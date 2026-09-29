@@ -1,5 +1,5 @@
 // Authored educational isolates. Run explicitly after reviewing edits; never imports raw private notes.
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
 const sourceIds = ['local-spectrum', 'eucast-expected', 'eucast-2026', 'idsa-amr'];
 const categories = [
   ['morphology', 'Gram stain / morphology', '염색 · 형태', '01'],
@@ -155,12 +155,33 @@ const records = variants.map(([id,taxon,phenotype,phenotypeId,description,patter
  if(phenotypeId==='vana') hints.resistance.text+=' 이 분리주는 고전적 VanA 표현형으로 설정했다.';
  return {id,taxonId:taxon,organism:t.name,koreanName:t.ko,phenotype,phenotypeId,phenotypeDescription:description,aliases:[`${t.name} ${phenotype}`,`${t.ko} ${phenotype}`,phenotype],classification:t.classification,biology:t.biology,diagnostics:t.diagnostics,pearl:t.pearl,hints,susceptibility,sourceIds:[...new Set([...sourceIds,...t.sources])],reviewStatus:'educational-draft',isolateModel:'authored-fixed-isolate',reviewedAt:'2026-09-30'};
 });
-const data={schemaVersion:1,datasetVersion:'0.2.0',title:'Core clinical bacteriology',reviewStatus:'educational-draft',interpretation:{system:'EUCAST',version:'16.1 (2026)',note:'EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. ACT는 임상 S/I가 아니라 근거가 명시된 조건부 활성이다. EUCAST 표의 dash(–)는 치료에 부적합한 조합이며 보고가 필요하면 검사 없이 R로 보고한다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.',advancedModeEnabled:false},categories,drugs,records};
+// Expansion packages are reviewed source data, not generated placeholders.
+const allSources=JSON.parse(await readFile('data/sources.json','utf8'));
+for(const file of ['gram-positive','gram-negative','core-antibiotics']) {
+ const pack=JSON.parse(await readFile(`scripts/expansion/${file}.json`,'utf8'));
+ for(const [id,source] of Object.entries(pack.sources||{})) {
+  if(allSources[id] && allSources[id].url!==source.url) throw Error(`Conflicting source ${id}`);
+  allSources[id] ||= source;
+ }
+ for(const drug of pack.drugs||[]) {
+  const existing=drugs.find(d=>d.id===drug.id);
+  if(existing) Object.assign(existing,drug); else drugs.push(drug);
+ }
+ for(const [id,extra] of Object.entries(pack.extensions||{})) {
+  const r=records.find(r=>r.id===id);if(!r)throw Error(`Unknown extension record ${id}`);
+  Object.assign(r.susceptibility,extra);
+ }
+ records.push(...(pack.records||[]));
+}
+await writeFile('data/sources.json',JSON.stringify(allSources,null,2)+'\n');
+const data={schemaVersion:1,datasetVersion:'0.3.0',title:'Core clinical bacteriology',reviewStatus:'educational-draft',interpretation:{system:'EUCAST',version:'16.1 (2026)',note:'EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. ACT는 임상 S/I가 아니라 근거가 명시된 조건부 활성이다. EUCAST 표의 dash(–)는 치료에 부적합한 조합이며 보고가 필요하면 검사 없이 R로 보고한다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.',advancedModeEnabled:false},categories,drugs,records};
 for(const record of records) for(const [drugId,result] of Object.entries(record.susceptibility)) {
  if(result.category === 'NA') throw Error(`${record.id}/${drugId}: NA categories are forbidden`);
  if(result.category === 'ACT' && !result.applicability) throw Error(`${record.id}/${drugId}: ACT requires applicability`);
  if(!result.note.trim() || !result.sourceIds.length) throw Error(`${record.id}/${drugId}: every AST result requires a note and sources`);
 }
+const {validateDataset}=await import('./validate-data.mjs');
+console.log(validateDataset(data,allSources));
 await mkdir('data',{recursive:true});
 await writeFile('data/organisms.json',JSON.stringify(data,null,2)+'\n');
 console.log(`${records.length} records, ${drugs.length} drugs → data/organisms.json`);

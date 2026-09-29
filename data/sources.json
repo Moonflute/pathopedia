@@ -59,5 +59,135 @@
     "title": "CDC Emerging Infectious Diseases · Antimicrobial Resistance in Enterococci",
     "url": "https://wwwnc.cdc.gov/eid/article/4/1/98-0106_article",
     "note": "Enterococci의 semisynthetic penicillinase-resistant penicillins(oxacillin 포함)에 대한 inherent resistance를 명시한 CDC 전문 리뷰."
+  },
+  "cdc-gas": {
+    "title": "CDC Clinical Guidance for Group A Streptococcal Pharyngitis",
+    "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+    "note": "GAS 진단, 질환 및 penicillin 감수성."
+  },
+  "cdc-gbs": {
+    "title": "CDC Group B Strep",
+    "url": "https://www.cdc.gov/group-b-strep/hcp/clinical-overview/",
+    "note": "주산기 집락화와 신생아·성인 침습 감염."
+  },
+  "cdc-pneumo": {
+    "title": "CDC Clinical Features of Pneumococcal Disease",
+    "url": "https://www.cdc.gov/pneumococcal/hcp/clinical-signs/index.html",
+    "note": "폐렴구균 임상 증후군과 위험군."
+  },
+  "cdc-listeria": {
+    "title": "CDC Clinical Overview of Listeriosis",
+    "url": "https://www.cdc.gov/listeria/hcp/clinical-overview/",
+    "note": "리스테리아증 위험군, 전파 및 임상상."
+  },
+  "cdc-anthrax": {
+    "title": "CDC Clinical Overview of Anthrax",
+    "url": "https://www.cdc.gov/anthrax/hcp/clinical-overview/index.html",
+    "note": "탄저의 임상형, 역학 및 공중보건 대응."
+  },
+  "cdc-diphtheria": {
+    "title": "CDC Clinical Guidance for Diphtheria",
+    "url": "https://www.cdc.gov/diphtheria/hcp/clinical-guidance/",
+    "note": "독소성 디프테리아의 진단과 임상상."
+  },
+  "cdc-cdiff": {
+    "title": "CDC C. diff: Facts for Clinicians",
+    "url": "https://www.cdc.gov/c-diff/hcp/clinical-overview/",
+    "note": "증상성 CDI, 집락화 구분 및 포자 전파."
+  },
+  "idsa-cdiff": {
+    "title": "SHEA/IDSA Clinical Practice Guideline for C. difficile Infection",
+    "url": "https://www.idsociety.org/practice-guideline/clostridium-difficile/",
+    "note": "CDI 진단·치료 및 감염관리 근거."
+  },
+  "msd-bacteria": {
+    "title": "Merck Manual Professional: Gram-Positive Bacteria",
+    "url": "https://www.merckmanuals.com/professional/infectious-diseases/gram-positive-bacteria",
+    "note": "임상 미생물학, 질환 및 진단 개요."
+  },
+  "idsa-amr-2024": {
+    "title": "IDSA 2024 Guidance on Treatment of Antimicrobial-Resistant Gram-Negative Infections",
+    "url": "https://www.idsociety.org/practice-guideline/amr-guidance/",
+    "note": "AmpC, ESBL-E, CRAB, S. maltophilia and B. cepacia complex therapeutic context."
+  },
+  "cdc-cholera": {
+    "title": "CDC Cholera: About",
+    "url": "https://www.cdc.gov/cholera/about/",
+    "note": "V. cholerae transmission, disease and geographic context."
+  },
+  "cdc-vibrio": {
+    "title": "CDC Vibrio and vibriosis",
+    "url": "https://www.cdc.gov/vibrio/about/",
+    "note": "Marine exposure, wound and seafood-associated vibriosis."
+  },
+  "cdc-hib": {
+    "title": "CDC Haemophilus influenzae Disease",
+    "url": "https://www.cdc.gov/hi-disease/about/",
+    "note": "Encapsulated and nontypeable disease epidemiology and prevention."
+  },
+  "cdc-salmonella": {
+    "title": "CDC About Salmonella Infection",
+    "url": "https://www.cdc.gov/salmonella/about/index.html",
+    "note": "Reservoir, transmission, clinical syndromes and prevention."
+  },
+  "cdc-shigella": {
+    "title": "CDC About Shigella Infection",
+    "url": "https://www.cdc.gov/shigella/about/index.html",
+    "note": "Transmission, clinical disease and antimicrobial-resistance context."
+  },
+  "cdc-yersinia": {
+    "title": "CDC About Yersinia Infection",
+    "url": "https://www.cdc.gov/yersinia/about/index.html",
+    "note": "Food reservoirs, transmission and clinical disease."
+  },
+  "eucast-aminoglycosides": {
+    "title": "EUCAST Guidance on implementation and use of the revised aminoglycoside breakpoints",
+    "url": "https://www.eucast.org/bacteria/guidance-documents/",
+    "note": "Aminoglycosides may require combination therapy; enterococcal high-level resistance testing predicts loss of synergy."
+  },
+  "eucast-daptomycin": {
+    "title": "EUCAST Daptomycin to treat infections with enterococci or coagulase-negative staphylococci (December 2025)",
+    "url": "https://www.eucast.org/bacteria/guidance-documents/",
+    "note": "Used to distinguish in-vitro activity from clinical breakpoint interpretation for enterococci and CoNS."
+  },
+  "idsa-amr-2026": {
+    "title": "IDSA 2026 Guidance on Treatment of Antimicrobial-Resistant Gram-Negative Infections",
+    "url": "https://www.idsociety.org/practice-guideline/amr-guidance/",
+    "note": "Phenotype context for ESBL-E, AmpC-E, CRE/KPC and DTR P. aeruginosa; treatment advice is not converted into MIC data."
+  },
+  "fda-daptomycin": {
+    "title": "FDA/DailyMed daptomycin prescribing information",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=daptomycin",
+    "note": "Labeled Gram-positive spectrum and limitations; Gram-negative organisms are outside its antibacterial spectrum."
+  },
+  "fda-ceftaroline": {
+    "title": "FDA/DailyMed TEFLARO (ceftaroline fosamil) prescribing information",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=ceftaroline",
+    "note": "Labeled susceptible organisms and indication-specific limitations."
+  },
+  "fda-tigecycline": {
+    "title": "FDA/DailyMed TYGACIL (tigecycline) prescribing information",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=tigecycline",
+    "note": "Spectrum and organism-specific clinical evidence; not evidence of Pseudomonas activity."
+  },
+  "fda-metronidazole": {
+    "title": "FDA/DailyMed metronidazole prescribing information",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=metronidazole",
+    "note": "Activity is directed at susceptible anaerobes; obligate and facultative aerobes are outside the antibacterial spectrum."
+  },
+  "core-cdc-vre-lab": {
+    "title": "CDC Vancomycin-resistant Enterococci: laboratory context",
+    "url": "https://www.cdc.gov/vre/about/index.html",
+    "note": "Clinical and laboratory context for acquired vancomycin resistance in enterococci; VanB commonly retains teicoplanin activity."
+  },
+  "core-cdc-mrsa-lab": {
+    "title": "CDC Laboratory Testing for MRSA",
+    "url": "https://www.cdc.gov/mrsa/php/laboratories/index.html",
+    "note": "MRSA detection context; mecA/mecC or PBP2a explains beta-lactam phenotype but does not determine unrelated drug results."
+  },
+  "core-fda-linezolid": {
+    "title": "FDA/DailyMed ZYVOX (linezolid) prescribing information",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=linezolid",
+    "note": "Official spectrum and susceptibility-testing context; the educational resistant isolate has no asserted MIC."
   }
 }

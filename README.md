@@ -20,7 +20,9 @@ GitHub Actions가 main push 시 테스트 → 정적 빌드 → Pages 배포합�
 
 ## 게임
 
-- 8 균종, 16 organism/phenotype 기록, 9 정보 항목, 16 항균제.
+- 49 균종·균군, 76 organism/phenotype 기록, 9 정보 항목, 28 항균제와 2,128개 조합.
+- 항균제 검색·16개씩 페이지 전환, Archive 내 항균제 도감(기전·활성 범위·제한점·내성).
+- 모바일 하단 정보/항균제/정답 전환과 44px 이상 터치 영역.
 - 숨은 답은 독립 ID를 가진 **교육용 고정 분리주**입니다. 무작위로 AST를 만들지 않습니다.
 - 같은 관찰 결과를 갖는 후보로 조건화한 Shannon entropy H를 계산합니다.
 - 검사 비용: `ceil(6 + 18 * H)`; 모든 결과가 같으면 최소 6.
@@ -36,8 +38,8 @@ GitHub Actions가 main push 시 테스트 → 정적 빌드 → Pages 배포합�
 ## 의료 데이터의 의미
 
 `data/organisms.json`이 플레이 데이터, `data/schema.json`이 확장용 JSON Schema,
-`data/sources.json`이 근거 목록입니다. `scripts/seed.mjs`를 수정하고 `npm run seed`로 다시 생성합니다.
-수동 JSON 수정은 seed 재생성 시 덮어써지므로 seed를 단일 작성 원본으로 유지하세요.
+`data/sources.json`이 근거 목록입니다. 핵심 seed와 `scripts/expansion/*.json`이 작성 원본이며 `npm run seed`로 병합합니다.
+수동 JSON 수정은 seed 재생성 시 덮어써지므로 seed와 확장 패키지를 작성 원본으로 유지하세요. `npm run build`도 전체 조합·출처 검증을 수행합니다.
 
 원본 `19 the medicine resource`는 **읽기 전용**으로 참고했습니다. 개인정보·학습 이력·원문 전체는 배포하지 않습니다.
 `docs/source-audit.json`에는 참고한 파일의 상대 경로와 SHA-256을 기록합니다.
@@ -46,7 +48,7 @@ GitHub Actions가 main push 시 테스트 → 정적 빌드 → Pages 배포합�
 현재 기록은 문헌상의 제약을 반영하여 작성한 가상의 고정 교육용 분리주이며 **expert-reviewed가 아닌 educational-draft**입니다.
 S/I/R의 의미 및 일부 조합의 추론 규칙은 EUCAST v16.1 (2026)을 따릅니다.
 `I = Susceptible, increased exposure`; R 또는 CLSI Intermediate와 같지 않습니다.
-미완성 감수성 값은 배포하지 않습니다. S/I/R 근거가 없는 조합은 임의 판정 대신 적용 조건과 확인된 활성을 작성합니다. ACT는 포도알균 ciprofloxacin의 획득 내성 선별 음성·고노출 병용 조건이며 임상 S/I/R 범주가 아닙니다. E. coli cefazolin은 요로 유래 감염 범위입니다.
+미완성 감수성 값은 배포하지 않습니다. S/I/R 근거가 없는 조합은 임의 판정 대신 적용 조건과 확인된 활성을 작성합니다. ACT는 고노출·병용·상승작용 등 명시된 조건에서의 활성입니다. ACTIVE/INACTIVE는 문헌 기반 항균 활성로 임상 S/I/R 범주와 구분합니다. Breakpoint 부재를 비활성으로 간주하지 않습니다. E. coli cefazolin은 요로 유래 감염 범위입니다.
 개별 실제 균주를 대변하거나 임상 처방을 권고하는 데이터가 아닙니다.
 
 MSSA/MRSA, MSSE/MRSE, E. faecalis/faecium VSE/vanA VRE, E. coli baseline/ESBL,
@@ -75,7 +77,7 @@ SemVer `v 0.0.0` 형식. 작은 수정은 patch, 기능 묶음은 minor 증가 �
 
 ## PWA와 아이콘
 
-현재 v 0.5.0. 홈 화면 설치용 manifest와 192/512px 아이콘, iOS용 180px 아이콘을 제공합니다.
+현재 v 0.6.0. 홈 화면 설치용 manifest와 192/512px 아이콘, iOS용 180px 아이콘을 제공합니다.
 지원 브라우저에서 사이트 설치 또는 홈 화면에 추가할 수 있습니다.
 첫 온라인 방문에서 캐시 설치가 완료되면 오프라인에서도 게임·Archive를 사용할 수 있습니다.
 외부 웹폰트를 불러오지 못하면 시스템 글꼴을 사용합니다.

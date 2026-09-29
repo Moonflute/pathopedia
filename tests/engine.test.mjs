@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { validateDataset } from '../scripts/validate-data.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { entropy, newRound, price, reveal, candidates, guess, score, addDiscovery, restoreRound } from '../src/engine.mjs';
@@ -11,7 +12,7 @@ test('all records have complete, sourced observations and unique organism/phenot
  assert.equal(new Set(records.map(r=>r.taxonId+'/'+r.phenotypeId)).size,records.length);
  for(const r of records){
   for(const c of categories) assert.ok(r.hints[c.id]?.text);
-  for(const d of drugs){const s=r.susceptibility[d.id];assert.ok(['S','I','R','ACT'].includes(s.category));assert.notEqual(s.category,'NA');assert.ok(s.note.trim());assert.ok(s.sourceIds.length);if(s.category==='ACT'){assert.equal(s.basis,'resistance-screen-negative');assert.ok(s.applicability);}assert.equal(s.mic,null);assert.equal(s.breakpoint,null);assert.ok(s.sourceIds.every(id=>sources[id]));}
+  for(const d of drugs){const s=r.susceptibility[d.id];assert.ok(['S','I','R','ACT','ACTIVE','INACTIVE'].includes(s.category));assert.notEqual(s.category,'NA');assert.ok(s.note.trim());assert.ok(s.sourceIds.length);if(s.category==='ACT'){assert.ok(['resistance-screen-negative','literature-activity','authored-isolate'].includes(s.basis));assert.ok(s.applicability);}assert.equal(s.mic,null);assert.equal(s.breakpoint,null);assert.ok(s.sourceIds.every(id=>sources[id]));}
   assert.ok(r.sourceIds.every(id=>sources[id]));
  }
 });
@@ -27,11 +28,11 @@ test('entropy quotes do not expose the selected answer',()=>{
 });
 test('reveal consumes one cost only, updates candidates, and ignores invalid keys',()=>{
  const start=make('SAU-002'); const round=reveal(records,start,'hint','morphology');
- assert.equal(round.actions.length,1);assert.equal(round.actions[0].cost,33);
- assert.equal(candidates(records,round).length,4);
+ assert.equal(round.actions.length,1);assert.equal(round.actions[0].cost,price(records,start,'hint','morphology').cost);
+ assert.equal(candidates(records,round).length,records.filter(r=>r.hints.morphology.text===records.find(r=>r.id==='SAU-002').hints.morphology.text).length);
  assert.equal(reveal(records,round,'hint','morphology'),round);
  assert.equal(reveal(records,round,'hint','invalid'),round);
- assert.equal(score(round).score,868);
+ assert.equal(score(round).score,1000-4*round.actions[0].cost);
  assert.equal(start.actions.length,0);
 });
 test('organism AND phenotype are required; wrong hypotheses incur one penalty each',()=>{
@@ -39,7 +40,7 @@ test('organism AND phenotype are required; wrong hypotheses incur one penalty ea
  assert.equal(round.status,'active');assert.equal(score(round).score,900);
  assert.equal(guess(records,round,'SAU-001'),round);
  assert.equal(guess(records,round,'not-a-record'),round);
- assert.equal(candidates(records,round).length,15);
+ assert.equal(candidates(records,round).length,records.length-1);
  round=guess(records,round,'SAU-002');assert.equal(round.status,'solved');
  assert.equal(reveal(records,round,'drug','vancomycin'),round);
  assert.equal(guess(records,round,'ECO-009'),round);
@@ -54,11 +55,11 @@ test('score clamps to zero and Archive only records completed rounds once',()=>{
  assert.equal(archive['SAU-002'].bestScore,1000);assert.equal(archive['SAU-002'].solves,2);
 });
 test('random draws cover the pool and avoid the previous isolate',()=>{
- const ids=new Set(records.map((_,i)=>newRound(records,null,()=>i/records.length).targetId));
+ const ids=new Set(records.map((_,i)=>newRound(records,null,()=>(i+0.5)/records.length).targetId));
  assert.equal(ids.size,records.length);
  for(let i=0;i<100;i++)assert.notEqual(newRound(records,'SAU-001',()=>i/100).targetId,'SAU-001');
  const subsequent=newRound(records,'SAU-001',()=>0.5);
- assert.equal(candidates(records,subsequent).length,15);
+ assert.equal(candidates(records,subsequent).length,records.length-1);
  assert.ok(!candidates(records,subsequent).some(r=>r.id==='SAU-001'));
 });
 test('all records can be uniquely identified and survive serialization',()=>{
@@ -78,4 +79,21 @@ test('clinically important phenotype invariants are preserved',()=>{
  assert.equal(result('ECL-015','ceftriaxone'),'S');assert.equal(result('ECL-016','ceftriaxone'),'R');
  for(const id of ['ECL-015','ECL-016'])for(const d of ['ampicillin','cefazolin'])assert.equal(result(id,d),'R');
  assert.equal(result('ECO-010','meropenem'),'S');assert.equal(result('KPN-012','meropenem'),'R');
+});
+
+test('catalog rejects missing or ungrounded susceptibility results',()=>{
+ assert.ok(validateDataset(data,sources).results>0);
+ const broken=structuredClone(data);broken.records[0].susceptibility[drugs[0].id].category='NA';
+ assert.throws(()=>validateDataset(broken,sources),/invalid/);
+ const empty=structuredClone(data);empty.records[0].susceptibility[drugs[0].id].sourceIds=[];
+ assert.throws(()=>validateDataset(empty,sources),/missing sources/);
+});
+
+test('expanded resistance phenotypes retain distinguishing constraints',()=>{
+ const ast=(id,drug)=>records.find(r=>r.id===id).susceptibility[drug].category;
+ for(const id of ['EFA-401','EFM-402']){assert.equal(ast(id,'vancomycin'),'R');assert.equal(ast(id,'teicoplanin'),'S');}
+ for(const id of ['ECO-405','KPN-406','PAE-411'])assert.equal(ast(id,'ceftazavi'),'R');
+ assert.equal(ast('SAU-403','vancomycin'),'R');assert.equal(ast('SAU-404','linezolid'),'R');
+ assert.equal(ast('GNX-202','tigecycline'),'R');
+ for(const d of ['meropenem','imipenem','amikacin','gentamicin'])assert.equal(ast('GNX-213',d),'R');
 });

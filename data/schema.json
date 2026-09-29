@@ -1,29 +1,385 @@
 {
-  "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "$id":"https://moonflute.github.io/pathopedia/data/schema.json",
-  "title":"Pathopedia dataset",
-  "type":"object",
-  "required":["schemaVersion","datasetVersion","interpretation","categories","drugs","records"],
-  "properties":{
-    "schemaVersion":{"const":1},
-    "datasetVersion":{"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},
-    "interpretation":{"type":"object","required":["system","version","note","advancedModeEnabled"],"properties":{"system":{"type":"string"},"version":{"type":"string"},"note":{"type":"string"},"advancedModeEnabled":{"type":"boolean"}}},
-    "categories":{"type":"array","minItems":1,"items":{"type":"object","required":["id","label","ko","number"],"properties":{"id":{"type":"string"},"label":{"type":"string"},"ko":{"type":"string"},"number":{"type":"string"}}}},
-    "drugs":{"type":"array","minItems":1,"items":{"type":"object","required":["id","name","family"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"family":{"type":"string"}}}},
-    "records":{"type":"array","minItems":2,"items":{"$ref":"#/$defs/record"}}
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moonflute.github.io/pathopedia/data/schema.json",
+  "title": "Pathopedia dataset",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "datasetVersion",
+    "interpretation",
+    "categories",
+    "drugs",
+    "records"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "datasetVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "interpretation": {
+      "type": "object",
+      "required": [
+        "system",
+        "version",
+        "note",
+        "advancedModeEnabled"
+      ],
+      "properties": {
+        "system": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "advancedModeEnabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "ko",
+          "number"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "ko": {
+            "type": "string"
+          },
+          "number": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "drugs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "family"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "family": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "records": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
   },
-  "$defs":{
-    "sourceIds":{"type":"array","minItems":1,"items":{"type":"string"}},
-    "hint":{"type":"object","required":["text","sourceIds"],"properties":{"text":{"type":"string","minLength":1},"sourceIds":{"$ref":"#/$defs/sourceIds"}}},
-    "ast":{"type":"object","required":["category","basis","mic","breakpoint","sourceIds","note"],"properties":{
-      "category":{"enum":["S","I","R","ACT"]},"basis":{"enum":["authored-isolate","expected-resistance","resistance-screen-negative","measured-isolate"]},
-      "applicability":{"enum":["infections-originating-from-urinary-tract","high-exposure-combination-therapy"]},
-      "mic":{"oneOf":[{"type":"null"},{"type":"object","required":["value","unit","operator","method","sourceId"],"properties":{"value":{"type":"number","minimum":0},"unit":{"const":"mg/L"},"operator":{"enum":["=","<=",">"]},"method":{"type":"string"},"sourceId":{"type":"string"}}}]},
-      "breakpoint":{"oneOf":[{"type":"null"},{"type":"object","required":["standard","version","site","exposure","susceptibleMax","resistantAbove","sourceId"],"properties":{"standard":{"enum":["EUCAST","CLSI"]},"version":{"type":"string"},"site":{"type":"string"},"exposure":{"type":"string"},"susceptibleMax":{"type":"number"},"resistantAbove":{"type":"number"},"sourceId":{"type":"string"}}}]},
-      "sourceIds":{"$ref":"#/$defs/sourceIds"},"note":{"type":"string","minLength":1}
-    },"allOf":[{"if":{"properties":{"category":{"const":"ACT"}}},"then":{"required":["applicability"],"properties":{"basis":{"const":"resistance-screen-negative"}}}}]},
-    "record":{"type":"object","required":["id","taxonId","organism","koreanName","phenotype","phenotypeId","phenotypeDescription","classification","biology","diagnostics","pearl","hints","susceptibility","sourceIds","reviewStatus","isolateModel","reviewedAt"],"properties":{
-      "id":{"type":"string","pattern":"^[A-Z]{3}-[0-9]{3}$"},"taxonId":{"type":"string"},"organism":{"type":"string"},"koreanName":{"type":"string"},"phenotype":{"type":"string"},"phenotypeId":{"type":"string"},"phenotypeDescription":{"type":"string"},"classification":{"type":"string"},"biology":{"type":"string"},"diagnostics":{"type":"string"},"pearl":{"type":"string"},"aliases":{"type":"array","items":{"type":"string"}},"hints":{"type":"object","additionalProperties":{"$ref":"#/$defs/hint"}},"susceptibility":{"type":"object","additionalProperties":{"$ref":"#/$defs/ast"}},"sourceIds":{"$ref":"#/$defs/sourceIds"},"reviewStatus":{"enum":["educational-draft","expert-reviewed"]},"isolateModel":{"enum":["authored-fixed-isolate","measured-isolate"]},"reviewedAt":{"type":"string","format":"date"}
-    }}
+  "$defs": {
+    "sourceIds": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "hint": {
+      "type": "object",
+      "required": [
+        "text",
+        "sourceIds"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceIds": {
+          "$ref": "#/$defs/sourceIds"
+        }
+      }
+    },
+    "ast": {
+      "type": "object",
+      "required": [
+        "category",
+        "basis",
+        "mic",
+        "breakpoint",
+        "sourceIds",
+        "note"
+      ],
+      "properties": {
+        "category": {
+          "enum": [
+            "S",
+            "I",
+            "R",
+            "ACT",
+            "ACTIVE",
+            "INACTIVE"
+          ]
+        },
+        "basis": {
+          "enum": [
+            "authored-isolate",
+            "expected-resistance",
+            "resistance-screen-negative",
+            "measured-isolate",
+            "literature-activity"
+          ]
+        },
+        "applicability": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mic": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "value",
+                "unit",
+                "operator",
+                "method",
+                "sourceId"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "unit": {
+                  "const": "mg/L"
+                },
+                "operator": {
+                  "enum": [
+                    "=",
+                    "<=",
+                    ">"
+                  ]
+                },
+                "method": {
+                  "type": "string"
+                },
+                "sourceId": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        "breakpoint": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "required": [
+                "standard",
+                "version",
+                "site",
+                "exposure",
+                "susceptibleMax",
+                "resistantAbove",
+                "sourceId"
+              ],
+              "properties": {
+                "standard": {
+                  "enum": [
+                    "EUCAST",
+                    "CLSI"
+                  ]
+                },
+                "version": {
+                  "type": "string"
+                },
+                "site": {
+                  "type": "string"
+                },
+                "exposure": {
+                  "type": "string"
+                },
+                "susceptibleMax": {
+                  "type": "number"
+                },
+                "resistantAbove": {
+                  "type": "number"
+                },
+                "sourceId": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
+        "sourceIds": {
+          "$ref": "#/$defs/sourceIds"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "category": {
+                "const": "ACT"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "applicability"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "category": {
+                "enum": [
+                  "ACTIVE",
+                  "INACTIVE"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "basis": {
+                "const": "literature-activity"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "id",
+        "taxonId",
+        "organism",
+        "koreanName",
+        "phenotype",
+        "phenotypeId",
+        "phenotypeDescription",
+        "classification",
+        "biology",
+        "diagnostics",
+        "pearl",
+        "hints",
+        "susceptibility",
+        "sourceIds",
+        "reviewStatus",
+        "isolateModel",
+        "reviewedAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}-[0-9]{3}$"
+        },
+        "taxonId": {
+          "type": "string"
+        },
+        "organism": {
+          "type": "string"
+        },
+        "koreanName": {
+          "type": "string"
+        },
+        "phenotype": {
+          "type": "string"
+        },
+        "phenotypeId": {
+          "type": "string"
+        },
+        "phenotypeDescription": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string"
+        },
+        "biology": {
+          "type": "string"
+        },
+        "diagnostics": {
+          "type": "string"
+        },
+        "pearl": {
+          "type": "string"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hints": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/hint"
+          }
+        },
+        "susceptibility": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/ast"
+          }
+        },
+        "sourceIds": {
+          "$ref": "#/$defs/sourceIds"
+        },
+        "reviewStatus": {
+          "enum": [
+            "educational-draft",
+            "expert-reviewed"
+          ]
+        },
+        "isolateModel": {
+          "enum": [
+            "authored-fixed-isolate",
+            "measured-isolate"
+          ]
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    }
   }
 }

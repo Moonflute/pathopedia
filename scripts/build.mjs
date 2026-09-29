@@ -1,4 +1,6 @@
 import { mkdir, cp, readFile, writeFile } from 'node:fs/promises';
+import { validateFiles } from './validate-data.mjs';
+console.log('Validated catalog:', await validateFiles());
 const pkg = JSON.parse(await readFile('package.json', 'utf8'));
 await mkdir('dist', { recursive: true });
 for (const path of ['index.html', 'favicon.svg', 'manifest.webmanifest', 'sw.js', 'src', 'data']) await cp(path, `dist/${path}`, { recursive: true });
