@@ -1,0 +1,26 @@
+{
+  "policy": "Read-only sources. Original files not copied into public distribution. Hashes capture inspected versions.",
+  "checkedAt": "2026-09-30",
+  "files": [
+    {
+      "relativePath": "_webapp/data/antibiotic-spectrum.json",
+      "sha256": "a1f641f9e7c2221baf77aa3f292f4383a5d883521e7c895ab18f535dce71668e"
+    },
+    {
+      "relativePath": "_webapp/data/infection-pathways.json",
+      "sha256": "7e8b87226f5931201b4290655ab9561a4a77216a5898338ae17eec0a6c4446dc"
+    },
+    {
+      "relativePath": "source_notes/02 Diseases/08 감염/포도알균 (Staphylococcus).md",
+      "sha256": "931e4ad4da803aa38ce339a46fbd77de11b93a97b74c363672df5d3439c85f8a"
+    },
+    {
+      "relativePath": "source_notes/02 Diseases/08 감염/대장균 (E. coli).md",
+      "sha256": "ce742caa33242becb169422d80035c557690268b33c9a347a73a6a91823f399d"
+    },
+    {
+      "relativePath": "source_notes/02 Diseases/08 감염/녹농균 (Pseudomonas Aeruginosa).md",
+      "sha256": "a5f5d76784d5992637c7d8036414b12406156627eebbef2f8c6dfd3ffd3f836c"
+    }
+  ]
+}

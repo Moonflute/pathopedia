@@ -1,0 +1,5636 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "0.1.0",
+  "title": "Core clinical bacteriology",
+  "reviewStatus": "educational-draft",
+  "interpretation": {
+    "system": "EUCAST",
+    "version": "16.1 (2026)",
+    "note": "EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. 부위별 제한으로 범주를 부여할 수 없는 조합은 NA. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.",
+    "advancedModeEnabled": false
+  },
+  "categories": [
+    {
+      "id": "morphology",
+      "label": "Gram stain / morphology",
+      "ko": "염색 · 형태",
+      "number": "01"
+    },
+    {
+      "id": "culture",
+      "label": "Culture characteristics",
+      "ko": "배양 특성",
+      "number": "02"
+    },
+    {
+      "id": "biochemistry",
+      "label": "Biochemical tests",
+      "ko": "생화학적 동정",
+      "number": "03"
+    },
+    {
+      "id": "virulence",
+      "label": "Virulence factors",
+      "ko": "병독성 인자",
+      "number": "04"
+    },
+    {
+      "id": "reservoir",
+      "label": "Reservoir / transmission",
+      "ko": "숙주 · 전파",
+      "number": "05"
+    },
+    {
+      "id": "diseases",
+      "label": "Associated diseases",
+      "ko": "연관 감염질환",
+      "number": "06"
+    },
+    {
+      "id": "resistance",
+      "label": "Resistance mechanism",
+      "ko": "내성 기전",
+      "number": "07"
+    },
+    {
+      "id": "tropism",
+      "label": "Organ tropism",
+      "ko": "장기 친화성",
+      "number": "08"
+    },
+    {
+      "id": "geography",
+      "label": "Geographic distribution",
+      "ko": "분포 지역",
+      "number": "09"
+    }
+  ],
+  "drugs": [
+    {
+      "id": "oxacillin",
+      "name": "Oxacillin",
+      "family": "Penicillin"
+    },
+    {
+      "id": "vancomycin",
+      "name": "Vancomycin",
+      "family": "Glycopeptide"
+    },
+    {
+      "id": "ceftriaxone",
+      "name": "Ceftriaxone",
+      "family": "3rd-gen cephalosporin"
+    },
+    {
+      "id": "cefepime",
+      "name": "Cefepime",
+      "family": "4th-gen cephalosporin"
+    },
+    {
+      "id": "ceftazidime",
+      "name": "Ceftazidime",
+      "family": "3rd-gen cephalosporin"
+    },
+    {
+      "id": "meropenem",
+      "name": "Meropenem",
+      "family": "Carbapenem"
+    },
+    {
+      "id": "imipenem",
+      "name": "Imipenem",
+      "family": "Carbapenem"
+    },
+    {
+      "id": "aztreonam",
+      "name": "Aztreonam",
+      "family": "Monobactam"
+    },
+    {
+      "id": "ciprofloxacin",
+      "name": "Ciprofloxacin",
+      "family": "Fluoroquinolone"
+    },
+    {
+      "id": "levofloxacin",
+      "name": "Levofloxacin",
+      "family": "Fluoroquinolone"
+    },
+    {
+      "id": "ampicillin",
+      "name": "Ampicillin",
+      "family": "Aminopenicillin"
+    },
+    {
+      "id": "piptazo",
+      "name": "Piperacillin–tazobactam",
+      "family": "β-lactam / BLI"
+    },
+    {
+      "id": "linezolid",
+      "name": "Linezolid",
+      "family": "Oxazolidinone"
+    },
+    {
+      "id": "ceftazavi",
+      "name": "Ceftazidime–avibactam",
+      "family": "β-lactam / BLI"
+    },
+    {
+      "id": "teicoplanin",
+      "name": "Teicoplanin",
+      "family": "Glycopeptide"
+    },
+    {
+      "id": "cefazolin",
+      "name": "Cefazolin",
+      "family": "1st-gen cephalosporin"
+    }
+  ],
+  "records": [
+    {
+      "id": "SAU-001",
+      "taxonId": "sau",
+      "organism": "Staphylococcus aureus",
+      "koreanName": "황색포도알균",
+      "phenotype": "MSSA",
+      "phenotypeId": "mssa",
+      "phenotypeDescription": "Methicillin-susceptible; penicillinase-positive",
+      "aliases": [
+        "Staphylococcus aureus MSSA",
+        "황색포도알균 MSSA",
+        "MSSA"
+      ],
+      "classification": "Bacteria / Bacillota / Staphylococcaceae",
+      "biology": "통성혐기성. 피부 장벽 손상과 혈관 내 기구가 침습 감염의 통로가 된다.",
+      "diagnostics": "배양 및 종 동정 후 cefoxitin/oxacillin 기반 methicillin 내성 검사. mecA/mecC 또는 PBP2a로 확인할 수 있다.",
+      "pearl": "혈액배양에서 동정되면 단순 오염으로 넘기지 않는다. 지속 균혈증은 심내막염이나 전이성 감염의 단서다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-positive cocci in clusters. 비포자성 구균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "culture": {
+          "text": "혈액한천에서 매끈한 집락. 황금색 색소와 β-hemolysis가 나타날 수 있으며 mannitol을 발효한다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "biochemistry": {
+          "text": "Catalase (+), coagulase (+), DNase (+).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "virulence": {
+          "text": "Protein A의 IgG Fc 결합, coagulase, 세포독소. 일부 균주에서 TSST-1 또는 exfoliative toxin.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 피부와 점막에 집락화. 직접 접촉 및 의료기구를 통한 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "diseases": {
+          "text": "화농성 피부·연조직 감염, 균혈증, 심내막염, 골수염, 폐렴. 균주별 독소 질환.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "resistance": {
+          "text": "mecA/mecC 비검출. Penicillinase 생성; oxacillin 감수성 유지.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "tropism": {
+          "text": "피부·연조직, 혈류, 심장판막, 뼈.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "vancomycin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "cefepime": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "EUCAST의 괄호 breakpoint에 해당. 내성 기전 부재와 임상적 S/I 범주를 혼동하지 않도록 이 panel에서는 NA."
+        },
+        "levofloxacin": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 균–약제 조합은 EUCAST에서 부적합한 조합으로 취급한다. Ceftazidime–avibactam을 Gram-positive 치료제로 해석하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "local-staph",
+        "cdc-mrsa"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "SAU-002",
+      "taxonId": "sau",
+      "organism": "Staphylococcus aureus",
+      "koreanName": "황색포도알균",
+      "phenotype": "MRSA",
+      "phenotypeId": "mrsa",
+      "phenotypeDescription": "mecA-positive MRSA",
+      "aliases": [
+        "Staphylococcus aureus MRSA",
+        "황색포도알균 MRSA",
+        "MRSA"
+      ],
+      "classification": "Bacteria / Bacillota / Staphylococcaceae",
+      "biology": "통성혐기성. 피부 장벽 손상과 혈관 내 기구가 침습 감염의 통로가 된다.",
+      "diagnostics": "배양 및 종 동정 후 cefoxitin/oxacillin 기반 methicillin 내성 검사. mecA/mecC 또는 PBP2a로 확인할 수 있다.",
+      "pearl": "혈액배양에서 동정되면 단순 오염으로 넘기지 않는다. 지속 균혈증은 심내막염이나 전이성 감염의 단서다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-positive cocci in clusters. 비포자성 구균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "culture": {
+          "text": "혈액한천에서 매끈한 집락. 황금색 색소와 β-hemolysis가 나타날 수 있으며 mannitol을 발효한다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "biochemistry": {
+          "text": "Catalase (+), coagulase (+), DNase (+).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "virulence": {
+          "text": "Protein A의 IgG Fc 결합, coagulase, 세포독소. 일부 균주에서 TSST-1 또는 exfoliative toxin.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 피부와 점막에 집락화. 직접 접촉 및 의료기구를 통한 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "diseases": {
+          "text": "화농성 피부·연조직 감염, 균혈증, 심내막염, 골수염, 폐렴. 균주별 독소 질환.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "resistance": {
+          "text": "mecA에 의한 PBP2a. 낮은 β-lactam 결합 친화성; vancomycin 감수성은 유지.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "tropism": {
+          "text": "피부·연조직, 혈류, 심장판막, 뼈.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "vancomycin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 균–약제 조합은 EUCAST에서 부적합한 조합으로 취급한다. Ceftazidime–avibactam을 Gram-positive 치료제로 해석하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph",
+            "cdc-mrsa"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "local-staph",
+        "cdc-mrsa"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "SEP-003",
+      "taxonId": "sep",
+      "organism": "Staphylococcus epidermidis",
+      "koreanName": "표피포도알균",
+      "phenotype": "MSSE",
+      "phenotypeId": "msse",
+      "phenotypeDescription": "Methicillin-susceptible; penicillinase-positive",
+      "aliases": [
+        "Staphylococcus epidermidis MSSE",
+        "표피포도알균 MSSE",
+        "MSSE"
+      ],
+      "classification": "Bacteria / Bacillota / Staphylococcaceae",
+      "biology": "통성혐기성 피부 상재균. 이물질 위 biofilm에서 지속 감염을 일으킬 수 있다.",
+      "diagnostics": "반복 혈액배양의 일치, 채혈 위치와 기구 여부를 함께 해석한다. 종 동정과 methicillin 내성 검사를 별도로 시행한다.",
+      "pearl": "혈액배양 한 병의 양성 여부만으로 오염과 감염을 구분하지 않는다. 인공물과 임상 맥락이 중요하다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-positive cocci in clusters. 비포자성 구균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "culture": {
+          "text": "혈액한천에서 대개 백색·비용혈성 집락. mannitol은 대개 발효하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "biochemistry": {
+          "text": "Catalase (+), coagulase (−), novobiocin susceptible.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "virulence": {
+          "text": "의료기구 표면의 부착과 biofilm 형성이 핵심. 다당류성 세포 간 부착 인자가 관여한다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 피부와 점막에 집락화. 직접 접촉 및 의료기구를 통한 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "diseases": {
+          "text": "카테터 관련 혈류 감염, 인공판막 심내막염, 인공관절 감염. 혈액배양 오염균으로도 흔하다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "resistance": {
+          "text": "mecA/mecC 비검출. Penicillinase 생성; oxacillin 감수성 유지.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "tropism": {
+          "text": "피부·연조직, 혈류, 심장판막, 뼈.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "vancomycin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "cefepime": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "EUCAST의 괄호 breakpoint에 해당. 내성 기전 부재와 임상적 S/I 범주를 혼동하지 않도록 이 panel에서는 NA."
+        },
+        "levofloxacin": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 균–약제 조합은 EUCAST에서 부적합한 조합으로 취급한다. Ceftazidime–avibactam을 Gram-positive 치료제로 해석하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "local-staph"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "SEP-004",
+      "taxonId": "sep",
+      "organism": "Staphylococcus epidermidis",
+      "koreanName": "표피포도알균",
+      "phenotype": "MRSE",
+      "phenotypeId": "mrse",
+      "phenotypeDescription": "mecA-positive MRSE",
+      "aliases": [
+        "Staphylococcus epidermidis MRSE",
+        "표피포도알균 MRSE",
+        "MRSE"
+      ],
+      "classification": "Bacteria / Bacillota / Staphylococcaceae",
+      "biology": "통성혐기성 피부 상재균. 이물질 위 biofilm에서 지속 감염을 일으킬 수 있다.",
+      "diagnostics": "반복 혈액배양의 일치, 채혈 위치와 기구 여부를 함께 해석한다. 종 동정과 methicillin 내성 검사를 별도로 시행한다.",
+      "pearl": "혈액배양 한 병의 양성 여부만으로 오염과 감염을 구분하지 않는다. 인공물과 임상 맥락이 중요하다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-positive cocci in clusters. 비포자성 구균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "culture": {
+          "text": "혈액한천에서 대개 백색·비용혈성 집락. mannitol은 대개 발효하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "biochemistry": {
+          "text": "Catalase (+), coagulase (−), novobiocin susceptible.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "virulence": {
+          "text": "의료기구 표면의 부착과 biofilm 형성이 핵심. 다당류성 세포 간 부착 인자가 관여한다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 피부와 점막에 집락화. 직접 접촉 및 의료기구를 통한 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "diseases": {
+          "text": "카테터 관련 혈류 감염, 인공판막 심내막염, 인공관절 감염. 혈액배양 오염균으로도 흔하다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "resistance": {
+          "text": "mecA에 의한 PBP2a. 낮은 β-lactam 결합 친화성; vancomycin 감수성은 유지.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "tropism": {
+          "text": "피부·연조직, 혈류, 심장판막, 뼈.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "vancomycin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 균–약제 조합은 EUCAST에서 부적합한 조합으로 취급한다. Ceftazidime–avibactam을 Gram-positive 치료제로 해석하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-staph"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "local-staph"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "EFA-005",
+      "taxonId": "efa",
+      "organism": "Enterococcus faecalis",
+      "koreanName": "장알균",
+      "phenotype": "VSE · ampicillin S",
+      "phenotypeId": "vse",
+      "phenotypeDescription": "Vancomycin-susceptible, ampicillin-susceptible",
+      "aliases": [
+        "Enterococcus faecalis VSE · ampicillin S",
+        "장알균 VSE · ampicillin S",
+        "VSE · ampicillin S"
+      ],
+      "classification": "Bacteria / Bacillota / Enterococcaceae",
+      "biology": "통성혐기성. 환경 생존력이 높고 cephalosporin 노출이 집락화를 선택할 수 있다.",
+      "diagnostics": "종 동정, ampicillin·vancomycin AST. 심내막염에서는 고도 aminoglycoside 내성 여부가 병합요법 해석에 중요하다.",
+      "pearl": "Cephalosporin 단독의 R과 특정 병합요법의 상승작용은 다른 개념이다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-positive cocci in pairs or short chains. 비포자성 구균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "culture": {
+          "text": "Bile-esculin (+). 6.5% NaCl에서 성장하며 혈액한천에서 흔히 비용혈성이다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "biochemistry": {
+          "text": "Catalase (−), PYR (+), arabinose 대개 (−).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "virulence": {
+          "text": "부착 인자, biofilm, 일부 균주의 cytolysin이 관여한다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 장내 세균총. 내인성 감염 및 의료환경에서 접촉 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "diseases": {
+          "text": "요로감염, 균혈증, 심내막염, 복강·담도 감염.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "resistance": {
+          "text": "Glycopeptide 획득내성 없음. Cephalosporin에 expected resistance; ampicillin 감수성.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "tropism": {
+          "text": "요로, 혈류, 복강.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "Enterococcus–meropenem 조합은 EUCAST에서 부적합하며 검사 panel에 포함 시 R로 처리한다."
+        },
+        "imipenem": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "linezolid": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 균–약제 조합은 EUCAST에서 부적합한 조합으로 취급한다. Ceftazidime–avibactam을 Gram-positive 치료제로 해석하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "cdc-vre"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "EFA-006",
+      "taxonId": "efa",
+      "organism": "Enterococcus faecalis",
+      "koreanName": "장알균",
+      "phenotype": "VRE · vanA",
+      "phenotypeId": "vana",
+      "phenotypeDescription": "vanA-positive, ampicillin-susceptible",
+      "aliases": [
+        "Enterococcus faecalis VRE · vanA",
+        "장알균 VRE · vanA",
+        "VRE · vanA"
+      ],
+      "classification": "Bacteria / Bacillota / Enterococcaceae",
+      "biology": "통성혐기성. 환경 생존력이 높고 cephalosporin 노출이 집락화를 선택할 수 있다.",
+      "diagnostics": "종 동정, ampicillin·vancomycin AST. 심내막염에서는 고도 aminoglycoside 내성 여부가 병합요법 해석에 중요하다.",
+      "pearl": "Cephalosporin 단독의 R과 특정 병합요법의 상승작용은 다른 개념이다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-positive cocci in pairs or short chains. 비포자성 구균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "culture": {
+          "text": "Bile-esculin (+). 6.5% NaCl에서 성장하며 혈액한천에서 흔히 비용혈성이다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "biochemistry": {
+          "text": "Catalase (−), PYR (+), arabinose 대개 (−).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "virulence": {
+          "text": "부착 인자, biofilm, 일부 균주의 cytolysin이 관여한다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 장내 세균총. 내인성 감염 및 의료환경에서 접촉 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "diseases": {
+          "text": "요로감염, 균혈증, 심내막염, 복강·담도 감염.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "resistance": {
+          "text": "vanA: D-Ala-D-Ala 말단을 D-Ala-D-Lac으로 치환. Vancomycin과 teicoplanin 내성. 이 분리주는 고전적 VanA 표현형으로 설정했다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "tropism": {
+          "text": "요로, 혈류, 복강.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "Enterococcus–meropenem 조합은 EUCAST에서 부적합하며 검사 panel에 포함 시 R로 처리한다."
+        },
+        "imipenem": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "linezolid": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 균–약제 조합은 EUCAST에서 부적합한 조합으로 취급한다. Ceftazidime–avibactam을 Gram-positive 치료제로 해석하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "cdc-vre"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "EFM-007",
+      "taxonId": "efm",
+      "organism": "Enterococcus faecium",
+      "koreanName": "페시움 장알균",
+      "phenotype": "VSE · ampicillin R",
+      "phenotypeId": "vse",
+      "phenotypeDescription": "Vancomycin-susceptible, ampicillin-resistant",
+      "aliases": [
+        "Enterococcus faecium VSE · ampicillin R",
+        "페시움 장알균 VSE · ampicillin R",
+        "VSE · ampicillin R"
+      ],
+      "classification": "Bacteria / Bacillota / Enterococcaceae",
+      "biology": "통성혐기성. 병원 관련 분리주에서 ampicillin 내성이 흔하지만 종 전체의 절대적 성질은 아니다.",
+      "diagnostics": "종 동정과 개별 AST가 필요하다. Vancomycin 내성 시 van 유전자형을 확인할 수 있다.",
+      "pearl": "VRE라는 이름만으로 종이 결정되지 않는다. faecalis와 faecium, 내성 유전자형을 구분한다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-positive cocci in pairs or short chains. 비포자성 구균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "culture": {
+          "text": "Bile-esculin (+). 6.5% NaCl에서 성장하며 혈액한천에서 흔히 비용혈성이다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "biochemistry": {
+          "text": "Catalase (−), PYR (+), arabinose 대개 (+).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "virulence": {
+          "text": "표면 부착 단백과 biofilm. 병원 환경에 적응한 계통에서 다제내성이 흔하다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 장내 세균총. 내인성 감염 및 의료환경에서 접촉 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "diseases": {
+          "text": "의료 관련 균혈증, 요로감염, 복강 감염. 면역저하 환자에서 중요하다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "resistance": {
+          "text": "낮은 친화성 PBP5 관련 ampicillin 내성. Glycopeptide 획득내성 없음.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "tropism": {
+          "text": "요로, 혈류, 복강.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "Enterococcus–meropenem 조합은 EUCAST에서 부적합하며 검사 panel에 포함 시 R로 처리한다."
+        },
+        "imipenem": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 균–약제 조합은 EUCAST에서 부적합한 조합으로 취급한다. Ceftazidime–avibactam을 Gram-positive 치료제로 해석하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "cdc-vre"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "EFM-008",
+      "taxonId": "efm",
+      "organism": "Enterococcus faecium",
+      "koreanName": "페시움 장알균",
+      "phenotype": "VRE · vanA",
+      "phenotypeId": "vana",
+      "phenotypeDescription": "vanA-positive, ampicillin-resistant",
+      "aliases": [
+        "Enterococcus faecium VRE · vanA",
+        "페시움 장알균 VRE · vanA",
+        "VRE · vanA"
+      ],
+      "classification": "Bacteria / Bacillota / Enterococcaceae",
+      "biology": "통성혐기성. 병원 관련 분리주에서 ampicillin 내성이 흔하지만 종 전체의 절대적 성질은 아니다.",
+      "diagnostics": "종 동정과 개별 AST가 필요하다. Vancomycin 내성 시 van 유전자형을 확인할 수 있다.",
+      "pearl": "VRE라는 이름만으로 종이 결정되지 않는다. faecalis와 faecium, 내성 유전자형을 구분한다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-positive cocci in pairs or short chains. 비포자성 구균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "culture": {
+          "text": "Bile-esculin (+). 6.5% NaCl에서 성장하며 혈액한천에서 흔히 비용혈성이다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "biochemistry": {
+          "text": "Catalase (−), PYR (+), arabinose 대개 (+).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "virulence": {
+          "text": "표면 부착 단백과 biofilm. 병원 환경에 적응한 계통에서 다제내성이 흔하다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 장내 세균총. 내인성 감염 및 의료환경에서 접촉 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "diseases": {
+          "text": "의료 관련 균혈증, 요로감염, 복강 감염. 면역저하 환자에서 중요하다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "resistance": {
+          "text": "vanA: D-Ala-D-Ala 말단을 D-Ala-D-Lac으로 치환. Vancomycin과 teicoplanin 내성. 이 분리주는 고전적 VanA 표현형으로 설정했다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "tropism": {
+          "text": "요로, 혈류, 복강.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "Enterococcus–meropenem 조합은 EUCAST에서 부적합하며 검사 panel에 포함 시 R로 처리한다."
+        },
+        "imipenem": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "R",
+          "basis": "expected-resistance",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 균–약제 조합은 EUCAST에서 부적합한 조합으로 취급한다. Ceftazidime–avibactam을 Gram-positive 치료제로 해석하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "cdc-vre"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "cdc-vre"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "ECO-009",
+      "taxonId": "eco",
+      "organism": "Escherichia coli",
+      "koreanName": "대장균",
+      "phenotype": "Baseline susceptible",
+      "phenotypeId": "baseline",
+      "phenotypeDescription": "No acquired β-lactam resistance in this isolate",
+      "aliases": [
+        "Escherichia coli Baseline susceptible",
+        "대장균 Baseline susceptible",
+        "Baseline susceptible"
+      ],
+      "classification": "Bacteria / Pseudomonadota / Enterobacterales",
+      "biology": "통성혐기성 Enterobacterales. 이번 문제의 내성 phenotype은 장관외 감염 분리주로 설정했다.",
+      "diagnostics": "배양·종 동정과 AST. Ceftriaxone 비감수성만으로 ESBL 유전자형을 확정할 수는 없다.",
+      "pearl": "STEC의 장염과 일반적인 장관외 감염은 치료 맥락이 다르다. ESBL이라는 말은 병원형을 뜻하지 않는다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-negative rods. 비포자성 간균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "culture": {
+          "text": "MacConkey agar에서 lactose 발효성 분홍색 집락. 통성혐기성 성장.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "biochemistry": {
+          "text": "Oxidase (−), indole (+), citrate 대개 (−), motility (+).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "virulence": {
+          "text": "Fimbriae와 adhesin, LPS. 병원형에 따라 capsule, enterotoxin 또는 Shiga toxin이 추가된다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 장내 세균총. 내인성 감염 및 의료환경에서 접촉 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "diseases": {
+          "text": "방광염, 신우신염, 균혈증, 복강 감염. 일부 병원형은 장염 또는 신생아 수막염.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "resistance": {
+          "text": "이 분리주에서 획득성 ESBL/carbapenemase가 검출되지 않음.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "tropism": {
+          "text": "요로, 혈류, 복강.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "EUCAST cefazolin 해석의 요로 기원 감염 조건이 이 panel에서 지정되지 않아 범주를 부여하지 않음."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "local-ecoli"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "ECO-010",
+      "taxonId": "eco",
+      "organism": "Escherichia coli",
+      "koreanName": "대장균",
+      "phenotype": "ESBL-producing",
+      "phenotypeId": "esbl",
+      "phenotypeDescription": "CTX-M-type ESBL; carbapenem-susceptible",
+      "aliases": [
+        "Escherichia coli ESBL-producing",
+        "대장균 ESBL-producing",
+        "ESBL-producing"
+      ],
+      "classification": "Bacteria / Pseudomonadota / Enterobacterales",
+      "biology": "통성혐기성 Enterobacterales. 이번 문제의 내성 phenotype은 장관외 감염 분리주로 설정했다.",
+      "diagnostics": "배양·종 동정과 AST. Ceftriaxone 비감수성만으로 ESBL 유전자형을 확정할 수는 없다.",
+      "pearl": "STEC의 장염과 일반적인 장관외 감염은 치료 맥락이 다르다. ESBL이라는 말은 병원형을 뜻하지 않는다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-negative rods. 비포자성 간균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "culture": {
+          "text": "MacConkey agar에서 lactose 발효성 분홍색 집락. 통성혐기성 성장.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "biochemistry": {
+          "text": "Oxidase (−), indole (+), citrate 대개 (−), motility (+).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "virulence": {
+          "text": "Fimbriae와 adhesin, LPS. 병원형에 따라 capsule, enterotoxin 또는 Shiga toxin이 추가된다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 장내 세균총. 내인성 감염 및 의료환경에서 접촉 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "diseases": {
+          "text": "방광염, 신우신염, 균혈증, 복강 감염. 일부 병원형은 장염 또는 신생아 수막염.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "resistance": {
+          "text": "CTX-M형 ESBL. 확장-spectrum cephalosporin과 aztreonam 가수분해; carbapenem 감수성 유지.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "tropism": {
+          "text": "요로, 혈류, 복강.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-ecoli"
+          ],
+          "note": "EUCAST cefazolin 해석의 요로 기원 감염 조건이 이 panel에서 지정되지 않아 범주를 부여하지 않음."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "local-ecoli"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "KPN-011",
+      "taxonId": "kpn",
+      "organism": "Klebsiella pneumoniae",
+      "koreanName": "폐렴막대균",
+      "phenotype": "ESBL-producing",
+      "phenotypeId": "esbl",
+      "phenotypeDescription": "CTX-M-type ESBL; carbapenem-susceptible",
+      "aliases": [
+        "Klebsiella pneumoniae ESBL-producing",
+        "폐렴막대균 ESBL-producing",
+        "ESBL-producing"
+      ],
+      "classification": "Bacteria / Pseudomonadota / Enterobacterales",
+      "biology": "통성혐기성 비운동성 간균. Ampicillin에 expected resistant phenotype을 보인다.",
+      "diagnostics": "배양과 AST. Carbapenem 내성 발견 시 carbapenemase 검사로 KPC, NDM, OXA-48-like 등을 구분한다.",
+      "pearl": "Carbapenem 내성은 KPC의 동의어가 아니다. 비-carbapenemase 기전도 가능하다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-negative rods. 비포자성 간균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "culture": {
+          "text": "MacConkey agar에서 lactose 발효성의 크고 점액성인 집락.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "biochemistry": {
+          "text": "Oxidase (−), indole (−), citrate (+), urease (+), non-motile.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "virulence": {
+          "text": "두꺼운 capsule, LPS와 siderophore. 고병독성 phenotype과 내성 phenotype은 별개 축이다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 장내 세균총. 내인성 감염 및 의료환경에서 접촉 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "diseases": {
+          "text": "폐렴, 요로감염, 균혈증. 고병독성 계통은 간농양 및 전이성 감염과 연관된다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "resistance": {
+          "text": "CTX-M형 ESBL. 확장-spectrum cephalosporin과 aztreonam 가수분해; carbapenem 감수성 유지.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "tropism": {
+          "text": "호흡기, 요로, 혈류.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "KPN-012",
+      "taxonId": "kpn",
+      "organism": "Klebsiella pneumoniae",
+      "koreanName": "폐렴막대균",
+      "phenotype": "KPC-producing",
+      "phenotypeId": "kpc",
+      "phenotypeDescription": "KPC-producing; ceftazidime–avibactam S",
+      "aliases": [
+        "Klebsiella pneumoniae KPC-producing",
+        "폐렴막대균 KPC-producing",
+        "KPC-producing"
+      ],
+      "classification": "Bacteria / Pseudomonadota / Enterobacterales",
+      "biology": "통성혐기성 비운동성 간균. Ampicillin에 expected resistant phenotype을 보인다.",
+      "diagnostics": "배양과 AST. Carbapenem 내성 발견 시 carbapenemase 검사로 KPC, NDM, OXA-48-like 등을 구분한다.",
+      "pearl": "Carbapenem 내성은 KPC의 동의어가 아니다. 비-carbapenemase 기전도 가능하다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-negative rods. 비포자성 간균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "culture": {
+          "text": "MacConkey agar에서 lactose 발효성의 크고 점액성인 집락.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "biochemistry": {
+          "text": "Oxidase (−), indole (−), citrate (+), urease (+), non-motile.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "virulence": {
+          "text": "두꺼운 capsule, LPS와 siderophore. 고병독성 phenotype과 내성 phenotype은 별개 축이다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 장내 세균총. 내인성 감염 및 의료환경에서 접촉 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "diseases": {
+          "text": "폐렴, 요로감염, 균혈증. 고병독성 계통은 간농양 및 전이성 감염과 연관된다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "resistance": {
+          "text": "KPC형 class A serine carbapenemase. 이 분리주에서는 avibactam으로 억제 가능.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "tropism": {
+          "text": "호흡기, 요로, 혈류.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "PAE-013",
+      "taxonId": "pae",
+      "organism": "Pseudomonas aeruginosa",
+      "koreanName": "녹농균",
+      "phenotype": "Non-DTR · susceptible panel",
+      "phenotypeId": "baseline",
+      "phenotypeDescription": "Susceptible to conventional antipseudomonal panel",
+      "aliases": [
+        "Pseudomonas aeruginosa Non-DTR · susceptible panel",
+        "녹농균 Non-DTR · susceptible panel",
+        "Non-DTR · susceptible panel"
+      ],
+      "classification": "Bacteria / Pseudomonadota / Pseudomonadales",
+      "biology": "산화적 대사를 하는 비발효균. 낮은 외막 투과성, 유출펌프와 염색체성 AmpC가 항균제 반응에 관여한다.",
+      "diagnostics": "배양과 종 동정 후 개별 항녹농균제 AST. DTR은 여러 약제에 대한 비감수성으로 정의되는 phenotype이다.",
+      "pearl": "DTR만으로 carbapenemase 종류를 추정할 수 없다. 새로운 β-lactam/BLI의 활성도 개별 AST로 판단한다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-negative rods. 비포자성 간균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "culture": {
+          "text": "비발효성 집락. Pyocyanin/pyoverdine 색소, 특유의 냄새, 42°C 성장 가능.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "biochemistry": {
+          "text": "Oxidase (+), non-glucose-fermenter, motility (+).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "virulence": {
+          "text": "Exotoxin A, elastase, type III secretion system, alginate biofilm.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "reservoir": {
+          "text": "물과 습윤 환경. 병원 급수·의료기구가 감염원이 될 수 있다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "diseases": {
+          "text": "인공호흡기 관련 폐렴, 화상 감염, 외이도염, ecthyma gangrenosum, 낭포성 섬유증의 만성 기도 감염.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "resistance": {
+          "text": "기저 외막 장벽·유출펌프·염색체 AmpC. 이 분리주는 통상 항녹농균제 panel에 감수성.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "tropism": {
+          "text": "호흡기, 요로, 혈류.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "ceftazidime": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "meropenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "aztreonam": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "ciprofloxacin": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "levofloxacin": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "I",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다."
+        },
+        "linezolid": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "local-pseudomonas"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "PAE-014",
+      "taxonId": "pae",
+      "organism": "Pseudomonas aeruginosa",
+      "koreanName": "녹농균",
+      "phenotype": "DTR phenotype",
+      "phenotypeId": "dtr",
+      "phenotypeDescription": "Difficult-to-treat resistance; ceftazidime–avibactam S",
+      "aliases": [
+        "Pseudomonas aeruginosa DTR phenotype",
+        "녹농균 DTR phenotype",
+        "DTR phenotype"
+      ],
+      "classification": "Bacteria / Pseudomonadota / Pseudomonadales",
+      "biology": "산화적 대사를 하는 비발효균. 낮은 외막 투과성, 유출펌프와 염색체성 AmpC가 항균제 반응에 관여한다.",
+      "diagnostics": "배양과 종 동정 후 개별 항녹농균제 AST. DTR은 여러 약제에 대한 비감수성으로 정의되는 phenotype이다.",
+      "pearl": "DTR만으로 carbapenemase 종류를 추정할 수 없다. 새로운 β-lactam/BLI의 활성도 개별 AST로 판단한다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-negative rods. 비포자성 간균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "culture": {
+          "text": "비발효성 집락. Pyocyanin/pyoverdine 색소, 특유의 냄새, 42°C 성장 가능.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "biochemistry": {
+          "text": "Oxidase (+), non-glucose-fermenter, motility (+).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "virulence": {
+          "text": "Exotoxin A, elastase, type III secretion system, alginate biofilm.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "reservoir": {
+          "text": "물과 습윤 환경. 병원 급수·의료기구가 감염원이 될 수 있다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "diseases": {
+          "text": "인공호흡기 관련 폐렴, 화상 감염, 외이도염, ecthyma gangrenosum, 낭포성 섬유증의 만성 기도 감염.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "resistance": {
+          "text": "OprD 소실, AmpC 과발현과 efflux 증가의 조합을 설정. DTR 자체는 단일 내성 유전자가 아니다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "tropism": {
+          "text": "호흡기, 요로, 혈류.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr",
+            "local-pseudomonas"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr",
+        "local-pseudomonas"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "ECL-015",
+      "taxonId": "ecl",
+      "organism": "Enterobacter cloacae complex",
+      "koreanName": "클로아카 장내세균 복합체",
+      "phenotype": "Inducible AmpC · baseline",
+      "phenotypeId": "inducible",
+      "phenotypeDescription": "Basal AmpC expression; ceftriaxone S in vitro",
+      "aliases": [
+        "Enterobacter cloacae complex Inducible AmpC · baseline",
+        "클로아카 장내세균 복합체 Inducible AmpC · baseline",
+        "Inducible AmpC · baseline"
+      ],
+      "classification": "Bacteria / Pseudomonadota / Enterobacterales",
+      "biology": "유도성 염색체 AmpC를 가진 복합체. 치료 중 탈억제 변이가 선택될 수 있다.",
+      "diagnostics": "초기 ceftriaxone S만으로 AmpC 선택 위험이 없다고 판단하지 않는다. Cefepime 결과 및 동반 ESBL 가능성을 함께 본다.",
+      "pearl": "In vitro S와 임상적 약제 선택은 같지 않다. 유도성 AmpC의 위험을 균종 지식으로 해석해야 한다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-negative rods. 비포자성 간균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "culture": {
+          "text": "MacConkey agar에서 lactose 발효성 집락. 통성혐기성 성장.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "biochemistry": {
+          "text": "Oxidase (−), indole (−), citrate (+), motility (+), ornithine decarboxylase 흔히 (+).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "virulence": {
+          "text": "LPS, 부착 인자와 biofilm. 의료 관련 기회감염을 일으킨다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 장내 세균총. 내인성 감염 및 의료환경에서 접촉 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "diseases": {
+          "text": "의료 관련 폐렴, 요로감염, 균혈증, 복강 감염.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "resistance": {
+          "text": "유도성 염색체 AmpC의 기저 발현. Ampicillin·1세대 cephalosporin 내성; 치료 중 탈억제 선택 가능.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "tropism": {
+          "text": "호흡기, 요로, 혈류.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    },
+    {
+      "id": "ECL-016",
+      "taxonId": "ecl",
+      "organism": "Enterobacter cloacae complex",
+      "koreanName": "클로아카 장내세균 복합체",
+      "phenotype": "Derepressed AmpC",
+      "phenotypeId": "derepressed",
+      "phenotypeDescription": "AmpC overexpression; cefepime S",
+      "aliases": [
+        "Enterobacter cloacae complex Derepressed AmpC",
+        "클로아카 장내세균 복합체 Derepressed AmpC",
+        "Derepressed AmpC"
+      ],
+      "classification": "Bacteria / Pseudomonadota / Enterobacterales",
+      "biology": "유도성 염색체 AmpC를 가진 복합체. 치료 중 탈억제 변이가 선택될 수 있다.",
+      "diagnostics": "초기 ceftriaxone S만으로 AmpC 선택 위험이 없다고 판단하지 않는다. Cefepime 결과 및 동반 ESBL 가능성을 함께 본다.",
+      "pearl": "In vitro S와 임상적 약제 선택은 같지 않다. 유도성 AmpC의 위험을 균종 지식으로 해석해야 한다.",
+      "hints": {
+        "morphology": {
+          "text": "Gram-negative rods. 비포자성 간균.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "culture": {
+          "text": "MacConkey agar에서 lactose 발효성 집락. 통성혐기성 성장.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "biochemistry": {
+          "text": "Oxidase (−), indole (−), citrate (+), motility (+), ornithine decarboxylase 흔히 (+).",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "virulence": {
+          "text": "LPS, 부착 인자와 biofilm. 의료 관련 기회감염을 일으킨다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "reservoir": {
+          "text": "사람의 장내 세균총. 내인성 감염 및 의료환경에서 접촉 전파.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "diseases": {
+          "text": "의료 관련 폐렴, 요로감염, 균혈증, 복강 감염.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "resistance": {
+          "text": "염색체 AmpC 탈억제·과발현. 3세대 cephalosporin 내성, 이 분리주는 cefepime 감수성.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "tropism": {
+          "text": "호흡기, 요로, 혈류.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        },
+        "geography": {
+          "text": "전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.",
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ]
+        }
+      },
+      "susceptibility": {
+        "oxacillin": {
+          "category": "NA",
+          "basis": "not-interpreted",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+        },
+        "vancomycin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftriaxone": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefepime": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazidime": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "meropenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "imipenem": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "aztreonam": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ciprofloxacin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "levofloxacin": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ampicillin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "piptazo": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "linezolid": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "ceftazavi": {
+          "category": "S",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "teicoplanin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        },
+        "cefazolin": {
+          "category": "R",
+          "basis": "authored-isolate",
+          "mic": null,
+          "breakpoint": null,
+          "sourceIds": [
+            "local-spectrum",
+            "eucast-expected",
+            "eucast-2026",
+            "idsa-amr"
+          ],
+          "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
+        }
+      },
+      "sourceIds": [
+        "local-spectrum",
+        "eucast-expected",
+        "eucast-2026",
+        "idsa-amr"
+      ],
+      "reviewStatus": "educational-draft",
+      "isolateModel": "authored-fixed-isolate",
+      "reviewedAt": "2026-09-30"
+    }
+  ]
+}

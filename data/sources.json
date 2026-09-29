@@ -1,0 +1,43 @@
+{
+  "local-spectrum": {
+    "title": "19 the medicine resource · antibiotic-spectrum.json",
+    "note": "읽기 전용 참고. 기존 spectrum은 초안이며 variable/conditional을 개별 AST로 변환하지 않음. 원문 미배포."
+  },
+  "local-staph": {
+    "title": "개인 학습 노트 · 포도알균 (Staphylococcus)",
+    "note": "source_notes/02 Diseases/08 감염. 생물학·감염질환 요약을 참고하고 새 문장으로 작성."
+  },
+  "local-ecoli": {
+    "title": "개인 학습 노트 · 대장균 (E. coli)",
+    "note": "source_notes/02 Diseases/08 감염. 장관외 감염과 장관 병원형 구분을 참고."
+  },
+  "local-pseudomonas": {
+    "title": "개인 학습 노트 · 녹농균 (Pseudomonas Aeruginosa)",
+    "note": "source_notes/02 Diseases/08 감염. 병독성·감염질환·환경 노출을 참고."
+  },
+  "eucast-expected": {
+    "title": "EUCAST · Expected Resistant Phenotypes v1.2 (2023)",
+    "url": "https://www.eucast.org/fileadmin/eucast/pdf/expert_rules/Expected_Resistant_Phenotypes_v1.2_20230113.pdf",
+    "note": "Expected resistance의 종–약제 관계. 실측 MIC 자료가 아님."
+  },
+  "idsa-amr": {
+    "title": "IDSA · 2026 AMR Guidance",
+    "url": "https://www.idsociety.org/practice-guideline/amr-guidance/",
+    "note": "ESBL, AmpC, KPC 및 DTR의 정의·해석. 치료 권고를 in-vitro AST로 그대로 변환하지 않음."
+  },
+  "cdc-mrsa": {
+    "title": "CDC · Laboratory Testing for MRSA (2025)",
+    "url": "https://www.cdc.gov/mrsa/php/laboratories/index.html",
+    "note": "Methicillin 내성, PBP2a, cefoxitin/oxacillin 검사의 원리."
+  },
+  "cdc-vre": {
+    "title": "CDC · Vancomycin-resistant Enterococci",
+    "url": "https://www.cdc.gov/vre/about/index.html",
+    "note": "VRE의 임상·역학적 맥락. 고정 분리주 AST의 직접 출처는 아님."
+  },
+  "eucast-2026": {
+    "title": "EUCAST · Clinical Breakpoint Tables v16.1 (2026)",
+    "url": "https://www.eucast.org/fileadmin/eucast/pdf/breakpoints/v_16.1_Breakpoint_Tables.pdf",
+    "note": "정성 범주의 의미와 증가된 노출 I, 추론 규칙, 판정 제한을 참고. 실측 MIC의 출처가 아님."
+  }
+}
