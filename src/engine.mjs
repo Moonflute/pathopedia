@@ -11,7 +11,7 @@ export function observation(record, kind, key) {
 export function candidates(records, round) {
   const target = records.find(r => r.id === round.targetId);
   if (!target) return [];
-  return records.filter(r => !round.wrongIds.includes(r.id) && round.actions.every(a => observation(r, a.kind, a.key) === observation(target, a.kind, a.key)));
+  return records.filter(r => r.id !== round.previousId && !round.wrongIds.includes(r.id) && round.actions.every(a => observation(r, a.kind, a.key) === observation(target, a.kind, a.key)));
 }
 export function price(records, round, kind, key) {
   const bits = entropy(candidates(records, round).map(r => observation(r, kind, key)));
@@ -20,7 +20,7 @@ export function price(records, round, kind, key) {
 export function newRound(records, previousId = null, random = Math.random) {
   const pool = records.filter(r => r.id !== previousId);
   const target = pool[Math.min(pool.length - 1, Math.floor(random() * pool.length))] || records[0];
-  return { targetId: target.id, status: 'active', actions: [], wrongIds: [], startedAt: new Date().toISOString(), serial: Math.floor(random() * 90000) + 10000 };
+  return { targetId: target.id, previousId, status: 'active', actions: [], wrongIds: [], startedAt: new Date().toISOString(), serial: Math.floor(random() * 90000) + 10000 };
 }
 export function reveal(records, round, kind, key) {
   if (round.status !== 'active' || round.actions.some(a => a.kind === kind && a.key === key)) return round;
@@ -47,6 +47,7 @@ export function addDiscovery(archive, round) {
 export function restoreRound(saved, records) {
   if (!saved || !records.some(r => r.id === saved.targetId) || !['active', 'solved', 'abandoned'].includes(saved.status) || !Array.isArray(saved.actions) || !Array.isArray(saved.wrongIds)) return null;
   const target = records.find(r => r.id === saved.targetId);
+  if (saved.previousId != null && (saved.previousId === saved.targetId || !records.some(r => r.id === saved.previousId))) return null;
   if (saved.actions.some(a => !['hint','drug'].includes(a.kind) || !(a.kind === 'hint' ? target.hints[a.key] : target.susceptibility[a.key]) || !Number.isInteger(a.cost) || a.cost < 0 || !Number.isFinite(a.bits))) return null;
   if (new Set(saved.actions.map(a => a.kind + a.key)).size !== saved.actions.length || new Set(saved.wrongIds).size !== saved.wrongIds.length || saved.wrongIds.some(id => id === saved.targetId || !records.some(r => r.id === id))) return null;
   if (!Number.isInteger(saved.serial) || typeof saved.startedAt !== 'string') return null;

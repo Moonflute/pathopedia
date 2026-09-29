@@ -57,6 +57,9 @@ test('random draws cover the pool and avoid the previous isolate',()=>{
  const ids=new Set(records.map((_,i)=>newRound(records,null,()=>i/records.length).targetId));
  assert.equal(ids.size,records.length);
  for(let i=0;i<100;i++)assert.notEqual(newRound(records,'SAU-001',()=>i/100).targetId,'SAU-001');
+ const subsequent=newRound(records,'SAU-001',()=>0.5);
+ assert.equal(candidates(records,subsequent).length,15);
+ assert.ok(!candidates(records,subsequent).some(r=>r.id==='SAU-001'));
 });
 test('all records can be uniquely identified and survive serialization',()=>{
  for(const r of records){let round=make(r.id);for(const c of categories)round=reveal(records,round,'hint',c.id);for(const d of drugs)round=reveal(records,round,'drug',d.id);

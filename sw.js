@@ -1,4 +1,4 @@
-const VERSION = '0.2.0';
+const VERSION = '0.2.1';
 const PREFIX = `pathopedia:${new URL(self.registration.scope).pathname}:`;
 const CACHE = PREFIX + VERSION;
 const FILES = ['./','./index.html','./src/app.mjs','./src/engine.mjs','./src/style.css','./data/organisms.json','./data/sources.json','./data/schema.json','./favicon.svg','./manifest.webmanifest','./assets/pathopedia-icon-180.png','./assets/pathopedia-icon-192.png','./assets/pathopedia-icon-512.png'];
