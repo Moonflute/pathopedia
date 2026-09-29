@@ -1,6 +1,6 @@
 import { RULES, newRound, reveal, guess, score, addDiscovery, restoreRound } from './engine.mjs';
 
-const VERSION = '0.6.1';
+const VERSION = '0.6.2';
 const KEY = 'pathopedia.v1';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -10,7 +10,7 @@ const shortResult = category => ({ACT:'조건부 활성',ACTIVE:'활성 있음',
 const matchingDrugs = () => data.drugs.filter(d=>(d.name+' '+d.family).toLowerCase().includes(filter.trim().toLowerCase()));
 let data, sources, round, archive = {}, view = 'lab', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', archiveId = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
 const root = $('#app');
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.6.1" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.6.2" alt="" width="27" height="27">';
 const arrow = '<span aria-hidden="true">↗</span>';
 const record = () => data.records.find(r => r.id === round.targetId);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -56,7 +56,7 @@ function hintPanel() {
  const done=round.status==='solved';
  return `<div class="clue-grid">${data.categories.map(c=>{
  const action=has('hint',c.id),opened=!!action||done;
- return `<button id="clue-${c.id}" class="clue-tile ${opened?'is-revealed':''}" ${opened?`data-detail-hint="${c.id}"`:`data-hint="${c.id}"`} aria-label="${esc(opened?c.label+': '+record().hints[c.id].text+' — 전체 보기':c.label+' 공개')}"><span class="clue-top"><span>${c.ko}</span><small>${c.number}</small></span>${opened?`<span class="clue-text">${esc(record().hints[c.id].text)}</span><span class="clue-bottom">${action?'공개됨':'동정 완료'} <span>전체 보기 ↗</span></span>`:`<span class="clue-hidden"><span>${c.label}</span><strong>열람</strong></span>`}</button>`;
+ return `<button id="clue-${c.id}" class="clue-tile ${opened?'is-revealed':''}" ${opened?`data-detail-hint="${c.id}"`:`data-hint="${c.id}"`} aria-label="${esc(opened?c.label+': '+record().hints[c.id].text+' — 전체 보기':c.label+' 공개')}"><span class="clue-top">${c.ko}</span>${opened?`<span class="clue-text">${esc(record().hints[c.id].text)}</span><span class="clue-bottom">${action?'공개됨':'동정 완료'} <span>전체 보기 ↗</span></span>`:`<span class="clue-hidden" aria-hidden="true"><span class="clue-question">?</span></span>`}</button>`;
  }).join('')}</div>`;
 }
 function drugPanel() {

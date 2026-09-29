@@ -79,3 +79,11 @@ main.game-main{max-width:1760px;padding:8px 12px}
  main.archive-main{padding:20px 12px max(24px,env(safe-area-inset-bottom))}
  .drug-library{grid-template-columns:1fr}.archive-intro{flex-wrap:wrap;gap:10px}
 }
+
+/* Keep the category fixed at the top; reveal the same cell's contents. */
+.clue-tile,.clue-tile.is-revealed{padding:8px 10px;border-radius:7px}
+.clue-top{justify-content:center;text-align:center;line-height:19px}
+.clue-hidden{width:100%;padding:0;background:#f2f5eb;border-radius:4px}
+.clue-hidden>.clue-question{font:500 2rem/1 var(--mono);color:#4e6940}
+.clue-tile:hover .clue-hidden{background:#eaf0df}
+.clue-text{text-align:left}
