@@ -156,13 +156,16 @@ const records = variants.map(([id,taxon,phenotype,phenotypeId,description,patter
  return {id,taxonId:taxon,organism:t.name,koreanName:t.ko,phenotype,phenotypeId,phenotypeDescription:description,aliases:[`${t.name} ${phenotype}`,`${t.ko} ${phenotype}`,phenotype],classification:t.classification,biology:t.biology,diagnostics:t.diagnostics,pearl:t.pearl,hints,susceptibility,sourceIds:[...new Set([...sourceIds,...t.sources])],reviewStatus:'educational-draft',isolateModel:'authored-fixed-isolate',reviewedAt:'2026-09-30'};
 });
 // Expansion packages are reviewed source data, not generated placeholders.
-const allSources=JSON.parse(await readFile('data/sources.json','utf8'));
-for(const file of ['gram-positive','gram-negative','core-antibiotics']) {
+const panels=[{id:'bacterial-ast',name:'세균 · 감수성',domain:'bacteria',observationType:'susceptibility',drugIds:[]}];
+const regimenConversions=[];
+const allSources=JSON.parse(await readFile('scripts/sources.base.json','utf8'));
+for(const file of ['gram-positive','gram-negative','core-antibiotics','bacterial-gaps','bacterial-gaps-reviewed-tail','fungi-parasites','viruses','legacy-regimen']) {
  const pack=JSON.parse(await readFile(`scripts/expansion/${file}.json`,'utf8'));
  for(const [id,source] of Object.entries(pack.sources||{})) {
   if(allSources[id] && allSources[id].url!==source.url) throw Error(`Conflicting source ${id}`);
   allSources[id] ||= source;
  }
+ panels.push(...(pack.panels||[]));
  for(const drug of pack.drugs||[]) {
   const existing=drugs.find(d=>d.id===drug.id);
   if(existing) Object.assign(existing,drug); else drugs.push(drug);
@@ -172,9 +175,28 @@ for(const file of ['gram-positive','gram-negative','core-antibiotics']) {
   Object.assign(r.susceptibility,extra);
  }
  records.push(...(pack.records||[]));
+ for(const [id,override] of Object.entries(pack.recordOverrides||{})){
+  const index=records.findIndex(r=>r.id===id);if(index<0 || override.id!==id)throw Error(`Unknown override record ${id}`);
+  records[index]=override;
+ }
+ regimenConversions.push(...(pack.regimenConversions||[]));
 }
-await writeFile('data/sources.json',JSON.stringify(allSources,null,2)+'\n');
-const data={schemaVersion:1,datasetVersion:'0.3.1',title:'Core clinical bacteriology',reviewStatus:'educational-draft',interpretation:{system:'EUCAST',version:'16.1 (2026)',note:'EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. ACT는 임상 S/I가 아니라 근거가 명시된 조건부 활성이다. EUCAST 표의 dash(–)는 치료에 부적합한 조합이며 보고가 필요하면 검사 없이 R로 보고한다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.',advancedModeEnabled:false},categories,drugs,records};
+for(const spec of regimenConversions){
+ const r=records.find(r=>r.id===spec.id),panel=panels.find(p=>p.id===spec.panelId);
+ if(!r || !panel || panel.observationType!=='regimen')throw Error(`Invalid regimen conversion ${spec.id}`);
+ if(Object.keys(spec.included).some(id=>!panel.drugIds.includes(id)))throw Error(`Unknown regimen drug in ${spec.id}`);
+ Object.assign(r,{panelId:panel.id,domain:panel.domain,observationType:'regimen',clinicalContext:spec.clinicalContext});
+ r.sourceIds=[...new Set([...r.sourceIds,...spec.sourceIds])];
+ r.susceptibility=Object.fromEntries(panel.drugIds.map(id=>[id,{category:Object.hasOwn(spec.included,id)?'REGIMEN':'OUTSIDE_REGIMEN',basis:'guideline-regimen',mic:null,breakpoint:null,applicability:spec.clinicalContext,sourceIds:spec.sourceIds,note:spec.included[id]||spec.outsideNotes?.[id]||'이 기록에 명시된 임상 상황과 인용 지침의 요법 목록에 포함되지 않는다. 다른 감염·병기의 사용 가능성이나 in vitro 활성·내성을 판정한 결과가 아니다.'}]));
+}
+for(const r of records){
+ r.domain ||= 'bacteria';r.panelId ||= 'bacterial-ast';r.observationType ||= 'susceptibility';r.reviewedAt ||= '2026-09-30';
+ r.sourceIds=[...new Set([...(r.sourceIds||[]),...Object.values(r.hints).flatMap(h=>h.sourceIds),...Object.values(r.susceptibility).flatMap(a=>a.sourceIds)])];
+ if(r.observationType==='regimen')r.isolateModel='guideline-context';
+ if(['clinical-regimen','guideline-regimen'].includes(r.phenotype))r.phenotype='대표 임상형';
+}
+panels[0].drugIds=Object.keys(records[0].susceptibility);
+const data={schemaVersion:2,datasetVersion:'0.4.0',title:'Clinical pathogen atlas',reviewStatus:'educational-draft',interpretation:{system:'EUCAST / scoped clinical guidelines',version:'16.1 (2026) / per-record citations',note:'Regimen panels: REGIMEN은 명시된 임상 상황의 지침 요법 구성원, OUTSIDE_REGIMEN은 선택한 목록 밖이며 내성 판정이 아니다. 감수성 패널: EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. ACT는 임상 S/I가 아니라 근거가 명시된 조건부 활성이다. EUCAST 표의 dash(–)는 치료에 부적합한 조합이며 보고가 필요하면 검사 없이 R로 보고한다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.',advancedModeEnabled:false},categories,panels,drugs,records};
 for(const record of records) for(const [drugId,result] of Object.entries(record.susceptibility)) {
  if(result.category === 'NA') throw Error(`${record.id}/${drugId}: NA categories are forbidden`);
  if(result.category === 'ACT' && !result.applicability) throw Error(`${record.id}/${drugId}: ACT requires applicability`);
@@ -183,5 +205,6 @@ for(const record of records) for(const [drugId,result] of Object.entries(record.
 const {validateDataset}=await import('./validate-data.mjs');
 console.log(validateDataset(data,allSources));
 await mkdir('data',{recursive:true});
+await writeFile('data/sources.json',JSON.stringify(allSources,null,2)+'\n');
 await writeFile('data/organisms.json',JSON.stringify(data,null,2)+'\n');
 console.log(`${records.length} records, ${drugs.length} drugs → data/organisms.json`);

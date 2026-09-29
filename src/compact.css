@@ -87,3 +87,16 @@ main.game-main{max-width:1760px;padding:8px 12px}
 .clue-hidden>.clue-question{font:500 2rem/1 var(--mono);color:#4e6940}
 .clue-tile:hover .clue-hidden{background:#eaf0df}
 .clue-text{text-align:left}
+
+/* Each domain has its own stable candidate and drug panel. */
+.panel-picker{margin:0;min-width:0}.panel-picker select{height:28px;min-height:28px;max-width:220px;padding:2px 24px 2px 7px;font-size:.8125rem;color:#293d2c;background:#f3f5eb;border:1px solid #aaba9b}
+.regimen-help{margin-left:auto;font-size:.8125rem;color:#354f2e;white-space:nowrap;min-height:28px}.regimen-key{font-family:var(--sans);color:#4b5c41}
+.drug-tile.regimen .drug-value,.drug-tile.outside_regimen .drug-value{font:500 .8125rem/1.3 var(--sans)}
+.regimen{color:#285738}.outside_regimen{color:#59634e}.drug-tile.is-revealed.regimen{background:#e0ebd5;border-color:#8da577}.drug-tile.is-revealed.outside_regimen{background:#eff0e7}
+.clinical-context{padding:10px 12px;background:#e8ecdf;border-left:3px solid #7b9069;line-height:1.7}
+.identity-heading h2{overflow-wrap:anywhere}.identity-heading p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.archive-progress>div{flex-wrap:wrap}.drug-name{overflow-wrap:anywhere}
+@media(max-width:759px){
+ .board-toolbar .case-heading{flex:1;gap:8px;min-width:0}.case-heading h1{font-size:.875rem;white-space:nowrap}.panel-picker{flex:1}.panel-picker select{width:100%;max-width:none;height:44px;min-height:44px;font-size:.875rem}.log-trigger{font-size:.75rem;padding-inline:2px}
+ .regimen-key{flex-basis:100%;order:3;margin:0;font-size:.75rem}.regimen-help{min-height:44px}.assay-heading{flex-wrap:wrap}.drug-tile.regimen .drug-value,.drug-tile.outside_regimen .drug-value{font-size:.9375rem}
+}

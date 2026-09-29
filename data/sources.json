@@ -15,11 +15,6 @@
     "title": "개인 학습 노트 · 녹농균 (Pseudomonas Aeruginosa)",
     "note": "source_notes/02 Diseases/08 감염. 병독성·감염질환·환경 노출을 참고."
   },
-  "eucast-expected": {
-    "title": "EUCAST · Expected Resistant Phenotypes v1.2 (2023)",
-    "url": "https://www.eucast.org/fileadmin/eucast/pdf/expert_rules/Expected_Resistant_Phenotypes_v1.2_20230113.pdf",
-    "note": "Expected resistance의 종–약제 관계. 실측 MIC 자료가 아님."
-  },
   "idsa-amr": {
     "title": "IDSA · 2026 AMR Guidance",
     "url": "https://www.idsociety.org/practice-guideline/amr-guidance/",
@@ -34,16 +29,6 @@
     "title": "CDC · Vancomycin-resistant Enterococci",
     "url": "https://www.cdc.gov/vre/about/index.html",
     "note": "VRE의 임상·역학적 맥락. 고정 분리주 AST의 직접 출처는 아님."
-  },
-  "eucast-2026": {
-    "title": "EUCAST · Clinical Breakpoint Tables v16.1 (2026)",
-    "url": "https://www.eucast.org/fileadmin/eucast/pdf/breakpoints/v_16.1_Breakpoint_Tables.pdf",
-    "note": "정성 범주의 의미와 증가된 노출 I, 추론 규칙, 판정 제한을 참고. Note 8은 dash(–)를 치료 부적합 조합으로 정의하며 보고가 필요하면 검사 없이 R로 보고하도록 한다. Oxacillin dash는 Enterobacterales p.14, Pseudomonas spp. p.21, Enterococcus spp. p.39에 수록."
-  },
-  "eucast-no-breakpoints": {
-    "title": "EUCAST · When there are no breakpoints (10 July 2026)",
-    "url": "https://www.eucast.org/fileadmin/eucast/pdf/guidance_documents/When_there_are_no_breakpoints_revision_20260710.pdf",
-    "note": "Breakpoint가 없을 때 통합 평가와 비범주형 보고를 우선하며, 사용을 명백히 권하지 않는 조합은 R 보고를 고려할 수 있다는 지침."
   },
   "eucast-bracket-breakpoints": {
     "title": "EUCAST · Guidance on breakpoints in brackets (December 2021)",
@@ -102,8 +87,13 @@
   },
   "msd-bacteria": {
     "title": "Merck Manual Professional: Gram-Positive Bacteria",
-    "url": "https://www.merckmanuals.com/professional/infectious-diseases/gram-positive-bacteria",
+    "url": "https://www.merckmanuals.com/professional/infectious-diseases/bacteria-and-antibacterial-medications/overview-of-bacteria",
     "note": "임상 미생물학, 질환 및 진단 개요."
+  },
+  "cdc-anthrax-treatment-2023": {
+    "title": "CDC Guidelines for the Prevention and Treatment of Anthrax, 2023",
+    "url": "https://www.cdc.gov/mmwr/volumes/72/rr/rr7206a1.htm",
+    "note": "Treatment Recommendations: cephalosporins, TMP-SMX, aztreonam의 비활성을 명시한다. 개별 임상 MIC를 제공하는 자료로 취급하지 않는다."
   },
   "idsa-amr-2024": {
     "title": "IDSA 2024 Guidance on Treatment of Antimicrobial-Resistant Gram-Negative Infections",
@@ -139,6 +129,21 @@
     "title": "CDC About Yersinia Infection",
     "url": "https://www.cdc.gov/yersinia/about/index.html",
     "note": "Food reservoirs, transmission and clinical disease."
+  },
+  "eucast-2026": {
+    "title": "EUCAST Clinical Breakpoint Tables v16.1 (2026)",
+    "url": "https://www.eucast.org/fileadmin/eucast/pdf/breakpoints/v_16.1_Breakpoint_Tables.pdf",
+    "note": "Clinical category framework, organism-specific breakpoints, dash combinations, and inference rules; no MIC values are invented here."
+  },
+  "eucast-expected": {
+    "title": "EUCAST Expected Resistant Phenotypes v1.2 (2023)",
+    "url": "https://www.eucast.org/fileadmin/eucast/pdf/expert_rules/Expected_Resistant_Phenotypes_v1.2_20230113.pdf",
+    "note": "Used only for intrinsic or expected resistance, never as a measured isolate MIC."
+  },
+  "eucast-no-breakpoints": {
+    "title": "EUCAST When there are no breakpoints (10 July 2026)",
+    "url": "https://www.eucast.org/fileadmin/eucast/pdf/guidance_documents/When_there_are_no_breakpoints_revision_20260710.pdf",
+    "note": "Supports non-clinical ACTIVE/INACTIVE descriptions where categorical breakpoint interpretation is unavailable."
   },
   "eucast-aminoglycosides": {
     "title": "EUCAST Guidance on implementation and use of the revised aminoglycoside breakpoints",
@@ -190,9 +195,729 @@
     "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=linezolid",
     "note": "Official spectrum and susceptibility-testing context; the educational resistant isolate has no asserted MIC."
   },
-  "cdc-anthrax-treatment-2023": {
-    "title": "CDC Guidelines for the Prevention and Treatment of Anthrax, 2023",
-    "url": "https://www.cdc.gov/mmwr/volumes/72/rr/rr7206a1.htm",
-    "note": "Treatment Recommendations: cephalosporins, TMP-SMX, aztreonam의 비활성을 명시한다. 개별 임상 MIC를 제공하는 자료로 취급하지 않는다."
+  "cap": {
+    "title": "ATS/IDSA Guidelines for Diagnosis and Treatment of Adults with Community-Acquired Pneumonia",
+    "url": "https://www.idsociety.org/practice-guideline/community-acquired-pneumonia-cap-in-adults/",
+    "note": "성인 CAP의 외래·입원 경험요법과 비정형 병원체 포함 범위를 제시한다."
+  },
+  "tb": {
+    "title": "권위기관 임상지침",
+    "url": "https://www.cdc.gov/tb/php/dear-colleague-letters/2025-treatment-guidelines.html",
+    "note": "해당 기록의 명시된 임상범위 치료 근거."
+  },
+  "ntm": {
+    "title": "ATS/ERS/ESCMID/IDSA Guideline on Nontuberculous Mycobacterial Pulmonary Disease",
+    "url": "https://www.idsociety.org/practice-guideline/nontuberculous-mycobacterial-ntm-diseases/",
+    "note": "MAC와 M. abscessus 폐질환의 진단기준, 감수성검사, macrolide·amikacin 기반 다제요법을 제시한다."
+  },
+  "sti": {
+    "title": "권위기관 임상지침",
+    "url": "https://www.cdc.gov/std/treatment-guidelines/STI-Guidelines-2021.pdf",
+    "note": "해당 기록의 명시된 임상범위 치료 근거."
+  },
+  "ssti": {
+    "title": "권위기관 임상지침",
+    "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+    "note": "해당 기록의 명시된 임상범위 치료 근거."
+  },
+  "cdc": {
+    "title": "권위기관 임상지침",
+    "url": "https://www.cdc.gov/mmwr/volumes/65/rr/rr6502a1.htm",
+    "note": "해당 기록의 명시된 임상범위 치료 근거."
+  },
+  "legionella-cdc": {
+    "title": "CDC Clinical Guidance for Legionella Infections",
+    "url": "https://www.cdc.gov/legionella/hcp/clinical-guidance/index.html",
+    "note": "Legionella 진단과 CAP 지침 연계."
+  },
+  "pertussis-cdc": {
+    "title": "CDC Treatment of Pertussis",
+    "url": "https://www.cdc.gov/pertussis/hcp/clinical-care/index.html",
+    "note": "백일해 치료시기와 항균제 선택."
+  },
+  "mycoplasma-cdc": {
+    "title": "CDC Clinical Care of Mycoplasma pneumoniae Infection",
+    "url": "https://www.cdc.gov/mycoplasma/hcp/clinical-care/index.html",
+    "note": "세포벽 부재, 연령별 치료 계열, macrolide 내성 시 대체요법을 설명한다."
+  },
+  "cpneumoniae-cdc": {
+    "title": "CDC Clinical Overview of Chlamydia pneumoniae Infection",
+    "url": "https://www.cdc.gov/cpneumoniae/hcp/clinical-overview/index.html",
+    "note": "세포내 발달주기, 호흡기 임상상과 분자검사·혈청검사·세포배양의 역할을 설명한다."
+  },
+  "tb-cdc-clinical": {
+    "title": "CDC Clinical Treatment of Tuberculosis",
+    "url": "https://www.cdc.gov/tb/hcp/treatment/index.html",
+    "note": "활동성 결핵 치료 원칙과 최신 ATS/CDC/ERS/IDSA 지침 연결 자료."
+  },
+  "tb-cdc-diagnosis": {
+    "title": "CDC Clinical and Laboratory Diagnosis for Tuberculosis",
+    "url": "https://www.cdc.gov/tb/hcp/testing-diagnosis/clinical-and-laboratory-diagnosis.html",
+    "note": "배양, 핵산증폭검사, 도말 및 최초 분리주의 약제감수성검사를 설명한다."
+  },
+  "nocardia-merck": {
+    "title": "Merck Manual Professional: Nocardiosis",
+    "url": "https://www.merckmanuals.com/professional/infectious-diseases/gram-positive-bacilli/nocardiosis",
+    "note": "폐·피부·파종 nocardiosis의 진단과 TMP-SMX 기반 치료 및 중증 병합요법을 설명한다."
+  },
+  "gonorrhea-cdc": {
+    "title": "CDC STI Guidelines: Gonococcal Infections Among Adolescents and Adults",
+    "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
+    "note": "해부학적 부위별 검사, ceftriaxone 표준요법, 대체 병합요법과 치료실패 대응을 제시한다."
+  },
+  "chlamydia-cdc": {
+    "title": "CDC STI Guidelines: Chlamydial Infections",
+    "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+    "note": "NAAT 검체, 비임신·임신 치료, 파트너 관리와 재검사를 제시한다."
+  },
+  "mgen-cdc": {
+    "title": "CDC STI Guidelines: Mycoplasma genitalium",
+    "url": "https://www.cdc.gov/std/treatment-guidelines/mycoplasmagenitalium.htm",
+    "note": "NAAT 진단, macrolide 내성, 순차적 내성유도 치료와 test-of-cure 조건을 제시한다."
+  },
+  "syphilis-cdc": {
+    "title": "CDC STI Guidelines: Syphilis",
+    "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis.htm",
+    "note": "병기·침범부위에 따른 penicillin 제형과 추적 혈청검사의 원칙을 설명한다."
+  },
+  "syphilis-early-cdc": {
+    "title": "CDC STI Guidelines: Primary and Secondary Syphilis",
+    "url": "https://www.cdc.gov/std/treatment-guidelines/p-and-s-syphilis.htm",
+    "note": "조기 매독의 benzathine penicillin G와 비임신 penicillin 알레르기 대체요법을 제시한다."
+  },
+  "hpylori-acg-2024": {
+    "title": "American College of Gastroenterology: 2024 H. pylori Guideline Summary",
+    "url": "https://gi.org/journals-publications/ebgi/schoenfeld_sep2024/",
+    "note": "14일 optimized bismuth quadruple therapy, 감수성 기반 clarithromycin/levofloxacin 사용, 제균 확인을 요약한다."
+  },
+  "campylobacter-cdc": {
+    "title": "CDC Clinical Overview of Campylobacter",
+    "url": "https://www.cdc.gov/campylobacter/hcp/clinical-overview/index.html",
+    "note": "노출, 임상상, CIDT 후 배양 확인, 중증 환자의 azithromycin/fluoroquinolone 치료와 내성 문제를 설명한다."
+  },
+  "anaerobes-merck": {
+    "title": "Merck Manual Professional: Mixed Anaerobic Infections",
+    "url": "https://www.merckmanuals.com/professional/infectious-diseases/anaerobic-bacteria/mixed-anaerobic-infections",
+    "note": "무산소 검체 채취, 배농·괴사조직 제거, 감염부위별 항혐기성 요법을 설명한다."
+  },
+  "lung-abscess-merck": {
+    "title": "Merck Manual Professional: Lung Abscess",
+    "url": "https://www.merckmanuals.com/professional/pulmonary-disorders/lung-abscess/lung-abscess",
+    "note": "흡인성 폐농양의 흔한 혐기균과 beta-lactam/beta-lactamase inhibitor 중심 치료 및 대체요법을 제시한다."
+  },
+  "tail-who-tetanus": {
+    "title": "WHO: Current recommendations for treatment of tetanus during humanitarian emergencies",
+    "url": "https://iris.who.int/bitstream/handle/10665/70219/WHO_HSE_GAR_DCE_2010.2_eng.pdf",
+    "note": "Clinical tetanus diagnosis, wound care, antitoxin and antimicrobial treatment."
+  },
+  "tail-cdc-botulism": {
+    "title": "CDC MMWR: Clinical Guidelines for Diagnosis and Treatment of Botulism, 2021",
+    "url": "https://www.cdc.gov/mmwr/volumes/70/rr/rr7002a1.htm",
+    "note": "Antitoxin-first care; antimicrobials do not benefit toxin-mediated botulism and may worsen neuromuscular blockade."
+  },
+  "tail-idsa-myonecrosis": {
+    "title": "IDSA: Skin and Soft Tissue Infections Guideline—Clostridial Myonecrosis",
+    "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+    "note": "Urgent surgery plus definitive penicillin and clindamycin for clostridial myonecrosis."
+  },
+  "tail-cdc-meningococcus": {
+    "title": "CDC: Clinical Guidance for Meningococcal Disease",
+    "url": "https://www.cdc.gov/meningococcal/hcp/clinical-guidance/index.html",
+    "note": "Ceftriaxone empiric/definitive therapy and penicillin or ampicillin after susceptibility confirmation."
+  },
+  "tail-esc-endocarditis": {
+    "title": "2023 ESC Guidelines for the management of endocarditis",
+    "url": "https://academic.oup.com/eurheartj/article/44/39/3948/7243107",
+    "note": "Regimens for susceptible oral/digestive streptococcal and uncommon-organism infective endocarditis."
+  },
+  "tail-idsa-cellulitis": {
+    "title": "IDSA: Skin and Soft Tissue Infections Guideline—Cellulitis",
+    "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+    "note": "Therapy directed at streptococci for typical nonpurulent cellulitis."
+  },
+  "tail-aerococcus": {
+    "title": "Aerococcus urinae: severe and fatal bloodstream infections and endocarditis",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2937665/",
+    "note": "Clinical syndrome, identification pitfalls, susceptibility and endocarditis treatment experience."
+  },
+  "tail-idsa-bites": {
+    "title": "IDSA: Skin and Soft Tissue Infections Guideline—Animal and Human Bites",
+    "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+    "note": "Amoxicillin-clavulanate and alternatives for infected animal and human bite wounds."
+  },
+  "tail-cdc-capnocytophaga": {
+    "title": "CDC: Clinical Overview of Capnocytophaga",
+    "url": "https://www.cdc.gov/capnocytophaga/hcp/clinical-overview/index.html",
+    "note": "Dog/cat exposure, fulminant sepsis risk and beta-lactam/BLI or carbapenem treatment."
+  },
+  "tail-kingella": {
+    "title": "Kingella kingae infections in children: ten cases and a review",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/11303824/",
+    "note": "Pediatric osteoarticular syndrome, culture characteristics and beta-lactam treatment experience."
+  },
+  "tail-cdc-lepto": {
+    "title": "CDC Yellow Book: Leptospirosis",
+    "url": "https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/leptospirosis.html",
+    "note": "Leptospirosis epidemiology, biphasic testing and mild/severe treatment options."
+  },
+  "tail-cdc-scrub": {
+    "title": "CDC: Clinical Overview of Scrub Typhus",
+    "url": "https://www.cdc.gov/typhus/hcp/clinical-overview/scrub.html",
+    "note": "Scrub typhus eschar, testing and doxycycline or azithromycin treatment."
+  },
+  "tail-cdc-qfever": {
+    "title": "CDC: Clinical Guidance for Q Fever",
+    "url": "https://www.cdc.gov/q-fever/hcp/clinical-guidance/index.html",
+    "note": "Acute Q fever diagnosis and doxycycline treatment; chronic focal infection distinction."
+  },
+  "tail-cdc-brucella": {
+    "title": "CDC: Clinical Care of Brucellosis",
+    "url": "https://www.cdc.gov/brucellosis/hcp/clinical-care/index.html",
+    "note": "Combination regimens for uncomplicated brucellosis and focal disease."
+  },
+  "tail-cdc-bartonella": {
+    "title": "CDC: Clinical Guidance for Bartonella henselae",
+    "url": "https://www.cdc.gov/bartonella/hcp/bartonella-henselae/index.html",
+    "note": "Cat-scratch disease diagnosis and optional azithromycin treatment; complicated disease distinctions."
+  },
+  "tail-cdc-fleaborne": {
+    "title": "CDC: Clinical Overview of Flea-borne Typhus",
+    "url": "https://www.cdc.gov/typhus/hcp/clinical-overview/flea-borne-typhus.html",
+    "note": "Murine typhus presentation, testing and doxycycline treatment."
+  },
+  "tail-cdc-anaplasmosis": {
+    "title": "CDC: Clinical Care of Anaplasmosis",
+    "url": "https://www.cdc.gov/anaplasmosis/hcp/clinical-care/index.html",
+    "note": "Immediate doxycycline treatment and rifampin as a limited alternative in selected patients."
+  },
+  "tail-cdc-lyme": {
+    "title": "CDC: Clinical Treatment of Erythema Migrans Rash",
+    "url": "https://www.cdc.gov/lyme/hcp/clinical-care/erythema-migrans-rash.html",
+    "note": "Doxycycline, amoxicillin and azithromycin fallback for early localized Lyme disease."
+  },
+  "idsa-candida": {
+    "url": "https://www.idsociety.org/practice-guideline/candidiasis/",
+    "title": "IDSA Clinical Practice Guideline for Candidiasis",
+    "note": "침습성·점막 칸디다증 치료 권고"
+  },
+  "idsa-aspergillus": {
+    "url": "https://www.idsociety.org/practice-guideline/aspergillosis/",
+    "title": "IDSA Clinical Practice Guideline for Aspergillosis",
+    "note": "침습성 및 만성 아스페르길루스증 권고"
+  },
+  "idsa-crypto": {
+    "url": "https://www.idsociety.org/practice-guideline/cryptococcal-disease/",
+    "title": "IDSA Guideline for Cryptococcal Disease",
+    "note": "중추신경계·폐 크립토콕쿠스증"
+  },
+  "nih-crypto": {
+    "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/cryptococcosis",
+    "title": "NIH OI Guidelines: Cryptococcosis",
+    "note": "HIV 연관 수막염 유도·공고 요법"
+  },
+  "nih-pcp": {
+    "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/pneumocystis",
+    "title": "NIH OI Guidelines: Pneumocystis Pneumonia",
+    "note": "PCP 치료 및 예방"
+  },
+  "idsa-histo": {
+    "url": "https://www.idsociety.org/practice-guideline/histoplasmosis/",
+    "title": "IDSA Clinical Practice Guideline for Histoplasmosis",
+    "note": "폐·파종성 히스토플라스마증"
+  },
+  "idsa-cocci": {
+    "url": "https://www.idsociety.org/practice-guideline/coccidioidomycosis/",
+    "title": "IDSA Guideline for Coccidioidomycosis",
+    "note": "폐·파종·수막 질환"
+  },
+  "cdc-fungal": {
+    "url": "https://www.cdc.gov/fungal/about/index.html",
+    "title": "CDC About Fungal Diseases",
+    "note": "진균 질환 임상·역학 개요"
+  },
+  "cdc-dpdx": {
+    "url": "https://www.cdc.gov/dpdx/az.html",
+    "title": "CDC DPDx Parasites A–Z Index",
+    "note": "생활사·형태·검사 참조 허브"
+  },
+  "cdc-malaria": {
+    "url": "https://www.cdc.gov/malaria/hcp/clinical-guidance/treatment-of-uncomplicated-malaria.html",
+    "title": "CDC Treatment of Uncomplicated Malaria",
+    "note": "종·획득지역별 혈액기 치료와 재발방지"
+  },
+  "cdc-intestinal": {
+    "url": "https://www.cdc.gov/parasites/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Parasitic Diseases",
+    "note": "장·조직 기생충 치료 페이지 모음"
+  },
+  "cdc-strongyloides": {
+    "url": "https://www.cdc.gov/strongyloides/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Strongyloides",
+    "note": "만성 및 과감염 치료"
+  },
+  "cdc-schisto": {
+    "url": "https://www.cdc.gov/schistosomiasis/hcp/treatment/index.html",
+    "title": "CDC Clinical Care of Schistosomiasis",
+    "note": "성충기 praziquantel 치료"
+  },
+  "cdc-cysticercosis": {
+    "url": "https://www.cdc.gov/cysticercosis/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Cysticercosis",
+    "note": "신경낭미충증 병변별 치료"
+  },
+  "cdc-chagas": {
+    "url": "https://www.cdc.gov/chagas/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Chagas Disease",
+    "note": "항기생충 치료 적응"
+  },
+  "cdc-leish": {
+    "url": "https://www.cdc.gov/leishmaniasis/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Leishmaniasis",
+    "note": "피부·점막·내장 리슈만편모충증"
+  },
+  "cdc-scabies": {
+    "url": "https://www.cdc.gov/scabies/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Scabies",
+    "note": "고전·가피옴 치료"
+  },
+  "cdc-fasciola": {
+    "url": "https://www.cdc.gov/liver-flukes/hcp/clinical-care/fasciola-hepatica.html",
+    "title": "CDC Clinical Care of Fasciola hepatica",
+    "note": "triclabendazole 특이 치료"
+  },
+  "cdc-anisakis": {
+    "url": "https://www.cdc.gov/anisakiasis/about/index.html",
+    "title": "CDC About Anisakiasis",
+    "note": "내시경적 유충 제거 중심"
+  },
+  "who-hat": {
+    "url": "https://www.who.int/health-topics/human-african-trypanosomiasis",
+    "title": "WHO Human African Trypanosomiasis",
+    "note": "병기·아종별 치료 원칙"
+  },
+  "nih-toxo": {
+    "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/toxoplasma-gondii-encephalitis",
+    "title": "NIH OI Guidelines: Toxoplasma gondii Encephalitis",
+    "note": "HIV 연관 뇌톡소포자충증의 선호·대안 요법"
+  },
+  "cdc-candida-auris": {
+    "url": "https://www.cdc.gov/candida-auris/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Treatment of Candida auris Infections",
+    "note": "echinocandin 초기치료와 불응성 감염"
+  },
+  "cdc-ringworm": {
+    "url": "https://www.cdc.gov/ringworm/about/index.html",
+    "title": "CDC About Ringworm",
+    "note": "피부사상균 감염의 임상·진단·치료 개요"
+  },
+  "nih-talaro": {
+    "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/talaromycosis",
+    "title": "NIH OI Guidelines: Talaromycosis",
+    "note": "HIV 연관 talaromycosis 치료"
+  },
+  "cdc-giardia": {
+    "url": "https://www.cdc.gov/giardia/hcp/clinical-care/index.html",
+    "title": "CDC Patient Care for Giardia Infection",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-amebiasis": {
+    "url": "https://www.cdc.gov/amebiasis/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Amebiasis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-crypto-par": {
+    "url": "https://www.cdc.gov/cryptosporidium/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Cryptosporidiosis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-cyclospora": {
+    "url": "https://www.cdc.gov/cyclosporiasis/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Cyclosporiasis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "nih-cystoisospora": {
+    "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/cystoisosporiasis",
+    "title": "NIH OI Guidelines: Cystoisosporiasis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-trichomonas": {
+    "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
+    "title": "CDC STI Treatment Guidelines: Trichomoniasis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-ascariasis": {
+    "url": "https://www.cdc.gov/soil-transmitted-helminths/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Soil-transmitted Helminths",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-pinworm": {
+    "url": "https://www.cdc.gov/pinworm/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Pinworm Infection",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-hookworm": {
+    "url": "https://www.cdc.gov/soil-transmitted-helminths/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Soil-transmitted Helminths",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-clonorchis": {
+    "url": "https://www.cdc.gov/liver-flukes/hcp/clinical-care/clonorchis-sinensis.html",
+    "title": "CDC Clinical Care of Clonorchis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-paragonimus": {
+    "url": "https://www.cdc.gov/lung-flukes/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Paragonimiasis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-taeniasis": {
+    "url": "https://www.cdc.gov/taeniasis/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Taeniasis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-echinococcus": {
+    "url": "https://www.cdc.gov/echinococcosis/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Echinococcosis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-toxocara": {
+    "url": "https://www.cdc.gov/toxocariasis/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Toxocariasis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "cdc-trichinella": {
+    "url": "https://www.cdc.gov/trichinellosis/hcp/clinical-care/index.html",
+    "title": "CDC Clinical Care of Trichinellosis",
+    "note": "질환별 진단·치료 권고"
+  },
+  "idsa-babesia": {
+    "url": "https://www.idsociety.org/practice-guideline/babesiosis/",
+    "title": "IDSA 2020 Guideline on Diagnosis and Management of Babesiosis",
+    "note": "B. microti 진단, 중증도별 병합요법과 추적"
+  },
+  "escmid-hyalohypho": {
+    "url": "https://doi.org/10.1111/1469-0691.12465",
+    "title": "ESCMID and ECMM Joint Guidelines on Hyalohyphomycosis",
+    "note": "Fusarium·Scedosporium 감염의 진단과 치료 권고"
+  },
+  "ecmm-rare-mould": {
+    "url": "https://doi.org/10.1016/S1473-3099(20)30784-2",
+    "title": "Global Guideline for the Diagnosis and Management of Rare Mould Infections",
+    "note": "ECMM/ISHAM/ASM 2021 희귀 사상균 진단·치료 국제지침; PMID 33606997"
+  },
+  "label-fluconazole": {
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2fcac0e4-4f12-42d2-b129-106b4e100075",
+    "title": "DailyMed Prescribing Information: Fluconazole",
+    "note": "기전, 내성, 적응증과 제한사항"
+  },
+  "label-voriconazole": {
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=23f25c6b-f075-42dc-ae05-63b5bf410929",
+    "title": "DailyMed Prescribing Information: Voriconazole",
+    "note": "기전, 내성, 적응증과 안전성"
+  },
+  "label-posaconazole": {
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e031b632-8e57-4359-87bd-a5da02bdc55f",
+    "title": "DailyMed Prescribing Information: Posaconazole",
+    "note": "기전, 내성, 제형별 제한과 적응증"
+  },
+  "label-isavuconazole": {
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8f7f73b8-586a-4df0-935f-fecd4696c16c",
+    "title": "DailyMed Prescribing Information: Cresemba (isavuconazonium)",
+    "note": "isavuconazole 기전, Aspergillus·Mucorales 활성과 안전성"
+  },
+  "label-amphotericin-liposomal": {
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a96a734f-d1c4-4d42-93c2-7c336da7f7b9",
+    "title": "DailyMed Prescribing Information: Amphotericin B Liposome",
+    "note": "ergosterol 결합 기전, 내성 및 liposomal formulation 특성"
+  },
+  "label-micafungin": {
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=dc5241be-4b85-4f04-8553-9819603373b8",
+    "title": "DailyMed Prescribing Information: Micafungin",
+    "note": "1,3-beta-D-glucan 합성 억제, 활성·내성·제한"
+  },
+  "label-flucytosine": {
+    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=59f0bf8c-21a8-4932-85b2-2fe017a2a486",
+    "title": "DailyMed Prescribing Information: Flucytosine",
+    "note": "세포내 유입·5-FU 전환 기전, 독성과 내성"
+  },
+  "label-terbinafine": {
+    "url": "https://dailymed.nlm.nih.gov/dailymed/getFile.cfm?setid=80aab848-8739-4259-a092-ed99d0f6a56d&type=pdf",
+    "title": "DailyMed Prescribing Information: Terbinafine",
+    "note": "squalene epoxidase 억제, 피부사상균 적응과 안전성"
+  },
+  "label-itraconazole": {
+    "url": "https://dailymed.nlm.nih.gov/dailymed/downloadpdffile.cfm?setId=6242b7ad-eaa0-a524-b6e0-ec33e63407db",
+    "title": "DailyMed Prescribing Information: Itraconazole Capsules",
+    "note": "기전, 흡수·상호작용·심부전 제한과 적응증"
+  },
+  "cdc-sti-herpes": {
+    "title": "CDC STI Treatment Guidelines: Genital Herpes",
+    "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm",
+    "note": "HSV diagnosis and recommended antiviral regimens."
+  },
+  "nih-oi-vzv": {
+    "title": "NIH OI Guidelines: Varicella-Zoster Virus Disease",
+    "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/varicella-zoster",
+    "note": "VZV clinical syndromes, diagnosis and antiviral treatment in people with HIV."
+  },
+  "nih-oi-cmv": {
+    "title": "NIH OI Guidelines: Cytomegalovirus Disease",
+    "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/cytomegalovirus",
+    "note": "CMV end-organ disease diagnosis and treatment."
+  },
+  "fda-letermovir": {
+    "title": "FDA Prescribing Information: PREVYMIS (letermovir)",
+    "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2024/219104s000lbl.pdf",
+    "note": "CMV prophylaxis indication and limitations."
+  },
+  "cdc-ebv": {
+    "title": "CDC: About Epstein-Barr Virus",
+    "url": "https://www.cdc.gov/epstein-barr/about/index.html",
+    "note": "Transmission, manifestations and supportive management."
+  },
+  "nih-hhv6": {
+    "title": "ECIL Guidelines for HHV-6 after hematopoietic stem-cell transplantation",
+    "url": "https://haematologica.org/article/view/9118",
+    "note": "HHV-6B encephalitis diagnosis and recommended ganciclovir or foscarnet treatment after HCT."
+  },
+  "nih-oi-hhv8": {
+    "title": "NIH OI Guidelines: Human Herpesvirus-8 Disease",
+    "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/human-herpesvirus-8",
+    "note": "HHV-8 disease and ART role in HIV-associated Kaposi sarcoma."
+  },
+  "cdc-adenovirus": {
+    "title": "CDC: Clinical Overview of Adenovirus",
+    "url": "https://www.cdc.gov/adenovirus/hcp/clinical-overview/index.html",
+    "note": "Adenovirus syndromes, testing and absence of approved specific treatment."
+  },
+  "cdc-parvovirus": {
+    "title": "CDC: About Parvovirus B19",
+    "url": "https://www.cdc.gov/parvovirus-b19/about/index.html",
+    "note": "Clinical syndromes, transmission and risk groups."
+  },
+  "cdc-hpv": {
+    "title": "CDC STI Treatment Guidelines: Human Papillomavirus Infection",
+    "url": "https://www.cdc.gov/std/treatment-guidelines/anogenital-warts.htm",
+    "note": "HPV diagnosis, wart management and prevention."
+  },
+  "who-hbv": {
+    "title": "WHO Guidelines for chronic hepatitis B",
+    "url": "https://www.who.int/publications/i/item/9789240090903",
+    "note": "Chronic HBV treatment and prevention guidance."
+  },
+  "hcv-guidance": {
+    "title": "AASLD-IDSA HCV Guidance: Treatment-Naive",
+    "url": "https://www.hcvguidelines.org/treatment-naive",
+    "note": "Recommended direct-acting antiviral regimens."
+  },
+  "cdc-hav": {
+    "title": "CDC: Clinical Care of Hepatitis A",
+    "url": "https://www.cdc.gov/hepatitis-a/hcp/clinical-care/index.html",
+    "note": "HAV supportive care and prevention."
+  },
+  "who-hepatitis-e": {
+    "title": "WHO: Hepatitis E",
+    "url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-e",
+    "note": "HEV epidemiology, diagnosis, prevention and management."
+  },
+  "nih-hiv-start": {
+    "title": "NIH HIV Guidelines: What to Start",
+    "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-arv/what-start-initial-combination-regimens",
+    "note": "Recommended initial combination ART for HIV-1."
+  },
+  "cdc-htlv": {
+    "title": "CDC MMWR: Counseling Persons Infected with HTLV-I/II",
+    "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/00021234.htm",
+    "note": "HTLV-1 transmission, associated diseases and counseling recommendations."
+  },
+  "cdc-influenza-treatment": {
+    "title": "CDC: Influenza Antiviral Medications—Summary for Clinicians",
+    "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html",
+    "note": "Influenza A/B treatment options by clinical setting."
+  },
+  "cdc-rsv-care": {
+    "title": "CDC: Clinical Overview of RSV",
+    "url": "https://www.cdc.gov/rsv/hcp/clinical-overview/index.html",
+    "note": "RSV clinical disease, diagnosis and supportive management."
+  },
+  "cdc-covid-treatment": {
+    "title": "CDC: COVID-19 Treatment Clinical Care for Outpatients",
+    "url": "https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html",
+    "note": "Preferred and alternative outpatient COVID-19 therapies."
+  },
+  "cdc-rhinovirus": {
+    "title": "CDC: About Rhinoviruses",
+    "url": "https://www.cdc.gov/common-cold/about/about-rhinoviruses.html",
+    "note": "Rhinovirus transmission, illness and supportive care."
+  },
+  "cdc-parainfluenza": {
+    "title": "CDC: About Human Parainfluenza Viruses",
+    "url": "https://www.cdc.gov/parainfluenza/about/index.html",
+    "note": "HPIV syndromes, transmission and management."
+  },
+  "cdc-hmpv": {
+    "title": "CDC: About Human Metapneumovirus",
+    "url": "https://www.cdc.gov/human-metapneumovirus/about/index.html",
+    "note": "hMPV respiratory disease and supportive care."
+  },
+  "cdc-measles": {
+    "title": "CDC: Clinical Overview of Measles",
+    "url": "https://www.cdc.gov/measles/hcp/clinical-overview/index.html",
+    "note": "Measles presentation, diagnosis, complications and prevention."
+  },
+  "cdc-rubella": {
+    "title": "CDC: Clinical Overview of Rubella",
+    "url": "https://www.cdc.gov/rubella/hcp/clinical-overview/index.html",
+    "note": "Rubella and congenital rubella syndrome."
+  },
+  "cdc-mumps": {
+    "title": "CDC: Clinical Overview of Mumps",
+    "url": "https://www.cdc.gov/mumps/hcp/clinical-overview/index.html",
+    "note": "Mumps presentation, complications and testing."
+  },
+  "cdc-rotavirus": {
+    "title": "CDC: Clinical Overview of Rotavirus",
+    "url": "https://www.cdc.gov/rotavirus/hcp/clinical-overview/index.html",
+    "note": "Rotavirus gastroenteritis, diagnosis and prevention."
+  },
+  "cdc-norovirus": {
+    "title": "CDC Yellow Book: Norovirus",
+    "url": "https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/norovirus.html",
+    "note": "Norovirus clinical disease, transmission and supportive care."
+  },
+  "cdc-enterovirus": {
+    "title": "CDC: About Non-Polio Enteroviruses",
+    "url": "https://www.cdc.gov/non-polio-enterovirus/about/index.html",
+    "note": "Coxsackievirus/echovirus syndromes and transmission."
+  },
+  "cdc-polio": {
+    "title": "CDC: Clinical Overview of Poliomyelitis",
+    "url": "https://www.cdc.gov/polio/hcp/clinical-overview/index.html",
+    "note": "Poliovirus presentation, diagnosis and prevention."
+  },
+  "cdc-rabies": {
+    "title": "CDC: Clinical Care of Rabies",
+    "url": "https://www.cdc.gov/rabies/hcp/clinical-care/index.html",
+    "note": "Rabies clinical care and the distinction from post-exposure prophylaxis."
+  },
+  "cdc-dengue": {
+    "title": "CDC: Clinical Care of Dengue",
+    "url": "https://www.cdc.gov/dengue/hcp/clinical-care/index.html",
+    "note": "No specific antiviral; warning-sign guided supportive care."
+  },
+  "cdc-je": {
+    "title": "CDC Yellow Book: Japanese Encephalitis",
+    "url": "https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/japanese-encephalitis.html",
+    "note": "Japanese encephalitis epidemiology, diagnosis and prevention."
+  },
+  "cdc-hantavirus": {
+    "title": "CDC: Clinician Brief—Hemorrhagic Fever with Renal Syndrome",
+    "url": "https://www.cdc.gov/hantavirus/hcp/clinical-overview/hfrs.html",
+    "note": "HFRS causes, diagnosis, supportive care and early intravenous ribavirin option."
+  },
+  "kdca-sfts": {
+    "title": "KDCA: Clinical guide for severe fever with thrombocytopenia syndrome",
+    "url": "https://www.kdca.go.kr/kdca/2857/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGa2RjYSUyRjQ5JTJGMzA5Nzk1JTJGYXJ0Y2xWaWV3LmRvJTNG",
+    "note": "Korean clinician guide covering SFTS epidemiology, diagnosis, treatment and infection control."
+  },
+  "who-hdv": {
+    "title": "WHO: Hepatitis D",
+    "url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-d",
+    "note": "HDV dependence on HBV, diagnosis and peginterferon/bulevirtide treatment landscape."
+  },
+  "bk-consensus-2024": {
+    "title": "Second International Consensus Guidelines on BK Polyomavirus in Kidney Transplantation",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11335089/",
+    "note": "Screening and treatment centered on immunosuppression reduction; cidofovir and fluoroquinolones are not recommended."
+  },
+  "nih-pml-jcv": {
+    "title": "NIH OI Guidelines: Progressive Multifocal Leukoencephalopathy/JC Virus",
+    "url": "https://clinicalinfo.hiv.gov/sites/default/files/guidelines/documents/adult-adolescent-oi/progressive-multifocal-leukoencephalopathy-adult-adolescent-oi.pdf",
+    "note": "Immediate effective ART for HIV-associated PML and no effective direct-acting anti-JCV therapy."
+  },
+  "cdc-mpox-care": {
+    "title": "CDC: Caring for Patients with Mpox",
+    "url": "https://www.cdc.gov/mpox/hcp/clinical-care/index.html",
+    "note": "Supportive care for uncomplicated disease and restricted access to therapeutics for severe/high-risk mpox."
+  },
+  "cdc-zika-care": {
+    "title": "CDC: Treatment and Prevention of Zika Virus Disease",
+    "url": "https://www.cdc.gov/zika/hcp/clinical-care/index.html",
+    "note": "Supportive care, pregnancy monitoring and no available antiviral treatment."
+  },
+  "cdc-chikungunya": {
+    "title": "CDC Yellow Book: Chikungunya",
+    "url": "https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/chikungunya.html",
+    "note": "Clinical features, diagnosis, supportive management and prevention."
+  },
+  "cdc-west-nile": {
+    "title": "CDC: Clinical Treatment and Prevention of West Nile Virus Disease",
+    "url": "https://www.cdc.gov/west-nile-virus/hcp/treatment-prevention/index.html",
+    "note": "Supportive clinical management and no recommended antiviral therapy."
+  },
+  "ictv-kolmioviridae": {
+    "title": "ICTV Virus Taxonomy Profile: Kolmioviridae",
+    "url": "https://ictv.global/report/chapter/kolmioviridae/kolmioviridae",
+    "note": "HDV genome, replication and taxonomy."
+  },
+  "ictv-polyomaviridae": {
+    "title": "ICTV Virus Taxonomy Profile: Polyomaviridae",
+    "url": "https://ictv.global/report/chapter/polyomaviridae/polyomaviridae",
+    "note": "Polyomavirus virion, genome, replication and taxonomy."
+  },
+  "ictv-poxviridae": {
+    "title": "ICTV Virus Taxonomy Profile: Poxviridae",
+    "url": "https://ictv.global/report/chapter/poxviridae/poxviridae",
+    "note": "Orthopoxvirus virion, genome and cytoplasmic replication."
+  },
+  "ictv-flaviviridae": {
+    "title": "ICTV Virus Taxonomy Profile: Flaviviridae",
+    "url": "https://ictv.global/report/chapter/flaviviridae/flaviviridae",
+    "note": "Flavivirus virion, positive-sense RNA genome and replication."
+  },
+  "ictv-togaviridae": {
+    "title": "ICTV Virus Taxonomy Profile: Togaviridae",
+    "url": "https://ictv.global/report/chapter/togaviridae/togaviridae",
+    "note": "Alphavirus virion, genome and replication."
+  },
+  "idsa-ssti-table4-2014": {
+    "title": "IDSA 2014 SSTI guideline — Table 4, organism-directed necrotizing infection regimens",
+    "url": "https://www.idsociety.org/globalassets/idsa/practice-guidelines/practice-guidelines-for-the-diagnosis-and-management-of-skin-and-soft-tissue-infections-2014-update-by-the-infectious-diseases-society-of-america.pdf",
+    "note": "Aeromonas / Vibrio의 병원체 지향 요법. 경험적 다균종 감염 요법과 구분."
+  },
+  "cdc-vibrio-clinical-2024": {
+    "title": "CDC — Clinical Overview of Vibriosis",
+    "url": "https://www.cdc.gov/vibrio/hcp/clinical-overview/index.html",
+    "note": "경증 장염과 중증 창상감염의 치료 적응·요법을 구분."
+  },
+  "cdc-yellowbook-cholera-2026": {
+    "title": "CDC Yellow Book 2026 — Cholera",
+    "url": "https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/cholera.html",
+    "note": "수액이 치료의 중심. 여행자 초기 약제 선택은 doxycycline / azithromycin이며 지역·시기별 감수성 확인."
+  },
+  "cdc-pinkbook-hib-management": {
+    "title": "CDC Pink Book — Haemophilus influenzae, Medical Management",
+    "url": "https://www.cdc.gov/pinkbook/hcp/table-of-contents/chapter-8-haemophilus-influenzae.html",
+    "note": "침습성 Hib의 초기 치료. Ceftriaxone/cefotaxime 또는 chloramphenicol+ampicillin 대안, ampicillin 단독 초기 투여는 부적합."
+  },
+  "idsa-abrs-2012": {
+    "title": "IDSA 2012 — Acute Bacterial Rhinosinusitis guideline",
+    "url": "https://academic.oup.com/cid/article/54/8/e72/367144",
+    "note": "성인 외래 ABRS의 표준·알레르기 대안 요법. 내성 감시 자료를 현재 모든 분리주의 AST로 해석하지 않음."
+  },
+  "fda-fidaxomicin-pharmacology": {
+    "title": "FDA DIFICID initial label — pharmacology and microbiology (2011)",
+    "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2011/201699s000lbl.pdf",
+    "note": "RNA polymerase 표적 및 낮은 전신흡수에 대한 약리 근거. 현재 소아 허가·용법 전체를 대변하는 최신 라벨로 사용하지 않음."
+  },
+  "idsa-cdi-2021": {
+    "title": "SHEA/IDSA 2021 — Adult Clostridioides difficile infection guideline",
+    "url": "https://www.idsociety.org/practice-guideline/clostridioides-difficile-2021-focused-update/",
+    "note": "초발·재발 CDI, fidaxomicin/경구 vancomycin, 비전격성과 전격성 질환을 구분."
+  },
+  "idsa-cdi-2021-table": {
+    "title": "SHEA/IDSA 2021 CDI guideline — Table 1",
+    "url": "https://academic.oup.com/cid/article/73/5/e1029/6298219",
+    "note": "초발 비중증에서 다른 두 약제 이용 불가 시 metronidazole 대안과 전격성 질환의 별도 요법."
   }
 }

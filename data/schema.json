@@ -9,11 +9,12 @@
     "interpretation",
     "categories",
     "drugs",
-    "records"
+    "records",
+    "panels"
   ],
   "properties": {
     "schemaVersion": {
-      "const": 1
+      "const": 2
     },
     "datasetVersion": {
       "type": "string",
@@ -98,6 +99,50 @@
       "items": {
         "$ref": "#/$defs/record"
       }
+    },
+    "panels": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "domain",
+          "observationType",
+          "drugIds"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "domain": {
+            "enum": [
+              "bacteria",
+              "fungi",
+              "viruses",
+              "parasites"
+            ]
+          },
+          "observationType": {
+            "enum": [
+              "susceptibility",
+              "regimen"
+            ]
+          },
+          "drugIds": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
   },
   "$defs": {
@@ -142,7 +187,9 @@
             "R",
             "ACT",
             "ACTIVE",
-            "INACTIVE"
+            "INACTIVE",
+            "REGIMEN",
+            "OUTSIDE_REGIMEN"
           ]
         },
         "basis": {
@@ -151,7 +198,8 @@
             "expected-resistance",
             "resistance-screen-negative",
             "measured-isolate",
-            "literature-activity"
+            "literature-activity",
+            "guideline-regimen"
           ]
         },
         "applicability": {
@@ -283,6 +331,28 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "category": {
+                "enum": [
+                  "REGIMEN",
+                  "OUTSIDE_REGIMEN"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "applicability"
+            ],
+            "properties": {
+              "basis": {
+                "const": "guideline-regimen"
+              }
+            }
+          }
         }
       ]
     },
@@ -305,7 +375,10 @@
         "sourceIds",
         "reviewStatus",
         "isolateModel",
-        "reviewedAt"
+        "reviewedAt",
+        "domain",
+        "panelId",
+        "observationType"
       ],
       "properties": {
         "id": {
@@ -372,12 +445,34 @@
         "isolateModel": {
           "enum": [
             "authored-fixed-isolate",
-            "measured-isolate"
+            "measured-isolate",
+            "guideline-context"
           ]
         },
         "reviewedAt": {
           "type": "string",
           "format": "date"
+        },
+        "domain": {
+          "enum": [
+            "bacteria",
+            "fungi",
+            "viruses",
+            "parasites"
+          ]
+        },
+        "panelId": {
+          "type": "string"
+        },
+        "observationType": {
+          "enum": [
+            "susceptibility",
+            "regimen"
+          ]
+        },
+        "clinicalContext": {
+          "type": "string",
+          "minLength": 1
         }
       }
     }
