@@ -1,12 +1,12 @@
-import { RULES, newRound, reveal, guess, score, price, addDiscovery, restoreRound } from './engine.mjs';
+import { RULES, newRound, reveal, guess, score, addDiscovery, restoreRound } from './engine.mjs';
 
-const VERSION = '0.3.1';
+const VERSION = '0.3.2';
 const KEY = 'pathopedia.v1';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let data, sources, round, archive = {}, view = 'lab', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', archiveId = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
 const root = $('#app');
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.3.1" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.3.2" alt="" width="27" height="27">';
 const arrow = '<span aria-hidden="true">↗</span>';
 const record = () => data.records.find(r => r.id === round.targetId);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -51,8 +51,8 @@ function lab() {
 function hintPanel() {
  const done=round.status==='solved';
  return `<div class="clue-grid">${data.categories.map(c=>{
- const action=has('hint',c.id),opened=!!action||done,quote=action||price(data.records,round,'hint',c.id);
- return `<button id="clue-${c.id}" class="clue-tile ${opened?'is-revealed':''}" ${opened?`data-detail-hint="${c.id}"`:`data-hint="${c.id}"`} aria-label="${esc(opened?c.label+': '+record().hints[c.id].text+' — 전체 보기':c.label+' 공개, 비용 '+quote.cost)}"><span class="clue-top"><span>${c.ko}</span><small>${c.number}</small></span>${opened?`<span class="clue-text">${esc(record().hints[c.id].text)}</span><span class="clue-bottom">${action?'공개됨':'동정 완료'} <span>전체 보기 ↗</span></span>`:`<span class="clue-hidden"><span>${c.label}</span><strong>열람 <b>−${quote.cost}</b></strong></span>`}</button>`;
+ const action=has('hint',c.id),opened=!!action||done;
+ return `<button id="clue-${c.id}" class="clue-tile ${opened?'is-revealed':''}" ${opened?`data-detail-hint="${c.id}"`:`data-hint="${c.id}"`} aria-label="${esc(opened?c.label+': '+record().hints[c.id].text+' — 전체 보기':c.label+' 공개')}"><span class="clue-top"><span>${c.ko}</span><small>${c.number}</small></span>${opened?`<span class="clue-text">${esc(record().hints[c.id].text)}</span><span class="clue-bottom">${action?'공개됨':'동정 완료'} <span>전체 보기 ↗</span></span>`:`<span class="clue-hidden"><span>${c.label}</span><strong>열람</strong></span>`}</button>`;
  }).join('')}</div>`;
 }
 function drugPanel() {
@@ -62,7 +62,7 @@ function drugRows() {
  const done=round.status==='solved';
  return data.drugs.map(d=>{
  const action=has('drug',d.id),opened=!!action||done,result=record().susceptibility[d.id];
- return `<button id="drug-${d.id}" class="drug-tile ${opened?'is-revealed '+result.category.toLowerCase():''}" ${opened?`data-detail-drug="${d.id}"`:`data-drug="${d.id}"`} aria-label="${esc(d.name+(opened?': '+resultLabel(result.category)+' — 판정 설명':' 시험, 비용 '+price(data.records,round,'drug',d.id).cost))}"><span class="drug-name">${d.name}</span>${opened?`<span class="drug-value">${mode==='standard'?result.category:({S:'Effective',I:'Effective · 노출 ↑',R:'Ineffective',NA:'미판정'})[result.category]}<small>↗</small></span>`:`<span class="drug-hidden">시험 <b>−${price(data.records,round,'drug',d.id).cost}</b></span>`}</button>`;
+ return `<button id="drug-${d.id}" class="drug-tile ${opened?'is-revealed '+result.category.toLowerCase():''}" ${opened?`data-detail-drug="${d.id}"`:`data-drug="${d.id}"`} aria-label="${esc(d.name+(opened?': '+resultLabel(result.category)+' — 판정 설명':' 시험'))}"><span class="drug-name">${d.name}</span>${opened?`<span class="drug-value">${mode==='standard'?result.category:({S:'Effective',I:'Effective · 노출 ↑',R:'Ineffective',NA:'미판정'})[result.category]}<small>↗</small></span>`:`<span class="drug-hidden">시험</span>`}</button>`;
  }).join('');
 }
 function answerPanel() {
