@@ -1,0 +1,16 @@
+{
+  "id":"./",
+  "name":"Pathopedia — 미생물 동정실",
+  "short_name":"Pathopedia",
+  "description":"검사와 항균제 감수성을 단서로 병원체와 내성 표현형을 동정하는 게임",
+  "lang":"ko",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#eeeee6",
+  "theme_color":"#1d2827",
+  "icons":[
+    {"src":"./assets/pathopedia-icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"./assets/pathopedia-icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"}
+  ]
+}

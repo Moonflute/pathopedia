@@ -1,6 +1,6 @@
 import { RULES, newRound, reveal, guess, score, price, addDiscovery, restoreRound } from './engine.mjs';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 const KEY = 'pathopedia.v1';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -132,7 +132,19 @@ try {
  const responses=await Promise.all([fetch(new URL('../data/organisms.json',import.meta.url)),fetch(new URL('../data/sources.json',import.meta.url))]);
  if(responses.some(r=>!r.ok))throw Error('Data unavailable');
  [data,sources]=await Promise.all(responses.map(r=>r.json()));
- load();persist();render();
+  load();persist();render();
+  if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(new URL('../sw.js',import.meta.url),{scope:new URL('../',import.meta.url).pathname}).then(registration=>{
+      const offerUpdate=()=>{
+        if(!registration.waiting||document.querySelector('.update-banner'))return;
+        const banner=document.createElement('div');banner.className='update-banner';banner.setAttribute('role','status');
+        banner.innerHTML='<span>새 버전이 준비되었습니다. 진행 기록은 유지됩니다.</span><button>업데이트 적용 →</button>';
+        banner.querySelector('button').onclick=()=>{navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload(),{once:true});registration.waiting?.postMessage('ACTIVATE_UPDATE');};
+        document.body.append(banner);
+      };
+      offerUpdate();registration.addEventListener('updatefound',()=>registration.installing?.addEventListener('statechange',offerUpdate));
+    }).catch(error=>console.warn('Offline cache unavailable',error));
+  }
 } catch(error) {
  console.error(error);root.innerHTML='<main class="boot"><span class="eyebrow">DATA LOAD ERROR</span><h1>기록을 불러오지 못했습니다.</h1><p>연결 상태를 확인하고 다시 시도해 주세요.</p><button onclick="location.reload()">다시 불러오기</button></main>';
 }
