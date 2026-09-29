@@ -11,7 +11,7 @@ test('all records have complete, sourced observations and unique organism/phenot
  assert.equal(new Set(records.map(r=>r.taxonId+'/'+r.phenotypeId)).size,records.length);
  for(const r of records){
   for(const c of categories) assert.ok(r.hints[c.id]?.text);
-  for(const d of drugs){const s=r.susceptibility[d.id];assert.ok(['S','I','R','NA'].includes(s.category));assert.equal(s.mic,null);assert.equal(s.breakpoint,null);assert.ok(s.sourceIds.every(id=>sources[id]));}
+  for(const d of drugs){const s=r.susceptibility[d.id];assert.ok(['S','I','R','ACT'].includes(s.category));assert.notEqual(s.category,'NA');assert.ok(s.note.trim());assert.ok(s.sourceIds.length);if(s.category==='ACT'){assert.equal(s.basis,'resistance-screen-negative');assert.ok(s.applicability);}assert.equal(s.mic,null);assert.equal(s.breakpoint,null);assert.ok(s.sourceIds.every(id=>sources[id]));}
   assert.ok(r.sourceIds.every(id=>sources[id]));
  }
 });

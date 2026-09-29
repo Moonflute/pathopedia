@@ -38,6 +38,26 @@
   "eucast-2026": {
     "title": "EUCAST · Clinical Breakpoint Tables v16.1 (2026)",
     "url": "https://www.eucast.org/fileadmin/eucast/pdf/breakpoints/v_16.1_Breakpoint_Tables.pdf",
-    "note": "정성 범주의 의미와 증가된 노출 I, 추론 규칙, 판정 제한을 참고. 실측 MIC의 출처가 아님."
+    "note": "정성 범주의 의미와 증가된 노출 I, 추론 규칙, 판정 제한을 참고. Note 8은 dash(–)를 치료 부적합 조합으로 정의하며 보고가 필요하면 검사 없이 R로 보고하도록 한다. Oxacillin dash는 Enterobacterales p.14, Pseudomonas spp. p.21, Enterococcus spp. p.39에 수록."
+  },
+  "eucast-no-breakpoints": {
+    "title": "EUCAST · When there are no breakpoints (10 July 2026)",
+    "url": "https://www.eucast.org/fileadmin/eucast/pdf/guidance_documents/When_there_are_no_breakpoints_revision_20260710.pdf",
+    "note": "Breakpoint가 없을 때 통합 평가와 비범주형 보고를 우선하며, 사용을 명백히 권하지 않는 조합은 R 보고를 고려할 수 있다는 지침."
+  },
+  "eucast-bracket-breakpoints": {
+    "title": "EUCAST · Guidance on breakpoints in brackets (December 2021)",
+    "url": "https://www.eucast.org/fileadmin/eucast/pdf/guidance_documents/Breakpoints_in_brackets.pdf",
+    "note": "괄호 breakpoint는 획득 내성 기전의 유무를 구별하며 임상 S/I를 직접 뜻하지 않는다."
+  },
+  "dailymed-oxacillin": {
+    "title": "DailyMed/FDA · Oxacillin for Injection, USP prescribing information",
+    "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=195c2054-0746-421d-8b20-8c751bdd772b",
+    "note": "Oxacillin은 감수성인 penicillinase 생성 staphylococci 감염에 적응하며, 원인균이 그 밖의 균이면 oxacillin 치료를 계속하지 않도록 명시한 미국 공식 의약품 라벨."
+  },
+  "cdc-enterococci-resistance": {
+    "title": "CDC Emerging Infectious Diseases · Antimicrobial Resistance in Enterococci",
+    "url": "https://wwwnc.cdc.gov/eid/article/4/1/98-0106_article",
+    "note": "Enterococci의 semisynthetic penicillinase-resistant penicillins(oxacillin 포함)에 대한 inherent resistance를 명시한 CDC 전문 리뷰."
   }
 }

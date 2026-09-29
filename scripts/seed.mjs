@@ -112,30 +112,31 @@ const taxa = {
   diagnostics:'초기 ceftriaxone S만으로 AmpC 선택 위험이 없다고 판단하지 않는다. Cefepime 결과 및 동반 ESBL 가능성을 함께 본다.',
   pearl:'In vitro S와 임상적 약제 선택은 같지 않다. 유도성 AmpC의 위험을 균종 지식으로 해석해야 한다.',sources:['eucast-expected','idsa-amr'] },
 };
-// Order is exactly drugs above. NA means this teaching panel does not assign a clinical category.
+// Order is exactly drugs above. Base patterns permit only clinical S/I/R categories.
 const variants = [
- ['SAU-001','sau','MSSA','mssa','Methicillin-susceptible; penicillinase-positive','SSSSRSSRSSRSSNSS','mecA/mecC 비검출. Penicillinase 생성; oxacillin 감수성 유지.'],
- ['SAU-002','sau','MRSA','mrsa','mecA-positive MRSA','RSRRRRRRRRRRSN SR'.replaceAll(' ',''),'mecA에 의한 PBP2a. 낮은 β-lactam 결합 친화성; vancomycin 감수성은 유지.'],
- ['SEP-003','sep','MSSE','msse','Methicillin-susceptible; penicillinase-positive','SSSSRSSRSSRSSNSS','mecA/mecC 비검출. Penicillinase 생성; oxacillin 감수성 유지.'],
- ['SEP-004','sep','MRSE','mrse','mecA-positive MRSE','RSRRRRRRRRRRSNSR','mecA에 의한 PBP2a. 낮은 β-lactam 결합 친화성; vancomycin 감수성은 유지.'],
- ['EFA-005','efa','VSE · ampicillin S','vse','Vancomycin-susceptible, ampicillin-susceptible','NSRRRNSRRRSSSN SR'.replaceAll(' ',''),'Glycopeptide 획득내성 없음. Cephalosporin에 expected resistance; ampicillin 감수성.'],
- ['EFA-006','efa','VRE · vanA','vana','vanA-positive, ampicillin-susceptible','NRRRRNSRRRSSSNRR','vanA: D-Ala-D-Ala 말단을 D-Ala-D-Lac으로 치환. Vancomycin과 teicoplanin 내성.'],
- ['EFM-007','efm','VSE · ampicillin R','vse','Vancomycin-susceptible, ampicillin-resistant','NSRRRNRRRRRRSNSR','낮은 친화성 PBP5 관련 ampicillin 내성. Glycopeptide 획득내성 없음.'],
- ['EFM-008','efm','VRE · vanA','vana','vanA-positive, ampicillin-resistant','NRRRRNRRRRRRSNRR','vanA: D-Ala-D-Ala 말단을 D-Ala-D-Lac으로 치환. Vancomycin과 teicoplanin 내성.'],
- ['ECO-009','eco','Baseline susceptible','baseline','No acquired β-lactam resistance in this isolate','NRSSSSSSSSSSR SRS'.replaceAll(' ',''),'이 분리주에서 획득성 ESBL/carbapenemase가 검출되지 않음.'],
- ['ECO-010','eco','ESBL-producing','esbl','CTX-M-type ESBL; carbapenem-susceptible','NRRRRSSRRRRRRSRR','CTX-M형 ESBL. 확장-spectrum cephalosporin과 aztreonam 가수분해; carbapenem 감수성 유지.'],
- ['KPN-011','kpn','ESBL-producing','esbl','CTX-M-type ESBL; carbapenem-susceptible','NRRRRSSRRRRRRSRR','CTX-M형 ESBL. 확장-spectrum cephalosporin과 aztreonam 가수분해; carbapenem 감수성 유지.'],
- ['KPN-012','kpn','KPC-producing','kpc','KPC-producing; ceftazidime–avibactam S','NRRRRRRRRRRRRSRR','KPC형 class A serine carbapenemase. 이 분리주에서는 avibactam으로 억제 가능.'],
- ['PAE-013','pae','Non-DTR · susceptible panel','baseline','Susceptible to conventional antipseudomonal panel','NRRSSSSSSSRSRSRR','기저 외막 장벽·유출펌프·염색체 AmpC. 이 분리주는 통상 항녹농균제 panel에 감수성.'],
- ['PAE-014','pae','DTR phenotype','dtr','Difficult-to-treat resistance; ceftazidime–avibactam S','NRRRRRRRRRRRRSRR','OprD 소실, AmpC 과발현과 efflux 증가의 조합을 설정. DTR 자체는 단일 내성 유전자가 아니다.'],
- ['ECL-015','ecl','Inducible AmpC · baseline','inducible','Basal AmpC expression; ceftriaxone S in vitro','NRSSSSSSSSRSRSRR','유도성 염색체 AmpC의 기저 발현. Ampicillin·1세대 cephalosporin 내성; 치료 중 탈억제 선택 가능.'],
- ['ECL-016','ecl','Derepressed AmpC','derepressed','AmpC overexpression; cefepime S','NRRSRSSRSSRRRSRR','염색체 AmpC 탈억제·과발현. 3세대 cephalosporin 내성, 이 분리주는 cefepime 감수성.'],
+ ['SAU-001','sau','MSSA','mssa','Methicillin-susceptible; penicillinase-positive','SSSSRSSRSSRSSRSS','mecA/mecC 비검출. Penicillinase 생성; oxacillin 감수성 유지.'],
+ ['SAU-002','sau','MRSA','mrsa','mecA-positive MRSA','RSRRRRRRRRRRSR SR'.replaceAll(' ',''),'mecA에 의한 PBP2a. 낮은 β-lactam 결합 친화성; vancomycin 감수성은 유지.'],
+ ['SEP-003','sep','MSSE','msse','Methicillin-susceptible; penicillinase-positive','SSSSRSSRSSRSSRSS','mecA/mecC 비검출. Penicillinase 생성; oxacillin 감수성 유지.'],
+ ['SEP-004','sep','MRSE','mrse','mecA-positive MRSE','RSRRRRRRRRRRSRSR','mecA에 의한 PBP2a. 낮은 β-lactam 결합 친화성; vancomycin 감수성은 유지.'],
+ ['EFA-005','efa','VSE · ampicillin S','vse','Vancomycin-susceptible, ampicillin-susceptible','RSRRRRSRRRSSSR SR'.replaceAll(' ',''),'Glycopeptide 획득내성 없음. Cephalosporin에 expected resistance; ampicillin 감수성.'],
+ ['EFA-006','efa','VRE · vanA','vana','vanA-positive, ampicillin-susceptible','RRRRRRSRRRSSSRRR','vanA: D-Ala-D-Ala 말단을 D-Ala-D-Lac으로 치환. Vancomycin과 teicoplanin 내성.'],
+ ['EFM-007','efm','VSE · ampicillin R','vse','Vancomycin-susceptible, ampicillin-resistant','RSRRRRRRRRRRSRSR','낮은 친화성 PBP5 관련 ampicillin 내성. Glycopeptide 획득내성 없음.'],
+ ['EFM-008','efm','VRE · vanA','vana','vanA-positive, ampicillin-resistant','RRRRRRRRRRRRSRRR','vanA: D-Ala-D-Ala 말단을 D-Ala-D-Lac으로 치환. Vancomycin과 teicoplanin 내성.'],
+ ['ECO-009','eco','Baseline susceptible','baseline','No acquired β-lactam resistance in this isolate','RRSSSSSSSSSSR SRS'.replaceAll(' ',''),'이 분리주에서 획득성 ESBL/carbapenemase가 검출되지 않음.'],
+ ['ECO-010','eco','ESBL-producing','esbl','CTX-M-type ESBL; carbapenem-susceptible','RRRRRSSRRRRRRSRR','CTX-M형 ESBL. 확장-spectrum cephalosporin과 aztreonam 가수분해; carbapenem 감수성 유지.'],
+ ['KPN-011','kpn','ESBL-producing','esbl','CTX-M-type ESBL; carbapenem-susceptible','RRRRRSSRRRRRRSRR','CTX-M형 ESBL. 확장-spectrum cephalosporin과 aztreonam 가수분해; carbapenem 감수성 유지.'],
+ ['KPN-012','kpn','KPC-producing','kpc','KPC-producing; ceftazidime–avibactam S','RRRRRRRRRRRRRSRR','KPC형 class A serine carbapenemase. 이 분리주에서는 avibactam으로 억제 가능.'],
+ ['PAE-013','pae','Non-DTR · susceptible panel','baseline','Susceptible to conventional antipseudomonal panel','RRRSSSSSSSRSRSRR','기저 외막 장벽·유출펌프·염색체 AmpC. 이 분리주는 통상 항녹농균제 panel에 감수성.'],
+ ['PAE-014','pae','DTR phenotype','dtr','Difficult-to-treat resistance; ceftazidime–avibactam S','RRRRRRRRRRRRRSRR','OprD 소실, AmpC 과발현과 efflux 증가의 조합을 설정. DTR 자체는 단일 내성 유전자가 아니다.'],
+ ['ECL-015','ecl','Inducible AmpC · baseline','inducible','Basal AmpC expression; ceftriaxone S in vitro','RRSSSSSSSSRSRSRR','유도성 염색체 AmpC의 기저 발현. Ampicillin·1세대 cephalosporin 내성; 치료 중 탈억제 선택 가능.'],
+ ['ECL-016','ecl','Derepressed AmpC','derepressed','AmpC overexpression; cefepime S','RRRSRSSRSSRRRSRR','염색체 AmpC 탈억제·과발현. 3세대 cephalosporin 내성, 이 분리주는 cefepime 감수성.'],
 ];
 const records = variants.map(([id,taxon,phenotype,phenotypeId,description,pattern,resistance]) => {
  if (pattern.length !== drugs.length) throw Error(`${id}: ${pattern.length} AST cells`);
+ if (!/^[SIR]+$/.test(pattern)) throw Error(`${id}: base AST pattern may contain only S, I or R`);
  const t=taxa[taxon];
  const hints=Object.fromEntries(categories.map(c=>[c.id,{ text: c.id==='resistance'? resistance:c.id==='geography'?'전 세계에 분포. 이 기록은 특정 지역 유행주를 전제로 하지 않는다.':t[c.id], sourceIds: [...new Set([...sourceIds,...t.sources])] }]));
- const susceptibility=Object.fromEntries(drugs.map((d,i)=>[d.id, {category:pattern[i]==='N'?'NA':pattern[i], basis:pattern[i]==='N'?'not-interpreted':'authored-isolate', mic:null, breakpoint:null, sourceIds:[...new Set([...sourceIds,...t.sources])], note:pattern[i]==='N'?'이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다.':'이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다.' }]));
+ const susceptibility=Object.fromEntries(drugs.map((d,i)=>[d.id, {category:pattern[i], basis:'authored-isolate', mic:null, breakpoint:null, sourceIds:[...new Set([...sourceIds,...t.sources])], note:'이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다.' }]));
  // EUCAST v16.1: I is susceptible with increased exposure, never equivalent to R.
  const increasedExposure={
   'SAU-001':['ceftriaxone','cefepime','cefazolin','levofloxacin'],
@@ -146,12 +147,20 @@ const records = variants.map(([id,taxon,phenotype,phenotypeId,description,patter
  for(const drug of increasedExposure[id]||[]) Object.assign(susceptibility[drug],{category:'I',note:'EUCAST I: Susceptible, increased exposure. 증가된 노출에서 감수성. Intermediate 또는 R를 뜻하지 않는다. 이 분리주의 교육용 범주이며 MIC 실측값은 없다.'});
  if(['sau','sep','efa','efm'].includes(taxon)) Object.assign(susceptibility.ceftazavi,{category:'R',basis:'expected-resistance',note:'이 균–약제 조합은 EUCAST에서 부적합한 조합으로 취급한다. Ceftazidime–avibactam을 Gram-positive 치료제로 해석하지 않는다.'});
  if(['efa','efm'].includes(taxon)) Object.assign(susceptibility.meropenem,{category:'R',basis:'expected-resistance',note:'Enterococcus–meropenem 조합은 EUCAST에서 부적합하며 검사 panel에 포함 시 R로 처리한다.'});
- if(['SAU-001','SEP-003'].includes(id)) Object.assign(susceptibility.ciprofloxacin,{category:'NA',basis:'not-interpreted',note:'EUCAST의 괄호 breakpoint에 해당. 내성 기전 부재와 임상적 S/I 범주를 혼동하지 않도록 이 panel에서는 NA.'});
- if(taxon==='eco') Object.assign(susceptibility.cefazolin,{category:'NA',basis:'not-interpreted',note:'EUCAST cefazolin 해석의 요로 기원 감염 조건이 이 panel에서 지정되지 않아 범주를 부여하지 않음.'});
+ if(!['sau','sep'].includes(taxon)) Object.assign(susceptibility.oxacillin,{category:'R',basis:'expected-resistance',sourceIds:['eucast-2026','dailymed-oxacillin'],note:`EUCAST v16.1의 ${['efa','efm'].includes(taxon)?'Enterococcus spp. 표(p. 39)':['pae'].includes(taxon)?'Pseudomonas spp. 표(p. 21)':'Enterobacterales 표(p. 14)'}에서 oxacillin은 dash(–)이다. EUCAST Note 8은 이 조합을 치료에 부적합하며 검사·임상 사용을 피하고, 보고가 필요하면 검사 없이 R로 보고하도록 명시한다.`});
+ if(['efa','efm'].includes(taxon)) Object.assign(susceptibility.oxacillin,{sourceIds:['eucast-2026','cdc-enterococci-resistance','dailymed-oxacillin'],note:'EUCAST v16.1 Enterococcus spp. 표(p. 39)에서 oxacillin은 dash(–)이며, Note 8에 따라 검사 없이 R로 보고한다. CDC도 Enterococcus가 oxacillin 등 semisynthetic penicillinase-resistant penicillin에 고유 내성을 보인다고 명시한다.'});
+ if(['SAU-001','SEP-003'].includes(id)) Object.assign(susceptibility.ciprofloxacin,{category:'ACT',basis:'resistance-screen-negative',applicability:'high-exposure-combination-therapy',sourceIds:['eucast-2026','eucast-bracket-breakpoints'],note:'획득 fluoroquinolone 내성 기전이 검출되지 않은 교육용 분리주. EUCAST 괄호 breakpoint는 임상 S/I를 뜻하지 않으며, ciprofloxacin은 고노출 병합요법에서만 고려할 수 있다.'});
+ if(id==='ECO-009') Object.assign(susceptibility.cefazolin,{category:'I',basis:'authored-isolate',applicability:'infections-originating-from-urinary-tract',sourceIds:['eucast-2026'],note:'EUCAST v16.1의 E. coli cefazolin breakpoint는 요로 기원 감염에만 적용된다. 이 고정 교육용 분리주는 해당 맥락의 wild-type 결과(I, increased exposure)로 설정했다.'});
+ if(id==='ECO-010') Object.assign(susceptibility.cefazolin,{category:'R',basis:'authored-isolate',applicability:'infections-originating-from-urinary-tract',sourceIds:['eucast-2026','idsa-amr'],note:'요로 기원 감염 맥락의 CTX-M ESBL 생성 교육용 분리주로 cefazolin R 결과를 설정했다. ESBL 명칭만으로 자동 판정한 결과가 아니라 이 분리주의 authored AST다.'});
  if(phenotypeId==='vana') hints.resistance.text+=' 이 분리주는 고전적 VanA 표현형으로 설정했다.';
  return {id,taxonId:taxon,organism:t.name,koreanName:t.ko,phenotype,phenotypeId,phenotypeDescription:description,aliases:[`${t.name} ${phenotype}`,`${t.ko} ${phenotype}`,phenotype],classification:t.classification,biology:t.biology,diagnostics:t.diagnostics,pearl:t.pearl,hints,susceptibility,sourceIds:[...new Set([...sourceIds,...t.sources])],reviewStatus:'educational-draft',isolateModel:'authored-fixed-isolate',reviewedAt:'2026-09-30'};
 });
-const data={schemaVersion:1,datasetVersion:'0.1.0',title:'Core clinical bacteriology',reviewStatus:'educational-draft',interpretation:{system:'EUCAST',version:'16.1 (2026)',note:'EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. 부위별 제한으로 범주를 부여할 수 없는 조합은 NA. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.',advancedModeEnabled:false},categories,drugs,records};
+const data={schemaVersion:1,datasetVersion:'0.2.0',title:'Core clinical bacteriology',reviewStatus:'educational-draft',interpretation:{system:'EUCAST',version:'16.1 (2026)',note:'EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. ACT는 임상 S/I가 아니라 근거가 명시된 조건부 활성이다. EUCAST 표의 dash(–)는 치료에 부적합한 조합이며 보고가 필요하면 검사 없이 R로 보고한다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.',advancedModeEnabled:false},categories,drugs,records};
+for(const record of records) for(const [drugId,result] of Object.entries(record.susceptibility)) {
+ if(result.category === 'NA') throw Error(`${record.id}/${drugId}: NA categories are forbidden`);
+ if(result.category === 'ACT' && !result.applicability) throw Error(`${record.id}/${drugId}: ACT requires applicability`);
+ if(!result.note.trim() || !result.sourceIds.length) throw Error(`${record.id}/${drugId}: every AST result requires a note and sources`);
+}
 await mkdir('data',{recursive:true});
 await writeFile('data/organisms.json',JSON.stringify(data,null,2)+'\n');
 console.log(`${records.length} records, ${drugs.length} drugs → data/organisms.json`);

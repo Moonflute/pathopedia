@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "datasetVersion": "0.1.0",
+  "datasetVersion": "0.2.0",
   "title": "Core clinical bacteriology",
   "reviewStatus": "educational-draft",
   "interpretation": {
     "system": "EUCAST",
     "version": "16.1 (2026)",
-    "note": "EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. 부위별 제한으로 범주를 부여할 수 없는 조합은 NA. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.",
+    "note": "EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. ACT는 임상 S/I가 아니라 근거가 명시된 조건부 활성이다. EUCAST 표의 dash(–)는 치료에 부적합한 조합이며 보고가 필요하면 검사 없이 R로 보고한다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.",
     "advancedModeEnabled": false
   },
   "categories": [
@@ -388,19 +388,16 @@
           "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
         },
         "ciprofloxacin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "ACT",
+          "basis": "resistance-screen-negative",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "local-staph",
-            "cdc-mrsa"
+            "eucast-bracket-breakpoints"
           ],
-          "note": "EUCAST의 괄호 breakpoint에 해당. 내성 기전 부재와 임상적 S/I 범주를 혼동하지 않도록 이 panel에서는 NA."
+          "note": "획득 fluoroquinolone 내성 기전이 검출되지 않은 교육용 분리주. EUCAST 괄호 breakpoint는 임상 S/I를 뜻하지 않으며, ciprofloxacin은 고노출 병합요법에서만 고려할 수 있다.",
+          "applicability": "high-exposure-combination-therapy"
         },
         "levofloxacin": {
           "category": "I",
@@ -1115,18 +1112,16 @@
           "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
         },
         "ciprofloxacin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "ACT",
+          "basis": "resistance-screen-negative",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "local-staph"
+            "eucast-bracket-breakpoints"
           ],
-          "note": "EUCAST의 괄호 breakpoint에 해당. 내성 기전 부재와 임상적 S/I 범주를 혼동하지 않도록 이 panel에서는 NA."
+          "note": "획득 fluoroquinolone 내성 기전이 검출되지 않은 교육용 분리주. EUCAST 괄호 breakpoint는 임상 S/I를 뜻하지 않으며, ciprofloxacin은 고노출 병합요법에서만 고려할 수 있다.",
+          "applicability": "high-exposure-combination-therapy"
         },
         "levofloxacin": {
           "category": "I",
@@ -1695,18 +1690,16 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "cdc-vre"
+            "cdc-enterococci-resistance",
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1 Enterococcus spp. 표(p. 39)에서 oxacillin은 dash(–)이며, Note 8에 따라 검사 없이 R로 보고한다. CDC도 Enterococcus가 oxacillin 등 semisynthetic penicillinase-resistant penicillin에 고유 내성을 보인다고 명시한다."
         },
         "vancomycin": {
           "category": "S",
@@ -2041,18 +2034,16 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "cdc-vre"
+            "cdc-enterococci-resistance",
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1 Enterococcus spp. 표(p. 39)에서 oxacillin은 dash(–)이며, Note 8에 따라 검사 없이 R로 보고한다. CDC도 Enterococcus가 oxacillin 등 semisynthetic penicillinase-resistant penicillin에 고유 내성을 보인다고 명시한다."
         },
         "vancomycin": {
           "category": "R",
@@ -2387,18 +2378,16 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "cdc-vre"
+            "cdc-enterococci-resistance",
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1 Enterococcus spp. 표(p. 39)에서 oxacillin은 dash(–)이며, Note 8에 따라 검사 없이 R로 보고한다. CDC도 Enterococcus가 oxacillin 등 semisynthetic penicillinase-resistant penicillin에 고유 내성을 보인다고 명시한다."
         },
         "vancomycin": {
           "category": "S",
@@ -2733,18 +2722,16 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "cdc-vre"
+            "cdc-enterococci-resistance",
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1 Enterococcus spp. 표(p. 39)에서 oxacillin은 dash(–)이며, Note 8에 따라 검사 없이 R로 보고한다. CDC도 Enterococcus가 oxacillin 등 semisynthetic penicillinase-resistant penicillin에 고유 내성을 보인다고 명시한다."
         },
         "vancomycin": {
           "category": "R",
@@ -3079,18 +3066,15 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "local-ecoli"
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1의 Enterobacterales 표(p. 14)에서 oxacillin은 dash(–)이다. EUCAST Note 8은 이 조합을 치료에 부적합하며 검사·임상 사용을 피하고, 보고가 필요하면 검사 없이 R로 보고하도록 명시한다."
         },
         "vancomycin": {
           "category": "R",
@@ -3289,18 +3273,15 @@
           "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
         },
         "cefazolin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "I",
+          "basis": "authored-isolate",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
-            "eucast-2026",
-            "idsa-amr",
-            "local-ecoli"
+            "eucast-2026"
           ],
-          "note": "EUCAST cefazolin 해석의 요로 기원 감염 조건이 이 panel에서 지정되지 않아 범주를 부여하지 않음."
+          "note": "EUCAST v16.1의 E. coli cefazolin breakpoint는 요로 기원 감염에만 적용된다. 이 고정 교육용 분리주는 해당 맥락의 wild-type 결과(I, increased exposure)로 설정했다.",
+          "applicability": "infections-originating-from-urinary-tract"
         }
       },
       "sourceIds": [
@@ -3425,18 +3406,15 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "local-ecoli"
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1의 Enterobacterales 표(p. 14)에서 oxacillin은 dash(–)이다. EUCAST Note 8은 이 조합을 치료에 부적합하며 검사·임상 사용을 피하고, 보고가 필요하면 검사 없이 R로 보고하도록 명시한다."
         },
         "vancomycin": {
           "category": "R",
@@ -3635,18 +3613,16 @@
           "note": "이 문제에 고정된 교육용 분리주의 정성 결과. 이 균종의 모든 분리주에 일반화하지 않는다."
         },
         "cefazolin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "authored-isolate",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "local-ecoli"
+            "idsa-amr"
           ],
-          "note": "EUCAST cefazolin 해석의 요로 기원 감염 조건이 이 panel에서 지정되지 않아 범주를 부여하지 않음."
+          "note": "요로 기원 감염 맥락의 CTX-M ESBL 생성 교육용 분리주로 cefazolin R 결과를 설정했다. ESBL 명칭만으로 자동 판정한 결과가 아니라 이 분리주의 authored AST다.",
+          "applicability": "infections-originating-from-urinary-tract"
         }
       },
       "sourceIds": [
@@ -3762,17 +3738,15 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr"
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1의 Enterobacterales 표(p. 14)에서 oxacillin은 dash(–)이다. EUCAST Note 8은 이 조합을 치료에 부적합하며 검사·임상 사용을 피하고, 보고가 필요하면 검사 없이 R로 보고하도록 명시한다."
         },
         "vancomycin": {
           "category": "R",
@@ -4082,17 +4056,15 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr"
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1의 Enterobacterales 표(p. 14)에서 oxacillin은 dash(–)이다. EUCAST Note 8은 이 조합을 치료에 부적합하며 검사·임상 사용을 피하고, 보고가 필요하면 검사 없이 R로 보고하도록 명시한다."
         },
         "vancomycin": {
           "category": "R",
@@ -4411,18 +4383,15 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "local-pseudomonas"
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1의 Pseudomonas spp. 표(p. 21)에서 oxacillin은 dash(–)이다. EUCAST Note 8은 이 조합을 치료에 부적합하며 검사·임상 사용을 피하고, 보고가 필요하면 검사 없이 R로 보고하도록 명시한다."
         },
         "vancomycin": {
           "category": "R",
@@ -4757,18 +4726,15 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr",
-            "local-pseudomonas"
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1의 Pseudomonas spp. 표(p. 21)에서 oxacillin은 dash(–)이다. EUCAST Note 8은 이 조합을 치료에 부적합하며 검사·임상 사용을 피하고, 보고가 필요하면 검사 없이 R로 보고하도록 명시한다."
         },
         "vancomycin": {
           "category": "R",
@@ -5094,17 +5060,15 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr"
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1의 Enterobacterales 표(p. 14)에서 oxacillin은 dash(–)이다. EUCAST Note 8은 이 조합을 치료에 부적합하며 검사·임상 사용을 피하고, 보고가 필요하면 검사 없이 R로 보고하도록 명시한다."
         },
         "vancomycin": {
           "category": "R",
@@ -5414,17 +5378,15 @@
       },
       "susceptibility": {
         "oxacillin": {
-          "category": "NA",
-          "basis": "not-interpreted",
+          "category": "R",
+          "basis": "expected-resistance",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "local-spectrum",
-            "eucast-expected",
             "eucast-2026",
-            "idsa-amr"
+            "dailymed-oxacillin"
           ],
-          "note": "이 교육용 panel에서는 이 균–약제 조합을 S/I/R로 판정하지 않는다. NA는 R이 아니다."
+          "note": "EUCAST v16.1의 Enterobacterales 표(p. 14)에서 oxacillin은 dash(–)이다. EUCAST Note 8은 이 조합을 치료에 부적합하며 검사·임상 사용을 피하고, 보고가 필요하면 검사 없이 R로 보고하도록 명시한다."
         },
         "vancomycin": {
           "category": "R",
