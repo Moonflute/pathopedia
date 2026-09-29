@@ -174,7 +174,7 @@ for(const file of ['gram-positive','gram-negative','core-antibiotics']) {
  records.push(...(pack.records||[]));
 }
 await writeFile('data/sources.json',JSON.stringify(allSources,null,2)+'\n');
-const data={schemaVersion:1,datasetVersion:'0.3.0',title:'Core clinical bacteriology',reviewStatus:'educational-draft',interpretation:{system:'EUCAST',version:'16.1 (2026)',note:'EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. ACT는 임상 S/I가 아니라 근거가 명시된 조건부 활성이다. EUCAST 표의 dash(–)는 치료에 부적합한 조합이며 보고가 필요하면 검사 없이 R로 보고한다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.',advancedModeEnabled:false},categories,drugs,records};
+const data={schemaVersion:1,datasetVersion:'0.3.1',title:'Core clinical bacteriology',reviewStatus:'educational-draft',interpretation:{system:'EUCAST',version:'16.1 (2026)',note:'EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. ACT는 임상 S/I가 아니라 근거가 명시된 조건부 활성이다. EUCAST 표의 dash(–)는 치료에 부적합한 조합이며 보고가 필요하면 검사 없이 R로 보고한다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.',advancedModeEnabled:false},categories,drugs,records};
 for(const record of records) for(const [drugId,result] of Object.entries(record.susceptibility)) {
  if(result.category === 'NA') throw Error(`${record.id}/${drugId}: NA categories are forbidden`);
  if(result.category === 'ACT' && !result.applicability) throw Error(`${record.id}/${drugId}: ACT requires applicability`);

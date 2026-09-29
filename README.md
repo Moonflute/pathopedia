@@ -45,6 +45,8 @@ GitHub Actions가 main push 시 테스트 → 정적 빌드 → Pages 배포합�
 `docs/source-audit.json`에는 참고한 파일의 상대 경로와 SHA-256을 기록합니다.
 기존 spectrum의 `variable/conditional`을 S로 자동 매핑하지 않았습니다.
 
+현재 검증의 한계와 미해결 문제는 [데이터 감사 기록](docs/data-audit-2026-09-30.md)에 정리했습니다. 출처 링크와 자동 테스트 통과가 모든 조합의 의학적 검증을 뜻하지 않습니다.
+
 현재 기록은 문헌상의 제약을 반영하여 작성한 가상의 고정 교육용 분리주이며 **expert-reviewed가 아닌 educational-draft**입니다.
 S/I/R의 의미 및 일부 조합의 추론 규칙은 EUCAST v16.1 (2026)을 따릅니다.
 `I = Susceptible, increased exposure`; R 또는 CLSI Intermediate와 같지 않습니다.
@@ -77,7 +79,7 @@ SemVer `v 0.0.0` 형식. 작은 수정은 patch, 기능 묶음은 minor 증가 �
 
 ## PWA와 아이콘
 
-현재 v 0.6.0. 홈 화면 설치용 manifest와 192/512px 아이콘, iOS용 180px 아이콘을 제공합니다.
+현재 v 0.6.1. 홈 화면 설치용 manifest와 192/512px 아이콘, iOS용 180px 아이콘을 제공합니다.
 지원 브라우저에서 사이트 설치 또는 홈 화면에 추가할 수 있습니다.
 첫 온라인 방문에서 캐시 설치가 완료되면 오프라인에서도 게임·Archive를 사용할 수 있습니다.
 외부 웹폰트를 불러오지 못하면 시스템 글꼴을 사용합니다.

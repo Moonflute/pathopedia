@@ -81,7 +81,7 @@ test('clinically important phenotype invariants are preserved',()=>{
  assert.equal(result('ECO-010','meropenem'),'S');assert.equal(result('KPN-012','meropenem'),'R');
 });
 
-test('catalog rejects missing or ungrounded susceptibility results',()=>{
+test('catalog rejects missing results, invalid categories, and empty source references',()=>{
  assert.ok(validateDataset(data,sources).results>0);
  const broken=structuredClone(data);broken.records[0].susceptibility[drugs[0].id].category='NA';
  assert.throws(()=>validateDataset(broken,sources),/invalid/);
@@ -96,4 +96,12 @@ test('expanded resistance phenotypes retain distinguishing constraints',()=>{
  assert.equal(ast('SAU-403','vancomycin'),'R');assert.equal(ast('SAU-404','linezolid'),'R');
  assert.equal(ast('GNX-202','tigecycline'),'R');
  for(const d of ['meropenem','imipenem','amikacin','gentamicin'])assert.equal(ast('GNX-213',d),'R');
+});
+
+test('anthrax activity follows CDC organism-specific exceptions',()=>{
+ const r=records.find(r=>r.id==='BAN-117');
+ for(const drug of ['ceftriaxone','cefepime','ceftazidime','cefazolin','ceftaroline','tmpsmx','aztreonam']){
+  assert.equal(r.susceptibility[drug].category,'INACTIVE');
+  assert.ok(r.susceptibility[drug].sourceIds.includes('cdc-anthrax-treatment-2023'));
+ }
 });

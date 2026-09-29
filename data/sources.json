@@ -189,5 +189,10 @@
     "title": "FDA/DailyMed ZYVOX (linezolid) prescribing information",
     "url": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=linezolid",
     "note": "Official spectrum and susceptibility-testing context; the educational resistant isolate has no asserted MIC."
+  },
+  "cdc-anthrax-treatment-2023": {
+    "title": "CDC Guidelines for the Prevention and Treatment of Anthrax, 2023",
+    "url": "https://www.cdc.gov/mmwr/volumes/72/rr/rr7206a1.htm",
+    "note": "Treatment Recommendations: cephalosporins, TMP-SMX, aztreonam의 비활성을 명시한다. 개별 임상 MIC를 제공하는 자료로 취급하지 않는다."
   }
 }

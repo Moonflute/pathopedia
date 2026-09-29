@@ -44,6 +44,11 @@
       "title": "Merck Manual Professional: Gram-Positive Bacteria",
       "url": "https://www.merckmanuals.com/professional/infectious-diseases/gram-positive-bacteria",
       "note": "임상 미생물학, 질환 및 진단 개요."
+    },
+    "cdc-anthrax-treatment-2023": {
+      "title": "CDC Guidelines for the Prevention and Treatment of Anthrax, 2023",
+      "url": "https://www.cdc.gov/mmwr/volumes/72/rr/rr7206a1.htm",
+      "note": "Treatment Recommendations: cephalosporins, TMP-SMX, aztreonam의 비활성을 명시한다. 개별 임상 MIC를 제공하는 자료로 취급하지 않는다."
     }
   },
   "records": [
@@ -7601,46 +7606,34 @@
           "applicability": "activity-only-no-clinical-breakpoint"
         },
         "ceftriaxone": {
-          "category": "ACTIVE",
+          "category": "INACTIVE",
           "basis": "literature-activity",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "eucast-2026",
-            "eucast-expected",
-            "cdc-anthrax",
-            "eucast-no-breakpoints"
+            "cdc-anthrax-treatment-2023"
           ],
-          "note": "3세대 cephalosporin의 Gram 양성 활성은 균군과 감염 부위에 따라 달라지며, 종별 breakpoint가 없는 조합은 S로 외삽하지 않는다.",
-          "applicability": "activity-only-no-clinical-breakpoint"
+          "note": "CDC 2023 탄저 지침은 cephalosporin, trimethoprim–sulfamethoxazole 및 aztreonam의 in-vitro 비활성을 명시한다. 일반적인 Gram-positive 활성 범위를 이 조합에 적용하지 않는다. 임상 MIC 기반 S/I/R 판정이 아닌 문헌상 비활성이다."
         },
         "cefepime": {
-          "category": "ACTIVE",
+          "category": "INACTIVE",
           "basis": "literature-activity",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "eucast-2026",
-            "eucast-expected",
-            "cdc-anthrax",
-            "eucast-no-breakpoints"
+            "cdc-anthrax-treatment-2023"
           ],
-          "note": "4세대 cephalosporin의 일부 Gram 양성 in-vitro 활성은 가능하지만 이 균군의 표준 표적 치료나 S 판정으로 간주하지 않는다.",
-          "applicability": "activity-only-no-clinical-breakpoint"
+          "note": "CDC 2023 탄저 지침은 cephalosporin, trimethoprim–sulfamethoxazole 및 aztreonam의 in-vitro 비활성을 명시한다. 일반적인 Gram-positive 활성 범위를 이 조합에 적용하지 않는다. 임상 MIC 기반 S/I/R 판정이 아닌 문헌상 비활성이다."
         },
         "ceftazidime": {
-          "category": "ACTIVE",
+          "category": "INACTIVE",
           "basis": "literature-activity",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "eucast-2026",
-            "eucast-expected",
-            "cdc-anthrax",
-            "eucast-no-breakpoints"
+            "cdc-anthrax-treatment-2023"
           ],
-          "note": "다른 3세대 cephalosporin보다 Gram 양성 활성이 제한적이다. 검출 가능한 in-vitro 활성을 임상 S 또는 표준 치료 적합성으로 확대하지 않는다.",
-          "applicability": "activity-only-no-clinical-breakpoint"
+          "note": "CDC 2023 탄저 지침은 cephalosporin, trimethoprim–sulfamethoxazole 및 aztreonam의 in-vitro 비활성을 명시한다. 일반적인 Gram-positive 활성 범위를 이 조합에 적용하지 않는다. 임상 MIC 기반 S/I/R 판정이 아닌 문헌상 비활성이다."
         },
         "meropenem": {
           "category": "ACTIVE",
@@ -7674,12 +7667,9 @@
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "eucast-2026",
-            "eucast-expected",
-            "cdc-anthrax",
-            "eucast-no-breakpoints"
+            "cdc-anthrax-treatment-2023"
           ],
-          "note": "Monobactam은 주로 호기성 Gram 음성균의 PBP3를 표적으로 하며 Gram 양성균에는 의미 있는 고유 활성이 없다."
+          "note": "CDC 2023 탄저 지침은 cephalosporin, trimethoprim–sulfamethoxazole 및 aztreonam의 in-vitro 비활성을 명시한다. 일반적인 Gram-positive 활성 범위를 이 조합에 적용하지 않는다. 임상 MIC 기반 S/I/R 판정이 아닌 문헌상 비활성이다."
         },
         "ciprofloxacin": {
           "category": "ACTIVE",
@@ -7773,18 +7763,14 @@
           "applicability": "activity-only-no-clinical-breakpoint"
         },
         "cefazolin": {
-          "category": "ACTIVE",
+          "category": "INACTIVE",
           "basis": "literature-activity",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "eucast-2026",
-            "eucast-expected",
-            "cdc-anthrax",
-            "eucast-no-breakpoints"
+            "cdc-anthrax-treatment-2023"
           ],
-          "note": "1세대 cephalosporin의 Gram 양성 활성은 가능하지만 균종별 표준 AST가 없는 경우 임상 S로 외삽하지 않는다.",
-          "applicability": "activity-only-no-clinical-breakpoint"
+          "note": "CDC 2023 탄저 지침은 cephalosporin, trimethoprim–sulfamethoxazole 및 aztreonam의 in-vitro 비활성을 명시한다. 일반적인 Gram-positive 활성 범위를 이 조합에 적용하지 않는다. 임상 MIC 기반 S/I/R 판정이 아닌 문헌상 비활성이다."
         },
         "penicillin": {
           "category": "ACTIVE",
@@ -7813,18 +7799,14 @@
           "applicability": "activity-only-no-clinical-breakpoint"
         },
         "ceftaroline": {
-          "category": "ACTIVE",
+          "category": "INACTIVE",
           "basis": "literature-activity",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "eucast-2026",
-            "eucast-expected",
-            "cdc-anthrax",
-            "eucast-no-breakpoints"
+            "cdc-anthrax-treatment-2023"
           ],
-          "note": "항-MRSA cephalosporin의 일부 Gram 양성 활성은 가능하지만 허가 적응증 밖 균종을 S로 외삽하지 않는다.",
-          "applicability": "activity-only-no-clinical-breakpoint"
+          "note": "CDC 2023 탄저 지침은 cephalosporin, trimethoprim–sulfamethoxazole 및 aztreonam의 in-vitro 비활성을 명시한다. 일반적인 Gram-positive 활성 범위를 이 조합에 적용하지 않는다. 임상 MIC 기반 S/I/R 판정이 아닌 문헌상 비활성이다."
         },
         "daptomycin": {
           "category": "ACTIVE",
@@ -7881,18 +7863,14 @@
           "applicability": "public-health-guidance-and-ast-required"
         },
         "tmpsmx": {
-          "category": "ACTIVE",
+          "category": "INACTIVE",
           "basis": "literature-activity",
           "mic": null,
           "breakpoint": null,
           "sourceIds": [
-            "eucast-2026",
-            "eucast-expected",
-            "cdc-anthrax",
-            "eucast-no-breakpoints"
+            "cdc-anthrax-treatment-2023"
           ],
-          "note": "Folate 경로 억제 활성은 배지 조건과 균종 생리에 좌우되며, 표준화된 종별 검사 없이 S로 외삽하지 않는다.",
-          "applicability": "activity-only-no-clinical-breakpoint"
+          "note": "CDC 2023 탄저 지침은 cephalosporin, trimethoprim–sulfamethoxazole 및 aztreonam의 in-vitro 비활성을 명시한다. 일반적인 Gram-positive 활성 범위를 이 조합에 적용하지 않는다. 임상 MIC 기반 S/I/R 판정이 아닌 문헌상 비활성이다."
         },
         "gentamicin": {
           "category": "ACTIVE",
@@ -7954,7 +7932,8 @@
         "eucast-2026",
         "eucast-expected",
         "msd-bacteria",
-        "cdc-anthrax"
+        "cdc-anthrax",
+        "cdc-anthrax-treatment-2023"
       ],
       "reviewStatus": "educational-draft",
       "isolateModel": "authored-fixed-isolate",
