@@ -1,12 +1,13 @@
 import { RULES, newRound, reveal, guess, score, addDiscovery, restoreRound } from './engine.mjs';
 
-const VERSION = '0.3.2';
+const VERSION = '0.4.0';
 const KEY = 'pathopedia.v1';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let mobileSection = 'hints';
 let data, sources, round, archive = {}, view = 'lab', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', archiveId = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
 const root = $('#app');
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.3.2" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.4.0" alt="" width="27" height="27">';
 const arrow = '<span aria-hidden="true">↗</span>';
 const record = () => data.records.find(r => r.id === round.targetId);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -43,10 +44,10 @@ function shell() {
 }
 function lab() {
  const stats=score(round), done=round.status==='solved';
- return `<div class="playboard"><div class="board-toolbar"><div class="case-heading"><h1>${done?'동정 완료':'미생물 동정'}</h1><span>CASE ${round.serial}</span></div><div class="session-stats" aria-label="라운드 점수"><span>점수 <b>${stats.score.toLocaleString()}</b></span><span>비용 <b>${stats.cost}</b></span><span>오답 <b>−${stats.penalty}</b></span><span>공개 <b>${round.actions.length}/25</b></span></div><button class="log-trigger" data-action="log">검사 기록 ↗</button></div>
+ return `<div class="playboard" data-mobile-section="${mobileSection}"><div class="board-toolbar"><div class="case-heading"><h1>${done?'동정 완료':'미생물 동정'}</h1><span>CASE ${round.serial}</span></div><div class="session-stats" aria-label="라운드 점수"><span>점수 <b>${stats.score.toLocaleString()}</b></span><span>비용 <b>${stats.cost}</b></span><span>오답 <b>−${stats.penalty}</b></span><span>공개 <b>${round.actions.length}/25</b></span></div><button class="log-trigger" data-action="log">검사 기록 ↗</button></div>
  <div class="board-upper"><aside class="identity-panel"><div class="identity-heading"><div class="sample-mark ${done?'identified':''}" aria-hidden="true">${done?'✓':'?'}</div><div><span class="sample-status">${done?record().id:'UNIDENTIFIED'}</span><h2>${done?esc(record().organism):'UNKNOWN<br>ORGANISM'}</h2>${done?`<p>${esc(record().phenotype)}</p>`:''}</div></div>${done?`<div class="solved-summary"><span class="solved-label">IDENTIFICATION CONFIRMED</span><h3>Archive에 기록했습니다.</h3><p>최종 점수 <strong>${stats.score}</strong><br>사용한 정보 ${round.actions.length}개 · 오답 ${round.wrongIds.length}회</p><button class="submit-button" data-action="record">전체 organism record ↗</button></div>`:answerPanel()}<button class="replace-specimen" data-action="next">${done?'다음 검체':'새 검체로 교체'} <span>→</span></button></aside>
  <section class="clue-board" aria-label="병원체 정보">${hintPanel()}</section></div>
- ${drugPanel()}</div>`;
+ ${drugPanel()}<nav class="mobile-sections" aria-label="동정실 화면 선택">${[['hints','정보'],['drugs','항균제'],['answer',done?'동정 결과':'정답']].map(([id,label])=>`<button data-mobile-section="${id}" aria-pressed="${mobileSection===id}">${label}</button>`).join('')}</nav></div>`;
 }
 function hintPanel() {
  const done=round.status==='solved';
@@ -98,11 +99,12 @@ function render(focusSelector) {
  if (focusSelector) $(focusSelector)?.focus({preventScroll:true});
 }
 function reset() {
- round=newRound(data.records,round.targetId); selectedTaxon='';selectedAnswer='';notice='';confirmNext=false;filter='';tab='hints';persist();render();window.scrollTo({top:0,behavior:'smooth'});
+ mobileSection='hints';round=newRound(data.records,round.targetId); selectedTaxon='';selectedAnswer='';notice='';confirmNext=false;filter='';tab='hints';persist();render();window.scrollTo({top:0,behavior:'smooth'});
 }
 root.addEventListener('click',e=>{
  if(e.target.closest('.brand')){e.preventDefault();view='lab';archiveId='';render();return;}
  const b=e.target.closest('button'); if (!b||b.disabled) return;
+ if (b.dataset.mobileSection) {mobileSection=b.dataset.mobileSection;render(`[data-mobile-section="${mobileSection}"] button[aria-pressed="true"]`);window.scrollTo({top:0});return;}
  if (b.dataset.view) {view=b.dataset.view;archiveId='';notice='';render();return;}
  if (b.dataset.tab) {tab=b.dataset.tab;render(`#${tab}-tab`);return;}
  if(b.dataset.detailHint){const c=data.categories.find(c=>c.id===b.dataset.detailHint);openDetail(c.label,`<p class="detail-hint-text">${esc(record().hints[c.id].text)}</p><p class="tiny">${c.ko} · 이미 공개한 정보입니다. 추가 비용 없음.</p>`);return;}
@@ -134,7 +136,7 @@ root.addEventListener('submit',e=>{
  if(e.target.id!=='answer-form')return;e.preventDefault();if(!selectedAnswer)return;
  const duplicate=round.wrongIds.includes(selectedAnswer);
  round=guess(data.records,round,selectedAnswer);
- if(round.status==='solved'){archive=addDiscovery(archive,round);notice='';persist();render();window.scrollTo({top:0,behavior:'smooth'});}
+ if(round.status==='solved'){mobileSection='answer';archive=addDiscovery(archive,round);notice='';persist();render();window.scrollTo({top:0,behavior:'smooth'});}
  else{notice=duplicate?'이미 제외한 조합입니다. 추가 감점 없음.':'일치하지 않습니다. −100점. 다른 조합을 검토하세요.';persist();render('#phenotype');}
 });
 root.addEventListener('keydown',e=>{if(e.target.getAttribute('role')==='tab'&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();tab=tab==='hints'?'drugs':'hints';render(`#${tab}-tab`);}});
