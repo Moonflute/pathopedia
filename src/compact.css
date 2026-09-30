@@ -96,7 +96,16 @@ main.game-main{max-width:1760px;padding:8px 12px}
 .clinical-context{padding:10px 12px;background:#e8ecdf;border-left:3px solid #7b9069;line-height:1.7}
 .identity-heading h2{overflow-wrap:anywhere}.identity-heading p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .archive-progress>div{flex-wrap:wrap}.drug-name{overflow-wrap:anywhere}
+.specimen-actions{display:flex;align-items:center;gap:16px;margin-top:auto;border-top:1px solid #bdc8b0;flex-shrink:0}
+.specimen-actions .replace-specimen{flex:1;min-width:0;margin:0;border:0;padding:6px 0;min-height:32px}
+.show-answer{flex-shrink:0;min-height:32px;padding:6px 0;font-size:.875rem;color:#354c30;text-decoration:underline;text-underline-offset:3px}
+.show-answer:hover{color:#162b1f}
+@media(min-width:760px) and (max-height:680px){
+ .specimen-actions .replace-specimen,.show-answer{min-height:26px;padding:2px 0;font-size:.8125rem}
+ .identity-heading{flex-shrink:0}.solved-summary h3{margin:5px 0}.solved-summary p{margin:6px 0;line-height:1.5}.solved-summary .submit-button{padding:8px;min-height:32px}
+}
 @media(max-width:759px){
+ .specimen-actions{margin-top:0}.specimen-actions .replace-specimen,.show-answer{min-height:44px;font-size:.875rem}
  .board-toolbar .case-heading{flex:1;gap:8px;min-width:0}.case-heading h1{font-size:.875rem;white-space:nowrap}.panel-picker{flex:1}.panel-picker select{width:100%;max-width:none;height:44px;min-height:44px;font-size:.875rem}.log-trigger{font-size:.75rem;padding-inline:2px}
  .regimen-key{flex-basis:100%;order:3;margin:0;font-size:.75rem}.regimen-help{min-height:44px}.assay-heading{flex-wrap:wrap}.drug-tile.regimen .drug-value,.drug-tile.outside_regimen .drug-value{font-size:.9375rem}
 }

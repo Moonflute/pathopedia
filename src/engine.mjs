@@ -41,6 +41,10 @@ export function score(round) {
   const penalty = round.wrongIds.length * RULES.wrongPenalty;
   return { cost, penalty, score: Math.max(0, RULES.initialScore - cost * RULES.costMultiplier - penalty) };
 }
+export function showAnswer(round) {
+  if (round.status !== 'active') return round;
+  return { ...round, status: 'revealed', finishedAt: new Date().toISOString() };
+}
 export function addDiscovery(archive, round) {
   if (round.status !== 'solved') return archive;
   const previous = archive[round.targetId];
@@ -48,7 +52,7 @@ export function addDiscovery(archive, round) {
   return { ...archive, [round.targetId]: { firstSeen: previous?.firstSeen || round.finishedAt, bestScore: Math.max(previous?.bestScore || 0, score(round).score), solves: (previous?.solves || 0) + 1, lastRound: round.startedAt } };
 }
 export function restoreRound(saved, records) {
-  if (!saved || !records.some(r => r.id === saved.targetId) || !['active', 'solved', 'abandoned'].includes(saved.status) || !Array.isArray(saved.actions) || !Array.isArray(saved.wrongIds)) return null;
+  if (!saved || !records.some(r => r.id === saved.targetId) || !['active', 'solved', 'revealed', 'abandoned'].includes(saved.status) || !Array.isArray(saved.actions) || !Array.isArray(saved.wrongIds)) return null;
   const target = records.find(r => r.id === saved.targetId);
   if(saved.panelId!==target.panelId) return null;
   if (saved.previousId != null && (saved.previousId === saved.targetId || !records.some(r => r.id === saved.previousId && r.panelId === target.panelId))) return null;

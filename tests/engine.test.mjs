@@ -2,7 +2,7 @@ import test from 'node:test';
 import { validateDataset } from '../scripts/validate-data.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { entropy, newRound, price, reveal, candidates, guess, score, addDiscovery, restoreRound } from '../src/engine.mjs';
+import { entropy, newRound, price, reveal, candidates, guess, score, showAnswer, addDiscovery, restoreRound } from '../src/engine.mjs';
 const data=JSON.parse(readFileSync(new URL('../data/organisms.json',import.meta.url),'utf8'));
 const sources=JSON.parse(readFileSync(new URL('../data/sources.json',import.meta.url),'utf8'));
 const {records,drugs,categories}=data;
@@ -105,6 +105,34 @@ test('anthrax activity follows CDC organism-specific exceptions',()=>{
  for(const drug of ['ceftriaxone','cefepime','ceftazidime','cefazolin','ceftaroline','tmpsmx','aztreonam']){
   assert.equal(r.susceptibility[drug].category,'INACTIVE');
   assert.ok(r.susceptibility[drug].sourceIds.includes('cdc-anthrax-treatment-2023'));
+ }
+});
+test('showing an answer ends the round without earning or modifying discoveries, even after reload',()=>{
+ for(const p of data.panels){
+  const start=newRound(records,null,()=>0,p.id);
+  const attempted=guess(records,reveal(records,start,'hint','morphology'),pool(p.id)[1].id);
+  const revealed=showAnswer(attempted);
+  assert.equal(revealed.status,'revealed');
+  assert.equal(attempted.status,'active');
+  assert.equal(revealed.targetId,attempted.targetId);
+  assert.deepEqual(revealed.actions,attempted.actions);
+  assert.deepEqual(revealed.wrongIds,attempted.wrongIds);
+  assert.ok(revealed.finishedAt);
+  assert.equal(showAnswer(revealed),revealed);
+  const restored=restoreRound(JSON.parse(JSON.stringify(revealed)),records);
+  assert.deepEqual(restored,revealed);
+  assert.equal(guess(records,restored,restored.targetId),restored);
+  assert.equal(reveal(records,restored,'drug',p.drugIds[0]),restored);
+  const empty={};assert.equal(addDiscovery(empty,restored),empty);
+  const solved=guess(records,start,start.targetId),existing=addDiscovery({},solved);
+  const previous=structuredClone(existing);
+  assert.equal(showAnswer(solved),solved);
+  assert.equal(addDiscovery(existing,restored),existing);
+  assert.deepEqual(existing,previous);
+  const next=newRound(records,restored.targetId,()=>0,p.id);
+  const archive=addDiscovery(existing,guess(records,next,next.targetId));
+  assert.equal(archive[next.targetId].solves,1);
+  assert.deepEqual(archive[start.targetId],previous[start.targetId]);
  }
 });
 
