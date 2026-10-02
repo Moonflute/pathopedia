@@ -109,3 +109,19 @@ main.game-main{max-width:1760px;padding:8px 12px}
  .board-toolbar .case-heading{flex:1;gap:8px;min-width:0}.case-heading h1{font-size:.875rem;white-space:nowrap}.panel-picker{flex:1}.panel-picker select{width:100%;max-width:none;height:44px;min-height:44px;font-size:.875rem}.log-trigger{font-size:.75rem;padding-inline:2px}
  .regimen-key{flex-basis:100%;order:3;margin:0;font-size:.75rem}.regimen-help{min-height:44px}.assay-heading{flex-wrap:wrap}.drug-tile.regimen .drug-value,.drug-tile.outside_regimen .drug-value{font-size:.9375rem}
 }
+
+/* Proportional text gives the study board a calmer, more approachable voice. */
+.appbar .brand>span{font-family:var(--sans);font-weight:750;letter-spacing:.055em}
+.appnav button{font-weight:550}
+.identity-heading h2{font-family:var(--sans);font-weight:650;letter-spacing:-.025em;line-height:1.25}
+.compact-answer label,.mode-label,.panel-picker,.drug-search-label{font-family:var(--sans);font-weight:550}
+.clue-top{font-weight:600;letter-spacing:-.015em}
+.clue-text{font-weight:450;letter-spacing:-.01em;line-height:1.45}
+.clue-hidden>.clue-question,.sample-mark{font-family:var(--sans);font-weight:600}
+.drug-name{font-weight:550;letter-spacing:0}
+.drug-value,.detail-ast{font-family:var(--sans);font-weight:650}
+.submit-button,.mobile-sections button{font-weight:600}
+.record-seal,.record-header>p,.archive-card>p,.record-section p.classification{font-family:var(--sans);font-size:.875rem;line-height:1.7}
+.record-name h2,.archive-card h2{letter-spacing:-.015em}
+.session-stats b,.record-meta,.drug-pagination{font-variant-numeric:tabular-nums}
+@media(max-width:759px){.appbar .brand>span{font-size:.8125rem;letter-spacing:.015em}}

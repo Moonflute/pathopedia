@@ -1,0 +1,4 @@
+SUIT by Sun
+Official source: https://github.com/sun-typeface/SUIT
+Upstream commit: 55118d981336d8fce005eb62888c12c0568ef7b0
+Unmodified variable WOFF2; SIL Open Font License 1.1 (OFL-SUIT.txt).
