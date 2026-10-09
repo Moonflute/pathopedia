@@ -1,0 +1,239 @@
+import { writeFile } from 'node:fs/promises';
+import { validateTreatmentCatalog } from './validate-treatment.mjs';
+
+// Authored clinical vignettes; do not infer treatment choices from AST game tiles.
+const checkedAt = '2026-10-08';
+const source = (title, organization, year, url, region, note) => ({ title, organization, year, url, region, note, accessedAt: checkedAt });
+const sources = {
+  'amr-2026': source('IDSA AMR Treatment Guidance', 'IDSA', 2026, 'https://www.idsociety.org/practice-guideline/amr-guidance/', '미국', '2026-07-30 개정. 전문가 guidance이며 약제 공급·감수성·감염 부위에 따라 적용한다. 국내 허가·공급을 보장하지 않는다.'),
+  'cap-2019': source('Diagnosis and Treatment of Adults with Community-acquired Pneumonia', 'ATS / IDSA', 2019, 'https://www.idsociety.org/practice-guideline/community-acquired-pneumonia-cap-in-adults/', '미국', '초기 항균 요법과 흡인 시 혐기성 커버 근거. 치료 기간·바이러스 양성 환자의 항균제 여부는 후속 ATS 2025 업데이트와 함께 해석한다.'),
+  'cap-pathway': source('CAP Clinical Pathway', 'IDSA', 2023, 'https://www.idsociety.org/globalassets/idsa/practice-guidelines/community-acquired-pneumonia-in-adults/cap-clinical-pathway-final-online.pdf', '미국', '2019 지침에 근거한 실행 경로. 약제 용량·MRSA 위험과 치료 축소를 확인한다.'),
+  'cap-2025': source('Diagnosis and Management of Community-acquired Pneumonia: ATS guideline update', 'ATS', 2025, 'https://doi.org/10.1164/rccm.202507-1692ST', '미국', '치료 기간 등에 대한 조건부 권고를 포함한 ATS 업데이트. ATS/IDSA 공동 지침으로 표기하지 않는다.'),
+  'hap-2016': source('Management of Adults with Hospital-acquired and Ventilator-associated Pneumonia', 'ATS / IDSA', 2016, 'https://www.idsociety.org/practice-guideline/hap_vap/', '미국', 'MRSA·녹농균 위험에 따른 경험적 요법, 배양 후 축소, 통상 7일 치료. 병동별 antibiogram이 필요하다.'),
+  'fn-2010': source('Antimicrobial Agents in Neutropenic Patients with Cancer: 2010 Update', 'IDSA', 2010, 'https://www.idsociety.org/practice-guideline/neutropenic-patients-with-cancer/', '미국', '2011 출판된 2010 업데이트. 고위험 환자 초기 IV 요법과 vancomycin 추가 적응증.'),
+  'ssti-2014': source('Diagnosis and Management of Skin and Soft Tissue Infections', 'IDSA', 2014, 'https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/', '미국', '봉와직염·괴사성 감염·동물 교상. 수술 및 배농 판단은 항균제 선택과 함께 평가한다.'),
+  'meningitis-2025': source('WHO guidelines on meningitis diagnosis, treatment and care', 'WHO', 2025, 'https://www.who.int/publications/i/item/9789240108042', '국제', '비유행 상황의 수막염 경험적 치료. Listeria 위험과 지역 폐렴구균 내성에 따른 추가 약제를 구분한다.'),
+  'cuti-2025': source('Management and Treatment of Complicated Urinary Tract Infections', 'IDSA', 2025, 'https://www.idsociety.org/practice-guideline/complicated-urinary-tract-infections/', '미국', '중증도·과거 배양·환자 조건·antibiogram으로 경험적 선택, 감수성 확인 후 IV→PO 전환. 단기 치료 권고의 제외 집단을 확인한다.'),
+  'cdi-2021': source('Clostridioides difficile Infection: Focused Update', 'SHEA / IDSA', 2021, 'https://www.idsociety.org/practice-guideline/clostridioides-difficile-2021-focused-update/', '미국', '초발·재발 CDI의 fidaxomicin 우선 제안. 비용·가용성에 따라 경구 vancomycin은 인정되는 대안이다.'),
+  'cdi-2017': source('Clostridium difficile Infection in Adults and Children', 'SHEA / IDSA', 2017, 'https://www.idsociety.org/practice-guideline/clostridium-difficile/', '미국', '2018 출판된 2017 업데이트. 전격성 CDI의 고용량 경구/직장 vancomycin + IV metronidazole 요법은 2021 업데이트에서도 유지된다.'),
+  'gc-2021': source('Gonococcal Infections Among Adolescents and Adults', 'CDC', 2021, 'https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm', '미국', '체중 150 kg 기준 ceftriaxone 용량과 chlamydia 동반 여부, 인두 감염 추적 검사.'),
+  'pid-2021': source('Pelvic Inflammatory Disease', 'CDC', 2021, 'https://www.cdc.gov/std/treatment-guidelines/pid.htm', '미국', '외래 요법에 ceftriaxone + doxycycline + metronidazole, 72시간 재평가 및 입원 기준.'),
+  'epididymitis-2021': source('Epididymitis', 'CDC', 2021, 'https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm', '미국', '성매개 감염과 장내균 위험을 구분한다. 임질 배제 없는 levofloxacin 단독 요법을 피한다.'),
+  'neurosyphilis-2021': source('Neurosyphilis, Ocular Syphilis, and Otosyphilis', 'CDC', 2021, 'https://www.cdc.gov/std/treatment-guidelines/neurosyphilis.htm', '미국', '수용성 crystalline penicillin G의 IV 요법. Benzathine 제형과 구분한다.'),
+  'chlamydia-2021': source('Chlamydial Infections', 'CDC', 2021, 'https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm', '미국', '임신 중 권장·대안 요법 및 치료 후 약 4주 test of cure.'),
+  'h-pylori-2024': source('ACG H. pylori Guideline Highlights', 'ACG', 2024, 'https://webfiles.gi.org/links/journals/ACG-Hpylori-Guidelines-Highlights-2024-FINAL.pdf', '북미', '감수성 미확인 시 14일 optimized bismuth quadruple therapy. 한국의 일차 제균 요법과 무조건 동일시하지 않는다.'),
+  'asb-2019': source('Management of Asymptomatic Bacteriuria', 'IDSA', 2019, 'https://www.idsociety.org/practice-guideline/asymptomatic-bacteriuria/', '미국', '당뇨만으로 무증상 세균뇨를 치료하지 않는다. 임신과 점막 손상 비뇨기 시술은 별도 적응증이다.'),
+  'uti-korea-2018': source('지역사회 획득 요로감염 항생제 사용지침', '대한감염학회 등 / Infection & Chemotherapy', 2018, 'https://icjournal.org/DOIx.php?id=10.3947/ic.2018.50.1.67', '대한민국', '국내 지침의 급성 방광염 권고를 참고한다. 당시 내성률·허가·공급 상황을 현재 수치로 간주하지 않는다.'),
+  'ie-2023': source('ESC Guidelines for the management of endocarditis', 'ESC', 2023, 'https://academic.oup.com/eurheartj/article/44/39/3948/7243107', '유럽', 'E. faecalis HLAR 심내막염의 ampicillin/amoxicillin + ceftriaxone 병용과 기간, Endocarditis Team의 역할.'),
+  'vanc-2020': source('Therapeutic Monitoring of Vancomycin for Serious MRSA Infections', 'ASHP / IDSA / PIDS / SIDP', 2020, 'https://www.idsociety.org/practice-guideline/vancomycin/', '국제 전문가 합의 / 미국', '중증 MRSA 감염의 AUC 기반 노출 목표. 근거는 주로 균혈증이며 모든 감염으로 단순 외삽하지 않는다.'),
+};
+const normal = ['투여 조건', '성인 · 정상 신기능 · 중증 β-lactam 알레르기 없음'];
+function q(value) {
+  const { options, refs, reasoning, regimen, alternatives, reassess, pearl, ...rest } = value;
+  const offset = questions.length % 4;
+  const ordered = [...options.slice(offset), ...options.slice(0, offset)];
+  return { ...rest, context: value.context.map(([label,value]) => ({label,value})), options: ordered.map(([text,rationale], i) => ({id:'abcd'[i],text,rationale})), answerId: 'abcd'[(4-offset)%4], explanation:{reasoning,regimen,alternatives,reassess,pearl}, sourceRefs:refs.map(([id,section]) => ({id,section})) };
+}
+const questions = [];
+const add = value => questions.push(q(value));
+
+add({ id:'emp-cap-ward', track:'empiric', title:'일반 병동에 입원한 지역사회획득 폐렴', topic:'폐렴',
+  case:'62세 남성이 3일간의 발열, 화농성 객담, 호흡곤란으로 입원했다. 흉부 영상에서 우하엽 침윤이 있다. 산소 2 L/min으로 안정적이며 쇼크·기계환기는 없다. 최근 90일 입원/IV 항생제, 과거 MRSA·녹농균 분리, 기관지확장증은 없다.',
+  context:[['중증도','비중증 CAP · 입원 치료'],['내성 위험','MRSA/녹농균 위험 단서 없음'],normal], prompt:'제시된 선택지 중 초기 경험적 요법으로 가장 적절한 것은?',
+  options:[['Ceftriaxone + azithromycin','전형적 병원체와 비정형 병원체를 함께 커버하는 입원 CAP 요법이다.'],['Ceftriaxone 단독','비정형 병원체 커버가 빠진다. 선택지의 β-lactam + macrolide가 권장 조합이다.'],['Vancomycin + meropenem','MRSA·녹농균 위험 단서 없이 광범위 요법을 일괄 적용할 근거가 없다.'],['Azithromycin 단독','입원 CAP에서 β-lactam 병용 또는 호흡기 fluoroquinolone 요법 대신 선택하기 어렵다.']],
+  reasoning:['먼저 CAP와 HAP를 구분하고 중증도와 내성 위험을 평가한다. 병동 입원 자체가 MRSA 커버 적응증은 아니다.','β-lactam + macrolide는 폐렴구균 등과 비정형균을 함께 겨냥한다.'], regimen:'정상 성인 신기능 기준 예: ceftriaxone 1–2 g IV 24시간마다 + azithromycin 500 mg IV/PO 24시간마다. QT 연장·상호작용을 확인한다.',
+  alternatives:'호흡기 fluoroquinolone 단독도 비중증 입원 CAP의 인정되는 대안이다. 금기·부작용·지역 내성을 고려해 선택한다.', reassess:'임상 안정과 미생물 결과에 따라 좁힌다. 기간은 고정 7–14일로 외우지 않고 ATS 2025의 안정성·중증도에 따른 권고를 확인한다.', pearl:'입원 여부와 내성균 위험은 서로 다른 판단 축이다.', refs:[['cap-2019','Question 9 / Table 4'],['cap-pathway','Table 4: Initial treatment'],['cap-2025','Question 3: duration']], evidence:'ATS/IDSA 초기 요법 권고 · 기간은 ATS 2025 별도 업데이트' });
+
+add({ id:'emp-cap-mrsa', track:'empiric', title:'과거 MRSA 호흡기 분리가 있는 중증 폐렴', topic:'폐렴',
+  case:'58세 남성이 지역사회에서 발생한 폐렴으로 기관삽관과 승압제가 필요하다. 6개월 전 하기도 검체에서 MRSA가 분리되었다. 녹농균 과거 분리나 기관지확장증은 없고, 지역에서 검증된 별도 녹농균 위험도 없다.',
+  context:[['중증도','중증 CAP · 쇼크/기계환기'],['주요 위험','과거 호흡기 MRSA 분리'],normal], prompt:'제시된 선택지 중 배양 결과 전 사용할 요법은?',
+  options:[['Ceftriaxone + azithromycin + vancomycin','중증 CAP 기본 요법에 MRSA 커버를 추가한다.'],['Ceftriaxone + azithromycin','이 사례의 과거 MRSA 분리라는 위험을 커버하지 못한다.'],['Vancomycin 단독','MRSA 외 CAP 병원체와 비정형균 커버가 빠진다.'],['Ceftriaxone + daptomycin','비정형균 커버가 빠지고 daptomycin은 폐렴 치료 약제가 아니다.']],
+  reasoning:['중증 CAP의 기본 조합을 유지하면서 과거 MRSA 호흡기 분리를 근거로 MRSA 약제를 추가한다.','모든 중증 CAP에 meropenem을 자동 추가하는 대신 녹농균 위험을 별도로 판단한다.'], regimen:'Ceftriaxone + azithromycin에 IV vancomycin을 추가한다. Vancomycin은 체중·신기능·AUC 모니터링에 맞추며 고정 용량으로 외우지 않는다.', alternatives:'MRSA 커버에는 linezolid도 권장된다. 혈구감소, 약물 상호작용, 신독성 위험과 동반 균혈증 등을 검토한다.', reassess:'혈액·호흡기 배양과 MRSA 비강 PCR, 임상 경과를 함께 검토해 MRSA 커버 중단 가능성을 평가한다. 중증 환자에서 PCR 한 가지로 치료를 결정하지 않는다.', pearl:'추가한 광범위 약제에는 중단 기준도 함께 세운다.', refs:[['cap-2019','Questions 9, 11 / Table 4'],['cap-pathway','MRSA risk / de-escalation'],['vanc-2020','AUC-guided monitoring']], evidence:'과거 호흡기 분리를 반영한 MRSA 경험적 커버' });
+
+add({ id:'emp-aspiration', track:'empiric', title:'흡인 위험이 있는 지역사회획득 폐렴', topic:'폐렴',
+  case:'76세 남성이 연하장애와 발열·화농성 객담으로 입원했다. 증상은 3일간 진행했고 하엽 침윤이 있다. 폐농양·농흉은 없으며 쇼크나 MRSA/녹농균 위험도 없다. 단발성 흡인 직후의 화학성 폐렴 상황은 아니다.',
+  context:[['진단 범위','감염성 CAP · 흡인 위험'],['영상','폐농양·농흉 없음'],normal], prompt:'흡인 위험을 고려할 때 가장 적절한 초기 요법은?',
+  options:[['Ceftriaxone + azithromycin','표준 입원 CAP 요법을 적용하며 혐기성 약제를 일률적으로 더하지 않는다.'],['Ceftriaxone + azithromycin + clindamycin을 항상 추가','폐농양·농흉 없이 흡인 위험만으로 혐기성 커버를 추가하지 않는다.'],['Metronidazole 단독','CAP의 주요 호기성 병원체와 비정형균을 커버하지 못한다.'],['흡인 위험이므로 항균제를 모두 보류','이 사례는 지속 발열·객담·영상 소견을 갖춘 감염성 폐렴으로 제시되었다.']],
+  reasoning:['흡인 위험, 세균성 흡인 폐렴, 화학성 pneumonitis를 구분한다.','농양·농흉이 의심될 때는 혐기성 커버와 배액을 별도로 평가하지만, 이 사례에서는 표준 CAP 접근이 적절하다.'], regimen:'입원 CAP 요법을 사용한다. 추가 clindamycin/metronidazole을 자동 처방하지 않는다.', alternatives:'β-lactam/β-lactamase inhibitor를 쓰는 다른 CAP 요법도 가능하다. 이 문항은 혐기성 약제의 일률적 추가 여부를 묻는다.', reassess:'48–72시간 경과와 영상·배양을 재평가한다. 연하 평가·흡인 예방도 함께 시행한다.', pearl:'흡인이라는 단어 하나만으로 혐기성 커버가 결정되지 않는다.', refs:[['cap-2019','Question 10: aspiration pneumonia']], evidence:'혐기성 커버 추가에 대한 조건부 권고 · 근거 확실성 매우 낮음' });
+
+add({ id:'emp-hap-low-risk', track:'empiric', title:'내성 위험이 낮은 병원획득 폐렴', topic:'폐렴',
+  case:'입원 6일째 54세 남성에게 새 폐침윤과 발열·객담이 발생했다. 기계환기나 쇼크는 없고 최근 90일 IV 항생제·기관지확장증·MRSA 보균은 없다. 해당 병동 MRSA 비율은 S. aureus의 10%, 녹농균 cefepime 감수성은 95%이며 추가 내성 위험은 없다.',
+  context:[['분류','HAP · 저사망 위험'],['병동 antibiogram','MRSA 10% · 녹농균 cefepime S 95%'],normal], prompt:'제시된 조건에 맞는 초기 경험적 요법은?',
+  options:[['Cefepime 단독','MSSA와 녹농균/그람음성균을 커버하며 이 조건에서는 MRSA 추가나 2계열 녹농균 커버가 일률적으로 필요하지 않다.'],['Cefazolin 단독','MSSA 표적 치료에는 가능하지만 경험적 HAP의 녹농균 커버가 부족하다.'],['Vancomycin 단독','필요한 그람음성균·녹농균 커버가 빠진다.'],['Cefepime + levofloxacin + vancomycin을 항상 유지','이 문항의 저위험 조건에서는 불필요한 추가 커버다. 높은 사망/내성 위험에서는 달라진다.']],
+  reasoning:['HAP에는 녹농균 및 다른 그람음성균 커버가 필요하다.','MRSA 및 이중 항녹농균 커버는 이전 IV 항생제, 병동 내성률, 쇼크·기계환기 등 위험에 따라 추가한다.'], regimen:'IV cefepime. 성인 정상 신기능 HAP 표준 예는 2 g 8시간마다이며 신기능 저하·신경독성과 병동 투여 프로토콜을 확인한다.', alternatives:'감수성이 뒷받침되면 piperacillin-tazobactam 등도 선택 가능하다. 구조적 폐질환·최근 IV 항생제·높은 사망 위험이 있으면 전략이 바뀐다.', reassess:'배양 후 표적 요법으로 좁히고 반응에 따라 통상 7일 치료를 검토한다. 농흉·농양·불충분한 반응은 별도 평가한다.', pearl:'병원 획득이라는 이유만으로 vancomycin과 두 항녹농균 약제가 항상 필요한 것은 아니다.', refs:[['hap-2016','Sections XII, XXII–XXIII: empiric HAP / duration / de-escalation']], evidence:'HAP 위험 기반 선택 · 일부 권고의 근거 확실성 낮음/매우 낮음' });
+
+add({ id:'emp-neutropenic-fever', track:'empiric', title:'고위험 발열성 호중구감소증', topic:'면역저하',
+  case:'급성 백혈병 유도 항암 중인 45세 환자의 ANC는 80/µL, 체온은 38.6°C이다. 7일 이상 호중구감소가 예상된다. 혈역학은 안정적이고 폐렴·카테터 감염·피부 감염 단서, MRSA 또는 내성 그람음성균 보균력은 없다. 병동 cefepime 감수성은 경험적 선택에 충분하다.',
+  context:[['위험군','장기·심한 호중구감소 · 입원 고위험'],['추가 커버 단서','쇼크·국소 그람양성 감염 단서 없음'],normal], prompt:'가장 적절한 초기 경험적 요법은?',
+  options:[['Cefepime IV 단독','항녹농균 β-lactam 단독이 고위험 초기 치료의 한 선택이다.'],['Vancomycin IV 단독','고위험 환자에서 중요한 녹농균·그람음성균 커버가 없다.'],['Ceftriaxone IV 단독','항녹농균 활성이 없어 이 상황의 기본 요법으로 부적절하다.'],['Cefepime + vancomycin을 모든 환자에게 투여','Vancomycin은 쇼크·폐렴·카테터/피부 감염 등 적응증에 따라 추가한다.']],
+  reasoning:['고위험 발열성 호중구감소증은 신속한 입원 IV 항녹농균 치료 대상이다.','원인 불명 발열만으로 vancomycin을 자동 추가하지 않는다.'], regimen:'정상 신기능 성인의 예: cefepime 2 g IV 8시간마다. 배양을 채취하되 항균제 투여를 지연하지 않는다.', alternatives:'Piperacillin-tazobactam 또는 meropenem/imipenem도 가능하다. 과거 ESBL/CRE, 쇼크, 복강 감염은 별도 고려한다.', reassess:'배양·감염 부위·임상 상태에 맞춰 변경한다. 안정적인 지속 발열만으로 약제를 무작정 늘리지 않고, 장기 발열에서는 진균 감염 등을 재평가한다.', pearl:'경험적 vancomycin을 시작할 이유와 중단할 기준을 구분한다.', refs:[['fn-2010','Recommendations 9–12; modification of empirical therapy']], evidence:'초기 항녹농균 β-lactam 단독 A-I · 일률적 vancomycin 비권장 A-I' });
+
+add({ id:'emp-cellulitis', track:'empiric', title:'화농성이 없는 봉와직염', topic:'피부·연조직',
+  case:'49세 여성이 하지의 홍반·열감·압통으로 입원 치료를 받는다. 농양·고름·관통상·동물 교상은 없고 MRSA 보균/감염력도 없다. 혈역학은 안정적이며 SIRS나 심한 면역저하는 없다. β-lactam 투여에 문제가 없다.',
+  context:[['감염 형태','비화농성 봉와직염'],['내성/특수 노출','MRSA 위험·교상·수중 노출 없음'],normal], prompt:'제시된 선택지 중 적절한 경험적 항균제는?',
+  options:[['Cefazolin','연쇄구균과 MSSA를 커버하는 좁은 IV β-lactam이다.'],['TMP-SMX 단독','비화농성 봉와직염에서 필요한 연쇄구균 커버를 신뢰하기 어렵다.'],['Meropenem 단독','특수 노출·심한 면역저하 없이 불필요하게 넓은 커버다.'],['Vancomycin을 모든 봉와직염에 투여','MRSA 위험 또는 중증 단서 없이 일률적으로 사용할 근거가 없다.']],
+  reasoning:['농양 유무와 MRSA 위험을 먼저 구분한다. 비화농성 감염에서는 연쇄구균이 주요 표적이다.'], regimen:'IV cefazolin 후 호전·경구 가능 시 좁은 경구 β-lactam 전환을 검토한다. 5일 치료 후 충분한 호전 여부에 따라 연장을 판단한다.', alternatives:'경증 외래라면 cephalexin 등 경구 요법을 사용할 수 있다. 관통상·MRSA·SIRS 등에서는 MRSA 활성 약제가 필요할 수 있다.', reassess:'농양, 괴사성 감염, 심부정맥혈전 등 다른 진단과 발가락 사이 피부 균열·부종을 확인한다.', pearl:'비화농성 봉와직염과 배농이 필요한 농양을 같은 치료 문제로 다루지 않는다.', refs:[['ssti-2014','Section IV: erysipelas and cellulitis']], evidence:'연쇄구균 표적 치료 및 반응 시 5일 기간 권고' });
+
+add({ id:'emp-necrotizing', track:'empiric', title:'괴사성 연조직 감염이 의심되는 쇼크', topic:'피부·연조직',
+  case:'64세 당뇨 환자가 회음부 통증과 쇼크로 내원했다. 피부 변화보다 훨씬 심한 통증과 수포가 있고 빠르게 진행한다. 원인균은 아직 확인되지 않았다. 수술팀이 즉시 평가 중이다.',
+  context:[['응급 단서','통증의 불균형 · 급속 진행 · 쇼크'],['미생물','혼합 감염 또는 단일 균 모두 가능'],normal], prompt:'수술적 감염원 조절과 동시에 시작할 경험적 요법은?',
+  options:[['Vancomycin + piperacillin-tazobactam','MRSA·그람음성균·혐기성균을 포함하는 광범위 경험적 조합이다.'],['Cefazolin 단독','원인 미확인 중증 괴사성 감염의 혼합균·MRSA 커버가 부족하다.'],['Clindamycin 단독','독소 억제 효과만으로 중증 혼합 감염 커버를 대체할 수 없다.'],['항균제 없이 영상 확진을 기다린다','감염원 조절과 항균제 시작을 지연하면 안 된다.']],
+  reasoning:['약제만 맞히는 문제가 아니다. 즉시 외과 평가·탐색/변연절제와 쇼크 치료를 병행한다.','초기에는 원인이 미확인이므로 넓게 시작하고 수술 검체 결과에 따라 좁힌다.'], regimen:'Vancomycin + piperacillin-tazobactam IV. 신기능·노출·신독성을 모니터링하고 수술을 지연하지 않는다.', alternatives:'Linezolid + 광범위 β-lactam, 또는 vancomycin + carbapenem 등도 지침의 경험적 대안이다. GAS가 확정되면 penicillin + clindamycin으로 표적화한다.', reassess:'수술 검체 배양·잔여 괴사·재수술 필요성과 지속 쇼크를 재평가한다. 치료 기간은 감염원 조절·임상 반응에 맞춘다.', pearl:'괴사성 감염에서 적절한 항균제는 수술을 대체하지 못한다.', refs:[['ssti-2014','Section VIII: necrotizing fasciitis / Fournier gangrene']], evidence:'신속 수술 평가·광범위 경험적 요법 강한 권고 · 근거 낮음' });
+
+add({ id:'emp-animal-bite', track:'empiric', title:'고양이 교상 후 생긴 손의 감염', topic:'피부·연조직',
+  case:'36세 여성이 고양이에게 손을 물린 다음 날 국소 홍반·열감·통증이 발생했다. 쇼크나 전신 독성은 없고 관절·건초 침범이 진찰에서 의심되지 않는다. 경구 치료가 가능하며 임신·약물 알레르기는 없다.',
+  context:[['노출','고양이 교상 · 이미 감염 소견'],['치료 장소','외래 경구 가능 · 심부 감염 평가 완료'],normal], prompt:'제시된 선택지 중 적절한 경험적 경구 항균제는?',
+  options:[['Amoxicillin-clavulanate','Pasteurella를 포함한 호기성균과 혐기성균을 함께 겨냥한다.'],['Cephalexin 단독','Pasteurella와 혐기성균 커버가 충분하지 않다.'],['Clindamycin 단독','Pasteurella 커버가 부족하다.'],['Metronidazole 단독','혐기성균 외 중요한 교상 병원체를 커버하지 못한다.']],
+  reasoning:['교상 감염은 단순 봉와직염과 예상 균 구성이 다르다. 손의 깊은 구조 손상을 특히 확인한다.'], regimen:'Amoxicillin-clavulanate 경구 요법. 상처 세척·필요 시 배농과 파상풍/광견병 노출 평가를 함께 한다. 감염 치료와 3–5일 예방 요법을 혼동하지 않는다.', alternatives:'입원/IV 치료가 필요하면 ampicillin-sulbactam 등을 검토한다. β-lactam 중증 알레르기는 Pasteurella 및 혐기성 커버가 되는 대안 조합을 선택한다.', reassess:'빠르게 악화하거나 건초·관절·뼈 침범이 의심되면 즉시 재평가한다.', pearl:'교상에서는 MRSA보다 먼저 놓치기 쉬운 Pasteurella·혐기성 커버를 점검한다.', refs:[['ssti-2014','Sections XI–XII: animal bites']], evidence:'감염 교상의 호기성·혐기성 커버 강한 권고 · 근거 중등도' });
+
+add({ id:'emp-urosepsis-esbl', track:'empiric', title:'최근 ESBL 분리력이 있는 요로성 쇼크', topic:'요로감염',
+  case:'71세 여성이 발열·옆구리 통증·저혈압으로 승압제를 투여 중이다. 1개월 전 요배양에서 ESBL E. coli가 분리되었으며 ceftriaxone·ciprofloxacin·TMP-SMX 내성, meropenem 감수성이었다. 현재 혈액·요배양을 채취했고 완전 요로 폐색은 없다.',
+  context:[['중증도','요로성 패혈성 쇼크'],['과거 배양','최근 ESBL · 경구 후보 내성'],normal], prompt:'현재 배양 결과를 기다리는 동안 가장 적절한 초기 선택은?',
+  options:[['Meropenem IV','쇼크와 최근 ESBL 분리·경구 후보 내성을 반영한다.'],['Ceftriaxone IV','최근 분리균의 내성 때문에 초기 유효 치료 실패 위험이 크다.'],['Nitrofurantoin PO','신실질·혈류 감염 치료에 적절한 조직/혈중 노출을 기대하지 않는다.'],['Ciprofloxacin PO','최근 내성 결과와 쇼크·경구 치료 부적합성을 무시한 선택이다.']],
+  reasoning:['경험적 요법에서도 최근 개인 배양 결과는 중요한 단서다. 쇼크에서 초기 유효 치료 확보를 우선한다.'], regimen:'Meropenem IV를 신기능·중증도·병원 주입 프로토콜에 맞춰 사용한다. 소생과 요로 폐색/농양 평가를 병행한다.', alternatives:'Imipenem-cilastatin 등 유효한 대안이 있다. 초기 쇼크에서 ertapenem을 편의성만으로 선택하지 않는다.', reassess:'현재 감수성과 감염원 조절 결과로 좁힌다. ESBL이라는 이름만으로 carbapenem 전 과정을 고정하지 않고 유효 경구 후보와 안정성을 다시 확인한다.', pearl:'경험적 치료는 배양을 무시하는 치료가 아니라 현재 결과 전의 위험 기반 선택이다.', refs:[['cuti-2025','Selection: four-step approach / prior cultures'],['amr-2026','Questions 1.2–1.3']], evidence:'중증도·최근 배양 기반 선택 · IDSA 2025 cUTI / 2026 AMR' });
+
+add({ id:'emp-meningitis-older', track:'empiric', title:'고령자의 급성 세균성 수막염 의심', topic:'중추신경계',
+  case:'68세 남성이 발열·두통·경부 강직·의식 저하로 내원했다. 비유행 상황의 지역사회 획득 세균성 수막염이 의심된다. 해당 지역은 폐렴구균의 penicillin/3세대 cephalosporin 내성이 높다. 혈액배양 채취 및 요추천자/영상 필요성 평가가 진행 중이다.',
+  context:[['숙주','60세 초과 · Listeria 위험'],['지역 내성','내성 폐렴구균 위험이 높은 지역'],normal], prompt:'이 조건을 모두 반영한 경험적 IV 요법은?',
+  options:[['Ceftriaxone + vancomycin + ampicillin','수막염 기본 약제, 내성 폐렴구균, Listeria 위험을 각각 반영한다.'],['Ceftriaxone + vancomycin','Listeria 커버가 빠진다. 3세대 cephalosporin으로 이를 대체하지 않는다.'],['Ceftriaxone 단독','이 환자의 Listeria 및 지역 내성 폐렴구균 위험을 놓친다.'],['Ampicillin 단독','Listeria에는 가능하지만 다른 주요 수막염 병원체의 초기 커버가 부족하다.']],
+  reasoning:['WHO 2025는 ceftriaxone/cefotaxime을 기본으로 하고 고령·임신·면역저하의 Listeria 위험에 ampicillin/amoxicillin을 추가한다.','Vancomycin 추가는 지역 폐렴구균 내성을 근거로 한다.'], regimen:'수막염용 고노출 IV 요법을 적용한다. 항균제는 영상이나 요추천자 때문에 지연하지 않으며 적응증에 따른 초기 dexamethasone도 평가한다.', alternatives:'Cefotaxime이 기본 cephalosporin 대안이다. 지역 내성이나 숙주 조건이 다르면 추가 약제 구성이 달라진다.', reassess:'CSF·혈액배양/PCR·감수성으로 표적화하고 원인별 기간을 정한다. 청력·신경학적 합병증도 추적한다.', pearl:'숙주에 따라 빠지는 커버와 지역 내성에 따라 추가하는 커버를 따로 생각한다.', refs:[['meningitis-2025','Empiric antimicrobial treatment recommendations: Listeria risk and resistant pneumococcus']], evidence:'WHO 2025 경험적 수막염 치료 · 숙주 및 지역 내성 조건부 적용' });
+
+add({ id:'bug-esbl-bacteremia', track:'pathogen', title:'ESBL E. coli 균혈증과 저알부민혈증', topic:'내성 그람음성균',
+  case:'혈액배양에서 ESBL E. coli가 확인되었다. 환자는 승압제를 사용 중이며 albumin 1.8 g/dL이다. Meropenem은 감수성이고 piperacillin-tazobactam도 검사상 감수성으로 보고되었다. Ceftriaxone은 내성이다.',
+  context:[['부위/중증도','균혈증 · 쇼크'],['약동학 단서','Albumin 1.8 g/dL'],normal], prompt:'제시된 선택지 중 우선할 확정 치료는?',
+  options:[['Meropenem IV','침습 ESBL 감염과 쇼크·저알부민혈증을 고려한 선택이다.'],['Piperacillin-tazobactam IV','검사상 S만으로 침습 ESBL 감염의 선호 약제를 대체하지 않는다.'],['Ertapenem 1일 1회 IV를 우선','안정적 환자의 대안이지만 중환자·저알부민혈증에서는 meropenem/imipenem이 우선이다.'],['Ceftriaxone IV','확인된 내성과 ESBL을 무시한 선택이다.']],
+  reasoning:['In vitro 감수성은 치료 선택의 한 조건이다. 감염 부위·중증도·노출을 함께 해석한다.','Ertapenem의 높은 단백결합률 때문에 저알부민혈증·중환자에서는 노출이 불안정해질 수 있다.'], regimen:'Meropenem IV. 신기능·중증도와 주입시간을 반영해 충분한 노출을 확보한다.', alternatives:'Imipenem-cilastatin도 선호 후보이다. 안정적이고 저알부민혈증이 없는 환자에서는 ertapenem을 검토할 수 있다.', reassess:'감염원 조절과 안정화 후 유효한 TMP-SMX/fluoroquinolone의 감수성·흡수·상호작용을 확인해 경구 전환 가능성을 평가한다.', pearl:'같은 ESBL이어도 방광염·신우신염·쇼크성 균혈증의 선택은 다르다.', refs:[['amr-2026','Questions 1.3–1.4: invasive ESBL infections']], evidence:'IDSA 2026 전문가 guidance · 침습 ESBL 치료 및 노출 조건' });
+
+add({ id:'bug-esbl-oral-switch', track:'pathogen', title:'ESBL 신우신염의 경구 전환', topic:'요로감염',
+  case:'ESBL E. coli 신우신염으로 meropenem을 투여한 39세 여성이 48시간 후 안정화되었다. 요로 폐색·농양은 없고 경구 섭취와 흡수가 정상이다. TMP-SMX는 감수성, ciprofloxacin·levofloxacin은 내성이다. 임신·고칼륨혈증·중요 상호작용은 없다.',
+  context:[['부위','신우신염 · 감염원 조절 문제 없음'],['현재 상태','임상 안정 · 경구 흡수 가능'],normal], prompt:'감수성과 현재 상태를 반영한 치료 축소는?',
+  options:[['TMP-SMX PO로 전환','신실질 감염에서 유효한 경구 후보이며 감수성이 확인되었다.'],['Nitrofurantoin PO로 전환','방광염 후보를 신실질 감염에 그대로 적용할 수 없다.'],['Fosfomycin PO 3 g 1회로 종료','단회 방광염 요법은 신우신염 치료를 대체하지 않는다.'],['ESBL이므로 meropenem을 전 기간 반드시 유지','감수성·안정성·흡수를 충족하면 유효 경구 요법으로 전환 가능하다.']],
+  reasoning:['ESBL은 모든 비-β-lactam 약제의 내성을 뜻하지 않는다.','IV→PO 전환에는 유효 감수성, 안정화, 감염원 조절, 정상 흡수를 함께 확인한다.'], regimen:'감수성 TMP-SMX 경구 요법으로 전환한다. 신기능·칼륨·약물 상호작용을 확인한다.', alternatives:'감수성일 때 ciprofloxacin/levofloxacin도 선호 경구 후보이다. 이 환자는 내성이므로 해당되지 않는다.', reassess:'기간은 첫 유효 항균제일부터 계산한다. IDSA 2025 cUTI 단기 권고를 적용할 때 쇼크·농양·면역저하 등 근거 제외 집단을 확인한다.', pearl:'내성 기전은 약제별 감수성 정보를 대신하지 않는다.', refs:[['amr-2026','Question 1.2: ESBL cUTI / oral transition'],['cuti-2025','IV-to-oral switch / duration']], evidence:'감수성 확인 후 유효 경구 요법 선호 · 임상 안정 조건' });
+
+add({ id:'bug-ampc', track:'pathogen', title:'E. cloacae complex의 침습 감염', topic:'내성 그람음성균',
+  case:'E. cloacae complex가 혈액배양에서 확인되었다. 감염은 중증이며 감염원 조절이 아직 완결되지 않았다. Cefepime MIC 1 µg/mL로 감수성이고 ceftriaxone도 감수성 보고되었다. 추가 검사에서 ESBL 동반은 확인되지 않았다.',
+  context:[['내성 기전','임상적으로 의미 있는 inducible AmpC 위험'],['균혈증 상태','중증 · 감염원 조절 미완료'],normal], prompt:'선택지 중 AmpC 위험을 고려한 표적 β-lactam은?',
+  options:[['Cefepime IV','AmpC 유도 가능성이 낮고 가수분해에 상대적으로 안정적이다.'],['Ceftriaxone IV','중증 침습 감염에서 치료 중 AmpC 발현·내성 선택 위험이 있다.'],['Amoxicillin-clavulanate PO','기저 AmpC에 의한 내재 내성과 중증 혈류 감염 조건에 맞지 않는다.'],['Cephalexin PO','침습 감염과 AmpC 내성 위험에 맞는 선택이 아니다.']],
+  reasoning:['초기 ceftriaxone S가 치료 중 내성 발생을 배제하지 않는다.','Cefepime의 MIC·노출과 ESBL 동반 가능성도 확인한다.'], regimen:'감수성 cefepime IV. 고노출/연장 주입 필요성은 MIC·신기능·감염 중증도로 결정한다.', alternatives:'Carbapenem도 유효한 대안일 수 있다. IDSA 2026은 일부 비중증·호전·충분한 감염원 조절 사례에서 이미 시작한 ceftriaxone 지속 가능성을 별도로 설명하며, 이 환자는 그 조건이 아니다.', reassess:'감염원 조절을 완결하고 지속 균혈증·임상 악화 시 반복 AST와 미배액 병소를 평가한다.', pearl:'AmpC를 무조건 모든 종에 동일 적용하지 않고 균종·감염 부담·조절 상태를 본다.', refs:[['amr-2026','Questions 2.1–2.4: AmpC / cefepime / ceftriaxone']], evidence:'IDSA 2026 전문가 guidance · 중증 침습 감염 조건' });
+
+add({ id:'bug-kpc', track:'pathogen', title:'KPC 생성 K. pneumoniae 균혈증', topic:'내성 그람음성균',
+  case:'K. pneumoniae 균혈증에서 KPC가 확인되었다. Meropenem 단독은 내성이고 meropenem-vaborbactam은 감수성이다. 해당 복합제를 공급받을 수 있으며 IV 치료가 가능하다.',
+  context:[['Carbapenemase','KPC · serine β-lactamase'],['가용성/AST','Meropenem-vaborbactam 사용 가능 · S'],normal], prompt:'선택지 중 적절한 표적 치료는?',
+  options:[['Meropenem-vaborbactam','KPC 억제와 감수성이 확인된 선호 복합제 후보이다.'],['Meropenem 단독','복합제 감수성을 단독 약제 감수성으로 해석할 수 없다.'],['Tigecycline 단독','혈류 감염의 주된 치료로 권장되지 않는다.'],['Vancomycin','K. pneumoniae 혈류 감염에 유효한 치료가 아니다.']],
+  reasoning:['CRE라는 범주를 확인한 뒤 carbapenemase 기전과 약제별 AST를 연결한다.'], regimen:'감수성 meropenem-vaborbactam IV. 신기능과 연장 주입 프로토콜을 따른다.', alternatives:'Ceftazidime-avibactam과 imipenem-relebactam도 KPC의 선호 후보이다. 모든 CRE에 같은 복합제를 쓰는 것은 아니다.', reassess:'유효 β-lactam 감수성이 확인되면 aminoglycoside/polymyxin을 일률적으로 병용하지 않는다. 실패 시 재배양·반복 AST와 감염원 조절을 평가한다.', pearl:'Meropenem-vaborbactam은 meropenem 단독과 다른 치료 선택이다.', refs:[['amr-2026','Questions 3.4, 3.7–3.8: KPC / bloodstream / combination']], evidence:'IDSA 2026 전문가 guidance · 감수성 및 약제 가용성 확인' });
+
+add({ id:'bug-ndm', track:'pathogen', title:'NDM 생성 Enterobacterales 균혈증', topic:'내성 그람음성균',
+  case:'혈액배양 K. pneumoniae에서 NDM이 검출되었다. Aztreonam-avibactam 감수성이 확인되었고 해당 약제의 사용이 가능하다. Ceftazidime-avibactam 단독은 내성이다. IDSA 2026 guidance를 적용한다.',
+  context:[['Carbapenemase','NDM · metallo-β-lactamase'],['출제 조건','Aztreonam-avibactam 사용 가능 · S'],normal], prompt:'이 조건에서 선호되는 표적 치료 후보는?',
+  options:[['Aztreonam-avibactam','Aztreonam을 NDM 외 동반 serine β-lactamase로부터 보호하는 조합이다.'],['Ceftazidime-avibactam 단독','Avibactam이 NDM을 억제하지 않는다.'],['Meropenem-vaborbactam','Vaborbactam은 NDM 억제제로 선택하지 않는다.'],['Aztreonam 단독을 AST 확인 없이 사용','NDM에 안정적이어도 동반 serine β-lactamase에 의해 불활성화될 수 있다.']],
+  reasoning:['Aztreonam의 MBL 안정성과 avibactam의 동반 serine 효소 억제를 함께 이용한다.','2026 guidance는 aztreonam-avibactam과 cefiderocol을 선호 후보로 제시한다.'], regimen:'감수성 aztreonam-avibactam IV. 신기능에 따른 용량·주입 조정과 지역 허가/공급 조건을 확인한다.', alternatives:'Cefiderocol도 선호 후보다. Aztreonam-avibactam을 구할 수 없으면 ceftazidime-avibactam + aztreonam이 대안이다. Ceftazidime-avibactam 단독과 혼동하지 않는다.', reassess:'기전 검사만으로 감수성을 보장하지 않는다. 임상 반응·AST·감염원 조절을 확인한다.', pearl:'β-lactamase inhibitor마다 억제하는 효소 범위가 다르다.', refs:[['amr-2026','Question 3.5: NDM-producing Enterobacterales']], evidence:'IDSA 2026 개정 guidance · 신약 가용성을 명시한 문항' });
+
+add({ id:'bug-oxa48', track:'pathogen', title:'OXA-48-like 생성 균의 표적 치료', topic:'내성 그람음성균',
+  case:'OXA-48-like 생성 E. coli의 복강 감염과 균혈증이 확인되었다. 수술적 감염원 조절은 시행했다. Ceftazidime-avibactam은 감수성, meropenem-vaborbactam과 imipenem-relebactam은 내성이다. Ceftazidime-avibactam 사용이 가능하다.',
+  context:[['Carbapenemase','OXA-48-like'],['AST','Ceftazidime-avibactam S · 다른 두 복합제 R'],normal], prompt:'제시된 선택지 중 적절한 표적 치료 축은?',
+  options:[['Ceftazidime-avibactam','OXA-48-like에 대한 선호 후보이며 이 분리주의 AST가 뒷받침한다.'],['Meropenem-vaborbactam','OXA-48-like 억제와 이 사례의 AST에 맞지 않는다.'],['Imipenem-relebactam','이 사례에서 내성이고 OXA-48-like 억제를 기대해 선택하지 않는다.'],['Tigecycline 단독','동반 균혈증의 주 치료로 적절하지 않다.']],
+  reasoning:['KPC, NDM, OXA-48-like를 같은 CRE 요법으로 묶지 않는다.'], regimen:'Ceftazidime-avibactam IV를 표적 치료 축으로 사용한다. 복강 혼합 감염에 필요한 혐기성 커버는 수술 검체와 잔여 감염 범위에 따라 별도로 유지한다.', alternatives:'Aztreonam-avibactam 또는 cefiderocol은 감수성·가용성에 따른 대안이다.', reassess:'감염원 조절 상태, 혈액배양 음전과 다른 동반 병원체를 확인해 불필요한 커버를 줄인다.', pearl:'표적 약제의 선택과 혼합 감염의 남은 커버는 별도로 점검한다.', refs:[['amr-2026','Question 3.6: OXA-48-like infections']], evidence:'IDSA 2026 전문가 guidance · 효소 및 AST 기반' });
+
+add({ id:'bug-dtr-pseudomonas', track:'pathogen', title:'DTR 녹농균 폐렴', topic:'내성 그람음성균',
+  case:'호흡기 배양과 임상 소견으로 DTR P. aeruginosa 폐렴이 확인되었다. Cefepime·piperacillin-tazobactam·meropenem·fluoroquinolone은 내성, ceftolozane-tazobactam은 감수성이다. 해당 약제 사용이 가능하며 MBL 생성 단서는 없다.',
+  context:[['부위','폐렴 · 단순 기도 집락화 아님'],['AST','Ceftolozane-tazobactam S'],normal], prompt:'이 조건에서 적절한 표적 치료는?',
+  options:[['Ceftolozane-tazobactam IV','감수성이 확인된 후보이며 2026 guidance는 DTR 녹농균 폐렴에서 이를 선호한다.'],['Cefepime IV','분리주 내성이 확인되었다.'],['Tobramycin 단독','폐렴의 주 치료를 aminoglycoside 단독으로 대체하지 않는다.'],['흡입 colistin만 사용','유효한 전신 β-lactam이 있는 상황에서 전신 치료를 대체할 수 없다.']],
+  reasoning:['내성 정의와 감염 부위를 함께 본다. DTR의 신약 감수성을 별도로 확인한다.'], regimen:'폐렴에 맞는 ceftolozane-tazobactam IV 노출을 적용한다. 정상 신기능 성인 폐렴 요법은 3 g 8시간마다이며 신기능에 따라 조정한다.', alternatives:'감수성 ceftazidime-avibactam 또는 imipenem-relebactam도 선호 후보다. MBL 생성 녹농균은 다른 접근이 필요하다.', reassess:'유효 β-lactam 확인 후 aminoglycoside를 일률적으로 병용하지 않는다. 재발/실패에는 반복 AST로 치료 중 내성을 평가한다.', pearl:'CRE에 쓰이는 복합제가 모두 녹농균에 유효한 것은 아니다.', refs:[['amr-2026','Questions 4.3–4.7 / Table 1']], evidence:'IDSA 2026 guidance · DTR 폐렴 선호 및 불필요 병용 제한' });
+
+add({ id:'bug-crab', track:'pathogen', title:'침습성 carbapenem 내성 A. baumannii 감염', topic:'내성 그람음성균',
+  case:'중환자의 폐렴과 혈액배양에서 CRAB가 확인되었다. 기도 집락화만의 상황이 아니다. Sulbactam-durlobactam은 감수성이고 즉시 사용 가능하다. Imipenem 단독은 내성이다. IDSA 2026 guidance 기준으로 선택한다.',
+  context:[['부위','폐렴 + 균혈증'],['가용성','Sulbactam-durlobactam 즉시 사용 가능'],normal], prompt:'선호되는 요법은?',
+  options:[['Sulbactam-durlobactam + imipenem-cilastatin','2026 guidance의 선호 조합이다. Carbapenem 단독 감수성과 이 병용 권고는 다르다.'],['Imipenem-cilastatin 단독','내성이 확인된 단독 약제로 침습 CRAB를 치료하지 않는다.'],['Colistin 단독을 항상 우선','가용한 선호 sulbactam 기반 조합 대신 독성 큰 단독 요법을 일률적으로 우선하지 않는다.'],['표준 용량 ampicillin-sulbactam 단독','이 중증 침습 CRAB의 선호 요법을 대체하지 못한다.']],
+  reasoning:['Sulbactam 자체의 A. baumannii PBP 활성을 durlobactam이 보호한다.','선호 조합에서 carbapenem 병용은 단독 carbapenem 감수성만으로 판단하지 않는다.'], regimen:'Sulbactam-durlobactam + imipenem-cilastatin 또는 meropenem. 각 성분 용량과 신기능별 간격을 확인한다.', alternatives:'선호 약제의 즉시 공급이 안 될 때에는 sulbactam 성분 총 9 g/day의 고용량 ampicillin-sulbactam + 다른 약제를 임시 연결 요법으로 검토한다. 2026 guidance의 가용성 조건을 함께 읽는다.', reassess:'감염과 집락화를 구분하고 감염원·반복 AST·임상 반응을 평가한다.', pearl:'Sulbactam은 이 균에서 단순한 inhibitor 역할을 넘어 직접 항균 활성을 가진다.', refs:[['amr-2026','Questions 5.1–5.2: invasive CRAB']], evidence:'IDSA 2026 guidance · 선호 약제 공급 및 감수성 확인' });
+
+add({ id:'bug-stenotrophomonas', track:'pathogen', title:'S. maltophilia 침습 감염과 지침 개정', topic:'내성 그람음성균',
+  case:'혈액배양 두 세트에서 S. maltophilia가 분리되어 침습 감염으로 판단했다. Cefiderocol 감수성이 확인되었고 사용 가능하다. IDSA 2026 AMR guidance가 제시하는 선호 약제를 묻는다.',
+  context:[['진단','임상적으로 의미 있는 균혈증'],['출제 기준','IDSA 2026 · cefiderocol S/사용 가능'],normal], prompt:'이 지침에서 선호하는 치료는?',
+  options:[['Cefiderocol IV 단독','2026 guidance의 선호 접근이다. 근거는 주로 전임상 모델이며 임상 우월성이 확증되었다는 뜻은 아니다.'],['TMP-SMX 단독을 모든 침습 감염의 고정 정답으로 사용','2026 guidance에서는 TMP-SMX를 대안 병용의 구성 약제로 다룬다.'],['Meropenem IV 단독','S. maltophilia의 내재 내성 때문에 적절한 표적 치료가 아니다.'],['Ceftazidime IV 단독','내재 β-lactamase와 근거를 고려해 권장되지 않는다.']],
+  reasoning:['지침 연도에 따라 선호 접근이 달라질 수 있어 2026 기준을 명시했다.','근거의 한계를 치료명과 함께 기억한다. 권고가 임상 비교시험의 우월성 확증과 같지는 않다.'], regimen:'감수성 cefiderocol IV. 신기능과 augmented renal clearance에 따른 노출 조정을 확인한다.', alternatives:'Aztreonam-avibactam 또는 levofloxacin/minocycline/TMP-SMX를 포함한 병용 접근은 상황에 따른 대안이다. 이전 guidance와 구분해 읽는다.', reassess:'카테터 등 감염원 조절, 배양 음전과 임상 경과를 확인한다. 호흡기 분리만 있다면 집락화 가능성부터 평가한다.', pearl:'새 지침의 선호와 근거의 확실성을 함께 기록한다.', refs:[['amr-2026','Questions 6.1–6.6: invasive S. maltophilia']], evidence:'IDSA 2026 전문가 guidance · 선호 근거가 주로 동물 모델, 임상 비교 근거 제한' });
+
+add({ id:'bug-mssa-hap', track:'pathogen', title:'HAP 배양 후 MSSA로 치료 축소', topic:'그람양성균',
+  case:'HAP로 cefepime + vancomycin을 투여받던 환자가 호전 중이다. 좋은 품질의 호흡기 검체에서 MSSA만 확인되었고 그람음성균이나 MRSA의 임상·배양 단서는 없다. 혈액배양은 음성이며 β-lactam 알레르기가 없다.',
+  context:[['원인','확인된 MSSA 단일 감염'],['현재 단계','배양 후 표적화 · 임상 호전'],normal], prompt:'선택지 중 적절한 표적 요법은?',
+  options:[['Cefazolin IV','확인된 MSSA HAP의 선호 표적 β-lactam 후보이다.'],['Vancomycin을 반드시 유지','β-lactam 사용 가능한 MSSA에서 광범위 MRSA 요법을 유지할 이유가 없다.'],['Meropenem으로 확대','원인과 임상 호전이 확인된 상황에서 불필요한 확대다.'],['Azithromycin 단독','MSSA HAP의 표준 표적 치료가 아니다.']],
+  reasoning:['경험적 커버를 유지할 필요와 확정 원인균의 표적 치료는 다르다.'], regimen:'IV cefazolin으로 좁히며 불필요한 vancomycin·항녹농균 커버를 중단한다.', alternatives:'Nafcillin/oxacillin도 MSSA 표적 후보다. 균혈증·심내막염·농흉이 동반되면 기간과 평가 범위가 달라진다.', reassess:'HAP는 반응에 따라 통상 7일을 검토하되 감염원과 합병증을 확인한다.', pearl:'배양 결과는 약제를 추가하는 계기뿐 아니라 줄이는 계기다.', refs:[['hap-2016','Section XII: proven MSSA / de-escalation / duration']], evidence:'확인된 MSSA에서 cefazolin/nafcillin/oxacillin 선호' });
+
+add({ id:'bug-mrsa-pneumonia', track:'pathogen', title:'MRSA 폐렴에서 감염 부위의 중요성', topic:'그람양성균',
+  case:'임상 소견과 호흡기 배양으로 MRSA HAP가 확인되었다. Vancomycin MIC는 1 µg/mL이며 알레르기나 중증 신기능 장애가 없다. 폐렴의 주 치료 약제를 선택한다.',
+  context:[['부위','MRSA 폐렴'],['AST/숙주','Vancomycin MIC 1 · 사용 금기 없음'],normal], prompt:'제시된 선택지 중 적절한 약제는?',
+  options:[['Vancomycin IV','MRSA HAP의 권장 후보이며 노출과 신기능을 모니터링한다.'],['Daptomycin IV','폐 표면활성제에 의해 활성이 저하되어 폐렴의 주 치료로 사용하지 않는다.'],['Cefazolin IV','MRSA에는 MSSA 표적 β-lactam을 그대로 적용하지 않는다.'],['Vancomycin PO','경구 vancomycin은 전신 흡수가 매우 낮아 폐렴 치료 경로가 아니다.']],
+  reasoning:['항균 스펙트럼뿐 아니라 감염 부위와 투여 경로가 맞아야 한다.'], regimen:'IV vancomycin을 환자별로 조정한다. 중증 MRSA에서 AUC24/MIC 400–600 목표(MIC 1 가정)를 이용하며 신독성을 모니터링한다.', alternatives:'Linezolid 600 mg IV/PO 12시간마다도 MRSA HAP의 권장 대안이다. 혈구감소·상호작용·동반 균혈증을 확인한다.', reassess:'반응·신기능·노출·배양과 농흉/농양 등 합병증을 재평가한다. AUC 근거는 주로 중증 MRSA 균혈증에서 도출되었다는 한계를 함께 읽는다.', pearl:'같은 vancomycin도 PO와 IV는 치료하는 부위가 다르다.', refs:[['hap-2016','Section XV: MRSA HAP/VAP'],['vanc-2020','AUC24/MIC target and evidence limitations']], evidence:'MRSA HAP vancomycin/linezolid 권고 · AUC 근거의 외삽 한계 명시' });
+
+add({ id:'bug-enterococcus-ie', track:'pathogen', title:'HLAR E. faecalis 심내막염', topic:'심내막염',
+  case:'E. faecalis 자연판막 심내막염이 확진되었다. Ampicillin 감수성이며 high-level gentamicin resistance가 있다. β-lactam 알레르기는 없다. Endocarditis Team이 판막 합병증과 수술 필요성을 평가한다.',
+  context:[['부위','자연판막 심내막염'],['AST','Ampicillin S · high-level gentamicin R'],normal], prompt:'제시된 선택지 중 적절한 항균 요법은?',
+  options:[['Ampicillin + ceftriaxone','상보적 PBP 억제의 병용이며 HLAR E. faecalis 심내막염의 선택이다.'],['Ceftriaxone 단독','장구균의 내재 cephalosporin 내성 때문에 병용 효과를 단독 효과로 해석할 수 없다.'],['Ampicillin + gentamicin','High-level gentamicin resistance가 있어 기대하는 상승작용이 성립하지 않는다.'],['Ampicillin 단독 단기 치료','심내막염의 긴 살균 요법을 일반 감염의 단독·단기 요법으로 대체하지 않는다.']],
+  reasoning:['Enterococcus에서 cephalosporin 단독 내성과 이중 β-lactam 상승작용은 서로 다른 개념이다.','HLAR를 확인하면 aminoglycoside 상승작용을 기대하는 조합을 재검토한다.'], regimen:'정상 성인 신기능 기준 ampicillin 총 12 g/day IV(4–6회 분할) + ceftriaxone 총 4 g/day IV(2회 분할), 6주 요법. 환자별 신기능·체중·판막 상황에 맞춘다.', alternatives:'HLAR와 균종에 따라 선택이 달라진다. E. faecium에 이중 β-lactam 효과를 그대로 일반화하지 않는다.', reassess:'배양 음전·심초음파·심부전·색전·농양·수술 적응증을 팀으로 평가한다. 경구 전환은 안정성·선정 기준을 갖춘 별도 판단이다.', pearl:'단독 약제의 AST와 병용 상승작용을 구분한다.', refs:[['ie-2023','Section 7.8 / Recommendation Table 9: Enterococcus, HLAR']], evidence:'ESC 2023 HLAR 장구균 심내막염 병용 권고 · E. faecalis 조건' });
+
+add({ id:'disease-cdi-initial', track:'disease', title:'초발 비전격성 C. difficile 감염', topic:'장관감염',
+  case:'67세 환자가 항균제 사용 후 하루 6회의 수양성 설사를 보인다. C. difficile 독소 검사가 양성이고 다른 원인은 없다. WBC 11,000/µL, creatinine 0.9 mg/dL이며 쇼크·장폐색·거대결장은 없다. Fidaxomicin과 경구 vancomycin을 모두 사용할 수 있고 비용 제한도 없다.',
+  context:[['분류','초발 · 비전격성 CDI'],['문항 조건','두 약제 모두 사용 가능 · 자원 제한 없음'],normal], prompt:'SHEA/IDSA 2021이 경구 vancomycin보다 우선 제안하는 요법은?',
+  options:[['Fidaxomicin 200 mg PO 12시간마다 10일','초기 임상 치유뿐 아니라 재발을 줄이는 지속 반응을 고려한 우선 제안이다.'],['Vancomycin 125 mg PO 6시간마다 10일','인정되는 적절한 대안이다. 이 문항은 두 약 모두 가능할 때 지침이 우선 제안하는 요법을 묻는다.'],['Vancomycin IV 단독','장내 표적 치료를 IV vancomycin으로 대체하지 않는다.'],['Metronidazole PO를 모든 초발 CDI의 일차로 선택','Fidaxomicin/경구 vancomycin 사용 가능 조건에서 일괄 일차 선택하지 않는다.']],
+  reasoning:['증상과 독소 결과를 함께 해석하고 중증/전격성 여부를 구분한다.','Fidaxomicin 선호는 조건부 권고이며 경구 vancomycin을 부적절한 치료로 분류하는 뜻은 아니다.'], regimen:'Fidaxomicin 200 mg PO 12시간마다 10일. 필요 없는 원인 항균제를 중단하고 수분·전해질을 관리한다.', alternatives:'Vancomycin 125 mg PO 6시간마다 10일은 가용성·비용에 따른 인정되는 대안이다.', reassess:'회복 후 test of cure를 일률적으로 시행하지 않는다. 재발 시 이전 요법·재발 횟수와 별도 재발 전략을 평가한다.', pearl:'우선 제안과 유일한 유효 치료를 구분한다.', refs:[['cdi-2021','Recommendation I / implementation considerations']], evidence:'Fidaxomicin 우선 제안: 조건부 · 근거 중등도' });
+
+add({ id:'disease-cdi-fulminant', track:'disease', title:'쇼크와 장폐색을 동반한 전격성 CDI', topic:'장관감염',
+  case:'항균제 관련 C. difficile 설사 이후 복부 팽만·장폐색과 저혈압이 발생해 승압제가 필요하다. CT에서 심한 대장염이 있고 외과팀이 평가 중이다. 전격성 CDI로 판단했다.',
+  context:[['분류','전격성 CDI · 쇼크 + ileus'],['핵심 문제','경구 약제의 대장 도달 저하'],normal], prompt:'외과 평가와 함께 시행할 항균 요법은?',
+  options:[['고용량 경구/위관 vancomycin + IV metronidazole, ileus 시 직장 vancomycin 고려','장내 고농도 약제와 ileus 상황의 전신 metronidazole을 병용한다.'],['Fidaxomicin 단독','전격성 CDI에서는 비전격성 초발 CDI의 선호를 그대로 적용하지 않는다.'],['Vancomycin IV 단독','대장 내 적절한 치료 농도를 위한 경구/직장 요법을 대체하지 못한다.'],['Metronidazole PO 단독','쇼크·ileus의 전격성 CDI에 불충분하다.']],
+  reasoning:['전격성은 저혈압/쇼크·ileus·거대결장으로 판단한다. WBC나 creatinine 수치만으로 구분하지 않는다.','Ileus로 장내 전달이 떨어져 직장 투여와 IV metronidazole을 추가 검토한다.'], regimen:'Vancomycin 500 mg PO/위관 6시간마다 + metronidazole 500 mg IV 8시간마다. Ileus 시 vancomycin 500 mg/약 100 mL 생리식염수 직장 유지관장 6시간마다를 고려한다.', alternatives:'이 문항에서 fidaxomicin 단독은 전격성 지침 요법 대안이 아니다. 수술 전략은 임상 악화·합병증에 따라 결정한다.', reassess:'쇼크·lactate·복부 소견·장 천공/거대결장과 수술 필요성을 반복 평가한다. 고용량/장 점막 손상·신부전에서는 vancomycin 전신 흡수도 주의한다.', pearl:'전격성 CDI에서는 제형·투여 경로가 치료의 핵심이다.', refs:[['cdi-2017','Section XXX: fulminant CDI'],['cdi-2021','Fulminant CDI: unchanged recommendation']], evidence:'고용량 경구 vancomycin 및 IV metronidazole 강한 권고 · 직장 투여 근거 낮음' });
+
+add({ id:'disease-gonorrhea', track:'disease', title:'합병증 없는 임질의 체중·동반 감염 조건', topic:'성매개감염',
+  case:'체중 82 kg의 비임신 성인이 요도 N. gonorrhoeae NAAT 양성이다. Chlamydia NAAT는 음성이며 파종 감염·인두 감염은 없다. Ceftriaxone 알레르기가 없고 투여가 가능하다. CDC 지침 기준으로 치료한다.',
+  context:[['범위','합병증 없는 요도 임질 · chlamydia 배제'],['체중','82 kg (<150 kg)'],normal], prompt:'권장 요법은?',
+  options:[['Ceftriaxone 500 mg IM 1회','150 kg 미만의 합병증 없는 임질에 권장 용량이다.'],['Ceftriaxone 250 mg IM + azithromycin 1 g PO 1회','과거 일률적 이중요법을 현재 고정 요법으로 적용한 선택이다.'],['Doxycycline 100 mg PO 12시간마다 7일 단독','Chlamydia 요법으로 임질 치료를 대체할 수 없다.'],['Azithromycin 1 g PO 단독','임질의 권장 단독 요법이 아니다.']],
+  reasoning:['임질의 부위·파종 여부와 체중, chlamydia 동반 여부를 먼저 확인한다.'], regimen:'Ceftriaxone 500 mg IM 1회. 체중 ≥150 kg이면 1 g IM 1회이다. Chlamydia를 배제하지 못한 비임신 환자에는 doxycycline 100 mg PO 12시간마다 7일을 추가한다.', alternatives:'Ceftriaxone 투여 불가·중증 알레르기는 지침 대안을 확인한다. 인두 감염은 대안의 신뢰성과 test of cure가 특히 중요하다.', reassess:'약 3개월 재검을 계획하고 재노출을 평가한다. 지속 증상/실패 의심 시 배양과 AST를 시행한다.', pearl:'동반 chlamydia가 배제되었으면 azithromycin을 자동 추가하지 않는다.', refs:[['gc-2021','Uncomplicated cervical/urethral/rectal infection / follow-up']], evidence:'CDC 2021 체중 기반 권장 요법' });
+
+add({ id:'disease-neurosyphilis', track:'disease', title:'신경매독에서 penicillin 제형 선택', topic:'성매개감염',
+  case:'매독 혈청검사 양성인 성인이 신경학적 증상과 CSF-VDRL 양성을 보인다. 신경매독으로 진단했다. Penicillin 알레르기가 없으며 입원 IV 치료가 가능하다.',
+  context:[['질병','신경매독'],['투여 가능성','Penicillin 사용 가능 · IV 치료 가능'],normal], prompt:'제시된 선택지 중 권장 요법은?',
+  options:[['Aqueous crystalline penicillin G IV 10–14일','중추신경계 치료에 필요한 제형·노출을 확보한다.'],['Benzathine penicillin G 2.4 million units IM 1회','조기 매독 요법이며 신경매독의 CSF 치료 노출을 대체하지 못한다.'],['Azithromycin 1 g PO 1회','신경매독 권장 치료가 아니다.'],['Ceftriaxone 500 mg IM 1회','임질 용량·기간을 신경매독에 적용할 수 없다.']],
+  reasoning:['Penicillin이라는 약제명보다 제형·투여 경로·기간이 핵심이다.'], regimen:'Aqueous crystalline penicillin G 총 18–24 million units/day, 3–4 million units IV 4시간마다 또는 지속 주입, 10–14일.', alternatives:'상황에 따라 procaine penicillin G + probenecid 또는 ceftriaxone 대안을 검토할 수 있다. 중증 알레르기·임신에서는 탈감작/전문가 평가 조건을 확인한다.', reassess:'신경/안과·청력 소견, HIV 검사와 혈청학적 반응을 추적한다. 다른 병기 치료에 필요한 기간을 별도로 고려한다.', pearl:'Benzathine, procaine, aqueous crystalline penicillin은 서로 대체 가능한 제형이 아니다.', refs:[['neurosyphilis-2021','Recommended regimen / alternative regimen / follow-up']], evidence:'CDC 2021 권장 제형·경로·용량·기간' });
+
+add({ id:'disease-chlamydia-pregnancy', track:'disease', title:'임신 중 chlamydia 치료', topic:'성매개감염',
+  case:'임신 24주인 29세 여성이 C. trachomatis NAAT 양성이고 gonorrhea는 음성이다. PID나 파종 감염 소견은 없다. Azithromycin 알레르기·중요 상호작용은 없으며 경구 복용이 가능하다.',
+  context:[['숙주','임신 24주'],['감염 범위','합병증 없는 chlamydia'],['투여 조건','정상 신기능 · 경구 가능']], prompt:'CDC 임신 중 권장 요법은?',
+  options:[['Azithromycin 1 g PO 1회','임신 중 권장 요법이다.'],['Doxycycline 100 mg PO 12시간마다 7일','임신 2·3분기에서는 이를 일반 성인의 선호 요법처럼 적용하지 않는다.'],['Ceftriaxone 500 mg IM 단독','임질 요법은 chlamydia 치료를 대체하지 못한다.'],['출산 후까지 치료를 미룬다','현재 감염과 산모/신생아 위험을 방치하는 선택이다.']],
+  reasoning:['비임신 성인의 doxycycline 선호를 임신 중에 그대로 적용하지 않는다.'], regimen:'Azithromycin 1 g PO 1회.', alternatives:'Amoxicillin 500 mg PO 8시간마다 7일은 임신 중 대안이다.', reassess:'치료 완료 약 4주 후 NAAT로 test of cure를 시행하고 약 3개월 후 재검한다. 너무 이른 NAAT는 잔여 비활성 균의 핵산으로 양성일 수 있다.', pearl:'임신에서는 치료 약제뿐 아니라 test of cure 계획도 달라진다.', refs:[['chlamydia-2021','Pregnancy: recommended / alternative regimen / follow-up']], evidence:'CDC 2021 임신 중 권장 및 대안 요법' });
+
+add({ id:'disease-pid', track:'disease', title:'외래 치료 가능한 경증–중등도 PID', topic:'성매개감염',
+  case:'체중 60 kg의 비임신 여성이 하복부 통증·자궁경부 이동 압통·점액농성 분비물을 보인다. 다른 원인을 배제하고 경증–중등도 PID로 판단했다. Tubo-ovarian abscess·구토·중증 전신증상은 없고 경구 복용과 추적이 가능하다.',
+  context:[['치료 장소','입원 적응증 없는 외래 PID'],['숙주','비임신 · 60 kg'],normal], prompt:'CDC 권장 외래 요법은?',
+  options:[['Ceftriaxone IM 1회 + doxycycline + metronidazole 14일','임질·chlamydia 및 혐기성균을 함께 커버한다.'],['Ceftriaxone IM 1회 단독','Chlamydia와 혐기성 상부 생식기 감염 커버가 불충분하다.'],['Doxycycline 7일 단독','PID를 단순 chlamydia 요법으로 대체할 수 없다.'],['Metronidazole 14일 단독','임질·chlamydia를 포함한 필요한 커버가 빠진다.']],
+  reasoning:['자궁경부 검사가 음성이어도 상부 생식기 감염을 배제하지 못한다.','Metronidazole은 혐기성균/BV 연관 커버를 위한 구성 약제이다.'], regimen:'Ceftriaxone 500 mg IM 1회 + doxycycline 100 mg PO 12시간마다 14일 + metronidazole 500 mg PO 12시간마다 14일.', alternatives:'입원이 필요하면 IV 요법과 입원 적응증을 다시 적용한다. 임신·농양·경구 불가·중증 상태는 이 외래 문제의 범위를 벗어난다.', reassess:'72시간 이내 임상 호전을 확인한다. 반응이 없으면 진단·입원·IV 치료·농양을 재평가한다.', pearl:'같은 ceftriaxone + doxycycline도 PID와 부고환염에서 병용 구성·기간이 다르다.', refs:[['pid-2021','Intramuscular or oral treatment / hospitalization / follow-up']], evidence:'CDC 2021 외래 PID 3제 요법' });
+
+add({ id:'disease-epididymitis', track:'disease', title:'성매개 감염 가능성이 높은 부고환염', topic:'성매개감염',
+  case:'체중 74 kg의 25세 남성이 요도 분비물과 편측 부고환 압통으로 내원했다. 고환 염전은 배제했다. 최근 새로운 성 파트너가 있고 삽입 항문 성교나 요로 기구 조작은 없다. GC/CT NAAT 결과를 기다리는 급성 부고환염이다.',
+  context:[['예상 원인','Gonorrhea / chlamydia'],['장내균 위험','삽입 항문 성교·기구 조작 없음'],normal], prompt:'이 조건의 경험적 요법은?',
+  options:[['Ceftriaxone IM 1회 + doxycycline PO 10일','GC/CT 부고환염에 맞는 조합과 기간이다.'],['Levofloxacin PO 단독','임질이 배제되지 않은 이 상황에서 장내균 요법만 적용하지 않는다.'],['Ceftriaxone IM 1회 단독','Chlamydia 커버가 빠진다.'],['Doxycycline PO 7일 단독','임질 커버와 부고환염의 10일 치료 조건이 빠진다.']],
+  reasoning:['STI 위험과 장내균 위험을 구분해야 조합이 정해진다.'], regimen:'Ceftriaxone 500 mg IM 1회 + doxycycline 100 mg PO 12시간마다 10일. 체중 ≥150 kg이면 ceftriaxone 1 g이다.', alternatives:'삽입 항문 성교로 GC/CT + 장내균 위험이 있으면 ceftriaxone + levofloxacin 10일을 검토한다. 장내균 단독 상황은 임질 배제 조건을 충족해야 한다.', reassess:'72시간 안에 호전이 없으면 진단·농양·종양·경색 등을 재평가한다. 통증 조절·음낭 지지도 병행한다.', pearl:'요도염 7일과 부고환염 10일을 같은 기간으로 외우지 않는다.', refs:[['epididymitis-2021','Recommended regimens / follow-up']], evidence:'CDC 2021 원인 위험별 조합·기간' });
+
+add({ id:'disease-h-pylori', track:'disease', title:'감수성 미확인 H. pylori의 초기 제균', topic:'장관감염',
+  case:'북미 ACG 2024 지침을 적용하는 제균 치료 경험이 없는 비임신 성인이다. H. pylori 감염이 확인되었으나 clarithromycin 감수성은 모른다. Bismuth·tetracycline 사용이 가능하고 약제 금기는 없다.',
+  context:[['출제 기준','북미 ACG 2024 · 초기 치료'],['감수성','Clarithromycin 감수성 미확인'],normal], prompt:'제시된 선택지 중 권장되는 경험적 제균 요법은?',
+  options:[['Optimized bismuth quadruple therapy 14일','감수성 미확인의 초기 제균에서 권장되는 선택이다.'],['PPI + amoxicillin + clarithromycin 7일을 일률적으로 투여','Clarithromycin 감수성 확인 없이 고정 경험적 선택하지 않는다.'],['Amoxicillin 단독 7일','권장 제균 요법이 아니다.'],['PPI + metronidazole만 3일','약제 구성·노출·기간 모두 권장 제균 요법에 못 미친다.']],
+  reasoning:['미확인 clarithromycin 내성을 고려하며 치료 지역과 적용 지침을 명시한다.','항생제만이 아니라 산 억제·bismuth·순응도가 제균 효과에 관여한다.'], regimen:'PPI 1일 2회 + bismuth 1일 4회(제형별 용량) + tetracycline 500 mg 1일 4회 + metronidazole 500 mg 1일 3–4회, 총 14일.', alternatives:'조건에 따라 rifabutin triple 또는 vonoprazan-amoxicillin dual 등 대안을 검토한다. 한국의 일차 요법으로 무조건 동일 적용하지 않으며 doxycycline을 tetracycline의 자동 대체로 쓰지 않는다.', reassess:'항균제 종료 ≥4주 후 제균 확인. 검사 전 PPI/PCAB ≥2주, 항균제/bismuth ≥4주 중단 조건을 확인한다.', pearl:'치료 시작 시점에 제균 확인 검사 시점까지 함께 계획한다.', refs:[['h-pylori-2024','Treatment-naive patients / optimized BQT / test of cure']], evidence:'ACG 2024 북미 권고 · 지역과 약제 가용성을 명시' });
+
+add({ id:'disease-asb-diabetes', track:'disease', title:'당뇨 환자의 무증상 세균뇨', topic:'요로감염',
+  case:'비임신 58세 당뇨 여성이 검진 요배양에서 같은 E. coli ≥10⁵ CFU/mL가 두 번 확인되었다. 배뇨통·빈뇨·발열·옆구리 통증은 없고 요로 카테터도 없다. 점막 손상 비뇨기 시술 계획은 없다. 소변에 백혈구는 있다.',
+  context:[['증상','요로 국소·전신 증상 없음'],['예외 적응증','임신·점막 손상 비뇨기 시술 아님'],normal], prompt:'가장 적절한 항균제 전략은?',
+  options:[['항균제를 투여하지 않는다','당뇨 또는 농뇨만으로 무증상 세균뇨를 치료하지 않는다.'],['Nitrofurantoin 5일','치료 적응증 없이 배양 양성만 치료하는 선택이다.'],['Ceftriaxone IV 7일','증상 없는 배양 양성에 불필요한 IV 치료다.'],['ESBL 가능성을 고려해 meropenem','감수성 추정보다 먼저 치료 적응증이 없다는 점을 봐야 한다.']],
+  reasoning:['배양 양성·농뇨와 증상이 있는 요로감염을 구분한다.','당뇨 자체는 ASB 치료 적응증이 아니다.'], regimen:'항균제 없이 임상 증상 발생 여부를 평가한다. 무증상 상태에서 균 제거를 목표로 반복 배양·치료하지 않는다.', alternatives:'임신과 점막 손상이 예상되는 내비뇨기 시술 전에는 별도 선별·표적 치료 적응증이 있다.', reassess:'새 증상이 생기면 증상·감염 부위·전신 상태를 기준으로 다시 판단한다.', pearl:'항생제 선택의 첫 단계는 투여 적응증 확인이다.', refs:[['asb-2019','Section VI: diabetes / definition of ASB']], evidence:'당뇨 환자 ASB 선별/치료 비권장: 강한 권고 · 근거 중등도' });
+
+add({ id:'disease-cystitis', track:'disease', title:'방광에 국한된 급성 요로감염', topic:'요로감염',
+  case:'건강한 비임신 28세 여성이 배뇨통·빈뇨·절박뇨를 보인다. 발열·옆구리 통증·구토·질 분비물은 없고 eGFR 95 mL/min이다. 반복 감염 평가 중 채취한 배양에서 E. coli가 확인되었고 nitrofurantoin 감수성이다. 해당 제형을 사용할 수 있다.',
+  context:[['감염 부위','방광에 국한 · 신우신염 단서 없음'],['약제 조건','Nitrofurantoin S · 신기능 정상/제형 가능'],normal], prompt:'선택지 중 적절한 좁은 경구 요법은?',
+  options:[['Nitrofurantoin monohydrate/macrocrystals 100 mg PO 12시간마다 5일','정상 신기능의 하부 요로감염에서 적절한 선택이다.'],['Meropenem IV 14일','이 감염 범위와 감수성에 비해 불필요한 광범위·장기 IV 치료다.'],['Azithromycin PO 1회','E. coli 방광염의 권장 요법이 아니다.'],['항균제 없이 무증상 세균뇨로 간주','명확한 새 요로 증상이 있어 ASB와 다르다.']],
+  reasoning:['방광염에 유효한 약제가 신우신염·균혈증에도 적절한 것은 아니다.','국내 지침의 nitrofurantoin 권고를 참고하되 현재 공급·제형·감수성과 신기능을 별도로 확인한다.'], regimen:'Nitrofurantoin monohydrate/macrocrystals 100 mg PO 12시간마다 5일. 다른 제형의 복용 간격과 혼동하지 않는다.', alternatives:'Fosfomycin 등 다른 방광염 후보는 감수성·지역 가용성·환자 조건을 보고 선택한다.', reassess:'발열·옆구리 통증이 발생하거나 반응이 없으면 신우신염·내성·다른 진단을 재평가한다.', pearl:'소변 농도와 신실질/혈중 농도는 다른 약동학 문제다.', refs:[['uti-korea-2018','Acute uncomplicated cystitis: recommended agents and duration']], evidence:'국내 2018 방광염 지침 참고 · 현재 감수성/공급 조건 명시' });
+
+const catalog = { schemaVersion:1, datasetVersion:'0.1.0', checkedAt, reviewStatus:'educational-draft', scope:'의사·전공의의 성인 감염 치료 복습. 문제에 명시된 부위·중증도·숙주·감수성·약제 가용성에서 선택한다. 용량은 별도 명시가 없으면 정상 신기능 성인 기준이며 환자별 조정이 필요하다. 문헌 확인을 마친 교육용 초안으로, 전문 임상 검토 완료를 뜻하지 않는다.', tracks:[
+  {id:'empiric',name:'증상 → 경험적 항생제',description:'배양 전 · 중증도와 숙주, 내성 위험으로 커버를 결정합니다.'},
+  {id:'pathogen',name:'병원체 → 표적 항생제',description:'배양 후 · 감염 부위와 내성 기전에 맞춰 좁힙니다.'},
+  {id:'disease',name:'질병 → 치료 요법',description:'질병별 병용, 투여 경로와 기간, 치료 적응증을 판단합니다.'},
+], sources, questions };
+console.log('Validated treatment questions:', validateTreatmentCatalog(catalog));
+await writeFile(new URL('../data/treatment-questions.json', import.meta.url), JSON.stringify(catalog,null,2)+'\n');

@@ -196,7 +196,7 @@ for(const r of records){
  if(['clinical-regimen','guideline-regimen'].includes(r.phenotype))r.phenotype='대표 임상형';
 }
 panels[0].drugIds=Object.keys(records[0].susceptibility);
-const data={schemaVersion:2,datasetVersion:'0.4.0',title:'Clinical pathogen atlas',reviewStatus:'educational-draft',interpretation:{system:'EUCAST / scoped clinical guidelines',version:'16.1 (2026) / per-record citations',note:'Regimen panels: REGIMEN은 명시된 임상 상황의 지침 요법 구성원, OUTSIDE_REGIMEN은 선택한 목록 밖이며 내성 판정이 아니다. 감수성 패널: EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. ACT는 임상 S/I가 아니라 근거가 명시된 조건부 활성이다. EUCAST 표의 dash(–)는 치료에 부적합한 조합이며 보고가 필요하면 검사 없이 R로 보고한다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.',advancedModeEnabled:false},categories,panels,drugs,records};
+const data={schemaVersion:2,datasetVersion:'0.5.0',title:'Clinical pathogen atlas',reviewStatus:'educational-draft',interpretation:{system:'EUCAST / scoped clinical guidelines',version:'16.1 (2026) / per-record citations',note:'Regimen panels: REGIMEN은 명시된 임상 상황의 지침 요법 구성원, OUTSIDE_REGIMEN은 선택한 목록 밖이며 내성 판정이 아니다. 감수성 패널: EUCAST 의미를 적용한 고정 교육용 분리주의 정성 범주. I는 Susceptible, increased exposure이며 R이 아니다. ACT는 임상 S/I가 아니라 근거가 명시된 조건부 활성이다. EUCAST 표의 dash(–)는 치료에 부적합한 조합이며 보고가 필요하면 검사 없이 R로 보고한다. 실측 환자 AST나 MIC의 breakpoint 판정 재현을 주장하지 않는다. MIC 확장 시 표준·버전·감염부위·노출조건과 수치 근거 필수.',advancedModeEnabled:false},categories,panels,drugs,records};
 for(const record of records) for(const [drugId,result] of Object.entries(record.susceptibility)) {
  if(result.category === 'NA') throw Error(`${record.id}/${drugId}: NA categories are forbidden`);
  if(result.category === 'ACT' && !result.applicability) throw Error(`${record.id}/${drugId}: ACT requires applicability`);
@@ -208,3 +208,5 @@ await mkdir('data',{recursive:true});
 await writeFile('data/sources.json',JSON.stringify(allSources,null,2)+'\n');
 await writeFile('data/organisms.json',JSON.stringify(data,null,2)+'\n');
 console.log(`${records.length} records, ${drugs.length} drugs → data/organisms.json`);
+const { generateLibraryCatalog } = await import('./seed-cards.mjs');
+await generateLibraryCatalog(data,allSources);

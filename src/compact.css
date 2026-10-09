@@ -125,3 +125,36 @@ main.game-main{max-width:1760px;padding:8px 12px}
 .record-name h2,.archive-card h2{letter-spacing:-.015em}
 .session-stats b,.record-meta,.drug-pagination{font-variant-numeric:tabular-nums}
 @media(max-width:759px){.appbar .brand>span{font-size:.8125rem;letter-spacing:.015em}}
+
+/* Morphology observations use the same concept art wherever the exact clue appears. */
+.clue-content{display:block;min-width:0;min-height:0;overflow:hidden}
+.morphology-visual{margin:0;color:#536549}
+.morphology-visual img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;background:#f8f8f2;border-radius:50%}
+.morphology-caption{font-size:.8125rem;line-height:1.45;margin-top:7px;text-align:center}
+.morphology-caption small{display:block;margin-top:3px;font-size:.6875rem;color:#78866d}
+.morphology-visual--tile{display:block;width:min(96px,50%);margin:0 auto 5px}
+.morphology-visual--tile .morphology-caption{display:none}
+.clue-tile.has-morphology-visual .clue-text{-webkit-line-clamp:2}
+.morphology-visual--detail{width:min(100%,320px);margin:0 auto 18px}
+.morphology-visual--record{width:min(100%,240px);margin:0 0 14px}
+
+@media(min-width:760px) and (max-height:680px){
+ .clue-tile.has-morphology-visual .clue-content{display:grid;grid-template-columns:58px minmax(0,1fr);align-items:start;gap:8px}
+ .clue-tile.has-morphology-visual .morphology-visual--tile{width:58px;margin:0}
+ .clue-tile.has-morphology-visual .clue-text{-webkit-line-clamp:2}
+}
+@media(max-width:759px){
+ .clue-tile.has-morphology-visual .clue-content{display:grid;grid-template-columns:56px minmax(0,1fr);align-items:start;gap:8px}
+ .clue-tile.has-morphology-visual .morphology-visual--tile{width:56px;margin:0}
+ .clue-tile.has-morphology-visual .clue-text{-webkit-line-clamp:2}
+ .morphology-visual--detail{margin-bottom:14px}
+}
+
+/* Four primary tabs and the rules action remain visible on narrow screens. */
+@media(max-width:620px) {
+ .appbar { height:auto; min-height:76px; flex-wrap:wrap; gap:5px; padding-top:9px; }
+ .appbar .brand { flex-basis:100%; }
+ .appnav { width:100%; height:44px; margin-left:0; justify-content:space-between; gap:0; }
+ .appnav button { padding:0 5px; font-size:.8125rem; white-space:nowrap; }
+ main.game-main { min-height:calc(100dvh - 80px); }
+}

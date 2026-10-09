@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moonflute.github.io/pathopedia/data/library-schema.json",
+  "title": "Pathopedia reusable card catalog",
+  "type": "object",
+  "required": ["schemaVersion", "catalogVersion", "sourceDatasetVersion", "locale", "pathogens", "variants", "drugs", "responses", "responseProfiles", "sources", "interpretation", "panels", "categories"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "catalogVersion": { "type": "string" },
+    "sourceDatasetVersion": { "type": "string" },
+    "locale": { "const": "ko-KR" },
+    "interpretation": { "type": "object", "required": ["system", "version", "note"] },
+    "panels": { "type": "object", "additionalProperties": { "type": "object", "required": ["id", "name", "domain", "observationType", "drugIds"] } },
+    "categories": { "type": "object", "additionalProperties": { "type": "object", "required": ["id", "label", "ko", "number"] } },
+    "pathogens": { "type": "object", "additionalProperties": { "$ref": "#/$defs/pathogen" } },
+    "variants": { "type": "object", "additionalProperties": { "$ref": "#/$defs/variant" } },
+    "drugs": { "type": "object", "additionalProperties": { "$ref": "#/$defs/drug" } },
+    "responses": { "type": "object", "additionalProperties": { "type": "object", "additionalProperties": { "type": "string", "pattern": "^rsp_[0-9a-f]{16}$" } } },
+    "responseProfiles": { "type": "object", "additionalProperties": { "$ref": "#/$defs/response" } },
+    "sources": { "type": "object", "additionalProperties": { "type": "object", "required": ["url"], "properties": { "url": { "type": "string" } } } }
+  },
+  "$defs": {
+    "summary": { "type": "string", "minLength": 20, "maxLength": 160, "description": "An authored one- or two-sentence concept summary in Korean; never a truncated detail field." },
+    "sourceIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "section": {
+      "type": "object", "required": ["id", "title", "text", "sourceIds"],
+      "properties": { "id": { "type": "string" }, "title": { "type": "string" }, "text": { "type": "string", "minLength": 1 }, "sourceIds": { "$ref": "#/$defs/sourceIds" } }
+    },
+    "back": { "type": "object", "required": ["sections"], "properties": { "sections": { "type": "array", "items": { "$ref": "#/$defs/section" } } } },
+    "resistance": { "type": "object", "required": ["code", "label"], "properties": { "code": { "type": "string" }, "label": { "type": "string" } } },
+    "pathogen": {
+      "type": "object", "required": ["id", "kind", "domain", "name", "koreanName", "classification", "summary", "back", "sourceIds"],
+      "properties": {
+        "id": { "type": "string" }, "kind": { "const": "pathogen" }, "domain": { "enum": ["bacteria", "fungi", "viruses", "parasites"] },
+        "name": { "type": "string" }, "koreanName": { "type": "string" }, "classification": { "type": "string" },
+        "summary": { "$ref": "#/$defs/summary" }, "back": { "$ref": "#/$defs/back" }, "sourceIds": { "$ref": "#/$defs/sourceIds" }
+      }
+    },
+    "variant": {
+      "type": "object", "required": ["id", "pathogenId", "label", "summary", "back", "observationType", "sourceIds"],
+      "properties": {
+        "id": { "type": "string" }, "pathogenId": { "type": "string" }, "label": { "type": "string" },
+        "summary": { "$ref": "#/$defs/summary" }, "back": { "$ref": "#/$defs/back" }, "resistance": { "$ref": "#/$defs/resistance" },
+        "observationType": { "enum": ["susceptibility", "regimen"] }, "sourceIds": { "$ref": "#/$defs/sourceIds" }
+      }
+    },
+    "drug": {
+      "type": "object", "required": ["id", "kind", "name", "family", "summary", "back", "sourceIds"],
+      "properties": {
+        "id": { "type": "string" }, "kind": { "const": "drug" }, "name": { "type": "string" }, "family": { "type": "string" },
+        "summary": { "$ref": "#/$defs/summary" }, "back": { "$ref": "#/$defs/back" }, "sourceIds": { "$ref": "#/$defs/sourceIds" }
+      }
+    },
+    "response": {
+      "type": "object", "required": ["category", "basis", "note", "sourceIds"],
+      "properties": {
+        "category": { "enum": ["S", "I", "R", "ACT", "ACTIVE", "INACTIVE", "REGIMEN", "OUTSIDE_REGIMEN"] },
+        "basis": { "type": "string" }, "note": { "type": "string" }, "sourceIds": { "$ref": "#/$defs/sourceIds" }, "applicability": { "type": "string" }
+      }
+    }
+  }
+}
