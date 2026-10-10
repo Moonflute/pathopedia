@@ -1,7 +1,7 @@
-const VERSION = '0.13.1';
+const VERSION = '0.13.2';
 const PREFIX = `pathopedia:${new URL(self.registration.scope).pathname}:`;
 const CACHE = PREFIX + VERSION;
-const FILES = ['./','./index.html','./src/app.mjs','./src/engine.mjs','./src/treatment-engine.mjs','./src/treatment-ui.mjs','./src/library-ui.mjs','./src/card-prototype-ui.mjs','./src/reference-card.mjs','./src/card-catalog.mjs','./src/card-models.mjs','./src/card-gallery-ui.mjs','./src/style.css','./src/compact.css','./src/treatment.css','./src/library.css','./src/reference-card.css','./src/card-gallery.css','./data/organisms.json','./data/library.json','./data/library-schema.json','./data/sources.json','./data/schema.json','./data/treatment-questions.json','./assets/fonts/SUIT-Variable.woff2','./favicon.svg','./manifest.webmanifest','./assets/pathopedia-icon-180.png?v=0.13.1','./assets/pathopedia-icon-192.png?v=0.13.1','./assets/pathopedia-icon-512.png?v=0.13.1'];
+const FILES = ['./','./index.html','./src/app.mjs','./src/engine.mjs','./src/treatment-engine.mjs','./src/treatment-ui.mjs','./src/library-ui.mjs','./src/card-prototype-ui.mjs','./src/reference-card.mjs','./src/card-catalog.mjs','./src/card-models.mjs','./src/card-gallery-ui.mjs','./src/style.css','./src/compact.css','./src/treatment.css','./src/library.css','./src/reference-card.css','./src/card-gallery.css','./data/organisms.json','./data/library.json','./data/library-schema.json','./data/sources.json','./data/schema.json','./data/treatment-questions.json','./assets/fonts/SUIT-Variable.woff2','./favicon.svg','./manifest.webmanifest','./assets/pathopedia-icon-180.png?v=0.13.2','./assets/pathopedia-icon-192.png?v=0.13.2','./assets/pathopedia-icon-512.png?v=0.13.2'];
 const absolute = path => new URL(path,self.registration.scope).href;
 self.addEventListener('install', event => event.waitUntil((async()=>{
  const cache=await caches.open(CACHE);
@@ -20,6 +20,19 @@ self.addEventListener('fetch',event=>{
  if(event.request.method!=='GET'||!event.request.url.startsWith(self.registration.scope))return;
  event.respondWith((async()=>{
   const cache=await caches.open(CACHE);
+  const manifestUrl=absolute('./manifest.webmanifest');
+  // Installation metadata must refresh online; query versions share one offline copy.
+  if(new URL(event.request.url).pathname===new URL(manifestUrl).pathname){
+   try {
+    const response=await fetch(event.request,{cache:'no-cache'});
+    if(response.ok)await cache.put(manifestUrl,response.clone());
+    return response.ok?response:((await cache.match(manifestUrl))||response);
+   } catch(error) {
+    const cached=await cache.match(manifestUrl);
+    if(cached)return cached;
+    throw error;
+   }
+  }
   if(event.request.mode==='navigate')return (await cache.match(absolute('./index.html')))||fetch(event.request);
   return (await cache.match(event.request))||fetch(event.request);
  })());
