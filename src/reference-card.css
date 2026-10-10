@@ -159,29 +159,6 @@
 .card-rune.is-conditional::before { content: ''; position: absolute; right: .4cqw; bottom: .4cqw; width: .9cqw; height: .9cqw; background: currentColor; border-radius: 50%; }
 .card-rune.is-dim { color: #777a75; }
 .card-rune:focus-visible, .card-route:focus-visible { outline: 2px solid var(--card-light); outline-offset: 2px; }
-.card-rune::after, .card-route::after {
-  content: attr(data-tooltip);
-  display: none;
-  position: absolute;
-  top: 50%;
-  left: calc(100% + 8px);
-  z-index: 6;
-  width: max-content;
-  max-width: 210px;
-  transform: translateY(-50%);
-  border: 1px solid #6b7a6f;
-  border-radius: 4px;
-  padding: 7px 9px;
-  background: #182422;
-  color: #f0f1e6;
-  box-shadow: 0 4px 12px #0004;
-  font: 450 12px / 1.45 var(--sans);
-  text-align: left;
-  pointer-events: none;
-  filter: none;
-}
-.card-rail--right .card-rune::after { left: auto; right: calc(100% + 8px); }
-.card-rune:hover::after, .card-rune:focus::after, .card-route:hover::after, .card-route:focus::after { display: block; }
 .card-lineage {
   grid-area: 3 / 2 / 4 / 3;
   display: flex;
@@ -368,8 +345,7 @@
 .card-rune.is-blocked { color:#ed9a8a; filter:drop-shadow(0 0 2px #d5796c66); background:radial-gradient(circle,#e2806814,transparent 75%); }
 .card-rune.is-dim { color:#6e7772; filter:none; background:none; }
 .card-rune.has-condition::before { content:''; position:absolute; right:.45cqw; top:.7cqw; width:1.05cqw; height:1.05cqw; border-radius:50%; background:#8cbee3; box-shadow:0 0 2px #8cbee344; }
-.card-rune::after,.card-route::after { width:210px; max-width:calc(100vw - 64px); font-size:12px; }
-.card-back-tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1cqw; }
+.card-back-tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1cqw; }
 .card-back-tabs button { min-height:9cqw; border:1px solid #a4b09166; border-radius:1cqw; padding:1.2cqw .5cqw; color:#c3c9b7; font:550 3cqw/1.2 var(--sans); }
 .card-back-tabs button[aria-selected="true"] { background:#eee4ce; border-color:#d1c7ac; color:#354632; }
 .card-back-tabs button:focus-visible { outline:2px solid var(--card-light); outline-offset:2px; }
@@ -383,13 +359,12 @@
 .card-back-pane .card-back-section p { margin:0 0 .5em; }
 .card-therapy-note { border-left:2px solid #b9983e; padding-left:2.5cqw; }
 .card-therapy-note h3 { color:#8c6c21; }
-.card-property-list,.card-reference-list { margin:0; padding:0; list-style:none; }
+.card-property-list { margin:0; padding:0; list-style:none; }
 .card-property-list li { display:flex; gap:2.5cqw; align-items:start; margin:0 0 .9em; }
 .card-property-list .card-rune { background:#35443a; flex:none; width:8cqw; height:9cqw; }
 .card-property-list li > div { min-width:0; }
 .card-property-list b { font-size:.9em; font-weight:650; }
 .card-property-list p { font-size:.82em; line-height:1.6; margin:.3em 0 0; }
-.card-reference-list li { margin:0 0 1em; font-size:.9em; line-height:1.65; }
 .card-response-list { margin:.7em 0 0; }
 .card-response-list > div { padding:.8em 0; border-top:1px solid #8b9a7c44; }
 .card-response-list dt { font-weight:650; font-size:.9em; }
@@ -504,3 +479,9 @@ dialog.card-inspector { width:max-content; height:max-content; max-width:calc(10
 .card-inspector-variants button { flex:1 1 auto; min-height:36px; border:1px solid #6f8461; border-radius:5px; padding:7px 9px; color:#e1e9d8; font:550 .6875rem/1.35 var(--sans); }
 .card-inspector-variants button[aria-pressed="true"] { background:#d6e1c7; color:#354c2d; border-color:#d6e1c7; }
 @media(max-width:599px) { dialog.card-inspector { padding:28px 18px 12px; } }
+
+
+.reference-card-tooltip { position:fixed; z-index:100; width:max-content; max-width:min(280px,calc(100vw - 24px)); box-sizing:border-box; padding:10px 12px; border:1px solid #66786d; border-radius:8px; background:#182422; color:#f0f1e6; box-shadow:0 5px 18px #0005; font:450 13px/1.55 var(--sans); text-align:left; pointer-events:none; overflow-wrap:anywhere; }
+.reference-card-tooltip[hidden] { display:none; }
+.reference-card-tooltip > strong { display:block; font-size:14px; font-weight:650; color:#f7f8ed; }
+.reference-card-tooltip > span { display:block; margin-top:5px; white-space:pre-line; color:#d4ddcf; }

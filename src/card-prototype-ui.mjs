@@ -89,7 +89,7 @@ export function createCardPrototype(data, { render, catalog }) {
     if (!record || !drug) return '<p>대표 카드 데이터를 불러올 수 없습니다.</p><a href="#library">라이브러리로 돌아가기</a>';
     const pathogen = pathogenModel(record, variant, data.drugs, cardContent);
     const antimicrobial = drugModel(drug, data.records, cardContent);
-    return `<header class="card-prototype-heading"><div><span class="eyebrow">LIBRARY / CARD PROTOTYPE</span><h1>카드 틀<span class="heading-dot">.</span></h1><p>앞면에는 핵심 컨셉을, 뒷장에는 자세한 설명과 근거를 담습니다.</p></div><a class="card-prototype-back" href="#library">← 라이브러리</a></header>
+    return `<header class="card-prototype-heading"><div><span class="eyebrow">LIBRARY / CARD PROTOTYPE</span><h1>카드 틀<span class="heading-dot">.</span></h1><p>앞면에는 핵심 컨셉을, 뒷장에는 자세한 임상 설명을 담습니다.</p></div><a class="card-prototype-back" href="#library">← 라이브러리</a></header>
       <div class="card-prototype-toolbar">
         <div class="card-prototype-control" role="group" aria-label="카드 표시 크기"><span>표시 크기</span>${WIDTHS.map(value => `<button type="button" data-card-width="${value}" aria-pressed="${value === width}">${value} × ${value * 1.5}</button>`).join('')}</div>
         <div class="card-prototype-control" role="group" aria-label="병원체 표현형"><span>병원체</span>${variants.map(item => `<button type="button" data-card-variant="${item.id}" aria-pressed="${item.id === selectedId}">${item.label}</button>`).join('')}</div>

@@ -73,7 +73,7 @@ export function createLibrary(data, { getArchive, render, openDetail, catalog, c
   function renderLibrary(view) {
     section = SECTIONS.find(s => s.view === view)?.id || 'organisms';
     const found = discoveries().length;
-    return `<header class="library-heading"><div><span class="eyebrow">PATHOPEDIA / STUDY COLLECTION</span><h1>라이브러리<span class="heading-dot">.</span></h1><p>카드를 골라 확대하고, 뒤집어 임상 특징과 근거를 읽어보세요.</p></div><dl class="library-totals"><div><dt>병원체</dt><dd>${taxonCount(records)}<small>종·군</small></dd></div><div><dt>약제</dt><dd>${drugs.length}<small>개</small></dd></div></dl></header>
+    return `<header class="library-heading"><div><span class="eyebrow">PATHOPEDIA / STUDY COLLECTION</span><h1>라이브러리<span class="heading-dot">.</span></h1><p>카드를 골라 확대하고, 뒤집어 임상 특징과 약제 정보를 읽어보세요.</p></div><dl class="library-totals"><div><dt>병원체</dt><dd>${taxonCount(records)}<small>종·군</small></dd></div><div><dt>약제</dt><dd>${drugs.length}<small>개</small></dd></div></dl></header>
       <a class="card-prototype-link" href="#cards">병원체·약제를 한 번에 보기 <span aria-hidden="true">↗</span></a>
       <nav class="library-sections" aria-label="라이브러리 분류">${SECTIONS.map(s => `<button data-view="${s.view}" class="${section===s.id?'active':''}" ${section===s.id?'aria-current="page"':''}>${s.name}<small>${s.id==='drugs'?drugs.length:s.id==='archive'?found:records.length}</small></button>`).join('')}</nav>
       <p class="library-description">${section==='organisms'?'수록된 모든 병원체의 분류, 형태, 진단, 약제 반응과 근거를 열람할 수 있습니다.':section==='drugs'?'약제별 작용 기전, 활성 범위, 사용 제한과 내성 기전을 확인하세요.':'직접 동정한 병원체와 표현형·임상형별 기록입니다. 이 브라우저에 저장됩니다.'}</p>

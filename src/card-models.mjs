@@ -12,16 +12,11 @@ const RESULTS = {
   REGIMEN:'해당 임상형의 요법에 포함', OUTSIDE_REGIMEN:'선택된 요법 목록 밖'
 };
 const ORGANS = [
-  {icon:'skin',label:'피부·연조직',pattern:/피부|연조직|피하/},
-  {icon:'blood',label:'혈류',pattern:/혈류|혈액|혈중|혈관|적혈구|혈증/},
-  {icon:'heart',label:'심장·판막',pattern:/심장|판막|심내막|심근/},
-  {icon:'bone',label:'뼈·관절',pattern:/뼈|골수|골막|관절/},
-  {icon:'lungs',label:'폐·호흡기',pattern:/폐|호흡|기도|인두|비강/},
-  {icon:'urinary',label:'비뇨·생식기',pattern:/요로|신장|비뇨|생식|질\s*점막|질·|태반/},
-  {icon:'abdomen',label:'소화기·복강',pattern:/복강|복부|장관|위장|대장|소장|장상피|식도|구강/},
-  {icon:'brain',label:'중추·신경계',pattern:/뇌|신경|수막|CNS/},
-  {icon:'liver',label:'간·담도·비장',pattern:/간[·\s]|간내|간세포|간비장|담도|비장/},
-  {icon:'eye',label:'눈·각막',pattern:/눈|안구|각막|망막/}
+  {icon:'skin',label:'피부·연조직'}, {icon:'blood',label:'혈류'},
+  {icon:'heart',label:'심장·판막'}, {icon:'bone',label:'뼈·관절'},
+  {icon:'lungs',label:'폐·호흡기'}, {icon:'urinary',label:'비뇨·생식기'},
+  {icon:'abdomen',label:'소화기·복강'}, {icon:'brain',label:'중추·신경계'},
+  {icon:'liver',label:'간·담도·비장'}, {icon:'eye',label:'눈·각막'}
 ];
 const TRANSMISSION = [
   {icon:'lungs',label:'호흡',pattern:/비말|공기|흡입|호흡기 전파|aerosol|droplet/i},
@@ -58,6 +53,7 @@ const GROUP_LABELS={staph:'포도',strep:'사슬',entero:'장알',enterics:'장�
 const DRUG_CODES={oxacillin:'OXA',cefazolin:'CZO',vancomycin:'VAN',linezolid:'LZD',daptomycin:'DAP',ceftriaxone:'CTX',cefepime:'FEP',ceftazidime:'CAZ',meropenem:'MEM',imipenem:'IPM',piptazo:'TZP',ceftazavi:'CZA',ampicillin:'AMP',amoxicillin:'AMX',amoxclav:'AMC',penicillin:'PEN',teicoplanin:'TEI',ceftaroline:'CPT',aztreonam:'ATM',tmpsmx:'SXT',ciprofloxacin:'CIP',levofloxacin:'LEV',moxifloxacin:'MOX',gentamicin:'GEN',amikacin:'AMK',clindamycin:'CLI',doxycycline:'DOX',azithromycin:'AZM',clarithromycin:'CLR',erythromycin:'ERY',rifampicin:'RIF',isoniazid:'INH',ethambutol:'EMB',pyrazinamide:'PZA',metronidazole:'MTZ',fidaxomicin:'FDX',fluconazole:'FLC',voriconazole:'VRC',amphotericinb:'AMB',micafungin:'MCF',flucytosine:'5FC',itraconazole:'ITR',terbinafine:'TER',acyclovir:'ACY',ganciclovir:'GCV',oseltamivir:'OSE',remdesivir:'REM','nirmatrelvir-ritonavir':'N/R',tenofovir:'TDF',entecavir:'ETV',ribavirin:'RBV',albendazole:'ALB',ivermectin:'IVM',praziquantel:'PZQ',primaquine:'PQ',pyrimethamine:'PYR',sulfadiazine:'SDZ',paromomycin:'PAR',artemetherlumefantrine:'A/L',atovaquone:'ATQ',permethrin:'PER',triclabendazole:'TCB'};
 const drugCode=id=>DRUG_CODES[id] || id.slice(0,3).toUpperCase();
 const preferenceNote=context=>'우선요법: '+context.context+' · '+context.note;
+const HOVER_RESULTS={S:'감수성',I:'노출 증가 필요',R:'내성',ACT:'조건부 활성',ACTIVE:'활성',INACTIVE:'활성 없음',REGIMEN:'요법 포함',OUTSIDE_REGIMEN:'요법 밖'};
 
 export function drugGlyph(drug) {
   const family = drug.family.toLowerCase();
@@ -126,7 +122,7 @@ function drugRoute(drug) {
   if (/흡입/.test(text)) labels.push('흡입');
   if (/도포|topical/i.test(text+' '+drug.family)) labels.push('도포');
   return labels.length ? {icon:labels.includes('IV')?'syringe':'capsule',label:labels.length>1?'복수':labels[0],description:'기존 약제 기록에 명시된 경로: '+labels.join(' / ')+' · '+drug.limitations} :
-    {icon:'routes',label:'—',description:'투여 경로가 별도 지정되지 않은 약제 기록입니다. 뒷장의 제형·적용 조건과 근거를 확인하세요.'};
+    {icon:'routes',label:'—',description:'투여 경로 미지정'};
 }
 
 function drugLineage(drug) {
@@ -170,9 +166,12 @@ export function createCardModels(data, catalog) {
       lineage:pathogenLineage(record),route:pathogenRoute(record),
       artwork:{placeholder:pathogenArt(record),label:CARD_DOMAINS[record.domain]},
       leftHeading:'장기',rightHeading:'약제',
-      leftLabel:'공격 가능 · 주요 감염 장기',
-      leftProperties:ORGANS.map(({icon,label,pattern})=>({icon,label,shortLabel:ORGAN_LABELS[icon],active:pattern.test(record.hints.tropism.text),note:record.hints.tropism.text})),
-      rightLabel:record.observationType==='regimen'?'공격받음 · 해당 임상형의 요법 구성 약제':'공격받음 · 이 교육용 분리주에 효과 있는 약제',
+      leftLabel:'감염 부위별 질환',
+      leftProperties:ORGANS.map(({icon,label})=>{
+        const diseases=content.pathogen(id).organDiseases[icon] || [];
+        return {icon,label,shortLabel:ORGAN_LABELS[icon],active:diseases.length>0,note:diseases.join(' · ') || '—',tooltip:{title:label,body:diseases.join('\n') || '—'}};
+      }),
+      rightLabel:'약제',
       rightProperties:chosen.map(drugId=>{
         const response=content.response(id,drugId);
         const item=drugs.get(drugId),excluded=therapyContext?.excludedDrugIds?.includes(drugId);
@@ -181,6 +180,7 @@ export function createCardModels(data, catalog) {
           icon:drugRoute(item).icon==='syringe'?'syringe':'capsule',shortLabel:drugCode(drugId),label:item.name,
           active:!excluded && POSITIVE.has(response?.category),preferred:Boolean(preferred),
           conditional:CONDITIONAL.has(response?.category) || Boolean(response?.applicability) || Boolean(preferred && therapyContext.combination),
+          tooltip:{title:item.name,body:[excluded?'사용 제외':preferred?'우선 약제':HOVER_RESULTS[response?.category] || '—',excluded || preferred?therapyContext.context:response?.applicability].filter(Boolean).join('\n')},
           note:excluded?'선택한 임상 상황에서 사용하지 않는 약제 · '+therapyContext.context+' · '+therapyContext.note:
             (preferred?preferenceNote(therapyContext)+' · ':'')+(RESULTS[response?.category] || '이 기록에 결과 없음')+(response?.applicability?' · '+response.applicability:'')
         };
@@ -201,14 +201,14 @@ export function createCardModels(data, catalog) {
     const properties=positive=>GROUPS.map(group=>{
       const entries=groups.get(group.id).map(record=>({record,response:content.response(record.id,id)})).filter(entry=>entry.response);
       const matching=entries.filter(({response})=>(positive?POSITIVE:NEGATIVE).has(response.category));
-      const examples=matching.slice(0,2).map(({record,response})=>record.organism+' · '+record.phenotype+' · '+RESULTS[response.category]).join(' / ');
+      const examples=matching.slice(0,2).map(({record})=>record.organism+' · '+record.phenotype).join('\n');
       const hasOther=entries.some(({response})=>(positive?NEGATIVE:POSITIVE).has(response.category));
       const preferredContexts=positive?preferenceContexts.filter(context=>context.recordIds.some(recordId=>matching.some(entry=>entry.record.id===recordId))):[];
       return {
         icon:group.icon,shortLabel:GROUP_LABELS[group.id],label:group.label,active:matching.length>0,negative:!positive,preferred:preferredContexts.length>0,
         conditional:positive && matching.length>0 && (matching.some(({response})=>CONDITIONAL.has(response.category) || response.applicability) || hasOther || preferredContexts.some(context=>context.combination)),
-        note:matching.length ? (preferredContexts.map(preferenceNote).join(' / ')+(preferredContexts.length?' · ':''))+'해당 수록 기록 '+matching.length+'개'+(hasOther?' · 표현형·임상형별로 판정이 다름':'')+' · '+examples :
-          entries.length ? '수록 기록에 해당 판정 없음 · 요법 목록 밖은 무효로 세지 않음' : '수록 기록에 약제 반응 기록 없음'
+        tooltip:{title:group.label,body:matching.length?[examples,hasOther?'표현형에 따라 다름':''].filter(Boolean).join('\n'):'—'},
+        note:matching.length ? [...preferredContexts.map(preferenceNote),hasOther?'표현형·임상형별로 판정이 다름':'',examples].filter(Boolean).join(' · ') : '—'
       };
     });
     const responses=data.records.flatMap(record=>{
@@ -221,8 +221,8 @@ export function createCardModels(data, catalog) {
       subtitle:'약제 · '+item.family,
       artwork:{placeholder:drugGlyph(item),label:'약제'},
       leftHeading:'유효',rightHeading:'무효',
-      leftLabel:'유효 · 활성 또는 임상형 요법에 포함된 기록',
-      leftProperties:properties(true),rightLabel:'무효 · R 또는 활성 없음으로 명시된 수록 기록',
+      leftLabel:'유효 대상',
+      leftProperties:properties(true),rightLabel:'무효 대상',
       rightProperties:properties(false),
       back:{...base.back,responses,responseLabel:'병원체·표현형별 약제 반응'}
     };

@@ -1,7 +1,7 @@
 {
   "$schema": "./library-schema.json",
   "schemaVersion": 1,
-  "catalogVersion": "1.2.0",
+  "catalogVersion": "1.3.0",
   "sourceDatasetVersion": "0.5.0",
   "locale": "ko-KR",
   "reviewStatus": "educational-draft",
@@ -239,6 +239,23 @@
         "스타필로코커스 아우레우스"
       ],
       "summary": "피부농양·균혈증·심내막염·골수염의 대표 원인이다. 혈액배양 양성을 단순 오염으로 넘기지 않으며, 지속 균혈증이면 판막·원격 감염을 살핀다.",
+      "organDiseases": {
+        "skin": [
+          "화농성 피부·연조직 감염"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "heart": [
+          "심내막염"
+        ],
+        "bone": [
+          "골수염"
+        ],
+        "lungs": [
+          "폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -440,6 +457,17 @@
         "스타필로코쿠스 에피더미디스"
       ],
       "summary": "카테터·인공판막·인공관절 감염의 원인이며 혈액배양 오염균으로도 흔하다. 배양 한 병만으로 판단하지 않고 인공물과 임상 경과를 함께 본다.",
+      "organDiseases": {
+        "blood": [
+          "카테터 관련 혈류 감염"
+        ],
+        "heart": [
+          "인공판막 심내막염"
+        ],
+        "bone": [
+          "인공관절 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -628,6 +656,23 @@
         "페칼리스 장구균"
       ],
       "summary": "요로감염·균혈증·심내막염과 복강·담도감염을 일으킨다. Cephalosporin 단독은 듣지 않으며, VRE 여부가 표적 치료 선택에 중요하다.",
+      "organDiseases": {
+        "urinary": [
+          "요로감염"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "heart": [
+          "심내막염"
+        ],
+        "abdomen": [
+          "복강 감염"
+        ],
+        "liver": [
+          "담도 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -820,6 +865,17 @@
         "엔테로코커스 페시움"
       ],
       "summary": "입원·면역저하 환자의 균혈증·요로·복강감염에서 중요하다. Ampicillin 내성이 흔하고 VRE도 가능해 E. faecalis와 구별해야 한다.",
+      "organDiseases": {
+        "blood": [
+          "의료 관련 균혈증"
+        ],
+        "urinary": [
+          "요로감염"
+        ],
+        "abdomen": [
+          "복강 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -1012,6 +1068,22 @@
         "이콜라이"
       ],
       "summary": "방광염·신우신염·균혈증·복강감염의 흔한 원인이다. ESBL 등 내성이 치료 선택을 바꾸며, 장염 병원형은 장관외 감염과 치료 맥락이 다르다.",
+      "organDiseases": {
+        "urinary": [
+          "방광염",
+          "신우신염"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "abdomen": [
+          "복강 감염",
+          "일부 병원형의 장염"
+        ],
+        "brain": [
+          "일부 병원형의 신생아 수막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -1203,6 +1275,20 @@
         "클렙시엘라 뉴모니아"
       ],
       "summary": "폐렴·요로감염·균혈증을 일으키며, 고병독성 계통은 간농양과 원격 파종이 특징이다. ESBL·carbapenem 내성은 병독성과 별도로 확인한다.",
+      "organDiseases": {
+        "lungs": [
+          "폐렴"
+        ],
+        "urinary": [
+          "요로감염"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "liver": [
+          "고병독성 계통의 간농양"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -1381,6 +1467,16 @@
         "슈도모나스 아에루기노사"
       ],
       "summary": "인공호흡기 폐렴·화상감염과 낭성섬유증의 만성 기도감염에서 중요하다. 일반 항균제로 덮이지 않을 수 있어 항녹농균 범위와 실제 감수성을 확인한다.",
+      "organDiseases": {
+        "lungs": [
+          "인공호흡기 관련 폐렴",
+          "낭포성 섬유증의 만성 기도 감염"
+        ],
+        "skin": [
+          "화상 감염",
+          "ecthyma gangrenosum"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -1571,6 +1667,20 @@
         "엔테로박터 클로아케"
       ],
       "summary": "의료 관련 폐렴·요로·복강 감염과 균혈증의 원인이다. 초기 감수성이 좋아도 유도성 AmpC에 따른 치료 중 내성 위험이 약제 선택을 바꾼다.",
+      "organDiseases": {
+        "lungs": [
+          "의료 관련 폐렴"
+        ],
+        "urinary": [
+          "요로감염"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "abdomen": [
+          "복강 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -1752,6 +1862,18 @@
         "에이군 연쇄상구균"
       ],
       "summary": "인두염·피부감염부터 괴사근막염·독성쇼크까지 일으킨다. 인두염 뒤 류마티스열, 인두·피부감염 뒤 사구체신염 같은 후유 합병증도 중요하다.",
+      "organDiseases": {
+        "lungs": [
+          "인두염"
+        ],
+        "skin": [
+          "농가진",
+          "괴사근막염"
+        ],
+        "blood": [
+          "STSS"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -1897,6 +2019,18 @@
         "아갈락티아"
       ],
       "summary": "산모 생식기 집락과 연관된 신생아 패혈증·폐렴·수막염의 대표 원인이다. 성인에서도 균혈증을 일으킬 수 있다.",
+      "organDiseases": {
+        "blood": [
+          "신생아 패혈증",
+          "성인 균혈증"
+        ],
+        "lungs": [
+          "신생아 폐렴"
+        ],
+        "brain": [
+          "신생아 수막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -2041,6 +2175,18 @@
         "스트렙토코쿠스 뉴모니에"
       ],
       "summary": "폐렴·중이염·부비동염·수막염의 대표 원인이다. 무비증 환자는 침습감염이 빠르게 악화하며, 수막염 여부에 따라 감수성 해석도 달라진다.",
+      "organDiseases": {
+        "lungs": [
+          "폐렴",
+          "부비동염"
+        ],
+        "brain": [
+          "수막염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -2183,6 +2329,14 @@
         "미티스연쇄상구균"
       ],
       "summary": "구강 사슬알균이지만 아급성 심내막염·균혈증의 원인이 된다. 호중구감소 환자의 혈액배양 양성을 오염으로 단정하지 않는다.",
+      "organDiseases": {
+        "blood": [
+          "균혈증"
+        ],
+        "heart": [
+          "아급성 심내막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -2313,6 +2467,14 @@
         "오랄리스연쇄상구균"
       ],
       "summary": "구강 병소와 연관된 균혈증·아급성 심내막염을 일으킨다. 치과·구강 상태와 심장판막 감염의 연계를 살핀다.",
+      "organDiseases": {
+        "heart": [
+          "아급성 심내막염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -2443,6 +2605,14 @@
         "갈롤리티쿠스연쇄상구균"
       ],
       "summary": "균혈증·심내막염이 대장 종양을 찾는 단서가 된다. 구강 사슬알균과 같은 취급으로 넘기지 않는 것이 중요하다.",
+      "organDiseases": {
+        "heart": [
+          "심내막염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -2573,6 +2743,14 @@
         "루그두넨시스포도상구균"
       ],
       "summary": "Coagulase 음성이어도 피부농양과 파괴성 심내막염을 일으킬 수 있다. 다른 피부 상재 포도알균보다 침습감염 가능성을 적극적으로 살핀다.",
+      "organDiseases": {
+        "heart": [
+          "파괴성 심내막염"
+        ],
+        "skin": [
+          "피부농양"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -2703,6 +2881,12 @@
         "부생포도상구균"
       ],
       "summary": "젊은 여성의 급성 단순 방광염에서 만나는 병원체다. 증상이 뚜렷하면 낮은 집락수도 임상 맥락과 함께 해석한다.",
+      "organDiseases": {
+        "urinary": [
+          "급성 단순 방광염",
+          "드문 신우신염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -2832,6 +3016,17 @@
         "갈리나룸장구균"
       ],
       "summary": "요로·담도감염과 균혈증을 일으키는 장알균이다. 종 자체의 저수준 vancomycin 내성을 알아야 획득성 VRE와 혼동하지 않는다.",
+      "organDiseases": {
+        "blood": [
+          "균혈증"
+        ],
+        "urinary": [
+          "요로감염"
+        ],
+        "liver": [
+          "담도 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -2961,6 +3156,17 @@
         "카셀리플라부스장구균"
       ],
       "summary": "담도·요로 감염과 균혈증에서 만나는 장알균이다. VanC에 의한 고유 vancomycin 내성이 있어 획득성 VRE와 구별한다.",
+      "organDiseases": {
+        "blood": [
+          "균혈증"
+        ],
+        "urinary": [
+          "요로감염"
+        ],
+        "liver": [
+          "담도 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -3087,6 +3293,17 @@
       "classification": "Bacteria / Bacillota / Listeriaceae",
       "representativeRecordId": "LMO-115",
       "summary": "고령·면역저하 환자의 패혈증·수막염과 임신 관련 감염에서 중요하다. Cephalosporin이 듣지 않아 수막염 경험적 치료에서 놓치기 쉽다.",
+      "organDiseases": {
+        "blood": [
+          "패혈증"
+        ],
+        "brain": [
+          "수막염"
+        ],
+        "urinary": [
+          "임신 관련 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -3225,6 +3442,17 @@
       "classification": "Bacteria / Bacillota / Bacillaceae",
       "representativeRecordId": "BCE-116",
       "summary": "구토형·설사형 식중독의 원인이며, 안구염과 카테터 균혈증도 일으킨다. 재가열한 밥을 먹은 뒤 구토하는 상황이 대표적이다.",
+      "organDiseases": {
+        "abdomen": [
+          "구토형·설사형 식중독"
+        ],
+        "eye": [
+          "안구염"
+        ],
+        "blood": [
+          "카테터 균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -3351,6 +3579,18 @@
       "classification": "Bacteria / Bacillota / Bacillaceae",
       "representativeRecordId": "BAN-117",
       "summary": "피부·흡입·위장관·주사 노출에 따라 서로 다른 탄저 임상형을 만든다. 노출력과 전신 침범 여부가 대응을 가르며, 의심 사례는 신고가 중요하다.",
+      "organDiseases": {
+        "skin": [
+          "피부 탄저",
+          "주사 탄저"
+        ],
+        "lungs": [
+          "흡입 탄저"
+        ],
+        "abdomen": [
+          "위장관 탄저"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -3493,6 +3733,20 @@
       "classification": "Bacteria / Actinomycetota / Corynebacteriaceae",
       "representativeRecordId": "CDI-118",
       "summary": "인두 위막에 심근염·신경병증이 동반될 수 있는 독소성 감염이다. 독소성 호흡기 디프테리아가 의심되면 검사 확정까지 항독소 판단을 미루지 않는다.",
+      "organDiseases": {
+        "lungs": [
+          "인두 위막"
+        ],
+        "heart": [
+          "심근염"
+        ],
+        "brain": [
+          "신경병증"
+        ],
+        "skin": [
+          "피부병변"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -3631,6 +3885,17 @@
       "classification": "Bacteria / Actinomycetota / Corynebacteriaceae",
       "representativeRecordId": "CJE-119",
       "summary": "면역저하자의 카테터 균혈증·인공판막 감염에서 중요하다. 반복 혈액배양 양성이면 단순 피부 오염으로 넘기지 않는다.",
+      "organDiseases": {
+        "blood": [
+          "카테터 균혈증"
+        ],
+        "heart": [
+          "인공판막염"
+        ],
+        "bone": [
+          "골수염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -3757,6 +4022,17 @@
       "classification": "Bacteria / Actinomycetota / Cutibacteriaceae",
       "representativeRecordId": "CAC-120",
       "summary": "염증이 뚜렷하지 않은 어깨 인공관절·션트 감염의 원인이 될 수 있다. 천천히 자라는 피부 상재균이어서 오염과 실제 기구감염을 구별해야 한다.",
+      "organDiseases": {
+        "skin": [
+          "여드름"
+        ],
+        "bone": [
+          "인공관절 감염"
+        ],
+        "brain": [
+          "션트 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -3888,6 +4164,13 @@
         "씨디피실"
       ],
       "summary": "항균제 사용 뒤 생긴 설사·위막성 대장염이 대표적이며, 심하면 거대결장으로 진행한다. 치료 후 검사 음전보다 임상반응으로 회복을 판단한다.",
+      "organDiseases": {
+        "abdomen": [
+          "항생제 관련 설사",
+          "위막성 대장염",
+          "toxic megacolon"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -4030,6 +4313,17 @@
       "classification": "Bacteria / Bacillota / Clostridiaceae",
       "representativeRecordId": "CPE-122",
       "summary": "심한 통증과 가스를 동반한 근괴사, 식중독, 패혈증성 용혈을 일으킨다. 근괴사는 항균제만으로 해결되지 않아 긴급 외과 처치가 중요하다.",
+      "organDiseases": {
+        "skin": [
+          "근괴사"
+        ],
+        "abdomen": [
+          "식중독"
+        ],
+        "blood": [
+          "패혈증성 용혈"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -4156,6 +4450,17 @@
       "classification": "Bacteria / Actinomycetota / Actinomycetaceae",
       "representativeRecordId": "AIS-123",
       "summary": "만성 종괴와 배농되는 누공을 만드는 경부안면·흉부·복부골반 감염이 특징이다. 병변이 조직 경계를 넘어 퍼져 종양처럼 보일 수 있다.",
+      "organDiseases": {
+        "skin": [
+          "경부안면 actinomycosis"
+        ],
+        "lungs": [
+          "흉부 actinomycosis"
+        ],
+        "abdomen": [
+          "복부골반 actinomycosis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -4282,6 +4587,16 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-201",
       "summary": "복잡성 요로감염·신우신염과 감염결석을 일으킨다. 알칼리뇨와 struvite·녹각결석이 함께 보이면 중요한 단서다.",
+      "organDiseases": {
+        "urinary": [
+          "복잡성 요로감염",
+          "신우신염",
+          "감염결석"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -4392,6 +4707,17 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-203",
       "summary": "요로·상처 감염과 균혈증을 일으키는 Proteus다. Indole 양성으로 P. mirabilis와 구별되며 치료는 종별 감수성에 따라 달라진다.",
+      "organDiseases": {
+        "urinary": [
+          "요로감염"
+        ],
+        "skin": [
+          "상처감염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -4502,6 +4828,17 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-204",
       "summary": "요로·수술부위 감염과 균혈증을 일으킨다. 유도성 AmpC를 가진 장내세균으로, 감염 부위와 감수성을 함께 보고 치료제를 고른다.",
+      "organDiseases": {
+        "urinary": [
+          "요로감염"
+        ],
+        "skin": [
+          "수술부위감염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -4612,6 +4949,15 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-205",
       "summary": "장기요양시설의 만성 카테터 환자에서 요로감염·균혈증을 일으킨다. 다제내성이 동반될 수 있어 카테터와 감염원 관리가 중요하다.",
+      "organDiseases": {
+        "urinary": [
+          "카테터 관련 요로감염",
+          "신우신염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -4722,6 +5068,20 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-206",
       "summary": "의료 관련 카테터 균혈증·요로감염·폐렴을 일으킨다. AmpC를 보유하며, 붉은 색소가 없다고 이 균을 배제할 수는 없다.",
+      "organDiseases": {
+        "blood": [
+          "카테터 균혈증"
+        ],
+        "lungs": [
+          "폐렴"
+        ],
+        "urinary": [
+          "요로감염"
+        ],
+        "heart": [
+          "심내막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -4832,6 +5192,20 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-207",
       "summary": "요로·복강·혈류 감염을 일으킨다. 처음 ceftriaxone 감수성으로 보여도 유도성 AmpC 때문에 치료 중 내성이 선택될 수 있다.",
+      "organDiseases": {
+        "urinary": [
+          "요로감염"
+        ],
+        "abdomen": [
+          "복강감염"
+        ],
+        "lungs": [
+          "폐렴"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -4942,6 +5316,18 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-208",
       "summary": "신생아 수막염에 다발성 뇌농양이 동반될 수 있다. 신생아에서 동정되면 중추신경계 합병증을 적극적으로 살핀다.",
+      "organDiseases": {
+        "brain": [
+          "신생아 수막염",
+          "다발성 뇌농양"
+        ],
+        "urinary": [
+          "요로감염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -5052,6 +5438,20 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-209",
       "summary": "의료 관련 폐렴·요로감염·균혈증을 일으킨다. 옛 이름은 Enterobacter aerogenes이며, 유도성 AmpC 때문에 3세대 cephalosporin 선택에 주의한다.",
+      "organDiseases": {
+        "lungs": [
+          "폐렴"
+        ],
+        "urinary": [
+          "요로감염"
+        ],
+        "abdomen": [
+          "복강감염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -5162,6 +5562,20 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-210",
       "summary": "요로감염·균혈증과 항균제 연관 출혈성 대장염을 일으킨다. β-lactam 내성이 치료 선택에 영향을 주며 K. pneumoniae와 구별한다.",
+      "organDiseases": {
+        "urinary": [
+          "요로감염"
+        ],
+        "lungs": [
+          "폐렴"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "abdomen": [
+          "항생제 연관 출혈성 대장염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -5272,6 +5686,17 @@
       "classification": "Bacteria / Pseudomonadota / Moraxellaceae",
       "representativeRecordId": "GNX-211",
       "summary": "중환자실의 인공호흡기 폐렴·균혈증·상처감염에서 만나는 병원체다. 다제내성이 흔하며, 객담에서 나왔다는 이유만으로 폐렴을 확정하지 않는다.",
+      "organDiseases": {
+        "lungs": [
+          "인공호흡기 폐렴"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "skin": [
+          "상처감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -5386,6 +5811,15 @@
       "classification": "Bacteria / Pseudomonadota / Xanthomonadaceae",
       "representativeRecordId": "GNX-213",
       "summary": "면역저하자의 폐렴·카테터 균혈증에서 중요하며, carbapenem 치료 중 선택될 수 있다. 객담 집락과 실제 감염을 구별하고 폭넓은 고유 내성을 고려한다.",
+      "organDiseases": {
+        "lungs": [
+          "면역저하자 폐렴"
+        ],
+        "blood": [
+          "균혈증",
+          "카테터 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -5500,6 +5934,15 @@
       "classification": "Bacteria / Pseudomonadota / Burkholderiaceae",
       "representativeRecordId": "GNX-214",
       "summary": "낭성섬유증 환자의 만성 폐감염과 급격히 악화하는 cepacia syndrome에서 중요하다. 환자 간 전파 가능성 때문에 정확한 동정이 필요하다.",
+      "organDiseases": {
+        "lungs": [
+          "CF 만성 폐감염",
+          "cepacia syndrome"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -5614,6 +6057,18 @@
       "classification": "Bacteria / Pseudomonadota / Aeromonadaceae",
       "representativeRecordId": "GNX-215",
       "summary": "민물에 노출된 상처에서 빠르게 진행하는 연조직감염·괴사근막염을 일으킨다. 수상 외상 뒤 통증과 부종이 급격히 심해지는 상황이 중요한 단서다.",
+      "organDiseases": {
+        "abdomen": [
+          "위장염"
+        ],
+        "skin": [
+          "상처감염",
+          "괴사성 근막염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -5728,6 +6183,11 @@
       "classification": "Bacteria / Pseudomonadota / Vibrionaceae",
       "representativeRecordId": "GNX-216",
       "summary": "쌀뜨물 같은 대량 수양성 설사로 급격한 탈수·쇼크를 일으킨다. 치료의 중심은 신속하고 충분한 수액 보충이다.",
+      "organDiseases": {
+        "abdomen": [
+          "대량 수양성 설사"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -5846,6 +6306,15 @@
       "classification": "Bacteria / Pseudomonadota / Vibrionaceae",
       "representativeRecordId": "GNX-217",
       "summary": "간질환·철 과부하 환자에서 생굴 섭취나 바닷물 상처 노출 뒤 전격 패혈증을 일으킬 수 있다. 수포성 피부병변과 빠른 악화가 응급 신호다.",
+      "organDiseases": {
+        "blood": [
+          "원발성 패혈증"
+        ],
+        "skin": [
+          "수포성 피부병변",
+          "괴사성 상처감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -5968,6 +6437,14 @@
       "classification": "Bacteria / Pseudomonadota / Vibrionaceae",
       "representativeRecordId": "GNX-218",
       "summary": "날것·덜 익힌 해산물을 먹은 뒤 수양성 설사·복통·오심이 나타난다. 드물게 상처감염도 일으킨다.",
+      "organDiseases": {
+        "abdomen": [
+          "수양성 설사"
+        ],
+        "skin": [
+          "드문 상처감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -6086,6 +6563,15 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-219",
       "summary": "여행·노출력과 함께 지속 발열·균혈증으로 나타나는 장티푸스를 일으킨다. 장출혈·천공 같은 합병증이 생길 수 있다.",
+      "organDiseases": {
+        "abdomen": [
+          "장티푸스",
+          "장출혈·천공"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -6200,6 +6686,15 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-220",
       "summary": "대개 급성 위장염을 일으키지만 영아·고령·면역저하 환자는 균혈증·혈관감염 위험이 있다. 단순 위장염에 항균제를 일률적으로 쓰지는 않는다.",
+      "organDiseases": {
+        "abdomen": [
+          "급성 위장염"
+        ],
+        "blood": [
+          "영아·고령·면역저하자 균혈증",
+          "혈관 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -6314,6 +6809,11 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-221",
       "summary": "발열·복통·잔변감과 혈성·점액성 설사를 일으킨다. 적은 감염량으로 사람 간 전파되며, 내성 확인을 위해 배양 검체 확보가 중요하다.",
+      "organDiseases": {
+        "abdomen": [
+          "혈성·점액성 설사"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -6428,6 +6928,16 @@
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-222",
       "summary": "돼지고기 노출 뒤 장염·말단회장염·장간막 림프절염을 일으킨다. 우하복부 통증이 충수염처럼 보일 수 있고 이후 반응관절염이 가능하다.",
+      "organDiseases": {
+        "abdomen": [
+          "장염",
+          "말단회장염",
+          "장간막 림프절염"
+        ],
+        "bone": [
+          "반응성 관절염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -6542,6 +7052,16 @@
       "classification": "Bacteria / Pseudomonadota / Pasteurellaceae",
       "representativeRecordId": "GNX-225",
       "summary": "소아 중이염·부비동염과 COPD 악화의 원인이며, Hib는 수막염·후두개염을 일으킨다. Hib 백신은 비피막형의 점막감염까지 막지는 않는다.",
+      "organDiseases": {
+        "lungs": [
+          "부비동염",
+          "COPD 악화",
+          "Hib 후두개염"
+        ],
+        "brain": [
+          "Hib 수막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -6660,6 +7180,13 @@
       "classification": "Bacteria / Pseudomonadota / Moraxellaceae",
       "representativeRecordId": "GNX-228",
       "summary": "소아 중이염·부비동염과 성인 COPD 악화·폐렴의 원인이다. β-lactamase 생성이 흔해 ampicillin 단독은 신뢰하기 어렵다.",
+      "organDiseases": {
+        "lungs": [
+          "부비동염",
+          "성인 COPD 악화",
+          "폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -6774,6 +7301,11 @@
       "classification": "Legionellaceae · 호기성 세포내 Gram-negative bacillus",
       "representativeRecordId": "BGX-501",
       "summary": "수계 노출 뒤 중증 비정형 폐렴을 일으킨다. 설사·저나트륨혈증은 보조 단서이며, Pontiac fever는 폐렴 없는 열성질환이다.",
+      "organDiseases": {
+        "lungs": [
+          "Legionnaires' disease · 비정형 폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -6896,6 +7428,21 @@
       "classification": "Mycoplasmataceae · 세포벽이 없는 초소형 세균",
       "representativeRecordId": "BGX-502",
       "summary": "지역사회폐렴에 마른기침이 오래가고, 피부점막염·용혈성빈혈 같은 폐외 증상이 동반될 수 있다. 세포벽이 없어 β-lactam으로 치료하지 않는다.",
+      "organDiseases": {
+        "lungs": [
+          "기관기관지염",
+          "지역사회획득폐렴"
+        ],
+        "skin": [
+          "Stevens-Johnson 유사 점막염"
+        ],
+        "blood": [
+          "용혈성빈혈"
+        ],
+        "brain": [
+          "뇌염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -7006,6 +7553,14 @@
       "classification": "Chlamydiaceae · 절대 세포내 Gram-negative-like bacterium",
       "representativeRecordId": "BGX-503",
       "summary": "인두염·쉰목소리 뒤 서서히 이어지는 기침과 경증·중등도 폐렴이 특징이다. 증상만으로 다른 비정형 폐렴과 확실히 구별하기는 어렵다.",
+      "organDiseases": {
+        "lungs": [
+          "인두염",
+          "후두염",
+          "기관지염",
+          "지역사회획득폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -7128,6 +7683,12 @@
       "classification": "Alcaligenaceae · 호기성 Gram-negative coccobacillus",
       "representativeRecordId": "BGX-504",
       "summary": "발작성 기침과 기침 후 구토가 특징이며, 영아는 기침보다 무호흡이 먼저 나타날 수 있다. 늦게 시작한 항균제는 주로 전파 차단에 의미가 있다.",
+      "organDiseases": {
+        "lungs": [
+          "백일해 · 발작성 기침",
+          "영아 무호흡"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -7242,6 +7803,21 @@
         "마이코박테리움 투베르쿨로시스"
       ],
       "summary": "폐결핵부터 수막·뼈·전신 파종까지 일으킨다. 객담 도말 음성만으로 결핵을 배제하지 않으며, 치료 전 약제내성 확인이 중요하다.",
+      "organDiseases": {
+        "lungs": [
+          "폐결핵",
+          "흉막 결핵"
+        ],
+        "brain": [
+          "수막 결핵"
+        ],
+        "bone": [
+          "골 결핵"
+        ],
+        "urinary": [
+          "비뇨생식기 결핵"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -7364,6 +7940,12 @@
       "classification": "Mycobacteriaceae · slow-growing nontuberculous acid-fast bacilli",
       "representativeRecordId": "BGX-506",
       "summary": "기관지확장증·공동성 폐질환에서 만성 폐감염을, 진행 HIV에서는 파종감염을 일으킨다. 객담 한 번의 양성만으로 치료 대상 질환을 확정하지 않는다.",
+      "organDiseases": {
+        "lungs": [
+          "결절·기관지확장형 폐질환",
+          "상엽 공동성 폐질환"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -7474,6 +8056,14 @@
       "classification": "Mycobacteriaceae · rapidly growing nontuberculous acid-fast bacilli",
       "representativeRecordId": "BGX-507",
       "summary": "기관지확장증 환자의 폐감염과 수술·주사 뒤 피부연조직감염에서 중요하다. Macrolide가 초기에 감수성으로 보여도 유도성 내성을 확인해야 한다.",
+      "organDiseases": {
+        "lungs": [
+          "기관지확장성·공동성 폐질환"
+        ],
+        "skin": [
+          "수술·주사 후 피부연조직 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -7584,6 +8174,18 @@
       "classification": "Nocardiaceae · aerobic branching weakly acid-fast Gram-positive bacilli",
       "representativeRecordId": "BGX-508",
       "summary": "면역저하자의 폐결절·공동과 뇌농양이 함께 보이면 의심한다. 폐감염이 중추신경계로 퍼질 수 있어 침범 부위와 종별 감수성이 치료를 가른다.",
+      "organDiseases": {
+        "lungs": [
+          "아급성 폐렴",
+          "폐 결절·공동"
+        ],
+        "brain": [
+          "뇌농양"
+        ],
+        "skin": [
+          "N. brasiliensis 피부감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -7694,6 +8296,29 @@
       "classification": "Neisseriaceae · oxidase-positive Gram-negative diplococcus",
       "representativeRecordId": "BGX-509",
       "summary": "요도염·자궁경부염·골반염을 일으키며, 파종되면 관절염과 피부병변이 나타날 수 있다. 생식기뿐 아니라 노출된 인두·직장도 검사 대상이다.",
+      "organDiseases": {
+        "urinary": [
+          "요도염",
+          "자궁경부염",
+          "PID",
+          "부고환염"
+        ],
+        "abdomen": [
+          "직장염"
+        ],
+        "lungs": [
+          "인두염"
+        ],
+        "bone": [
+          "파종성 관절피부증후군"
+        ],
+        "skin": [
+          "파종성 관절피부증후군"
+        ],
+        "eye": [
+          "신생아 결막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -7804,6 +8429,26 @@
       "classification": "Chlamydiaceae · obligate intracellular Gram-negative-like bacterium",
       "representativeRecordId": "BGX-510",
       "summary": "무증상 생식기 감염부터 요도염·골반염, 신생아 결막염·폐렴까지 일으킨다. 재감염을 줄이기 위한 파트너 치료와 추적이 중요하다.",
+      "organDiseases": {
+        "urinary": [
+          "자궁경부염",
+          "요도염",
+          "PID",
+          "부고환염"
+        ],
+        "abdomen": [
+          "직장염"
+        ],
+        "bone": [
+          "반응관절염"
+        ],
+        "eye": [
+          "신생아 결막염"
+        ],
+        "lungs": [
+          "신생아 폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -7914,6 +8559,13 @@
       "classification": "Mycoplasmataceae · cell-wall-deficient sexually transmitted bacterium",
       "representativeRecordId": "BGX-511",
       "summary": "지속성 비임균성 요도염·자궁경부염에서 중요하다. Macrolide 내성이 흔해 내성에 따른 순차요법이 필요하며 azithromycin 단회요법은 피한다.",
+      "organDiseases": {
+        "urinary": [
+          "지속성 비임균성 요도염",
+          "자궁경부염",
+          "PID"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -8024,6 +8676,18 @@
       "classification": "Spirochaetaceae · thin motile spirochete",
       "representativeRecordId": "BGX-512",
       "summary": "무통성 하감, 전신발진, 신경·안구 증상 등 병기에 따라 모습이 달라진다. 신경·안구·귀 침범과 임신 여부가 penicillin 치료 방식을 가른다.",
+      "organDiseases": {
+        "skin": [
+          "경성하감",
+          "2기 전신발진·점막병변"
+        ],
+        "brain": [
+          "신경매독"
+        ],
+        "heart": [
+          "심혈관 매독"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -8146,6 +8810,14 @@
       "classification": "Helicobacteraceae · curved microaerophilic Gram-negative bacillus",
       "representativeRecordId": "BGX-513",
       "summary": "소화성궤양·만성위염과 위선암·MALT 림프종에 연관된다. 제균 확인에 혈청항체를 쓰지 않으며, 이전 항균제 노출과 내성이 치료 선택에 중요하다.",
+      "organDiseases": {
+        "abdomen": [
+          "만성위염",
+          "십이지장·위궤양",
+          "위선암",
+          "gastric MALT lymphoma"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -8256,6 +8928,20 @@
       "classification": "Campylobacteraceae · curved microaerophilic Gram-negative bacilli",
       "representativeRecordId": "BGX-514",
       "summary": "가금류 노출 뒤 발열·복통·혈성설사를 일으킨다. 대부분 수액으로 회복하지만, 감염 뒤 Guillain–Barré 증후군·반응관절염이 생길 수 있다.",
+      "organDiseases": {
+        "abdomen": [
+          "혈성설사"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "brain": [
+          "감염 후 Guillain-Barré syndrome"
+        ],
+        "bone": [
+          "감염 후 반응관절염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -8366,6 +9052,18 @@
       "classification": "Bacteroidaceae · obligately anaerobic Gram-negative bacilli",
       "representativeRecordId": "BGX-515",
       "summary": "장관 손상 뒤 복강·골반 농양과 복막염을 만드는 대표 혐기균이다. 항균제와 함께 천공 폐쇄·배농 등 감염원 제거가 중요하다.",
+      "organDiseases": {
+        "abdomen": [
+          "복강내·골반 농양",
+          "복막염"
+        ],
+        "skin": [
+          "수술부위감염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -8476,6 +9174,21 @@
       "classification": "Fusobacteriaceae · obligately anaerobic fusiform Gram-negative bacilli",
       "representativeRecordId": "BGX-516",
       "summary": "젊은 환자의 인두염 뒤 재발열·한쪽 목통증·폐결절이 이어지면 Lemierre 증후군을 의심한다. 내경정맥 혈전정맥염과 원격 감염이 특징이다.",
+      "organDiseases": {
+        "lungs": [
+          "편도주위 감염",
+          "흡인성 폐농양"
+        ],
+        "abdomen": [
+          "복강내 감염"
+        ],
+        "urinary": [
+          "산과 감염"
+        ],
+        "blood": [
+          "Lemierre syndrome"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -8598,6 +9311,15 @@
       "classification": "Prevotellaceae · obligately anaerobic Gram-negative bacilli",
       "representativeRecordId": "BGX-517",
       "summary": "불량 치열·흡인 위험이 있는 환자의 두경부농양·폐농양·농흉에 관여한다. 악취 나는 객담과 공동성 폐병변이 혼합 혐기균 감염의 단서다.",
+      "organDiseases": {
+        "lungs": [
+          "흡인성 폐농양",
+          "농흉"
+        ],
+        "abdomen": [
+          "복강내·골반 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -8723,6 +9445,21 @@
         "혐기성 그람양성 구균군"
       ],
       "summary": "당뇨발·욕창과 두경부·복강의 깊은 혼합 농양에 관여한다. Finegoldia는 인공관절 감염도 일으키며 배농·감염원 제거가 중요하다.",
+      "organDiseases": {
+        "lungs": [
+          "폐농양"
+        ],
+        "skin": [
+          "당뇨발",
+          "욕창"
+        ],
+        "abdomen": [
+          "복강내·골반 농양"
+        ],
+        "bone": [
+          "뼈관절 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -8845,6 +9582,11 @@
       "classification": "Bacteria / Bacillota / Clostridiaceae",
       "representativeRecordId": "BGX-519",
       "summary": "개구장애와 자극에 유발되는 전신경직, 자율신경 불안정이 특징이다. 원래 상처가 이미 아물었어도 파상풍이 발생할 수 있다.",
+      "organDiseases": {
+        "brain": [
+          "파상풍 · 개구장애·강직"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -8955,6 +9697,14 @@
       "classification": "Bacteria / Bacillota / Clostridiaceae",
       "representativeRecordId": "BGX-520",
       "summary": "복시·안검하수·연하장애에서 시작해 대칭성 하행 이완마비와 호흡부전으로 진행한다. 마비가 진행해도 의식과 감각이 보존되는 점이 특징이다.",
+      "organDiseases": {
+        "brain": [
+          "보툴리눔 독소의 하행 이완마비"
+        ],
+        "lungs": [
+          "호흡부전"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -9065,6 +9815,11 @@
       "classification": "Bacteria / Bacillota / Clostridiaceae",
       "representativeRecordId": "BGX-521",
       "summary": "외상 없이 빠르게 진행하는 근괴사·균혈증을 일으킨다. 이런 감염은 결장암·혈액암을 찾게 하는 중요한 경고다.",
+      "organDiseases": {
+        "skin": [
+          "비외상성 근괴사"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -9178,6 +9933,15 @@
         "수막구균"
       ],
       "summary": "수막염과 급격한 균혈증을 일으킨다. 자반성 발진·쇼크가 나타나면 빠르게 악화할 수 있어 즉각적인 치료가 중요하다.",
+      "organDiseases": {
+        "brain": [
+          "수막염"
+        ],
+        "blood": [
+          "meningococcemia",
+          "purpura fulminans"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -9292,6 +10056,23 @@
         "안지노수스군 연쇄상구균"
       ],
       "summary": "뇌·간·폐와 구강 주변의 깊은 농양을 잘 만든다. 균혈증에서 동정되면 배농이 필요한 숨은 감염원을 찾아야 한다.",
+      "organDiseases": {
+        "brain": [
+          "뇌농양"
+        ],
+        "liver": [
+          "간농양"
+        ],
+        "lungs": [
+          "폐농양"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "heart": [
+          "감염심내막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -9406,6 +10187,21 @@
         "말유사 디스갈락티아 연쇄상구균"
       ],
       "summary": "고령·당뇨 환자의 연조직감염·균혈증에서 중요하다. 재발성 봉와직염뿐 아니라 괴사근막염·독성쇼크를 동반할 수 있다.",
+      "organDiseases": {
+        "lungs": [
+          "인두염"
+        ],
+        "skin": [
+          "cellulitis",
+          "괴사근막염"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "heart": [
+          "심내막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -9516,6 +10312,17 @@
       "classification": "Bacteria / Bacillota / Aerococcaceae",
       "representativeRecordId": "BGX-525",
       "summary": "고령 남성, 특히 요로폐색 환자의 요로감염·균혈증에서 중요하다. 균혈증이면 큰 판막 병변을 동반한 심내막염 가능성을 살핀다.",
+      "organDiseases": {
+        "urinary": [
+          "요로감염"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "heart": [
+          "심내막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -9626,6 +10433,21 @@
       "classification": "Bacteria / Pseudomonadota / Pasteurellaceae",
       "representativeRecordId": "BGX-526",
       "summary": "개·고양이 교상 뒤 수 시간 안에 통증·부종이 빠르게 진행하는 연조직감염이 특징이다. 깊은 천자상은 건초·관절·뼈 감염으로 이어질 수 있다.",
+      "organDiseases": {
+        "skin": [
+          "cellulitis",
+          "tenosynovitis"
+        ],
+        "bone": [
+          "골관절염"
+        ],
+        "blood": [
+          "드문 균혈증"
+        ],
+        "brain": [
+          "드문 수막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -9736,6 +10558,19 @@
       "classification": "Bacteria / Bacteroidota / Flavobacteriaceae",
       "representativeRecordId": "BGX-527",
       "summary": "개·고양이 노출 뒤 무비장·알코올사용장애 환자에서 전격 패혈증·DIC를 일으킬 수 있다. 교상 없이 작은 상처를 핥은 것만으로도 감염될 수 있다.",
+      "organDiseases": {
+        "blood": [
+          "패혈증",
+          "DIC",
+          "purpura fulminans"
+        ],
+        "brain": [
+          "수막염"
+        ],
+        "heart": [
+          "심내막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -9846,6 +10681,19 @@
       "classification": "Bacteria / Pseudomonadota / Neisseriaceae",
       "representativeRecordId": "BGX-528",
       "summary": "사람 교상·주먹손상 뒤 손의 건초염·관절감염을 일으킨다. 치아에 부딪힌 작은 손등 상처도 깊은 감염 위험이 있으며 심내막염도 가능하다.",
+      "organDiseases": {
+        "skin": [
+          "cellulitis",
+          "건초염",
+          "head-neck abscess"
+        ],
+        "bone": [
+          "septic arthritis"
+        ],
+        "heart": [
+          "HACEK endocarditis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -9956,6 +10804,16 @@
       "classification": "Bacteria / Pseudomonadota / Neisseriaceae",
       "representativeRecordId": "BGX-529",
       "summary": "어린 소아의 골관절감염에서 중요하다. 미열·가벼운 염증수치만 보이며 절뚝거리는 아이에서도 감염을 놓치지 않아야 한다.",
+      "organDiseases": {
+        "bone": [
+          "septic arthritis",
+          "osteomyelitis",
+          "discitis"
+        ],
+        "heart": [
+          "드문 endocarditis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -10066,6 +10924,23 @@
       "classification": "Bacteria / Spirochaetota / Leptospiraceae",
       "representativeRecordId": "BGX-530",
       "summary": "민물·진흙 노출 뒤 발열·종아리 통증·결막충혈이 나타난다. 황달·급성신손상·폐출혈이 동반되면 중증 렙토스피라증을 의심한다.",
+      "organDiseases": {
+        "brain": [
+          "무균수막염"
+        ],
+        "urinary": [
+          "Weil disease"
+        ],
+        "liver": [
+          "Weil disease"
+        ],
+        "lungs": [
+          "폐출혈"
+        ],
+        "eye": [
+          "결막충혈"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -10176,6 +11051,18 @@
       "classification": "Bacteria / Pseudomonadota / Rickettsiaceae",
       "representativeRecordId": "BGX-531",
       "summary": "가을 야외 노출 뒤 발열·발진·림프절병이 생기고 검은 가피가 단서가 된다. 가피를 겨드랑이·서혜부까지 찾아야 하며 중증에서는 다장기를 침범한다.",
+      "organDiseases": {
+        "skin": [
+          "eschar",
+          "발진"
+        ],
+        "lungs": [
+          "폐렴"
+        ],
+        "brain": [
+          "뇌염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -10286,6 +11173,23 @@
       "classification": "Bacteria / Pseudomonadota / Coxiellaceae",
       "representativeRecordId": "BGX-532",
       "summary": "가축 분만산물 노출 뒤 비정형 폐렴·간염을 일으킨다. 판막질환자는 이후 만성 심내막염·혈관감염 위험을 살펴야 한다.",
+      "organDiseases": {
+        "lungs": [
+          "비정형폐렴"
+        ],
+        "liver": [
+          "육아종성간염"
+        ],
+        "urinary": [
+          "임신합병증"
+        ],
+        "heart": [
+          "만성 심내막염"
+        ],
+        "blood": [
+          "혈관감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -10396,6 +11300,23 @@
       "classification": "Bacteria / Pseudomonadota / Brucellaceae",
       "representativeRecordId": "BGX-533",
       "summary": "비살균 유제품·가축 노출 뒤 파동열·식은땀·골관절통이 나타난다. 심내막염·신경 침범과 재발 가능성이 치료 범위를 가른다.",
+      "organDiseases": {
+        "liver": [
+          "간비장비대"
+        ],
+        "bone": [
+          "골관절염"
+        ],
+        "urinary": [
+          "epididymo-orchitis"
+        ],
+        "brain": [
+          "neurobrucellosis"
+        ],
+        "heart": [
+          "endocarditis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -10506,6 +11427,20 @@
       "classification": "Bacteria / Pseudomonadota / Bartonellaceae",
       "representativeRecordId": "BGX-534",
       "summary": "고양이 할큄 뒤 접종 부위 병변에 이어 국소 림프절이 붓는 고양이할큄병이 대표적이다. 드물게 안구·간비장·심장판막을 침범한다.",
+      "organDiseases": {
+        "eye": [
+          "neuroretinitis"
+        ],
+        "skin": [
+          "bacillary angiomatosis"
+        ],
+        "liver": [
+          "간비장병"
+        ],
+        "heart": [
+          "endocarditis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -10616,6 +11551,20 @@
       "classification": "Bacteria / Pseudomonadota / Rickettsiaceae",
       "representativeRecordId": "BGX-535",
       "summary": "벼룩 노출 지역에서 발열·두통·근육통과 간효소 상승이 나타난다. 발진이 없다고 발진열을 배제하지 않는다.",
+      "organDiseases": {
+        "skin": [
+          "발진"
+        ],
+        "liver": [
+          "간염"
+        ],
+        "lungs": [
+          "드문 폐 합병증"
+        ],
+        "brain": [
+          "드문 신경 합병증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -10726,6 +11675,14 @@
       "classification": "Bacteria / Pseudomonadota / Anaplasmataceae",
       "representativeRecordId": "BGX-536",
       "summary": "진드기 노출 뒤 발열·두통과 백혈구감소·혈소판감소·간효소 상승이 함께 나타난다. 라임병과의 동시감염도 고려한다.",
+      "organDiseases": {
+        "blood": [
+          "백혈구·혈소판감소"
+        ],
+        "liver": [
+          "간효소 상승"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -10836,6 +11793,21 @@
       "classification": "Bacteria / Spirochaetota / Borreliaceae",
       "representativeRecordId": "BGX-537",
       "summary": "진드기 노출 뒤 수일에 걸쳐 커지는 홍반이 초기 라임병의 단서다. 이후 안면마비·수막염·심장전도장애·관절염으로 나타날 수 있다.",
+      "organDiseases": {
+        "skin": [
+          "EM"
+        ],
+        "brain": [
+          "안면마비",
+          "수막염"
+        ],
+        "heart": [
+          "carditis"
+        ],
+        "bone": [
+          "oligoarthritis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -10946,6 +11918,15 @@
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CAL-601",
       "summary": "아구창·식도염부터 칸디다혈증·심부 감염까지 일으킨다. 점막 감염과 혈류감염을 구별하고 숙주 상태·감염 부위에 맞춰 치료한다.",
+      "organDiseases": {
+        "abdomen": [
+          "아구창",
+          "식도염"
+        ],
+        "blood": [
+          "칸디다혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -11056,6 +12037,14 @@
         "칸디다 글라브라투스"
       ],
       "summary": "칸디다혈증·요로감염에서 중요하며 fluconazole 감수성이 낮을 수 있다. 이전 약제 노출과 감수성 결과가 치료 선택을 가른다.",
+      "organDiseases": {
+        "blood": [
+          "칸디다혈증"
+        ],
+        "urinary": [
+          "요로감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -11162,6 +12151,11 @@
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CAU-603",
       "summary": "의료기관 집단발생과 다제내성을 동반하는 침습성 Candida 감염의 원인이다. 피부 집락만으로 치료하지 않으며 실제 감염과 전파 관리가 중요하다.",
+      "organDiseases": {
+        "blood": [
+          "의료관련 칸디다혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -11268,6 +12262,11 @@
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CPA-604",
       "summary": "정맥영양·카테터와 연관된 혈류감염, 특히 신생아실 감염에서 중요하다. Echinocandin 감수성이 상대적으로 낮을 수 있다.",
+      "organDiseases": {
+        "blood": [
+          "카테터 관련 혈류감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -11374,6 +12373,11 @@
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CTR-605",
       "summary": "혈액종양·호중구감소 환자의 칸디다혈증에서 중요하다. 지역별 azole 내성 차이가 있어 종 동정과 감수성 확인이 필요하다.",
+      "organDiseases": {
+        "blood": [
+          "호중구감소 환자 칸디다혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -11483,6 +12487,11 @@
         "칸디다 크루세이"
       ],
       "summary": "침습성 칸디다증을 일으키며 fluconazole에 고유 비감수성이 있다. 다른 Candida와 같은 방식으로 fluconazole을 선택하면 실패할 수 있다.",
+      "organDiseases": {
+        "blood": [
+          "침습성 칸디다증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -11589,6 +12598,14 @@
       "classification": "Fungi / Basidiomycota / Tremellomycetes / Tremellales",
       "representativeRecordId": "CNE-607",
       "summary": "면역저하자의 수막뇌염·폐감염을 일으킨다. 중추신경계 감염은 병합 유도치료가 필요한 중요한 임상형이다.",
+      "organDiseases": {
+        "brain": [
+          "면역저하자 수막뇌염"
+        ],
+        "lungs": [
+          "폐 크립토콕쿠스 질환"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -11695,6 +12712,15 @@
       "classification": "Fungi / Basidiomycota / Tremellomycetes / Tremellales",
       "representativeRecordId": "CGA-608",
       "summary": "면역정상자도 폐 종괴·수막뇌염이 생길 수 있다. 큰 cryptococcoma를 동반할 수 있어 면역저하 여부만으로 배제하지 않는다.",
+      "organDiseases": {
+        "lungs": [
+          "폐 종괴"
+        ],
+        "brain": [
+          "수막뇌염",
+          "cryptococcoma"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -11801,6 +12827,12 @@
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Eurotiales",
       "representativeRecordId": "AFU-609",
       "summary": "면역저하자의 침습성 폐아스페르길루스증에서 중요하다. 천식 환자의 알레르기성 기관지폐 질환과 침습감염은 치료 맥락이 다르다.",
+      "organDiseases": {
+        "lungs": [
+          "침습성 폐아스페르길루스증",
+          "ABPA"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -11907,6 +12939,14 @@
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Eurotiales",
       "representativeRecordId": "AFL-610",
       "summary": "침습성 폐·부비동 감염과 각막염을 일으킨다. 지역·종에 따라 약제 감수성이 달라, Aspergillus라는 이름만으로 치료 반응을 단정하지 않는다.",
+      "organDiseases": {
+        "lungs": [
+          "침습성 폐·부비동 감염"
+        ],
+        "eye": [
+          "각막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -12013,6 +13053,11 @@
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Eurotiales",
       "representativeRecordId": "ATE-611",
       "summary": "침습성 폐감염과 파종감염을 일으킨다. Amphotericin B에 고유 비감수성이 있어 Aspergillus의 종 동정이 치료 선택을 바꾼다.",
+      "organDiseases": {
+        "lungs": [
+          "침습성 폐 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -12119,6 +13164,20 @@
       "classification": "Fungi / Mucoromycota / Mucoromycetes / Mucorales",
       "representativeRecordId": "MUC-612",
       "summary": "비뇌안와·폐·피부의 침습성 털곰팡이증을 일으킨다. 수술적 감염원 제거와 amphotericin 기반 치료가 함께 중요한 감염이다.",
+      "organDiseases": {
+        "lungs": [
+          "비·폐 털곰팡이증"
+        ],
+        "brain": [
+          "비뇌안와 털곰팡이증"
+        ],
+        "eye": [
+          "비뇌안와 털곰팡이증"
+        ],
+        "skin": [
+          "피부 털곰팡이증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -12229,6 +13288,11 @@
         "뉴모시스티스 지로베치"
       ],
       "summary": "면역저하자에서 저산소성 간질성 폐렴을 일으킨다. 치료 실패가 곧 약제내성은 아니며, 중증도·면역상태와 다른 원인을 함께 평가한다.",
+      "organDiseases": {
+        "lungs": [
+          "저산소성 간질성 폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -12335,6 +13399,11 @@
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Onygenales / Ajellomycetaceae",
       "representativeRecordId": "HCA-614",
       "summary": "조류·박쥐 배설물과 관련된 토양 노출 뒤 폐감염이 생길 수 있다. 면역저하자에서는 파종감염 위험이 커 여행·노출력이 중요하다.",
+      "organDiseases": {
+        "lungs": [
+          "급성 폐 히스토플라스마증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -12441,6 +13510,20 @@
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Onygenales / Onygenaceae",
       "representativeRecordId": "COC-615",
       "summary": "미국 남서부 등 건조지역 노출 뒤 폐질환을 일으킨다. 피부·뼈·관절·수막으로 파종할 수 있어 여행력과 폐외 병변이 중요하다.",
+      "organDiseases": {
+        "lungs": [
+          "폐 콕시디오이데스 질환"
+        ],
+        "bone": [
+          "골관절 파종"
+        ],
+        "skin": [
+          "피부 파종"
+        ],
+        "brain": [
+          "수막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -12547,6 +13630,17 @@
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Onygenales / Ajellomycetaceae",
       "representativeRecordId": "BLA-616",
       "summary": "북미 노출 뒤 폐감염에 피부·뼈 병변이 동반되면 의심한다. 폐에서 원격 부위로 파종할 수 있다.",
+      "organDiseases": {
+        "lungs": [
+          "폐 감염"
+        ],
+        "skin": [
+          "피부 파종 감염"
+        ],
+        "bone": [
+          "골 파종 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -12653,6 +13747,14 @@
       "classification": "Fungi / Ascomycota / Sordariomycetes / Ophiostomatales",
       "representativeRecordId": "SSS-617",
       "summary": "식물·토양·고양이 노출 뒤 림프관을 따라 이어지는 피부결절이 특징이다. 관절·전신 파종 여부에 따라 치료 범위가 달라진다.",
+      "organDiseases": {
+        "skin": [
+          "림프피부형 sporotrichosis"
+        ],
+        "bone": [
+          "관절 sporotrichosis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -12759,6 +13861,11 @@
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Eurotiales",
       "representativeRecordId": "TMA-618",
       "summary": "동남아 여행력이 있는 HIV·면역저하 환자의 파종감염에서 중요하다. 한국에서는 해외 노출력을 놓치지 않는 것이 핵심이다.",
+      "organDiseases": {
+        "blood": [
+          "면역저하자의 파종 talaromycosis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -12865,6 +13972,12 @@
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Onygenales / Arthrodermataceae",
       "representativeRecordId": "DER-619",
       "summary": "피부·모발·손발톱에 백선을 일으킨다. 침범 부위에 따라 치료가 달라지며, 지속 병변에서는 재감염과 terbinafine 내성을 구별한다.",
+      "organDiseases": {
+        "skin": [
+          "체부·족부·두부백선",
+          "손발톱진균증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -12971,6 +14084,15 @@
       "classification": "Fungi / Basidiomycota / Malasseziomycetes / Malasseziales",
       "representativeRecordId": "MAL-620",
       "summary": "어루러기·모낭염의 원인이며, 지질 공급·카테터와 관련된 혈류감염도 가능하다. 얕은 피부병변과 침습감염을 구별한다.",
+      "organDiseases": {
+        "skin": [
+          "어루러기",
+          "모낭염"
+        ],
+        "blood": [
+          "카테터 혈류감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -13077,6 +14199,11 @@
       "classification": "Eukaryota / Apicomplexa / Aconoidasida / Haemosporida / Plasmodiidae",
       "representativeRecordId": "PFA-701",
       "summary": "해외 노출 뒤 말라리아가 발생하면 뇌·신장·폐를 침범하는 중증질환으로 빠르게 진행할 수 있다. 초기부터 중증 징후를 평가해야 한다.",
+      "organDiseases": {
+        "blood": [
+          "중증 가능 말라리아"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -13183,6 +14310,11 @@
       "classification": "Eukaryota / Apicomplexa / Aconoidasida / Haemosporida / Plasmodiidae",
       "representativeRecordId": "PVO-702",
       "summary": "혈액기 말라리아가 호전된 뒤에도 간 휴면체 때문에 재발할 수 있다. 재발 방지 치료는 혈액기 치료와 별도이며 primaquine 전에 G6PD를 확인한다.",
+      "organDiseases": {
+        "blood": [
+          "재발성 말라리아"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -13289,6 +14421,14 @@
       "classification": "Eukaryota / Apicomplexa / Aconoidasida / Haemosporida / Plasmodiidae",
       "representativeRecordId": "PMA-703",
       "summary": "낮은 기생충혈증으로 장기간 지속될 수 있는 말라리아다. 만성 감염은 신증후군과 연관되며 간 휴면체 제거 치료는 필요하지 않다.",
+      "organDiseases": {
+        "blood": [
+          "저밀도 장기 말라리아 감염"
+        ],
+        "urinary": [
+          "신증후군 연관"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -13395,6 +14535,12 @@
       "classification": "Eukaryota / Apicomplexa / Aconoidasida / Haemosporida / Plasmodiidae",
       "representativeRecordId": "PKN-704",
       "summary": "동남아 여행 뒤 발생하는 말라리아로 기생충혈증이 빠르게 늘 수 있다. 비중증으로 시작해도 중증화 가능성을 가까이 관찰한다.",
+      "organDiseases": {
+        "blood": [
+          "고기생충혈증",
+          "중증 말라리아"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -13501,6 +14647,14 @@
       "classification": "Eukaryota / Apicomplexa / Conoidasida",
       "representativeRecordId": "TGO-705",
       "summary": "면역저하자의 재활성화 뇌염·망막염과 선천감염에서 중요하다. 숙주 면역상태와 임신·중추신경계 침범이 치료를 가른다.",
+      "organDiseases": {
+        "brain": [
+          "뇌염"
+        ],
+        "eye": [
+          "망막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -13607,6 +14761,12 @@
       "classification": "Eukaryota / Metamonada / Fornicata / Diplomonadida",
       "representativeRecordId": "GLA-706",
       "summary": "오염수 노출 뒤 지방변·흡수장애성 설사가 생긴다. 조직 침습성 아메바와 달리 소장 감염이 중심이다.",
+      "organDiseases": {
+        "abdomen": [
+          "지방변",
+          "흡수장애 설사"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -13713,6 +14873,14 @@
       "classification": "Eukaryota / Amoebozoa / Archamoebae / Entamoebida",
       "representativeRecordId": "EHI-707",
       "summary": "혈성 대장염과 간농양을 일으킨다. 조직 감염 치료 뒤에도 장강에 남은 감염을 따로 치료해야 한다.",
+      "organDiseases": {
+        "abdomen": [
+          "대장염"
+        ],
+        "liver": [
+          "간농양"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -13819,6 +14987,11 @@
       "classification": "Eukaryota / Apicomplexa / Conoidasida",
       "representativeRecordId": "CRY-708",
       "summary": "오염수 노출 뒤 수양성 설사를 일으킨다. 면역저하자는 설사가 오래가고 치료 반응이 제한될 수 있어 면역상태가 중요하다.",
+      "organDiseases": {
+        "abdomen": [
+          "수양성 설사"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -13925,6 +15098,11 @@
       "classification": "Eukaryota / Apicomplexa / Conoidasida",
       "representativeRecordId": "CYC-709",
       "summary": "식품·수입 농산물 노출 뒤 오래 지속하거나 재발하는 수양성 설사가 특징이다. 일회성 급성 장염과 달리 지속 경과가 단서가 된다.",
+      "organDiseases": {
+        "abdomen": [
+          "지속·재발 수양성 설사"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -14031,6 +15209,11 @@
       "classification": "Eukaryota / Apicomplexa / Conoidasida",
       "representativeRecordId": "CYS-710",
       "summary": "진행 HIV 환자의 만성 설사·흡수장애에서 중요하다. 면역저하 상태와 재발 위험이 치료·추적의 중심이다.",
+      "organDiseases": {
+        "abdomen": [
+          "AIDS의 만성 설사"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -14137,6 +15320,12 @@
       "classification": "Eukaryota / Metamonada / Parabasalia / Trichomonadida",
       "representativeRecordId": "TVA-711",
       "summary": "성접촉으로 전파되는 질염·요도염의 원인이다. 치료 뒤 재감염을 줄이기 위해 파트너와 전파 맥락을 함께 다룬다.",
+      "organDiseases": {
+        "urinary": [
+          "질염",
+          "요도염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -14243,6 +15432,14 @@
       "classification": "Eukaryota / Euglenozoa / Kinetoplastea / Trypanosomatida",
       "representativeRecordId": "LEI-712",
       "summary": "피부궤양·점막 파괴·내장형 등 다양한 임상형을 만든다. 감염 지역과 종, 침범 장기가 치료제를 가른다.",
+      "organDiseases": {
+        "skin": [
+          "피부·점막 리슈만편모충증"
+        ],
+        "liver": [
+          "내장 리슈만편모충증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -14349,6 +15546,14 @@
       "classification": "Eukaryota / Euglenozoa / Kinetoplastea / Trypanosomatida",
       "representativeRecordId": "TCR-713",
       "summary": "만성 샤가스병에서 심근병증과 소화기 신경 손상이 나타난다. 급성 감염과 이미 진행된 만성 장기병증은 치료 이득이 다르다.",
+      "organDiseases": {
+        "heart": [
+          "샤가스병 심근병증"
+        ],
+        "abdomen": [
+          "샤가스병 소화기 병증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -14455,6 +15660,14 @@
       "classification": "Eukaryota / Euglenozoa / Kinetoplastea / Trypanosomatida",
       "representativeRecordId": "TBR-714",
       "summary": "아프리카 노출 뒤 혈림프성 질환에서 중추신경계 침범·수면장애로 진행한다. 중추신경계 침범 여부가 치료 선택을 가른다.",
+      "organDiseases": {
+        "blood": [
+          "아프리카수면병 혈림프기"
+        ],
+        "brain": [
+          "아프리카수면병 CNS기"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -14561,6 +15774,15 @@
       "classification": "Eukaryota / Nematoda / Chromadorea / Rhabditida",
       "representativeRecordId": "SST-715",
       "summary": "오래 지속되는 만성감염이 steroid 노출 뒤 과감염·파종으로 악화할 수 있다. 장내세균 균혈증이 동반될 수 있어 면역억제 맥락이 중요하다.",
+      "organDiseases": {
+        "abdomen": [
+          "만성 분선충 감염",
+          "과감염"
+        ],
+        "lungs": [
+          "분선충 과감염·파종"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -14667,6 +15889,17 @@
       "classification": "Eukaryota / Nematoda / Chromadorea / Ascaridida / Ascarididae",
       "representativeRecordId": "ALU-716",
       "summary": "장폐색·담도회충증을 일으키며 유충이 폐를 지날 때 호흡기 증상이 생길 수 있다. 장관 증상과 폐 이동기의 증상을 구별한다.",
+      "organDiseases": {
+        "abdomen": [
+          "장폐색"
+        ],
+        "liver": [
+          "담도회충증"
+        ],
+        "lungs": [
+          "Löffler 증후군"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -14773,6 +16006,11 @@
       "classification": "Eukaryota / Nematoda / Chromadorea / Oxyurida / Oxyuridae",
       "representativeRecordId": "EVE-717",
       "summary": "소아의 야간 항문소양이 대표적이며 가족·집단 내 재감염이 흔하다. 항문주위 충란과 반복 노출을 확인한다.",
+      "organDiseases": {
+        "abdomen": [
+          "요충증 · 야간 항문소양"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -14879,6 +16117,15 @@
       "classification": "Eukaryota / Nematoda / Enoplea / Trichocephalida / Trichuridae",
       "representativeRecordId": "TTR-718",
       "summary": "만성 대장염·빈혈을 일으키며 심한 감염은 직장탈출로 나타날 수 있다. 감염량과 장관 합병증이 임상 경과를 가른다.",
+      "organDiseases": {
+        "abdomen": [
+          "대장염",
+          "직장탈출"
+        ],
+        "blood": [
+          "빈혈"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -14985,6 +16232,14 @@
       "classification": "Eukaryota / Nematoda / Chromadorea / Strongylida / Ancylostomatidae",
       "representativeRecordId": "HOO-719",
       "summary": "지속적인 장출혈로 철결핍빈혈을 일으킨다. 토양 접촉 뒤 피부 증상과 빈혈이 함께 있으면 노출력을 살핀다.",
+      "organDiseases": {
+        "blood": [
+          "철결핍빈혈"
+        ],
+        "skin": [
+          "ground itch"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -15091,6 +16346,20 @@
       "classification": "Eukaryota / Platyhelminthes / Trematoda",
       "representativeRecordId": "SCH-720",
       "summary": "민물 노출 뒤 장간·요로·신경 병변을 일으킬 수 있다. 종과 침범 장기에 따라 임상형과 합병증이 달라진다.",
+      "organDiseases": {
+        "abdomen": [
+          "장 주혈흡충증"
+        ],
+        "liver": [
+          "간 주혈흡충증"
+        ],
+        "urinary": [
+          "요로 주혈흡충증"
+        ],
+        "brain": [
+          "신경 주혈흡충증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -15197,6 +16466,13 @@
       "classification": "Eukaryota / Platyhelminthes / Trematoda",
       "representativeRecordId": "CSI-721",
       "summary": "민물고기 생식과 연관된 담관염·담석을 일으킨다. 만성감염은 담관암 위험과 연관되며 한국에서 중요한 풍토병이다.",
+      "organDiseases": {
+        "liver": [
+          "담관염",
+          "담석",
+          "담관암 위험"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -15303,6 +16579,14 @@
       "classification": "Eukaryota / Platyhelminthes / Trematoda",
       "representativeRecordId": "PWE-722",
       "summary": "민물게·가재 생식 뒤 만성 기침·객혈과 흉막 병변을 일으킨다. 폐질환뿐 아니라 이소성 뇌 병변도 가능하다.",
+      "organDiseases": {
+        "lungs": [
+          "폐·흉막 병변 · 만성 기침·객혈"
+        ],
+        "brain": [
+          "뇌 병변"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -15409,6 +16693,12 @@
       "classification": "Eukaryota / Platyhelminthes / Trematoda",
       "representativeRecordId": "FHE-723",
       "summary": "수생식물 노출 뒤 급성 간이행성 질환과 만성 담도질환을 일으킨다. 다른 흡충과 달리 triclabendazole의 치료 역할이 중요하다.",
+      "organDiseases": {
+        "liver": [
+          "급성 간이행",
+          "만성 담도질환"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -15515,6 +16805,17 @@
       "classification": "Eukaryota / Platyhelminthes / Cestoda",
       "representativeRecordId": "TSO-724",
       "summary": "신경낭미충증에서 발작·뇌부종·뇌실 병변이 나타날 수 있다. 병변의 위치·수와 생존 상태에 따라 약물·수술 판단이 달라진다.",
+      "organDiseases": {
+        "brain": [
+          "신경낭미충증"
+        ],
+        "eye": [
+          "안구 낭미충증"
+        ],
+        "skin": [
+          "근육 낭미충증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -15621,6 +16922,11 @@
       "classification": "Eukaryota / Platyhelminthes / Cestoda",
       "representativeRecordId": "TSA-725",
       "summary": "덜 익힌 소고기와 연관된 장 조충증을 일으킨다. T. solium과 달리 사람 낭미충증의 원인은 아니다.",
+      "organDiseases": {
+        "abdomen": [
+          "장 조충증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -15727,6 +17033,14 @@
       "classification": "Eukaryota / Platyhelminthes / Cestoda",
       "representativeRecordId": "ECH-726",
       "summary": "간·폐에 낭성 또는 침윤성 포충 병변을 만든다. 병변의 위치·형태와 종에 따라 약물·중재 치료의 범위가 달라진다.",
+      "organDiseases": {
+        "liver": [
+          "간 포충성 병변"
+        ],
+        "lungs": [
+          "폐 포충성 병변"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -15833,6 +17147,14 @@
       "classification": "Eukaryota / Nematoda / Chromadorea / Ascaridida / Toxocaridae",
       "representativeRecordId": "TOX-727",
       "summary": "내장·안구 유충이행증을 일으킨다. 사람에서는 장내 성충 감염이 아니어서 대변 충란검사만으로 진단할 수 없다.",
+      "organDiseases": {
+        "liver": [
+          "내장 유충이행증"
+        ],
+        "eye": [
+          "안구 유충이행증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -15939,6 +17261,20 @@
       "classification": "Eukaryota / Nematoda / Enoplea / Trichocephalida / Trichinellidae",
       "representativeRecordId": "TRI-728",
       "summary": "덜 익힌 돼지·야생동물 고기 노출 뒤 장 증상에 이어 근육통·안와부종이 나타난다. 심근·중추신경계 침범이 중증 신호다.",
+      "organDiseases": {
+        "abdomen": [
+          "장 증상"
+        ],
+        "skin": [
+          "근육통"
+        ],
+        "heart": [
+          "심근 침범"
+        ],
+        "brain": [
+          "CNS 침범"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -16045,6 +17381,11 @@
       "classification": "Eukaryota / Nematoda / Chromadorea / Ascaridida / Anisakidae",
       "representativeRecordId": "ANI-729",
       "summary": "날 생선·오징어를 먹은 뒤 급성 위장관 통증이 나타난다. 호산구·알레르기 반응이 동반될 수 있어 생식 노출력이 중요하다.",
+      "organDiseases": {
+        "abdomen": [
+          "급성 위·장 anisakiasis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -16151,6 +17492,12 @@
       "classification": "Eukaryota / Arthropoda / Arachnida / Sarcoptiformes",
       "representativeRecordId": "SCA-730",
       "summary": "야간 소양과 밀접접촉자 사이의 전파가 특징이다. 가피옴은 진드기 부담·전염성이 커 요양시설 집단발생에서 특히 중요하다.",
+      "organDiseases": {
+        "skin": [
+          "고전옴",
+          "가피옴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -16257,6 +17604,17 @@
       "classification": "Fungi / Ascomycota / Nectriaceae",
       "representativeRecordId": "FUS-621",
       "summary": "각막염을 일으키며 면역저하자에서는 폐·혈류·전신으로 파종할 수 있다. 호중구감소 환자의 통증성 피부결절과 양성 혈액배양이 중요한 단서다.",
+      "organDiseases": {
+        "eye": [
+          "각막염"
+        ],
+        "skin": [
+          "손발톱진균증"
+        ],
+        "lungs": [
+          "면역저하자의 폐·부비동 fusariosis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -16363,6 +17721,22 @@
       "classification": "Fungi / Ascomycota / Microascaceae",
       "representativeRecordId": "SCA-622",
       "summary": "익수 수주~수개월 뒤 폐감염·뇌농양이 나타나면 의심한다. Amphotericin B에 고유 비감수성이 있어 정확한 종 동정이 치료를 바꾼다.",
+      "organDiseases": {
+        "skin": [
+          "균종",
+          "피부 감염"
+        ],
+        "lungs": [
+          "폐 fungus ball",
+          "침습성 폐질환"
+        ],
+        "brain": [
+          "뇌농양"
+        ],
+        "bone": [
+          "골관절 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -16469,6 +17843,23 @@
       "classification": "Fungi / Ascomycota / Microascaceae",
       "representativeRecordId": "LPR-623",
       "summary": "면역저하자의 폐·혈류·중추신경계 파종감염을 일으킨다. 여러 항진균제에 감수성이 낮아 종 동정과 면역회복 전략이 특히 중요하다.",
+      "organDiseases": {
+        "lungs": [
+          "폐 파종 감염"
+        ],
+        "blood": [
+          "혈류 파종 감염"
+        ],
+        "brain": [
+          "CNS 파종 감염"
+        ],
+        "bone": [
+          "골관절 감염"
+        ],
+        "skin": [
+          "피하 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -16575,6 +17966,18 @@
       "classification": "Eukaryota / Apicomplexa / Aconoidasida / Piroplasmida",
       "representativeRecordId": "BMI-731",
       "summary": "진드기·수혈 노출 뒤 발열과 용혈성빈혈을 일으킨다. 무비장·고령·면역저하 환자는 중증화하기 쉬워 말라리아 여행력이 없어도 의심한다.",
+      "organDiseases": {
+        "blood": [
+          "용혈빈혈",
+          "DIC"
+        ],
+        "lungs": [
+          "ARDS"
+        ],
+        "urinary": [
+          "신부전"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -16681,6 +18084,17 @@
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Simplexvirus",
       "representativeRecordId": "HSV-801",
       "summary": "구순포진·각막염뿐 아니라 뇌염·신생아감염도 일으킨다. 재발성 점막 병변과 중추신경계 감염은 치료 범위가 다르다.",
+      "organDiseases": {
+        "skin": [
+          "구순포진"
+        ],
+        "eye": [
+          "각막염"
+        ],
+        "brain": [
+          "뇌염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -16787,6 +18201,14 @@
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Simplexvirus",
       "representativeRecordId": "HSV-802",
       "summary": "재발성 생식기궤양·무균수막염과 신생아감염의 원인이다. 증상이 없을 때도 배출되어 파트너·주산기 전파가 중요하다.",
+      "organDiseases": {
+        "urinary": [
+          "생식기궤양"
+        ],
+        "brain": [
+          "무균수막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -16893,6 +18315,21 @@
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Varicellovirus",
       "representativeRecordId": "VZV-803",
       "summary": "초감염은 수두, 재활성화는 피부절을 따라 나타나는 대상포진을 일으킨다. 면역저하자는 파종·폐렴·뇌염·안구 침범 위험을 살핀다.",
+      "organDiseases": {
+        "skin": [
+          "수두",
+          "대상포진"
+        ],
+        "lungs": [
+          "폐렴"
+        ],
+        "brain": [
+          "뇌염"
+        ],
+        "eye": [
+          "망막괴사"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -16999,6 +18436,18 @@
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Cytomegalovirus",
       "representativeRecordId": "CMV-804",
       "summary": "면역저하자의 망막염·대장염·식도염·폐렴과 선천감염을 일으킨다. 바이러스 검출과 실제 장기질환을 구별해야 치료 목적이 명확해진다.",
+      "organDiseases": {
+        "eye": [
+          "망막염"
+        ],
+        "abdomen": [
+          "식도염",
+          "대장염"
+        ],
+        "lungs": [
+          "폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -17105,6 +18554,18 @@
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Lymphocryptovirus",
       "representativeRecordId": "EBV-805",
       "summary": "청년의 감염단핵구증을 일으키며 일부 림프종·비인두암과 연관된다. 단순 급성 감염과 면역저하자의 종양성 질환은 다른 임상 맥락이다.",
+      "organDiseases": {
+        "blood": [
+          "감염단핵구증",
+          "Burkitt·Hodgkin 림프종"
+        ],
+        "abdomen": [
+          "구강털백반"
+        ],
+        "lungs": [
+          "비인두암"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -17211,6 +18672,15 @@
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Roseolovirus",
       "representativeRecordId": "HHS-806",
       "summary": "소아 돌발진·열성경련과 이식 후 재활성화 뇌염에서 중요하다. 이식 환자의 새 신경증상을 단순 과거 감염과 구별해야 한다.",
+      "organDiseases": {
+        "skin": [
+          "돌발진"
+        ],
+        "brain": [
+          "열성경련",
+          "이식 후 변연계뇌염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -17317,6 +18787,15 @@
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Rhadinovirus",
       "representativeRecordId": "HHE-807",
       "summary": "카포시육종·원발성 삼출림프종·다중심성 Castleman병과 연관된다. 면역저하 상태와 동반 종양이 임상 판단의 중심이다.",
+      "organDiseases": {
+        "skin": [
+          "Kaposi sarcoma"
+        ],
+        "blood": [
+          "primary effusion lymphoma",
+          "multicentric Castleman disease"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -17423,6 +18902,22 @@
       "classification": "Viruses / Rowavirales / Adenoviridae / Mastadenovirus",
       "representativeRecordId": "ADV-808",
       "summary": "인두결막열·유행각결막염·위장염과 호흡기 집단발생의 원인이다. 같은 바이러스라도 눈·호흡기·장관 등 침범 부위가 다양하다.",
+      "organDiseases": {
+        "lungs": [
+          "인두결막열",
+          "폐렴"
+        ],
+        "eye": [
+          "인두결막열",
+          "유행각결막염"
+        ],
+        "abdomen": [
+          "위장염"
+        ],
+        "urinary": [
+          "출혈방광염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -17529,6 +19024,15 @@
       "classification": "Viruses / Piccovirales / Parvoviridae / Erythroparvovirus",
       "representativeRecordId": "PVB-809",
       "summary": "소아 전염성홍반을 일으키며 용혈성 질환자는 일과성 무형성발작 위험이 있다. 임신 중 감염은 태아수종, 면역저하는 만성빈혈과 연관된다.",
+      "organDiseases": {
+        "skin": [
+          "전염성홍반"
+        ],
+        "blood": [
+          "일과성 무형성발작",
+          "만성빈혈"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -17635,6 +19139,20 @@
       "classification": "Viruses / Zurhausenvirales / Papillomaviridae / Alphapapillomavirus",
       "representativeRecordId": "HPV-810",
       "summary": "사마귀와 자궁경부·항문·구인두암에 연관된다. 사마귀 치료와 암 예방·검진은 서로 다른 임상 과제다.",
+      "organDiseases": {
+        "skin": [
+          "사마귀"
+        ],
+        "urinary": [
+          "자궁경부암"
+        ],
+        "abdomen": [
+          "항문암"
+        ],
+        "lungs": [
+          "구인두암"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -17741,6 +19259,13 @@
       "classification": "Viruses / Blubervirales / Hepadnaviridae / Orthohepadnavirus",
       "representativeRecordId": "HBV-811",
       "summary": "급성·만성간염을 일으키며 장기적으로 간경변·간세포암 위험이 있다. 만성 감염은 간 손상과 치료 적응증을 함께 평가한다.",
+      "organDiseases": {
+        "liver": [
+          "급·만성간염",
+          "간경변",
+          "간세포암"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -17847,6 +19372,16 @@
       "classification": "Viruses / Amarillovirales / Flaviviridae / Hepacivirus",
       "representativeRecordId": "HCV-812",
       "summary": "만성간염에서 간경변·간세포암으로 진행할 수 있다. 간질환 외에 혼합한랭글로불린혈증 같은 장기 증상도 가능하다.",
+      "organDiseases": {
+        "liver": [
+          "만성간염",
+          "간경변",
+          "간세포암"
+        ],
+        "blood": [
+          "혼합한랭글로불린혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -17953,6 +19488,12 @@
       "classification": "Viruses / Picornavirales / Picornaviridae / Hepatovirus",
       "representativeRecordId": "HAV-813",
       "summary": "급성간염을 일으키지만 만성화하지 않는다. 대부분의 급성 경과와 드물게 생기는 급성간부전을 구별해 살핀다.",
+      "organDiseases": {
+        "liver": [
+          "급성간염",
+          "드문 급성간부전"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -18059,6 +19600,12 @@
       "classification": "Viruses / Hepelivirales / Hepeviridae / Paslahepevirus",
       "representativeRecordId": "HEV-814",
       "summary": "급성간염을 일으키며 임신부는 중증질환, 면역저하자는 만성감염 위험이 있다. 숙주 상태에 따라 같은 감염의 경과가 크게 달라진다.",
+      "organDiseases": {
+        "liver": [
+          "급성간염",
+          "면역저하자의 만성감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -18165,6 +19712,12 @@
       "classification": "Viruses / Ortervirales / Retroviridae / Lentivirus",
       "representativeRecordId": "HIV-815",
       "summary": "급성 감염 뒤 면역저하가 진행하면 기회감염·종양이 나타난다. 치료는 한 약제의 단독 사용이 아닌 완전한 병합 항레트로바이러스 요법이다.",
+      "organDiseases": {
+        "blood": [
+          "급성 retroviral syndrome",
+          "AIDS"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -18271,6 +19824,17 @@
       "classification": "Viruses / Ortervirales / Retroviridae / Deltaretrovirus",
       "representativeRecordId": "HTL-816",
       "summary": "성인 T세포백혈병·림프종과 진행성 보행장애를 보이는 척수병증에 연관된다. 무증상 감염과 이미 생긴 장기질환을 구별한다.",
+      "organDiseases": {
+        "blood": [
+          "성인T세포백혈병·림프종"
+        ],
+        "brain": [
+          "HAM/TSP"
+        ],
+        "skin": [
+          "감염성피부염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -18377,6 +19941,13 @@
       "classification": "Viruses / Articulavirales / Orthomyxoviridae / Alphainfluenzavirus",
       "representativeRecordId": "FLA-817",
       "summary": "급성 발열·호흡기 증상에서 폐렴·세균성 중복감염으로 악화할 수 있다. 숙주의 중증 위험과 발병 시점이 항바이러스제 판단에 중요하다.",
+      "organDiseases": {
+        "lungs": [
+          "급성호흡기질환",
+          "바이러스폐렴",
+          "세균성 중복감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -18483,6 +20054,18 @@
       "classification": "Viruses / Articulavirales / Orthomyxoviridae / Betainfluenzavirus",
       "representativeRecordId": "FLB-818",
       "summary": "계절성 독감을 일으키며 폐렴과 소아 근염·뇌병증이 가능하다. Influenza A처럼 숙주 위험과 치료 시작 시점을 살핀다.",
+      "organDiseases": {
+        "lungs": [
+          "인플루엔자",
+          "폐렴"
+        ],
+        "skin": [
+          "소아 근염"
+        ],
+        "brain": [
+          "소아 뇌병증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -18589,6 +20172,12 @@
       "classification": "Viruses / Mononegavirales / Pneumoviridae / Orthopneumovirus",
       "representativeRecordId": "RSV-819",
       "summary": "영아 세기관지염과 노인·면역저하자의 중증 폐질환에서 중요하다. 환자 연령과 기저질환이 중증 위험을 가른다.",
+      "organDiseases": {
+        "lungs": [
+          "세기관지염",
+          "폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -18695,6 +20284,15 @@
       "classification": "Viruses / Nidovirales / Coronaviridae / Betacoronavirus",
       "representativeRecordId": "COV-820",
       "summary": "COVID-19의 원인이며 숙주에 따라 경증 호흡기질환부터 중증 폐렴까지 나타난다. 고위험 환자는 발병 초기에 치료 가능 여부를 판단한다.",
+      "organDiseases": {
+        "lungs": [
+          "COVID-19",
+          "폐렴"
+        ],
+        "blood": [
+          "혈전합병증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -18801,6 +20399,13 @@
       "classification": "Viruses / Picornavirales / Picornaviridae / Enterovirus",
       "representativeRecordId": "RHV-821",
       "summary": "흔한 감기의 원인이며 천식·COPD를 악화시킬 수 있다. 면역저하자에서는 하기도질환까지 진행할 수 있다.",
+      "organDiseases": {
+        "lungs": [
+          "감기",
+          "천식·COPD 악화",
+          "면역저하자의 하기도질환"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -18907,6 +20512,13 @@
       "classification": "Viruses / Mononegavirales / Paramyxoviridae / Respirovirus-Orthorubulavirus",
       "representativeRecordId": "PIV-822",
       "summary": "소아 크루프의 대표 원인이며 세기관지염·폐렴도 일으킨다. 상기도 증상과 하기도 침범을 나누어 평가한다.",
+      "organDiseases": {
+        "lungs": [
+          "크루프",
+          "세기관지염",
+          "폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -19013,6 +20625,14 @@
       "classification": "Viruses / Mononegavirales / Pneumoviridae / Metapneumovirus",
       "representativeRecordId": "HMP-823",
       "summary": "소아·노인에서 세기관지염·폐렴을 일으키며 천식 악화도 가능하다. 단순 감기처럼 시작해도 숙주에 따라 하기도질환으로 진행할 수 있다.",
+      "organDiseases": {
+        "lungs": [
+          "감기",
+          "세기관지염",
+          "폐렴",
+          "천식악화"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -19119,6 +20739,20 @@
       "classification": "Viruses / Mononegavirales / Paramyxoviridae / Morbillivirus",
       "representativeRecordId": "MEA-824",
       "summary": "발열·기침·콧물·결막염 뒤 Koplik 반점과 발진이 나타난다. 전염성이 높고 폐렴·뇌염 합병증이 가능하다.",
+      "organDiseases": {
+        "eye": [
+          "결막염"
+        ],
+        "skin": [
+          "발진"
+        ],
+        "lungs": [
+          "폐렴"
+        ],
+        "brain": [
+          "뇌염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -19225,6 +20859,14 @@
       "classification": "Viruses / Hepelivirales / Matonaviridae / Rubivirus",
       "representativeRecordId": "RUB-825",
       "summary": "대개 경한 발진열·관절염을 일으키지만 임신 중 감염은 선천풍진증후군 위험이 있다. 임신 여부가 중요한 임상 분기다.",
+      "organDiseases": {
+        "skin": [
+          "발진열"
+        ],
+        "bone": [
+          "관절염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -19331,6 +20973,18 @@
       "classification": "Viruses / Mononegavirales / Paramyxoviridae / Orthorubulavirus",
       "representativeRecordId": "MUM-826",
       "summary": "이하선염이 대표적이며 고환염·수막염·췌장염이 동반될 수 있다. 침범 장기에 따라 합병증 평가가 달라진다.",
+      "organDiseases": {
+        "urinary": [
+          "고환염"
+        ],
+        "brain": [
+          "수막염"
+        ],
+        "abdomen": [
+          "췌장염",
+          "이하선염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -19437,6 +21091,11 @@
       "classification": "Viruses / Reovirales / Sedoreoviridae / Rotavirus",
       "representativeRecordId": "ROT-827",
       "summary": "소아에서 구토·발열·수양성 설사와 탈수를 일으킨다. 바이러스 자체보다 수분·전해질 손실 관리가 급성기 치료의 중심이다.",
+      "organDiseases": {
+        "abdomen": [
+          "수양성설사 · 구토·탈수"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -19543,6 +21202,11 @@
       "classification": "Viruses / Picornavirales / Caliciviridae / Norovirus",
       "representativeRecordId": "NOR-828",
       "summary": "급성 구토·수양성 설사와 집단발병이 특징이다. 낮은 감염량으로 쉽게 전파되어 환자 수액 관리와 전파 차단이 중요하다.",
+      "organDiseases": {
+        "abdomen": [
+          "급성 구토·수양성설사"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -19649,6 +21313,23 @@
       "classification": "Viruses / Picornavirales / Picornaviridae / Enterovirus",
       "representativeRecordId": "ENT-829",
       "summary": "수족구병·구협염·무균수막염의 흔한 원인이다. 일부는 심근염이나 신생아 패혈증과 비슷한 중증질환을 일으킨다.",
+      "organDiseases": {
+        "skin": [
+          "수족구병"
+        ],
+        "lungs": [
+          "herpangina"
+        ],
+        "brain": [
+          "무균수막염"
+        ],
+        "heart": [
+          "심근염"
+        ],
+        "blood": [
+          "신생아 패혈증양 질환"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -19755,6 +21436,12 @@
       "classification": "Viruses / Picornavirales / Picornaviridae / Enterovirus",
       "representativeRecordId": "POL-830",
       "summary": "대부분 무증상이지만 드물게 무균수막염·급성이완마비를 일으킨다. 마비성 질환에서는 호흡근과 신경 기능 손상이 중요하다.",
+      "organDiseases": {
+        "brain": [
+          "무균수막염",
+          "급성이완마비"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -19861,6 +21548,11 @@
       "classification": "Viruses / Mononegavirales / Rhabdoviridae / Lyssavirus",
       "representativeRecordId": "RAB-831",
       "summary": "동물 노출 뒤 공수증·연하곤란을 동반한 뇌염 또는 마비형으로 나타난다. 증상이 생긴 광견병과 노출 후 예방은 전혀 다른 임상 단계다.",
+      "organDiseases": {
+        "brain": [
+          "광견병 뇌염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -19967,6 +21659,11 @@
       "classification": "Viruses / Amarillovirales / Flaviviridae / Orthoflavivirus",
       "representativeRecordId": "DEN-832",
       "summary": "모기 노출 뒤 발열·심한 통증이 나타나며, 일부는 출혈·쇼크·장기손상으로 진행한다. 경고징후와 수액 관리가 중요한 임상 판단이다.",
+      "organDiseases": {
+        "blood": [
+          "뎅기열 · 출혈·쇼크"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -20073,6 +21770,11 @@
       "classification": "Viruses / Amarillovirales / Flaviviridae / Orthoflavivirus",
       "representativeRecordId": "JEV-833",
       "summary": "모기 노출 뒤 뇌염·발작·운동이상을 일으킬 수 있다. 생존 후에도 신경 후유장애가 남을 수 있는 중증 신경감염이다.",
+      "organDiseases": {
+        "brain": [
+          "일본뇌염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -20179,6 +21881,14 @@
       "classification": "Viruses / Bunyavirales / Hantaviridae / Orthohantavirus",
       "representativeRecordId": "HAN-834",
       "summary": "설치류 노출 뒤 발열·저혈압·출혈경향과 급성신손상을 일으킨다. 한국에서는 신증후군출혈열의 주요 원인으로 노출력이 중요하다.",
+      "organDiseases": {
+        "urinary": [
+          "급성신손상"
+        ],
+        "blood": [
+          "출혈경향"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -20285,6 +21995,17 @@
       "classification": "Viruses / Bunyavirales / Phenuiviridae / Bandavirus",
       "representativeRecordId": "SFT-835",
       "summary": "진드기 노출 뒤 고열·혈소판감소·백혈구감소와 소화기·신경 증상이 나타난다. 다장기부전으로 악화할 수 있고 체액을 통한 전파도 주의한다.",
+      "organDiseases": {
+        "blood": [
+          "혈소판·백혈구감소"
+        ],
+        "abdomen": [
+          "GI 증상"
+        ],
+        "brain": [
+          "신경증상"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -20391,6 +22112,14 @@
       "classification": "Viruses / Kolmioviridae / Deltavirus",
       "representativeRecordId": "HDV-836",
       "summary": "HBV 감염이 있어야 성립하며 간염·간경변을 더 빠르게 악화시킬 수 있다. HBV DNA가 낮은데 간염이 심하면 중복감염을 고려한다.",
+      "organDiseases": {
+        "liver": [
+          "급성 중증간염",
+          "만성간염",
+          "간경변",
+          "간세포암"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -20503,6 +22232,12 @@
       "classification": "Viruses / Sepolyvirales / Polyomaviridae / Betapolyomavirus",
       "representativeRecordId": "BKV-837",
       "summary": "신장이식 후 신병증과 조혈모세포이식 후 출혈방광염에서 중요하다. 소변 양성만으로 판단하지 않고 혈장 바이러스량과 장기 손상을 함께 본다.",
+      "organDiseases": {
+        "urinary": [
+          "BK 바이러스 신병증",
+          "이식 후 출혈방광염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -20615,6 +22350,12 @@
       "classification": "Viruses / Sepolyvirales / Polyomaviridae / Betapolyomavirus",
       "representativeRecordId": "JCV-838",
       "summary": "세포면역이 저하된 환자에서 아급성으로 진행하는 비대칭 신경결손을 일으킨다. 발열·두통이 드물고 종괴효과가 적은 PML이 특징이다.",
+      "organDiseases": {
+        "brain": [
+          "PML",
+          "드문 granule cell neuronopathy"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -20727,6 +22468,14 @@
       "classification": "Viruses / Chitovirales / Poxviridae / Orthopoxvirus",
       "representativeRecordId": "MPX-839",
       "summary": "통증성 수포·농포, 림프절병과 직장염이 특징이다. 병변이 적어도 통증이 심할 수 있고 면역저하자는 괴사성 파종 위험이 있다.",
+      "organDiseases": {
+        "skin": [
+          "수포·농포성 병변"
+        ],
+        "abdomen": [
+          "직장염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -20839,6 +22588,21 @@
       "classification": "Viruses / Amarillovirales / Flaviviridae / Orthoflavivirus",
       "representativeRecordId": "ZIK-840",
       "summary": "성인은 대개 경한 발진열·결막염·관절통을 보인다. 임신 중 감염은 태아 소두증·뇌기형 위험이 있어 임신 여부가 핵심이다.",
+      "organDiseases": {
+        "skin": [
+          "발진열"
+        ],
+        "eye": [
+          "결막염"
+        ],
+        "bone": [
+          "관절통"
+        ],
+        "brain": [
+          "Guillain-Barré",
+          "선천성 Zika syndrome"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -20951,6 +22715,20 @@
       "classification": "Viruses / Martellivirales / Togaviridae / Alphavirus",
       "representativeRecordId": "CHK-841",
       "summary": "모기 노출 뒤 갑작스러운 고열과 심한 양측 관절통이 나타난다. 급성기가 지나도 관절통이 수개월 지속될 수 있다.",
+      "organDiseases": {
+        "bone": [
+          "심한 관절통"
+        ],
+        "skin": [
+          "발진"
+        ],
+        "brain": [
+          "드문 신경 합병증"
+        ],
+        "heart": [
+          "드문 심장 합병증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -21063,6 +22841,13 @@
       "classification": "Viruses / Amarillovirales / Flaviviridae / Orthoflavivirus",
       "representativeRecordId": "WNV-842",
       "summary": "모기 노출 뒤 뇌염과 비대칭 급성이완마비를 일으킬 수 있다. 감각소실 없이 마비가 진행하며 호흡근 침범을 살펴야 한다.",
+      "organDiseases": {
+        "brain": [
+          "meningitis",
+          "encephalitis",
+          "acute flaccid paralysis"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -24564,6 +26349,15 @@
         "erm-mediated macrolide resistance"
       ],
       "summary": "인두·피부·침습성 감염을 일으키는 GAS의 macrolide·clindamycin 내성형이다. Penicillin 반응과 달리 이 두 계열은 치료 효과를 기대하기 어렵다.",
+      "organDiseases": {
+        "lungs": [
+          "인두염"
+        ],
+        "skin": [
+          "성홍열",
+          "침습성 연조직 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -24729,6 +26523,14 @@
         "clindamycin-resistant GBS"
       ],
       "summary": "신생아·성인 감염을 일으키는 clindamycin 내성 GBS다. Penicillin 계열 반응과 clindamycin 내성을 별도로 확인해야 한다.",
+      "organDiseases": {
+        "blood": [
+          "신생아 침습감염"
+        ],
+        "urinary": [
+          "산후 감염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -24891,6 +26693,11 @@
         "penicillin-nonsusceptible meningitis isolate"
       ],
       "summary": "Penicillin 비감수성 폐렴알균의 수막염형이다. 호흡기감염과 수막염은 감수성 해석 기준·필요 노출이 달라 같은 결과로 치료하지 않는다.",
+      "organDiseases": {
+        "brain": [
+          "세균성 수막염"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -25014,6 +26821,11 @@
         "macrolide-resistant respiratory isolate"
       ],
       "summary": "폐렴 등 호흡기감염을 일으키는 macrolide 내성 폐렴알균이다. Macrolide와 penicillin 반응은 서로 다를 수 있어 별도로 확인한다.",
+      "organDiseases": {
+        "lungs": [
+          "지역사회획득 폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -25818,6 +27630,15 @@
         "code": "ESBL",
         "label": "ESBL-mediated resistance"
       },
+      "organDiseases": {
+        "urinary": [
+          "복잡성 요로감염",
+          "신우신염"
+        ],
+        "blood": [
+          "균혈증"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -26264,6 +28085,17 @@
       "resistance": {
         "code": "CRAB",
         "label": "Carbapenem resistance"
+      },
+      "organDiseases": {
+        "lungs": [
+          "인공호흡기 폐렴"
+        ],
+        "blood": [
+          "균혈증"
+        ],
+        "skin": [
+          "외상·화상 상처감염"
+        ]
       },
       "back": {
         "sections": [
@@ -26850,6 +28682,12 @@
         "code": "BLNAR",
         "label": "Altered-PBP resistance"
       },
+      "organDiseases": {
+        "lungs": [
+          "부비동염",
+          "폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {
@@ -26990,6 +28828,13 @@
         "Beta-lactamase positive"
       ],
       "summary": "호흡기·침습성 감염을 일으키는 β-lactamase 생성 H. influenzae다. Ampicillin 단독은 듣지 않아 내성에 맞는 약제가 필요하다.",
+      "organDiseases": {
+        "lungs": [
+          "부비동염",
+          "COPD 악화",
+          "폐렴"
+        ]
+      },
       "back": {
         "sections": [
           {

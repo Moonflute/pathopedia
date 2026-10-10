@@ -58,6 +58,7 @@ export function compileLibraryCatalog(dataset, sources, authored) {
       classification:base.classification, representativeRecordId:base.id,
       ...(authored.searchNames?.pathogens?.[taxonId]?.length?{searchAliases:authored.searchNames.pathogens[taxonId]}:{}),
       summary:summaryFor(authored.pathogens,taxonId,'pathogen'),
+      ...(authored.organDiseases?.pathogens?.[taxonId]?{organDiseases:authored.organDiseases.pathogens[taxonId]}:{}),
       back:{ sections:common }, sourceIds:unique(records.flatMap(record => record.sourceIds)),
       reviewStatus:base.reviewStatus || dataset.reviewStatus
     };
@@ -74,6 +75,7 @@ export function compileLibraryCatalog(dataset, sources, authored) {
         description:record.phenotypeDescription, aliases:record.aliases || [],
         summary:override ? summaryFor({[record.id]:override.summary},record.id,'phenotype') : pathogens[taxonId].summary,
         ...(override?.resistance ? {resistance:override.resistance} : {}),
+        ...(authored.organDiseases?.variants?.[record.id]?{organDiseases:authored.organDiseases.variants[record.id]}:{}),
         back:{ sections:changed }, observationType:record.observationType, panelId:record.panelId,
         isolateModel:record.isolateModel, reviewStatus:record.reviewStatus, reviewedAt:record.reviewedAt,
         sourceIds:record.sourceIds
@@ -101,6 +103,15 @@ export function compileLibraryCatalog(dataset, sources, authored) {
       if(!known[id] || !Array.isArray(names) || !names.length || names.some(name=>typeof name!=='string' || !name.trim()) || unique(names).length!==names.length)throw Error('Invalid '+label+' search names: '+id);
     }
   }
+  const organIds=new Set(['skin','blood','heart','bone','lungs','urinary','abdomen','brain','liver','eye']);
+  for(const [map,known] of [[authored.organDiseases?.pathogens,pathogens],[authored.organDiseases?.variants,variants]]){
+    for(const [id,organs] of Object.entries(map || {})){
+      if(!known[id] || !organs || Array.isArray(organs) || !Object.keys(organs).length)throw Error('Invalid organ disease map: '+id);
+      for(const [organ,names] of Object.entries(organs)){
+        if(!organIds.has(organ) || !Array.isArray(names) || !names.length || names.some(name=>typeof name!=='string' || !name.trim() || name.length>90) || unique(names).length!==names.length)throw Error('Invalid organ diseases: '+id+' / '+organ);
+      }
+    }
+  }
   const therapyContexts={};
   for (const context of authored.therapyContexts || []) {
     if(!context.id || therapyContexts[context.id] || !context.context?.trim() || !context.note?.trim() || !context.recordIds?.length || !context.drugIds?.length || !context.sourceIds?.length)throw Error('Invalid clinical preference context: '+context.id);
@@ -120,7 +131,7 @@ export function compileLibraryCatalog(dataset, sources, authored) {
     for (const id of Object.keys(map)) if (!known[id]) throw Error(`Unknown authored ${label} ID: ${id}`);
   }
   return {
-    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.2.0',
+    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.3.0',
     sourceDatasetVersion:dataset.datasetVersion, locale:'ko-KR', reviewStatus:dataset.reviewStatus,
     contentOrigin:'content/cards/*.json',
     interpretation:dataset.interpretation,
@@ -145,6 +156,8 @@ export async function generateLibraryCatalog(dataset, sources) {
   const drugContent = await json('content/cards/drugs.json');
   const therapyContent = await json('content/cards/therapies.json');
   const searchNames=await json('content/cards/search-names.json');
+  const organDiseases=await json('content/cards/organ-diseases.json');
+  if(dataset.records.some(record=>!organDiseases.pathogens?.[record.taxonId]))throw Error('Missing organ disease card data');
   if(dataset.drugs.some(drug=>!searchNames.drugs?.[drug.id]?.length))throw Error('Missing Korean drug search names');
   const cardSources = {...sources};
   for (const [id,reference] of Object.entries({...drugContent.references,...therapyContent.references})) {
@@ -155,7 +168,7 @@ export async function generateLibraryCatalog(dataset, sources) {
   for (const [drugId,ids] of Object.entries(drugContent.summarySourceIds || {})) {
     if (!dataset.drugs.some(drug => drug.id === drugId) || !Array.isArray(ids) || ids.some(id => !cardSources[id])) throw Error('Unknown drug summary reference: ' + drugId);
   }
-  const authored = { pathogens, drugs:drugContent.summaries, drugSummarySourceIds:drugContent.summarySourceIds || {}, variants:(await json('content/cards/variants.json')).overrides, therapyContexts:therapyContent.contexts, searchNames };
+  const authored = { pathogens, drugs:drugContent.summaries, drugSummarySourceIds:drugContent.summarySourceIds || {}, variants:(await json('content/cards/variants.json')).overrides, therapyContexts:therapyContent.contexts, searchNames, organDiseases };
   const catalog = compileLibraryCatalog(dataset,cardSources,authored);
   await writeFile(new URL('../data/library.json',import.meta.url),JSON.stringify(catalog,null,2)+'\n');
   console.log(`Card DB: ${catalog.counts.pathogens} pathogens / ${catalog.counts.variants} variants / ${catalog.counts.drugs} drugs → data/library.json`);

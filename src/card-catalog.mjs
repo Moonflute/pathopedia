@@ -28,6 +28,7 @@ export function createCardCatalog(catalog) {
     const card = {
       kind:'pathogen', id:recordId, name:entity.name, subtitle:entity.koreanName,
       summary:variant.summary, resistance:variant.resistance,
+      organDiseases:variant.organDiseases || entity.organDiseases || {},
       back:{
         label:variant.label, summary:variant.summary, sections:[...sections.values()], responses,
         responseLabel:variant.observationType === 'regimen' ? '이 임상형의 요법 구성' : '이 교육용 분리주의 약제 반응',

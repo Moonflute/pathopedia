@@ -52,13 +52,16 @@ export function cardIcon(name, className = '') {
   return `<svg class="card-glyph ${esc(className)}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${CARD_ICONS[name] || CARD_ICONS.artwork}</svg>`;
 }
 
+function tooltipAttributes({title,body=''}) {
+  const description=title+(body && body!=='—'?' · '+body.replaceAll('\n',' · '):'');
+  return 'aria-label="'+esc(description)+'" data-tooltip-title="'+esc(title)+'" data-tooltip-body="'+esc(body)+'"';
+}
 function propertyRune(property, preview=false) {
   const active=Boolean(property.active);
   const state=active ? property.negative ? 'blocked' : property.preferred ? 'preferred' : 'lit' : 'dim';
-  const status=active ? property.negative ? '내성·비활성 기록' : property.preferred ? '우선요법' : '유효·요법 포함' : '비해당·기록 없음';
-  const description=property.label+' · '+status+(property.conditional&&active?' · 적용 조건 있음':'')+(property.note?' · '+property.note:'');
+  const tooltip=property.tooltip || {title:property.label,body:property.note || ''};
   const tag=preview?'span':'button';
-  return '<'+tag+(preview?'':' type="button" data-card-property')+' class="card-rune is-'+state+(property.conditional&&active?' has-condition':'')+'" '+(preview?'':'aria-label="'+esc(description)+'" data-tooltip="'+esc(description)+'"')+'>'+cardIcon(property.icon)+(property.shortLabel?'<small>'+esc(property.shortLabel)+'</small>':'')+'</'+tag+'>';
+  return '<'+tag+(preview?'':' type="button" data-card-property')+' class="card-rune is-'+state+(property.conditional&&active?' has-condition':'')+'" '+(preview?'':tooltipAttributes(tooltip))+'>'+cardIcon(property.icon)+(property.shortLabel?'<small>'+esc(property.shortLabel)+'</small>':'')+'</'+tag+'>';
 }
 function propertyRail(properties, label, side, heading, preview) {
   return '<aside class="card-rail card-rail--'+side+'" aria-label="'+esc(label)+'"><span class="card-rail-caption" aria-hidden="true">'+esc(heading || (side==='left'?'유효':'약제'))+'</span><div class="card-runes">'+(properties || []).map(property=>propertyRune(property,preview)).join('')+'</div></aside>';
@@ -70,7 +73,6 @@ function artwork(model) {
   return `<div class="card-artwork-placeholder" aria-label="${esc(model.name)} 그림 자리"><span class="card-artwork-ring" aria-hidden="true"></span>${cardIcon(model.artwork?.placeholder || (model.kind === 'drug' ? 'vial' : 'cocci'), 'card-artwork-mark')}<span class="card-artwork-label">${esc(model.artwork?.label || 'ARTWORK')}</span><span class="card-artwork-corner top-left" aria-hidden="true"></span><span class="card-artwork-corner bottom-right" aria-hidden="true"></span></div>`;
 }
 
-const safeURL = value => /^https?:\/\//i.test(String(value || '')) ? value : '';
 
 export function renderCardBackContent(model) {
   const back = model.back || {};
@@ -78,8 +80,7 @@ export function renderCardBackContent(model) {
     ${back.label ? `<p class="card-back-label">${esc(back.label)}</p>` : ''}
     <p class="card-back-summary">${esc(back.summary || model.summary)}</p>
     ${(back.sections || []).map(section => `<section class="card-back-section"><h3>${esc(section.title)}</h3><p>${esc(section.text)}</p></section>`).join('')}
-    ${back.responses?.length ? `<details class="card-back-responses"><summary>${esc(back.responseLabel)} · ${back.responses.length}</summary><dl>${back.responses.map(response => `<div><dt>${esc(response.name)}<span>${esc(response.label)}</span></dt><dd>${esc(response.note)}${response.applicability ? `<small>적용 조건: ${esc(response.applicability)}</small>` : ''}</dd></div>`).join('')}</dl></details>` : ''}
-    ${back.references?.length ? `<details class="card-back-references"><summary>근거 자료 · ${back.references.length}</summary><ul>${back.references.map(source => `<li>${safeURL(source.url) ? `<a href="${esc(safeURL(source.url))}" target="_blank" rel="noopener noreferrer">${esc(source.title || source.name || source.id)} ↗</a>` : esc(source.title || source.name || source.id)}</li>`).join('')}</ul></details>` : ''}
+    ${back.responses?.length ? `<details class="card-back-responses"><summary>${esc(back.responseLabel)}</summary><dl>${back.responses.map(response => `<div><dt>${esc(response.name)}<span>${esc(response.label)}</span></dt><dd>${esc(response.note)}${response.applicability ? `<small>적용 조건: ${esc(response.applicability)}</small>` : ''}</dd></div>`).join('')}</dl></details>` : ''}
   </div>`;
 }
 
@@ -94,8 +95,7 @@ function renderBackPanels(model) {
     sectionMarkup(core)+(other.length?'<details><summary>구조·기전·추가 특징</summary>'+sectionMarkup(other)+'</details>':'');
   const responses=(back.responses || []).length?'<p class="card-back-label">'+esc(back.responseLabel)+'</p><dl class="card-response-list">'+back.responses.map(response=>'<div><dt>'+esc(response.name)+'<span>'+esc(response.label)+'</span></dt><dd>'+esc(response.note)+(response.applicability?'<small>'+esc(response.applicability)+'</small>':'')+'</dd></div>').join('')+'</dl>':'<p>수록된 약제 반응이 없습니다.</p>';
   const properties=[{label:model.leftLabel,items:model.leftProperties},{label:model.rightLabel,items:model.rightProperties}].map(rail=>'<section class="card-back-section"><h3>'+esc(rail.label)+'</h3><ul class="card-property-list">'+(rail.items || []).map(property=>'<li>'+propertyRune(property,true)+'<div><b>'+esc(property.label)+'</b><p>'+esc(property.note || (property.active?'해당':'비해당·기록 없음'))+'</p></div></li>').join('')+'</ul></section>').join('');
-  const refs=(back.references || []).length?'<ul class="card-reference-list">'+back.references.map(source=>'<li>'+(safeURL(source.url)?'<a href="'+esc(source.url)+'" target="_blank" rel="noopener noreferrer">'+esc(source.title || source.name || source.id)+' ↗</a>':esc(source.title || source.name || source.id))+'</li>').join('')+'</ul>':'<p>별도 근거 기록이 없습니다.</p>';
-  const tabs=[['clinical','임상',clinical],['responses',model.kind==='drug'?'대상':'약제',responses],['icons','기호',properties],['sources','근거',refs]];
+  const tabs=[['clinical','임상',clinical],['responses',model.kind==='drug'?'대상':'약제',responses],['icons','기호',properties]];
   const prefix='card-back-'+model.kind+'-'+model.id;
   return '<div class="card-back-tabs" role="tablist" aria-label="카드 뒷면 내용">'+tabs.map(([id,label])=>'<button type="button" role="tab" data-card-back-tab="'+id+'" id="'+esc(prefix+'-'+id)+'-tab" aria-controls="'+esc(prefix+'-'+id)+'" aria-selected="'+(id==='clinical')+'" tabindex="'+(id==='clinical'?'0':'-1')+'">'+label+'</button>').join('')+'</div><div class="card-back-content">'+tabs.map(([id,,markup])=>'<div class="card-back-pane card-back-prose" id="'+esc(prefix+'-'+id)+'" data-card-back-pane="'+id+'" role="tabpanel" aria-labelledby="'+esc(prefix+'-'+id)+'-tab" tabindex="0" '+(id!=='clinical'?'hidden':'')+'>'+markup+'</div>').join('')+'</div>';
 }
@@ -112,7 +112,7 @@ export function renderReferenceCard(model) {
   const classes='reference-card--'+kind+domainClass+nameClass;
   return '<div class="reference-card-slot '+(face==='back'?'is-flipped':'')+'" data-card-state="'+face+'" '+(preview?'data-card-preview':'')+'><div class="reference-card-tilt"><div class="reference-card-rotor"><article class="reference-card reference-card--front '+classes+(units>100?' has-long-summary':'')+(resistance?' has-resistance':'')+'" aria-label="'+esc(model.name+(resistance?' · '+resistance.code:''))+'" aria-hidden="'+(face==='back')+'" '+(face==='back'?'inert':'')+'>'+
     '<header class="card-nameplate"><h2>'+esc(model.name)+'</h2><p>'+esc(model.subtitle || '')+'</p></header>'+
-    '<'+(preview?'span':'button type="button" data-card-property')+' class="card-route" '+(preview?'':'aria-label="'+esc(route.description || route.label)+'" data-tooltip="'+esc(route.description || route.label)+'"')+'>'+cardIcon(route.icon)+'<span>'+esc(route.label)+'</span></'+(preview?'span':'button')+'>'+
+    '<'+(preview?'span':'button type="button" data-card-property')+' class="card-route" '+(preview?'':tooltipAttributes({title:route.label,body:route.description || ''}))+'>'+cardIcon(route.icon)+'<span>'+esc(route.label)+'</span></'+(preview?'span':'button')+'>'+
     propertyRail(model.leftProperties,model.leftLabel,'left',model.leftHeading,preview)+
     '<div class="card-artwork">'+artwork(model)+'</div>'+
     propertyRail(model.rightProperties,model.rightLabel,'right',model.rightHeading,preview)+
@@ -131,6 +131,7 @@ export function renderCardThumbnail(model,{key,badge='',caption=''}={}) {
 export function setReferenceCardFace(slot,face,{focus=true}={}) {
   if(!slot || !['front','back'].includes(face) || slot.hasAttribute('data-card-preview'))return false;
   slot.dataset.cardState=face;slot.classList.toggle('is-flipped',face==='back');
+  slot.dispatchEvent(new Event('card-face-change',{bubbles:true}));
   for(const side of ['front','back']){
     const article=slot.querySelector('.reference-card--'+side);
     if(article){article.setAttribute('aria-hidden',String(side!==face));article.inert=side!==face;}
@@ -192,4 +193,59 @@ export function bindCardMotion(root) {
     reset(slot);
   };
   root.addEventListener('pointerup',release);root.addEventListener('pointercancel',release);
+}
+
+
+// A single tooltip lives outside the tilted card so its text stays still.
+// Pointer and keyboard focus share it; touch opens it and outside taps dismiss it.
+export function bindCardTooltips(root) {
+  let hovered=null,focused=null,shown=null,tooltip=null,pointerType='mouse';
+  const target=element=>element?.closest?.('[data-tooltip-title]');
+  function hide() {
+    shown?.removeAttribute('aria-describedby');shown=null;
+    if(tooltip)tooltip.hidden=true;
+  }
+  function clear() {hovered=null;focused=null;hide();}
+  function update() {
+    const button=hovered?.isConnected?hovered:focused?.isConnected?focused:null;
+    if(!button || button.closest('[inert]')){hide();return;}
+    if(!tooltip){
+      tooltip=document.createElement('div');tooltip.id='card-property-tooltip';
+      tooltip.className='reference-card-tooltip';tooltip.setAttribute('role','tooltip');
+      tooltip.append(document.createElement('strong'),document.createElement('span'));
+    }
+    const host=button.closest('dialog') || root;
+    if(tooltip.parentElement!==host || !tooltip.isConnected)host.append(tooltip);
+    if(shown!==button)shown?.removeAttribute('aria-describedby');
+    shown=button;button.setAttribute('aria-describedby',tooltip.id);
+    tooltip.children[0].textContent=button.dataset.tooltipTitle;
+    tooltip.children[1].textContent=button.dataset.tooltipBody || '';
+    tooltip.children[1].hidden=!button.dataset.tooltipBody;
+    tooltip.hidden=false;
+    const rect=button.getBoundingClientRect(),width=tooltip.offsetWidth,height=tooltip.offsetHeight;
+    const onRight=button.closest('.card-rail--right');
+    const left=onRight?rect.left-width-12:rect.right+12;
+    tooltip.style.left=Math.max(12,Math.min(window.innerWidth-width-12,left))+'px';
+    tooltip.style.top=Math.max(12,Math.min(window.innerHeight-height-12,rect.top+(rect.height-height)/2))+'px';
+  }
+  root.addEventListener('pointerover',event=>{
+    if(event.pointerType!=='mouse' && event.pointerType!=='pen')return;
+    hovered=target(event.target);update();
+  });
+  root.addEventListener('pointerout',event=>{
+    const previous=target(event.target),next=target(event.relatedTarget);
+    if(previous && previous!==next){hovered=next;update();}
+  });
+  root.addEventListener('pointerdown',event=>{pointerType=event.pointerType || 'mouse';if(!target(event.target))clear();});
+  root.addEventListener('focusin',event=>{const button=target(event.target);focused=button?.matches(':focus-visible')?button:null;update();});
+  root.addEventListener('focusout',event=>{focused=target(event.relatedTarget);update();});
+  root.addEventListener('click',event=>{
+    const button=target(event.target);
+    if(button){focused=pointerType!=='mouse' || event.detail===0?button:null;update();}else clear();
+  });
+  root.addEventListener('keydown',event=>{if(event.key==='Escape')clear();});
+  root.addEventListener('card-face-change',clear);
+  root.addEventListener('close',clear,true);
+  window.addEventListener('resize',clear);
+  window.addEventListener('scroll',clear,true);
 }

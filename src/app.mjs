@@ -2,11 +2,11 @@ import { RULES, newRound, reveal, guess, score, showAnswer, addDiscovery, restor
 import { createTreatmentGame } from './treatment-ui.mjs';
 import { createLibrary } from './library-ui.mjs';
 import { createCardGallery } from './card-gallery-ui.mjs';
-import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion } from './reference-card.mjs';
+import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCardTooltips } from './reference-card.mjs';
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.14.4';
+const VERSION = '0.14.5';
 const KEY = 'pathopedia.v1';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -25,8 +25,9 @@ const matchingDrugs = () => panelDrugs().filter(d=>(d.name+' '+d.family).toLower
 let data, sources, treatmentGame, library, cardGallery, cardInspector, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = ['lab','treatment','library','archive','drugs','cards'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'lab', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
 const root = $('#app');
 bindCardMotion(root);
+bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.14.4" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.14.5" alt="" width="27" height="27">';
 const arrow = '<span aria-hidden="true">↗</span>';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);

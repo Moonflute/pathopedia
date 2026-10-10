@@ -28,3 +28,18 @@ test('MRSA preference changes with infection site and does not promote daptomyci
   assert.equal(blood.therapyContext.id,'mrsa-bacteremia');
   assert.equal(lungs.therapyContext.id,'mrsa-pneumonia');
 });
+
+test('organ tooltips show diseases for that site and keep meningitis and pneumonia variants separate',()=>{
+  const organ=(model,id)=>model.leftProperties.find(item=>item.icon===id);
+  const staph=models.pathogen('SAU-001');
+  assert.equal(organ(staph,'lungs').tooltip.body,'폐렴');
+  assert.equal(organ(staph,'heart').tooltip.body,'심내막염');
+  assert.equal(organ(staph,'blood').tooltip.body,'균혈증');
+  const meningitis=models.pathogen('SPN-106'),pneumonia=models.pathogen('SPN-107');
+  assert.equal(organ(meningitis,'brain').tooltip.body,'세균성 수막염');
+  assert.equal(organ(meningitis,'lungs').active,false);
+  assert.equal(organ(pneumonia,'lungs').tooltip.body,'지역사회획득 폐렴');
+  assert.equal(organ(pneumonia,'brain').active,false);
+  assert.equal(organ(models.pathogen('EHI-707'),'liver').tooltip.body,'간농양');
+  assert.equal(property(models.pathogen('SAU-002'),'VAN').tooltip.title,'Vancomycin');
+});
