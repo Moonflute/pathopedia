@@ -2,46 +2,216 @@
   "schemaVersion": 1,
   "locale": "ko-KR",
   "overrides": {
-    "GNX-211": { "summary": "건조 의료환경의 비발효균으로 폐렴·균혈증을 일으킨다. 이 분리주는 carbapenem 감수성을 유지하는 표현형이다." },
-    "GNX-212": { "summary": "의료환경에서 지속하는 Acinetobacter의 carbapenem 내성형이다. OXA 효소와 막·유출 변화가 복합 내성을 만든다.", "resistance": { "code": "CRAB", "label": "Carbapenem resistance" } },
-    "ECL-015": { "summary": "유도성 AmpC를 가진 의료 관련 장내세균이다. 초기 ceftriaxone 감수성에도 치료 중 탈억제 내성이 선택될 수 있다." },
-    "ECL-016": { "summary": "AmpC가 탈억제·과발현된 Enterobacter 감염 분리주다. 3세대 cephalosporin 내성이며 이 기록은 cefepime 감수성이다.", "resistance": { "code": "AmpC", "label": "Derepressed AmpC" } },
-    "ECO-009": { "summary": "장내 상재균으로 요로·복강·혈류 감염을 일으킨다. 이 분리주는 획득 ESBL·carbapenemase가 검출되지 않은 기본형이다." },
-    "ECO-010": { "summary": "CTX-M ESBL을 만드는 장관외 감염 대장균이다. 확장범위 cephalosporin·aztreonam을 분해하며 이 기록은 carbapenem 감수성이다.", "resistance": { "code": "ESBL", "label": "ESBL-mediated resistance" } },
-    "ECO-405": { "summary": "NDM을 획득한 장관외 감염 대장균이다. 이 효소는 carbapenem을 분해하지만 aztreonam 자체는 분해하지 않는다.", "resistance": { "code": "NDM", "label": "Carbapenem resistance" } },
-    "ECO-407": { "summary": "OXA-48-like 효소를 가진 장관외 감염 대장균이다. Penicillin·carbapenem 내성과 동반 ESBL 여부를 별도로 구분한다.", "resistance": { "code": "OXA-48", "label": "Carbapenem resistance" } },
-    "ECO-410": { "summary": "KPC 효소를 만드는 장관외 감염 대장균이다. Carbapenem을 분해하는 serine 효소이며 avibactam 억제가 핵심 차이다.", "resistance": { "code": "KPC", "label": "Carbapenem resistance" } },
-    "EFA-005": { "summary": "요로·혈류·판막 감염을 만드는 장알균이다. 이 기록은 ampicillin·vancomycin 감수성이며 cephalosporin에는 고유 내성을 보인다." },
-    "EFA-006": { "summary": "표적 말단을 D-Ala-D-Lac으로 바꾼 vanA VRE다. 이 장알균 분리주는 vancomycin·teicoplanin 내성을 함께 보인다.", "resistance": { "code": "VRE · vanA", "label": "Vancomycin resistance" } },
-    "EFA-401": { "summary": "표적을 바꾸는 vanB VRE 장알균이다. 이 기록은 vancomycin 내성이지만 teicoplanin 감수성은 유지한다.", "resistance": { "code": "VRE · vanB", "label": "Vancomycin resistance" } },
-    "EFM-007": { "summary": "의료 관련 감염에서 중요한 장알균으로 낮은 친화성 PBP5를 가진다. 이 기록은 ampicillin 내성·vancomycin 감수성이다." },
-    "EFM-008": { "summary": "의료 관련 장알균의 vanA VRE 표현형이다. Ampicillin 내성과 vancomycin·teicoplanin 내성을 함께 가진 기록이다.", "resistance": { "code": "VRE · vanA", "label": "Vancomycin resistance" } },
-    "EFM-402": { "summary": "의료 관련 장알균의 vanB VRE 표현형이다. Vancomycin 내성과 teicoplanin 감수성을 구별하는 기록이다.", "resistance": { "code": "VRE · vanB", "label": "Vancomycin resistance" } },
-    "GNX-225": { "summary": "X·V 인자를 요구하는 호흡기 상재균의 기본형이다. 이 분리주는 β-lactamase와 PBP3 내성 변이가 없는 설정이다." },
-    "GNX-226": { "summary": "ftsI 변이로 PBP3가 바뀐 H. influenzae다. β-lactamase 음성이어도 ampicillin 내성이며 억제제만으로 교정되지 않을 수 있다.", "resistance": { "code": "BLNAR", "label": "Altered-PBP resistance" } },
-    "GNX-227": { "summary": "호흡기 상재균 H. influenzae의 β-lactamase 양성형이다. TEM 효소가 ampicillin을 분해하며 이 기록은 PBP3 변이가 없다." },
-    "KPN-011": { "summary": "피막성 Klebsiella의 CTX-M ESBL 표현형이다. 확장범위 cephalosporin을 분해하며 이 분리주는 carbapenem 감수성을 유지한다.", "resistance": { "code": "ESBL", "label": "ESBL-mediated resistance" } },
-    "KPN-012": { "summary": "KPC를 만드는 Klebsiella의 carbapenem 내성형이다. Avibactam으로 억제 가능한 serine 효소가 이 기록의 핵심이다.", "resistance": { "code": "KPC", "label": "Carbapenem resistance" } },
-    "KPN-406": { "summary": "NDM을 획득한 피막성 Klebsiella다. 이 효소는 carbapenem을 분해하지만 aztreonam 직접 분해와는 구분된다.", "resistance": { "code": "NDM", "label": "Carbapenem resistance" } },
-    "KPN-408": { "summary": "OXA-48-like 효소를 가진 Klebsiella다. Penicillin·carbapenem 내성과 동반 ESBL을 별도로 보는 것이 핵심이다.", "resistance": { "code": "OXA-48", "label": "Carbapenem resistance" } },
-    "KPN-409": { "summary": "SHV 계열 효소로 ampicillin 고유 내성을 가진 피막성 장내세균이다. 이 기록에는 획득 ESBL·carbapenemase가 없다." },
-    "PAE-013": { "summary": "습윤 환경·biofilm과 기저 내성 장벽을 가진 녹농균이다. 이 분리주는 통상 항녹농균제 panel에 감수성을 유지한다." },
-    "PAE-014": { "summary": "막 투과·AmpC·유출 변화가 겹친 녹농균의 DTR 표현형이다. 여러 약제 비감수성을 뜻하며 단일 내성 유전자 이름은 아니다.", "resistance": { "code": "DTR", "label": "Difficult-to-treat resistance" } },
-    "PAE-411": { "summary": "MBL을 획득한 녹농균으로 carbapenem·다수 β-lactam을 분해한다. 이 기록은 aztreonam 활성을 없애는 동반 기전이 없다.", "resistance": { "code": "MBL", "label": "Carbapenem resistance" } },
-    "GNX-201": { "summary": "요소분해와 swarming으로 감염결석·복잡성 요로감염을 만드는 Proteus다. 고유 내성과 획득 ESBL을 구분하는 기본 기록이다." },
-    "GNX-202": { "summary": "요로친화 Proteus가 CTX-M ESBL을 획득한 표현형이다. 이 기록은 ceftriaxone·aztreonam 내성이며 carbapenemase는 없다.", "resistance": { "code": "ESBL", "label": "ESBL-mediated resistance" } },
-    "SAG-103": { "summary": "산모 생식기 집락과 신생아 패혈증·수막염을 연결하는 GBS다. 이 기록은 기본형이며 macrolide·clindamycin 내성은 별도 축이다." },
-    "SAG-104": { "summary": "신생아·성인 감염을 만드는 GBS의 clindamycin 내성형이다. erm·lnu 계열 기전을 기본 GBS 특성과 구분한다." },
-    "SAU-001": { "summary": "농양·혈류·판막·뼈 감염을 만드는 황색포도알균이다. 이 MSSA는 penicillinase를 만들지만 oxacillin 감수성은 유지한다." },
-    "SAU-002": { "summary": "PBP2a로 methicillin 내성을 가진 황색포도알균이다. 화농성·침습성 감염을 만들며 이 기록은 vancomycin 감수성이다.", "resistance": { "code": "MRSA", "label": "Methicillin resistance" } },
-    "SAU-403": { "summary": "MRSA의 세포벽 적응으로 vancomycin 반응도 저하된 VISA 표현형이다. 이 EUCAST 정성 기록은 vancomycin R로 설정된다.", "resistance": { "code": "MRSA · VISA", "label": "Methicillin / vancomycin resistance" } },
-    "SAU-404": { "summary": "Methicillin 내성 MRSA에 23S rRNA 변화로 linezolid 내성이 더해졌다. 서로 다른 두 표적 내성 기전을 구분하는 기록이다.", "resistance": { "code": "MRSA · LZD-R", "label": "Methicillin / linezolid resistance" } },
-    "SEP-003": { "summary": "의료기구 위 biofilm으로 지속감염을 만드는 피부 상재균이다. 이 MSSE는 penicillinase를 만들지만 oxacillin 감수성이다." },
-    "SEP-004": { "summary": "Biofilm성 기구감염을 만드는 표피포도알균의 methicillin 내성형이다. PBP2a 내성과 혈액배양 오염·실제 감염을 구분한다.", "resistance": { "code": "MRSE", "label": "Methicillin resistance" } },
-    "SPN-105": { "summary": "피막성 쌍알균으로 폐렴·중이염·수막염을 일으킨다. 이 기록은 penicillin 감수성이며 부위별 해석은 별도로 유지한다." },
-    "SPN-106": { "summary": "변형 PBP로 penicillin 비감수성을 보이는 폐렴알균이다. 수막염 분리주로 설정되어 감염부위가 감수성 해석의 핵심이다." },
-    "SPN-107": { "summary": "피막성 폐렴알균의 macrolide 내성 호흡기 분리주다. ermB·mef 계열 기전을 penicillin 내성과 별도로 구분한다." },
-    "SPY-101": { "summary": "인두·피부감염과 침습성 독소 질환을 만드는 GAS다. 이 기록은 penicillin 감수성 기본형이다." },
-    "SPY-102": { "summary": "GAS가 erm methylase로 macrolide·lincosamide 내성을 가진 표현형이다. Penicillin 반응과 다른 표적 내성을 구분한다." }
+    "GNX-211": {
+      "summary": "중환자실의 인공호흡기 폐렴·균혈증·상처감염에서 중요하다. Carbapenem 감수성형이지만 객담 양성만으로 실제 폐렴을 확정하지 않는다."
+    },
+    "GNX-212": {
+      "summary": "중환자실의 폐렴·균혈증을 일으키는 carbapenem 내성 Acinetobacter다. 치료 선택지가 좁아지며 집락과 실제 감염을 구별해야 한다.",
+      "resistance": {
+        "code": "CRAB",
+        "label": "Carbapenem resistance"
+      }
+    },
+    "ECL-015": {
+      "summary": "의료 관련 폐렴·요로감염·균혈증의 원인이다. 초기 ceftriaxone 감수성에도 치료 중 내성이 생길 수 있어 유도성 AmpC 위험이 중요하다."
+    },
+    "ECL-016": {
+      "summary": "의료 관련 폐렴·요로감염·균혈증을 일으키는 AmpC 과발현형이다. 3세대 cephalosporin은 듣지 않으며 cefepime 등은 실제 감수성으로 판단한다.",
+      "resistance": {
+        "code": "AmpC",
+        "label": "Derepressed AmpC"
+      }
+    },
+    "ECO-009": {
+      "summary": "방광염·신우신염·균혈증·복강감염의 흔한 원인이다. ESBL·carbapenemase가 없는 기본형이지만 감염 부위와 실제 감수성을 보고 치료한다."
+    },
+    "ECO-010": {
+      "summary": "요로감염·균혈증·복강감염을 일으키는 ESBL 대장균이다. 일반 3세대 cephalosporin을 신뢰하기 어려우며 침습감염 여부가 치료 선택을 가른다.",
+      "resistance": {
+        "code": "ESBL",
+        "label": "ESBL-mediated resistance"
+      }
+    },
+    "ECO-405": {
+      "summary": "요로감염·균혈증 등을 일으키는 NDM형 carbapenem 내성 대장균이다. 일반 carbapenem과 ceftazidime–avibactam 단독 치료는 기대하기 어렵다.",
+      "resistance": {
+        "code": "NDM",
+        "label": "Carbapenem resistance"
+      }
+    },
+    "ECO-407": {
+      "summary": "요로감염·균혈증 등을 일으키는 OXA-48형 carbapenem 내성 대장균이다. 동반 ESBL과 실제 감수성에 따라 사용할 치료제가 달라진다.",
+      "resistance": {
+        "code": "OXA-48",
+        "label": "Carbapenem resistance"
+      }
+    },
+    "ECO-410": {
+      "summary": "요로감염·균혈증 등을 일으키는 KPC형 carbapenem 내성 대장균이다. 새로운 β-lactam 조합도 감수성 결과를 확인해 선택한다.",
+      "resistance": {
+        "code": "KPC",
+        "label": "Carbapenem resistance"
+      }
+    },
+    "EFA-005": {
+      "summary": "요로감염·균혈증·심내막염과 복강·담도감염을 일으킨다. Ampicillin·vancomycin 감수성형이며 cephalosporin 단독은 듣지 않는다."
+    },
+    "EFA-006": {
+      "summary": "요로감염·균혈증·심내막염을 일으키는 vanA형 VRE다. Vancomycin뿐 아니라 teicoplanin도 듣지 않아 다른 표적 치료가 필요하다.",
+      "resistance": {
+        "code": "VRE · vanA",
+        "label": "Vancomycin resistance"
+      }
+    },
+    "EFA-401": {
+      "summary": "요로감염·균혈증·심내막염을 일으키는 vanB형 VRE다. Vancomycin 내성이지만 teicoplanin 반응은 유지될 수 있어 같은 VRE로 묶어 판단하지 않는다.",
+      "resistance": {
+        "code": "VRE · vanB",
+        "label": "Vancomycin resistance"
+      }
+    },
+    "EFM-007": {
+      "summary": "입원·면역저하 환자의 균혈증·요로·복강감염에서 중요하다. Ampicillin 내성형이지만 vancomycin 감수성은 유지한다."
+    },
+    "EFM-008": {
+      "summary": "입원·면역저하 환자의 감염을 일으키는 vanA형 VRE다. Ampicillin·vancomycin·teicoplanin 내성으로 치료 선택지가 제한된다.",
+      "resistance": {
+        "code": "VRE · vanA",
+        "label": "Vancomycin resistance"
+      }
+    },
+    "EFM-402": {
+      "summary": "입원·면역저하 환자의 감염을 일으키는 vanB형 VRE다. Vancomycin 내성과 teicoplanin 감수성을 구별하는 것이 치료 선택에 중요하다.",
+      "resistance": {
+        "code": "VRE · vanB",
+        "label": "Vancomycin resistance"
+      }
+    },
+    "GNX-225": {
+      "summary": "중이염·부비동염·COPD 악화와 침습성 Hib 감염을 일으킨다. 주요 ampicillin 내성 기전이 없는 기본형이며 감염 부위에 맞춰 치료한다."
+    },
+    "GNX-226": {
+      "summary": "호흡기·침습성 감염을 일으키는 ampicillin 내성 H. influenzae다. β-lactamase가 음성이어도 내성일 수 있고 억제제 조합만으로 해결되지 않을 수 있다.",
+      "resistance": {
+        "code": "BLNAR",
+        "label": "Altered-PBP resistance"
+      }
+    },
+    "GNX-227": {
+      "summary": "호흡기·침습성 감염을 일으키는 β-lactamase 생성 H. influenzae다. Ampicillin 단독은 듣지 않아 내성에 맞는 약제가 필요하다."
+    },
+    "KPN-011": {
+      "summary": "폐렴·요로감염·균혈증을 일으키는 ESBL Klebsiella다. 일반 3세대 cephalosporin을 신뢰하기 어려우며 침습감염 여부가 치료 선택을 가른다.",
+      "resistance": {
+        "code": "ESBL",
+        "label": "ESBL-mediated resistance"
+      }
+    },
+    "KPN-012": {
+      "summary": "폐렴·요로감염·균혈증을 일으키는 KPC형 carbapenem 내성 Klebsiella다. 감수성에 따라 새로운 β-lactam 조합을 검토한다.",
+      "resistance": {
+        "code": "KPC",
+        "label": "Carbapenem resistance"
+      }
+    },
+    "KPN-406": {
+      "summary": "폐렴·요로감염·균혈증을 일으키는 NDM형 carbapenem 내성 Klebsiella다. Ceftazidime–avibactam 단독으로 효과를 기대하지 않는다.",
+      "resistance": {
+        "code": "NDM",
+        "label": "Carbapenem resistance"
+      }
+    },
+    "KPN-408": {
+      "summary": "폐렴·요로감염·균혈증을 일으키는 OXA-48형 carbapenem 내성 Klebsiella다. 동반 내성과 실제 감수성이 사용할 약제를 가른다.",
+      "resistance": {
+        "code": "OXA-48",
+        "label": "Carbapenem resistance"
+      }
+    },
+    "KPN-409": {
+      "summary": "폐렴·요로감염·균혈증을 일으키는 기본 Klebsiella다. 획득 ESBL·carbapenemase가 없어도 ampicillin에는 고유 내성이 있다."
+    },
+    "PAE-013": {
+      "summary": "인공호흡기 폐렴·화상감염과 만성 기도감염에서 중요하다. 항녹농균제 감수성형이지만 일반 항균제가 모두 효과 있는 것은 아니다."
+    },
+    "PAE-014": {
+      "summary": "의료 관련 폐렴·혈류감염에서 중요한 치료곤란 내성 녹농균이다. 통상 항녹농균제 선택지가 제한되며 새 약제도 개별 감수성을 확인한다.",
+      "resistance": {
+        "code": "DTR",
+        "label": "Difficult-to-treat resistance"
+      }
+    },
+    "PAE-411": {
+      "summary": "의료 관련 폐렴·혈류감염을 일으키는 MBL 동반 carbapenem 내성 녹농균이다. 같은 carbapenem 내성이라도 사용할 치료 범위가 다를 수 있다.",
+      "resistance": {
+        "code": "MBL",
+        "label": "Carbapenem resistance"
+      }
+    },
+    "GNX-201": {
+      "summary": "복잡성 요로감염·신우신염과 감염결석을 일으킨다. ESBL이 없는 기본형이며 알칼리뇨·struvite 결석과 감염원 관리가 중요한 단서다."
+    },
+    "GNX-202": {
+      "summary": "복잡성 요로감염·감염결석을 일으키는 ESBL Proteus다. 일반 ceftriaxone 치료가 어려워 감수성에 맞춘 약제와 감염원 관리가 필요하다.",
+      "resistance": {
+        "code": "ESBL",
+        "label": "ESBL-mediated resistance"
+      }
+    },
+    "SAG-103": {
+      "summary": "산모 생식기 집락과 연관된 신생아 패혈증·폐렴·수막염의 대표 원인이다. 성인에서도 균혈증을 일으키며 penicillin 감수성 기본형이다."
+    },
+    "SAG-104": {
+      "summary": "신생아·성인 감염을 일으키는 clindamycin 내성 GBS다. Penicillin 계열 반응과 clindamycin 내성을 별도로 확인해야 한다."
+    },
+    "SAU-001": {
+      "summary": "피부농양·균혈증·심내막염·골수염의 대표 원인인 MSSA다. Oxacillin·cefazolin 등이 치료 범위에 들지만 혈액배양 양성을 오염으로 넘기지 않는다."
+    },
+    "SAU-002": {
+      "summary": "피부농양부터 균혈증·심내막염까지 일으키는 MRSA다. MSSA에 쓰는 oxacillin·cefazolin이 듣지 않아 MRSA 표적 약제가 필요하다.",
+      "resistance": {
+        "code": "MRSA",
+        "label": "Methicillin resistance"
+      }
+    },
+    "SAU-403": {
+      "summary": "피부·혈류·심부 감염을 일으키는 MRSA에 vancomycin 반응 저하까지 더해진 형태다. Vancomycin 치료를 그대로 믿기 어려워 대안 감수성을 확인한다.",
+      "resistance": {
+        "code": "MRSA · VISA",
+        "label": "Methicillin / vancomycin resistance"
+      }
+    },
+    "SAU-404": {
+      "summary": "피부·혈류·심부 감염을 일으키는 MRSA에 linezolid 내성이 더해진 형태다. MRSA라는 이름만으로 linezolid 효과를 기대해서는 안 된다.",
+      "resistance": {
+        "code": "MRSA · LZD-R",
+        "label": "Methicillin / linezolid resistance"
+      }
+    },
+    "SEP-003": {
+      "summary": "카테터·인공판막·인공관절 감염의 원인인 methicillin 감수성 피부 상재균이다. 혈액배양 오염 가능성과 실제 기구감염을 임상 맥락으로 구별한다."
+    },
+    "SEP-004": {
+      "summary": "카테터·인공판막·인공관절 감염을 일으키는 methicillin 내성 표피포도알균이다. 오염과 실제 감염을 구별하고 oxacillin 효과를 기대하지 않는다.",
+      "resistance": {
+        "code": "MRSE",
+        "label": "Methicillin resistance"
+      }
+    },
+    "SPN-105": {
+      "summary": "폐렴·중이염·수막염을 일으키는 penicillin 감수성 폐렴알균이다. 무비증 환자의 중증화 위험과 감염 부위별 감수성 해석이 중요하다."
+    },
+    "SPN-106": {
+      "summary": "Penicillin 비감수성 폐렴알균의 수막염형이다. 호흡기감염과 수막염은 감수성 해석 기준·필요 노출이 달라 같은 결과로 치료하지 않는다."
+    },
+    "SPN-107": {
+      "summary": "폐렴 등 호흡기감염을 일으키는 macrolide 내성 폐렴알균이다. Macrolide와 penicillin 반응은 서로 다를 수 있어 별도로 확인한다."
+    },
+    "SPY-101": {
+      "summary": "인두염·피부감염부터 괴사근막염·독성쇼크까지 일으키는 GAS다. Penicillin 감수성 기본형이며 감염 후 면역 합병증도 중요하다."
+    },
+    "SPY-102": {
+      "summary": "인두·피부·침습성 감염을 일으키는 GAS의 macrolide·clindamycin 내성형이다. Penicillin 반응과 달리 이 두 계열은 치료 효과를 기대하기 어렵다."
+    }
   }
 }

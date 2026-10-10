@@ -58,9 +58,9 @@ export function createCardGallery(data,{render,catalog}) {
   }
 
   function renderGallery() {
-    return '<header class="card-gallery-heading"><div><span class="eyebrow">PATHOPEDIA / CARD LIBRARY</span><h1>카드 도감<span class="heading-dot">.</span></h1><p>앞면의 핵심 컨셉부터, 뒷장의 자세한 기록까지.</p></div><div class="card-gallery-totals"><span><b>'+data.records.length+'</b> 병원체·표현형</span><span><b>'+data.drugs.length+'</b> 약제</span></div></header>'+
+    return '<header class="card-gallery-heading"><div><span class="eyebrow">PATHOPEDIA / CARD LIBRARY</span><h1>카드 도감<span class="heading-dot">.</span></h1><p>주요 임상 특징은 앞면에, 자세한 기록은 뒷장에.</p></div><div class="card-gallery-totals"><span><b>'+data.records.length+'</b> 병원체·표현형</span><span><b>'+data.drugs.length+'</b> 약제</span></div></header>'+
       '<div class="card-gallery-filters"><div class="card-gallery-domains" role="group" aria-label="카드 분류">'+FILTERS.map(filter=>'<button type="button" data-card-domain="'+filter.id+'" aria-pressed="'+(filter.id===domain)+'">'+filter.label+'<small>'+entries.filter(entry=>filter.id==='all' || entry.domain===filter.id).length+'</small></button>').join('')+'</div>'+
-      '<div class="card-gallery-controls"><label class="card-gallery-search">카드 검색<input id="card-gallery-search" type="search" autocomplete="off" placeholder="이름 · 표현형 · 계열 · 핵심 컨셉" value="'+esc(query)+'"></label>'+
+      '<div class="card-gallery-controls"><label class="card-gallery-search">카드 검색<input id="card-gallery-search" type="search" autocomplete="off" placeholder="이름 · 표현형 · 계열 · 임상 특징" value="'+esc(query)+'"></label>'+
       (domain==='drugs'?'<label class="card-gallery-family">약제 계열<select id="card-gallery-family"><option value="all">모든 계열</option>'+families.map(value=>'<option value="'+esc(value)+'" '+(value===family?'selected':'')+'>'+esc(value)+'</option>').join('')+'</select></label>':'')+
       '<label class="card-gallery-size">표시 크기<select id="card-gallery-size">'+WIDTHS.map(value=>'<option value="'+value+'" '+(value===width?'selected':'')+'>'+value+' × '+value*1.5+'</option>').join('')+'</select></label>'+
       (domain!=='drugs'?'<label class="card-gallery-resistance"><input id="card-gallery-resistance" type="checkbox" '+(resistanceOnly?'checked':'')+'>내성 표시 카드만</label>':'')+'</div></div>'+

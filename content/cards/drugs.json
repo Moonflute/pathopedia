@@ -2,85 +2,213 @@
   "schemaVersion": 1,
   "locale": "ko-KR",
   "summaries": {
-    "oxacillin": "포도알균 penicillinase를 견디며 MSSA의 세포벽을 공격하는 penicillin이다. MRSA의 PBP2a 내성은 극복하지 못한다.",
-    "vancomycin": "D-Ala-D-Ala에 붙어 그람양성균의 세포벽 합성을 막는다. 그람음성균에는 활성이 없고 경구제의 작용은 장내에 한정된다.",
-    "ceftriaxone": "감수성 장내세균·사슬알균을 겨냥하는 3세대 cephalosporin이다. 녹농균·장알균과 AmpC 선택 위험이 주요 경계다.",
-    "cefepime": "녹농균을 포함한 그람음성균과 일부 그람양성균의 세포벽을 공격하는 4세대 cephalosporin이다. 장알균에는 활성이 없다.",
-    "ceftazidime": "녹농균을 포함한 그람음성균에 초점을 둔 3세대 cephalosporin이다. 그람양성균 범위는 약하고 장알균에는 활성이 없다.",
-    "meropenem": "호기성·혐기성 병원체를 폭넓게 겨냥하는 carbapenem이다. MRSA와 장알균에는 신뢰할 치료 범위가 없다.",
-    "imipenem": "여러 호기성·혐기성균의 세포벽을 공격하는 광범위 carbapenem이다. MRSA와 균종별 한계는 별도로 구분한다.",
-    "aztreonam": "호기성 그람음성 간균의 PBP3를 겨냥하는 monobactam이다. 그람양성균·혐기성균은 범위 밖이다.",
-    "ciprofloxacin": "DNA gyrase·topoisomerase IV를 억제하며 그람음성균에 강점을 가진다. 빠른 내성 선택과 부위·노출 조건이 중요하다.",
-    "levofloxacin": "DNA 복제 효소를 막는 fluoroquinolone으로 호흡기 병원체와 여러 그람음성균을 겨냥한다. 감수성과 노출 조건을 함께 본다.",
-    "ampicillin": "장알균과 감수성 그람양성·일부 그람음성균의 세포벽을 공격한다. 여러 β-lactamase에 쉽게 분해되는 aminopenicillin이다.",
-    "piptazo": "항녹농균 penicillin에 일부 β-lactamase 억제제를 더한 조합이다. 혐기균까지 폭넓지만 침습성 ESBL과 MRSA가 한계다.",
-    "linezolid": "50S 번역 개시를 막아 MRSA·VRE 등 그람양성균을 겨냥한다. 그람음성균에는 활성이 없고 포도알균·장알균에는 주로 정균적이다.",
-    "ceftazavi": "Ceftazidime에 avibactam을 더해 일부 A·C·D형 효소 내성을 넘는다. Metallo-β-lactamase는 억제하지 못한다.",
-    "teicoplanin": "D-Ala-D-Ala에 결합해 그람양성균의 세포벽 합성을 막는 glycopeptide다. 그람음성균은 범위 밖이며 van 내성을 구분한다.",
-    "cefazolin": "MSSA·사슬알균과 일부 장내세균을 겨냥하는 1세대 cephalosporin이다. MRSA·장알균·녹농균에는 활성이 없다.",
-    "penicillin": "감수성 사슬알균·장알균 등의 세포벽을 공격하는 천연 penicillin이다. Penicillinase와 그람음성균 장벽이 범위를 제한한다.",
-    "amoxclav": "Amoxicillin에 clavulanate를 더해 일부 β-lactamase를 억제한다. 지역사회 혼합감염에 쓰이지만 녹농균·AmpC·ESBL이 한계다.",
-    "ceftaroline": "PBP2a에도 결합해 MRSA를 겨냥할 수 있는 cephalosporin이다. 녹농균과 ESBL·AmpC·carbapenemase가 범위를 제한한다.",
-    "daptomycin": "칼슘 의존적으로 그람양성균 막을 탈분극시켜 MRSA·VRE를 겨냥한다. 폐 계면활성제에 불활성화되어 폐렴에는 쓰지 않는다.",
-    "clindamycin": "50S 단백질 합성을 막아 일부 그람양성균·혐기성균을 겨냥한다. 유도성 내성을 찾는 D-test가 중요한 경계다.",
-    "erythromycin": "50S 단백질 신장을 억제하는 macrolide다. 감수성 그람양성균·비정형균이 주 범위이며 흔한 내성이 한계다.",
-    "doxycycline": "30S에서 tRNA 진입을 막는 tetracycline이다. 비정형균과 여러 선택된 병원체를 겨냥하지만 녹농균에는 신뢰할 활성이 없다.",
-    "tmpsmx": "엽산 합성의 두 단계를 연속 차단하는 조합이다. 감수성 포도알균·장내세균 등에 쓰며 장알균·녹농균은 주요 한계다.",
-    "gentamicin": "30S 오독을 유도하는 aminoglycoside로 호기성 그람음성균을 겨냥한다. 장알균에서는 고도내성 확인 뒤 병합 상승작용을 구분한다.",
-    "amikacin": "30S에 결합해 일부 내성균을 포함한 호기성 그람음성균을 겨냥한다. 혐기성균과 장알균 단독치료에는 유효하지 않다.",
-    "metronidazole": "혐기성 환경에서 환원되어 DNA 손상 물질을 만든다. 혐기성 세균·일부 원충이 표적이며 호기성균은 범위 밖이다.",
-    "tigecycline": "30S를 막아 그람양성·혐기성·일부 그람음성균을 폭넓게 겨냥한다. 녹농균과 낮은 혈중·요중 노출이 주요 한계다.",
-    "azithromycin": "50S를 억제하며 비정형 호흡기균·백일해·일부 STI를 겨냥한다. NTM 병합요법과 M. genitalium 내성 분기를 구분한다.",
-    "clarithromycin": "50S 단백질 합성을 막는 macrolide다. 감수성 NTM 병합요법과 H. pylori에서 감수성·상호작용이 중요하다.",
-    "rifampicin": "세균 RNA polymerase를 막아 전사를 차단하는 rifamycin이다. Mycobacterium 병합요법과 빠른 내성 선택·효소유도를 연결한다.",
-    "isoniazid": "KatG로 활성화되어 mycolic acid 합성을 막는 결핵약이다. 활동성 결핵 병합요법과 간독성·말초신경병증을 연결한다.",
-    "ethambutol": "Arabinogalactan 세포벽 합성을 방해하는 항산균약이다. 결핵·MAC 병합요법과 시력·적녹 색각 독성을 연결한다.",
-    "pyrazinamide": "산성 염증환경의 결핵균에 작용하는 전구약이다. 초기 강화기 역할과 간독성·고요산혈증, M. bovis 고유 내성을 연결한다.",
-    "amoxicillin": "감수성 사슬알균·장알균과 일부 그람음성균의 세포벽을 공격한다. β-lactamase에 취약하며 H. pylori에서는 병합요법 구성약이다.",
-    "moxifloxacin": "DNA 복제 효소를 막아 호흡기·일부 비정형 병원체를 겨냥한다. QT 연장과 내성 선택, 결핵 의심 시 노출 맥락이 중요하다.",
-    "fluconazole": "Ergosterol 합성을 막아 효모·일부 이형성 진균을 겨냥한다. Aspergillus·Mucorales는 범위 밖이며 Candida 종별 차이가 크다.",
-    "voriconazole": "Ergosterol 합성을 억제해 Aspergillus와 Candida를 겨냥한다. Mucorales 한계와 상호작용·혈중농도 관리가 중요하다.",
-    "posaconazole": "Ergosterol 합성을 막는 넓은 범위의 triazole이다. Candida·Aspergillus·일부 Mucorales와 제형별 흡수 차이를 연결한다.",
-    "isavuconazole": "Aspergillus·Mucorales를 포함한 진균의 ergosterol 합성을 막는다. 실제 사용범위는 종과 감염 증후군의 근거에 따라 달라진다.",
-    "amphotericinb": "Ergosterol에 붙어 진균 막의 투과성을 높이는 polyene이다. 광범위 침습진균증과 제형별 노출·독성 차이가 핵심이다.",
-    "micafungin": "β-1,3-D-glucan 세포벽 합성을 막는 echinocandin이다. Candida가 주요 표적이며 Cryptococcus·Mucorales와 특정 부위 노출이 한계다.",
-    "flucytosine": "진균 안에서 5-FU로 바뀌어 핵산 합성을 막는다. Cryptococcus 병합치료와 단독투여 시 빠른 내성·골수독성을 연결한다.",
-    "terbinafine": "Squalene epoxidase를 막아 피부사상균을 겨냥한다. 피부·손발톱 진균증과 침습성 진균증의 치료 맥락을 구분한다.",
-    "albendazole": "β-tubulin·미세소관을 막는 구충제다. 장·조직 선충과 일부 유충성 조충을 겨냥하며 병변별 염증반응을 구분한다.",
-    "mebendazole": "미세소관과 포도당 흡수를 방해하는 장내 선충약이다. 조직 침투가 제한적이라 장내 감염이 중심이다.",
-    "ivermectin": "기생충 chloride channel을 활성화해 Strongyloides·옴 등을 겨냥한다. Loa loa 고미세사상충혈증의 중증 반응을 구분한다.",
-    "praziquantel": "기생충 칼슘 투과를 높여 흡충·장내 성충 조충을 경직시킨다. Fasciola와 조직 낭미충은 별도 치료 맥락이 필요하다.",
-    "nitazoxanide": "혐기성 에너지 대사를 방해하는 thiazolide다. 면역정상자의 Cryptosporidium 등이 표적이며 중증 면역저하에서는 효과가 제한된다.",
-    "paromomycin": "30S에 작용하는 aminoglycoside로 경구제는 주로 장강에 머문다. 장강 내 아메바 치료와 조직 감염 치료를 구분한다.",
-    "pyrimethamine": "원충 DHFR을 막아 엽산 대사를 차단한다. Toxoplasma 병합요법과 골수억제에 대한 leucovorin 병용을 연결한다.",
-    "sulfadiazine": "엽산 합성을 막는 sulfonamide로 Toxoplasma 병합요법의 구성약이다. 과민반응·결정뇨·골수독성이 주요 한계다.",
-    "artemetherlumefantrine": "혈액기 말라리아를 두 기전으로 공격하는 artemisinin 조합이다. 비중증 치료와 중증질환·간 휴면체 치료를 구분한다.",
-    "atovaquoneproguanil": "미토콘드리아 전자전달과 엽산 경로를 막는 말라리아 조합이다. 비중증 혈액기 치료가 중심이며 간 휴면체는 제거하지 못한다.",
-    "primaquine": "말라리아 간 휴면체와 생식모세포를 겨냥하는 8-aminoquinoline이다. 재발·전파 차단과 G6PD 관련 용혈 위험을 연결한다.",
-    "miltefosine": "막 지질대사·미토콘드리아 기능을 교란하는 리슈만편모충약이다. 종·지역별 효과 차이와 최기형성이 주요 경계다.",
-    "triclabendazole": "Fasciola의 미성숙충과 성충을 함께 겨냥하는 흡충약이다. 간이행기부터 담도기까지의 치료 역할이 핵심이다.",
-    "permethrin": "절지동물 sodium channel에 작용하는 외용 옴약이다. 도포 누락과 접촉자 재감염이 치료 실패의 중요한 맥락이다.",
-    "benznidazole": "환원 대사체로 원충을 손상시키는 샤가스병 약이다. 감염 단계별 이득과 만성 진행성 장기병증의 한계를 구분한다.",
-    "itraconazole": "Ergosterol 합성을 막아 피부사상균·Sporothrix·여러 이형성 진균을 겨냥한다. 제형·흡수·상호작용과 CNS·요로 노출이 한계다.",
-    "pentamidine": "여러 생합성 단계를 교란해 Pneumocystis·일부 원충을 겨냥한다. 정맥 치료와 흡입 예방의 역할·독성을 구분한다.",
-    "atovaquone": "원충의 미토콘드리아 전자전달을 막는 약이다. Babesia 병합요법·PCP 대안 치료와 지방식에 따른 흡수 차이를 연결한다.",
-    "quinine": "적혈구 내 원충을 겨냥하며 중증 Babesia에서 clindamycin 병합 대안으로 쓰인다. Cinchonism·QT 연장·저혈당이 한계다.",
-    "acyclovir": "바이러스 선택적 활성화 뒤 DNA polymerase를 막아 HSV·VZV를 겨냥한다. 활성화 기전 내성과 정맥제 신독성을 연결한다.",
-    "ganciclovir": "CMV의 UL97 활성화 뒤 DNA polymerase를 막는다. 활동성 CMV 치료와 예방을 구분하며 골수억제가 중요한 한계다.",
-    "foscarnet": "인산화 없이 바이러스 DNA polymerase를 직접 막는다. 내성 CMV·HSV의 구제치료와 신장·전해질 독성을 연결한다.",
-    "cidofovir": "세포 내 활성화 뒤 DNA polymerase를 막는 nucleotide 유사체다. 선택된 DNA 바이러스 치료와 신독성에 따른 좁은 역할을 구분한다.",
-    "letermovir": "CMV terminase를 막아 바이러스 DNA 포장을 방해한다. CMV 예방이 중심이며 이미 생긴 장기질환 치료와 구분한다.",
-    "oseltamivir": "Neuraminidase를 억제해 influenza A·B 입자의 방출을 막는다. 발병 초기 사용 시점과 숙주·내성 맥락이 중요하다.",
-    "baloxavir": "Cap-dependent endonuclease를 막아 influenza A·B 전사를 방해한다. 초기 비복잡 독감과 중증 입원 독감의 근거를 구분한다.",
-    "remdesivir": "RNA polymerase를 막아 SARS-CoV-2 복제를 억제하는 전구약이다. 정맥 투여와 발병 시점이 사용범위를 좌우한다.",
-    "nirmatrelvir-ritonavir": "Nirmatrelvir가 SARS-CoV-2 protease를 막고 ritonavir가 노출을 높인다. 발병 시점·신장기능과 약물상호작용이 중요하다.",
-    "ribavirin": "여러 기전으로 RNA 바이러스 복제를 방해하는 nucleoside 유사체다. 독성과 질환별 불확실한 근거 때문에 사용범위가 좁다.",
-    "tenofovir": "HBV polymerase·HIV 역전사효소에서 사슬을 종결시키는 nucleotide 유사체다. HIV 병합요법과 TDF·TAF 제형 차이를 구분한다.",
-    "entecavir": "HBV polymerase의 여러 단계를 막는 nucleoside 유사체다. HBV 내성 장벽과 lamivudine 내성 병력, HIV 동시감염을 구분한다.",
-    "sofosbuvir-velpatasvir": "HCV의 NS5B와 NS5A를 함께 막는 범유전자형 조합이다. 간경변·이전 치료력과 상호작용이 요법 선택을 좌우한다.",
-    "dolutegravir": "HIV integrase의 strand transfer를 막는 약이다. 완전한 병합요법 구성과 다가 양이온 상호작용을 연결한다.",
-    "lamivudine": "HIV 역전사효소·HBV polymerase에서 사슬을 종결시킨다. HIV 병합요법과 낮은 HBV 내성 장벽을 구분한다.",
-    "peginterferon-alfa": "숙주의 interferon 항바이러스 경로를 활성화하는 면역조절제다. 선택된 만성 HBV 환자에서의 역할과 독성·금기를 구분한다.",
-    "fidaxomicin": "전사 개시를 막고 장내에 주로 머무는 경구 항균제다. C. difficile 대장염이 표적이며 전신 감염 치료에는 쓰지 않는다."
+    "oxacillin": "MSSA의 균혈증·심내막염·피부연조직감염을 겨냥하는 주사제다. MRSA에는 듣지 않으며 장알균·그람음성균도 치료 범위 밖이다.",
+    "vancomycin": "MRSA 등 그람양성균의 침습성 감염에 쓰는 약이다. 정맥제의 전신 치료와 경구제의 C. difficile 장염 치료는 구별하며 VRE·그람음성균은 덮지 못한다.",
+    "ceftriaxone": "감수성 병원체의 폐렴·수막염과 임질 치료 등에 쓰는 주사제다. 녹농균·장알균은 덮지 못하고, 유도성 AmpC 위험균에서는 치료 중 내성을 고려한다.",
+    "cefepime": "녹농균 위험이 있는 감염·호중구감소성 발열과 감수성 AmpC 감염에서 쓰인다. 신기능에 따른 노출 조절이 중요하며 신경독성을 살펴야 한다.",
+    "ceftazidime": "녹농균을 포함한 그람음성균 감염에 초점을 둔 주사제다. 그람양성균 범위가 약하고 장알균은 덮지 못해 혼합감염에서는 범위를 따져야 한다.",
+    "meropenem": "중증 그람음성균·혐기균 감염과 침습성 ESBL 감염에서 중요한 광범위 주사제다. MRSA는 덮지 못하며 carbapenem 내성 여부가 선택을 가른다.",
+    "imipenem": "호기성·혐기성균이 섞인 중증 감염을 폭넓게 겨냥하는 주사제다. MRSA는 범위 밖이며 같은 carbapenem이라도 균종별 감수성을 확인한다.",
+    "aztreonam": "녹농균 등 호기성 그람음성균 감염을 겨냥한다. 그람양성균·혐기균은 덮지 못하므로 혼합감염에서는 추가 치료 범위를 따져야 한다.",
+    "ciprofloxacin": "감수성 그람음성균의 요로·장관 감염 등에 쓰며 녹농균 범위가 있다. 내성 선택이 쉬워 감염 부위와 실제 감수성을 확인한다.",
+    "levofloxacin": "호흡기 병원체와 감수성 그람음성균의 폐렴·요로감염 등에 쓰인다. 감염 부위와 노출 조건, 내성 여부를 확인해 선택한다.",
+    "ampicillin": "감수성 장알균 감염과 Listeria 수막염·패혈증에서 중요한 약이다. β-lactamase 생성균과 다수 E. faecium에는 효과를 기대하기 어렵다.",
+    "piptazo": "녹농균·혐기균을 함께 고려하는 중증 혼합감염에서 쓰인다. MRSA는 덮지 못하고 침습성 ESBL 감염에서는 신뢰할 표적 치료로 여기지 않는다.",
+    "linezolid": "MRSA 폐렴·피부감염과 VRE 감염에서 쓰이며 경구 사용도 가능하다. 그람음성균은 덮지 못하고 혈소판감소·골수억제를 살펴야 한다.",
+    "ceftazavi": "KPC·OXA-48 계열 내성 그람음성균 감염의 치료 옵션이다. NDM 등 MBL 감염에는 단독으로 효과를 기대하지 않으며 실제 감수성을 확인한다.",
+    "teicoplanin": "MRSA 등 그람양성균 감염에 쓰는 주사제다. 그람음성균은 덮지 못하며, VRE는 vanA·vanB에 따라 반응이 달라질 수 있다.",
+    "cefazolin": "MSSA 감염·골관절감염과 수술 전 예방에 쓰는 대표 주사제다. MRSA·장알균·녹농균은 치료 범위 밖이다.",
+    "penicillin": "감수성 사슬알균 감염과 매독 등에서 중요한 약이다. 매독은 병기·신경계 침범에 따라 제형이 다르며 penicillinase 생성 포도알균에는 듣지 않는다.",
+    "amoxclav": "지역사회 혼합감염과 동물 교상 감염 등에 쓰인다. 녹농균은 덮지 못하고 AmpC·ESBL 같은 내성을 억제제가 모두 해결해 주지는 않는다.",
+    "ceftaroline": "MRSA를 포함한 피부연조직감염과 감수성 병원체의 지역사회폐렴에 쓰인다. 녹농균·주요 내성 장내세균까지 덮는 광범위 약은 아니다.",
+    "daptomycin": "MRSA 균혈증 등 그람양성균의 혈류·심부 감염에서 쓰는 주사제다. 폐에서는 활성이 소실되어 폐렴 치료에는 쓰지 않는다.",
+    "clindamycin": "일부 피부연조직·구강 혐기균 감염에 쓰며 침습성 GAS 감염에서는 병합 역할이 있다. 유도성 내성이 있으면 실패할 수 있어 D-test가 중요하다.",
+    "erythromycin": "감수성 호흡기·비정형 병원체를 겨냥하는 macrolide다. 흔한 내성 때문에 같은 계열이라는 이유만으로 효과를 기대하지 않는다.",
+    "doxycycline": "비정형 폐렴·진드기매개 감염과 일부 감수성 피부감염에서 쓰인다. 녹농균 치료용으로 기대하지 않으며 병원체·감염 부위에 따라 선택한다.",
+    "tmpsmx": "PCP·Nocardia 감염과 감수성 MRSA·요로감염 등에서 쓰인다. 장알균·녹농균의 치료 범위로 기대하지 않는다.",
+    "gentamicin": "호기성 그람음성균 감염과 일부 심내막염의 병합요법에서 쓰는 주사제다. 신독성·청력독성이 주요 제약이며 장알균에는 단독으로 쓰지 않는다.",
+    "amikacin": "일부 내성 그람음성균 감염과 감수성 기반 NTM 병합요법에서 쓰인다. 신독성·청력독성을 감시해야 하며 장알균 단독치료에는 효과가 없다.",
+    "metronidazole": "복강·골반의 혐기균 감염과 일부 원충 감염에 쓰인다. 호기성균은 덮지 못하고 침습성 아메바증은 장강 치료제를 따로 병용해야 한다.",
+    "tigecycline": "일부 내성균을 포함한 복잡한 조직·혼합감염에서 고려한다. 혈중·요중 노출이 낮아 균혈증·요로감염에 불리하고 녹농균도 덮지 못한다.",
+    "azithromycin": "비정형 호흡기감염·백일해와 일부 성매개감염에 쓰인다. NTM에는 병합하며 M. genitalium에는 내성 확인 없이 단회요법을 선택하지 않는다.",
+    "clarithromycin": "감수성 NTM 병합요법과 H. pylori 제균요법에서 쓰인다. 내성 확인과 CYP3A 상호작용·QT 연장이 선택의 중요한 제약이다.",
+    "rifampicin": "결핵·NTM의 병합요법에서 중요한 약이다. 단독 사용은 빠른 내성을 선택하며 강한 효소유도 때문에 병용약을 확인해야 한다.",
+    "isoniazid": "활동성 결핵 병합요법의 주요 구성약이다. 간독성·말초신경병증을 감시하며 위험군에는 pyridoxine 병용을 고려한다.",
+    "ethambutol": "결핵·MAC 병합요법에서 쓰는 약이다. 시력·적녹 색각 변화와 신기능을 살펴야 하며 활동성 감염에 단독으로 쓰지 않는다.",
+    "pyrazinamide": "결핵 초기 강화기 병합요법에서 중요한 약이다. 간독성·고요산혈증이 제약이며 M. bovis에는 고유 내성 때문에 효과가 없다.",
+    "amoxicillin": "감수성 지역사회 호흡기감염 등에 쓰며 H. pylori 제균요법의 구성약이기도 하다. β-lactamase 생성균에는 단독 효과를 기대하기 어렵다.",
+    "moxifloxacin": "호흡기감염과 내성에 따른 M. genitalium 치료 등에 쓰인다. QT 연장·상호작용을 확인하고 결핵 의심 상황의 단독 노출에 주의한다.",
+    "fluconazole": "감수성 Candida 감염과 일부 진균증의 치료·유지요법에서 쓰인다. Aspergillus·Mucorales에는 효과가 없고 Candida 종별 감수성 차이가 크다.",
+    "voriconazole": "침습성 Aspergillus 감염에서 중요한 약이다. Mucorales에는 신뢰할 효과가 없으며 상호작용과 혈중농도 관리가 중요하다.",
+    "posaconazole": "넓은 진균 범위가 필요한 예방·치료에서 쓰인다. 제형별 흡수와 병용약 상호작용을 확인해야 실제 노출을 확보할 수 있다.",
+    "isavuconazole": "침습성 Aspergillus·Mucorales 감염의 치료 옵션이다. 같은 진균증이라도 종·침범 부위에 따른 근거와 감수성을 확인해 선택한다.",
+    "amphotericinb": "중증 침습진균증과 일부 원충 감염에서 중요한 약이다. Liposomal·deoxycholate 제형은 독성·노출이 달라 임의로 바꾸어 쓰지 않는다.",
+    "micafungin": "칸디다혈증·침습성 Candida 감염에서 쓰는 주사제다. Cryptococcus·Mucorales는 덮지 못하고 중추신경계·안구·요로 노출도 제한적이다.",
+    "flucytosine": "Cryptococcus 수막염 등의 병합치료에 쓰인다. 단독 사용은 빠른 내성을 선택하며 골수·간 독성을 감시해야 한다.",
+    "terbinafine": "피부사상균에 의한 피부·손발톱 진균증 치료가 중심이다. 침습성 진균증의 표준 약제로 쓰는 약은 아니다.",
+    "albendazole": "장내 선충과 일부 조직 유충 감염에 쓰인다. 신경·조직 병변은 약물로 유발되는 염증과 병변 위치까지 고려해야 한다.",
+    "mebendazole": "장내 선충 감염을 주로 치료하는 구충제다. 조직 침투가 제한적이어서 조직 기생충 감염까지 같은 효과를 기대하지 않는다.",
+    "ivermectin": "Strongyloides 감염·옴 등에서 중요한 약이다. Loa loa 고미세사상충혈증에서는 중증 반응 위험을 고려해야 한다.",
+    "praziquantel": "여러 흡충과 장내 성충 조충 감염에 쓰인다. Fasciola는 별도 약제가 필요하며 조직 낭미충은 병변별 치료 판단이 필요하다.",
+    "nitazoxanide": "면역정상자의 Cryptosporidium 등 장내 원충 감염에 쓰인다. 중증 면역저하에서는 효과가 제한될 수 있다.",
+    "paromomycin": "경구제는 장강 내 아메바 감염을 치료하는 데 쓰인다. 조직 침투가 낮아 아메바 간농양·침습성 대장염을 단독으로 치료하는 약은 아니다.",
+    "pyrimethamine": "Toxoplasma 감염의 병합요법에 쓰인다. 골수억제를 줄이기 위한 leucovorin 병용이 중요하다.",
+    "sulfadiazine": "Toxoplasma 감염에서 pyrimethamine 등과 병합한다. 과민반응·결정뇨·골수독성이 중요한 사용 제약이다.",
+    "artemetherlumefantrine": "비중증 혈액기 말라리아 치료에 쓰는 병합제다. 중증 말라리아 치료나 P. vivax·ovale의 간 휴면체 제거를 대신하지 않는다.",
+    "atovaquoneproguanil": "비중증 말라리아의 혈액기 치료에 쓰는 병합제다. 중증 말라리아나 P. vivax·ovale의 재발 원인인 간 휴면체는 별도 치료가 필요하다.",
+    "primaquine": "P. vivax·ovale의 재발 방지와 일부 말라리아 전파 차단에 쓰인다. G6PD 관련 용혈 위험 때문에 검사와 임신·수유 조건을 확인한다.",
+    "miltefosine": "일부 리슈만편모충 감염을 치료하는 약이다. 종·획득 지역에 따라 효과가 다르고 최기형성이 중요한 사용 제약이다.",
+    "triclabendazole": "Fasciola 감염의 간이행기부터 담도기까지 치료하는 약이다. 다른 흔한 흡충 치료를 대신하는 일반 구충제는 아니다.",
+    "permethrin": "옴에 쓰는 외용제다. 도포 누락과 접촉자 미치료에 따른 재감염이 흔한 실패 원인이다.",
+    "benznidazole": "샤가스병의 원인 감염을 치료하는 약이다. 이미 진행된 만성 심장·소화기 병증에서는 이득이 불확실하며 독성을 함께 고려한다.",
+    "itraconazole": "Sporothrix·여러 이형성 진균과 피부사상균 감염에 쓰인다. 제형·흡수·상호작용과 심부전 위험이 중요하며 중추신경계·요로에는 불리하다.",
+    "pentamidine": "PCP 등의 대안 치료에 쓰이며 정맥제와 흡입 예방제의 역할이 다르다. 신장·췌장·혈당·전해질 독성이 중요한 사용 제약이다.",
+    "atovaquone": "비중증 Babesia 병합요법과 PCP 대안 치료 등에 쓰인다. 지방식과 복용해야 흡수가 개선되며 중증 감염에서는 같은 역할을 기대하지 않는다.",
+    "quinine": "일부 말라리아·Babesia 감염에서 병합요법의 구성약으로 쓰인다. 단독요법이 아니며 cinchonism·QT 연장·저혈당이 사용을 제한한다.",
+    "acyclovir": "HSV·VZV의 점막·피부감염부터 중증 감염까지 쓰인다. 감염 부위에 따라 경구·정맥 치료가 달라지며 정맥제의 신독성을 살펴야 한다.",
+    "ganciclovir": "활동성 CMV 장기질환, 특히 망막염 치료에서 중요한 약이다. 골수억제가 주요 제약이며 예방 목적과 치료 목적은 구별한다.",
+    "foscarnet": "Ganciclovir 내성·불내성 CMV와 acyclovir 내성 HSV의 대안 치료에 쓰인다. 신독성·전해질 이상이 커 전문적인 감시가 필요하다.",
+    "cidofovir": "선택된 내성·불내성 CMV 감염 등에서 고려하는 대안 약이다. 신독성 때문에 대부분의 DNA 바이러스 감염에 일률적으로 쓰지 않는다.",
+    "letermovir": "이식 등 특정 상황에서 CMV 예방을 위해 쓰는 약이다. 이미 발생한 CMV 장기질환의 표준 치료제는 아니다.",
+    "oseltamivir": "Influenza A·B 치료에 쓰며 일찍 시작할수록 이득이 크다. 입원·중증·고위험 환자는 초기 시간창이 지났다고 치료를 일률적으로 배제하지 않는다.",
+    "baloxavir": "발병 초기 비복잡 외래 독감 치료에서 쓰인다. 중증·입원 독감에 같은 근거로 단독 사용하지 않는다.",
+    "remdesivir": "중증 진행 위험이 있는 COVID-19 등에서 쓰는 정맥 항바이러스제다. 발병 시점과 정맥 투여 가능성이 선택을 가른다.",
+    "nirmatrelvir-ritonavir": "고위험 외래 COVID-19의 발병 초기 치료에 쓰인다. 병용약 상호작용과 신장·간 기능 조건을 먼저 확인해야 한다.",
+    "ribavirin": "일부 바이러스 질환에서 제한적으로 고려하지만 질환별 근거가 다르다. 독성과 불확실한 효과 때문에 일반적인 광범위 항바이러스제로 쓰지 않는다.",
+    "tenofovir": "만성 HBV 치료와 HIV 병합요법에서 쓰인다. HIV 단독치료제로 쓰지 않으며 TDF·TAF의 신장·뼈 영향과 제형 차이를 고려한다.",
+    "entecavir": "만성 HBV 치료에 쓰는 약이다. Lamivudine 내성 병력은 효과에 영향을 주며 HIV 동시감염을 단독으로 치료하지 못한다.",
+    "sofosbuvir-velpatasvir": "여러 HCV 유전자형의 만성 C형간염 치료에 쓰는 병합제다. 간경변 상태·이전 치료력과 약물상호작용이 요법 선택을 가른다.",
+    "dolutegravir": "HIV의 완전한 병합 항레트로바이러스 요법에 포함되는 약이다. 단독치료가 아니며 철·칼슘 등 다가 양이온과의 상호작용을 확인한다.",
+    "lamivudine": "HIV 병합요법과 HBV 치료에서 쓰인다. HBV 단독 사용은 내성을 빠르게 선택할 수 있고 완전한 HIV 치료를 대신하지 않는다.",
+    "peginterferon-alfa": "신중히 선택한 만성 HBV 환자에서 고려하는 약이다. 독성·금기가 많아 모든 만성간염 환자에게 같은 방식으로 쓰지 않는다.",
+    "fidaxomicin": "C. difficile 대장염 치료에 쓰는 경구제다. 전신흡수가 낮아 균혈증·심부감염을 치료하는 약은 아니며 전격성 장염의 근거는 별도로 본다."
+  },
+  "references": {
+    "card-label-cefepime": {
+      "title": "DailyMed/FDA · Cefepime Injection prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=be5f8ca6-7232-423a-a2d5-cccb7abe7921",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-linezolid": {
+      "title": "DailyMed/FDA · Linezolid prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=374af2a7-d994-40bd-a86a-cd9038d0b72c",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-daptomycin": {
+      "title": "DailyMed/FDA · Daptomycin prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1957b6ce-7382-4a7b-bf02-3595948d09c6",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-gentamicin": {
+      "title": "DailyMed/FDA · Gentamicin Sulfate prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=977180b3-a222-4282-d485-4a3217674305",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-amikacin": {
+      "title": "DailyMed/FDA · Amikacin Sulfate prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=20fa61ef-11e2-4d01-82ea-b5412cefaead",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-cefazolin": {
+      "title": "DailyMed/FDA · Cefazolin in Dextrose prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d91a8d13-99a0-4d87-88dc-71cbd37922b4",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-ceftaroline": {
+      "title": "DailyMed/FDA · Ceftaroline Fosamil prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=3cee3c08-ed60-06c5-ac49-103b7ad2ef5f&type=display",
+      "accessedAt": "2026-10-10"
+    },
+    "card-nih-oi-therapy": {
+      "title": "NIH · Preferred and Alternative Therapies for HIV-Associated Opportunistic Infections",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/treatment-hiv-associated-full",
+      "accessedAt": "2026-10-10"
+    },
+    "card-cdc-flu": {
+      "title": "CDC · Influenza Antiviral Medications: Summary for Clinicians",
+      "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html",
+      "accessedAt": "2026-10-10"
+    }
+  },
+  "summarySourceIds": {
+    "oxacillin": [
+      "dailymed-oxacillin"
+    ],
+    "cefepime": [
+      "card-label-cefepime",
+      "idsa-amr"
+    ],
+    "linezolid": [
+      "card-label-linezolid"
+    ],
+    "daptomycin": [
+      "card-label-daptomycin"
+    ],
+    "gentamicin": [
+      "card-label-gentamicin"
+    ],
+    "amikacin": [
+      "card-label-amikacin"
+    ],
+    "cefazolin": [
+      "card-label-cefazolin"
+    ],
+    "ceftaroline": [
+      "card-label-ceftaroline"
+    ],
+    "meropenem": [
+      "idsa-amr"
+    ],
+    "piptazo": [
+      "idsa-amr"
+    ],
+    "ceftazavi": [
+      "idsa-amr"
+    ],
+    "fluconazole": [
+      "idsa-candida"
+    ],
+    "micafungin": [
+      "idsa-candida"
+    ],
+    "flucytosine": [
+      "card-nih-oi-therapy"
+    ],
+    "tmpsmx": [
+      "card-nih-oi-therapy"
+    ],
+    "pyrimethamine": [
+      "card-nih-oi-therapy"
+    ],
+    "sulfadiazine": [
+      "card-nih-oi-therapy"
+    ],
+    "metronidazole": [
+      "cdc-amebiasis"
+    ],
+    "paromomycin": [
+      "cdc-amebiasis"
+    ],
+    "ganciclovir": [
+      "card-nih-oi-therapy"
+    ],
+    "foscarnet": [
+      "card-nih-oi-therapy"
+    ],
+    "cidofovir": [
+      "card-nih-oi-therapy"
+    ],
+    "pentamidine": [
+      "card-nih-oi-therapy"
+    ],
+    "atovaquone": [
+      "card-nih-oi-therapy"
+    ],
+    "oseltamivir": [
+      "card-cdc-flu"
+    ],
+    "baloxavir": [
+      "card-cdc-flu"
+    ]
   }
 }

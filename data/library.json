@@ -1,7 +1,7 @@
 {
   "$schema": "./library-schema.json",
   "schemaVersion": 1,
-  "catalogVersion": "1.0.0",
+  "catalogVersion": "1.0.1",
   "sourceDatasetVersion": "0.5.0",
   "locale": "ko-KR",
   "reviewStatus": "educational-draft",
@@ -232,7 +232,7 @@
       "koreanName": "황색포도알균",
       "classification": "Bacteria / Bacillota / Staphylococcaceae",
       "representativeRecordId": "SAU-001",
-      "summary": "피부·점막에 집락하는 화농성 구균이다. 농양과 혈류·판막·뼈 감염을 만들며 methicillin 내성이 카드의 중요한 변형이다.",
+      "summary": "피부농양·균혈증·심내막염·골수염의 대표 원인이다. 혈액배양 양성을 단순 오염으로 넘기지 않으며, 지속 균혈증이면 판막·원격 감염을 살핀다.",
       "back": {
         "sections": [
           {
@@ -428,7 +428,7 @@
       "koreanName": "표피포도알균",
       "classification": "Bacteria / Bacillota / Staphylococcaceae",
       "representativeRecordId": "SEP-003",
-      "summary": "피부 상재 구균으로 의료기구 표면에 biofilm을 만든다. 카테터·인공판막·인공관절 감염과 혈액배양 오염을 구분한다.",
+      "summary": "카테터·인공판막·인공관절 감염의 원인이며 혈액배양 오염균으로도 흔하다. 배양 한 병만으로 판단하지 않고 인공물과 임상 경과를 함께 본다.",
       "back": {
         "sections": [
           {
@@ -610,7 +610,7 @@
       "koreanName": "장알균",
       "classification": "Bacteria / Bacillota / Enterococcaceae",
       "representativeRecordId": "EFA-005",
-      "summary": "장내 상재 장알균으로 요로·혈류·심장판막 감염을 일으킨다. Cephalosporin 고유 내성과 VRE 획득내성을 구분한다.",
+      "summary": "요로감염·균혈증·심내막염과 복강·담도감염을 일으킨다. Cephalosporin 단독은 듣지 않으며, VRE 여부가 표적 치료 선택에 중요하다.",
       "back": {
         "sections": [
           {
@@ -797,7 +797,7 @@
       "koreanName": "페시움 장알균",
       "classification": "Bacteria / Bacillota / Enterococcaceae",
       "representativeRecordId": "EFM-007",
-      "summary": "의료 관련 감염과 다제내성에서 중요한 장알균이다. Ampicillin 내성과 vanA/vanB에 의한 VRE를 별도로 구분한다.",
+      "summary": "입원·면역저하 환자의 균혈증·요로·복강감염에서 중요하다. Ampicillin 내성이 흔하고 VRE도 가능해 E. faecalis와 구별해야 한다.",
       "back": {
         "sections": [
           {
@@ -984,7 +984,7 @@
       "koreanName": "대장균",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "ECO-009",
-      "summary": "장내 상재 그람음성균으로 요로·복강·혈류 감염을 흔히 일으킨다. 장염 병원형과 ESBL 같은 내성 표현형은 별개의 축이다.",
+      "summary": "방광염·신우신염·균혈증·복강감염의 흔한 원인이다. ESBL 등 내성이 치료 선택을 바꾸며, 장염 병원형은 장관외 감염과 치료 맥락이 다르다.",
       "back": {
         "sections": [
           {
@@ -1170,7 +1170,7 @@
       "koreanName": "폐렴막대균",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "KPN-011",
-      "summary": "피막을 가진 비운동성 장내세균으로 폐렴·요로·혈류 감염을 일으킨다. 고병독성·ESBL·carbapenemase는 별개의 축이다.",
+      "summary": "폐렴·요로감염·균혈증을 일으키며, 고병독성 계통은 간농양과 원격 파종이 특징이다. ESBL·carbapenem 내성은 병독성과 별도로 확인한다.",
       "back": {
         "sections": [
           {
@@ -1344,7 +1344,7 @@
       "koreanName": "녹농균",
       "classification": "Bacteria / Pseudomonadota / Pseudomonadales",
       "representativeRecordId": "PAE-013",
-      "summary": "습윤 환경의 비발효균으로 biofilm과 외막·유출펌프·AmpC 장벽을 가진다. 의료 관련 폐렴·화상감염과 다제내성을 연결한다.",
+      "summary": "인공호흡기 폐렴·화상감염과 낭성섬유증의 만성 기도감염에서 중요하다. 일반 항균제로 덮이지 않을 수 있어 항녹농균 범위와 실제 감수성을 확인한다.",
       "back": {
         "sections": [
           {
@@ -1530,7 +1530,7 @@
       "koreanName": "클로아카 장내세균 복합체",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "ECL-015",
-      "summary": "의료 관련 감염을 일으키며 유도성 염색체 AmpC를 가진 장내세균 복합체다. 치료 중 탈억제 내성이 선택될 수 있다.",
+      "summary": "의료 관련 폐렴·요로·복강 감염과 균혈증의 원인이다. 초기 감수성이 좋아도 유도성 AmpC에 따른 치료 중 내성 위험이 약제 선택을 바꾼다.",
       "back": {
         "sections": [
           {
@@ -1704,7 +1704,7 @@
       "koreanName": "화농사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SPY-101",
-      "summary": "Group A β용혈성 사슬알균이다. 인두·피부감염에서 괴사근막염·독성쇼크와 감염 후 면역 합병증까지 연결한다.",
+      "summary": "인두염·피부감염부터 괴사근막염·독성쇼크까지 일으킨다. 인두염 뒤 류마티스열, 인두·피부감염 뒤 사구체신염 같은 후유 합병증도 중요하다.",
       "back": {
         "sections": [
           {
@@ -1842,7 +1842,7 @@
       "koreanName": "B군사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SAG-103",
-      "summary": "Group B β용혈성 사슬알균으로 산모 생식기 집락과 신생아 감염을 연결한다. 신생아 패혈증·수막염과 성인 균혈증이 중요하다.",
+      "summary": "산모 생식기 집락과 연관된 신생아 패혈증·폐렴·수막염의 대표 원인이다. 성인에서도 균혈증을 일으킬 수 있다.",
       "back": {
         "sections": [
           {
@@ -1980,7 +1980,7 @@
       "koreanName": "폐렴사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SPN-105",
-      "summary": "피막성 창끝 모양 쌍알균으로 폐렴·중이염·수막염을 일으킨다. 무비증 숙주의 침습감염과 감염부위별 감수성 해석이 중요하다.",
+      "summary": "폐렴·중이염·부비동염·수막염의 대표 원인이다. 무비증 환자는 침습감염이 빠르게 악화하며, 수막염 여부에 따라 감수성 해석도 달라진다.",
       "back": {
         "sections": [
           {
@@ -2118,7 +2118,7 @@
       "koreanName": "미티스사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SMI-108",
-      "summary": "구강 viridans group 사슬알균이다. 아급성 심내막염뿐 아니라 호중구감소자의 균혈증에서도 중요하다.",
+      "summary": "구강 사슬알균이지만 아급성 심내막염·균혈증의 원인이 된다. 호중구감소 환자의 혈액배양 양성을 오염으로 단정하지 않는다.",
       "back": {
         "sections": [
           {
@@ -2244,7 +2244,7 @@
       "koreanName": "오랄리스사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SOR-109",
-      "summary": "구강 상재 viridans group 사슬알균이다. 구강 병소에서 혈류로 퍼져 아급성 심내막염을 일으킬 수 있다.",
+      "summary": "구강 병소와 연관된 균혈증·아급성 심내막염을 일으킨다. 치과·구강 상태와 심장판막 감염의 연계를 살핀다.",
       "back": {
         "sections": [
           {
@@ -2370,7 +2370,7 @@
       "koreanName": "갈롤리티쿠스사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SGL-110",
-      "summary": "Group D 비장알균성 사슬알균으로 균혈증·심내막염을 일으킨다. 대장 종양과의 연관이 중요한 임상 단서다.",
+      "summary": "균혈증·심내막염이 대장 종양을 찾는 단서가 된다. 구강 사슬알균과 같은 취급으로 넘기지 않는 것이 중요하다.",
       "back": {
         "sections": [
           {
@@ -2496,7 +2496,7 @@
       "koreanName": "루그두넨시스포도알균",
       "classification": "Bacteria / Bacillota / Staphylococcaceae",
       "representativeRecordId": "SLU-111",
-      "summary": "Coagulase 음성 포도알균이지만 공격적인 침습감염을 일으킨다. 파괴성 심내막염과 피부농양을 연결한다.",
+      "summary": "Coagulase 음성이어도 피부농양과 파괴성 심내막염을 일으킬 수 있다. 다른 피부 상재 포도알균보다 침습감염 가능성을 적극적으로 살핀다.",
       "back": {
         "sections": [
           {
@@ -2622,7 +2622,7 @@
       "koreanName": "부생포도알균",
       "classification": "Bacteria / Bacillota / Staphylococcaceae",
       "representativeRecordId": "SSA-112",
-      "summary": "요로친화성 coagulase 음성 포도알균이다. 젊은 여성의 단순 방광염이 대표적인 임상 맥락이다.",
+      "summary": "젊은 여성의 급성 단순 방광염에서 만나는 병원체다. 증상이 뚜렷하면 낮은 집락수도 임상 맥락과 함께 해석한다.",
       "back": {
         "sections": [
           {
@@ -2748,7 +2748,7 @@
       "koreanName": "갈리나룸장알균",
       "classification": "Bacteria / Bacillota / Enterococcaceae",
       "representativeRecordId": "EGA-113",
-      "summary": "운동성을 가진 장알균으로 저수준 vancomycin 고유 내성이 특징이다. 획득성 VRE와 VanC 종 자체의 특성을 구분한다.",
+      "summary": "요로·담도감염과 균혈증을 일으키는 장알균이다. 종 자체의 저수준 vancomycin 내성을 알아야 획득성 VRE와 혼동하지 않는다.",
       "back": {
         "sections": [
           {
@@ -2874,7 +2874,7 @@
       "koreanName": "카셀리플라부스장알균",
       "classification": "Bacteria / Bacillota / Enterococcaceae",
       "representativeRecordId": "ECA-114",
-      "summary": "황색 색소와 운동성을 가진 장알균이다. 담도·요로 감염 및 균혈증에서 종 수준의 특성을 기억한다.",
+      "summary": "담도·요로 감염과 균혈증에서 만나는 장알균이다. VanC에 의한 고유 vancomycin 내성이 있어 획득성 VRE와 구별한다.",
       "back": {
         "sections": [
           {
@@ -3000,7 +3000,7 @@
       "koreanName": "리스테리아모노사이토제네스",
       "classification": "Bacteria / Bacillota / Listeriaceae",
       "representativeRecordId": "LMO-115",
-      "summary": "세포내 생존이 가능한 작은 그람양성균이다. 패혈증·수막염과 임신 관련 감염에서 중요한 병원체다.",
+      "summary": "고령·면역저하 환자의 패혈증·수막염과 임신 관련 감염에서 중요하다. Cephalosporin이 듣지 않아 수막염 경험적 치료에서 놓치기 쉽다.",
       "back": {
         "sections": [
           {
@@ -3138,7 +3138,7 @@
       "koreanName": "세레우스바실루스",
       "classification": "Bacteria / Bacillota / Bacillaceae",
       "representativeRecordId": "BCE-116",
-      "summary": "포자형성 간균으로 구토형·설사형 식중독을 일으킨다. 안구염과 카테터 균혈증 같은 침습감염도 가능하다.",
+      "summary": "구토형·설사형 식중독의 원인이며, 안구염과 카테터 균혈증도 일으킨다. 재가열한 밥을 먹은 뒤 구토하는 상황이 대표적이다.",
       "back": {
         "sections": [
           {
@@ -3264,7 +3264,7 @@
       "koreanName": "탄저균",
       "classification": "Bacteria / Bacillota / Bacillaceae",
       "representativeRecordId": "BAN-117",
-      "summary": "비운동성 포자형성 간균으로 피부·흡입·위장관·주사 탄저를 일으킨다. 노출 경로에 따라 달라지는 임상형이 핵심이다.",
+      "summary": "피부·흡입·위장관·주사 노출에 따라 서로 다른 탄저 임상형을 만든다. 노출력과 전신 침범 여부가 대응을 가르며, 의심 사례는 신고가 중요하다.",
       "back": {
         "sections": [
           {
@@ -3406,7 +3406,7 @@
       "koreanName": "디프테리아균",
       "classification": "Bacteria / Actinomycetota / Corynebacteriaceae",
       "representativeRecordId": "CDI-118",
-      "summary": "독소성 균주는 인두 위막과 심근염·신경병증을 일으킨다. 국소 감염과 전신 독소 효과를 함께 기억하는 막대균이다.",
+      "summary": "인두 위막에 심근염·신경병증이 동반될 수 있는 독소성 감염이다. 독소성 호흡기 디프테리아가 의심되면 검사 확정까지 항독소 판단을 미루지 않는다.",
       "back": {
         "sections": [
           {
@@ -3544,7 +3544,7 @@
       "koreanName": "제이키움코리네박테륨",
       "classification": "Bacteria / Actinomycetota / Corynebacteriaceae",
       "representativeRecordId": "CJE-119",
-      "summary": "지질친화성 피부 상재균으로 면역저하자의 기구감염과 균혈증을 일으킨다. 반복 양성을 단순 피부 오염과 구분한다.",
+      "summary": "면역저하자의 카테터 균혈증·인공판막 감염에서 중요하다. 반복 혈액배양 양성이면 단순 피부 오염으로 넘기지 않는다.",
       "back": {
         "sections": [
           {
@@ -3670,7 +3670,7 @@
       "koreanName": "아크네스큐티박테륨",
       "classification": "Bacteria / Actinomycetota / Cutibacteriaceae",
       "representativeRecordId": "CAC-120",
-      "summary": "느리게 자라는 혐기성 피부 상재균이다. 여드름뿐 아니라 염증이 미미한 어깨 인공관절·션트 감염과 연결한다.",
+      "summary": "염증이 뚜렷하지 않은 어깨 인공관절·션트 감염의 원인이 될 수 있다. 천천히 자라는 피부 상재균이어서 오염과 실제 기구감염을 구별해야 한다.",
       "back": {
         "sections": [
           {
@@ -3796,7 +3796,7 @@
       "koreanName": "클로스트리디오이데스디피실레",
       "classification": "Bacteria / Bacillota / Peptostreptococcaceae",
       "representativeRecordId": "CDF-121",
-      "summary": "포자를 만드는 혐기성균으로 항균제 사용 뒤 독소성 대장염을 일으킨다. 설사·위막성 대장염·거대결장을 연결한다.",
+      "summary": "항균제 사용 뒤 생긴 설사·위막성 대장염이 대표적이며, 심하면 거대결장으로 진행한다. 치료 후 검사 음전보다 임상반응으로 회복을 판단한다.",
       "back": {
         "sections": [
           {
@@ -3938,7 +3938,7 @@
       "koreanName": "퍼프린젠스클로스트리듐",
       "classification": "Bacteria / Bacillota / Clostridiaceae",
       "representativeRecordId": "CPE-122",
-      "summary": "빠르게 증식하는 혐기성 포자형성균이다. 가스성 근괴사·식중독과 패혈증성 용혈을 연결한다.",
+      "summary": "심한 통증과 가스를 동반한 근괴사, 식중독, 패혈증성 용혈을 일으킨다. 근괴사는 항균제만으로 해결되지 않아 긴급 외과 처치가 중요하다.",
       "back": {
         "sections": [
           {
@@ -4064,7 +4064,7 @@
       "koreanName": "이스라엘리방선균",
       "classification": "Bacteria / Actinomycetota / Actinomycetaceae",
       "representativeRecordId": "AIS-123",
-      "summary": "분지하는 혐기성 방선균으로 만성 종괴와 누공을 만든다. 조직면을 가로지르는 경부안면·흉부·복부골반 감염이 특징이다.",
+      "summary": "만성 종괴와 배농되는 누공을 만드는 경부안면·흉부·복부골반 감염이 특징이다. 병변이 조직 경계를 넘어 퍼져 종양처럼 보일 수 있다.",
       "back": {
         "sections": [
           {
@@ -4190,7 +4190,7 @@
       "koreanName": "프로테우스 미라빌리스",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-201",
-      "summary": "Swarming과 요소분해가 특징인 장내세균이다. 알칼리뇨와 감염결석을 동반한 복잡성 요로감염을 연결한다.",
+      "summary": "복잡성 요로감염·신우신염과 감염결석을 일으킨다. 알칼리뇨와 struvite·녹각결석이 함께 보이면 중요한 단서다.",
       "back": {
         "sections": [
           {
@@ -4300,7 +4300,7 @@
       "koreanName": "프로테우스 불가리스",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-203",
-      "summary": "요소분해와 강한 운동성이 특징인 Proteus다. Indole 양성이 P. mirabilis와 구별하는 핵심 단서다.",
+      "summary": "요로·상처 감염과 균혈증을 일으키는 Proteus다. Indole 양성으로 P. mirabilis와 구별되며 치료는 종별 감수성에 따라 달라진다.",
       "back": {
         "sections": [
           {
@@ -4410,7 +4410,7 @@
       "koreanName": "모르가넬라 모르가니",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-204",
-      "summary": "장내 상재 기회감염균으로 유도성 AmpC를 가진다. 요로·수술부위 감염과 균혈증을 일으킨다.",
+      "summary": "요로·수술부위 감염과 균혈증을 일으킨다. 유도성 AmpC를 가진 장내세균으로, 감염 부위와 감수성을 함께 보고 치료제를 고른다.",
       "back": {
         "sections": [
           {
@@ -4520,7 +4520,7 @@
       "koreanName": "프로비덴시아 스투아르티",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-205",
-      "summary": "장기 카테터·요양시설과 연관된 기회감염 장내세균이다. 카테터 요로감염과 다제내성을 연결한다.",
+      "summary": "장기요양시설의 만성 카테터 환자에서 요로감염·균혈증을 일으킨다. 다제내성이 동반될 수 있어 카테터와 감염원 관리가 중요하다.",
       "back": {
         "sections": [
           {
@@ -4630,7 +4630,7 @@
       "koreanName": "세라티아 마르세센스",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-206",
-      "summary": "의료환경에서 살아남는 AmpC 보유 장내세균이다. 카테터·요로·폐 감염을 만들며 붉은 색소는 항상 보이지 않는다.",
+      "summary": "의료 관련 카테터 균혈증·요로감염·폐렴을 일으킨다. AmpC를 보유하며, 붉은 색소가 없다고 이 균을 배제할 수는 없다.",
       "back": {
         "sections": [
           {
@@ -4740,7 +4740,7 @@
       "koreanName": "시트로박터 프로인디",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-207",
-      "summary": "장관·환경의 기회감염균으로 유도성 AmpC를 가진다. 초기 감수성과 치료 중 탈억제에 따른 내성 변화를 구분한다.",
+      "summary": "요로·복강·혈류 감염을 일으킨다. 처음 ceftriaxone 감수성으로 보여도 유도성 AmpC 때문에 치료 중 내성이 선택될 수 있다.",
       "back": {
         "sections": [
           {
@@ -4850,7 +4850,7 @@
       "koreanName": "시트로박터 코세리",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-208",
-      "summary": "신생아 수막염과 다발성 뇌농양에 친화적인 장내세균이다. 중추신경계 침범이 다른 Citrobacter와 구별되는 핵심이다.",
+      "summary": "신생아 수막염에 다발성 뇌농양이 동반될 수 있다. 신생아에서 동정되면 중추신경계 합병증을 적극적으로 살핀다.",
       "back": {
         "sections": [
           {
@@ -4960,7 +4960,7 @@
       "koreanName": "클렙시엘라 에어로게네스",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-209",
-      "summary": "옛 이름이 Enterobacter aerogenes인 장내세균이다. 의료 관련 감염과 고위험 유도성 AmpC를 연결한다.",
+      "summary": "의료 관련 폐렴·요로감염·균혈증을 일으킨다. 옛 이름은 Enterobacter aerogenes이며, 유도성 AmpC 때문에 3세대 cephalosporin 선택에 주의한다.",
       "back": {
         "sections": [
           {
@@ -5070,7 +5070,7 @@
       "koreanName": "클렙시엘라 옥시토카",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-210",
-      "summary": "Indole 양성 Klebsiella로 OXY β-lactamase가 특징이다. 요로·혈류 감염과 항균제 연관 출혈성 대장염을 연결한다.",
+      "summary": "요로감염·균혈증과 항균제 연관 출혈성 대장염을 일으킨다. β-lactam 내성이 치료 선택에 영향을 주며 K. pneumoniae와 구별한다.",
       "back": {
         "sections": [
           {
@@ -5180,7 +5180,7 @@
       "koreanName": "아시네토박터 바우마니",
       "classification": "Bacteria / Pseudomonadota / Moraxellaceae",
       "representativeRecordId": "GNX-211",
-      "summary": "건조한 의료환경에서도 오래 살아남는 비발효성 그람음성균이다. 인공호흡기 폐렴·균혈증과 다제내성을 연결해 기억한다.",
+      "summary": "중환자실의 인공호흡기 폐렴·균혈증·상처감염에서 만나는 병원체다. 다제내성이 흔하며, 객담에서 나왔다는 이유만으로 폐렴을 확정하지 않는다.",
       "back": {
         "sections": [
           {
@@ -5294,7 +5294,7 @@
       "koreanName": "스테노트로포모나스 말토필리아",
       "classification": "Bacteria / Pseudomonadota / Xanthomonadaceae",
       "representativeRecordId": "GNX-213",
-      "summary": "수계·의료환경의 비발효균으로 광범위 고유 내성이 특징이다. 면역저하자의 폐렴·카테터 균혈증을 연결한다.",
+      "summary": "면역저하자의 폐렴·카테터 균혈증에서 중요하며, carbapenem 치료 중 선택될 수 있다. 객담 집락과 실제 감염을 구별하고 폭넓은 고유 내성을 고려한다.",
       "back": {
         "sections": [
           {
@@ -5408,7 +5408,7 @@
       "koreanName": "버크홀데리아 세파시아 복합체",
       "classification": "Bacteria / Pseudomonadota / Burkholderiaceae",
       "representativeRecordId": "GNX-214",
-      "summary": "낭성섬유증에서 중요한 비발효균 복합체다. 만성 폐감염과 급격히 악화하는 cepacia syndrome, 환자 간 전파를 연결한다.",
+      "summary": "낭성섬유증 환자의 만성 폐감염과 급격히 악화하는 cepacia syndrome에서 중요하다. 환자 간 전파 가능성 때문에 정확한 동정이 필요하다.",
       "back": {
         "sections": [
           {
@@ -5522,7 +5522,7 @@
       "koreanName": "에로모나스 하이드로필라",
       "classification": "Bacteria / Pseudomonadota / Aeromonadaceae",
       "representativeRecordId": "GNX-215",
-      "summary": "민물에 사는 그람음성균으로 설사와 수상 노출 뒤 상처감염을 일으킨다. 빠르게 진행하는 연조직 감염이 중요한 단서다.",
+      "summary": "민물에 노출된 상처에서 빠르게 진행하는 연조직감염·괴사근막염을 일으킨다. 수상 외상 뒤 통증과 부종이 급격히 심해지는 상황이 중요한 단서다.",
       "back": {
         "sections": [
           {
@@ -5636,7 +5636,7 @@
       "koreanName": "콜레라균",
       "classification": "Bacteria / Pseudomonadota / Vibrionaceae",
       "representativeRecordId": "GNX-216",
-      "summary": "독소성 O1/O139가 대량 수양성 설사를 만드는 수생 세균이다. 쌀뜨물변·탈수·쇼크를 연결하며 수액 보충이 중심이다.",
+      "summary": "쌀뜨물 같은 대량 수양성 설사로 급격한 탈수·쇼크를 일으킨다. 치료의 중심은 신속하고 충분한 수액 보충이다.",
       "back": {
         "sections": [
           {
@@ -5754,7 +5754,7 @@
       "koreanName": "비브리오 불니피쿠스",
       "classification": "Bacteria / Pseudomonadota / Vibrionaceae",
       "representativeRecordId": "GNX-217",
-      "summary": "따뜻한 바닷물의 호염성 세균이다. 간질환·철 과부하 숙주에서 생굴이나 상처 노출 뒤 수포·전격 패혈증이 가능하다.",
+      "summary": "간질환·철 과부하 환자에서 생굴 섭취나 바닷물 상처 노출 뒤 전격 패혈증을 일으킬 수 있다. 수포성 피부병변과 빠른 악화가 응급 신호다.",
       "back": {
         "sections": [
           {
@@ -5876,7 +5876,7 @@
       "koreanName": "장염비브리오",
       "classification": "Bacteria / Pseudomonadota / Vibrionaceae",
       "representativeRecordId": "GNX-218",
-      "summary": "날것·덜 익힌 해산물과 연관된 호염성 해양 세균이다. 급성 수양성 설사와 복통이 대표적이다.",
+      "summary": "날것·덜 익힌 해산물을 먹은 뒤 수양성 설사·복통·오심이 나타난다. 드물게 상처감염도 일으킨다.",
       "back": {
         "sections": [
           {
@@ -5994,7 +5994,7 @@
       "koreanName": "장티푸스균",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-219",
-      "summary": "사람만을 저장소로 하는 침습성 Salmonella로 장티푸스를 일으킨다. 지속 발열·균혈증과 장출혈·천공이 핵심이다.",
+      "summary": "여행·노출력과 함께 지속 발열·균혈증으로 나타나는 장티푸스를 일으킨다. 장출혈·천공 같은 합병증이 생길 수 있다.",
       "back": {
         "sections": [
           {
@@ -6108,7 +6108,7 @@
       "koreanName": "비장티푸스 살모넬라",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-220",
-      "summary": "동물·식품과 연관된 비장티푸스 Salmonella다. 대개 위장염이지만 고위험 숙주에서는 균혈증·혈관감염이 가능하다.",
+      "summary": "대개 급성 위장염을 일으키지만 영아·고령·면역저하 환자는 균혈증·혈관감염 위험이 있다. 단순 위장염에 항균제를 일률적으로 쓰지는 않는다.",
       "back": {
         "sections": [
           {
@@ -6222,7 +6222,7 @@
       "koreanName": "소네이 이질균",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-221",
-      "summary": "매우 적은 감염량으로 사람 간 전파되는 장내 병원체다. 발열·복통·혈성 또는 점액성 설사를 일으킨다.",
+      "summary": "발열·복통·잔변감과 혈성·점액성 설사를 일으킨다. 적은 감염량으로 사람 간 전파되며, 내성 확인을 위해 배양 검체 확보가 중요하다.",
       "back": {
         "sections": [
           {
@@ -6336,7 +6336,7 @@
       "koreanName": "예르시니아 엔테로콜리티카",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "GNX-222",
-      "summary": "저온에서도 증식하는 장내 병원체다. 돼지고기 노출 뒤 장염·말단회장염과 가성충수염을 연결한다.",
+      "summary": "돼지고기 노출 뒤 장염·말단회장염·장간막 림프절염을 일으킨다. 우하복부 통증이 충수염처럼 보일 수 있고 이후 반응관절염이 가능하다.",
       "back": {
         "sections": [
           {
@@ -6450,7 +6450,7 @@
       "koreanName": "인플루엔자균",
       "classification": "Bacteria / Pseudomonadota / Pasteurellaceae",
       "representativeRecordId": "GNX-225",
-      "summary": "X·V 인자를 요구하는 호흡기 상재균이다. 비피막형의 점막감염과 Hib의 수막염·후두개염을 구분한다.",
+      "summary": "소아 중이염·부비동염과 COPD 악화의 원인이며, Hib는 수막염·후두개염을 일으킨다. Hib 백신은 비피막형의 점막감염까지 막지는 않는다.",
       "back": {
         "sections": [
           {
@@ -6568,7 +6568,7 @@
       "koreanName": "모락셀라 카타랄리스",
       "classification": "Bacteria / Pseudomonadota / Moraxellaceae",
       "representativeRecordId": "GNX-228",
-      "summary": "상기도 상재 그람음성 쌍알균이다. 소아 중이염·부비동염과 성인 COPD 악화·폐렴을 연결한다.",
+      "summary": "소아 중이염·부비동염과 성인 COPD 악화·폐렴의 원인이다. β-lactamase 생성이 흔해 ampicillin 단독은 신뢰하기 어렵다.",
       "back": {
         "sections": [
           {
@@ -6682,7 +6682,7 @@
       "koreanName": "폐렴레지오넬라균",
       "classification": "Legionellaceae · 호기성 세포내 Gram-negative bacillus",
       "representativeRecordId": "BGX-501",
-      "summary": "수계에서 증식하고 폐포대식세포 안에서 살아가는 세균이다. 중증 비정형 폐렴과 폐렴 없는 Pontiac fever를 구분한다.",
+      "summary": "수계 노출 뒤 중증 비정형 폐렴을 일으킨다. 설사·저나트륨혈증은 보조 단서이며, Pontiac fever는 폐렴 없는 열성질환이다.",
       "back": {
         "sections": [
           {
@@ -6804,7 +6804,7 @@
       "koreanName": "폐렴미코플라스마",
       "classification": "Mycoplasmataceae · 세포벽이 없는 초소형 세균",
       "representativeRecordId": "BGX-502",
-      "summary": "세포벽이 없는 호흡기 세균으로 β-lactam 표적이 없다. 비정형 폐렴에 피부점막염·용혈 같은 폐외 증상이 동반될 수 있다.",
+      "summary": "지역사회폐렴에 마른기침이 오래가고, 피부점막염·용혈성빈혈 같은 폐외 증상이 동반될 수 있다. 세포벽이 없어 β-lactam으로 치료하지 않는다.",
       "back": {
         "sections": [
           {
@@ -6914,7 +6914,7 @@
       "koreanName": "폐렴클라미디아",
       "classification": "Chlamydiaceae · 절대 세포내 Gram-negative-like bacterium",
       "representativeRecordId": "BGX-503",
-      "summary": "감염형과 복제형이 교대하는 절대세포내 호흡기 세균이다. 인두염·쉰목소리 뒤 서서히 이어지는 기침과 폐렴이 단서다.",
+      "summary": "인두염·쉰목소리 뒤 서서히 이어지는 기침과 경증·중등도 폐렴이 특징이다. 증상만으로 다른 비정형 폐렴과 확실히 구별하기는 어렵다.",
       "back": {
         "sections": [
           {
@@ -7036,7 +7036,7 @@
       "koreanName": "백일해균",
       "classification": "Alcaligenaceae · 호기성 Gram-negative coccobacillus",
       "representativeRecordId": "BGX-504",
-      "summary": "호흡기 섬모상피에 붙어 백일해를 일으키는 세균이다. 발작성 기침·기침 후 구토가 특징이며 영아는 무호흡만 보일 수 있다.",
+      "summary": "발작성 기침과 기침 후 구토가 특징이며, 영아는 기침보다 무호흡이 먼저 나타날 수 있다. 늦게 시작한 항균제는 주로 전파 차단에 의미가 있다.",
       "back": {
         "sections": [
           {
@@ -7146,7 +7146,7 @@
       "koreanName": "결핵균 복합체",
       "classification": "Mycobacteriaceae · slow-growing acid-fast bacillus complex",
       "representativeRecordId": "BGX-505",
-      "summary": "대식세포 내 생존과 육아종 형성으로 잠복·재활성화하는 항산균이다. 폐결핵뿐 아니라 수막·뼈·전신 파종도 일으킨다.",
+      "summary": "폐결핵부터 수막·뼈·전신 파종까지 일으킨다. 객담 도말 음성만으로 결핵을 배제하지 않으며, 치료 전 약제내성 확인이 중요하다.",
       "back": {
         "sections": [
           {
@@ -7268,7 +7268,7 @@
       "koreanName": "조류형 비결핵항산균 복합체",
       "classification": "Mycobacteriaceae · slow-growing nontuberculous acid-fast bacilli",
       "representativeRecordId": "BGX-506",
-      "summary": "환경의 비결핵항산균 복합체로 구조적 폐질환에서 만성 폐감염을 일으킨다. 진행 HIV에서는 파종성 질환이 중요하다.",
+      "summary": "기관지확장증·공동성 폐질환에서 만성 폐감염을, 진행 HIV에서는 파종감염을 일으킨다. 객담 한 번의 양성만으로 치료 대상 질환을 확정하지 않는다.",
       "back": {
         "sections": [
           {
@@ -7378,7 +7378,7 @@
       "koreanName": "압세수스 비결핵항산균 복합체",
       "classification": "Mycobacteriaceae · rapidly growing nontuberculous acid-fast bacilli",
       "representativeRecordId": "BGX-507",
-      "summary": "빠르게 자라는 비결핵항산균으로 폐·피부연조직 감염을 일으킨다. 아종별 erm(41)과 유도성 macrolide 내성이 핵심이다.",
+      "summary": "기관지확장증 환자의 폐감염과 수술·주사 뒤 피부연조직감염에서 중요하다. Macrolide가 초기에 감수성으로 보여도 유도성 내성을 확인해야 한다.",
       "back": {
         "sections": [
           {
@@ -7488,7 +7488,7 @@
       "koreanName": "노카르디아속",
       "classification": "Nocardiaceae · aerobic branching weakly acid-fast Gram-positive bacilli",
       "representativeRecordId": "BGX-508",
-      "summary": "토양의 분지성·부분 항산성 호기성 방선균이다. 면역저하자의 폐결절·공동과 뇌농양을 연결하며 종별 감수성이 다르다.",
+      "summary": "면역저하자의 폐결절·공동과 뇌농양이 함께 보이면 의심한다. 폐감염이 중추신경계로 퍼질 수 있어 침범 부위와 종별 감수성이 치료를 가른다.",
       "back": {
         "sections": [
           {
@@ -7598,7 +7598,7 @@
       "koreanName": "임균",
       "classification": "Neisseriaceae · oxidase-positive Gram-negative diplococcus",
       "representativeRecordId": "BGX-509",
-      "summary": "사람 점막에 적응한 그람음성 쌍알균으로 임질을 일으킨다. 생식기·인두·직장 감염과 파종성 관절피부증후군을 연결한다.",
+      "summary": "요도염·자궁경부염·골반염을 일으키며, 파종되면 관절염과 피부병변이 나타날 수 있다. 생식기뿐 아니라 노출된 인두·직장도 검사 대상이다.",
       "back": {
         "sections": [
           {
@@ -7708,7 +7708,7 @@
       "koreanName": "트라코마클라미디아",
       "classification": "Chlamydiaceae · obligate intracellular Gram-negative-like bacterium",
       "representativeRecordId": "BGX-510",
-      "summary": "절대세포내 세균으로 혈청형에 따라 생식기 감염·트라코마·LGV가 나뉜다. 무증상 감염과 신생아 결막염·폐렴도 중요하다.",
+      "summary": "무증상 생식기 감염부터 요도염·골반염, 신생아 결막염·폐렴까지 일으킨다. 재감염을 줄이기 위한 파트너 치료와 추적이 중요하다.",
       "back": {
         "sections": [
           {
@@ -7818,7 +7818,7 @@
       "koreanName": "생식기미코플라스마",
       "classification": "Mycoplasmataceae · cell-wall-deficient sexually transmitted bacterium",
       "representativeRecordId": "BGX-511",
-      "summary": "세포벽이 없는 느리게 자라는 생식기 세균이다. 지속성 비임균성 요도염·자궁경부염과 macrolide 내성을 연결한다.",
+      "summary": "지속성 비임균성 요도염·자궁경부염에서 중요하다. Macrolide 내성이 흔해 내성에 따른 순차요법이 필요하며 azithromycin 단회요법은 피한다.",
       "back": {
         "sections": [
           {
@@ -7928,7 +7928,7 @@
       "koreanName": "매독균",
       "classification": "Spirochaetaceae · thin motile spirochete",
       "representativeRecordId": "BGX-512",
-      "summary": "전신으로 파종하며 여러 병기의 매독을 만드는 가는 나선균이다. 무통성 하감·전신발진과 신경·선천매독을 연결한다.",
+      "summary": "무통성 하감, 전신발진, 신경·안구 증상 등 병기에 따라 모습이 달라진다. 신경·안구·귀 침범과 임신 여부가 penicillin 치료 방식을 가른다.",
       "back": {
         "sections": [
           {
@@ -8050,7 +8050,7 @@
       "koreanName": "헬리코박터 파일로리",
       "classification": "Helicobacteraceae · curved microaerophilic Gram-negative bacillus",
       "representativeRecordId": "BGX-513",
-      "summary": "Urease로 위산을 완충해 위 점액층에 만성 집락하는 굽은 세균이다. 위염·소화성궤양·위선암·MALT 림프종과 연관된다.",
+      "summary": "소화성궤양·만성위염과 위선암·MALT 림프종에 연관된다. 제균 확인에 혈청항체를 쓰지 않으며, 이전 항균제 노출과 내성이 치료 선택에 중요하다.",
       "back": {
         "sections": [
           {
@@ -8160,7 +8160,7 @@
       "koreanName": "캄필로박터 제주니/콜리",
       "classification": "Campylobacteraceae · curved microaerophilic Gram-negative bacilli",
       "representativeRecordId": "BGX-514",
-      "summary": "가금류와 연관된 갈매기날개 모양의 미호기성 세균이다. 발열·복통·혈성설사 뒤 반응관절염이나 Guillain–Barré가 가능하다.",
+      "summary": "가금류 노출 뒤 발열·복통·혈성설사를 일으킨다. 대부분 수액으로 회복하지만, 감염 뒤 Guillain–Barré 증후군·반응관절염이 생길 수 있다.",
       "back": {
         "sections": [
           {
@@ -8270,7 +8270,7 @@
       "koreanName": "박테로이데스 프라질리스군",
       "classification": "Bacteroidaceae · obligately anaerobic Gram-negative bacilli",
       "representativeRecordId": "BGX-515",
-      "summary": "결장 상재 혐기성균으로 장벽이 깨지면 복강·골반 농양을 만든다. 혼합감염과 배농·감염원 제거가 핵심이다.",
+      "summary": "장관 손상 뒤 복강·골반 농양과 복막염을 만드는 대표 혐기균이다. 항균제와 함께 천공 폐쇄·배농 등 감염원 제거가 중요하다.",
       "back": {
         "sections": [
           {
@@ -8380,7 +8380,7 @@
       "koreanName": "푸소박테리움속",
       "classification": "Fusobacteriaceae · obligately anaerobic fusiform Gram-negative bacilli",
       "representativeRecordId": "BGX-516",
-      "summary": "구강·인두의 방추형 혐기성균이다. 인두염 뒤 내경정맥 혈전정맥염과 폐 병변이 이어지는 Lemierre 증후군을 연결한다.",
+      "summary": "젊은 환자의 인두염 뒤 재발열·한쪽 목통증·폐결절이 이어지면 Lemierre 증후군을 의심한다. 내경정맥 혈전정맥염과 원격 감염이 특징이다.",
       "back": {
         "sections": [
           {
@@ -8502,7 +8502,7 @@
       "koreanName": "프레보텔라속",
       "classification": "Prevotellaceae · obligately anaerobic Gram-negative bacilli",
       "representativeRecordId": "BGX-517",
-      "summary": "구강·생식기 점막의 혐기성균으로 혼합 농양에 참여한다. 불량 치열과 흡인 뒤 폐농양·농흉이 중요한 맥락이다.",
+      "summary": "불량 치열·흡인 위험이 있는 환자의 두경부농양·폐농양·농흉에 관여한다. 악취 나는 객담과 공동성 폐병변이 혼합 혐기균 감염의 단서다.",
       "back": {
         "sections": [
           {
@@ -8624,7 +8624,7 @@
       "koreanName": "혐기성 그람양성 알균군",
       "classification": "다계통 obligately anaerobic Gram-positive cocci",
       "representativeRecordId": "BGX-518",
-      "summary": "피부·점막 상재 혐기성 구균군으로 깊은 혼합 농양을 만든다. Finegoldia는 biofilm성 인공관절 감염도 일으킬 수 있다.",
+      "summary": "당뇨발·욕창과 두경부·복강의 깊은 혼합 농양에 관여한다. Finegoldia는 인공관절 감염도 일으키며 배농·감염원 제거가 중요하다.",
       "back": {
         "sections": [
           {
@@ -8746,7 +8746,7 @@
       "koreanName": "파상풍균",
       "classification": "Bacteria / Bacillota / Clostridiaceae",
       "representativeRecordId": "BGX-519",
-      "summary": "상처에서 생긴 신경독소가 개구장애와 자극 유발 전신경직을 만든다. 보툴리눔의 이완마비와 구별한다.",
+      "summary": "개구장애와 자극에 유발되는 전신경직, 자율신경 불안정이 특징이다. 원래 상처가 이미 아물었어도 파상풍이 발생할 수 있다.",
       "back": {
         "sections": [
           {
@@ -8856,7 +8856,7 @@
       "koreanName": "보툴리눔균",
       "classification": "Bacteria / Bacillota / Clostridiaceae",
       "representativeRecordId": "BGX-520",
-      "summary": "보툴리눔 신경독소가 뇌신경마비에서 시작하는 대칭성 하행 이완마비를 만든다. 의식·감각이 보존되는 점이 단서다.",
+      "summary": "복시·안검하수·연하장애에서 시작해 대칭성 하행 이완마비와 호흡부전으로 진행한다. 마비가 진행해도 의식과 감각이 보존되는 점이 특징이다.",
       "back": {
         "sections": [
           {
@@ -8966,7 +8966,7 @@
       "koreanName": "셉티쿰 클로스트리디움",
       "classification": "Bacteria / Bacillota / Clostridiaceae",
       "representativeRecordId": "BGX-521",
-      "summary": "장점막에서 혈행성으로 퍼져 비외상성 근괴사를 일으키는 혐기성균이다. 결장암·혈액암과의 연관이 중요한 단서다.",
+      "summary": "외상 없이 빠르게 진행하는 근괴사·균혈증을 일으킨다. 이런 감염은 결장암·혈액암을 찾게 하는 중요한 경고다.",
       "back": {
         "sections": [
           {
@@ -9076,7 +9076,7 @@
       "koreanName": "수막알균",
       "classification": "Bacteria / Pseudomonadota / Neisseriaceae",
       "representativeRecordId": "BGX-522",
-      "summary": "비인두에 집락하는 피막성 그람음성 쌍알균이다. 수막염과 자반·쇼크를 동반한 급격한 균혈증을 연결한다.",
+      "summary": "수막염과 급격한 균혈증을 일으킨다. 자반성 발진·쇼크가 나타나면 빠르게 악화할 수 있어 즉각적인 치료가 중요하다.",
       "back": {
         "sections": [
           {
@@ -9186,7 +9186,7 @@
       "koreanName": "안지노수스군 사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "BGX-523",
-      "summary": "구강·장관 상재 사슬알균군으로 깊은 농양을 잘 만든다. 뇌·간·폐 농양과 균혈증을 함께 연결한다.",
+      "summary": "뇌·간·폐와 구강 주변의 깊은 농양을 잘 만든다. 균혈증에서 동정되면 배농이 필요한 숨은 감염원을 찾아야 한다.",
       "back": {
         "sections": [
           {
@@ -9296,7 +9296,7 @@
       "koreanName": "말유사 디스갈락티아 사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "BGX-524",
-      "summary": "Group C/G β용혈성 사슬알균으로 GAS와 유사한 침습성을 보인다. Cellulitis·균혈증과 괴사근막염을 연결한다.",
+      "summary": "고령·당뇨 환자의 연조직감염·균혈증에서 중요하다. 재발성 봉와직염뿐 아니라 괴사근막염·독성쇼크를 동반할 수 있다.",
       "back": {
         "sections": [
           {
@@ -9406,7 +9406,7 @@
       "koreanName": "에어로코쿠스 우리나이",
       "classification": "Bacteria / Bacillota / Aerococcaceae",
       "representativeRecordId": "BGX-525",
-      "summary": "고령 남성의 요로감염과 연관된 catalase 음성 구균이다. 균혈증이 생기면 큰 vegetation을 동반한 심내막염도 연결한다.",
+      "summary": "고령 남성, 특히 요로폐색 환자의 요로감염·균혈증에서 중요하다. 균혈증이면 큰 판막 병변을 동반한 심내막염 가능성을 살핀다.",
       "back": {
         "sections": [
           {
@@ -9516,7 +9516,7 @@
       "koreanName": "파스퇴렐라 물토시다",
       "classification": "Bacteria / Pseudomonadota / Pasteurellaceae",
       "representativeRecordId": "BGX-526",
-      "summary": "개·고양이 구강균으로 교상 뒤 빠른 연조직 감염을 일으킨다. 건초·관절·뼈 침범으로 이어질 수 있다.",
+      "summary": "개·고양이 교상 뒤 수 시간 안에 통증·부종이 빠르게 진행하는 연조직감염이 특징이다. 깊은 천자상은 건초·관절·뼈 감염으로 이어질 수 있다.",
       "back": {
         "sections": [
           {
@@ -9626,7 +9626,7 @@
       "koreanName": "카프노사이토파가 카니모르수스",
       "classification": "Bacteria / Bacteroidota / Flavobacteriaceae",
       "representativeRecordId": "BGX-527",
-      "summary": "개·고양이 구강균으로 무비장·알코올사용장애에서 전격 패혈증을 일으킨다. 작은 교상이나 핥은 상처도 감염원이 된다.",
+      "summary": "개·고양이 노출 뒤 무비장·알코올사용장애 환자에서 전격 패혈증·DIC를 일으킬 수 있다. 교상 없이 작은 상처를 핥은 것만으로도 감염될 수 있다.",
       "back": {
         "sections": [
           {
@@ -9736,7 +9736,7 @@
       "koreanName": "에이케넬라 코로덴스",
       "classification": "Bacteria / Pseudomonadota / Neisseriaceae",
       "representativeRecordId": "BGX-528",
-      "summary": "사람 구강 상재균으로 사람 교상·주먹손상 뒤 깊은 관절·건초 감염을 일으킨다. HACEK 심내막염과도 연결한다.",
+      "summary": "사람 교상·주먹손상 뒤 손의 건초염·관절감염을 일으킨다. 치아에 부딪힌 작은 손등 상처도 깊은 감염 위험이 있으며 심내막염도 가능하다.",
       "back": {
         "sections": [
           {
@@ -9846,7 +9846,7 @@
       "koreanName": "킹겔라 킹아이",
       "classification": "Bacteria / Pseudomonadota / Neisseriaceae",
       "representativeRecordId": "BGX-529",
-      "summary": "어린 소아의 구인두에 집락하는 HACEK 세균이다. 미열·가벼운 염증수치만 보여도 골관절감염을 일으킬 수 있다.",
+      "summary": "어린 소아의 골관절감염에서 중요하다. 미열·가벼운 염증수치만 보이며 절뚝거리는 아이에서도 감염을 놓치지 않아야 한다.",
       "back": {
         "sections": [
           {
@@ -9956,7 +9956,7 @@
       "koreanName": "병원성 렙토스피라",
       "classification": "Bacteria / Spirochaetota / Leptospiraceae",
       "representativeRecordId": "BGX-530",
-      "summary": "오염된 민물·진흙에서 손상 피부로 침입하는 나선균이다. 결막충혈·황달·신손상과 폐출혈을 연결한다.",
+      "summary": "민물·진흙 노출 뒤 발열·종아리 통증·결막충혈이 나타난다. 황달·급성신손상·폐출혈이 동반되면 중증 렙토스피라증을 의심한다.",
       "back": {
         "sections": [
           {
@@ -10066,7 +10066,7 @@
       "koreanName": "쯔쯔가무시균",
       "classification": "Bacteria / Pseudomonadota / Rickettsiaceae",
       "representativeRecordId": "BGX-531",
-      "summary": "털진드기가 매개하는 세포내 세균으로 쯔쯔가무시병을 일으킨다. 발열·가피·발진과 다장기 침범이 핵심이다.",
+      "summary": "가을 야외 노출 뒤 발열·발진·림프절병이 생기고 검은 가피가 단서가 된다. 가피를 겨드랑이·서혜부까지 찾아야 하며 중증에서는 다장기를 침범한다.",
       "back": {
         "sections": [
           {
@@ -10176,7 +10176,7 @@
       "koreanName": "콕시엘라 버네티",
       "classification": "Bacteria / Pseudomonadota / Coxiellaceae",
       "representativeRecordId": "BGX-532",
-      "summary": "가축 분만산물의 에어로졸로 전파되는 세포내 세균이다. 급성 비정형 폐렴·간염과 만성 심내막염을 연결한다.",
+      "summary": "가축 분만산물 노출 뒤 비정형 폐렴·간염을 일으킨다. 판막질환자는 이후 만성 심내막염·혈관감염 위험을 살펴야 한다.",
       "back": {
         "sections": [
           {
@@ -10286,7 +10286,7 @@
       "koreanName": "브루셀라균",
       "classification": "Bacteria / Pseudomonadota / Brucellaceae",
       "representativeRecordId": "BGX-533",
-      "summary": "가축·비살균 유제품과 연관되어 대식세포 안에서 살아남는 세균이다. 파동열·식은땀과 골관절 병변, 재발을 연결한다.",
+      "summary": "비살균 유제품·가축 노출 뒤 파동열·식은땀·골관절통이 나타난다. 심내막염·신경 침범과 재발 가능성이 치료 범위를 가른다.",
       "back": {
         "sections": [
           {
@@ -10396,7 +10396,7 @@
       "koreanName": "바르토넬라 헨셀라",
       "classification": "Bacteria / Pseudomonadota / Bartonellaceae",
       "representativeRecordId": "BGX-534",
-      "summary": "고양이와 연관된 까다로운 세균으로 고양이할큄병을 일으킨다. 접종부위 병변 뒤 국소 림프절염이 대표적이다.",
+      "summary": "고양이 할큄 뒤 접종 부위 병변에 이어 국소 림프절이 붓는 고양이할큄병이 대표적이다. 드물게 안구·간비장·심장판막을 침범한다.",
       "back": {
         "sections": [
           {
@@ -10506,7 +10506,7 @@
       "koreanName": "발진열 리케차",
       "classification": "Bacteria / Pseudomonadota / Rickettsiaceae",
       "representativeRecordId": "BGX-535",
-      "summary": "벼룩 배설물로 전파되어 혈관내피에서 증식하는 세포내 세균이다. 발열·두통·간효소 상승이 오며 발진은 없을 수도 있다.",
+      "summary": "벼룩 노출 지역에서 발열·두통·근육통과 간효소 상승이 나타난다. 발진이 없다고 발진열을 배제하지 않는다.",
       "back": {
         "sections": [
           {
@@ -10616,7 +10616,7 @@
       "koreanName": "아나플라스마 파고사이토필룸",
       "classification": "Bacteria / Pseudomonadota / Anaplasmataceae",
       "representativeRecordId": "BGX-536",
-      "summary": "진드기가 매개하며 호중구 안에 morula를 만드는 세포내 세균이다. 발열과 백혈구·혈소판 감소, 간효소 상승이 함께 나타난다.",
+      "summary": "진드기 노출 뒤 발열·두통과 백혈구감소·혈소판감소·간효소 상승이 함께 나타난다. 라임병과의 동시감염도 고려한다.",
       "back": {
         "sections": [
           {
@@ -10726,7 +10726,7 @@
       "koreanName": "라임병 보렐리아",
       "classification": "Bacteria / Spirochaetota / Borreliaceae",
       "representativeRecordId": "BGX-537",
-      "summary": "Ixodes 진드기가 옮기는 나선균으로 라임병을 일으킨다. 확장성 홍반에서 신경·심장·관절 침범으로 이어질 수 있다.",
+      "summary": "진드기 노출 뒤 수일에 걸쳐 커지는 홍반이 초기 라임병의 단서다. 이후 안면마비·수막염·심장전도장애·관절염으로 나타날 수 있다.",
       "back": {
         "sections": [
           {
@@ -10836,7 +10836,7 @@
       "koreanName": "칸디다 알비칸스",
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CAL-601",
-      "summary": "점막 상재 효모로 발아관과 위균사를 만든다. 아구창·식도염부터 혈류·침습감염까지 숙주와 장벽 상태에 따라 달라진다.",
+      "summary": "아구창·식도염부터 칸디다혈증·심부 감염까지 일으킨다. 점막 감염과 혈류감염을 구별하고 숙주 상태·감염 부위에 맞춰 치료한다.",
       "back": {
         "sections": [
           {
@@ -10942,7 +10942,7 @@
       "koreanName": "나카세오마이세스 글라브라투스",
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CGL-602",
-      "summary": "작은 출아효모로 칸디다혈증·요로감염을 일으킨다. 낮은 fluconazole 감수성과 치료 중 FKS 내성 변화를 연결한다.",
+      "summary": "칸디다혈증·요로감염에서 중요하며 fluconazole 감수성이 낮을 수 있다. 이전 약제 노출과 감수성 결과가 치료 선택을 가른다.",
       "back": {
         "sections": [
           {
@@ -11048,7 +11048,7 @@
       "koreanName": "칸디다 아우리스",
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CAU-603",
-      "summary": "피부와 의료환경에 지속하며 집단발생을 만드는 효모다. 침습감염·다제내성과 환경 전파를 함께 기억한다.",
+      "summary": "의료기관 집단발생과 다제내성을 동반하는 침습성 Candida 감염의 원인이다. 피부 집락만으로 치료하지 않으며 실제 감염과 전파 관리가 중요하다.",
       "back": {
         "sections": [
           {
@@ -11154,7 +11154,7 @@
       "koreanName": "칸디다 파라프실로시스",
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CPA-604",
-      "summary": "피부·손·카테터와 연관된 효모다. 정맥영양·카테터 혈류감염과 상대적으로 높은 echinocandin MIC를 연결한다.",
+      "summary": "정맥영양·카테터와 연관된 혈류감염, 특히 신생아실 감염에서 중요하다. Echinocandin 감수성이 상대적으로 낮을 수 있다.",
       "back": {
         "sections": [
           {
@@ -11260,7 +11260,7 @@
       "koreanName": "칸디다 트로피칼리스",
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CTR-605",
-      "summary": "장관 상재 효모로 혈액종양·호중구감소 숙주에서 중요하다. 칸디다혈증과 지역별 azole 내성 차이를 연결한다.",
+      "summary": "혈액종양·호중구감소 환자의 칸디다혈증에서 중요하다. 지역별 azole 내성 차이가 있어 종 동정과 감수성 확인이 필요하다.",
       "back": {
         "sections": [
           {
@@ -11366,7 +11366,7 @@
       "koreanName": "피키아 쿠드리아브제비",
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CKR-606",
-      "summary": "길쭉한 효모와 위균사를 만드는 침습성 Candida 계열 진균이다. Fluconazole 고유 비감수성이 핵심 구별점이다.",
+      "summary": "침습성 칸디다증을 일으키며 fluconazole에 고유 비감수성이 있다. 다른 Candida와 같은 방식으로 fluconazole을 선택하면 실패할 수 있다.",
       "back": {
         "sections": [
           {
@@ -11472,7 +11472,7 @@
       "koreanName": "크립토콕쿠스 네오포르만스",
       "classification": "Fungi / Basidiomycota / Tremellomycetes / Tremellales",
       "representativeRecordId": "CNE-607",
-      "summary": "두꺼운 피막을 가진 환경 효모다. 면역저하자의 폐질환·수막뇌염과 병합 유도치료를 연결한다.",
+      "summary": "면역저하자의 수막뇌염·폐감염을 일으킨다. 중추신경계 감염은 병합 유도치료가 필요한 중요한 임상형이다.",
       "back": {
         "sections": [
           {
@@ -11578,7 +11578,7 @@
       "koreanName": "크립토콕쿠스 가티",
       "classification": "Fungi / Basidiomycota / Tremellomycetes / Tremellales",
       "representativeRecordId": "CGA-608",
-      "summary": "면역정상자도 감염시킬 수 있는 피막성 효모다. 폐 종괴와 수막뇌염, 큰 cryptococcoma가 중요한 단서다.",
+      "summary": "면역정상자도 폐 종괴·수막뇌염이 생길 수 있다. 큰 cryptococcoma를 동반할 수 있어 면역저하 여부만으로 배제하지 않는다.",
       "back": {
         "sections": [
           {
@@ -11684,7 +11684,7 @@
       "koreanName": "아스페르길루스 푸미가투스",
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Eurotiales",
       "representativeRecordId": "AFU-609",
-      "summary": "흡입 분생포자가 폐를 침범하는 예각 분지 사상균이다. 침습성 폐감염과 알레르기성 ABPA, azole 내성을 구분한다.",
+      "summary": "면역저하자의 침습성 폐아스페르길루스증에서 중요하다. 천식 환자의 알레르기성 기관지폐 질환과 침습감염은 치료 맥락이 다르다.",
       "back": {
         "sections": [
           {
@@ -11790,7 +11790,7 @@
       "koreanName": "아스페르길루스 플라부스",
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Eurotiales",
       "representativeRecordId": "AFL-610",
-      "summary": "토양·곡물의 분생포자로 전파되는 사상균이다. 폐·부비동 침습감염과 각막염을 일으키며 약제 감수성은 변이가 있다.",
+      "summary": "침습성 폐·부비동 감염과 각막염을 일으킨다. 지역·종에 따라 약제 감수성이 달라, Aspergillus라는 이름만으로 치료 반응을 단정하지 않는다.",
       "back": {
         "sections": [
           {
@@ -11896,7 +11896,7 @@
       "koreanName": "아스페르길루스 테레우스",
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Eurotiales",
       "representativeRecordId": "ATE-611",
-      "summary": "침습성 폐·파종 감염을 만드는 Aspergillus다. Amphotericin B 고유 비감수성이 종을 구별하는 핵심이다.",
+      "summary": "침습성 폐감염과 파종감염을 일으킨다. Amphotericin B에 고유 비감수성이 있어 Aspergillus의 종 동정이 치료 선택을 바꾼다.",
       "back": {
         "sections": [
           {
@@ -12002,7 +12002,7 @@
       "koreanName": "털곰팡이목",
       "classification": "Fungi / Mucoromycota / Mucoromycetes / Mucorales",
       "representativeRecordId": "MUC-612",
-      "summary": "넓고 불규칙한 비격벽성 균사를 만드는 곰팡이군이다. 비뇌안와·폐 침습감염에서 수술과 amphotericin 기반 치료를 연결한다.",
+      "summary": "비뇌안와·폐·피부의 침습성 털곰팡이증을 일으킨다. 수술적 감염원 제거와 amphotericin 기반 치료가 함께 중요한 감염이다.",
       "back": {
         "sections": [
           {
@@ -12108,7 +12108,7 @@
       "koreanName": "폐포자충",
       "classification": "Fungi / Ascomycota / Pneumocystidomycetes / Pneumocystidales",
       "representativeRecordId": "PJI-613",
-      "summary": "면역저하자의 폐포에서 저산소성 간질성 폐렴을 만드는 진균이다. 일반 배양이 어렵고 치료 실패를 단순 내성과 동일시하지 않는다.",
+      "summary": "면역저하자에서 저산소성 간질성 폐렴을 일으킨다. 치료 실패가 곧 약제내성은 아니며, 중증도·면역상태와 다른 원인을 함께 평가한다.",
       "back": {
         "sections": [
           {
@@ -12214,7 +12214,7 @@
       "koreanName": "히스토플라스마 캡술라툼",
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Onygenales / Ajellomycetaceae",
       "representativeRecordId": "HCA-614",
-      "summary": "조류·박쥐 배설물로 농축된 토양에서 흡입되는 열이형성 진균이다. 조직 내 세포내 효모와 폐·파종 감염을 연결한다.",
+      "summary": "조류·박쥐 배설물과 관련된 토양 노출 뒤 폐감염이 생길 수 있다. 면역저하자에서는 파종감염 위험이 커 여행·노출력이 중요하다.",
       "back": {
         "sections": [
           {
@@ -12320,7 +12320,7 @@
       "koreanName": "콕시디오이데스",
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Onygenales / Onygenaceae",
       "representativeRecordId": "COC-615",
-      "summary": "건조 토양의 포자를 흡입하면 조직에서 spherule을 만드는 진균이다. 폐질환과 피부·골관절·수막 파종이 가능하다.",
+      "summary": "미국 남서부 등 건조지역 노출 뒤 폐질환을 일으킨다. 피부·뼈·관절·수막으로 파종할 수 있어 여행력과 폐외 병변이 중요하다.",
       "back": {
         "sections": [
           {
@@ -12426,7 +12426,7 @@
       "koreanName": "블라스토마이세스",
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Onygenales / Ajellomycetaceae",
       "representativeRecordId": "BLA-616",
-      "summary": "조직에서 넓은 밑면으로 출아하는 열이형성 진균이다. 토양 노출 뒤 폐감염에서 피부·뼈 파종으로 이어질 수 있다.",
+      "summary": "북미 노출 뒤 폐감염에 피부·뼈 병변이 동반되면 의심한다. 폐에서 원격 부위로 파종할 수 있다.",
       "back": {
         "sections": [
           {
@@ -12532,7 +12532,7 @@
       "koreanName": "스포로트릭스",
       "classification": "Fungi / Ascomycota / Sordariomycetes / Ophiostomatales",
       "representativeRecordId": "SSS-617",
-      "summary": "식물·토양·고양이 노출 뒤 피부에 접종되는 진균군이다. 림프관을 따라 이어지는 피부병변과 관절·파종 감염을 연결한다.",
+      "summary": "식물·토양·고양이 노출 뒤 림프관을 따라 이어지는 피부결절이 특징이다. 관절·전신 파종 여부에 따라 치료 범위가 달라진다.",
       "back": {
         "sections": [
           {
@@ -12638,7 +12638,7 @@
       "koreanName": "탈라로마이세스 마르네페이",
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Eurotiales",
       "representativeRecordId": "TMA-618",
-      "summary": "동남아 환경과 연관된 열이형성 진균으로 횡격막 효모가 단서다. HIV 등 면역저하자의 파종감염이 대표적이다.",
+      "summary": "동남아 여행력이 있는 HIV·면역저하 환자의 파종감염에서 중요하다. 한국에서는 해외 노출력을 놓치지 않는 것이 핵심이다.",
       "back": {
         "sections": [
           {
@@ -12744,7 +12744,7 @@
       "koreanName": "피부사상균",
       "classification": "Fungi / Ascomycota / Eurotiomycetes / Onygenales / Arthrodermataceae",
       "representativeRecordId": "DER-619",
-      "summary": "각질을 좋아해 피부·모발·손발톱에 백선을 만드는 진균군이다. 부위별 병변과 terbinafine 내성·재감염을 구분한다.",
+      "summary": "피부·모발·손발톱에 백선을 일으킨다. 침범 부위에 따라 치료가 달라지며, 지속 병변에서는 재감염과 terbinafine 내성을 구별한다.",
       "back": {
         "sections": [
           {
@@ -12850,7 +12850,7 @@
       "koreanName": "말라세지아",
       "classification": "Fungi / Basidiomycota / Malasseziomycetes / Malasseziales",
       "representativeRecordId": "MAL-620",
-      "summary": "피지성 피부에 사는 지질의존성 효모다. 어루러기·모낭염과 지질 공급·카테터 관련 혈류감염을 연결한다.",
+      "summary": "어루러기·모낭염의 원인이며, 지질 공급·카테터와 관련된 혈류감염도 가능하다. 얕은 피부병변과 침습감염을 구별한다.",
       "back": {
         "sections": [
           {
@@ -12956,7 +12956,7 @@
       "koreanName": "열대열말라리아원충",
       "classification": "Eukaryota / Apicomplexa / Aconoidasida / Haemosporida / Plasmodiidae",
       "representativeRecordId": "PFA-701",
-      "summary": "모기가 옮기는 적혈구 원충으로 미세혈관 부착·폐쇄가 특징이다. 뇌말라리아 등 중증질환으로 빠르게 진행할 수 있다.",
+      "summary": "해외 노출 뒤 말라리아가 발생하면 뇌·신장·폐를 침범하는 중증질환으로 빠르게 진행할 수 있다. 초기부터 중증 징후를 평가해야 한다.",
       "back": {
         "sections": [
           {
@@ -13062,7 +13062,7 @@
       "koreanName": "삼일열·난형열말라리아원충",
       "classification": "Eukaryota / Apicomplexa / Aconoidasida / Haemosporida / Plasmodiidae",
       "representativeRecordId": "PVO-702",
-      "summary": "간에 hypnozoite를 남겨 재발하는 말라리아 원충군이다. 혈액기 감염과 간 휴면체를 별도로 다뤄야 한다.",
+      "summary": "혈액기 말라리아가 호전된 뒤에도 간 휴면체 때문에 재발할 수 있다. 재발 방지 치료는 혈액기 치료와 별도이며 primaquine 전에 G6PD를 확인한다.",
       "back": {
         "sections": [
           {
@@ -13168,7 +13168,7 @@
       "koreanName": "사일열말라리아원충",
       "classification": "Eukaryota / Apicomplexa / Aconoidasida / Haemosporida / Plasmodiidae",
       "representativeRecordId": "PMA-703",
-      "summary": "낮은 밀도로 오랫동안 적혈구 감염을 유지하는 말라리아 원충이다. Band form과 만성감염·신증후군 연관을 연결한다.",
+      "summary": "낮은 기생충혈증으로 장기간 지속될 수 있는 말라리아다. 만성 감염은 신증후군과 연관되며 간 휴면체 제거 치료는 필요하지 않다.",
       "back": {
         "sections": [
           {
@@ -13274,7 +13274,7 @@
       "koreanName": "원숭이말라리아원충",
       "classification": "Eukaryota / Apicomplexa / Aconoidasida / Haemosporida / Plasmodiidae",
       "representativeRecordId": "PKN-704",
-      "summary": "마카크·모기 생활사의 인수공통 말라리아 원충이다. 24시간 증식주기로 기생충혈증이 빠르게 늘어 중증화할 수 있다.",
+      "summary": "동남아 여행 뒤 발생하는 말라리아로 기생충혈증이 빠르게 늘 수 있다. 비중증으로 시작해도 중증화 가능성을 가까이 관찰한다.",
       "back": {
         "sections": [
           {
@@ -13380,7 +13380,7 @@
       "koreanName": "톡소포자충",
       "classification": "Eukaryota / Apicomplexa / Conoidasida",
       "representativeRecordId": "TGO-705",
-      "summary": "고양이 생활사와 덜 익힌 고기로 감염되어 조직에 잠복하는 원충이다. 재활성화 뇌염·망막염과 선천감염을 연결한다.",
+      "summary": "면역저하자의 재활성화 뇌염·망막염과 선천감염에서 중요하다. 숙주 면역상태와 임신·중추신경계 침범이 치료를 가른다.",
       "back": {
         "sections": [
           {
@@ -13486,7 +13486,7 @@
       "koreanName": "지아르디아",
       "classification": "Eukaryota / Metamonada / Fornicata / Diplomonadida",
       "representativeRecordId": "GLA-706",
-      "summary": "오염수로 전파되어 소장에 부착하는 원충이다. 지방변과 흡수장애성 설사가 핵심이며 조직 침습성 아메바와 구분한다.",
+      "summary": "오염수 노출 뒤 지방변·흡수장애성 설사가 생긴다. 조직 침습성 아메바와 달리 소장 감염이 중심이다.",
       "back": {
         "sections": [
           {
@@ -13592,7 +13592,7 @@
       "koreanName": "이질아메바",
       "classification": "Eukaryota / Amoebozoa / Archamoebae / Entamoebida",
       "representativeRecordId": "EHI-707",
-      "summary": "장 점막을 침범하고 간으로 퍼지는 아메바다. 적혈구 탐식 영양형, 대장염과 간농양을 연결한다.",
+      "summary": "혈성 대장염과 간농양을 일으킨다. 조직 감염 치료 뒤에도 장강에 남은 감염을 따로 치료해야 한다.",
       "back": {
         "sections": [
           {
@@ -13698,7 +13698,7 @@
       "koreanName": "와포자충",
       "classification": "Eukaryota / Apicomplexa / Conoidasida",
       "representativeRecordId": "CRY-708",
-      "summary": "염소에 강한 난포낭이 물을 통해 전파되는 장내 원충이다. 수양성 설사와 면역저하자의 지속감염이 핵심이다.",
+      "summary": "오염수 노출 뒤 수양성 설사를 일으킨다. 면역저하자는 설사가 오래가고 치료 반응이 제한될 수 있어 면역상태가 중요하다.",
       "back": {
         "sections": [
           {
@@ -13804,7 +13804,7 @@
       "koreanName": "원포자충",
       "classification": "Eukaryota / Apicomplexa / Conoidasida",
       "representativeRecordId": "CYC-709",
-      "summary": "환경에서 성숙한 난포낭이 식품으로 전파되는 장내 원충이다. 오래 지속하거나 재발하는 수양성 설사가 특징이다.",
+      "summary": "식품·수입 농산물 노출 뒤 오래 지속하거나 재발하는 수양성 설사가 특징이다. 일회성 급성 장염과 달리 지속 경과가 단서가 된다.",
       "back": {
         "sections": [
           {
@@ -13910,7 +13910,7 @@
       "koreanName": "등포자충",
       "classification": "Eukaryota / Apicomplexa / Conoidasida",
       "representativeRecordId": "CYS-710",
-      "summary": "분변-경구로 전파되는 장내 원충으로 타원형 항산성 난포낭이 단서다. AIDS의 만성 설사·흡수장애를 연결한다.",
+      "summary": "진행 HIV 환자의 만성 설사·흡수장애에서 중요하다. 면역저하 상태와 재발 위험이 치료·추적의 중심이다.",
       "back": {
         "sections": [
           {
@@ -14016,7 +14016,7 @@
       "koreanName": "질편모충",
       "classification": "Eukaryota / Metamonada / Parabasalia / Trichomonadida",
       "representativeRecordId": "TVA-711",
-      "summary": "낭포 없이 영양형으로 성접촉 전파되는 편모 원충이다. 질염·요도염과 비뇨생식기 점막 염증이 핵심이다.",
+      "summary": "성접촉으로 전파되는 질염·요도염의 원인이다. 치료 뒤 재감염을 줄이기 위해 파트너와 전파 맥락을 함께 다룬다.",
       "back": {
         "sections": [
           {
@@ -14122,7 +14122,7 @@
       "koreanName": "리슈만편모충",
       "classification": "Eukaryota / Euglenozoa / Kinetoplastea / Trypanosomatida",
       "representativeRecordId": "LEI-712",
-      "summary": "모래파리가 매개하고 대식세포 안에서 살아가는 원충군이다. 피부·점막·내장형을 구분하며 종과 지역이 치료를 좌우한다.",
+      "summary": "피부궤양·점막 파괴·내장형 등 다양한 임상형을 만든다. 감염 지역과 종, 침범 장기가 치료제를 가른다.",
       "back": {
         "sections": [
           {
@@ -14228,7 +14228,7 @@
       "koreanName": "크루스파동편모충",
       "classification": "Eukaryota / Euglenozoa / Kinetoplastea / Trypanosomatida",
       "representativeRecordId": "TCR-713",
-      "summary": "매개곤충·수혈·선천 전파로 샤가스병을 만드는 원충이다. 만성 심근병증과 소화기 신경총 손상을 연결한다.",
+      "summary": "만성 샤가스병에서 심근병증과 소화기 신경 손상이 나타난다. 급성 감염과 이미 진행된 만성 장기병증은 치료 이득이 다르다.",
       "back": {
         "sections": [
           {
@@ -14334,7 +14334,7 @@
       "koreanName": "브루스파동편모충",
       "classification": "Eukaryota / Euglenozoa / Kinetoplastea / Trypanosomatida",
       "representativeRecordId": "TBR-714",
-      "summary": "체체파리가 매개하는 아프리카수면병 원충이다. 혈림프기와 CNS 침범에 따른 수면-각성 장애를 구분한다.",
+      "summary": "아프리카 노출 뒤 혈림프성 질환에서 중추신경계 침범·수면장애로 진행한다. 중추신경계 침범 여부가 치료 선택을 가른다.",
       "back": {
         "sections": [
           {
@@ -14440,7 +14440,7 @@
       "koreanName": "분선충",
       "classification": "Eukaryota / Nematoda / Chromadorea / Rhabditida",
       "representativeRecordId": "SST-715",
-      "summary": "피부 침투 뒤 자가감염으로 오래 지속하는 선충이다. Steroid 노출에서 과감염·파종과 장내세균 균혈증이 중요하다.",
+      "summary": "오래 지속되는 만성감염이 steroid 노출 뒤 과감염·파종으로 악화할 수 있다. 장내세균 균혈증이 동반될 수 있어 면역억제 맥락이 중요하다.",
       "back": {
         "sections": [
           {
@@ -14546,7 +14546,7 @@
       "koreanName": "회충",
       "classification": "Eukaryota / Nematoda / Chromadorea / Ascaridida / Ascarididae",
       "representativeRecordId": "ALU-716",
-      "summary": "토양매개 알을 섭취해 감염되는 큰 장내 선충이다. 유충의 폐 이동과 성충의 장폐색·담도 침범을 구분한다.",
+      "summary": "장폐색·담도회충증을 일으키며 유충이 폐를 지날 때 호흡기 증상이 생길 수 있다. 장관 증상과 폐 이동기의 증상을 구별한다.",
       "back": {
         "sections": [
           {
@@ -14652,7 +14652,7 @@
       "koreanName": "요충",
       "classification": "Eukaryota / Nematoda / Chromadorea / Oxyurida / Oxyuridae",
       "representativeRecordId": "EVE-717",
-      "summary": "사람 사이 손-입 전파와 자가감염이 가능한 장내 선충이다. 야간 항문소양과 항문주위 충란이 핵심 단서다.",
+      "summary": "소아의 야간 항문소양이 대표적이며 가족·집단 내 재감염이 흔하다. 항문주위 충란과 반복 노출을 확인한다.",
       "back": {
         "sections": [
           {
@@ -14758,7 +14758,7 @@
       "koreanName": "편충",
       "classification": "Eukaryota / Nematoda / Enoplea / Trichocephalida / Trichuridae",
       "representativeRecordId": "TTR-718",
-      "summary": "토양매개 충란으로 감염되어 대장을 침범하는 선충이다. 만성 대장염·빈혈과 심한 감염의 직장탈출을 연결한다.",
+      "summary": "만성 대장염·빈혈을 일으키며 심한 감염은 직장탈출로 나타날 수 있다. 감염량과 장관 합병증이 임상 경과를 가른다.",
       "back": {
         "sections": [
           {
@@ -14864,7 +14864,7 @@
       "koreanName": "구충",
       "classification": "Eukaryota / Nematoda / Chromadorea / Strongylida / Ancylostomatidae",
       "representativeRecordId": "HOO-719",
-      "summary": "토양 유충이 피부를 뚫고 들어오는 장내 선충군이다. 성충의 지속적인 장출혈이 철결핍빈혈을 만든다.",
+      "summary": "지속적인 장출혈로 철결핍빈혈을 일으킨다. 토양 접촉 뒤 피부 증상과 빈혈이 함께 있으면 노출력을 살핀다.",
       "back": {
         "sections": [
           {
@@ -14970,7 +14970,7 @@
       "koreanName": "주혈흡충",
       "classification": "Eukaryota / Platyhelminthes / Trematoda",
       "representativeRecordId": "SCH-720",
-      "summary": "민물의 cercaria가 피부를 뚫고 성충은 혈관에 사는 흡충군이다. 충란의 육아종 반응이 장간·요로·신경 병변을 만든다.",
+      "summary": "민물 노출 뒤 장간·요로·신경 병변을 일으킬 수 있다. 종과 침범 장기에 따라 임상형과 합병증이 달라진다.",
       "back": {
         "sections": [
           {
@@ -15076,7 +15076,7 @@
       "koreanName": "간흡충",
       "classification": "Eukaryota / Platyhelminthes / Trematoda",
       "representativeRecordId": "CSI-721",
-      "summary": "민물고기로 감염되는 담도 흡충이다. 만성 담관염·담석과 담관암 위험을 연결한다.",
+      "summary": "민물고기 생식과 연관된 담관염·담석을 일으킨다. 만성감염은 담관암 위험과 연관되며 한국에서 중요한 풍토병이다.",
       "back": {
         "sections": [
           {
@@ -15182,7 +15182,7 @@
       "koreanName": "폐흡충",
       "classification": "Eukaryota / Platyhelminthes / Trematoda",
       "representativeRecordId": "PWE-722",
-      "summary": "민물게·가재로 감염되는 폐흡충이다. 만성 기침·객혈과 흉막 병변, 이소성 뇌 침범을 연결한다.",
+      "summary": "민물게·가재 생식 뒤 만성 기침·객혈과 흉막 병변을 일으킨다. 폐질환뿐 아니라 이소성 뇌 병변도 가능하다.",
       "back": {
         "sections": [
           {
@@ -15288,7 +15288,7 @@
       "koreanName": "간질",
       "classification": "Eukaryota / Platyhelminthes / Trematoda",
       "representativeRecordId": "FHE-723",
-      "summary": "수생식물로 감염되어 유충은 간을, 성충은 담도를 침범하는 흡충이다. 급성 간이행과 만성 담도질환을 구분한다.",
+      "summary": "수생식물 노출 뒤 급성 간이행성 질환과 만성 담도질환을 일으킨다. 다른 흡충과 달리 triclabendazole의 치료 역할이 중요하다.",
       "back": {
         "sections": [
           {
@@ -15394,7 +15394,7 @@
       "koreanName": "유구조충 유충",
       "classification": "Eukaryota / Platyhelminthes / Cestoda",
       "representativeRecordId": "TSO-724",
-      "summary": "사람이 배출한 충란을 섭취하면 조직에 낭미충이 생긴다. 신경낭미충증의 발작·뇌부종과 뇌실 병변을 연결한다.",
+      "summary": "신경낭미충증에서 발작·뇌부종·뇌실 병변이 나타날 수 있다. 병변의 위치·수와 생존 상태에 따라 약물·수술 판단이 달라진다.",
       "back": {
         "sections": [
           {
@@ -15500,7 +15500,7 @@
       "koreanName": "무구조충",
       "classification": "Eukaryota / Platyhelminthes / Cestoda",
       "representativeRecordId": "TSA-725",
-      "summary": "덜 익힌 소고기로 감염되어 사람 장에 성충이 사는 조충이다. 장 조충증을 만들며 사람 낭미충증은 일으키지 않는다.",
+      "summary": "덜 익힌 소고기와 연관된 장 조충증을 일으킨다. T. solium과 달리 사람 낭미충증의 원인은 아니다.",
       "back": {
         "sections": [
           {
@@ -15606,7 +15606,7 @@
       "koreanName": "포충",
       "classification": "Eukaryota / Platyhelminthes / Cestoda",
       "representativeRecordId": "ECH-726",
-      "summary": "개·여우 생활사에서 사람 조직에 낭성 또는 침윤성 병변을 만드는 조충이다. 간·폐 포충 병변과 종별 형태를 구분한다.",
+      "summary": "간·폐에 낭성 또는 침윤성 포충 병변을 만든다. 병변의 위치·형태와 종에 따라 약물·중재 치료의 범위가 달라진다.",
       "back": {
         "sections": [
           {
@@ -15712,7 +15712,7 @@
       "koreanName": "개·고양이회충",
       "classification": "Eukaryota / Nematoda / Chromadorea / Ascaridida / Toxocaridae",
       "representativeRecordId": "TOX-727",
-      "summary": "개·고양이 충란에서 나온 유충이 사람 조직을 이동한다. 내장·안구 유충이행증을 만들며 사람 대변에서는 충란이 나오지 않는다.",
+      "summary": "내장·안구 유충이행증을 일으킨다. 사람에서는 장내 성충 감염이 아니어서 대변 충란검사만으로 진단할 수 없다.",
       "back": {
         "sections": [
           {
@@ -15818,7 +15818,7 @@
       "koreanName": "선모충",
       "classification": "Eukaryota / Nematoda / Enoplea / Trichocephalida / Trichinellidae",
       "representativeRecordId": "TRI-728",
-      "summary": "돼지·야생동물 고기의 유충이 근육에 자리잡는 선충이다. 장 증상 뒤 근육통·안와부종과 심근·CNS 침범을 연결한다.",
+      "summary": "덜 익힌 돼지·야생동물 고기 노출 뒤 장 증상에 이어 근육통·안와부종이 나타난다. 심근·중추신경계 침범이 중증 신호다.",
       "back": {
         "sections": [
           {
@@ -15924,7 +15924,7 @@
       "koreanName": "아니사키스",
       "classification": "Eukaryota / Nematoda / Chromadorea / Ascaridida / Anisakidae",
       "representativeRecordId": "ANI-729",
-      "summary": "날 해산어·오징어의 유충이 위장벽을 뚫는 기생충이다. 급성 복통과 호산구·IgE 반응, 알레르기를 연결한다.",
+      "summary": "날 생선·오징어를 먹은 뒤 급성 위장관 통증이 나타난다. 호산구·알레르기 반응이 동반될 수 있어 생식 노출력이 중요하다.",
       "back": {
         "sections": [
           {
@@ -16030,7 +16030,7 @@
       "koreanName": "옴진드기",
       "classification": "Eukaryota / Arthropoda / Arachnida / Sarcoptiformes",
       "representativeRecordId": "SCA-730",
-      "summary": "밀접접촉으로 퍼져 피부 각질층에 굴을 만드는 진드기다. 야간 소양과 진드기 부담·전염성이 큰 가피옴을 구분한다.",
+      "summary": "야간 소양과 밀접접촉자 사이의 전파가 특징이다. 가피옴은 진드기 부담·전염성이 커 요양시설 집단발생에서 특히 중요하다.",
       "back": {
         "sections": [
           {
@@ -16136,7 +16136,7 @@
       "koreanName": "푸사리움속",
       "classification": "Fungi / Ascomycota / Nectriaceae",
       "representativeRecordId": "FUS-621",
-      "summary": "토양·물의 사상균으로 각막과 손상 피부를 침범한다. 면역저하자에서는 폐·혈류·전신 파종과 높은 약제 MIC가 중요하다.",
+      "summary": "각막염을 일으키며 면역저하자에서는 폐·혈류·전신으로 파종할 수 있다. 호중구감소 환자의 통증성 피부결절과 양성 혈액배양이 중요한 단서다.",
       "back": {
         "sections": [
           {
@@ -16242,7 +16242,7 @@
       "koreanName": "스케도스포리움 아피오스페르뭄 복합체",
       "classification": "Fungi / Ascomycota / Microascaceae",
       "representativeRecordId": "SCA-622",
-      "summary": "토양·오염수의 사상균으로 익수 뒤 폐·뇌 감염이 단서다. Amphotericin B의 낮은 감수성과 종 동정이 중요하다.",
+      "summary": "익수 수주~수개월 뒤 폐감염·뇌농양이 나타나면 의심한다. Amphotericin B에 고유 비감수성이 있어 정확한 종 동정이 치료를 바꾼다.",
       "back": {
         "sections": [
           {
@@ -16348,7 +16348,7 @@
       "koreanName": "로멘토스포라 프로리피칸스",
       "classification": "Fungi / Ascomycota / Microascaceae",
       "representativeRecordId": "LPR-623",
-      "summary": "면역저하자에서 폐·혈류·CNS로 파종하는 사상균이다. 여러 항진균제에 걸친 높은 MIC와 면역회복의 중요성이 핵심이다.",
+      "summary": "면역저하자의 폐·혈류·중추신경계 파종감염을 일으킨다. 여러 항진균제에 감수성이 낮아 종 동정과 면역회복 전략이 특히 중요하다.",
       "back": {
         "sections": [
           {
@@ -16454,7 +16454,7 @@
       "koreanName": "바베시아 미크로티",
       "classification": "Eukaryota / Apicomplexa / Aconoidasida / Piroplasmida",
       "representativeRecordId": "BMI-731",
-      "summary": "진드기·수혈로 전파되어 적혈구 안에서 증식하는 원충이다. 용혈성 빈혈과 무비증 숙주의 중증화를 연결한다.",
+      "summary": "진드기·수혈 노출 뒤 발열과 용혈성빈혈을 일으킨다. 무비장·고령·면역저하 환자는 중증화하기 쉬워 말라리아 여행력이 없어도 의심한다.",
       "back": {
         "sections": [
           {
@@ -16560,7 +16560,7 @@
       "koreanName": "단순헤르페스바이러스 1형",
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Simplexvirus",
       "representativeRecordId": "HSV-801",
-      "summary": "감각신경절에 잠복하고 상피에서 재활성화한다. 구순포진·각막염과 뇌염·신생아감염을 연결한다.",
+      "summary": "구순포진·각막염뿐 아니라 뇌염·신생아감염도 일으킨다. 재발성 점막 병변과 중추신경계 감염은 치료 범위가 다르다.",
       "back": {
         "sections": [
           {
@@ -16666,7 +16666,7 @@
       "koreanName": "단순헤르페스바이러스 2형",
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Simplexvirus",
       "representativeRecordId": "HSV-802",
-      "summary": "천수 감각신경절에 잠복하며 무증상 배출도 가능하다. 재발성 생식기궤양·무균수막염과 신생아감염을 연결한다.",
+      "summary": "재발성 생식기궤양·무균수막염과 신생아감염의 원인이다. 증상이 없을 때도 배출되어 파트너·주산기 전파가 중요하다.",
       "back": {
         "sections": [
           {
@@ -16772,7 +16772,7 @@
       "koreanName": "수두대상포진바이러스",
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Varicellovirus",
       "representativeRecordId": "VZV-803",
-      "summary": "감각신경절에 잠복하는 바이러스로 초감염은 수두를 만든다. 재활성화는 피부절을 따라 대상포진을 일으킨다.",
+      "summary": "초감염은 수두, 재활성화는 피부절을 따라 나타나는 대상포진을 일으킨다. 면역저하자는 파종·폐렴·뇌염·안구 침범 위험을 살핀다.",
       "back": {
         "sections": [
           {
@@ -16878,7 +16878,7 @@
       "koreanName": "사람거대세포바이러스",
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Cytomegalovirus",
       "representativeRecordId": "CMV-804",
-      "summary": "골수계 세포에 잠복하고 면역억제에서 재활성화하는 바이러스다. 망막·장관·폐의 장기질환과 선천감염을 연결한다.",
+      "summary": "면역저하자의 망막염·대장염·식도염·폐렴과 선천감염을 일으킨다. 바이러스 검출과 실제 장기질환을 구별해야 치료 목적이 명확해진다.",
       "back": {
         "sections": [
           {
@@ -16984,7 +16984,7 @@
       "koreanName": "엡스타인-바 바이러스",
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Lymphocryptovirus",
       "representativeRecordId": "EBV-805",
-      "summary": "B세포에 잠복하며 구인두에서 배출되는 바이러스다. 감염단핵구증과 일부 림프종·비인두암을 연결한다.",
+      "summary": "청년의 감염단핵구증을 일으키며 일부 림프종·비인두암과 연관된다. 단순 급성 감염과 면역저하자의 종양성 질환은 다른 임상 맥락이다.",
       "back": {
         "sections": [
           {
@@ -17090,7 +17090,7 @@
       "koreanName": "사람헤르페스바이러스 6",
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Roseolovirus",
       "representativeRecordId": "HHS-806",
-      "summary": "유아기 초감염 뒤 잠복하는 바이러스다. 돌발진·열성경련과 이식 후 재활성화 변연계뇌염을 구분한다.",
+      "summary": "소아 돌발진·열성경련과 이식 후 재활성화 뇌염에서 중요하다. 이식 환자의 새 신경증상을 단순 과거 감염과 구별해야 한다.",
       "back": {
         "sections": [
           {
@@ -17196,7 +17196,7 @@
       "koreanName": "카포시육종연관 헤르페스바이러스",
       "classification": "Viruses / Herpesvirales / Orthoherpesviridae / Rhadinovirus",
       "representativeRecordId": "HHE-807",
-      "summary": "B세포·내피계에 잠복하는 종양 연관 바이러스다. Kaposi 육종·원발성 삼출림프종·Castleman병을 연결한다.",
+      "summary": "카포시육종·원발성 삼출림프종·다중심성 Castleman병과 연관된다. 면역저하 상태와 동반 종양이 임상 판단의 중심이다.",
       "back": {
         "sections": [
           {
@@ -17302,7 +17302,7 @@
       "koreanName": "사람아데노바이러스",
       "classification": "Viruses / Rowavirales / Adenoviridae / Mastadenovirus",
       "representativeRecordId": "ADV-808",
-      "summary": "환경에서 안정한 바이러스로 호흡기·결막·장관을 폭넓게 침범한다. 인두결막열·유행각결막염과 집단발생을 연결한다.",
+      "summary": "인두결막열·유행각결막염·위장염과 호흡기 집단발생의 원인이다. 같은 바이러스라도 눈·호흡기·장관 등 침범 부위가 다양하다.",
       "back": {
         "sections": [
           {
@@ -17408,7 +17408,7 @@
       "koreanName": "파르보바이러스 B19",
       "classification": "Viruses / Piccovirales / Parvoviridae / Erythroparvovirus",
       "representativeRecordId": "PVB-809",
-      "summary": "적혈구 전구세포에서 증식하는 바이러스다. 전염성홍반·일과성 무형성발작과 태아수종·만성빈혈을 연결한다.",
+      "summary": "소아 전염성홍반을 일으키며 용혈성 질환자는 일과성 무형성발작 위험이 있다. 임신 중 감염은 태아수종, 면역저하는 만성빈혈과 연관된다.",
       "back": {
         "sections": [
           {
@@ -17514,7 +17514,7 @@
       "koreanName": "사람유두종바이러스",
       "classification": "Viruses / Zurhausenvirales / Papillomaviridae / Alphapapillomavirus",
       "representativeRecordId": "HPV-810",
-      "summary": "기저상피를 감염시켜 상피 분화와 함께 증식하는 바이러스다. 사마귀와 자궁경부·항문·구인두 암을 연결한다.",
+      "summary": "사마귀와 자궁경부·항문·구인두암에 연관된다. 사마귀 치료와 암 예방·검진은 서로 다른 임상 과제다.",
       "back": {
         "sections": [
           {
@@ -17620,7 +17620,7 @@
       "koreanName": "B형간염바이러스",
       "classification": "Viruses / Blubervirales / Hepadnaviridae / Orthohepadnavirus",
       "representativeRecordId": "HBV-811",
-      "summary": "간세포 핵의 cccDNA가 지속감염을 지탱하는 간염바이러스다. 만성간염에서 간경변·간세포암으로 이어질 수 있다.",
+      "summary": "급성·만성간염을 일으키며 장기적으로 간경변·간세포암 위험이 있다. 만성 감염은 간 손상과 치료 적응증을 함께 평가한다.",
       "back": {
         "sections": [
           {
@@ -17726,7 +17726,7 @@
       "koreanName": "C형간염바이러스",
       "classification": "Viruses / Amarillovirales / Flaviviridae / Hepacivirus",
       "representativeRecordId": "HCV-812",
-      "summary": "변이가 많은 RNA 간염바이러스로 만성감염이 중요하다. 간경변·간세포암과 혼합한랭글로불린혈증을 연결한다.",
+      "summary": "만성간염에서 간경변·간세포암으로 진행할 수 있다. 간질환 외에 혼합한랭글로불린혈증 같은 장기 증상도 가능하다.",
       "back": {
         "sections": [
           {
@@ -17832,7 +17832,7 @@
       "koreanName": "A형간염바이러스",
       "classification": "Viruses / Picornavirales / Picornaviridae / Hepatovirus",
       "representativeRecordId": "HAV-813",
-      "summary": "장관으로 들어와 간에서 증식하며 만성화하지 않는 간염바이러스다. 급성간염과 드문 급성간부전이 핵심이다.",
+      "summary": "급성간염을 일으키지만 만성화하지 않는다. 대부분의 급성 경과와 드물게 생기는 급성간부전을 구별해 살핀다.",
       "back": {
         "sections": [
           {
@@ -17938,7 +17938,7 @@
       "koreanName": "E형간염바이러스",
       "classification": "Viruses / Hepelivirales / Hepeviridae / Paslahepevirus",
       "representativeRecordId": "HEV-814",
-      "summary": "유전자형에 따라 물 또는 동물에서 전파되는 간염바이러스다. 임신부의 중증 급성질환과 면역저하자의 만성감염을 구분한다.",
+      "summary": "급성간염을 일으키며 임신부는 중증질환, 면역저하자는 만성감염 위험이 있다. 숙주 상태에 따라 같은 감염의 경과가 크게 달라진다.",
       "back": {
         "sections": [
           {
@@ -18044,7 +18044,7 @@
       "koreanName": "사람면역결핍바이러스 1형",
       "classification": "Viruses / Ortervirales / Retroviridae / Lentivirus",
       "representativeRecordId": "HIV-815",
-      "summary": "역전사 뒤 숙주 유전체에 통합되어 지속하는 바이러스다. AIDS의 기회감염·종양과 완전한 병합 항레트로바이러스 요법을 연결한다.",
+      "summary": "급성 감염 뒤 면역저하가 진행하면 기회감염·종양이 나타난다. 치료는 한 약제의 단독 사용이 아닌 완전한 병합 항레트로바이러스 요법이다.",
       "back": {
         "sections": [
           {
@@ -18150,7 +18150,7 @@
       "koreanName": "사람T림프친화바이러스 1형",
       "classification": "Viruses / Ortervirales / Retroviridae / Deltaretrovirus",
       "representativeRecordId": "HTL-816",
-      "summary": "Provirus로 지속하며 감염 T세포의 클론성 확장을 만드는 바이러스다. 성인T세포백혈병·림프종과 HAM/TSP를 연결한다.",
+      "summary": "성인 T세포백혈병·림프종과 진행성 보행장애를 보이는 척수병증에 연관된다. 무증상 감염과 이미 생긴 장기질환을 구별한다.",
       "back": {
         "sections": [
           {
@@ -18256,7 +18256,7 @@
       "koreanName": "인플루엔자 A 바이러스",
       "classification": "Viruses / Articulavirales / Orthomyxoviridae / Alphainfluenzavirus",
       "representativeRecordId": "FLA-817",
-      "summary": "항원소변이·대변이를 통해 호흡기 유행을 만드는 바이러스다. 급성 독감과 바이러스폐렴·세균성 중복감염을 연결한다.",
+      "summary": "급성 발열·호흡기 증상에서 폐렴·세균성 중복감염으로 악화할 수 있다. 숙주의 중증 위험과 발병 시점이 항바이러스제 판단에 중요하다.",
       "back": {
         "sections": [
           {
@@ -18362,7 +18362,7 @@
       "koreanName": "인플루엔자 B 바이러스",
       "classification": "Viruses / Articulavirales / Orthomyxoviridae / Betainfluenzavirus",
       "representativeRecordId": "FLB-818",
-      "summary": "주로 사람에서 계절 유행하는 인플루엔자바이러스다. 호흡기질환·폐렴과 소아 근염·뇌병증을 연결한다.",
+      "summary": "계절성 독감을 일으키며 폐렴과 소아 근염·뇌병증이 가능하다. Influenza A처럼 숙주 위험과 치료 시작 시점을 살핀다.",
       "back": {
         "sections": [
           {
@@ -18468,7 +18468,7 @@
       "koreanName": "호흡기세포융합바이러스",
       "classification": "Viruses / Mononegavirales / Pneumoviridae / Orthopneumovirus",
       "representativeRecordId": "RSV-819",
-      "summary": "F 단백으로 세포융합을 만드는 계절성 호흡기 바이러스다. 영아 세기관지염과 노인·면역저하자의 중증 폐질환을 연결한다.",
+      "summary": "영아 세기관지염과 노인·면역저하자의 중증 폐질환에서 중요하다. 환자 연령과 기저질환이 중증 위험을 가른다.",
       "back": {
         "sections": [
           {
@@ -18574,7 +18574,7 @@
       "koreanName": "중증급성호흡기증후군 코로나바이러스 2",
       "classification": "Viruses / Nidovirales / Coronaviridae / Betacoronavirus",
       "representativeRecordId": "COV-820",
-      "summary": "Spike–ACE2 진입으로 호흡기와 여러 장기를 침범하는 바이러스다. COVID-19의 숙주별 중증도와 발병 초기 치료 시점이 중요하다.",
+      "summary": "COVID-19의 원인이며 숙주에 따라 경증 호흡기질환부터 중증 폐렴까지 나타난다. 고위험 환자는 발병 초기에 치료 가능 여부를 판단한다.",
       "back": {
         "sections": [
           {
@@ -18680,7 +18680,7 @@
       "koreanName": "사람리노바이러스",
       "classification": "Viruses / Picornavirales / Picornaviridae / Enterovirus",
       "representativeRecordId": "RHV-821",
-      "summary": "다수 혈청형을 가진 상기도 바이러스다. 흔한 감기와 천식·COPD 악화, 면역저하자의 하기도질환을 연결한다.",
+      "summary": "흔한 감기의 원인이며 천식·COPD를 악화시킬 수 있다. 면역저하자에서는 하기도질환까지 진행할 수 있다.",
       "back": {
         "sections": [
           {
@@ -18786,7 +18786,7 @@
       "koreanName": "사람파라인플루엔자바이러스",
       "classification": "Viruses / Mononegavirales / Paramyxoviridae / Respirovirus-Orthorubulavirus",
       "representativeRecordId": "PIV-822",
-      "summary": "호흡상피 감염과 세포융합을 만드는 바이러스다. 크루프와 세기관지염·폐렴을 연결한다.",
+      "summary": "소아 크루프의 대표 원인이며 세기관지염·폐렴도 일으킨다. 상기도 증상과 하기도 침범을 나누어 평가한다.",
       "back": {
         "sections": [
           {
@@ -18892,7 +18892,7 @@
       "koreanName": "사람메타뉴모바이러스",
       "classification": "Viruses / Mononegavirales / Pneumoviridae / Metapneumovirus",
       "representativeRecordId": "HMP-823",
-      "summary": "재감염이 흔한 호흡기 바이러스다. 감기부터 세기관지염·폐렴과 천식악화까지 숙주에 따라 질환이 달라진다.",
+      "summary": "소아·노인에서 세기관지염·폐렴을 일으키며 천식 악화도 가능하다. 단순 감기처럼 시작해도 숙주에 따라 하기도질환으로 진행할 수 있다.",
       "back": {
         "sections": [
           {
@@ -18998,7 +18998,7 @@
       "koreanName": "홍역바이러스",
       "classification": "Viruses / Mononegavirales / Paramyxoviridae / Morbillivirus",
       "representativeRecordId": "MEA-824",
-      "summary": "전염성이 매우 높고 호흡기에서 전신으로 퍼지는 바이러스다. 기침·콧물·결막염, Koplik 반점과 발진을 연결한다.",
+      "summary": "발열·기침·콧물·결막염 뒤 Koplik 반점과 발진이 나타난다. 전염성이 높고 폐렴·뇌염 합병증이 가능하다.",
       "back": {
         "sections": [
           {
@@ -19104,7 +19104,7 @@
       "koreanName": "풍진바이러스",
       "classification": "Viruses / Hepelivirales / Matonaviridae / Rubivirus",
       "representativeRecordId": "RUB-825",
-      "summary": "호흡기 초감염 뒤 태반도 통과할 수 있는 바이러스다. 경한 발진열·관절염과 선천풍진증후군을 구분한다.",
+      "summary": "대개 경한 발진열·관절염을 일으키지만 임신 중 감염은 선천풍진증후군 위험이 있다. 임신 여부가 중요한 임상 분기다.",
       "back": {
         "sections": [
           {
@@ -19210,7 +19210,7 @@
       "koreanName": "유행성이하선염바이러스",
       "classification": "Viruses / Mononegavirales / Paramyxoviridae / Orthorubulavirus",
       "representativeRecordId": "MUM-826",
-      "summary": "호흡기 감염 뒤 선조직을 침범하는 바이러스다. 이하선염과 고환염·수막염·췌장염을 연결한다.",
+      "summary": "이하선염이 대표적이며 고환염·수막염·췌장염이 동반될 수 있다. 침범 장기에 따라 합병증 평가가 달라진다.",
       "back": {
         "sections": [
           {
@@ -19316,7 +19316,7 @@
       "koreanName": "로타바이러스 A",
       "classification": "Viruses / Reovirales / Sedoreoviridae / Rotavirus",
       "representativeRecordId": "ROT-827",
-      "summary": "장세포 손상과 NSP4 작용으로 수양성 설사를 만드는 바이러스다. 소아의 구토·발열·탈수가 핵심이다.",
+      "summary": "소아에서 구토·발열·수양성 설사와 탈수를 일으킨다. 바이러스 자체보다 수분·전해질 손실 관리가 급성기 치료의 중심이다.",
       "back": {
         "sections": [
           {
@@ -19422,7 +19422,7 @@
       "koreanName": "노로바이러스",
       "classification": "Viruses / Picornavirales / Caliciviridae / Norovirus",
       "representativeRecordId": "NOR-828",
-      "summary": "낮은 감염량과 환경 안정성으로 집단발병하는 장관 바이러스다. 급성 구토·수양성 설사가 대표적이다.",
+      "summary": "급성 구토·수양성 설사와 집단발병이 특징이다. 낮은 감염량으로 쉽게 전파되어 환자 수액 관리와 전파 차단이 중요하다.",
       "back": {
         "sections": [
           {
@@ -19528,7 +19528,7 @@
       "koreanName": "비폴리오 엔테로바이러스",
       "classification": "Viruses / Picornavirales / Picornaviridae / Enterovirus",
       "representativeRecordId": "ENT-829",
-      "summary": "장·인두에서 증식하는 enterovirus군이다. 수족구병·herpangina와 무균수막염·심근염·신생아 질환을 연결한다.",
+      "summary": "수족구병·구협염·무균수막염의 흔한 원인이다. 일부는 심근염이나 신생아 패혈증과 비슷한 중증질환을 일으킨다.",
       "back": {
         "sections": [
           {
@@ -19634,7 +19634,7 @@
       "koreanName": "폴리오바이러스",
       "classification": "Viruses / Picornavirales / Picornaviridae / Enterovirus",
       "representativeRecordId": "POL-830",
-      "summary": "장관에서 증식한 뒤 드물게 CNS 운동뉴런을 침범한다. 무균수막염과 급성이완마비를 연결한다.",
+      "summary": "대부분 무증상이지만 드물게 무균수막염·급성이완마비를 일으킨다. 마비성 질환에서는 호흡근과 신경 기능 손상이 중요하다.",
       "back": {
         "sections": [
           {
@@ -19740,7 +19740,7 @@
       "koreanName": "광견병바이러스",
       "classification": "Viruses / Mononegavirales / Rhabdoviridae / Lyssavirus",
       "representativeRecordId": "RAB-831",
-      "summary": "동물 노출 뒤 말초신경을 따라 CNS로 이동하는 바이러스다. 공수증·연하곤란 또는 마비형의 치명적 뇌염을 만든다.",
+      "summary": "동물 노출 뒤 공수증·연하곤란을 동반한 뇌염 또는 마비형으로 나타난다. 증상이 생긴 광견병과 노출 후 예방은 전혀 다른 임상 단계다.",
       "back": {
         "sections": [
           {
@@ -19846,7 +19846,7 @@
       "koreanName": "뎅기바이러스",
       "classification": "Viruses / Amarillovirales / Flaviviridae / Orthoflavivirus",
       "representativeRecordId": "DEN-832",
-      "summary": "Aedes 모기가 매개하며 네 혈청형을 가진다. 발열·심한 통증에서 출혈·쇼크·장기손상으로 진행할 수 있다.",
+      "summary": "모기 노출 뒤 발열·심한 통증이 나타나며, 일부는 출혈·쇼크·장기손상으로 진행한다. 경고징후와 수액 관리가 중요한 임상 판단이다.",
       "back": {
         "sections": [
           {
@@ -19952,7 +19952,7 @@
       "koreanName": "일본뇌염바이러스",
       "classification": "Viruses / Amarillovirales / Flaviviridae / Orthoflavivirus",
       "representativeRecordId": "JEV-833",
-      "summary": "모기·돼지·물새 주기의 바이러스로 사람은 우연숙주다. 뇌염·발작·운동이상과 지속되는 신경 후유장애가 핵심이다.",
+      "summary": "모기 노출 뒤 뇌염·발작·운동이상을 일으킬 수 있다. 생존 후에도 신경 후유장애가 남을 수 있는 중증 신경감염이다.",
       "back": {
         "sections": [
           {
@@ -20058,7 +20058,7 @@
       "koreanName": "한탄바이러스",
       "classification": "Viruses / Bunyavirales / Hantaviridae / Orthohantavirus",
       "representativeRecordId": "HAN-834",
-      "summary": "설치류 배설물 에어로졸로 전파되는 바이러스다. 발열·저혈압·출혈경향과 급성신손상의 신증후군출혈열을 연결한다.",
+      "summary": "설치류 노출 뒤 발열·저혈압·출혈경향과 급성신손상을 일으킨다. 한국에서는 신증후군출혈열의 주요 원인으로 노출력이 중요하다.",
       "back": {
         "sections": [
           {
@@ -20164,7 +20164,7 @@
       "koreanName": "중증열성혈소판감소증후군 바이러스",
       "classification": "Viruses / Bunyavirales / Phenuiviridae / Bandavirus",
       "representativeRecordId": "SFT-835",
-      "summary": "참진드기가 매개하며 체액으로 사람 간 전파도 가능한 바이러스다. 고열·혈소판 및 백혈구 감소와 다장기부전을 연결한다.",
+      "summary": "진드기 노출 뒤 고열·혈소판감소·백혈구감소와 소화기·신경 증상이 나타난다. 다장기부전으로 악화할 수 있고 체액을 통한 전파도 주의한다.",
       "back": {
         "sections": [
           {
@@ -20270,7 +20270,7 @@
       "koreanName": "D형간염바이러스",
       "classification": "Viruses / Kolmioviridae / Deltavirus",
       "representativeRecordId": "HDV-836",
-      "summary": "HBV의 HBsAg 외피를 빌려야 감염이 성립하는 결함성 바이러스다. HBV 동시·중복감염과 빠른 간질환 진행을 연결한다.",
+      "summary": "HBV 감염이 있어야 성립하며 간염·간경변을 더 빠르게 악화시킬 수 있다. HBV DNA가 낮은데 간염이 심하면 중복감염을 고려한다.",
       "back": {
         "sections": [
           {
@@ -20382,7 +20382,7 @@
       "koreanName": "BK 폴리오마바이러스",
       "classification": "Viruses / Sepolyvirales / Polyomaviridae / Betapolyomavirus",
       "representativeRecordId": "BKV-837",
-      "summary": "신장·요로상피에 잠복했다가 이식 면역억제에서 재활성화한다. 신장이식 신병증과 조혈모세포이식 후 출혈방광염을 구분한다.",
+      "summary": "신장이식 후 신병증과 조혈모세포이식 후 출혈방광염에서 중요하다. 소변 양성만으로 판단하지 않고 혈장 바이러스량과 장기 손상을 함께 본다.",
       "back": {
         "sections": [
           {
@@ -20494,7 +20494,7 @@
       "koreanName": "JC 폴리오마바이러스",
       "classification": "Viruses / Sepolyvirales / Polyomaviridae / Betapolyomavirus",
       "representativeRecordId": "JCV-838",
-      "summary": "잠복 바이러스가 세포면역 저하에서 희소돌기아교세포를 감염한다. PML의 아급성 진행성 국소 신경장애를 연결한다.",
+      "summary": "세포면역이 저하된 환자에서 아급성으로 진행하는 비대칭 신경결손을 일으킨다. 발열·두통이 드물고 종괴효과가 적은 PML이 특징이다.",
       "back": {
         "sections": [
           {
@@ -20606,7 +20606,7 @@
       "koreanName": "엠폭스바이러스",
       "classification": "Viruses / Chitovirales / Poxviridae / Orthopoxvirus",
       "representativeRecordId": "MPX-839",
-      "summary": "세포질에서 복제하는 큰 DNA 바이러스다. 림프절병·수포농포성 병변·직장염과 면역저하자의 괴사성 파종을 연결한다.",
+      "summary": "통증성 수포·농포, 림프절병과 직장염이 특징이다. 병변이 적어도 통증이 심할 수 있고 면역저하자는 괴사성 파종 위험이 있다.",
       "back": {
         "sections": [
           {
@@ -20718,7 +20718,7 @@
       "koreanName": "지카바이러스",
       "classification": "Viruses / Amarillovirales / Flaviviridae / Orthoflavivirus",
       "representativeRecordId": "ZIK-840",
-      "summary": "Aedes 모기·성접촉·수직전파가 가능한 바이러스다. 성인의 경한 발진열과 임신 중 태아 뇌기형 위험을 구분한다.",
+      "summary": "성인은 대개 경한 발진열·결막염·관절통을 보인다. 임신 중 감염은 태아 소두증·뇌기형 위험이 있어 임신 여부가 핵심이다.",
       "back": {
         "sections": [
           {
@@ -20830,7 +20830,7 @@
       "koreanName": "치쿤구니야바이러스",
       "classification": "Viruses / Martellivirales / Togaviridae / Alphavirus",
       "representativeRecordId": "CHK-841",
-      "summary": "Aedes 모기가 옮기는 바이러스로 고열과 심한 관절통이 특징이다. 관절·근육 염증이 핵심 컨셉이다.",
+      "summary": "모기 노출 뒤 갑작스러운 고열과 심한 양측 관절통이 나타난다. 급성기가 지나도 관절통이 수개월 지속될 수 있다.",
       "back": {
         "sections": [
           {
@@ -20942,7 +20942,7 @@
       "koreanName": "웨스트나일바이러스",
       "classification": "Viruses / Amarillovirales / Flaviviridae / Orthoflavivirus",
       "representativeRecordId": "WNV-842",
-      "summary": "Culex 모기와 조류 사이에서 순환하며 사람은 대개 종말숙주다. 뇌염과 감각소실 없는 비대칭 급성이완마비를 연결한다.",
+      "summary": "모기 노출 뒤 뇌염과 비대칭 급성이완마비를 일으킬 수 있다. 감각소실 없이 마비가 진행하며 호흡근 침범을 살펴야 한다.",
       "back": {
         "sections": [
           {
@@ -21059,7 +21059,7 @@
         "황색포도알균 MSSA",
         "MSSA"
       ],
-      "summary": "농양·혈류·판막·뼈 감염을 만드는 황색포도알균이다. 이 MSSA는 penicillinase를 만들지만 oxacillin 감수성은 유지한다.",
+      "summary": "피부농양·균혈증·심내막염·골수염의 대표 원인인 MSSA다. Oxacillin·cefazolin 등이 치료 범위에 들지만 혈액배양 양성을 오염으로 넘기지 않는다.",
       "back": {
         "sections": [
           {
@@ -21109,7 +21109,7 @@
         "황색포도알균 MRSA",
         "MRSA"
       ],
-      "summary": "PBP2a로 methicillin 내성을 가진 황색포도알균이다. 화농성·침습성 감염을 만들며 이 기록은 vancomycin 감수성이다.",
+      "summary": "피부농양부터 균혈증·심내막염까지 일으키는 MRSA다. MSSA에 쓰는 oxacillin·cefazolin이 듣지 않아 MRSA 표적 약제가 필요하다.",
       "resistance": {
         "code": "MRSA",
         "label": "Methicillin resistance"
@@ -21219,7 +21219,7 @@
         "MRSA VISA",
         "황색포도알균 VISA"
       ],
-      "summary": "MRSA의 세포벽 적응으로 vancomycin 반응도 저하된 VISA 표현형이다. 이 EUCAST 정성 기록은 vancomycin R로 설정된다.",
+      "summary": "피부·혈류·심부 감염을 일으키는 MRSA에 vancomycin 반응 저하까지 더해진 형태다. Vancomycin 치료를 그대로 믿기 어려워 대안 감수성을 확인한다.",
       "resistance": {
         "code": "MRSA · VISA",
         "label": "Methicillin / vancomycin resistance"
@@ -21446,7 +21446,7 @@
         "Staphylococcus aureus 23S linezolid resistance",
         "MRSA LZD-R"
       ],
-      "summary": "Methicillin 내성 MRSA에 23S rRNA 변화로 linezolid 내성이 더해졌다. 서로 다른 두 표적 내성 기전을 구분하는 기록이다.",
+      "summary": "피부·혈류·심부 감염을 일으키는 MRSA에 linezolid 내성이 더해진 형태다. MRSA라는 이름만으로 linezolid 효과를 기대해서는 안 된다.",
       "resistance": {
         "code": "MRSA · LZD-R",
         "label": "Methicillin / linezolid resistance"
@@ -21686,7 +21686,7 @@
         "표피포도알균 MSSE",
         "MSSE"
       ],
-      "summary": "의료기구 위 biofilm으로 지속감염을 만드는 피부 상재균이다. 이 MSSE는 penicillinase를 만들지만 oxacillin 감수성이다.",
+      "summary": "카테터·인공판막·인공관절 감염의 원인인 methicillin 감수성 피부 상재균이다. 혈액배양 오염 가능성과 실제 기구감염을 임상 맥락으로 구별한다.",
       "back": {
         "sections": [
           {
@@ -21734,7 +21734,7 @@
         "표피포도알균 MRSE",
         "MRSE"
       ],
-      "summary": "Biofilm성 기구감염을 만드는 표피포도알균의 methicillin 내성형이다. PBP2a 내성과 혈액배양 오염·실제 감염을 구분한다.",
+      "summary": "카테터·인공판막·인공관절 감염을 일으키는 methicillin 내성 표피포도알균이다. 오염과 실제 감염을 구별하고 oxacillin 효과를 기대하지 않는다.",
       "resistance": {
         "code": "MRSE",
         "label": "Methicillin resistance"
@@ -21839,7 +21839,7 @@
         "장알균 VSE · ampicillin S",
         "VSE · ampicillin S"
       ],
-      "summary": "요로·혈류·판막 감염을 만드는 장알균이다. 이 기록은 ampicillin·vancomycin 감수성이며 cephalosporin에는 고유 내성을 보인다.",
+      "summary": "요로감염·균혈증·심내막염과 복강·담도감염을 일으킨다. Ampicillin·vancomycin 감수성형이며 cephalosporin 단독은 듣지 않는다.",
       "back": {
         "sections": [
           {
@@ -21888,7 +21888,7 @@
         "장알균 VRE · vanA",
         "VRE · vanA"
       ],
-      "summary": "표적 말단을 D-Ala-D-Lac으로 바꾼 vanA VRE다. 이 장알균 분리주는 vancomycin·teicoplanin 내성을 함께 보인다.",
+      "summary": "요로감염·균혈증·심내막염을 일으키는 vanA형 VRE다. Vancomycin뿐 아니라 teicoplanin도 듣지 않아 다른 표적 치료가 필요하다.",
       "resistance": {
         "code": "VRE · vanA",
         "label": "Vancomycin resistance"
@@ -21941,7 +21941,7 @@
         "장알균 VanB VRE",
         "VanB VRE"
       ],
-      "summary": "표적을 바꾸는 vanB VRE 장알균이다. 이 기록은 vancomycin 내성이지만 teicoplanin 감수성은 유지한다.",
+      "summary": "요로감염·균혈증·심내막염을 일으키는 vanB형 VRE다. Vancomycin 내성이지만 teicoplanin 반응은 유지될 수 있어 같은 VRE로 묶어 판단하지 않는다.",
       "resistance": {
         "code": "VRE · vanB",
         "label": "Vancomycin resistance"
@@ -22163,7 +22163,7 @@
         "페시움 장알균 VSE · ampicillin R",
         "VSE · ampicillin R"
       ],
-      "summary": "의료 관련 감염에서 중요한 장알균으로 낮은 친화성 PBP5를 가진다. 이 기록은 ampicillin 내성·vancomycin 감수성이다.",
+      "summary": "입원·면역저하 환자의 균혈증·요로·복강감염에서 중요하다. Ampicillin 내성형이지만 vancomycin 감수성은 유지한다.",
       "back": {
         "sections": [
           {
@@ -22212,7 +22212,7 @@
         "페시움 장알균 VRE · vanA",
         "VRE · vanA"
       ],
-      "summary": "의료 관련 장알균의 vanA VRE 표현형이다. Ampicillin 내성과 vancomycin·teicoplanin 내성을 함께 가진 기록이다.",
+      "summary": "입원·면역저하 환자의 감염을 일으키는 vanA형 VRE다. Ampicillin·vancomycin·teicoplanin 내성으로 치료 선택지가 제한된다.",
       "resistance": {
         "code": "VRE · vanA",
         "label": "Vancomycin resistance"
@@ -22265,7 +22265,7 @@
         "페시움 장알균 VanB VRE",
         "VanB VRE"
       ],
-      "summary": "의료 관련 장알균의 vanB VRE 표현형이다. Vancomycin 내성과 teicoplanin 감수성을 구별하는 기록이다.",
+      "summary": "입원·면역저하 환자의 감염을 일으키는 vanB형 VRE다. Vancomycin 내성과 teicoplanin 감수성을 구별하는 것이 치료 선택에 중요하다.",
       "resistance": {
         "code": "VRE · vanB",
         "label": "Vancomycin resistance"
@@ -22487,7 +22487,7 @@
         "대장균 Baseline susceptible",
         "Baseline susceptible"
       ],
-      "summary": "장내 상재균으로 요로·복강·혈류 감염을 일으킨다. 이 분리주는 획득 ESBL·carbapenemase가 검출되지 않은 기본형이다.",
+      "summary": "방광염·신우신염·균혈증·복강감염의 흔한 원인이다. ESBL·carbapenemase가 없는 기본형이지만 감염 부위와 실제 감수성을 보고 치료한다.",
       "back": {
         "sections": [
           {
@@ -22536,7 +22536,7 @@
         "대장균 ESBL-producing",
         "ESBL-producing"
       ],
-      "summary": "CTX-M ESBL을 만드는 장관외 감염 대장균이다. 확장범위 cephalosporin·aztreonam을 분해하며 이 기록은 carbapenem 감수성이다.",
+      "summary": "요로감염·균혈증·복강감염을 일으키는 ESBL 대장균이다. 일반 3세대 cephalosporin을 신뢰하기 어려우며 침습감염 여부가 치료 선택을 가른다.",
       "resistance": {
         "code": "ESBL",
         "label": "ESBL-mediated resistance"
@@ -22589,7 +22589,7 @@
         "E. coli NDM-producing",
         "NDM E. coli"
       ],
-      "summary": "NDM을 획득한 장관외 감염 대장균이다. 이 효소는 carbapenem을 분해하지만 aztreonam 자체는 분해하지 않는다.",
+      "summary": "요로감염·균혈증 등을 일으키는 NDM형 carbapenem 내성 대장균이다. 일반 carbapenem과 ceftazidime–avibactam 단독 치료는 기대하기 어렵다.",
       "resistance": {
         "code": "NDM",
         "label": "Carbapenem resistance"
@@ -22807,7 +22807,7 @@
         "E. coli OXA-48-producing",
         "OXA-48 E. coli"
       ],
-      "summary": "OXA-48-like 효소를 가진 장관외 감염 대장균이다. Penicillin·carbapenem 내성과 동반 ESBL 여부를 별도로 구분한다.",
+      "summary": "요로감염·균혈증 등을 일으키는 OXA-48형 carbapenem 내성 대장균이다. 동반 ESBL과 실제 감수성에 따라 사용할 치료제가 달라진다.",
       "resistance": {
         "code": "OXA-48",
         "label": "Carbapenem resistance"
@@ -23025,7 +23025,7 @@
         "E. coli KPC-producing",
         "KPC E. coli"
       ],
-      "summary": "KPC 효소를 만드는 장관외 감염 대장균이다. Carbapenem을 분해하는 serine 효소이며 avibactam 억제가 핵심 차이다.",
+      "summary": "요로감염·균혈증 등을 일으키는 KPC형 carbapenem 내성 대장균이다. 새로운 β-lactam 조합도 감수성 결과를 확인해 선택한다.",
       "resistance": {
         "code": "KPC",
         "label": "Carbapenem resistance"
@@ -23243,7 +23243,7 @@
         "폐렴막대균 ESBL-producing",
         "ESBL-producing"
       ],
-      "summary": "피막성 Klebsiella의 CTX-M ESBL 표현형이다. 확장범위 cephalosporin을 분해하며 이 분리주는 carbapenem 감수성을 유지한다.",
+      "summary": "폐렴·요로감염·균혈증을 일으키는 ESBL Klebsiella다. 일반 3세대 cephalosporin을 신뢰하기 어려우며 침습감염 여부가 치료 선택을 가른다.",
       "resistance": {
         "code": "ESBL",
         "label": "ESBL-mediated resistance"
@@ -23294,7 +23294,7 @@
         "폐렴막대균 KPC-producing",
         "KPC-producing"
       ],
-      "summary": "KPC를 만드는 Klebsiella의 carbapenem 내성형이다. Avibactam으로 억제 가능한 serine 효소가 이 기록의 핵심이다.",
+      "summary": "폐렴·요로감염·균혈증을 일으키는 KPC형 carbapenem 내성 Klebsiella다. 감수성에 따라 새로운 β-lactam 조합을 검토한다.",
       "resistance": {
         "code": "KPC",
         "label": "Carbapenem resistance"
@@ -23345,7 +23345,7 @@
         "K. pneumoniae NDM-producing",
         "NDM K. pneumoniae"
       ],
-      "summary": "NDM을 획득한 피막성 Klebsiella다. 이 효소는 carbapenem을 분해하지만 aztreonam 직접 분해와는 구분된다.",
+      "summary": "폐렴·요로감염·균혈증을 일으키는 NDM형 carbapenem 내성 Klebsiella다. Ceftazidime–avibactam 단독으로 효과를 기대하지 않는다.",
       "resistance": {
         "code": "NDM",
         "label": "Carbapenem resistance"
@@ -23550,7 +23550,7 @@
         "K. pneumoniae OXA-48-producing",
         "OXA-48 K. pneumoniae"
       ],
-      "summary": "OXA-48-like 효소를 가진 Klebsiella다. Penicillin·carbapenem 내성과 동반 ESBL을 별도로 보는 것이 핵심이다.",
+      "summary": "폐렴·요로감염·균혈증을 일으키는 OXA-48형 carbapenem 내성 Klebsiella다. 동반 내성과 실제 감수성이 사용할 약제를 가른다.",
       "resistance": {
         "code": "OXA-48",
         "label": "Carbapenem resistance"
@@ -23755,7 +23755,7 @@
         "K. pneumoniae non-ESBL non-CRE",
         "폐렴막대균 baseline"
       ],
-      "summary": "SHV 계열 효소로 ampicillin 고유 내성을 가진 피막성 장내세균이다. 이 기록에는 획득 ESBL·carbapenemase가 없다.",
+      "summary": "폐렴·요로감염·균혈증을 일으키는 기본 Klebsiella다. 획득 ESBL·carbapenemase가 없어도 ampicillin에는 고유 내성이 있다.",
       "back": {
         "sections": [
           {
@@ -23956,7 +23956,7 @@
         "녹농균 Non-DTR · susceptible panel",
         "Non-DTR · susceptible panel"
       ],
-      "summary": "습윤 환경·biofilm과 기저 내성 장벽을 가진 녹농균이다. 이 분리주는 통상 항녹농균제 panel에 감수성을 유지한다.",
+      "summary": "인공호흡기 폐렴·화상감염과 만성 기도감염에서 중요하다. 항녹농균제 감수성형이지만 일반 항균제가 모두 효과 있는 것은 아니다.",
       "back": {
         "sections": [
           {
@@ -24005,7 +24005,7 @@
         "녹농균 DTR phenotype",
         "DTR phenotype"
       ],
-      "summary": "막 투과·AmpC·유출 변화가 겹친 녹농균의 DTR 표현형이다. 여러 약제 비감수성을 뜻하며 단일 내성 유전자 이름은 아니다.",
+      "summary": "의료 관련 폐렴·혈류감염에서 중요한 치료곤란 내성 녹농균이다. 통상 항녹농균제 선택지가 제한되며 새 약제도 개별 감수성을 확인한다.",
       "resistance": {
         "code": "DTR",
         "label": "Difficult-to-treat resistance"
@@ -24058,7 +24058,7 @@
         "MBL P. aeruginosa aztreonam susceptible",
         "녹농균 MBL"
       ],
-      "summary": "MBL을 획득한 녹농균으로 carbapenem·다수 β-lactam을 분해한다. 이 기록은 aztreonam 활성을 없애는 동반 기전이 없다.",
+      "summary": "의료 관련 폐렴·혈류감염을 일으키는 MBL 동반 carbapenem 내성 녹농균이다. 같은 carbapenem 내성이라도 사용할 치료 범위가 다를 수 있다.",
       "resistance": {
         "code": "MBL",
         "label": "Carbapenem resistance"
@@ -24272,7 +24272,7 @@
         "클로아카 장내세균 복합체 Inducible AmpC · baseline",
         "Inducible AmpC · baseline"
       ],
-      "summary": "유도성 AmpC를 가진 의료 관련 장내세균이다. 초기 ceftriaxone 감수성에도 치료 중 탈억제 내성이 선택될 수 있다.",
+      "summary": "의료 관련 폐렴·요로감염·균혈증의 원인이다. 초기 ceftriaxone 감수성에도 치료 중 내성이 생길 수 있어 유도성 AmpC 위험이 중요하다.",
       "back": {
         "sections": [
           {
@@ -24319,7 +24319,7 @@
         "클로아카 장내세균 복합체 Derepressed AmpC",
         "Derepressed AmpC"
       ],
-      "summary": "AmpC가 탈억제·과발현된 Enterobacter 감염 분리주다. 3세대 cephalosporin 내성이며 이 기록은 cefepime 감수성이다.",
+      "summary": "의료 관련 폐렴·요로감염·균혈증을 일으키는 AmpC 과발현형이다. 3세대 cephalosporin은 듣지 않으며 cefepime 등은 실제 감수성으로 판단한다.",
       "resistance": {
         "code": "AmpC",
         "label": "Derepressed AmpC"
@@ -24370,7 +24370,7 @@
         "화농사슬알균",
         "GAS penicillin-susceptible"
       ],
-      "summary": "인두·피부감염과 침습성 독소 질환을 만드는 GAS다. 이 기록은 penicillin 감수성 기본형이다.",
+      "summary": "인두염·피부감염부터 괴사근막염·독성쇼크까지 일으키는 GAS다. Penicillin 감수성 기본형이며 감염 후 면역 합병증도 중요하다.",
       "back": {
         "sections": [
           {
@@ -24409,7 +24409,7 @@
         "화농사슬알균",
         "erm-mediated macrolide resistance"
       ],
-      "summary": "GAS가 erm methylase로 macrolide·lincosamide 내성을 가진 표현형이다. Penicillin 반응과 다른 표적 내성을 구분한다.",
+      "summary": "인두·피부·침습성 감염을 일으키는 GAS의 macrolide·clindamycin 내성형이다. Penicillin 반응과 달리 이 두 계열은 치료 효과를 기대하기 어렵다.",
       "back": {
         "sections": [
           {
@@ -24532,7 +24532,7 @@
         "B군사슬알균",
         "GBS wild type"
       ],
-      "summary": "산모 생식기 집락과 신생아 패혈증·수막염을 연결하는 GBS다. 이 기록은 기본형이며 macrolide·clindamycin 내성은 별도 축이다.",
+      "summary": "산모 생식기 집락과 연관된 신생아 패혈증·폐렴·수막염의 대표 원인이다. 성인에서도 균혈증을 일으키며 penicillin 감수성 기본형이다.",
       "back": {
         "sections": [
           {
@@ -24571,7 +24571,7 @@
         "B군사슬알균",
         "clindamycin-resistant GBS"
       ],
-      "summary": "신생아·성인 감염을 만드는 GBS의 clindamycin 내성형이다. erm·lnu 계열 기전을 기본 GBS 특성과 구분한다.",
+      "summary": "신생아·성인 감염을 일으키는 clindamycin 내성 GBS다. Penicillin 계열 반응과 clindamycin 내성을 별도로 확인해야 한다.",
       "back": {
         "sections": [
           {
@@ -24694,7 +24694,7 @@
         "폐렴사슬알균",
         "penicillin-susceptible"
       ],
-      "summary": "피막성 쌍알균으로 폐렴·중이염·수막염을 일으킨다. 이 기록은 penicillin 감수성이며 부위별 해석은 별도로 유지한다.",
+      "summary": "폐렴·중이염·수막염을 일으키는 penicillin 감수성 폐렴알균이다. 무비증 환자의 중증화 위험과 감염 부위별 감수성 해석이 중요하다.",
       "back": {
         "sections": [
           {
@@ -24733,7 +24733,7 @@
         "폐렴사슬알균",
         "penicillin-nonsusceptible meningitis isolate"
       ],
-      "summary": "변형 PBP로 penicillin 비감수성을 보이는 폐렴알균이다. 수막염 분리주로 설정되어 감염부위가 감수성 해석의 핵심이다.",
+      "summary": "Penicillin 비감수성 폐렴알균의 수막염형이다. 호흡기감염과 수막염은 감수성 해석 기준·필요 노출이 달라 같은 결과로 치료하지 않는다.",
       "back": {
         "sections": [
           {
@@ -24856,7 +24856,7 @@
         "폐렴사슬알균",
         "macrolide-resistant respiratory isolate"
       ],
-      "summary": "피막성 폐렴알균의 macrolide 내성 호흡기 분리주다. ermB·mef 계열 기전을 penicillin 내성과 별도로 구분한다.",
+      "summary": "폐렴 등 호흡기감염을 일으키는 macrolide 내성 폐렴알균이다. Macrolide와 penicillin 반응은 서로 다를 수 있어 별도로 확인한다.",
       "back": {
         "sections": [
           {
@@ -24991,7 +24991,7 @@
         "미티스사슬알균",
         "viridans group bloodstream isolate"
       ],
-      "summary": "구강 viridans group 사슬알균이다. 아급성 심내막염뿐 아니라 호중구감소자의 균혈증에서도 중요하다.",
+      "summary": "구강 사슬알균이지만 아급성 심내막염·균혈증의 원인이 된다. 호중구감소 환자의 혈액배양 양성을 오염으로 단정하지 않는다.",
       "back": {
         "sections": [
           {
@@ -25029,7 +25029,7 @@
         "오랄리스사슬알균",
         "viridans group endocarditis isolate"
       ],
-      "summary": "구강 상재 viridans group 사슬알균이다. 구강 병소에서 혈류로 퍼져 아급성 심내막염을 일으킬 수 있다.",
+      "summary": "구강 병소와 연관된 균혈증·아급성 심내막염을 일으킨다. 치과·구강 상태와 심장판막 감염의 연계를 살핀다.",
       "back": {
         "sections": [
           {
@@ -25067,7 +25067,7 @@
         "갈롤리티쿠스사슬알균",
         "bacteremia/endocarditis isolate"
       ],
-      "summary": "Group D 비장알균성 사슬알균으로 균혈증·심내막염을 일으킨다. 대장 종양과의 연관이 중요한 임상 단서다.",
+      "summary": "균혈증·심내막염이 대장 종양을 찾는 단서가 된다. 구강 사슬알균과 같은 취급으로 넘기지 않는 것이 중요하다.",
       "back": {
         "sections": [
           {
@@ -25105,7 +25105,7 @@
         "루그두넨시스포도알균",
         "methicillin-susceptible invasive isolate"
       ],
-      "summary": "Coagulase 음성 포도알균이지만 공격적인 침습감염을 일으킨다. 파괴성 심내막염과 피부농양을 연결한다.",
+      "summary": "Coagulase 음성이어도 피부농양과 파괴성 심내막염을 일으킬 수 있다. 다른 피부 상재 포도알균보다 침습감염 가능성을 적극적으로 살핀다.",
       "back": {
         "sections": [
           {
@@ -25143,7 +25143,7 @@
         "부생포도알균",
         "uncomplicated UTI isolate"
       ],
-      "summary": "요로친화성 coagulase 음성 포도알균이다. 젊은 여성의 단순 방광염이 대표적인 임상 맥락이다.",
+      "summary": "젊은 여성의 급성 단순 방광염에서 만나는 병원체다. 증상이 뚜렷하면 낮은 집락수도 임상 맥락과 함께 해석한다.",
       "back": {
         "sections": [
           {
@@ -25181,7 +25181,7 @@
         "갈리나룸장알균",
         "VanC intrinsic low-level vancomycin resistance"
       ],
-      "summary": "운동성을 가진 장알균으로 저수준 vancomycin 고유 내성이 특징이다. 획득성 VRE와 VanC 종 자체의 특성을 구분한다.",
+      "summary": "요로·담도감염과 균혈증을 일으키는 장알균이다. 종 자체의 저수준 vancomycin 내성을 알아야 획득성 VRE와 혼동하지 않는다.",
       "back": {
         "sections": [
           {
@@ -25219,7 +25219,7 @@
         "카셀리플라부스장알균",
         "VanC intrinsic low-level vancomycin resistance"
       ],
-      "summary": "황색 색소와 운동성을 가진 장알균이다. 담도·요로 감염 및 균혈증에서 종 수준의 특성을 기억한다.",
+      "summary": "담도·요로 감염과 균혈증에서 만나는 장알균이다. VanC에 의한 고유 vancomycin 내성이 있어 획득성 VRE와 구별한다.",
       "back": {
         "sections": [
           {
@@ -25257,7 +25257,7 @@
         "리스테리아모노사이토제네스",
         "invasive listeriosis isolate"
       ],
-      "summary": "세포내 생존이 가능한 작은 그람양성균이다. 패혈증·수막염과 임신 관련 감염에서 중요한 병원체다.",
+      "summary": "고령·면역저하 환자의 패혈증·수막염과 임신 관련 감염에서 중요하다. Cephalosporin이 듣지 않아 수막염 경험적 치료에서 놓치기 쉽다.",
       "back": {
         "sections": [
           {
@@ -25296,7 +25296,7 @@
         "세레우스바실루스",
         "toxin-mediated/invasive isolate"
       ],
-      "summary": "포자형성 간균으로 구토형·설사형 식중독을 일으킨다. 안구염과 카테터 균혈증 같은 침습감염도 가능하다.",
+      "summary": "구토형·설사형 식중독의 원인이며, 안구염과 카테터 균혈증도 일으킨다. 재가열한 밥을 먹은 뒤 구토하는 상황이 대표적이다.",
       "back": {
         "sections": [
           {
@@ -25334,7 +25334,7 @@
         "탄저균",
         "clinical anthrax isolate"
       ],
-      "summary": "비운동성 포자형성 간균으로 피부·흡입·위장관·주사 탄저를 일으킨다. 노출 경로에 따라 달라지는 임상형이 핵심이다.",
+      "summary": "피부·흡입·위장관·주사 노출에 따라 서로 다른 탄저 임상형을 만든다. 노출력과 전신 침범 여부가 대응을 가르며, 의심 사례는 신고가 중요하다.",
       "back": {
         "sections": [
           {
@@ -25374,7 +25374,7 @@
         "디프테리아균",
         "toxigenic respiratory isolate"
       ],
-      "summary": "독소성 균주는 인두 위막과 심근염·신경병증을 일으킨다. 국소 감염과 전신 독소 효과를 함께 기억하는 막대균이다.",
+      "summary": "인두 위막에 심근염·신경병증이 동반될 수 있는 독소성 감염이다. 독소성 호흡기 디프테리아가 의심되면 검사 확정까지 항독소 판단을 미루지 않는다.",
       "back": {
         "sections": [
           {
@@ -25413,7 +25413,7 @@
         "제이키움코리네박테륨",
         "multidrug-resistant device isolate"
       ],
-      "summary": "지질친화성 피부 상재균으로 면역저하자의 기구감염과 균혈증을 일으킨다. 반복 양성을 단순 피부 오염과 구분한다.",
+      "summary": "면역저하자의 카테터 균혈증·인공판막 감염에서 중요하다. 반복 혈액배양 양성이면 단순 피부 오염으로 넘기지 않는다.",
       "back": {
         "sections": [
           {
@@ -25451,7 +25451,7 @@
         "아크네스큐티박테륨",
         "prosthetic-device isolate"
       ],
-      "summary": "느리게 자라는 혐기성 피부 상재균이다. 여드름뿐 아니라 염증이 미미한 어깨 인공관절·션트 감염과 연결한다.",
+      "summary": "염증이 뚜렷하지 않은 어깨 인공관절·션트 감염의 원인이 될 수 있다. 천천히 자라는 피부 상재균이어서 오염과 실제 기구감염을 구별해야 한다.",
       "back": {
         "sections": [
           {
@@ -25489,7 +25489,7 @@
         "클로스트리디오이데스디피실레",
         "toxigenic CDI isolate"
       ],
-      "summary": "포자를 만드는 혐기성균으로 항균제 사용 뒤 독소성 대장염을 일으킨다. 설사·위막성 대장염·거대결장을 연결한다.",
+      "summary": "항균제 사용 뒤 생긴 설사·위막성 대장염이 대표적이며, 심하면 거대결장으로 진행한다. 치료 후 검사 음전보다 임상반응으로 회복을 판단한다.",
       "back": {
         "sections": [
           {
@@ -25542,7 +25542,7 @@
         "퍼프린젠스클로스트리듐",
         "gas gangrene isolate"
       ],
-      "summary": "빠르게 증식하는 혐기성 포자형성균이다. 가스성 근괴사·식중독과 패혈증성 용혈을 연결한다.",
+      "summary": "심한 통증과 가스를 동반한 근괴사, 식중독, 패혈증성 용혈을 일으킨다. 근괴사는 항균제만으로 해결되지 않아 긴급 외과 처치가 중요하다.",
       "back": {
         "sections": [
           {
@@ -25580,7 +25580,7 @@
         "이스라엘리방선균",
         "cervicofacial actinomycosis isolate"
       ],
-      "summary": "분지하는 혐기성 방선균으로 만성 종괴와 누공을 만든다. 조직면을 가로지르는 경부안면·흉부·복부골반 감염이 특징이다.",
+      "summary": "만성 종괴와 배농되는 누공을 만드는 경부안면·흉부·복부골반 감염이 특징이다. 병변이 조직 경계를 넘어 퍼져 종양처럼 보일 수 있다.",
       "back": {
         "sections": [
           {
@@ -25618,7 +25618,7 @@
         "프로테우스 미라빌리스 Wild-type",
         "Wild-type"
       ],
-      "summary": "요소분해와 swarming으로 감염결석·복잡성 요로감염을 만드는 Proteus다. 고유 내성과 획득 ESBL을 구분하는 기본 기록이다.",
+      "summary": "복잡성 요로감염·신우신염과 감염결석을 일으킨다. ESBL이 없는 기본형이며 알칼리뇨·struvite 결석과 감염원 관리가 중요한 단서다.",
       "back": {
         "sections": [
           {
@@ -25653,7 +25653,7 @@
         "프로테우스 미라빌리스 ESBL",
         "ESBL"
       ],
-      "summary": "요로친화 Proteus가 CTX-M ESBL을 획득한 표현형이다. 이 기록은 ceftriaxone·aztreonam 내성이며 carbapenemase는 없다.",
+      "summary": "복잡성 요로감염·감염결석을 일으키는 ESBL Proteus다. 일반 ceftriaxone 치료가 어려워 감수성에 맞춘 약제와 감염원 관리가 필요하다.",
       "resistance": {
         "code": "ESBL",
         "label": "ESBL-mediated resistance"
@@ -25775,7 +25775,7 @@
         "프로테우스 불가리스 Baseline",
         "Baseline"
       ],
-      "summary": "요소분해와 강한 운동성이 특징인 Proteus다. Indole 양성이 P. mirabilis와 구별하는 핵심 단서다.",
+      "summary": "요로·상처 감염과 균혈증을 일으키는 Proteus다. Indole 양성으로 P. mirabilis와 구별되며 치료는 종별 감수성에 따라 달라진다.",
       "back": {
         "sections": [
           {
@@ -25810,7 +25810,7 @@
         "모르가넬라 모르가니 Baseline AmpC",
         "Baseline AmpC"
       ],
-      "summary": "장내 상재 기회감염균으로 유도성 AmpC를 가진다. 요로·수술부위 감염과 균혈증을 일으킨다.",
+      "summary": "요로·수술부위 감염과 균혈증을 일으킨다. 유도성 AmpC를 가진 장내세균으로, 감염 부위와 감수성을 함께 보고 치료제를 고른다.",
       "back": {
         "sections": [
           {
@@ -25845,7 +25845,7 @@
         "프로비덴시아 스투아르티 Catheter-associated",
         "Catheter-associated"
       ],
-      "summary": "장기 카테터·요양시설과 연관된 기회감염 장내세균이다. 카테터 요로감염과 다제내성을 연결한다.",
+      "summary": "장기요양시설의 만성 카테터 환자에서 요로감염·균혈증을 일으킨다. 다제내성이 동반될 수 있어 카테터와 감염원 관리가 중요하다.",
       "back": {
         "sections": [
           {
@@ -25880,7 +25880,7 @@
         "세라티아 마르세센스 Baseline AmpC",
         "Baseline AmpC"
       ],
-      "summary": "의료환경에서 살아남는 AmpC 보유 장내세균이다. 카테터·요로·폐 감염을 만들며 붉은 색소는 항상 보이지 않는다.",
+      "summary": "의료 관련 카테터 균혈증·요로감염·폐렴을 일으킨다. AmpC를 보유하며, 붉은 색소가 없다고 이 균을 배제할 수는 없다.",
       "back": {
         "sections": [
           {
@@ -25915,7 +25915,7 @@
         "시트로박터 프로인디 Baseline AmpC",
         "Baseline AmpC"
       ],
-      "summary": "장관·환경의 기회감염균으로 유도성 AmpC를 가진다. 초기 감수성과 치료 중 탈억제에 따른 내성 변화를 구분한다.",
+      "summary": "요로·복강·혈류 감염을 일으킨다. 처음 ceftriaxone 감수성으로 보여도 유도성 AmpC 때문에 치료 중 내성이 선택될 수 있다.",
       "back": {
         "sections": [
           {
@@ -25950,7 +25950,7 @@
         "시트로박터 코세리 Neonatal invasive",
         "Neonatal invasive"
       ],
-      "summary": "신생아 수막염과 다발성 뇌농양에 친화적인 장내세균이다. 중추신경계 침범이 다른 Citrobacter와 구별되는 핵심이다.",
+      "summary": "신생아 수막염에 다발성 뇌농양이 동반될 수 있다. 신생아에서 동정되면 중추신경계 합병증을 적극적으로 살핀다.",
       "back": {
         "sections": [
           {
@@ -25985,7 +25985,7 @@
         "클렙시엘라 에어로게네스 Baseline AmpC",
         "Baseline AmpC"
       ],
-      "summary": "옛 이름이 Enterobacter aerogenes인 장내세균이다. 의료 관련 감염과 고위험 유도성 AmpC를 연결한다.",
+      "summary": "의료 관련 폐렴·요로감염·균혈증을 일으킨다. 옛 이름은 Enterobacter aerogenes이며, 유도성 AmpC 때문에 3세대 cephalosporin 선택에 주의한다.",
       "back": {
         "sections": [
           {
@@ -26020,7 +26020,7 @@
         "클렙시엘라 옥시토카 K1 hyperproduction",
         "K1 hyperproduction"
       ],
-      "summary": "Indole 양성 Klebsiella로 OXY β-lactamase가 특징이다. 요로·혈류 감염과 항균제 연관 출혈성 대장염을 연결한다.",
+      "summary": "요로감염·균혈증과 항균제 연관 출혈성 대장염을 일으킨다. β-lactam 내성이 치료 선택에 영향을 주며 K. pneumoniae와 구별한다.",
       "back": {
         "sections": [
           {
@@ -26055,7 +26055,7 @@
         "아시네토박터 바우마니 Carbapenem-susceptible",
         "Carbapenem-susceptible"
       ],
-      "summary": "건조 의료환경의 비발효균으로 폐렴·균혈증을 일으킨다. 이 분리주는 carbapenem 감수성을 유지하는 표현형이다.",
+      "summary": "중환자실의 인공호흡기 폐렴·균혈증·상처감염에서 중요하다. Carbapenem 감수성형이지만 객담 양성만으로 실제 폐렴을 확정하지 않는다.",
       "back": {
         "sections": [
           {
@@ -26091,7 +26091,7 @@
         "아시네토박터 바우마니 CRAB",
         "CRAB"
       ],
-      "summary": "의료환경에서 지속하는 Acinetobacter의 carbapenem 내성형이다. OXA 효소와 막·유출 변화가 복합 내성을 만든다.",
+      "summary": "중환자실의 폐렴·균혈증을 일으키는 carbapenem 내성 Acinetobacter다. 치료 선택지가 좁아지며 집락과 실제 감염을 구별해야 한다.",
       "resistance": {
         "code": "CRAB",
         "label": "Carbapenem resistance"
@@ -26217,7 +26217,7 @@
         "스테노트로포모나스 말토필리아 Baseline",
         "Baseline"
       ],
-      "summary": "수계·의료환경의 비발효균으로 광범위 고유 내성이 특징이다. 면역저하자의 폐렴·카테터 균혈증을 연결한다.",
+      "summary": "면역저하자의 폐렴·카테터 균혈증에서 중요하며, carbapenem 치료 중 선택될 수 있다. 객담 집락과 실제 감염을 구별하고 폭넓은 고유 내성을 고려한다.",
       "back": {
         "sections": [
           {
@@ -26253,7 +26253,7 @@
         "버크홀데리아 세파시아 복합체 CF-associated",
         "CF-associated"
       ],
-      "summary": "낭성섬유증에서 중요한 비발효균 복합체다. 만성 폐감염과 급격히 악화하는 cepacia syndrome, 환자 간 전파를 연결한다.",
+      "summary": "낭성섬유증 환자의 만성 폐감염과 급격히 악화하는 cepacia syndrome에서 중요하다. 환자 간 전파 가능성 때문에 정확한 동정이 필요하다.",
       "back": {
         "sections": [
           {
@@ -26289,7 +26289,7 @@
         "에로모나스 하이드로필라 Water-associated",
         "Water-associated"
       ],
-      "summary": "민물에 사는 그람음성균으로 설사와 수상 노출 뒤 상처감염을 일으킨다. 빠르게 진행하는 연조직 감염이 중요한 단서다.",
+      "summary": "민물에 노출된 상처에서 빠르게 진행하는 연조직감염·괴사근막염을 일으킨다. 수상 외상 뒤 통증과 부종이 급격히 심해지는 상황이 중요한 단서다.",
       "back": {
         "sections": [
           {
@@ -26335,7 +26335,7 @@
         "콜레라균 Toxigenic O1/O139",
         "Toxigenic O1/O139"
       ],
-      "summary": "독소성 O1/O139가 대량 수양성 설사를 만드는 수생 세균이다. 쌀뜨물변·탈수·쇼크를 연결하며 수액 보충이 중심이다.",
+      "summary": "쌀뜨물 같은 대량 수양성 설사로 급격한 탈수·쇼크를 일으킨다. 치료의 중심은 신속하고 충분한 수액 보충이다.",
       "back": {
         "sections": [
           {
@@ -26383,7 +26383,7 @@
         "비브리오 불니피쿠스 Invasive",
         "Invasive"
       ],
-      "summary": "따뜻한 바닷물의 호염성 세균이다. 간질환·철 과부하 숙주에서 생굴이나 상처 노출 뒤 수포·전격 패혈증이 가능하다.",
+      "summary": "간질환·철 과부하 환자에서 생굴 섭취나 바닷물 상처 노출 뒤 전격 패혈증을 일으킬 수 있다. 수포성 피부병변과 빠른 악화가 응급 신호다.",
       "back": {
         "sections": [
           {
@@ -26433,7 +26433,7 @@
         "장염비브리오 Seafood-associated",
         "Seafood-associated"
       ],
-      "summary": "날것·덜 익힌 해산물과 연관된 호염성 해양 세균이다. 급성 수양성 설사와 복통이 대표적이다.",
+      "summary": "날것·덜 익힌 해산물을 먹은 뒤 수양성 설사·복통·오심이 나타난다. 드물게 상처감염도 일으킨다.",
       "back": {
         "sections": [
           {
@@ -26481,7 +26481,7 @@
         "장티푸스균 Enteric fever",
         "Enteric fever"
       ],
-      "summary": "사람만을 저장소로 하는 침습성 Salmonella로 장티푸스를 일으킨다. 지속 발열·균혈증과 장출혈·천공이 핵심이다.",
+      "summary": "여행·노출력과 함께 지속 발열·균혈증으로 나타나는 장티푸스를 일으킨다. 장출혈·천공 같은 합병증이 생길 수 있다.",
       "back": {
         "sections": [
           {
@@ -26517,7 +26517,7 @@
         "비장티푸스 살모넬라 Gastroenteritis",
         "Gastroenteritis"
       ],
-      "summary": "동물·식품과 연관된 비장티푸스 Salmonella다. 대개 위장염이지만 고위험 숙주에서는 균혈증·혈관감염이 가능하다.",
+      "summary": "대개 급성 위장염을 일으키지만 영아·고령·면역저하 환자는 균혈증·혈관감염 위험이 있다. 단순 위장염에 항균제를 일률적으로 쓰지는 않는다.",
       "back": {
         "sections": [
           {
@@ -26553,7 +26553,7 @@
         "소네이 이질균 Shigellosis",
         "Shigellosis"
       ],
-      "summary": "매우 적은 감염량으로 사람 간 전파되는 장내 병원체다. 발열·복통·혈성 또는 점액성 설사를 일으킨다.",
+      "summary": "발열·복통·잔변감과 혈성·점액성 설사를 일으킨다. 적은 감염량으로 사람 간 전파되며, 내성 확인을 위해 배양 검체 확보가 중요하다.",
       "back": {
         "sections": [
           {
@@ -26589,7 +26589,7 @@
         "예르시니아 엔테로콜리티카 Enterocolitis",
         "Enterocolitis"
       ],
-      "summary": "저온에서도 증식하는 장내 병원체다. 돼지고기 노출 뒤 장염·말단회장염과 가성충수염을 연결한다.",
+      "summary": "돼지고기 노출 뒤 장염·말단회장염·장간막 림프절염을 일으킨다. 우하복부 통증이 충수염처럼 보일 수 있고 이후 반응관절염이 가능하다.",
       "back": {
         "sections": [
           {
@@ -26625,7 +26625,7 @@
         "인플루엔자균 Beta-lactamase negative",
         "Beta-lactamase negative"
       ],
-      "summary": "X·V 인자를 요구하는 호흡기 상재균의 기본형이다. 이 분리주는 β-lactamase와 PBP3 내성 변이가 없는 설정이다.",
+      "summary": "중이염·부비동염·COPD 악화와 침습성 Hib 감염을 일으킨다. 주요 ampicillin 내성 기전이 없는 기본형이며 감염 부위에 맞춰 치료한다.",
       "back": {
         "sections": [
           {
@@ -26673,7 +26673,7 @@
         "인플루엔자균 BLNAR",
         "BLNAR"
       ],
-      "summary": "ftsI 변이로 PBP3가 바뀐 H. influenzae다. β-lactamase 음성이어도 ampicillin 내성이며 억제제만으로 교정되지 않을 수 있다.",
+      "summary": "호흡기·침습성 감염을 일으키는 ampicillin 내성 H. influenzae다. β-lactamase가 음성이어도 내성일 수 있고 억제제 조합만으로 해결되지 않을 수 있다.",
       "resistance": {
         "code": "BLNAR",
         "label": "Altered-PBP resistance"
@@ -26814,7 +26814,7 @@
         "인플루엔자균 Beta-lactamase positive",
         "Beta-lactamase positive"
       ],
-      "summary": "호흡기 상재균 H. influenzae의 β-lactamase 양성형이다. TEM 효소가 ampicillin을 분해하며 이 기록은 PBP3 변이가 없다.",
+      "summary": "호흡기·침습성 감염을 일으키는 β-lactamase 생성 H. influenzae다. Ampicillin 단독은 듣지 않아 내성에 맞는 약제가 필요하다.",
       "back": {
         "sections": [
           {
@@ -26951,7 +26951,7 @@
         "모락셀라 카타랄리스 Beta-lactamase positive",
         "Beta-lactamase positive"
       ],
-      "summary": "상기도 상재 그람음성 쌍알균이다. 소아 중이염·부비동염과 성인 COPD 악화·폐렴을 연결한다.",
+      "summary": "소아 중이염·부비동염과 성인 COPD 악화·폐렴의 원인이다. β-lactamase 생성이 흔해 ampicillin 단독은 신뢰하기 어렵다.",
       "back": {
         "sections": [
           {
@@ -26997,7 +26997,7 @@
         "L. pneumophila",
         "Legionnaires' disease bacillus"
       ],
-      "summary": "수계에서 증식하고 폐포대식세포 안에서 살아가는 세균이다. 중증 비정형 폐렴과 폐렴 없는 Pontiac fever를 구분한다.",
+      "summary": "수계 노출 뒤 중증 비정형 폐렴을 일으킨다. 설사·저나트륨혈증은 보조 단서이며, Pontiac fever는 폐렴 없는 열성질환이다.",
       "back": {
         "sections": [
           {
@@ -27043,7 +27043,7 @@
         "M. pneumoniae",
         "Eaton agent"
       ],
-      "summary": "세포벽이 없는 호흡기 세균으로 β-lactam 표적이 없다. 비정형 폐렴에 피부점막염·용혈 같은 폐외 증상이 동반될 수 있다.",
+      "summary": "지역사회폐렴에 마른기침이 오래가고, 피부점막염·용혈성빈혈 같은 폐외 증상이 동반될 수 있다. 세포벽이 없어 β-lactam으로 치료하지 않는다.",
       "back": {
         "sections": [
           {
@@ -27086,7 +27086,7 @@
         "Chlamydophila pneumoniae",
         "C. pneumoniae"
       ],
-      "summary": "감염형과 복제형이 교대하는 절대세포내 호흡기 세균이다. 인두염·쉰목소리 뒤 서서히 이어지는 기침과 폐렴이 단서다.",
+      "summary": "인두염·쉰목소리 뒤 서서히 이어지는 기침과 경증·중등도 폐렴이 특징이다. 증상만으로 다른 비정형 폐렴과 확실히 구별하기는 어렵다.",
       "back": {
         "sections": [
           {
@@ -27132,7 +27132,7 @@
         "B. pertussis",
         "whooping cough bacillus"
       ],
-      "summary": "호흡기 섬모상피에 붙어 백일해를 일으키는 세균이다. 발작성 기침·기침 후 구토가 특징이며 영아는 무호흡만 보일 수 있다.",
+      "summary": "발작성 기침과 기침 후 구토가 특징이며, 영아는 기침보다 무호흡이 먼저 나타날 수 있다. 늦게 시작한 항균제는 주로 전파 차단에 의미가 있다.",
       "back": {
         "sections": [
           {
@@ -27176,7 +27176,7 @@
         "M. tuberculosis",
         "M. bovis"
       ],
-      "summary": "대식세포 내 생존과 육아종 형성으로 잠복·재활성화하는 항산균이다. 폐결핵뿐 아니라 수막·뼈·전신 파종도 일으킨다.",
+      "summary": "폐결핵부터 수막·뼈·전신 파종까지 일으킨다. 객담 도말 음성만으로 결핵을 배제하지 않으며, 치료 전 약제내성 확인이 중요하다.",
       "back": {
         "sections": [
           {
@@ -27223,7 +27223,7 @@
         "M. avium",
         "M. intracellulare"
       ],
-      "summary": "환경의 비결핵항산균 복합체로 구조적 폐질환에서 만성 폐감염을 일으킨다. 진행 HIV에서는 파종성 질환이 중요하다.",
+      "summary": "기관지확장증·공동성 폐질환에서 만성 폐감염을, 진행 HIV에서는 파종감염을 일으킨다. 객담 한 번의 양성만으로 치료 대상 질환을 확정하지 않는다.",
       "back": {
         "sections": [
           {
@@ -27267,7 +27267,7 @@
         "M. massiliense",
         "rapidly growing mycobacterium"
       ],
-      "summary": "빠르게 자라는 비결핵항산균으로 폐·피부연조직 감염을 일으킨다. 아종별 erm(41)과 유도성 macrolide 내성이 핵심이다.",
+      "summary": "기관지확장증 환자의 폐감염과 수술·주사 뒤 피부연조직감염에서 중요하다. Macrolide가 초기에 감수성으로 보여도 유도성 내성을 확인해야 한다.",
       "back": {
         "sections": [
           {
@@ -27310,7 +27310,7 @@
         "Nocardia spp.",
         "aerobic actinomycetes"
       ],
-      "summary": "토양의 분지성·부분 항산성 호기성 방선균이다. 면역저하자의 폐결절·공동과 뇌농양을 연결하며 종별 감수성이 다르다.",
+      "summary": "면역저하자의 폐결절·공동과 뇌농양이 함께 보이면 의심한다. 폐감염이 중추신경계로 퍼질 수 있어 침범 부위와 종별 감수성이 치료를 가른다.",
       "back": {
         "sections": [
           {
@@ -27353,7 +27353,7 @@
         "N. gonorrhoeae",
         "gonococcus"
       ],
-      "summary": "사람 점막에 적응한 그람음성 쌍알균으로 임질을 일으킨다. 생식기·인두·직장 감염과 파종성 관절피부증후군을 연결한다.",
+      "summary": "요도염·자궁경부염·골반염을 일으키며, 파종되면 관절염과 피부병변이 나타날 수 있다. 생식기뿐 아니라 노출된 인두·직장도 검사 대상이다.",
       "back": {
         "sections": [
           {
@@ -27396,7 +27396,7 @@
         "C. trachomatis",
         "genital chlamydia"
       ],
-      "summary": "절대세포내 세균으로 혈청형에 따라 생식기 감염·트라코마·LGV가 나뉜다. 무증상 감염과 신생아 결막염·폐렴도 중요하다.",
+      "summary": "무증상 생식기 감염부터 요도염·골반염, 신생아 결막염·폐렴까지 일으킨다. 재감염을 줄이기 위한 파트너 치료와 추적이 중요하다.",
       "back": {
         "sections": [
           {
@@ -27439,7 +27439,7 @@
         "M. genitalium",
         "Mgen"
       ],
-      "summary": "세포벽이 없는 느리게 자라는 생식기 세균이다. 지속성 비임균성 요도염·자궁경부염과 macrolide 내성을 연결한다.",
+      "summary": "지속성 비임균성 요도염·자궁경부염에서 중요하다. Macrolide 내성이 흔해 내성에 따른 순차요법이 필요하며 azithromycin 단회요법은 피한다.",
       "back": {
         "sections": [
           {
@@ -27482,7 +27482,7 @@
         "T. pallidum subsp. pallidum",
         "syphilis spirochete"
       ],
-      "summary": "전신으로 파종하며 여러 병기의 매독을 만드는 가는 나선균이다. 무통성 하감·전신발진과 신경·선천매독을 연결한다.",
+      "summary": "무통성 하감, 전신발진, 신경·안구 증상 등 병기에 따라 모습이 달라진다. 신경·안구·귀 침범과 임신 여부가 penicillin 치료 방식을 가른다.",
       "back": {
         "sections": [
           {
@@ -27528,7 +27528,7 @@
         "H. pylori",
         "Campylobacter pyloridis"
       ],
-      "summary": "Urease로 위산을 완충해 위 점액층에 만성 집락하는 굽은 세균이다. 위염·소화성궤양·위선암·MALT 림프종과 연관된다.",
+      "summary": "소화성궤양·만성위염과 위선암·MALT 림프종에 연관된다. 제균 확인에 혈청항체를 쓰지 않으며, 이전 항균제 노출과 내성이 치료 선택에 중요하다.",
       "back": {
         "sections": [
           {
@@ -27572,7 +27572,7 @@
         "C. jejuni/coli",
         "thermophilic Campylobacter"
       ],
-      "summary": "가금류와 연관된 갈매기날개 모양의 미호기성 세균이다. 발열·복통·혈성설사 뒤 반응관절염이나 Guillain–Barré가 가능하다.",
+      "summary": "가금류 노출 뒤 발열·복통·혈성설사를 일으킨다. 대부분 수액으로 회복하지만, 감염 뒤 Guillain–Barré 증후군·반응관절염이 생길 수 있다.",
       "back": {
         "sections": [
           {
@@ -27615,7 +27615,7 @@
         "B. fragilis group",
         "BFG"
       ],
-      "summary": "결장 상재 혐기성균으로 장벽이 깨지면 복강·골반 농양을 만든다. 혼합감염과 배농·감염원 제거가 핵심이다.",
+      "summary": "장관 손상 뒤 복강·골반 농양과 복막염을 만드는 대표 혐기균이다. 항균제와 함께 천공 폐쇄·배농 등 감염원 제거가 중요하다.",
       "back": {
         "sections": [
           {
@@ -27659,7 +27659,7 @@
         "F. necrophorum",
         "F. nucleatum"
       ],
-      "summary": "구강·인두의 방추형 혐기성균이다. 인두염 뒤 내경정맥 혈전정맥염과 폐 병변이 이어지는 Lemierre 증후군을 연결한다.",
+      "summary": "젊은 환자의 인두염 뒤 재발열·한쪽 목통증·폐결절이 이어지면 Lemierre 증후군을 의심한다. 내경정맥 혈전정맥염과 원격 감염이 특징이다.",
       "back": {
         "sections": [
           {
@@ -27705,7 +27705,7 @@
         "Prevotella spp.",
         "pigmented anaerobic Gram-negative rods"
       ],
-      "summary": "구강·생식기 점막의 혐기성균으로 혼합 농양에 참여한다. 불량 치열과 흡인 뒤 폐농양·농흉이 중요한 맥락이다.",
+      "summary": "불량 치열·흡인 위험이 있는 환자의 두경부농양·폐농양·농흉에 관여한다. 악취 나는 객담과 공동성 폐병변이 혼합 혐기균 감염의 단서다.",
       "back": {
         "sections": [
           {
@@ -27753,7 +27753,7 @@
         "Parvimonas micra",
         "Peptostreptococcus anaerobius"
       ],
-      "summary": "피부·점막 상재 혐기성 구균군으로 깊은 혼합 농양을 만든다. Finegoldia는 biofilm성 인공관절 감염도 일으킬 수 있다.",
+      "summary": "당뇨발·욕창과 두경부·복강의 깊은 혼합 농양에 관여한다. Finegoldia는 인공관절 감염도 일으키며 배농·감염원 제거가 중요하다.",
       "back": {
         "sections": [
           {
@@ -27799,7 +27799,7 @@
         "파상풍균",
         "tetanus bacillus"
       ],
-      "summary": "상처에서 생긴 신경독소가 개구장애와 자극 유발 전신경직을 만든다. 보툴리눔의 이완마비와 구별한다.",
+      "summary": "개구장애와 자극에 유발되는 전신경직, 자율신경 불안정이 특징이다. 원래 상처가 이미 아물었어도 파상풍이 발생할 수 있다.",
       "back": {
         "sections": [
           {
@@ -27842,7 +27842,7 @@
         "보툴리눔독소증",
         "foodborne botulism"
       ],
-      "summary": "보툴리눔 신경독소가 뇌신경마비에서 시작하는 대칭성 하행 이완마비를 만든다. 의식·감각이 보존되는 점이 단서다.",
+      "summary": "복시·안검하수·연하장애에서 시작해 대칭성 하행 이완마비와 호흡부전으로 진행한다. 마비가 진행해도 의식과 감각이 보존되는 점이 특징이다.",
       "back": {
         "sections": [
           {
@@ -27885,7 +27885,7 @@
         "spontaneous gas gangrene",
         "비외상성 가스괴저"
       ],
-      "summary": "장점막에서 혈행성으로 퍼져 비외상성 근괴사를 일으키는 혐기성균이다. 결장암·혈액암과의 연관이 중요한 단서다.",
+      "summary": "외상 없이 빠르게 진행하는 근괴사·균혈증을 일으킨다. 이런 감염은 결장암·혈액암을 찾게 하는 중요한 경고다.",
       "back": {
         "sections": [
           {
@@ -27928,7 +27928,7 @@
         "수막구균",
         "N. meningitidis"
       ],
-      "summary": "비인두에 집락하는 피막성 그람음성 쌍알균이다. 수막염과 자반·쇼크를 동반한 급격한 균혈증을 연결한다.",
+      "summary": "수막염과 급격한 균혈증을 일으킨다. 자반성 발진·쇼크가 나타나면 빠르게 악화할 수 있어 즉각적인 치료가 중요하다.",
       "back": {
         "sections": [
           {
@@ -27971,7 +27971,7 @@
         "Streptococcus milleri group",
         "안지노수스군"
       ],
-      "summary": "구강·장관 상재 사슬알균군으로 깊은 농양을 잘 만든다. 뇌·간·폐 농양과 균혈증을 함께 연결한다.",
+      "summary": "뇌·간·폐와 구강 주변의 깊은 농양을 잘 만든다. 균혈증에서 동정되면 배농이 필요한 숨은 감염원을 찾아야 한다.",
       "back": {
         "sections": [
           {
@@ -28014,7 +28014,7 @@
         "group C/G streptococcus",
         "Streptococcus dysgalactiae"
       ],
-      "summary": "Group C/G β용혈성 사슬알균으로 GAS와 유사한 침습성을 보인다. Cellulitis·균혈증과 괴사근막염을 연결한다.",
+      "summary": "고령·당뇨 환자의 연조직감염·균혈증에서 중요하다. 재발성 봉와직염뿐 아니라 괴사근막염·독성쇼크를 동반할 수 있다.",
       "back": {
         "sections": [
           {
@@ -28057,7 +28057,7 @@
         "Aerococcus urinae endocarditis",
         "에어로코쿠스"
       ],
-      "summary": "고령 남성의 요로감염과 연관된 catalase 음성 구균이다. 균혈증이 생기면 큰 vegetation을 동반한 심내막염도 연결한다.",
+      "summary": "고령 남성, 특히 요로폐색 환자의 요로감염·균혈증에서 중요하다. 균혈증이면 큰 판막 병변을 동반한 심내막염 가능성을 살핀다.",
       "back": {
         "sections": [
           {
@@ -28100,7 +28100,7 @@
         "고양이 교상 감염",
         "Pasteurella"
       ],
-      "summary": "개·고양이 구강균으로 교상 뒤 빠른 연조직 감염을 일으킨다. 건초·관절·뼈 침범으로 이어질 수 있다.",
+      "summary": "개·고양이 교상 뒤 수 시간 안에 통증·부종이 빠르게 진행하는 연조직감염이 특징이다. 깊은 천자상은 건초·관절·뼈 감염으로 이어질 수 있다.",
       "back": {
         "sections": [
           {
@@ -28143,7 +28143,7 @@
         "dog-bite sepsis",
         "카프노사이토파가"
       ],
-      "summary": "개·고양이 구강균으로 무비장·알코올사용장애에서 전격 패혈증을 일으킨다. 작은 교상이나 핥은 상처도 감염원이 된다.",
+      "summary": "개·고양이 노출 뒤 무비장·알코올사용장애 환자에서 전격 패혈증·DIC를 일으킬 수 있다. 교상 없이 작은 상처를 핥은 것만으로도 감염될 수 있다.",
       "back": {
         "sections": [
           {
@@ -28186,7 +28186,7 @@
         "human bite pathogen",
         "에이케넬라"
       ],
-      "summary": "사람 구강 상재균으로 사람 교상·주먹손상 뒤 깊은 관절·건초 감염을 일으킨다. HACEK 심내막염과도 연결한다.",
+      "summary": "사람 교상·주먹손상 뒤 손의 건초염·관절감염을 일으킨다. 치아에 부딪힌 작은 손등 상처도 깊은 감염 위험이 있으며 심내막염도 가능하다.",
       "back": {
         "sections": [
           {
@@ -28229,7 +28229,7 @@
         "소아 골관절감염",
         "Kingella"
       ],
-      "summary": "어린 소아의 구인두에 집락하는 HACEK 세균이다. 미열·가벼운 염증수치만 보여도 골관절감염을 일으킬 수 있다.",
+      "summary": "어린 소아의 골관절감염에서 중요하다. 미열·가벼운 염증수치만 보이며 절뚝거리는 아이에서도 감염을 놓치지 않아야 한다.",
       "back": {
         "sections": [
           {
@@ -28272,7 +28272,7 @@
         "렙토스피라증",
         "Weil disease"
       ],
-      "summary": "오염된 민물·진흙에서 손상 피부로 침입하는 나선균이다. 결막충혈·황달·신손상과 폐출혈을 연결한다.",
+      "summary": "민물·진흙 노출 뒤 발열·종아리 통증·결막충혈이 나타난다. 황달·급성신손상·폐출혈이 동반되면 중증 렙토스피라증을 의심한다.",
       "back": {
         "sections": [
           {
@@ -28315,7 +28315,7 @@
         "쯔쯔가무시병",
         "O. tsutsugamushi"
       ],
-      "summary": "털진드기가 매개하는 세포내 세균으로 쯔쯔가무시병을 일으킨다. 발열·가피·발진과 다장기 침범이 핵심이다.",
+      "summary": "가을 야외 노출 뒤 발열·발진·림프절병이 생기고 검은 가피가 단서가 된다. 가피를 겨드랑이·서혜부까지 찾아야 하며 중증에서는 다장기를 침범한다.",
       "back": {
         "sections": [
           {
@@ -28358,7 +28358,7 @@
         "큐열",
         "C. burnetii"
       ],
-      "summary": "가축 분만산물의 에어로졸로 전파되는 세포내 세균이다. 급성 비정형 폐렴·간염과 만성 심내막염을 연결한다.",
+      "summary": "가축 분만산물 노출 뒤 비정형 폐렴·간염을 일으킨다. 판막질환자는 이후 만성 심내막염·혈관감염 위험을 살펴야 한다.",
       "back": {
         "sections": [
           {
@@ -28401,7 +28401,7 @@
         "브루셀라증",
         "undulant fever"
       ],
-      "summary": "가축·비살균 유제품과 연관되어 대식세포 안에서 살아남는 세균이다. 파동열·식은땀과 골관절 병변, 재발을 연결한다.",
+      "summary": "비살균 유제품·가축 노출 뒤 파동열·식은땀·골관절통이 나타난다. 심내막염·신경 침범과 재발 가능성이 치료 범위를 가른다.",
       "back": {
         "sections": [
           {
@@ -28444,7 +28444,7 @@
         "고양이할큄병",
         "B. henselae"
       ],
-      "summary": "고양이와 연관된 까다로운 세균으로 고양이할큄병을 일으킨다. 접종부위 병변 뒤 국소 림프절염이 대표적이다.",
+      "summary": "고양이 할큄 뒤 접종 부위 병변에 이어 국소 림프절이 붓는 고양이할큄병이 대표적이다. 드물게 안구·간비장·심장판막을 침범한다.",
       "back": {
         "sections": [
           {
@@ -28487,7 +28487,7 @@
         "발진열",
         "R. typhi"
       ],
-      "summary": "벼룩 배설물로 전파되어 혈관내피에서 증식하는 세포내 세균이다. 발열·두통·간효소 상승이 오며 발진은 없을 수도 있다.",
+      "summary": "벼룩 노출 지역에서 발열·두통·근육통과 간효소 상승이 나타난다. 발진이 없다고 발진열을 배제하지 않는다.",
       "back": {
         "sections": [
           {
@@ -28530,7 +28530,7 @@
         "사람과립구아나플라스마증",
         "A. phagocytophilum"
       ],
-      "summary": "진드기가 매개하며 호중구 안에 morula를 만드는 세포내 세균이다. 발열과 백혈구·혈소판 감소, 간효소 상승이 함께 나타난다.",
+      "summary": "진드기 노출 뒤 발열·두통과 백혈구감소·혈소판감소·간효소 상승이 함께 나타난다. 라임병과의 동시감염도 고려한다.",
       "back": {
         "sections": [
           {
@@ -28573,7 +28573,7 @@
         "라임병",
         "B. burgdorferi"
       ],
-      "summary": "Ixodes 진드기가 옮기는 나선균으로 라임병을 일으킨다. 확장성 홍반에서 신경·심장·관절 침범으로 이어질 수 있다.",
+      "summary": "진드기 노출 뒤 수일에 걸쳐 커지는 홍반이 초기 라임병의 단서다. 이후 안면마비·수막염·심장전도장애·관절염으로 나타날 수 있다.",
       "back": {
         "sections": [
           {
@@ -28615,7 +28615,7 @@
         "Candida albicans",
         "칸디다 알비칸스"
       ],
-      "summary": "점막 상재 효모로 발아관과 위균사를 만든다. 아구창·식도염부터 혈류·침습감염까지 숙주와 장벽 상태에 따라 달라진다.",
+      "summary": "아구창·식도염부터 칸디다혈증·심부 감염까지 일으킨다. 점막 감염과 혈류감염을 구별하고 숙주 상태·감염 부위에 맞춰 치료한다.",
       "back": {
         "sections": [
           {
@@ -28655,7 +28655,7 @@
         "Candida glabrata (Nakaseomyces glabratus)",
         "나카세오마이세스 글라브라투스"
       ],
-      "summary": "작은 출아효모로 칸디다혈증·요로감염을 일으킨다. 낮은 fluconazole 감수성과 치료 중 FKS 내성 변화를 연결한다.",
+      "summary": "칸디다혈증·요로감염에서 중요하며 fluconazole 감수성이 낮을 수 있다. 이전 약제 노출과 감수성 결과가 치료 선택을 가른다.",
       "back": {
         "sections": [
           {
@@ -28695,7 +28695,7 @@
         "Candida auris",
         "칸디다 아우리스"
       ],
-      "summary": "피부와 의료환경에 지속하며 집단발생을 만드는 효모다. 침습감염·다제내성과 환경 전파를 함께 기억한다.",
+      "summary": "의료기관 집단발생과 다제내성을 동반하는 침습성 Candida 감염의 원인이다. 피부 집락만으로 치료하지 않으며 실제 감염과 전파 관리가 중요하다.",
       "back": {
         "sections": [
           {
@@ -28735,7 +28735,7 @@
         "Candida parapsilosis",
         "칸디다 파라프실로시스"
       ],
-      "summary": "피부·손·카테터와 연관된 효모다. 정맥영양·카테터 혈류감염과 상대적으로 높은 echinocandin MIC를 연결한다.",
+      "summary": "정맥영양·카테터와 연관된 혈류감염, 특히 신생아실 감염에서 중요하다. Echinocandin 감수성이 상대적으로 낮을 수 있다.",
       "back": {
         "sections": [
           {
@@ -28775,7 +28775,7 @@
         "Candida tropicalis",
         "칸디다 트로피칼리스"
       ],
-      "summary": "장관 상재 효모로 혈액종양·호중구감소 숙주에서 중요하다. 칸디다혈증과 지역별 azole 내성 차이를 연결한다.",
+      "summary": "혈액종양·호중구감소 환자의 칸디다혈증에서 중요하다. 지역별 azole 내성 차이가 있어 종 동정과 감수성 확인이 필요하다.",
       "back": {
         "sections": [
           {
@@ -28815,7 +28815,7 @@
         "Pichia kudriavzevii (Candida krusei)",
         "피키아 쿠드리아브제비"
       ],
-      "summary": "길쭉한 효모와 위균사를 만드는 침습성 Candida 계열 진균이다. Fluconazole 고유 비감수성이 핵심 구별점이다.",
+      "summary": "침습성 칸디다증을 일으키며 fluconazole에 고유 비감수성이 있다. 다른 Candida와 같은 방식으로 fluconazole을 선택하면 실패할 수 있다.",
       "back": {
         "sections": [
           {
@@ -28855,7 +28855,7 @@
         "Cryptococcus neoformans",
         "크립토콕쿠스 네오포르만스"
       ],
-      "summary": "두꺼운 피막을 가진 환경 효모다. 면역저하자의 폐질환·수막뇌염과 병합 유도치료를 연결한다.",
+      "summary": "면역저하자의 수막뇌염·폐감염을 일으킨다. 중추신경계 감염은 병합 유도치료가 필요한 중요한 임상형이다.",
       "back": {
         "sections": [
           {
@@ -28895,7 +28895,7 @@
         "Cryptococcus gattii",
         "크립토콕쿠스 가티"
       ],
-      "summary": "면역정상자도 감염시킬 수 있는 피막성 효모다. 폐 종괴와 수막뇌염, 큰 cryptococcoma가 중요한 단서다.",
+      "summary": "면역정상자도 폐 종괴·수막뇌염이 생길 수 있다. 큰 cryptococcoma를 동반할 수 있어 면역저하 여부만으로 배제하지 않는다.",
       "back": {
         "sections": [
           {
@@ -28935,7 +28935,7 @@
         "Aspergillus fumigatus",
         "아스페르길루스 푸미가투스"
       ],
-      "summary": "흡입 분생포자가 폐를 침범하는 예각 분지 사상균이다. 침습성 폐감염과 알레르기성 ABPA, azole 내성을 구분한다.",
+      "summary": "면역저하자의 침습성 폐아스페르길루스증에서 중요하다. 천식 환자의 알레르기성 기관지폐 질환과 침습감염은 치료 맥락이 다르다.",
       "back": {
         "sections": [
           {
@@ -28975,7 +28975,7 @@
         "Aspergillus flavus",
         "아스페르길루스 플라부스"
       ],
-      "summary": "토양·곡물의 분생포자로 전파되는 사상균이다. 폐·부비동 침습감염과 각막염을 일으키며 약제 감수성은 변이가 있다.",
+      "summary": "침습성 폐·부비동 감염과 각막염을 일으킨다. 지역·종에 따라 약제 감수성이 달라, Aspergillus라는 이름만으로 치료 반응을 단정하지 않는다.",
       "back": {
         "sections": [
           {
@@ -29015,7 +29015,7 @@
         "Aspergillus terreus",
         "아스페르길루스 테레우스"
       ],
-      "summary": "침습성 폐·파종 감염을 만드는 Aspergillus다. Amphotericin B 고유 비감수성이 종을 구별하는 핵심이다.",
+      "summary": "침습성 폐감염과 파종감염을 일으킨다. Amphotericin B에 고유 비감수성이 있어 Aspergillus의 종 동정이 치료 선택을 바꾼다.",
       "back": {
         "sections": [
           {
@@ -29055,7 +29055,7 @@
         "Mucorales spp.",
         "털곰팡이목"
       ],
-      "summary": "넓고 불규칙한 비격벽성 균사를 만드는 곰팡이군이다. 비뇌안와·폐 침습감염에서 수술과 amphotericin 기반 치료를 연결한다.",
+      "summary": "비뇌안와·폐·피부의 침습성 털곰팡이증을 일으킨다. 수술적 감염원 제거와 amphotericin 기반 치료가 함께 중요한 감염이다.",
       "back": {
         "sections": [
           {
@@ -29095,7 +29095,7 @@
         "Pneumocystis jirovecii",
         "폐포자충"
       ],
-      "summary": "면역저하자의 폐포에서 저산소성 간질성 폐렴을 만드는 진균이다. 일반 배양이 어렵고 치료 실패를 단순 내성과 동일시하지 않는다.",
+      "summary": "면역저하자에서 저산소성 간질성 폐렴을 일으킨다. 치료 실패가 곧 약제내성은 아니며, 중증도·면역상태와 다른 원인을 함께 평가한다.",
       "back": {
         "sections": [
           {
@@ -29135,7 +29135,7 @@
         "Histoplasma capsulatum",
         "히스토플라스마 캡술라툼"
       ],
-      "summary": "조류·박쥐 배설물로 농축된 토양에서 흡입되는 열이형성 진균이다. 조직 내 세포내 효모와 폐·파종 감염을 연결한다.",
+      "summary": "조류·박쥐 배설물과 관련된 토양 노출 뒤 폐감염이 생길 수 있다. 면역저하자에서는 파종감염 위험이 커 여행·노출력이 중요하다.",
       "back": {
         "sections": [
           {
@@ -29175,7 +29175,7 @@
         "Coccidioides spp.",
         "콕시디오이데스"
       ],
-      "summary": "건조 토양의 포자를 흡입하면 조직에서 spherule을 만드는 진균이다. 폐질환과 피부·골관절·수막 파종이 가능하다.",
+      "summary": "미국 남서부 등 건조지역 노출 뒤 폐질환을 일으킨다. 피부·뼈·관절·수막으로 파종할 수 있어 여행력과 폐외 병변이 중요하다.",
       "back": {
         "sections": [
           {
@@ -29215,7 +29215,7 @@
         "Blastomyces dermatitidis complex",
         "블라스토마이세스"
       ],
-      "summary": "조직에서 넓은 밑면으로 출아하는 열이형성 진균이다. 토양 노출 뒤 폐감염에서 피부·뼈 파종으로 이어질 수 있다.",
+      "summary": "북미 노출 뒤 폐감염에 피부·뼈 병변이 동반되면 의심한다. 폐에서 원격 부위로 파종할 수 있다.",
       "back": {
         "sections": [
           {
@@ -29255,7 +29255,7 @@
         "Sporothrix schenckii complex",
         "스포로트릭스"
       ],
-      "summary": "식물·토양·고양이 노출 뒤 피부에 접종되는 진균군이다. 림프관을 따라 이어지는 피부병변과 관절·파종 감염을 연결한다.",
+      "summary": "식물·토양·고양이 노출 뒤 림프관을 따라 이어지는 피부결절이 특징이다. 관절·전신 파종 여부에 따라 치료 범위가 달라진다.",
       "back": {
         "sections": [
           {
@@ -29295,7 +29295,7 @@
         "Talaromyces marneffei",
         "탈라로마이세스 마르네페이"
       ],
-      "summary": "동남아 환경과 연관된 열이형성 진균으로 횡격막 효모가 단서다. HIV 등 면역저하자의 파종감염이 대표적이다.",
+      "summary": "동남아 여행력이 있는 HIV·면역저하 환자의 파종감염에서 중요하다. 한국에서는 해외 노출력을 놓치지 않는 것이 핵심이다.",
       "back": {
         "sections": [
           {
@@ -29335,7 +29335,7 @@
         "Dermatophytes (Trichophyton rubrum / Microsporum spp.)",
         "피부사상균"
       ],
-      "summary": "각질을 좋아해 피부·모발·손발톱에 백선을 만드는 진균군이다. 부위별 병변과 terbinafine 내성·재감염을 구분한다.",
+      "summary": "피부·모발·손발톱에 백선을 일으킨다. 침범 부위에 따라 치료가 달라지며, 지속 병변에서는 재감염과 terbinafine 내성을 구별한다.",
       "back": {
         "sections": [
           {
@@ -29375,7 +29375,7 @@
         "Malassezia spp.",
         "말라세지아"
       ],
-      "summary": "피지성 피부에 사는 지질의존성 효모다. 어루러기·모낭염과 지질 공급·카테터 관련 혈류감염을 연결한다.",
+      "summary": "어루러기·모낭염의 원인이며, 지질 공급·카테터와 관련된 혈류감염도 가능하다. 얕은 피부병변과 침습감염을 구별한다.",
       "back": {
         "sections": [
           {
@@ -29415,7 +29415,7 @@
         "Plasmodium falciparum",
         "열대열말라리아원충"
       ],
-      "summary": "모기가 옮기는 적혈구 원충으로 미세혈관 부착·폐쇄가 특징이다. 뇌말라리아 등 중증질환으로 빠르게 진행할 수 있다.",
+      "summary": "해외 노출 뒤 말라리아가 발생하면 뇌·신장·폐를 침범하는 중증질환으로 빠르게 진행할 수 있다. 초기부터 중증 징후를 평가해야 한다.",
       "back": {
         "sections": [
           {
@@ -29455,7 +29455,7 @@
         "Plasmodium vivax / P. ovale",
         "삼일열·난형열말라리아원충"
       ],
-      "summary": "간에 hypnozoite를 남겨 재발하는 말라리아 원충군이다. 혈액기 감염과 간 휴면체를 별도로 다뤄야 한다.",
+      "summary": "혈액기 말라리아가 호전된 뒤에도 간 휴면체 때문에 재발할 수 있다. 재발 방지 치료는 혈액기 치료와 별도이며 primaquine 전에 G6PD를 확인한다.",
       "back": {
         "sections": [
           {
@@ -29495,7 +29495,7 @@
         "Plasmodium malariae",
         "사일열말라리아원충"
       ],
-      "summary": "낮은 밀도로 오랫동안 적혈구 감염을 유지하는 말라리아 원충이다. Band form과 만성감염·신증후군 연관을 연결한다.",
+      "summary": "낮은 기생충혈증으로 장기간 지속될 수 있는 말라리아다. 만성 감염은 신증후군과 연관되며 간 휴면체 제거 치료는 필요하지 않다.",
       "back": {
         "sections": [
           {
@@ -29535,7 +29535,7 @@
         "Plasmodium knowlesi",
         "원숭이말라리아원충"
       ],
-      "summary": "마카크·모기 생활사의 인수공통 말라리아 원충이다. 24시간 증식주기로 기생충혈증이 빠르게 늘어 중증화할 수 있다.",
+      "summary": "동남아 여행 뒤 발생하는 말라리아로 기생충혈증이 빠르게 늘 수 있다. 비중증으로 시작해도 중증화 가능성을 가까이 관찰한다.",
       "back": {
         "sections": [
           {
@@ -29575,7 +29575,7 @@
         "Toxoplasma gondii",
         "톡소포자충"
       ],
-      "summary": "고양이 생활사와 덜 익힌 고기로 감염되어 조직에 잠복하는 원충이다. 재활성화 뇌염·망막염과 선천감염을 연결한다.",
+      "summary": "면역저하자의 재활성화 뇌염·망막염과 선천감염에서 중요하다. 숙주 면역상태와 임신·중추신경계 침범이 치료를 가른다.",
       "back": {
         "sections": [
           {
@@ -29615,7 +29615,7 @@
         "Giardia duodenalis",
         "지아르디아"
       ],
-      "summary": "오염수로 전파되어 소장에 부착하는 원충이다. 지방변과 흡수장애성 설사가 핵심이며 조직 침습성 아메바와 구분한다.",
+      "summary": "오염수 노출 뒤 지방변·흡수장애성 설사가 생긴다. 조직 침습성 아메바와 달리 소장 감염이 중심이다.",
       "back": {
         "sections": [
           {
@@ -29655,7 +29655,7 @@
         "Entamoeba histolytica",
         "이질아메바"
       ],
-      "summary": "장 점막을 침범하고 간으로 퍼지는 아메바다. 적혈구 탐식 영양형, 대장염과 간농양을 연결한다.",
+      "summary": "혈성 대장염과 간농양을 일으킨다. 조직 감염 치료 뒤에도 장강에 남은 감염을 따로 치료해야 한다.",
       "back": {
         "sections": [
           {
@@ -29695,7 +29695,7 @@
         "Cryptosporidium spp.",
         "와포자충"
       ],
-      "summary": "염소에 강한 난포낭이 물을 통해 전파되는 장내 원충이다. 수양성 설사와 면역저하자의 지속감염이 핵심이다.",
+      "summary": "오염수 노출 뒤 수양성 설사를 일으킨다. 면역저하자는 설사가 오래가고 치료 반응이 제한될 수 있어 면역상태가 중요하다.",
       "back": {
         "sections": [
           {
@@ -29735,7 +29735,7 @@
         "Cyclospora cayetanensis",
         "원포자충"
       ],
-      "summary": "환경에서 성숙한 난포낭이 식품으로 전파되는 장내 원충이다. 오래 지속하거나 재발하는 수양성 설사가 특징이다.",
+      "summary": "식품·수입 농산물 노출 뒤 오래 지속하거나 재발하는 수양성 설사가 특징이다. 일회성 급성 장염과 달리 지속 경과가 단서가 된다.",
       "back": {
         "sections": [
           {
@@ -29775,7 +29775,7 @@
         "Cystoisospora belli",
         "등포자충"
       ],
-      "summary": "분변-경구로 전파되는 장내 원충으로 타원형 항산성 난포낭이 단서다. AIDS의 만성 설사·흡수장애를 연결한다.",
+      "summary": "진행 HIV 환자의 만성 설사·흡수장애에서 중요하다. 면역저하 상태와 재발 위험이 치료·추적의 중심이다.",
       "back": {
         "sections": [
           {
@@ -29815,7 +29815,7 @@
         "Trichomonas vaginalis",
         "질편모충"
       ],
-      "summary": "낭포 없이 영양형으로 성접촉 전파되는 편모 원충이다. 질염·요도염과 비뇨생식기 점막 염증이 핵심이다.",
+      "summary": "성접촉으로 전파되는 질염·요도염의 원인이다. 치료 뒤 재감염을 줄이기 위해 파트너와 전파 맥락을 함께 다룬다.",
       "back": {
         "sections": [
           {
@@ -29855,7 +29855,7 @@
         "Leishmania spp.",
         "리슈만편모충"
       ],
-      "summary": "모래파리가 매개하고 대식세포 안에서 살아가는 원충군이다. 피부·점막·내장형을 구분하며 종과 지역이 치료를 좌우한다.",
+      "summary": "피부궤양·점막 파괴·내장형 등 다양한 임상형을 만든다. 감염 지역과 종, 침범 장기가 치료제를 가른다.",
       "back": {
         "sections": [
           {
@@ -29895,7 +29895,7 @@
         "Trypanosoma cruzi",
         "크루스파동편모충"
       ],
-      "summary": "매개곤충·수혈·선천 전파로 샤가스병을 만드는 원충이다. 만성 심근병증과 소화기 신경총 손상을 연결한다.",
+      "summary": "만성 샤가스병에서 심근병증과 소화기 신경 손상이 나타난다. 급성 감염과 이미 진행된 만성 장기병증은 치료 이득이 다르다.",
       "back": {
         "sections": [
           {
@@ -29935,7 +29935,7 @@
         "Trypanosoma brucei complex",
         "브루스파동편모충"
       ],
-      "summary": "체체파리가 매개하는 아프리카수면병 원충이다. 혈림프기와 CNS 침범에 따른 수면-각성 장애를 구분한다.",
+      "summary": "아프리카 노출 뒤 혈림프성 질환에서 중추신경계 침범·수면장애로 진행한다. 중추신경계 침범 여부가 치료 선택을 가른다.",
       "back": {
         "sections": [
           {
@@ -29975,7 +29975,7 @@
         "Strongyloides stercoralis",
         "분선충"
       ],
-      "summary": "피부 침투 뒤 자가감염으로 오래 지속하는 선충이다. Steroid 노출에서 과감염·파종과 장내세균 균혈증이 중요하다.",
+      "summary": "오래 지속되는 만성감염이 steroid 노출 뒤 과감염·파종으로 악화할 수 있다. 장내세균 균혈증이 동반될 수 있어 면역억제 맥락이 중요하다.",
       "back": {
         "sections": [
           {
@@ -30015,7 +30015,7 @@
         "Ascaris lumbricoides",
         "회충"
       ],
-      "summary": "토양매개 알을 섭취해 감염되는 큰 장내 선충이다. 유충의 폐 이동과 성충의 장폐색·담도 침범을 구분한다.",
+      "summary": "장폐색·담도회충증을 일으키며 유충이 폐를 지날 때 호흡기 증상이 생길 수 있다. 장관 증상과 폐 이동기의 증상을 구별한다.",
       "back": {
         "sections": [
           {
@@ -30055,7 +30055,7 @@
         "Enterobius vermicularis",
         "요충"
       ],
-      "summary": "사람 사이 손-입 전파와 자가감염이 가능한 장내 선충이다. 야간 항문소양과 항문주위 충란이 핵심 단서다.",
+      "summary": "소아의 야간 항문소양이 대표적이며 가족·집단 내 재감염이 흔하다. 항문주위 충란과 반복 노출을 확인한다.",
       "back": {
         "sections": [
           {
@@ -30095,7 +30095,7 @@
         "Trichuris trichiura",
         "편충"
       ],
-      "summary": "토양매개 충란으로 감염되어 대장을 침범하는 선충이다. 만성 대장염·빈혈과 심한 감염의 직장탈출을 연결한다.",
+      "summary": "만성 대장염·빈혈을 일으키며 심한 감염은 직장탈출로 나타날 수 있다. 감염량과 장관 합병증이 임상 경과를 가른다.",
       "back": {
         "sections": [
           {
@@ -30135,7 +30135,7 @@
         "Hookworms (Ancylostoma duodenale / Necator americanus)",
         "구충"
       ],
-      "summary": "토양 유충이 피부를 뚫고 들어오는 장내 선충군이다. 성충의 지속적인 장출혈이 철결핍빈혈을 만든다.",
+      "summary": "지속적인 장출혈로 철결핍빈혈을 일으킨다. 토양 접촉 뒤 피부 증상과 빈혈이 함께 있으면 노출력을 살핀다.",
       "back": {
         "sections": [
           {
@@ -30175,7 +30175,7 @@
         "Schistosoma spp.",
         "주혈흡충"
       ],
-      "summary": "민물의 cercaria가 피부를 뚫고 성충은 혈관에 사는 흡충군이다. 충란의 육아종 반응이 장간·요로·신경 병변을 만든다.",
+      "summary": "민물 노출 뒤 장간·요로·신경 병변을 일으킬 수 있다. 종과 침범 장기에 따라 임상형과 합병증이 달라진다.",
       "back": {
         "sections": [
           {
@@ -30215,7 +30215,7 @@
         "Clonorchis sinensis",
         "간흡충"
       ],
-      "summary": "민물고기로 감염되는 담도 흡충이다. 만성 담관염·담석과 담관암 위험을 연결한다.",
+      "summary": "민물고기 생식과 연관된 담관염·담석을 일으킨다. 만성감염은 담관암 위험과 연관되며 한국에서 중요한 풍토병이다.",
       "back": {
         "sections": [
           {
@@ -30255,7 +30255,7 @@
         "Paragonimus westermani complex",
         "폐흡충"
       ],
-      "summary": "민물게·가재로 감염되는 폐흡충이다. 만성 기침·객혈과 흉막 병변, 이소성 뇌 침범을 연결한다.",
+      "summary": "민물게·가재 생식 뒤 만성 기침·객혈과 흉막 병변을 일으킨다. 폐질환뿐 아니라 이소성 뇌 병변도 가능하다.",
       "back": {
         "sections": [
           {
@@ -30295,7 +30295,7 @@
         "Fasciola hepatica / F. gigantica",
         "간질"
       ],
-      "summary": "수생식물로 감염되어 유충은 간을, 성충은 담도를 침범하는 흡충이다. 급성 간이행과 만성 담도질환을 구분한다.",
+      "summary": "수생식물 노출 뒤 급성 간이행성 질환과 만성 담도질환을 일으킨다. 다른 흡충과 달리 triclabendazole의 치료 역할이 중요하다.",
       "back": {
         "sections": [
           {
@@ -30335,7 +30335,7 @@
         "Taenia solium larvae (cysticercosis)",
         "유구조충 유충"
       ],
-      "summary": "사람이 배출한 충란을 섭취하면 조직에 낭미충이 생긴다. 신경낭미충증의 발작·뇌부종과 뇌실 병변을 연결한다.",
+      "summary": "신경낭미충증에서 발작·뇌부종·뇌실 병변이 나타날 수 있다. 병변의 위치·수와 생존 상태에 따라 약물·수술 판단이 달라진다.",
       "back": {
         "sections": [
           {
@@ -30375,7 +30375,7 @@
         "Taenia saginata",
         "무구조충"
       ],
-      "summary": "덜 익힌 소고기로 감염되어 사람 장에 성충이 사는 조충이다. 장 조충증을 만들며 사람 낭미충증은 일으키지 않는다.",
+      "summary": "덜 익힌 소고기와 연관된 장 조충증을 일으킨다. T. solium과 달리 사람 낭미충증의 원인은 아니다.",
       "back": {
         "sections": [
           {
@@ -30415,7 +30415,7 @@
         "Echinococcus granulosus / E. multilocularis",
         "포충"
       ],
-      "summary": "개·여우 생활사에서 사람 조직에 낭성 또는 침윤성 병변을 만드는 조충이다. 간·폐 포충 병변과 종별 형태를 구분한다.",
+      "summary": "간·폐에 낭성 또는 침윤성 포충 병변을 만든다. 병변의 위치·형태와 종에 따라 약물·중재 치료의 범위가 달라진다.",
       "back": {
         "sections": [
           {
@@ -30455,7 +30455,7 @@
         "Toxocara canis / T. cati",
         "개·고양이회충"
       ],
-      "summary": "개·고양이 충란에서 나온 유충이 사람 조직을 이동한다. 내장·안구 유충이행증을 만들며 사람 대변에서는 충란이 나오지 않는다.",
+      "summary": "내장·안구 유충이행증을 일으킨다. 사람에서는 장내 성충 감염이 아니어서 대변 충란검사만으로 진단할 수 없다.",
       "back": {
         "sections": [
           {
@@ -30495,7 +30495,7 @@
         "Trichinella spp.",
         "선모충"
       ],
-      "summary": "돼지·야생동물 고기의 유충이 근육에 자리잡는 선충이다. 장 증상 뒤 근육통·안와부종과 심근·CNS 침범을 연결한다.",
+      "summary": "덜 익힌 돼지·야생동물 고기 노출 뒤 장 증상에 이어 근육통·안와부종이 나타난다. 심근·중추신경계 침범이 중증 신호다.",
       "back": {
         "sections": [
           {
@@ -30535,7 +30535,7 @@
         "Anisakis spp.",
         "아니사키스"
       ],
-      "summary": "날 해산어·오징어의 유충이 위장벽을 뚫는 기생충이다. 급성 복통과 호산구·IgE 반응, 알레르기를 연결한다.",
+      "summary": "날 생선·오징어를 먹은 뒤 급성 위장관 통증이 나타난다. 호산구·알레르기 반응이 동반될 수 있어 생식 노출력이 중요하다.",
       "back": {
         "sections": [
           {
@@ -30575,7 +30575,7 @@
         "Sarcoptes scabiei var. hominis",
         "옴진드기"
       ],
-      "summary": "밀접접촉으로 퍼져 피부 각질층에 굴을 만드는 진드기다. 야간 소양과 진드기 부담·전염성이 큰 가피옴을 구분한다.",
+      "summary": "야간 소양과 밀접접촉자 사이의 전파가 특징이다. 가피옴은 진드기 부담·전염성이 커 요양시설 집단발생에서 특히 중요하다.",
       "back": {
         "sections": [
           {
@@ -30615,7 +30615,7 @@
         "Fusarium spp.",
         "푸사리움속"
       ],
-      "summary": "토양·물의 사상균으로 각막과 손상 피부를 침범한다. 면역저하자에서는 폐·혈류·전신 파종과 높은 약제 MIC가 중요하다.",
+      "summary": "각막염을 일으키며 면역저하자에서는 폐·혈류·전신으로 파종할 수 있다. 호중구감소 환자의 통증성 피부결절과 양성 혈액배양이 중요한 단서다.",
       "back": {
         "sections": [
           {
@@ -30655,7 +30655,7 @@
         "Scedosporium apiospermum species complex",
         "스케도스포리움 아피오스페르뭄 복합체"
       ],
-      "summary": "토양·오염수의 사상균으로 익수 뒤 폐·뇌 감염이 단서다. Amphotericin B의 낮은 감수성과 종 동정이 중요하다.",
+      "summary": "익수 수주~수개월 뒤 폐감염·뇌농양이 나타나면 의심한다. Amphotericin B에 고유 비감수성이 있어 정확한 종 동정이 치료를 바꾼다.",
       "back": {
         "sections": [
           {
@@ -30695,7 +30695,7 @@
         "Lomentospora prolificans",
         "로멘토스포라 프로리피칸스"
       ],
-      "summary": "면역저하자에서 폐·혈류·CNS로 파종하는 사상균이다. 여러 항진균제에 걸친 높은 MIC와 면역회복의 중요성이 핵심이다.",
+      "summary": "면역저하자의 폐·혈류·중추신경계 파종감염을 일으킨다. 여러 항진균제에 감수성이 낮아 종 동정과 면역회복 전략이 특히 중요하다.",
       "back": {
         "sections": [
           {
@@ -30735,7 +30735,7 @@
         "Babesia microti",
         "바베시아 미크로티"
       ],
-      "summary": "진드기·수혈로 전파되어 적혈구 안에서 증식하는 원충이다. 용혈성 빈혈과 무비증 숙주의 중증화를 연결한다.",
+      "summary": "진드기·수혈 노출 뒤 발열과 용혈성빈혈을 일으킨다. 무비장·고령·면역저하 환자는 중증화하기 쉬워 말라리아 여행력이 없어도 의심한다.",
       "back": {
         "sections": [
           {
@@ -30776,7 +30776,7 @@
         "단순헤르페스바이러스 1형",
         "HSV1"
       ],
-      "summary": "감각신경절에 잠복하고 상피에서 재활성화한다. 구순포진·각막염과 뇌염·신생아감염을 연결한다.",
+      "summary": "구순포진·각막염뿐 아니라 뇌염·신생아감염도 일으킨다. 재발성 점막 병변과 중추신경계 감염은 치료 범위가 다르다.",
       "back": {
         "sections": [
           {
@@ -30817,7 +30817,7 @@
         "단순헤르페스바이러스 2형",
         "HSV2"
       ],
-      "summary": "천수 감각신경절에 잠복하며 무증상 배출도 가능하다. 재발성 생식기궤양·무균수막염과 신생아감염을 연결한다.",
+      "summary": "재발성 생식기궤양·무균수막염과 신생아감염의 원인이다. 증상이 없을 때도 배출되어 파트너·주산기 전파가 중요하다.",
       "back": {
         "sections": [
           {
@@ -30858,7 +30858,7 @@
         "수두대상포진바이러스",
         "VZV"
       ],
-      "summary": "감각신경절에 잠복하는 바이러스로 초감염은 수두를 만든다. 재활성화는 피부절을 따라 대상포진을 일으킨다.",
+      "summary": "초감염은 수두, 재활성화는 피부절을 따라 나타나는 대상포진을 일으킨다. 면역저하자는 파종·폐렴·뇌염·안구 침범 위험을 살핀다.",
       "back": {
         "sections": [
           {
@@ -30899,7 +30899,7 @@
         "사람거대세포바이러스",
         "CMV"
       ],
-      "summary": "골수계 세포에 잠복하고 면역억제에서 재활성화하는 바이러스다. 망막·장관·폐의 장기질환과 선천감염을 연결한다.",
+      "summary": "면역저하자의 망막염·대장염·식도염·폐렴과 선천감염을 일으킨다. 바이러스 검출과 실제 장기질환을 구별해야 치료 목적이 명확해진다.",
       "back": {
         "sections": [
           {
@@ -30940,7 +30940,7 @@
         "엡스타인-바 바이러스",
         "EBV"
       ],
-      "summary": "B세포에 잠복하며 구인두에서 배출되는 바이러스다. 감염단핵구증과 일부 림프종·비인두암을 연결한다.",
+      "summary": "청년의 감염단핵구증을 일으키며 일부 림프종·비인두암과 연관된다. 단순 급성 감염과 면역저하자의 종양성 질환은 다른 임상 맥락이다.",
       "back": {
         "sections": [
           {
@@ -30981,7 +30981,7 @@
         "사람헤르페스바이러스 6",
         "HHV6"
       ],
-      "summary": "유아기 초감염 뒤 잠복하는 바이러스다. 돌발진·열성경련과 이식 후 재활성화 변연계뇌염을 구분한다.",
+      "summary": "소아 돌발진·열성경련과 이식 후 재활성화 뇌염에서 중요하다. 이식 환자의 새 신경증상을 단순 과거 감염과 구별해야 한다.",
       "back": {
         "sections": [
           {
@@ -31022,7 +31022,7 @@
         "카포시육종연관 헤르페스바이러스",
         "HHV8"
       ],
-      "summary": "B세포·내피계에 잠복하는 종양 연관 바이러스다. Kaposi 육종·원발성 삼출림프종·Castleman병을 연결한다.",
+      "summary": "카포시육종·원발성 삼출림프종·다중심성 Castleman병과 연관된다. 면역저하 상태와 동반 종양이 임상 판단의 중심이다.",
       "back": {
         "sections": [
           {
@@ -31063,7 +31063,7 @@
         "사람아데노바이러스",
         "ADENOVIRUS"
       ],
-      "summary": "환경에서 안정한 바이러스로 호흡기·결막·장관을 폭넓게 침범한다. 인두결막열·유행각결막염과 집단발생을 연결한다.",
+      "summary": "인두결막열·유행각결막염·위장염과 호흡기 집단발생의 원인이다. 같은 바이러스라도 눈·호흡기·장관 등 침범 부위가 다양하다.",
       "back": {
         "sections": [
           {
@@ -31104,7 +31104,7 @@
         "파르보바이러스 B19",
         "PARVOVIRUS-B19"
       ],
-      "summary": "적혈구 전구세포에서 증식하는 바이러스다. 전염성홍반·일과성 무형성발작과 태아수종·만성빈혈을 연결한다.",
+      "summary": "소아 전염성홍반을 일으키며 용혈성 질환자는 일과성 무형성발작 위험이 있다. 임신 중 감염은 태아수종, 면역저하는 만성빈혈과 연관된다.",
       "back": {
         "sections": [
           {
@@ -31145,7 +31145,7 @@
         "사람유두종바이러스",
         "HPV"
       ],
-      "summary": "기저상피를 감염시켜 상피 분화와 함께 증식하는 바이러스다. 사마귀와 자궁경부·항문·구인두 암을 연결한다.",
+      "summary": "사마귀와 자궁경부·항문·구인두암에 연관된다. 사마귀 치료와 암 예방·검진은 서로 다른 임상 과제다.",
       "back": {
         "sections": [
           {
@@ -31186,7 +31186,7 @@
         "B형간염바이러스",
         "HBV"
       ],
-      "summary": "간세포 핵의 cccDNA가 지속감염을 지탱하는 간염바이러스다. 만성간염에서 간경변·간세포암으로 이어질 수 있다.",
+      "summary": "급성·만성간염을 일으키며 장기적으로 간경변·간세포암 위험이 있다. 만성 감염은 간 손상과 치료 적응증을 함께 평가한다.",
       "back": {
         "sections": [
           {
@@ -31227,7 +31227,7 @@
         "C형간염바이러스",
         "HCV"
       ],
-      "summary": "변이가 많은 RNA 간염바이러스로 만성감염이 중요하다. 간경변·간세포암과 혼합한랭글로불린혈증을 연결한다.",
+      "summary": "만성간염에서 간경변·간세포암으로 진행할 수 있다. 간질환 외에 혼합한랭글로불린혈증 같은 장기 증상도 가능하다.",
       "back": {
         "sections": [
           {
@@ -31268,7 +31268,7 @@
         "A형간염바이러스",
         "HAV"
       ],
-      "summary": "장관으로 들어와 간에서 증식하며 만성화하지 않는 간염바이러스다. 급성간염과 드문 급성간부전이 핵심이다.",
+      "summary": "급성간염을 일으키지만 만성화하지 않는다. 대부분의 급성 경과와 드물게 생기는 급성간부전을 구별해 살핀다.",
       "back": {
         "sections": [
           {
@@ -31309,7 +31309,7 @@
         "E형간염바이러스",
         "HEV"
       ],
-      "summary": "유전자형에 따라 물 또는 동물에서 전파되는 간염바이러스다. 임신부의 중증 급성질환과 면역저하자의 만성감염을 구분한다.",
+      "summary": "급성간염을 일으키며 임신부는 중증질환, 면역저하자는 만성감염 위험이 있다. 숙주 상태에 따라 같은 감염의 경과가 크게 달라진다.",
       "back": {
         "sections": [
           {
@@ -31350,7 +31350,7 @@
         "사람면역결핍바이러스 1형",
         "HIV1"
       ],
-      "summary": "역전사 뒤 숙주 유전체에 통합되어 지속하는 바이러스다. AIDS의 기회감염·종양과 완전한 병합 항레트로바이러스 요법을 연결한다.",
+      "summary": "급성 감염 뒤 면역저하가 진행하면 기회감염·종양이 나타난다. 치료는 한 약제의 단독 사용이 아닌 완전한 병합 항레트로바이러스 요법이다.",
       "back": {
         "sections": [
           {
@@ -31391,7 +31391,7 @@
         "사람T림프친화바이러스 1형",
         "HTLV1"
       ],
-      "summary": "Provirus로 지속하며 감염 T세포의 클론성 확장을 만드는 바이러스다. 성인T세포백혈병·림프종과 HAM/TSP를 연결한다.",
+      "summary": "성인 T세포백혈병·림프종과 진행성 보행장애를 보이는 척수병증에 연관된다. 무증상 감염과 이미 생긴 장기질환을 구별한다.",
       "back": {
         "sections": [
           {
@@ -31432,7 +31432,7 @@
         "인플루엔자 A 바이러스",
         "INFLUENZA-A"
       ],
-      "summary": "항원소변이·대변이를 통해 호흡기 유행을 만드는 바이러스다. 급성 독감과 바이러스폐렴·세균성 중복감염을 연결한다.",
+      "summary": "급성 발열·호흡기 증상에서 폐렴·세균성 중복감염으로 악화할 수 있다. 숙주의 중증 위험과 발병 시점이 항바이러스제 판단에 중요하다.",
       "back": {
         "sections": [
           {
@@ -31473,7 +31473,7 @@
         "인플루엔자 B 바이러스",
         "INFLUENZA-B"
       ],
-      "summary": "주로 사람에서 계절 유행하는 인플루엔자바이러스다. 호흡기질환·폐렴과 소아 근염·뇌병증을 연결한다.",
+      "summary": "계절성 독감을 일으키며 폐렴과 소아 근염·뇌병증이 가능하다. Influenza A처럼 숙주 위험과 치료 시작 시점을 살핀다.",
       "back": {
         "sections": [
           {
@@ -31514,7 +31514,7 @@
         "호흡기세포융합바이러스",
         "RSV"
       ],
-      "summary": "F 단백으로 세포융합을 만드는 계절성 호흡기 바이러스다. 영아 세기관지염과 노인·면역저하자의 중증 폐질환을 연결한다.",
+      "summary": "영아 세기관지염과 노인·면역저하자의 중증 폐질환에서 중요하다. 환자 연령과 기저질환이 중증 위험을 가른다.",
       "back": {
         "sections": [
           {
@@ -31555,7 +31555,7 @@
         "중증급성호흡기증후군 코로나바이러스 2",
         "SARS-COV-2"
       ],
-      "summary": "Spike–ACE2 진입으로 호흡기와 여러 장기를 침범하는 바이러스다. COVID-19의 숙주별 중증도와 발병 초기 치료 시점이 중요하다.",
+      "summary": "COVID-19의 원인이며 숙주에 따라 경증 호흡기질환부터 중증 폐렴까지 나타난다. 고위험 환자는 발병 초기에 치료 가능 여부를 판단한다.",
       "back": {
         "sections": [
           {
@@ -31596,7 +31596,7 @@
         "사람리노바이러스",
         "RHINOVIRUS"
       ],
-      "summary": "다수 혈청형을 가진 상기도 바이러스다. 흔한 감기와 천식·COPD 악화, 면역저하자의 하기도질환을 연결한다.",
+      "summary": "흔한 감기의 원인이며 천식·COPD를 악화시킬 수 있다. 면역저하자에서는 하기도질환까지 진행할 수 있다.",
       "back": {
         "sections": [
           {
@@ -31637,7 +31637,7 @@
         "사람파라인플루엔자바이러스",
         "PARAINFLUENZA"
       ],
-      "summary": "호흡상피 감염과 세포융합을 만드는 바이러스다. 크루프와 세기관지염·폐렴을 연결한다.",
+      "summary": "소아 크루프의 대표 원인이며 세기관지염·폐렴도 일으킨다. 상기도 증상과 하기도 침범을 나누어 평가한다.",
       "back": {
         "sections": [
           {
@@ -31678,7 +31678,7 @@
         "사람메타뉴모바이러스",
         "HMPV"
       ],
-      "summary": "재감염이 흔한 호흡기 바이러스다. 감기부터 세기관지염·폐렴과 천식악화까지 숙주에 따라 질환이 달라진다.",
+      "summary": "소아·노인에서 세기관지염·폐렴을 일으키며 천식 악화도 가능하다. 단순 감기처럼 시작해도 숙주에 따라 하기도질환으로 진행할 수 있다.",
       "back": {
         "sections": [
           {
@@ -31719,7 +31719,7 @@
         "홍역바이러스",
         "MEASLES"
       ],
-      "summary": "전염성이 매우 높고 호흡기에서 전신으로 퍼지는 바이러스다. 기침·콧물·결막염, Koplik 반점과 발진을 연결한다.",
+      "summary": "발열·기침·콧물·결막염 뒤 Koplik 반점과 발진이 나타난다. 전염성이 높고 폐렴·뇌염 합병증이 가능하다.",
       "back": {
         "sections": [
           {
@@ -31760,7 +31760,7 @@
         "풍진바이러스",
         "RUBELLA"
       ],
-      "summary": "호흡기 초감염 뒤 태반도 통과할 수 있는 바이러스다. 경한 발진열·관절염과 선천풍진증후군을 구분한다.",
+      "summary": "대개 경한 발진열·관절염을 일으키지만 임신 중 감염은 선천풍진증후군 위험이 있다. 임신 여부가 중요한 임상 분기다.",
       "back": {
         "sections": [
           {
@@ -31801,7 +31801,7 @@
         "유행성이하선염바이러스",
         "MUMPS"
       ],
-      "summary": "호흡기 감염 뒤 선조직을 침범하는 바이러스다. 이하선염과 고환염·수막염·췌장염을 연결한다.",
+      "summary": "이하선염이 대표적이며 고환염·수막염·췌장염이 동반될 수 있다. 침범 장기에 따라 합병증 평가가 달라진다.",
       "back": {
         "sections": [
           {
@@ -31842,7 +31842,7 @@
         "로타바이러스 A",
         "ROTAVIRUS"
       ],
-      "summary": "장세포 손상과 NSP4 작용으로 수양성 설사를 만드는 바이러스다. 소아의 구토·발열·탈수가 핵심이다.",
+      "summary": "소아에서 구토·발열·수양성 설사와 탈수를 일으킨다. 바이러스 자체보다 수분·전해질 손실 관리가 급성기 치료의 중심이다.",
       "back": {
         "sections": [
           {
@@ -31883,7 +31883,7 @@
         "노로바이러스",
         "NOROVIRUS"
       ],
-      "summary": "낮은 감염량과 환경 안정성으로 집단발병하는 장관 바이러스다. 급성 구토·수양성 설사가 대표적이다.",
+      "summary": "급성 구토·수양성 설사와 집단발병이 특징이다. 낮은 감염량으로 쉽게 전파되어 환자 수액 관리와 전파 차단이 중요하다.",
       "back": {
         "sections": [
           {
@@ -31924,7 +31924,7 @@
         "비폴리오 엔테로바이러스",
         "NON-POLIO-ENTEROVIRUS"
       ],
-      "summary": "장·인두에서 증식하는 enterovirus군이다. 수족구병·herpangina와 무균수막염·심근염·신생아 질환을 연결한다.",
+      "summary": "수족구병·구협염·무균수막염의 흔한 원인이다. 일부는 심근염이나 신생아 패혈증과 비슷한 중증질환을 일으킨다.",
       "back": {
         "sections": [
           {
@@ -31965,7 +31965,7 @@
         "폴리오바이러스",
         "POLIOVIRUS"
       ],
-      "summary": "장관에서 증식한 뒤 드물게 CNS 운동뉴런을 침범한다. 무균수막염과 급성이완마비를 연결한다.",
+      "summary": "대부분 무증상이지만 드물게 무균수막염·급성이완마비를 일으킨다. 마비성 질환에서는 호흡근과 신경 기능 손상이 중요하다.",
       "back": {
         "sections": [
           {
@@ -32006,7 +32006,7 @@
         "광견병바이러스",
         "RABIES"
       ],
-      "summary": "동물 노출 뒤 말초신경을 따라 CNS로 이동하는 바이러스다. 공수증·연하곤란 또는 마비형의 치명적 뇌염을 만든다.",
+      "summary": "동물 노출 뒤 공수증·연하곤란을 동반한 뇌염 또는 마비형으로 나타난다. 증상이 생긴 광견병과 노출 후 예방은 전혀 다른 임상 단계다.",
       "back": {
         "sections": [
           {
@@ -32047,7 +32047,7 @@
         "뎅기바이러스",
         "DENGUE"
       ],
-      "summary": "Aedes 모기가 매개하며 네 혈청형을 가진다. 발열·심한 통증에서 출혈·쇼크·장기손상으로 진행할 수 있다.",
+      "summary": "모기 노출 뒤 발열·심한 통증이 나타나며, 일부는 출혈·쇼크·장기손상으로 진행한다. 경고징후와 수액 관리가 중요한 임상 판단이다.",
       "back": {
         "sections": [
           {
@@ -32088,7 +32088,7 @@
         "일본뇌염바이러스",
         "JAPANESE-ENCEPHALITIS"
       ],
-      "summary": "모기·돼지·물새 주기의 바이러스로 사람은 우연숙주다. 뇌염·발작·운동이상과 지속되는 신경 후유장애가 핵심이다.",
+      "summary": "모기 노출 뒤 뇌염·발작·운동이상을 일으킬 수 있다. 생존 후에도 신경 후유장애가 남을 수 있는 중증 신경감염이다.",
       "back": {
         "sections": [
           {
@@ -32129,7 +32129,7 @@
         "한탄바이러스",
         "HANTAAN-VIRUS"
       ],
-      "summary": "설치류 배설물 에어로졸로 전파되는 바이러스다. 발열·저혈압·출혈경향과 급성신손상의 신증후군출혈열을 연결한다.",
+      "summary": "설치류 노출 뒤 발열·저혈압·출혈경향과 급성신손상을 일으킨다. 한국에서는 신증후군출혈열의 주요 원인으로 노출력이 중요하다.",
       "back": {
         "sections": [
           {
@@ -32170,7 +32170,7 @@
         "중증열성혈소판감소증후군 바이러스",
         "SFTS-VIRUS"
       ],
-      "summary": "참진드기가 매개하며 체액으로 사람 간 전파도 가능한 바이러스다. 고열·혈소판 및 백혈구 감소와 다장기부전을 연결한다.",
+      "summary": "진드기 노출 뒤 고열·혈소판감소·백혈구감소와 소화기·신경 증상이 나타난다. 다장기부전으로 악화할 수 있고 체액을 통한 전파도 주의한다.",
       "back": {
         "sections": [
           {
@@ -32211,7 +32211,7 @@
         "delta hepatitis virus",
         "D형간염"
       ],
-      "summary": "HBV의 HBsAg 외피를 빌려야 감염이 성립하는 결함성 바이러스다. HBV 동시·중복감염과 빠른 간질환 진행을 연결한다.",
+      "summary": "HBV 감염이 있어야 성립하며 간염·간경변을 더 빠르게 악화시킬 수 있다. HBV DNA가 낮은데 간염이 심하면 중복감염을 고려한다.",
       "back": {
         "sections": [
           {
@@ -32254,7 +32254,7 @@
         "BKPyV",
         "BK 바이러스 신병증"
       ],
-      "summary": "신장·요로상피에 잠복했다가 이식 면역억제에서 재활성화한다. 신장이식 신병증과 조혈모세포이식 후 출혈방광염을 구분한다.",
+      "summary": "신장이식 후 신병증과 조혈모세포이식 후 출혈방광염에서 중요하다. 소변 양성만으로 판단하지 않고 혈장 바이러스량과 장기 손상을 함께 본다.",
       "back": {
         "sections": [
           {
@@ -32297,7 +32297,7 @@
         "JCPyV",
         "진행다초점백질뇌병증"
       ],
-      "summary": "잠복 바이러스가 세포면역 저하에서 희소돌기아교세포를 감염한다. PML의 아급성 진행성 국소 신경장애를 연결한다.",
+      "summary": "세포면역이 저하된 환자에서 아급성으로 진행하는 비대칭 신경결손을 일으킨다. 발열·두통이 드물고 종괴효과가 적은 PML이 특징이다.",
       "back": {
         "sections": [
           {
@@ -32340,7 +32340,7 @@
         "MPXV",
         "엠폭스"
       ],
-      "summary": "세포질에서 복제하는 큰 DNA 바이러스다. 림프절병·수포농포성 병변·직장염과 면역저하자의 괴사성 파종을 연결한다.",
+      "summary": "통증성 수포·농포, 림프절병과 직장염이 특징이다. 병변이 적어도 통증이 심할 수 있고 면역저하자는 괴사성 파종 위험이 있다.",
       "back": {
         "sections": [
           {
@@ -32383,7 +32383,7 @@
         "지카열",
         "Zika fever"
       ],
-      "summary": "Aedes 모기·성접촉·수직전파가 가능한 바이러스다. 성인의 경한 발진열과 임신 중 태아 뇌기형 위험을 구분한다.",
+      "summary": "성인은 대개 경한 발진열·결막염·관절통을 보인다. 임신 중 감염은 태아 소두증·뇌기형 위험이 있어 임신 여부가 핵심이다.",
       "back": {
         "sections": [
           {
@@ -32426,7 +32426,7 @@
         "치쿤구니야열",
         "chikungunya fever"
       ],
-      "summary": "Aedes 모기가 옮기는 바이러스로 고열과 심한 관절통이 특징이다. 관절·근육 염증이 핵심 컨셉이다.",
+      "summary": "모기 노출 뒤 갑작스러운 고열과 심한 양측 관절통이 나타난다. 급성기가 지나도 관절통이 수개월 지속될 수 있다.",
       "back": {
         "sections": [
           {
@@ -32469,7 +32469,7 @@
         "웨스트나일열",
         "West Nile neuroinvasive disease"
       ],
-      "summary": "Culex 모기와 조류 사이에서 순환하며 사람은 대개 종말숙주다. 뇌염과 감각소실 없는 비대칭 급성이완마비를 연결한다.",
+      "summary": "모기 노출 뒤 뇌염과 비대칭 급성이완마비를 일으킬 수 있다. 감각소실 없이 마비가 진행하며 호흡근 침범을 살펴야 한다.",
       "back": {
         "sections": [
           {
@@ -32508,7 +32508,7 @@
       "kind": "drug",
       "name": "Oxacillin",
       "family": "Penicillin",
-      "summary": "포도알균 penicillinase를 견디며 MSSA의 세포벽을 공격하는 penicillin이다. MRSA의 PBP2a 내성은 극복하지 못한다.",
+      "summary": "MSSA의 균혈증·심내막염·피부연조직감염을 겨냥하는 주사제다. MRSA에는 듣지 않으며 장알균·그람음성균도 치료 범위 밖이다.",
       "back": {
         "sections": [
           {
@@ -32565,7 +32565,7 @@
       "kind": "drug",
       "name": "Vancomycin",
       "family": "Glycopeptide",
-      "summary": "D-Ala-D-Ala에 붙어 그람양성균의 세포벽 합성을 막는다. 그람음성균에는 활성이 없고 경구제의 작용은 장내에 한정된다.",
+      "summary": "MRSA 등 그람양성균의 침습성 감염에 쓰는 약이다. 정맥제의 전신 치료와 경구제의 C. difficile 장염 치료는 구별하며 VRE·그람음성균은 덮지 못한다.",
       "back": {
         "sections": [
           {
@@ -32617,7 +32617,7 @@
       "kind": "drug",
       "name": "Ceftriaxone",
       "family": "3rd-generation cephalosporin",
-      "summary": "감수성 장내세균·사슬알균을 겨냥하는 3세대 cephalosporin이다. 녹농균·장알균과 AmpC 선택 위험이 주요 경계다.",
+      "summary": "감수성 병원체의 폐렴·수막염과 임질 치료 등에 쓰는 주사제다. 녹농균·장알균은 덮지 못하고, 유도성 AmpC 위험균에서는 치료 중 내성을 고려한다.",
       "back": {
         "sections": [
           {
@@ -32669,7 +32669,7 @@
       "kind": "drug",
       "name": "Cefepime",
       "family": "4th-generation cephalosporin",
-      "summary": "녹농균을 포함한 그람음성균과 일부 그람양성균의 세포벽을 공격하는 4세대 cephalosporin이다. 장알균에는 활성이 없다.",
+      "summary": "녹농균 위험이 있는 감염·호중구감소성 발열과 감수성 AmpC 감염에서 쓰인다. 신기능에 따른 노출 조절이 중요하며 신경독성을 살펴야 한다.",
       "back": {
         "sections": [
           {
@@ -32712,7 +32712,9 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "card-label-cefepime",
+        "idsa-amr"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -32721,7 +32723,7 @@
       "kind": "drug",
       "name": "Ceftazidime",
       "family": "3rd-generation cephalosporin",
-      "summary": "녹농균을 포함한 그람음성균에 초점을 둔 3세대 cephalosporin이다. 그람양성균 범위는 약하고 장알균에는 활성이 없다.",
+      "summary": "녹농균을 포함한 그람음성균 감염에 초점을 둔 주사제다. 그람양성균 범위가 약하고 장알균은 덮지 못해 혼합감염에서는 범위를 따져야 한다.",
       "back": {
         "sections": [
           {
@@ -32773,7 +32775,7 @@
       "kind": "drug",
       "name": "Meropenem",
       "family": "Carbapenem",
-      "summary": "호기성·혐기성 병원체를 폭넓게 겨냥하는 carbapenem이다. MRSA와 장알균에는 신뢰할 치료 범위가 없다.",
+      "summary": "중증 그람음성균·혐기균 감염과 침습성 ESBL 감염에서 중요한 광범위 주사제다. MRSA는 덮지 못하며 carbapenem 내성 여부가 선택을 가른다.",
       "back": {
         "sections": [
           {
@@ -32816,7 +32818,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "idsa-amr"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -32825,7 +32828,7 @@
       "kind": "drug",
       "name": "Imipenem",
       "family": "Carbapenem",
-      "summary": "여러 호기성·혐기성균의 세포벽을 공격하는 광범위 carbapenem이다. MRSA와 균종별 한계는 별도로 구분한다.",
+      "summary": "호기성·혐기성균이 섞인 중증 감염을 폭넓게 겨냥하는 주사제다. MRSA는 범위 밖이며 같은 carbapenem이라도 균종별 감수성을 확인한다.",
       "back": {
         "sections": [
           {
@@ -32877,7 +32880,7 @@
       "kind": "drug",
       "name": "Aztreonam",
       "family": "Monobactam",
-      "summary": "호기성 그람음성 간균의 PBP3를 겨냥하는 monobactam이다. 그람양성균·혐기성균은 범위 밖이다.",
+      "summary": "녹농균 등 호기성 그람음성균 감염을 겨냥한다. 그람양성균·혐기균은 덮지 못하므로 혼합감염에서는 추가 치료 범위를 따져야 한다.",
       "back": {
         "sections": [
           {
@@ -32929,7 +32932,7 @@
       "kind": "drug",
       "name": "Ciprofloxacin",
       "family": "Fluoroquinolone",
-      "summary": "DNA gyrase·topoisomerase IV를 억제하며 그람음성균에 강점을 가진다. 빠른 내성 선택과 부위·노출 조건이 중요하다.",
+      "summary": "감수성 그람음성균의 요로·장관 감염 등에 쓰며 녹농균 범위가 있다. 내성 선택이 쉬워 감염 부위와 실제 감수성을 확인한다.",
       "back": {
         "sections": [
           {
@@ -32981,7 +32984,7 @@
       "kind": "drug",
       "name": "Levofloxacin",
       "family": "Fluoroquinolone",
-      "summary": "DNA 복제 효소를 막는 fluoroquinolone으로 호흡기 병원체와 여러 그람음성균을 겨냥한다. 감수성과 노출 조건을 함께 본다.",
+      "summary": "호흡기 병원체와 감수성 그람음성균의 폐렴·요로감염 등에 쓰인다. 감염 부위와 노출 조건, 내성 여부를 확인해 선택한다.",
       "back": {
         "sections": [
           {
@@ -33033,7 +33036,7 @@
       "kind": "drug",
       "name": "Ampicillin",
       "family": "Aminopenicillin",
-      "summary": "장알균과 감수성 그람양성·일부 그람음성균의 세포벽을 공격한다. 여러 β-lactamase에 쉽게 분해되는 aminopenicillin이다.",
+      "summary": "감수성 장알균 감염과 Listeria 수막염·패혈증에서 중요한 약이다. β-lactamase 생성균과 다수 E. faecium에는 효과를 기대하기 어렵다.",
       "back": {
         "sections": [
           {
@@ -33085,7 +33088,7 @@
       "kind": "drug",
       "name": "Piperacillin–tazobactam",
       "family": "Antipseudomonal penicillin/BLI",
-      "summary": "항녹농균 penicillin에 일부 β-lactamase 억제제를 더한 조합이다. 혐기균까지 폭넓지만 침습성 ESBL과 MRSA가 한계다.",
+      "summary": "녹농균·혐기균을 함께 고려하는 중증 혼합감염에서 쓰인다. MRSA는 덮지 못하고 침습성 ESBL 감염에서는 신뢰할 표적 치료로 여기지 않는다.",
       "back": {
         "sections": [
           {
@@ -33128,7 +33131,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "idsa-amr"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -33137,7 +33141,7 @@
       "kind": "drug",
       "name": "Linezolid",
       "family": "Oxazolidinone",
-      "summary": "50S 번역 개시를 막아 MRSA·VRE 등 그람양성균을 겨냥한다. 그람음성균에는 활성이 없고 포도알균·장알균에는 주로 정균적이다.",
+      "summary": "MRSA 폐렴·피부감염과 VRE 감염에서 쓰이며 경구 사용도 가능하다. 그람음성균은 덮지 못하고 혈소판감소·골수억제를 살펴야 한다.",
       "back": {
         "sections": [
           {
@@ -33180,7 +33184,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "card-label-linezolid"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -33189,7 +33194,7 @@
       "kind": "drug",
       "name": "Ceftazidime–avibactam",
       "family": "Cephalosporin/BLI",
-      "summary": "Ceftazidime에 avibactam을 더해 일부 A·C·D형 효소 내성을 넘는다. Metallo-β-lactamase는 억제하지 못한다.",
+      "summary": "KPC·OXA-48 계열 내성 그람음성균 감염의 치료 옵션이다. NDM 등 MBL 감염에는 단독으로 효과를 기대하지 않으며 실제 감수성을 확인한다.",
       "back": {
         "sections": [
           {
@@ -33232,7 +33237,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "idsa-amr"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -33241,7 +33247,7 @@
       "kind": "drug",
       "name": "Teicoplanin",
       "family": "Glycopeptide",
-      "summary": "D-Ala-D-Ala에 결합해 그람양성균의 세포벽 합성을 막는 glycopeptide다. 그람음성균은 범위 밖이며 van 내성을 구분한다.",
+      "summary": "MRSA 등 그람양성균 감염에 쓰는 주사제다. 그람음성균은 덮지 못하며, VRE는 vanA·vanB에 따라 반응이 달라질 수 있다.",
       "back": {
         "sections": [
           {
@@ -33293,7 +33299,7 @@
       "kind": "drug",
       "name": "Cefazolin",
       "family": "1st-generation cephalosporin",
-      "summary": "MSSA·사슬알균과 일부 장내세균을 겨냥하는 1세대 cephalosporin이다. MRSA·장알균·녹농균에는 활성이 없다.",
+      "summary": "MSSA 감염·골관절감염과 수술 전 예방에 쓰는 대표 주사제다. MRSA·장알균·녹농균은 치료 범위 밖이다.",
       "back": {
         "sections": [
           {
@@ -33336,7 +33342,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "card-label-cefazolin"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -33345,7 +33352,7 @@
       "kind": "drug",
       "name": "Penicillin G",
       "family": "Natural penicillin",
-      "summary": "감수성 사슬알균·장알균 등의 세포벽을 공격하는 천연 penicillin이다. Penicillinase와 그람음성균 장벽이 범위를 제한한다.",
+      "summary": "감수성 사슬알균 감염과 매독 등에서 중요한 약이다. 매독은 병기·신경계 침범에 따라 제형이 다르며 penicillinase 생성 포도알균에는 듣지 않는다.",
       "back": {
         "sections": [
           {
@@ -33397,7 +33404,7 @@
       "kind": "drug",
       "name": "Amoxicillin–clavulanate",
       "family": "Aminopenicillin/BLI",
-      "summary": "Amoxicillin에 clavulanate를 더해 일부 β-lactamase를 억제한다. 지역사회 혼합감염에 쓰이지만 녹농균·AmpC·ESBL이 한계다.",
+      "summary": "지역사회 혼합감염과 동물 교상 감염 등에 쓰인다. 녹농균은 덮지 못하고 AmpC·ESBL 같은 내성을 억제제가 모두 해결해 주지는 않는다.",
       "back": {
         "sections": [
           {
@@ -33449,7 +33456,7 @@
       "kind": "drug",
       "name": "Ceftaroline",
       "family": "Anti-MRSA cephalosporin",
-      "summary": "PBP2a에도 결합해 MRSA를 겨냥할 수 있는 cephalosporin이다. 녹농균과 ESBL·AmpC·carbapenemase가 범위를 제한한다.",
+      "summary": "MRSA를 포함한 피부연조직감염과 감수성 병원체의 지역사회폐렴에 쓰인다. 녹농균·주요 내성 장내세균까지 덮는 광범위 약은 아니다.",
       "back": {
         "sections": [
           {
@@ -33492,7 +33499,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "card-label-ceftaroline"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -33501,7 +33509,7 @@
       "kind": "drug",
       "name": "Daptomycin",
       "family": "Lipopeptide",
-      "summary": "칼슘 의존적으로 그람양성균 막을 탈분극시켜 MRSA·VRE를 겨냥한다. 폐 계면활성제에 불활성화되어 폐렴에는 쓰지 않는다.",
+      "summary": "MRSA 균혈증 등 그람양성균의 혈류·심부 감염에서 쓰는 주사제다. 폐에서는 활성이 소실되어 폐렴 치료에는 쓰지 않는다.",
       "back": {
         "sections": [
           {
@@ -33544,7 +33552,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "card-label-daptomycin"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -33553,7 +33562,7 @@
       "kind": "drug",
       "name": "Clindamycin",
       "family": "Lincosamide",
-      "summary": "50S 단백질 합성을 막아 일부 그람양성균·혐기성균을 겨냥한다. 유도성 내성을 찾는 D-test가 중요한 경계다.",
+      "summary": "일부 피부연조직·구강 혐기균 감염에 쓰며 침습성 GAS 감염에서는 병합 역할이 있다. 유도성 내성이 있으면 실패할 수 있어 D-test가 중요하다.",
       "back": {
         "sections": [
           {
@@ -33605,7 +33614,7 @@
       "kind": "drug",
       "name": "Erythromycin",
       "family": "Macrolide",
-      "summary": "50S 단백질 신장을 억제하는 macrolide다. 감수성 그람양성균·비정형균이 주 범위이며 흔한 내성이 한계다.",
+      "summary": "감수성 호흡기·비정형 병원체를 겨냥하는 macrolide다. 흔한 내성 때문에 같은 계열이라는 이유만으로 효과를 기대하지 않는다.",
       "back": {
         "sections": [
           {
@@ -33657,7 +33666,7 @@
       "kind": "drug",
       "name": "Doxycycline",
       "family": "Tetracycline",
-      "summary": "30S에서 tRNA 진입을 막는 tetracycline이다. 비정형균과 여러 선택된 병원체를 겨냥하지만 녹농균에는 신뢰할 활성이 없다.",
+      "summary": "비정형 폐렴·진드기매개 감염과 일부 감수성 피부감염에서 쓰인다. 녹농균 치료용으로 기대하지 않으며 병원체·감염 부위에 따라 선택한다.",
       "back": {
         "sections": [
           {
@@ -33709,7 +33718,7 @@
       "kind": "drug",
       "name": "Trimethoprim–sulfamethoxazole",
       "family": "Antifolate combination",
-      "summary": "엽산 합성의 두 단계를 연속 차단하는 조합이다. 감수성 포도알균·장내세균 등에 쓰며 장알균·녹농균은 주요 한계다.",
+      "summary": "PCP·Nocardia 감염과 감수성 MRSA·요로감염 등에서 쓰인다. 장알균·녹농균의 치료 범위로 기대하지 않는다.",
       "back": {
         "sections": [
           {
@@ -33752,7 +33761,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "card-nih-oi-therapy"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -33761,7 +33771,7 @@
       "kind": "drug",
       "name": "Gentamicin",
       "family": "Aminoglycoside",
-      "summary": "30S 오독을 유도하는 aminoglycoside로 호기성 그람음성균을 겨냥한다. 장알균에서는 고도내성 확인 뒤 병합 상승작용을 구분한다.",
+      "summary": "호기성 그람음성균 감염과 일부 심내막염의 병합요법에서 쓰는 주사제다. 신독성·청력독성이 주요 제약이며 장알균에는 단독으로 쓰지 않는다.",
       "back": {
         "sections": [
           {
@@ -33804,7 +33814,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "card-label-gentamicin"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -33813,7 +33824,7 @@
       "kind": "drug",
       "name": "Amikacin",
       "family": "Aminoglycoside",
-      "summary": "30S에 결합해 일부 내성균을 포함한 호기성 그람음성균을 겨냥한다. 혐기성균과 장알균 단독치료에는 유효하지 않다.",
+      "summary": "일부 내성 그람음성균 감염과 감수성 기반 NTM 병합요법에서 쓰인다. 신독성·청력독성을 감시해야 하며 장알균 단독치료에는 효과가 없다.",
       "back": {
         "sections": [
           {
@@ -33856,7 +33867,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "card-label-amikacin"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -33865,7 +33877,7 @@
       "kind": "drug",
       "name": "Metronidazole",
       "family": "Nitroimidazole",
-      "summary": "혐기성 환경에서 환원되어 DNA 손상 물질을 만든다. 혐기성 세균·일부 원충이 표적이며 호기성균은 범위 밖이다.",
+      "summary": "복강·골반의 혐기균 감염과 일부 원충 감염에 쓰인다. 호기성균은 덮지 못하고 침습성 아메바증은 장강 치료제를 따로 병용해야 한다.",
       "back": {
         "sections": [
           {
@@ -33908,7 +33920,8 @@
       },
       "sourceIds": [
         "eucast-2026",
-        "eucast-expected"
+        "eucast-expected",
+        "cdc-amebiasis"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -33917,7 +33930,7 @@
       "kind": "drug",
       "name": "Tigecycline",
       "family": "Glycylcycline",
-      "summary": "30S를 막아 그람양성·혐기성·일부 그람음성균을 폭넓게 겨냥한다. 녹농균과 낮은 혈중·요중 노출이 주요 한계다.",
+      "summary": "일부 내성균을 포함한 복잡한 조직·혼합감염에서 고려한다. 혈중·요중 노출이 낮아 균혈증·요로감염에 불리하고 녹농균도 덮지 못한다.",
       "back": {
         "sections": [
           {
@@ -33969,7 +33982,7 @@
       "kind": "drug",
       "name": "Azithromycin",
       "family": "Azalide macrolide",
-      "summary": "50S를 억제하며 비정형 호흡기균·백일해·일부 STI를 겨냥한다. NTM 병합요법과 M. genitalium 내성 분기를 구분한다.",
+      "summary": "비정형 호흡기감염·백일해와 일부 성매개감염에 쓰인다. NTM에는 병합하며 M. genitalium에는 내성 확인 없이 단회요법을 선택하지 않는다.",
       "back": {
         "sections": [
           {
@@ -34031,7 +34044,7 @@
       "kind": "drug",
       "name": "Clarithromycin",
       "family": "14-membered macrolide",
-      "summary": "50S 단백질 합성을 막는 macrolide다. 감수성 NTM 병합요법과 H. pylori에서 감수성·상호작용이 중요하다.",
+      "summary": "감수성 NTM 병합요법과 H. pylori 제균요법에서 쓰인다. 내성 확인과 CYP3A 상호작용·QT 연장이 선택의 중요한 제약이다.",
       "back": {
         "sections": [
           {
@@ -34088,7 +34101,7 @@
       "kind": "drug",
       "name": "Rifampicin",
       "family": "Rifamycin",
-      "summary": "세균 RNA polymerase를 막아 전사를 차단하는 rifamycin이다. Mycobacterium 병합요법과 빠른 내성 선택·효소유도를 연결한다.",
+      "summary": "결핵·NTM의 병합요법에서 중요한 약이다. 단독 사용은 빠른 내성을 선택하며 강한 효소유도 때문에 병용약을 확인해야 한다.",
       "back": {
         "sections": [
           {
@@ -34140,7 +34153,7 @@
       "kind": "drug",
       "name": "Isoniazid",
       "family": "Antimycobacterial prodrug",
-      "summary": "KatG로 활성화되어 mycolic acid 합성을 막는 결핵약이다. 활동성 결핵 병합요법과 간독성·말초신경병증을 연결한다.",
+      "summary": "활동성 결핵 병합요법의 주요 구성약이다. 간독성·말초신경병증을 감시하며 위험군에는 pyridoxine 병용을 고려한다.",
       "back": {
         "sections": [
           {
@@ -34192,7 +34205,7 @@
       "kind": "drug",
       "name": "Ethambutol",
       "family": "Arabinose-analog antimycobacterial",
-      "summary": "Arabinogalactan 세포벽 합성을 방해하는 항산균약이다. 결핵·MAC 병합요법과 시력·적녹 색각 독성을 연결한다.",
+      "summary": "결핵·MAC 병합요법에서 쓰는 약이다. 시력·적녹 색각 변화와 신기능을 살펴야 하며 활동성 감염에 단독으로 쓰지 않는다.",
       "back": {
         "sections": [
           {
@@ -34244,7 +34257,7 @@
       "kind": "drug",
       "name": "Pyrazinamide",
       "family": "Nicotinamide-analog antimycobacterial prodrug",
-      "summary": "산성 염증환경의 결핵균에 작용하는 전구약이다. 초기 강화기 역할과 간독성·고요산혈증, M. bovis 고유 내성을 연결한다.",
+      "summary": "결핵 초기 강화기 병합요법에서 중요한 약이다. 간독성·고요산혈증이 제약이며 M. bovis에는 고유 내성 때문에 효과가 없다.",
       "back": {
         "sections": [
           {
@@ -34296,7 +34309,7 @@
       "kind": "drug",
       "name": "Amoxicillin",
       "family": "Aminopenicillin",
-      "summary": "감수성 사슬알균·장알균과 일부 그람음성균의 세포벽을 공격한다. β-lactamase에 취약하며 H. pylori에서는 병합요법 구성약이다.",
+      "summary": "감수성 지역사회 호흡기감염 등에 쓰며 H. pylori 제균요법의 구성약이기도 하다. β-lactamase 생성균에는 단독 효과를 기대하기 어렵다.",
       "back": {
         "sections": [
           {
@@ -34348,7 +34361,7 @@
       "kind": "drug",
       "name": "Moxifloxacin",
       "family": "Fluoroquinolone",
-      "summary": "DNA 복제 효소를 막아 호흡기·일부 비정형 병원체를 겨냥한다. QT 연장과 내성 선택, 결핵 의심 시 노출 맥락이 중요하다.",
+      "summary": "호흡기감염과 내성에 따른 M. genitalium 치료 등에 쓰인다. QT 연장·상호작용을 확인하고 결핵 의심 상황의 단독 노출에 주의한다.",
       "back": {
         "sections": [
           {
@@ -34405,7 +34418,7 @@
       "kind": "drug",
       "name": "Fluconazole",
       "family": "Triazole",
-      "summary": "Ergosterol 합성을 막아 효모·일부 이형성 진균을 겨냥한다. Aspergillus·Mucorales는 범위 밖이며 Candida 종별 차이가 크다.",
+      "summary": "감수성 Candida 감염과 일부 진균증의 치료·유지요법에서 쓰인다. Aspergillus·Mucorales에는 효과가 없고 Candida 종별 감수성 차이가 크다.",
       "back": {
         "sections": [
           {
@@ -34467,7 +34480,7 @@
       "kind": "drug",
       "name": "Voriconazole",
       "family": "Triazole",
-      "summary": "Ergosterol 합성을 억제해 Aspergillus와 Candida를 겨냥한다. Mucorales 한계와 상호작용·혈중농도 관리가 중요하다.",
+      "summary": "침습성 Aspergillus 감염에서 중요한 약이다. Mucorales에는 신뢰할 효과가 없으며 상호작용과 혈중농도 관리가 중요하다.",
       "back": {
         "sections": [
           {
@@ -34519,7 +34532,7 @@
       "kind": "drug",
       "name": "Posaconazole",
       "family": "Triazole",
-      "summary": "Ergosterol 합성을 막는 넓은 범위의 triazole이다. Candida·Aspergillus·일부 Mucorales와 제형별 흡수 차이를 연결한다.",
+      "summary": "넓은 진균 범위가 필요한 예방·치료에서 쓰인다. 제형별 흡수와 병용약 상호작용을 확인해야 실제 노출을 확보할 수 있다.",
       "back": {
         "sections": [
           {
@@ -34576,7 +34589,7 @@
       "kind": "drug",
       "name": "Isavuconazole",
       "family": "Triazole",
-      "summary": "Aspergillus·Mucorales를 포함한 진균의 ergosterol 합성을 막는다. 실제 사용범위는 종과 감염 증후군의 근거에 따라 달라진다.",
+      "summary": "침습성 Aspergillus·Mucorales 감염의 치료 옵션이다. 같은 진균증이라도 종·침범 부위에 따른 근거와 감수성을 확인해 선택한다.",
       "back": {
         "sections": [
           {
@@ -34633,7 +34646,7 @@
       "kind": "drug",
       "name": "Amphotericin B",
       "family": "Polyene",
-      "summary": "Ergosterol에 붙어 진균 막의 투과성을 높이는 polyene이다. 광범위 침습진균증과 제형별 노출·독성 차이가 핵심이다.",
+      "summary": "중증 침습진균증과 일부 원충 감염에서 중요한 약이다. Liposomal·deoxycholate 제형은 독성·노출이 달라 임의로 바꾸어 쓰지 않는다.",
       "back": {
         "sections": [
           {
@@ -34705,7 +34718,7 @@
       "kind": "drug",
       "name": "Micafungin",
       "family": "Echinocandin",
-      "summary": "β-1,3-D-glucan 세포벽 합성을 막는 echinocandin이다. Candida가 주요 표적이며 Cryptococcus·Mucorales와 특정 부위 노출이 한계다.",
+      "summary": "칸디다혈증·침습성 Candida 감염에서 쓰는 주사제다. Cryptococcus·Mucorales는 덮지 못하고 중추신경계·안구·요로 노출도 제한적이다.",
       "back": {
         "sections": [
           {
@@ -34762,7 +34775,7 @@
       "kind": "drug",
       "name": "Flucytosine",
       "family": "Pyrimidine analogue",
-      "summary": "진균 안에서 5-FU로 바뀌어 핵산 합성을 막는다. Cryptococcus 병합치료와 단독투여 시 빠른 내성·골수독성을 연결한다.",
+      "summary": "Cryptococcus 수막염 등의 병합치료에 쓰인다. 단독 사용은 빠른 내성을 선택하며 골수·간 독성을 감시해야 한다.",
       "back": {
         "sections": [
           {
@@ -34805,7 +34818,8 @@
       },
       "sourceIds": [
         "label-flucytosine",
-        "nih-crypto"
+        "nih-crypto",
+        "card-nih-oi-therapy"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -34814,7 +34828,7 @@
       "kind": "drug",
       "name": "Terbinafine",
       "family": "Allylamine",
-      "summary": "Squalene epoxidase를 막아 피부사상균을 겨냥한다. 피부·손발톱 진균증과 침습성 진균증의 치료 맥락을 구분한다.",
+      "summary": "피부사상균에 의한 피부·손발톱 진균증 치료가 중심이다. 침습성 진균증의 표준 약제로 쓰는 약은 아니다.",
       "back": {
         "sections": [
           {
@@ -34871,7 +34885,7 @@
       "kind": "drug",
       "name": "Albendazole",
       "family": "Benzimidazole",
-      "summary": "β-tubulin·미세소관을 막는 구충제다. 장·조직 선충과 일부 유충성 조충을 겨냥하며 병변별 염증반응을 구분한다.",
+      "summary": "장내 선충과 일부 조직 유충 감염에 쓰인다. 신경·조직 병변은 약물로 유발되는 염증과 병변 위치까지 고려해야 한다.",
       "back": {
         "sections": [
           {
@@ -34918,7 +34932,7 @@
       "kind": "drug",
       "name": "Mebendazole",
       "family": "Benzimidazole",
-      "summary": "미세소관과 포도당 흡수를 방해하는 장내 선충약이다. 조직 침투가 제한적이라 장내 감염이 중심이다.",
+      "summary": "장내 선충 감염을 주로 치료하는 구충제다. 조직 침투가 제한적이어서 조직 기생충 감염까지 같은 효과를 기대하지 않는다.",
       "back": {
         "sections": [
           {
@@ -34965,7 +34979,7 @@
       "kind": "drug",
       "name": "Ivermectin",
       "family": "Macrocyclic lactone",
-      "summary": "기생충 chloride channel을 활성화해 Strongyloides·옴 등을 겨냥한다. Loa loa 고미세사상충혈증의 중증 반응을 구분한다.",
+      "summary": "Strongyloides 감염·옴 등에서 중요한 약이다. Loa loa 고미세사상충혈증에서는 중증 반응 위험을 고려해야 한다.",
       "back": {
         "sections": [
           {
@@ -35012,7 +35026,7 @@
       "kind": "drug",
       "name": "Praziquantel",
       "family": "Pyrazinoisoquinoline",
-      "summary": "기생충 칼슘 투과를 높여 흡충·장내 성충 조충을 경직시킨다. Fasciola와 조직 낭미충은 별도 치료 맥락이 필요하다.",
+      "summary": "여러 흡충과 장내 성충 조충 감염에 쓰인다. Fasciola는 별도 약제가 필요하며 조직 낭미충은 병변별 치료 판단이 필요하다.",
       "back": {
         "sections": [
           {
@@ -35059,7 +35073,7 @@
       "kind": "drug",
       "name": "Nitazoxanide",
       "family": "Thiazolide",
-      "summary": "혐기성 에너지 대사를 방해하는 thiazolide다. 면역정상자의 Cryptosporidium 등이 표적이며 중증 면역저하에서는 효과가 제한된다.",
+      "summary": "면역정상자의 Cryptosporidium 등 장내 원충 감염에 쓰인다. 중증 면역저하에서는 효과가 제한될 수 있다.",
       "back": {
         "sections": [
           {
@@ -35106,7 +35120,7 @@
       "kind": "drug",
       "name": "Paromomycin",
       "family": "Aminoglycoside",
-      "summary": "30S에 작용하는 aminoglycoside로 경구제는 주로 장강에 머문다. 장강 내 아메바 치료와 조직 감염 치료를 구분한다.",
+      "summary": "경구제는 장강 내 아메바 감염을 치료하는 데 쓰인다. 조직 침투가 낮아 아메바 간농양·침습성 대장염을 단독으로 치료하는 약은 아니다.",
       "back": {
         "sections": [
           {
@@ -35144,7 +35158,8 @@
         ]
       },
       "sourceIds": [
-        "cdc-intestinal"
+        "cdc-intestinal",
+        "cdc-amebiasis"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -35153,7 +35168,7 @@
       "kind": "drug",
       "name": "Pyrimethamine",
       "family": "Antifolate",
-      "summary": "원충 DHFR을 막아 엽산 대사를 차단한다. Toxoplasma 병합요법과 골수억제에 대한 leucovorin 병용을 연결한다.",
+      "summary": "Toxoplasma 감염의 병합요법에 쓰인다. 골수억제를 줄이기 위한 leucovorin 병용이 중요하다.",
       "back": {
         "sections": [
           {
@@ -35191,7 +35206,8 @@
         ]
       },
       "sourceIds": [
-        "cdc-intestinal"
+        "cdc-intestinal",
+        "card-nih-oi-therapy"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -35200,7 +35216,7 @@
       "kind": "drug",
       "name": "Sulfadiazine",
       "family": "Sulfonamide",
-      "summary": "엽산 합성을 막는 sulfonamide로 Toxoplasma 병합요법의 구성약이다. 과민반응·결정뇨·골수독성이 주요 한계다.",
+      "summary": "Toxoplasma 감염에서 pyrimethamine 등과 병합한다. 과민반응·결정뇨·골수독성이 중요한 사용 제약이다.",
       "back": {
         "sections": [
           {
@@ -35238,7 +35254,8 @@
         ]
       },
       "sourceIds": [
-        "cdc-intestinal"
+        "cdc-intestinal",
+        "card-nih-oi-therapy"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -35247,7 +35264,7 @@
       "kind": "drug",
       "name": "Artemether–lumefantrine",
       "family": "Artemisinin combination",
-      "summary": "혈액기 말라리아를 두 기전으로 공격하는 artemisinin 조합이다. 비중증 치료와 중증질환·간 휴면체 치료를 구분한다.",
+      "summary": "비중증 혈액기 말라리아 치료에 쓰는 병합제다. 중증 말라리아 치료나 P. vivax·ovale의 간 휴면체 제거를 대신하지 않는다.",
       "back": {
         "sections": [
           {
@@ -35294,7 +35311,7 @@
       "kind": "drug",
       "name": "Atovaquone–proguanil",
       "family": "Antimalarial combination",
-      "summary": "미토콘드리아 전자전달과 엽산 경로를 막는 말라리아 조합이다. 비중증 혈액기 치료가 중심이며 간 휴면체는 제거하지 못한다.",
+      "summary": "비중증 말라리아의 혈액기 치료에 쓰는 병합제다. 중증 말라리아나 P. vivax·ovale의 재발 원인인 간 휴면체는 별도 치료가 필요하다.",
       "back": {
         "sections": [
           {
@@ -35341,7 +35358,7 @@
       "kind": "drug",
       "name": "Primaquine",
       "family": "8-aminoquinoline",
-      "summary": "말라리아 간 휴면체와 생식모세포를 겨냥하는 8-aminoquinoline이다. 재발·전파 차단과 G6PD 관련 용혈 위험을 연결한다.",
+      "summary": "P. vivax·ovale의 재발 방지와 일부 말라리아 전파 차단에 쓰인다. G6PD 관련 용혈 위험 때문에 검사와 임신·수유 조건을 확인한다.",
       "back": {
         "sections": [
           {
@@ -35388,7 +35405,7 @@
       "kind": "drug",
       "name": "Miltefosine",
       "family": "Alkylphosphocholine",
-      "summary": "막 지질대사·미토콘드리아 기능을 교란하는 리슈만편모충약이다. 종·지역별 효과 차이와 최기형성이 주요 경계다.",
+      "summary": "일부 리슈만편모충 감염을 치료하는 약이다. 종·획득 지역에 따라 효과가 다르고 최기형성이 중요한 사용 제약이다.",
       "back": {
         "sections": [
           {
@@ -35435,7 +35452,7 @@
       "kind": "drug",
       "name": "Triclabendazole",
       "family": "Benzimidazole flukicide",
-      "summary": "Fasciola의 미성숙충과 성충을 함께 겨냥하는 흡충약이다. 간이행기부터 담도기까지의 치료 역할이 핵심이다.",
+      "summary": "Fasciola 감염의 간이행기부터 담도기까지 치료하는 약이다. 다른 흔한 흡충 치료를 대신하는 일반 구충제는 아니다.",
       "back": {
         "sections": [
           {
@@ -35482,7 +35499,7 @@
       "kind": "drug",
       "name": "Permethrin",
       "family": "Topical pyrethroid",
-      "summary": "절지동물 sodium channel에 작용하는 외용 옴약이다. 도포 누락과 접촉자 재감염이 치료 실패의 중요한 맥락이다.",
+      "summary": "옴에 쓰는 외용제다. 도포 누락과 접촉자 미치료에 따른 재감염이 흔한 실패 원인이다.",
       "back": {
         "sections": [
           {
@@ -35529,7 +35546,7 @@
       "kind": "drug",
       "name": "Benznidazole",
       "family": "Nitroimidazole antitrypanosomal",
-      "summary": "환원 대사체로 원충을 손상시키는 샤가스병 약이다. 감염 단계별 이득과 만성 진행성 장기병증의 한계를 구분한다.",
+      "summary": "샤가스병의 원인 감염을 치료하는 약이다. 이미 진행된 만성 심장·소화기 병증에서는 이득이 불확실하며 독성을 함께 고려한다.",
       "back": {
         "sections": [
           {
@@ -35576,7 +35593,7 @@
       "kind": "drug",
       "name": "Itraconazole",
       "family": "Triazole",
-      "summary": "Ergosterol 합성을 막아 피부사상균·Sporothrix·여러 이형성 진균을 겨냥한다. 제형·흡수·상호작용과 CNS·요로 노출이 한계다.",
+      "summary": "Sporothrix·여러 이형성 진균과 피부사상균 감염에 쓰인다. 제형·흡수·상호작용과 심부전 위험이 중요하며 중추신경계·요로에는 불리하다.",
       "back": {
         "sections": [
           {
@@ -35633,7 +35650,7 @@
       "kind": "drug",
       "name": "Pentamidine",
       "family": "Aromatic diamidine",
-      "summary": "여러 생합성 단계를 교란해 Pneumocystis·일부 원충을 겨냥한다. 정맥 치료와 흡입 예방의 역할·독성을 구분한다.",
+      "summary": "PCP 등의 대안 치료에 쓰이며 정맥제와 흡입 예방제의 역할이 다르다. 신장·췌장·혈당·전해질 독성이 중요한 사용 제약이다.",
       "back": {
         "sections": [
           {
@@ -35671,7 +35688,8 @@
         ]
       },
       "sourceIds": [
-        "nih-pcp"
+        "nih-pcp",
+        "card-nih-oi-therapy"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -35680,7 +35698,7 @@
       "kind": "drug",
       "name": "Atovaquone",
       "family": "Hydroxynaphthoquinone",
-      "summary": "원충의 미토콘드리아 전자전달을 막는 약이다. Babesia 병합요법·PCP 대안 치료와 지방식에 따른 흡수 차이를 연결한다.",
+      "summary": "비중증 Babesia 병합요법과 PCP 대안 치료 등에 쓰인다. 지방식과 복용해야 흡수가 개선되며 중증 감염에서는 같은 역할을 기대하지 않는다.",
       "back": {
         "sections": [
           {
@@ -35723,7 +35741,8 @@
       },
       "sourceIds": [
         "idsa-babesia",
-        "nih-pcp"
+        "nih-pcp",
+        "card-nih-oi-therapy"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -35732,7 +35751,7 @@
       "kind": "drug",
       "name": "Quinine",
       "family": "Quinoline antiprotozoal",
-      "summary": "적혈구 내 원충을 겨냥하며 중증 Babesia에서 clindamycin 병합 대안으로 쓰인다. Cinchonism·QT 연장·저혈당이 한계다.",
+      "summary": "일부 말라리아·Babesia 감염에서 병합요법의 구성약으로 쓰인다. 단독요법이 아니며 cinchonism·QT 연장·저혈당이 사용을 제한한다.",
       "back": {
         "sections": [
           {
@@ -35779,7 +35798,7 @@
       "kind": "drug",
       "name": "Acyclovir",
       "family": "Guanosine nucleoside analogue",
-      "summary": "바이러스 선택적 활성화 뒤 DNA polymerase를 막아 HSV·VZV를 겨냥한다. 활성화 기전 내성과 정맥제 신독성을 연결한다.",
+      "summary": "HSV·VZV의 점막·피부감염부터 중증 감염까지 쓰인다. 감염 부위에 따라 경구·정맥 치료가 달라지며 정맥제의 신독성을 살펴야 한다.",
       "back": {
         "sections": [
           {
@@ -35831,7 +35850,7 @@
       "kind": "drug",
       "name": "Ganciclovir",
       "family": "Guanosine nucleoside analogue",
-      "summary": "CMV의 UL97 활성화 뒤 DNA polymerase를 막는다. 활동성 CMV 치료와 예방을 구분하며 골수억제가 중요한 한계다.",
+      "summary": "활동성 CMV 장기질환, 특히 망막염 치료에서 중요한 약이다. 골수억제가 주요 제약이며 예방 목적과 치료 목적은 구별한다.",
       "back": {
         "sections": [
           {
@@ -35874,7 +35893,8 @@
       },
       "sourceIds": [
         "nih-oi-cmv",
-        "nih-hhv6"
+        "nih-hhv6",
+        "card-nih-oi-therapy"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -35883,7 +35903,7 @@
       "kind": "drug",
       "name": "Foscarnet",
       "family": "Pyrophosphate analogue",
-      "summary": "인산화 없이 바이러스 DNA polymerase를 직접 막는다. 내성 CMV·HSV의 구제치료와 신장·전해질 독성을 연결한다.",
+      "summary": "Ganciclovir 내성·불내성 CMV와 acyclovir 내성 HSV의 대안 치료에 쓰인다. 신독성·전해질 이상이 커 전문적인 감시가 필요하다.",
       "back": {
         "sections": [
           {
@@ -35926,7 +35946,8 @@
       },
       "sourceIds": [
         "nih-oi-cmv",
-        "cdc-sti-herpes"
+        "cdc-sti-herpes",
+        "card-nih-oi-therapy"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -35935,7 +35956,7 @@
       "kind": "drug",
       "name": "Cidofovir",
       "family": "Nucleotide analogue",
-      "summary": "세포 내 활성화 뒤 DNA polymerase를 막는 nucleotide 유사체다. 선택된 DNA 바이러스 치료와 신독성에 따른 좁은 역할을 구분한다.",
+      "summary": "선택된 내성·불내성 CMV 감염 등에서 고려하는 대안 약이다. 신독성 때문에 대부분의 DNA 바이러스 감염에 일률적으로 쓰지 않는다.",
       "back": {
         "sections": [
           {
@@ -35978,7 +35999,8 @@
       },
       "sourceIds": [
         "nih-oi-cmv",
-        "cdc-adenovirus"
+        "cdc-adenovirus",
+        "card-nih-oi-therapy"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -35987,7 +36009,7 @@
       "kind": "drug",
       "name": "Letermovir",
       "family": "CMV terminase inhibitor",
-      "summary": "CMV terminase를 막아 바이러스 DNA 포장을 방해한다. CMV 예방이 중심이며 이미 생긴 장기질환 치료와 구분한다.",
+      "summary": "이식 등 특정 상황에서 CMV 예방을 위해 쓰는 약이다. 이미 발생한 CMV 장기질환의 표준 치료제는 아니다.",
       "back": {
         "sections": [
           {
@@ -36034,7 +36056,7 @@
       "kind": "drug",
       "name": "Oseltamivir",
       "family": "Neuraminidase inhibitor",
-      "summary": "Neuraminidase를 억제해 influenza A·B 입자의 방출을 막는다. 발병 초기 사용 시점과 숙주·내성 맥락이 중요하다.",
+      "summary": "Influenza A·B 치료에 쓰며 일찍 시작할수록 이득이 크다. 입원·중증·고위험 환자는 초기 시간창이 지났다고 치료를 일률적으로 배제하지 않는다.",
       "back": {
         "sections": [
           {
@@ -36072,7 +36094,8 @@
         ]
       },
       "sourceIds": [
-        "cdc-influenza-treatment"
+        "cdc-influenza-treatment",
+        "card-cdc-flu"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -36081,7 +36104,7 @@
       "kind": "drug",
       "name": "Baloxavir marboxil",
       "family": "Cap-dependent endonuclease inhibitor",
-      "summary": "Cap-dependent endonuclease를 막아 influenza A·B 전사를 방해한다. 초기 비복잡 독감과 중증 입원 독감의 근거를 구분한다.",
+      "summary": "발병 초기 비복잡 외래 독감 치료에서 쓰인다. 중증·입원 독감에 같은 근거로 단독 사용하지 않는다.",
       "back": {
         "sections": [
           {
@@ -36119,7 +36142,8 @@
         ]
       },
       "sourceIds": [
-        "cdc-influenza-treatment"
+        "cdc-influenza-treatment",
+        "card-cdc-flu"
       ],
       "reviewStatus": "educational-draft"
     },
@@ -36128,7 +36152,7 @@
       "kind": "drug",
       "name": "Remdesivir",
       "family": "Adenosine nucleotide prodrug",
-      "summary": "RNA polymerase를 막아 SARS-CoV-2 복제를 억제하는 전구약이다. 정맥 투여와 발병 시점이 사용범위를 좌우한다.",
+      "summary": "중증 진행 위험이 있는 COVID-19 등에서 쓰는 정맥 항바이러스제다. 발병 시점과 정맥 투여 가능성이 선택을 가른다.",
       "back": {
         "sections": [
           {
@@ -36175,7 +36199,7 @@
       "kind": "drug",
       "name": "Nirmatrelvir–ritonavir",
       "family": "Coronavirus protease inhibitor plus pharmacokinetic enhancer",
-      "summary": "Nirmatrelvir가 SARS-CoV-2 protease를 막고 ritonavir가 노출을 높인다. 발병 시점·신장기능과 약물상호작용이 중요하다.",
+      "summary": "고위험 외래 COVID-19의 발병 초기 치료에 쓰인다. 병용약 상호작용과 신장·간 기능 조건을 먼저 확인해야 한다.",
       "back": {
         "sections": [
           {
@@ -36222,7 +36246,7 @@
       "kind": "drug",
       "name": "Ribavirin",
       "family": "Broad-spectrum nucleoside analogue",
-      "summary": "여러 기전으로 RNA 바이러스 복제를 방해하는 nucleoside 유사체다. 독성과 질환별 불확실한 근거 때문에 사용범위가 좁다.",
+      "summary": "일부 바이러스 질환에서 제한적으로 고려하지만 질환별 근거가 다르다. 독성과 불확실한 효과 때문에 일반적인 광범위 항바이러스제로 쓰지 않는다.",
       "back": {
         "sections": [
           {
@@ -36274,7 +36298,7 @@
       "kind": "drug",
       "name": "Tenofovir (TDF/TAF)",
       "family": "Nucleotide reverse-transcriptase inhibitor",
-      "summary": "HBV polymerase·HIV 역전사효소에서 사슬을 종결시키는 nucleotide 유사체다. HIV 병합요법과 TDF·TAF 제형 차이를 구분한다.",
+      "summary": "만성 HBV 치료와 HIV 병합요법에서 쓰인다. HIV 단독치료제로 쓰지 않으며 TDF·TAF의 신장·뼈 영향과 제형 차이를 고려한다.",
       "back": {
         "sections": [
           {
@@ -36326,7 +36350,7 @@
       "kind": "drug",
       "name": "Entecavir",
       "family": "Guanosine nucleoside analogue",
-      "summary": "HBV polymerase의 여러 단계를 막는 nucleoside 유사체다. HBV 내성 장벽과 lamivudine 내성 병력, HIV 동시감염을 구분한다.",
+      "summary": "만성 HBV 치료에 쓰는 약이다. Lamivudine 내성 병력은 효과에 영향을 주며 HIV 동시감염을 단독으로 치료하지 못한다.",
       "back": {
         "sections": [
           {
@@ -36373,7 +36397,7 @@
       "kind": "drug",
       "name": "Sofosbuvir–velpatasvir",
       "family": "HCV NS5B nucleotide inhibitor plus NS5A inhibitor",
-      "summary": "HCV의 NS5B와 NS5A를 함께 막는 범유전자형 조합이다. 간경변·이전 치료력과 상호작용이 요법 선택을 좌우한다.",
+      "summary": "여러 HCV 유전자형의 만성 C형간염 치료에 쓰는 병합제다. 간경변 상태·이전 치료력과 약물상호작용이 요법 선택을 가른다.",
       "back": {
         "sections": [
           {
@@ -36420,7 +36444,7 @@
       "kind": "drug",
       "name": "Dolutegravir",
       "family": "HIV integrase strand-transfer inhibitor",
-      "summary": "HIV integrase의 strand transfer를 막는 약이다. 완전한 병합요법 구성과 다가 양이온 상호작용을 연결한다.",
+      "summary": "HIV의 완전한 병합 항레트로바이러스 요법에 포함되는 약이다. 단독치료가 아니며 철·칼슘 등 다가 양이온과의 상호작용을 확인한다.",
       "back": {
         "sections": [
           {
@@ -36467,7 +36491,7 @@
       "kind": "drug",
       "name": "Lamivudine",
       "family": "Nucleoside reverse-transcriptase inhibitor",
-      "summary": "HIV 역전사효소·HBV polymerase에서 사슬을 종결시킨다. HIV 병합요법과 낮은 HBV 내성 장벽을 구분한다.",
+      "summary": "HIV 병합요법과 HBV 치료에서 쓰인다. HBV 단독 사용은 내성을 빠르게 선택할 수 있고 완전한 HIV 치료를 대신하지 않는다.",
       "back": {
         "sections": [
           {
@@ -36519,7 +36543,7 @@
       "kind": "drug",
       "name": "Peginterferon alfa",
       "family": "Host-directed immunomodulator",
-      "summary": "숙주의 interferon 항바이러스 경로를 활성화하는 면역조절제다. 선택된 만성 HBV 환자에서의 역할과 독성·금기를 구분한다.",
+      "summary": "신중히 선택한 만성 HBV 환자에서 고려하는 약이다. 독성·금기가 많아 모든 만성간염 환자에게 같은 방식으로 쓰지 않는다.",
       "back": {
         "sections": [
           {
@@ -36566,7 +36590,7 @@
       "kind": "drug",
       "name": "Fidaxomicin",
       "family": "Macrocyclic antibacterial",
-      "summary": "전사 개시를 막고 장내에 주로 머무는 경구 항균제다. C. difficile 대장염이 표적이며 전신 감염 치료에는 쓰지 않는다.",
+      "summary": "C. difficile 대장염 치료에 쓰는 경구제다. 전신흡수가 낮아 균혈증·심부감염을 치료하는 약은 아니며 전격성 장염의 근거는 별도로 본다.",
       "back": {
         "sections": [
           {
@@ -51817,6 +51841,51 @@
       "title": "SHEA/IDSA 2021 CDI guideline — Table 1",
       "url": "https://academic.oup.com/cid/article/73/5/e1029/6298219",
       "note": "초발 비중증에서 다른 두 약제 이용 불가 시 metronidazole 대안과 전격성 질환의 별도 요법."
+    },
+    "card-label-cefepime": {
+      "title": "DailyMed/FDA · Cefepime Injection prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=be5f8ca6-7232-423a-a2d5-cccb7abe7921",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-linezolid": {
+      "title": "DailyMed/FDA · Linezolid prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=374af2a7-d994-40bd-a86a-cd9038d0b72c",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-daptomycin": {
+      "title": "DailyMed/FDA · Daptomycin prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1957b6ce-7382-4a7b-bf02-3595948d09c6",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-gentamicin": {
+      "title": "DailyMed/FDA · Gentamicin Sulfate prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=977180b3-a222-4282-d485-4a3217674305",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-amikacin": {
+      "title": "DailyMed/FDA · Amikacin Sulfate prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=20fa61ef-11e2-4d01-82ea-b5412cefaead",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-cefazolin": {
+      "title": "DailyMed/FDA · Cefazolin in Dextrose prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d91a8d13-99a0-4d87-88dc-71cbd37922b4",
+      "accessedAt": "2026-10-10"
+    },
+    "card-label-ceftaroline": {
+      "title": "DailyMed/FDA · Ceftaroline Fosamil prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=3cee3c08-ed60-06c5-ac49-103b7ad2ef5f&type=display",
+      "accessedAt": "2026-10-10"
+    },
+    "card-nih-oi-therapy": {
+      "title": "NIH · Preferred and Alternative Therapies for HIV-Associated Opportunistic Infections",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/treatment-hiv-associated-full",
+      "accessedAt": "2026-10-10"
+    },
+    "card-cdc-flu": {
+      "title": "CDC · Influenza Antiviral Medications: Summary for Clinicians",
+      "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html",
+      "accessedAt": "2026-10-10"
     }
   }
 }

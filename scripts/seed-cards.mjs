@@ -92,13 +92,13 @@ export function compileLibraryCatalog(dataset, sources, authored) {
     id:drug.id, kind:'drug', name:drug.name, family:drug.family,
     summary:summaryFor(authored.drugs,drug.id,'drug'),
     back:{ sections:Object.entries(drugLabels).filter(([key]) => drug[key]).map(([id,title]) => ({ id,title,text:text(drug[id]),sourceIds:drug.sourceIds || [] })) },
-    sourceIds:drug.sourceIds || [], reviewStatus:dataset.reviewStatus
+    sourceIds:unique([...(drug.sourceIds || []),...(authored.drugSummarySourceIds?.[drug.id] || [])]), reviewStatus:dataset.reviewStatus
   };
   for (const [map,known,label] of [[authored.pathogens,pathogens,'pathogen'],[authored.drugs,drugs,'drug'],[authored.variants,variants,'variant']]) {
     for (const id of Object.keys(map)) if (!known[id]) throw Error(`Unknown authored ${label} ID: ${id}`);
   }
   return {
-    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.0.0',
+    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.0.1',
     sourceDatasetVersion:dataset.datasetVersion, locale:'ko-KR', reviewStatus:dataset.reviewStatus,
     contentOrigin:'content/cards/*.json',
     interpretation:dataset.interpretation,
@@ -120,8 +120,18 @@ export async function generateLibraryCatalog(dataset, sources) {
       pathogens[id] = summary;
     }
   }
-  const authored = { pathogens, drugs:(await json('content/cards/drugs.json')).summaries, variants:(await json('content/cards/variants.json')).overrides };
-  const catalog = compileLibraryCatalog(dataset,sources,authored);
+  const drugContent = await json('content/cards/drugs.json');
+  const cardSources = {...sources};
+  for (const [id,reference] of Object.entries(drugContent.references || {})) {
+    if (!reference.title?.trim() || !/^https:\/\//.test(reference.url)) throw Error('Invalid card reference: ' + id);
+    if (cardSources[id] && !same(cardSources[id],reference)) throw Error('Conflicting card reference: ' + id);
+    cardSources[id] = reference;
+  }
+  for (const [drugId,ids] of Object.entries(drugContent.summarySourceIds || {})) {
+    if (!dataset.drugs.some(drug => drug.id === drugId) || !Array.isArray(ids) || ids.some(id => !cardSources[id])) throw Error('Unknown drug summary reference: ' + drugId);
+  }
+  const authored = { pathogens, drugs:drugContent.summaries, drugSummarySourceIds:drugContent.summarySourceIds || {}, variants:(await json('content/cards/variants.json')).overrides };
+  const catalog = compileLibraryCatalog(dataset,cardSources,authored);
   await writeFile(new URL('../data/library.json',import.meta.url),JSON.stringify(catalog,null,2)+'\n');
   console.log(`Card DB: ${catalog.counts.pathogens} pathogens / ${catalog.counts.variants} variants / ${catalog.counts.drugs} drugs → data/library.json`);
   return catalog;

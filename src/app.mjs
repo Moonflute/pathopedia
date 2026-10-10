@@ -4,7 +4,7 @@ import { createLibrary } from './library-ui.mjs';
 import { createCardGallery } from './card-gallery-ui.mjs';
 import { handleReferenceCardClick } from './reference-card.mjs';
 
-const VERSION = '0.13.0';
+const VERSION = '0.13.1';
 const KEY = 'pathopedia.v1';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -22,7 +22,7 @@ const shortResult = category => ({ACT:'조건부 활성',ACTIVE:'활성 있음',
 const matchingDrugs = () => panelDrugs().filter(d=>(d.name+' '+d.family).toLowerCase().includes(filter.trim().toLowerCase()));
 let data, sources, treatmentGame, library, cardGallery, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = ['lab','treatment','library','archive','drugs','cards'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'lab', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
 const root = $('#app');
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.13.0" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.13.1" alt="" width="27" height="27">';
 const arrow = '<span aria-hidden="true">↗</span>';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
