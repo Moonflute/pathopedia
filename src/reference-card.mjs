@@ -45,6 +45,7 @@ export const CARD_ICONS = Object.freeze({
   antifolate: "<path d=\"m6 3 5 3v6l-5 3-4-3V6l4-3ZM13 12l5-3 4 3v6l-4 3-5-3v-6ZM11 9l2 6M6 15v6\"/>",
   antiviral: "<path d=\"m12 2 8 4v7c0 5-8 9-8 9s-8-4-8-9V6l8-4ZM8 12l3 3 5-6\"/>",
   antiparasitic: "<path d=\"M4 4c8-4 2 7 9 7s-1 10 7 9M3 21 21 3M15 3h6v6\"/>",
+  clinical: '<path d="M8 3h8v5h5v8h-5v5H8v-5H3V8h5V3Z"/>',
   artwork: '<rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8" cy="8" r="2"/><path d="m3 17 6-6 4 4 3-3 5 5"/>'
 });
 

@@ -123,3 +123,44 @@ body:has(#card-gallery-options[open]) { overflow:hidden; }
 .card-gallery-discoveries progress { flex:1; max-width:400px; height:8px; accent-color:#627e4d; }
 .card-gallery-options .card-gallery-legend { margin:20px 0 0; line-height:1.6; }
 @media(max-width:380px) { .appbar .brand>span { display:none; } }
+
+
+/* The catalog opens as three decks; each cover shares the 2:3 card shape. */
+.card-gallery-results.is-deck-overview { display:grid; align-items:center; min-height:max(260px,calc(100svh - 215px)); }
+.card-decks { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); align-items:center; gap:clamp(16px,5vw,70px); width:min(100%,940px); margin:0 auto; padding:32px 12px; list-style:none; box-sizing:border-box; }
+.card-decks > li { min-width:0; }
+.card-deck { --deck-tone:#735244; --deck-deep:#302823; --deck-edge:#b3946d; --deck-light:#e7d2a4; display:flex; flex-direction:column; align-items:center; gap:0; width:100%; padding:12px 0 18px; border:0; border-radius:12px; background:transparent; color:var(--ink); cursor:pointer; touch-action:manipulation; }
+.card-deck[data-card-deck="drugs"] { --deck-tone:#646f49; --deck-deep:#253427; --deck-edge:#a3ae79; --deck-light:#e3ebbd; }
+.card-deck[data-card-deck="diseases"] { --deck-tone:#486e62; --deck-deep:#1d3531; --deck-edge:#8fb8a5; --deck-light:#c1e1d5; }
+.card-deck-stack { position:relative; display:block; width:min(82%,210px); aspect-ratio:2 / 3; margin:0 auto 28px; isolation:isolate; }
+.card-deck-layer { position:absolute; inset:0; box-sizing:border-box; border:3px solid var(--deck-edge); border-radius:10px; background:linear-gradient(145deg,var(--deck-tone),var(--deck-deep) 68%); box-shadow:0 9px 16px #16211926; color:var(--deck-light); transform-origin:50% 88%; transition:transform .24s ease,box-shadow .24s ease; }
+.card-deck-layer::before { content:""; position:absolute; inset:7px; border:1px solid color-mix(in srgb,var(--deck-light) 55%,transparent); border-radius:6px; pointer-events:none; }
+.card-deck-layer--far { z-index:0; transform:translate(-7%,-3%) rotate(-8deg); }
+.card-deck-layer--near { z-index:1; transform:translate(7%,-1%) rotate(7deg); }
+.card-deck-cover { z-index:2; display:grid; place-items:center; transform:rotate(-1deg); }
+.card-deck-emblem { display:grid; place-items:center; width:70%; aspect-ratio:1; border:1px solid color-mix(in srgb,var(--deck-light) 45%,transparent); border-radius:50%; background:radial-gradient(circle,#ffffff0b,transparent 70%); box-shadow:0 0 0 5px #ffffff05; }
+.card-deck-emblem svg { display:block; width:60%; height:60%; stroke-width:1.2; }
+.card-deck-crest { position:absolute; top:11%; font-size:clamp(7px,1vw,13px); opacity:.75; }
+.card-deck-crest--bottom { top:auto; bottom:11%; }
+.card-deck-label { font:650 clamp(14px,1.7vw,21px)/1.4 var(--sans); letter-spacing:-.03em; }
+.card-deck:focus-visible { outline:2px solid #607c58; outline-offset:6px; }
+.card-deck:focus-visible .card-deck-cover { transform:translateY(-7px) rotate(0); box-shadow:0 14px 22px #16211933; }
+.card-deck:active .card-deck-cover { transform:translateY(-3px) rotate(0); }
+.card-gallery-deck-nav { display:flex; align-items:center; gap:12px; margin:0 0 20px; color:var(--muted); font:550 .8125rem/1.4 var(--sans); }
+.card-gallery-deck-nav button { min-height:40px; padding:8px 13px; border:1px solid #aab79b; border-radius:20px; background:#ffffff42; color:#3b5134; font:600 .8125rem/1.4 var(--sans); }
+.card-gallery-deck-nav button:focus-visible { outline:2px solid #607c58; outline-offset:3px; }
+@media(hover:hover) {
+ .card-deck:hover .card-deck-cover { transform:translateY(-7px) rotate(0); box-shadow:0 14px 22px #16211933; }
+ .card-deck:hover .card-deck-layer--far { transform:translate(-9%,-4%) rotate(-11deg); }
+ .card-deck:hover .card-deck-layer--near { transform:translate(9%,-2%) rotate(10deg); }
+}
+@media(max-width:599px) {
+ .card-decks { padding:24px 0; gap:14px; }
+ .card-deck-stack { margin-bottom:22px; }
+ .card-deck-layer { border-width:2px; border-radius:7px; }
+ .card-deck-layer::before { inset:5px; border-radius:4px; }
+ .card-gallery-deck-nav { margin-bottom:15px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .card-deck-layer { transition:none; }
+}
