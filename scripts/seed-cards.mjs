@@ -56,6 +56,7 @@ export function compileLibraryCatalog(dataset, sources, authored) {
     pathogens[taxonId] = {
       id:taxonId, kind:'pathogen', domain:base.domain, name:base.organism, koreanName:base.koreanName,
       classification:base.classification, representativeRecordId:base.id,
+      ...(authored.searchNames?.pathogens?.[taxonId]?.length?{searchAliases:authored.searchNames.pathogens[taxonId]}:{}),
       summary:summaryFor(authored.pathogens,taxonId,'pathogen'),
       back:{ sections:common }, sourceIds:unique(records.flatMap(record => record.sourceIds)),
       reviewStatus:base.reviewStatus || dataset.reviewStatus
@@ -90,10 +91,16 @@ export function compileLibraryCatalog(dataset, sources, authored) {
   const drugLabels = { mechanism:'작용 기전', spectrum:'주요 표적', limitations:'범위 · 사용 한계', resistance:'내성 기전' };
   for (const drug of dataset.drugs) drugs[drug.id] = {
     id:drug.id, kind:'drug', name:drug.name, family:drug.family,
+    ...(authored.searchNames?.drugs?.[drug.id]?.length?{searchAliases:authored.searchNames.drugs[drug.id]}:{}),
     summary:summaryFor(authored.drugs,drug.id,'drug'),
     back:{ sections:Object.entries(drugLabels).filter(([key]) => drug[key]).map(([id,title]) => ({ id,title,text:text(drug[id]),sourceIds:drug.sourceIds || [] })) },
     sourceIds:unique([...(drug.sourceIds || []),...(authored.drugSummarySourceIds?.[drug.id] || [])]), reviewStatus:dataset.reviewStatus
   };
+  for(const [aliases,known,label] of [[authored.searchNames?.pathogens,pathogens,'pathogen'],[authored.searchNames?.drugs,drugs,'drug']]){
+    for(const [id,names] of Object.entries(aliases || {})){
+      if(!known[id] || !Array.isArray(names) || !names.length || names.some(name=>typeof name!=='string' || !name.trim()) || unique(names).length!==names.length)throw Error('Invalid '+label+' search names: '+id);
+    }
+  }
   const therapyContexts={};
   for (const context of authored.therapyContexts || []) {
     if(!context.id || therapyContexts[context.id] || !context.context?.trim() || !context.note?.trim() || !context.recordIds?.length || !context.drugIds?.length || !context.sourceIds?.length)throw Error('Invalid clinical preference context: '+context.id);
@@ -113,7 +120,7 @@ export function compileLibraryCatalog(dataset, sources, authored) {
     for (const id of Object.keys(map)) if (!known[id]) throw Error(`Unknown authored ${label} ID: ${id}`);
   }
   return {
-    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.1.0',
+    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.2.0',
     sourceDatasetVersion:dataset.datasetVersion, locale:'ko-KR', reviewStatus:dataset.reviewStatus,
     contentOrigin:'content/cards/*.json',
     interpretation:dataset.interpretation,
@@ -137,6 +144,8 @@ export async function generateLibraryCatalog(dataset, sources) {
   }
   const drugContent = await json('content/cards/drugs.json');
   const therapyContent = await json('content/cards/therapies.json');
+  const searchNames=await json('content/cards/search-names.json');
+  if(dataset.drugs.some(drug=>!searchNames.drugs?.[drug.id]?.length))throw Error('Missing Korean drug search names');
   const cardSources = {...sources};
   for (const [id,reference] of Object.entries({...drugContent.references,...therapyContent.references})) {
     if (!reference.title?.trim() || !/^https:\/\//.test(reference.url)) throw Error('Invalid card reference: ' + id);
@@ -146,7 +155,7 @@ export async function generateLibraryCatalog(dataset, sources) {
   for (const [drugId,ids] of Object.entries(drugContent.summarySourceIds || {})) {
     if (!dataset.drugs.some(drug => drug.id === drugId) || !Array.isArray(ids) || ids.some(id => !cardSources[id])) throw Error('Unknown drug summary reference: ' + drugId);
   }
-  const authored = { pathogens, drugs:drugContent.summaries, drugSummarySourceIds:drugContent.summarySourceIds || {}, variants:(await json('content/cards/variants.json')).overrides, therapyContexts:therapyContent.contexts };
+  const authored = { pathogens, drugs:drugContent.summaries, drugSummarySourceIds:drugContent.summarySourceIds || {}, variants:(await json('content/cards/variants.json')).overrides, therapyContexts:therapyContent.contexts, searchNames };
   const catalog = compileLibraryCatalog(dataset,cardSources,authored);
   await writeFile(new URL('../data/library.json',import.meta.url),JSON.stringify(catalog,null,2)+'\n');
   console.log(`Card DB: ${catalog.counts.pathogens} pathogens / ${catalog.counts.variants} variants / ${catalog.counts.drugs} drugs → data/library.json`);

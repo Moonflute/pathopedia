@@ -1,10 +1,9 @@
 import { createCardStacks } from './card-stacks.mjs';
-import { createCardCatalog } from './card-catalog.mjs';
+import { createCardSearch } from './card-search.mjs';
 import { renderCardThumbnail, renderCardLegend } from './reference-card.mjs';
 import { createCardModels } from './card-models.mjs';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const normalize = value => String(value ?? '').normalize('NFKC').toLocaleLowerCase();
 const PAGE_SIZE = 24;
 const DOMAINS = { bacteria:'세균', fungi:'진균', viruses:'바이러스', parasites:'기생충' };
 const SECTIONS = [
@@ -14,7 +13,7 @@ const SECTIONS = [
 ];
 
 export function createLibrary(data, { getArchive, render, openDetail, catalog, cardStacks }) {
-  const cardContent = createCardCatalog(catalog);
+  const search = createCardSearch(data,catalog);
   const models = createCardModels(data,catalog);
   const stacks=cardStacks || createCardStacks(catalog);
   let section = 'organisms';
@@ -26,13 +25,11 @@ export function createLibrary(data, { getArchive, render, openDetail, catalog, c
   const taxonCount = list => new Set(list.map(r => r.taxonId)).size;
 
   function matchingItems() {
-    const { query, category } = state(), term = normalize(query.trim());
+    const { query, category } = state(), kind = section === 'drugs' ? 'drug' : 'pathogen';
     const list = section === 'drugs' ? drugs : section === 'archive' ? discoveries() : records;
     return list.filter(item => {
       const group = section === 'drugs' ? item.family : item.domain;
-      const summary = cardContent.summary(section === 'drugs' ? 'drug' : 'pathogen',item.id);
-      const text = section === 'drugs' ? [item.name,item.family,item.mechanism] : [item.organism,item.koreanName,item.phenotype,item.phenotypeDescription,item.classification,item.id];
-      return (category === 'all' || group === category) && normalize([...text,summary].join(' ')).includes(term);
+      return (category === 'all' || group === category) && search.matches(kind,item.id,query);
     });
   }
 
@@ -81,7 +78,7 @@ export function createLibrary(data, { getArchive, render, openDetail, catalog, c
       <nav class="library-sections" aria-label="라이브러리 분류">${SECTIONS.map(s => `<button data-view="${s.view}" class="${section===s.id?'active':''}" ${section===s.id?'aria-current="page"':''}>${s.name}<small>${s.id==='drugs'?drugs.length:s.id==='archive'?found:records.length}</small></button>`).join('')}</nav>
       <p class="library-description">${section==='organisms'?'수록된 모든 병원체의 분류, 형태, 진단, 약제 반응과 근거를 열람할 수 있습니다.':section==='drugs'?'약제별 작용 기전, 활성 범위, 사용 제한과 내성 기전을 확인하세요.':'직접 동정한 병원체와 표현형·임상형별 기록입니다. 이 브라우저에 저장됩니다.'}</p>
       ${section==='archive'?`<div class="library-collection"><span>발견 ${found} / ${records.length}</span><progress value="${found}" max="${records.length}" aria-label="병원체 발견 진행률"></progress></div>`:''}
-      <div class="library-controls"><label class="library-search-label" for="library-search"><span>검색</span><input id="library-search" type="search" placeholder="${section==='drugs'?'약제 이름·계열·기전 검색':'병원체 이름·한글명·표현형 검색'}" value="${esc(state().query)}" autocomplete="off"></label><label for="library-filter"><span>${section==='drugs'?'계열':'분류'}</span><select id="library-filter"><option value="all">전체 ${section==='drugs'?'계열':'분류'}</option>${categoryOptions().map(([id,label]) => `<option value="${esc(id)}" ${state().category===id?'selected':''}>${esc(label)}</option>`).join('')}</select></label></div>
+      <div class="library-controls"><label class="library-search-label" for="library-search"><span>검색</span><input id="library-search" type="search" placeholder="${section==='drugs'?'약제 한글·영문 이름·계열 검색':'병원체 이름·한글명·표현형 검색'}" value="${esc(state().query)}" autocomplete="off"></label><label for="library-filter"><span>${section==='drugs'?'계열':'분류'}</span><select id="library-filter"><option value="all">전체 ${section==='drugs'?'계열':'분류'}</option>${categoryOptions().map(([id,label]) => `<option value="${esc(id)}" ${state().category===id?'selected':''}>${esc(label)}</option>`).join('')}</select></label></div>
       ${section!=='drugs'?stacks.controls('library'):''}
       ${renderCardLegend()}
       <section id="library-results" aria-labelledby="library-result-title">${results()}</section>`;

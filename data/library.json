@@ -1,7 +1,7 @@
 {
   "$schema": "./library-schema.json",
   "schemaVersion": 1,
-  "catalogVersion": "1.1.0",
+  "catalogVersion": "1.2.0",
   "sourceDatasetVersion": "0.5.0",
   "locale": "ko-KR",
   "reviewStatus": "educational-draft",
@@ -232,6 +232,12 @@
       "koreanName": "황색포도알균",
       "classification": "Bacteria / Bacillota / Staphylococcaceae",
       "representativeRecordId": "SAU-001",
+      "searchAliases": [
+        "황색포도구균",
+        "황색포도상구균",
+        "스타필로코쿠스 아우레우스",
+        "스타필로코커스 아우레우스"
+      ],
       "summary": "피부농양·균혈증·심내막염·골수염의 대표 원인이다. 혈액배양 양성을 단순 오염으로 넘기지 않으며, 지속 균혈증이면 판막·원격 감염을 살핀다.",
       "back": {
         "sections": [
@@ -428,6 +434,11 @@
       "koreanName": "표피포도알균",
       "classification": "Bacteria / Bacillota / Staphylococcaceae",
       "representativeRecordId": "SEP-003",
+      "searchAliases": [
+        "표피포도구균",
+        "표피포도상구균",
+        "스타필로코쿠스 에피더미디스"
+      ],
       "summary": "카테터·인공판막·인공관절 감염의 원인이며 혈액배양 오염균으로도 흔하다. 배양 한 병만으로 판단하지 않고 인공물과 임상 경과를 함께 본다.",
       "back": {
         "sections": [
@@ -610,6 +621,12 @@
       "koreanName": "장알균",
       "classification": "Bacteria / Bacillota / Enterococcaceae",
       "representativeRecordId": "EFA-005",
+      "searchAliases": [
+        "장구균",
+        "엔테로코쿠스 페칼리스",
+        "엔테로코커스 페칼리스",
+        "페칼리스 장구균"
+      ],
       "summary": "요로감염·균혈증·심내막염과 복강·담도감염을 일으킨다. Cephalosporin 단독은 듣지 않으며, VRE 여부가 표적 치료 선택에 중요하다.",
       "back": {
         "sections": [
@@ -797,6 +814,11 @@
       "koreanName": "페시움 장알균",
       "classification": "Bacteria / Bacillota / Enterococcaceae",
       "representativeRecordId": "EFM-007",
+      "searchAliases": [
+        "페시움 장구균",
+        "엔테로코쿠스 페시움",
+        "엔테로코커스 페시움"
+      ],
       "summary": "입원·면역저하 환자의 균혈증·요로·복강감염에서 중요하다. Ampicillin 내성이 흔하고 VRE도 가능해 E. faecalis와 구별해야 한다.",
       "back": {
         "sections": [
@@ -984,6 +1006,11 @@
       "koreanName": "대장균",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "ECO-009",
+      "searchAliases": [
+        "에스케리키아 콜라이",
+        "에스케리히아 콜라이",
+        "이콜라이"
+      ],
       "summary": "방광염·신우신염·균혈증·복강감염의 흔한 원인이다. ESBL 등 내성이 치료 선택을 바꾸며, 장염 병원형은 장관외 감염과 치료 맥락이 다르다.",
       "back": {
         "sections": [
@@ -1170,6 +1197,11 @@
       "koreanName": "폐렴막대균",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "KPN-011",
+      "searchAliases": [
+        "폐렴간균",
+        "클렙시엘라 뉴모니에",
+        "클렙시엘라 뉴모니아"
+      ],
       "summary": "폐렴·요로감염·균혈증을 일으키며, 고병독성 계통은 간농양과 원격 파종이 특징이다. ESBL·carbapenem 내성은 병독성과 별도로 확인한다.",
       "back": {
         "sections": [
@@ -1344,6 +1376,10 @@
       "koreanName": "녹농균",
       "classification": "Bacteria / Pseudomonadota / Pseudomonadales",
       "representativeRecordId": "PAE-013",
+      "searchAliases": [
+        "슈도모나스 에루기노사",
+        "슈도모나스 아에루기노사"
+      ],
       "summary": "인공호흡기 폐렴·화상감염과 낭성섬유증의 만성 기도감염에서 중요하다. 일반 항균제로 덮이지 않을 수 있어 항녹농균 범위와 실제 감수성을 확인한다.",
       "back": {
         "sections": [
@@ -1530,6 +1566,10 @@
       "koreanName": "클로아카 장내세균 복합체",
       "classification": "Bacteria / Pseudomonadota / Enterobacterales",
       "representativeRecordId": "ECL-015",
+      "searchAliases": [
+        "엔테로박터 클로아카",
+        "엔테로박터 클로아케"
+      ],
       "summary": "의료 관련 폐렴·요로·복강 감염과 균혈증의 원인이다. 초기 감수성이 좋아도 유도성 AmpC에 따른 치료 중 내성 위험이 약제 선택을 바꾼다.",
       "back": {
         "sections": [
@@ -1704,6 +1744,13 @@
       "koreanName": "화농사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SPY-101",
+      "searchAliases": [
+        "화농사슬구균",
+        "화농연쇄상구균",
+        "화농성 연쇄상구균",
+        "A군 연쇄상구균",
+        "에이군 연쇄상구균"
+      ],
       "summary": "인두염·피부감염부터 괴사근막염·독성쇼크까지 일으킨다. 인두염 뒤 류마티스열, 인두·피부감염 뒤 사구체신염 같은 후유 합병증도 중요하다.",
       "back": {
         "sections": [
@@ -1842,6 +1889,13 @@
       "koreanName": "B군사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SAG-103",
+      "searchAliases": [
+        "B군사슬구균",
+        "B군연쇄상구균",
+        "B군 연쇄상구균",
+        "비군 연쇄상구균",
+        "아갈락티아"
+      ],
       "summary": "산모 생식기 집락과 연관된 신생아 패혈증·폐렴·수막염의 대표 원인이다. 성인에서도 균혈증을 일으킬 수 있다.",
       "back": {
         "sections": [
@@ -1980,6 +2034,12 @@
       "koreanName": "폐렴사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SPN-105",
+      "searchAliases": [
+        "폐렴사슬구균",
+        "폐렴연쇄상구균",
+        "폐렴구균",
+        "스트렙토코쿠스 뉴모니에"
+      ],
       "summary": "폐렴·중이염·부비동염·수막염의 대표 원인이다. 무비증 환자는 침습감염이 빠르게 악화하며, 수막염 여부에 따라 감수성 해석도 달라진다.",
       "back": {
         "sections": [
@@ -2118,6 +2178,10 @@
       "koreanName": "미티스사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SMI-108",
+      "searchAliases": [
+        "미티스사슬구균",
+        "미티스연쇄상구균"
+      ],
       "summary": "구강 사슬알균이지만 아급성 심내막염·균혈증의 원인이 된다. 호중구감소 환자의 혈액배양 양성을 오염으로 단정하지 않는다.",
       "back": {
         "sections": [
@@ -2244,6 +2308,10 @@
       "koreanName": "오랄리스사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SOR-109",
+      "searchAliases": [
+        "오랄리스사슬구균",
+        "오랄리스연쇄상구균"
+      ],
       "summary": "구강 병소와 연관된 균혈증·아급성 심내막염을 일으킨다. 치과·구강 상태와 심장판막 감염의 연계를 살핀다.",
       "back": {
         "sections": [
@@ -2370,6 +2438,10 @@
       "koreanName": "갈롤리티쿠스사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "SGL-110",
+      "searchAliases": [
+        "갈롤리티쿠스사슬구균",
+        "갈롤리티쿠스연쇄상구균"
+      ],
       "summary": "균혈증·심내막염이 대장 종양을 찾는 단서가 된다. 구강 사슬알균과 같은 취급으로 넘기지 않는 것이 중요하다.",
       "back": {
         "sections": [
@@ -2496,6 +2568,10 @@
       "koreanName": "루그두넨시스포도알균",
       "classification": "Bacteria / Bacillota / Staphylococcaceae",
       "representativeRecordId": "SLU-111",
+      "searchAliases": [
+        "루그두넨시스포도구균",
+        "루그두넨시스포도상구균"
+      ],
       "summary": "Coagulase 음성이어도 피부농양과 파괴성 심내막염을 일으킬 수 있다. 다른 피부 상재 포도알균보다 침습감염 가능성을 적극적으로 살핀다.",
       "back": {
         "sections": [
@@ -2622,6 +2698,10 @@
       "koreanName": "부생포도알균",
       "classification": "Bacteria / Bacillota / Staphylococcaceae",
       "representativeRecordId": "SSA-112",
+      "searchAliases": [
+        "부생포도구균",
+        "부생포도상구균"
+      ],
       "summary": "젊은 여성의 급성 단순 방광염에서 만나는 병원체다. 증상이 뚜렷하면 낮은 집락수도 임상 맥락과 함께 해석한다.",
       "back": {
         "sections": [
@@ -2748,6 +2828,9 @@
       "koreanName": "갈리나룸장알균",
       "classification": "Bacteria / Bacillota / Enterococcaceae",
       "representativeRecordId": "EGA-113",
+      "searchAliases": [
+        "갈리나룸장구균"
+      ],
       "summary": "요로·담도감염과 균혈증을 일으키는 장알균이다. 종 자체의 저수준 vancomycin 내성을 알아야 획득성 VRE와 혼동하지 않는다.",
       "back": {
         "sections": [
@@ -2874,6 +2957,9 @@
       "koreanName": "카셀리플라부스장알균",
       "classification": "Bacteria / Bacillota / Enterococcaceae",
       "representativeRecordId": "ECA-114",
+      "searchAliases": [
+        "카셀리플라부스장구균"
+      ],
       "summary": "담도·요로 감염과 균혈증에서 만나는 장알균이다. VanC에 의한 고유 vancomycin 내성이 있어 획득성 VRE와 구별한다.",
       "back": {
         "sections": [
@@ -3796,6 +3882,11 @@
       "koreanName": "클로스트리디오이데스디피실레",
       "classification": "Bacteria / Bacillota / Peptostreptococcaceae",
       "representativeRecordId": "CDF-121",
+      "searchAliases": [
+        "클로스트리디움 디피실레",
+        "디피실균",
+        "씨디피실"
+      ],
       "summary": "항균제 사용 뒤 생긴 설사·위막성 대장염이 대표적이며, 심하면 거대결장으로 진행한다. 치료 후 검사 음전보다 임상반응으로 회복을 판단한다.",
       "back": {
         "sections": [
@@ -7146,6 +7237,10 @@
       "koreanName": "결핵균 복합체",
       "classification": "Mycobacteriaceae · slow-growing acid-fast bacillus complex",
       "representativeRecordId": "BGX-505",
+      "searchAliases": [
+        "결핵균",
+        "마이코박테리움 투베르쿨로시스"
+      ],
       "summary": "폐결핵부터 수막·뼈·전신 파종까지 일으킨다. 객담 도말 음성만으로 결핵을 배제하지 않으며, 치료 전 약제내성 확인이 중요하다.",
       "back": {
         "sections": [
@@ -8624,6 +8719,9 @@
       "koreanName": "혐기성 그람양성 알균군",
       "classification": "다계통 obligately anaerobic Gram-positive cocci",
       "representativeRecordId": "BGX-518",
+      "searchAliases": [
+        "혐기성 그람양성 구균군"
+      ],
       "summary": "당뇨발·욕창과 두경부·복강의 깊은 혼합 농양에 관여한다. Finegoldia는 인공관절 감염도 일으키며 배농·감염원 제거가 중요하다.",
       "back": {
         "sections": [
@@ -9076,6 +9174,9 @@
       "koreanName": "수막알균",
       "classification": "Bacteria / Pseudomonadota / Neisseriaceae",
       "representativeRecordId": "BGX-522",
+      "searchAliases": [
+        "수막구균"
+      ],
       "summary": "수막염과 급격한 균혈증을 일으킨다. 자반성 발진·쇼크가 나타나면 빠르게 악화할 수 있어 즉각적인 치료가 중요하다.",
       "back": {
         "sections": [
@@ -9186,6 +9287,10 @@
       "koreanName": "안지노수스군 사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "BGX-523",
+      "searchAliases": [
+        "안지노수스군 사슬구균",
+        "안지노수스군 연쇄상구균"
+      ],
       "summary": "뇌·간·폐와 구강 주변의 깊은 농양을 잘 만든다. 균혈증에서 동정되면 배농이 필요한 숨은 감염원을 찾아야 한다.",
       "back": {
         "sections": [
@@ -9296,6 +9401,10 @@
       "koreanName": "말유사 디스갈락티아 사슬알균",
       "classification": "Bacteria / Bacillota / Streptococcaceae",
       "representativeRecordId": "BGX-524",
+      "searchAliases": [
+        "말유사 디스갈락티아 사슬구균",
+        "말유사 디스갈락티아 연쇄상구균"
+      ],
       "summary": "고령·당뇨 환자의 연조직감염·균혈증에서 중요하다. 재발성 봉와직염뿐 아니라 괴사근막염·독성쇼크를 동반할 수 있다.",
       "back": {
         "sections": [
@@ -10942,6 +11051,10 @@
       "koreanName": "나카세오마이세스 글라브라투스",
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CGL-602",
+      "searchAliases": [
+        "칸디다 글라브라타",
+        "칸디다 글라브라투스"
+      ],
       "summary": "칸디다혈증·요로감염에서 중요하며 fluconazole 감수성이 낮을 수 있다. 이전 약제 노출과 감수성 결과가 치료 선택을 가른다.",
       "back": {
         "sections": [
@@ -11366,6 +11479,9 @@
       "koreanName": "피키아 쿠드리아브제비",
       "classification": "Fungi / Ascomycota / Saccharomycetes / Saccharomycetales",
       "representativeRecordId": "CKR-606",
+      "searchAliases": [
+        "칸디다 크루세이"
+      ],
       "summary": "침습성 칸디다증을 일으키며 fluconazole에 고유 비감수성이 있다. 다른 Candida와 같은 방식으로 fluconazole을 선택하면 실패할 수 있다.",
       "back": {
         "sections": [
@@ -12108,6 +12224,10 @@
       "koreanName": "폐포자충",
       "classification": "Fungi / Ascomycota / Pneumocystidomycetes / Pneumocystidales",
       "representativeRecordId": "PJI-613",
+      "searchAliases": [
+        "뉴모시스티스 지로베시",
+        "뉴모시스티스 지로베치"
+      ],
       "summary": "면역저하자에서 저산소성 간질성 폐렴을 일으킨다. 치료 실패가 곧 약제내성은 아니며, 중증도·면역상태와 다른 원인을 함께 평가한다.",
       "back": {
         "sections": [
@@ -32645,6 +32765,10 @@
       "kind": "drug",
       "name": "Oxacillin",
       "family": "Penicillin",
+      "searchAliases": [
+        "옥사실린",
+        "옥사실린 나트륨"
+      ],
       "summary": "MSSA의 균혈증·심내막염·피부연조직감염을 겨냥하는 주사제다. MRSA에는 듣지 않으며 장알균·그람음성균도 치료 범위 밖이다.",
       "back": {
         "sections": [
@@ -32702,6 +32826,10 @@
       "kind": "drug",
       "name": "Vancomycin",
       "family": "Glycopeptide",
+      "searchAliases": [
+        "반코마이신",
+        "밴코마이신"
+      ],
       "summary": "MRSA 등 그람양성균의 침습성 감염에 쓰는 약이다. 정맥제의 전신 치료와 경구제의 C. difficile 장염 치료는 구별하며 VRE·그람음성균은 덮지 못한다.",
       "back": {
         "sections": [
@@ -32754,6 +32882,10 @@
       "kind": "drug",
       "name": "Ceftriaxone",
       "family": "3rd-generation cephalosporin",
+      "searchAliases": [
+        "세프트리악손",
+        "세프트리아손"
+      ],
       "summary": "감수성 병원체의 폐렴·수막염과 임질 치료 등에 쓰는 주사제다. 녹농균·장알균은 덮지 못하고, 유도성 AmpC 위험균에서는 치료 중 내성을 고려한다.",
       "back": {
         "sections": [
@@ -32806,6 +32938,10 @@
       "kind": "drug",
       "name": "Cefepime",
       "family": "4th-generation cephalosporin",
+      "searchAliases": [
+        "세페핌",
+        "세페피임"
+      ],
       "summary": "녹농균 위험이 있는 감염·호중구감소성 발열과 감수성 AmpC 감염에서 쓰인다. 신기능에 따른 노출 조절이 중요하며 신경독성을 살펴야 한다.",
       "back": {
         "sections": [
@@ -32860,6 +32996,9 @@
       "kind": "drug",
       "name": "Ceftazidime",
       "family": "3rd-generation cephalosporin",
+      "searchAliases": [
+        "세프타지딤"
+      ],
       "summary": "녹농균을 포함한 그람음성균 감염에 초점을 둔 주사제다. 그람양성균 범위가 약하고 장알균은 덮지 못해 혼합감염에서는 범위를 따져야 한다.",
       "back": {
         "sections": [
@@ -32912,6 +33051,9 @@
       "kind": "drug",
       "name": "Meropenem",
       "family": "Carbapenem",
+      "searchAliases": [
+        "메로페넴"
+      ],
       "summary": "중증 그람음성균·혐기균 감염과 침습성 ESBL 감염에서 중요한 광범위 주사제다. MRSA는 덮지 못하며 carbapenem 내성 여부가 선택을 가른다.",
       "back": {
         "sections": [
@@ -32965,6 +33107,10 @@
       "kind": "drug",
       "name": "Imipenem",
       "family": "Carbapenem",
+      "searchAliases": [
+        "이미페넴",
+        "이미페넴 실라스타틴"
+      ],
       "summary": "호기성·혐기성균이 섞인 중증 감염을 폭넓게 겨냥하는 주사제다. MRSA는 범위 밖이며 같은 carbapenem이라도 균종별 감수성을 확인한다.",
       "back": {
         "sections": [
@@ -33017,6 +33163,9 @@
       "kind": "drug",
       "name": "Aztreonam",
       "family": "Monobactam",
+      "searchAliases": [
+        "아즈트레오남"
+      ],
       "summary": "녹농균 등 호기성 그람음성균 감염을 겨냥한다. 그람양성균·혐기균은 덮지 못하므로 혼합감염에서는 추가 치료 범위를 따져야 한다.",
       "back": {
         "sections": [
@@ -33069,6 +33218,10 @@
       "kind": "drug",
       "name": "Ciprofloxacin",
       "family": "Fluoroquinolone",
+      "searchAliases": [
+        "시프로플록사신",
+        "씨프로플록사신"
+      ],
       "summary": "감수성 그람음성균의 요로·장관 감염 등에 쓰며 녹농균 범위가 있다. 내성 선택이 쉬워 감염 부위와 실제 감수성을 확인한다.",
       "back": {
         "sections": [
@@ -33121,6 +33274,9 @@
       "kind": "drug",
       "name": "Levofloxacin",
       "family": "Fluoroquinolone",
+      "searchAliases": [
+        "레보플록사신"
+      ],
       "summary": "호흡기 병원체와 감수성 그람음성균의 폐렴·요로감염 등에 쓰인다. 감염 부위와 노출 조건, 내성 여부를 확인해 선택한다.",
       "back": {
         "sections": [
@@ -33173,6 +33329,10 @@
       "kind": "drug",
       "name": "Ampicillin",
       "family": "Aminopenicillin",
+      "searchAliases": [
+        "암피실린",
+        "앰피실린"
+      ],
       "summary": "감수성 장알균 감염과 Listeria 수막염·패혈증에서 중요한 약이다. β-lactamase 생성균과 다수 E. faecium에는 효과를 기대하기 어렵다.",
       "back": {
         "sections": [
@@ -33225,6 +33385,9 @@
       "kind": "drug",
       "name": "Piperacillin–tazobactam",
       "family": "Antipseudomonal penicillin/BLI",
+      "searchAliases": [
+        "피페라실린 타조박탐"
+      ],
       "summary": "녹농균·혐기균을 함께 고려하는 중증 혼합감염에서 쓰인다. MRSA는 덮지 못하고 침습성 ESBL 감염에서는 신뢰할 표적 치료로 여기지 않는다.",
       "back": {
         "sections": [
@@ -33278,6 +33441,9 @@
       "kind": "drug",
       "name": "Linezolid",
       "family": "Oxazolidinone",
+      "searchAliases": [
+        "리네졸리드"
+      ],
       "summary": "MRSA 폐렴·피부감염과 VRE 감염에서 쓰이며 경구 사용도 가능하다. 그람음성균은 덮지 못하고 혈소판감소·골수억제를 살펴야 한다.",
       "back": {
         "sections": [
@@ -33331,6 +33497,9 @@
       "kind": "drug",
       "name": "Ceftazidime–avibactam",
       "family": "Cephalosporin/BLI",
+      "searchAliases": [
+        "세프타지딤 아비박탐"
+      ],
       "summary": "KPC·OXA-48 계열 내성 그람음성균 감염의 치료 옵션이다. NDM 등 MBL 감염에는 단독으로 효과를 기대하지 않으며 실제 감수성을 확인한다.",
       "back": {
         "sections": [
@@ -33384,6 +33553,9 @@
       "kind": "drug",
       "name": "Teicoplanin",
       "family": "Glycopeptide",
+      "searchAliases": [
+        "테이코플라닌"
+      ],
       "summary": "MRSA 등 그람양성균 감염에 쓰는 주사제다. 그람음성균은 덮지 못하며, VRE는 vanA·vanB에 따라 반응이 달라질 수 있다.",
       "back": {
         "sections": [
@@ -33436,6 +33608,10 @@
       "kind": "drug",
       "name": "Cefazolin",
       "family": "1st-generation cephalosporin",
+      "searchAliases": [
+        "세파졸린",
+        "세파조린"
+      ],
       "summary": "MSSA 감염·골관절감염과 수술 전 예방에 쓰는 대표 주사제다. MRSA·장알균·녹농균은 치료 범위 밖이다.",
       "back": {
         "sections": [
@@ -33489,6 +33665,11 @@
       "kind": "drug",
       "name": "Penicillin G",
       "family": "Natural penicillin",
+      "searchAliases": [
+        "페니실린",
+        "페니실린 지",
+        "페니실린 G"
+      ],
       "summary": "감수성 사슬알균 감염과 매독 등에서 중요한 약이다. 매독은 병기·신경계 침범에 따라 제형이 다르며 penicillinase 생성 포도알균에는 듣지 않는다.",
       "back": {
         "sections": [
@@ -33541,6 +33722,10 @@
       "kind": "drug",
       "name": "Amoxicillin–clavulanate",
       "family": "Aminopenicillin/BLI",
+      "searchAliases": [
+        "아목시실린 클라불란산",
+        "아목시실린 클라불라네이트"
+      ],
       "summary": "지역사회 혼합감염과 동물 교상 감염 등에 쓰인다. 녹농균은 덮지 못하고 AmpC·ESBL 같은 내성을 억제제가 모두 해결해 주지는 않는다.",
       "back": {
         "sections": [
@@ -33593,6 +33778,9 @@
       "kind": "drug",
       "name": "Ceftaroline",
       "family": "Anti-MRSA cephalosporin",
+      "searchAliases": [
+        "세프타롤린"
+      ],
       "summary": "MRSA를 포함한 피부연조직감염과 감수성 병원체의 지역사회폐렴에 쓰인다. 녹농균·주요 내성 장내세균까지 덮는 광범위 약은 아니다.",
       "back": {
         "sections": [
@@ -33646,6 +33834,10 @@
       "kind": "drug",
       "name": "Daptomycin",
       "family": "Lipopeptide",
+      "searchAliases": [
+        "답토마이신",
+        "댑토마이신"
+      ],
       "summary": "MRSA 균혈증 등 그람양성균의 혈류·심부 감염에서 쓰는 주사제다. 폐에서는 활성이 소실되어 폐렴 치료에는 쓰지 않는다.",
       "back": {
         "sections": [
@@ -33699,6 +33891,9 @@
       "kind": "drug",
       "name": "Clindamycin",
       "family": "Lincosamide",
+      "searchAliases": [
+        "클린다마이신"
+      ],
       "summary": "일부 피부연조직·구강 혐기균 감염에 쓰며 침습성 GAS 감염에서는 병합 역할이 있다. 유도성 내성이 있으면 실패할 수 있어 D-test가 중요하다.",
       "back": {
         "sections": [
@@ -33751,6 +33946,10 @@
       "kind": "drug",
       "name": "Erythromycin",
       "family": "Macrolide",
+      "searchAliases": [
+        "에리트로마이신",
+        "에리스로마이신"
+      ],
       "summary": "감수성 호흡기·비정형 병원체를 겨냥하는 macrolide다. 흔한 내성 때문에 같은 계열이라는 이유만으로 효과를 기대하지 않는다.",
       "back": {
         "sections": [
@@ -33803,6 +34002,10 @@
       "kind": "drug",
       "name": "Doxycycline",
       "family": "Tetracycline",
+      "searchAliases": [
+        "독시사이클린",
+        "독시싸이클린"
+      ],
       "summary": "비정형 폐렴·진드기매개 감염과 일부 감수성 피부감염에서 쓰인다. 녹농균 치료용으로 기대하지 않으며 병원체·감염 부위에 따라 선택한다.",
       "back": {
         "sections": [
@@ -33855,6 +34058,11 @@
       "kind": "drug",
       "name": "Trimethoprim–sulfamethoxazole",
       "family": "Antifolate combination",
+      "searchAliases": [
+        "트리메토프림 설파메톡사졸",
+        "트리메토프림 술파메톡사졸",
+        "코트리목사졸"
+      ],
       "summary": "PCP·Nocardia 감염과 감수성 MRSA·요로감염 등에서 쓰인다. 장알균·녹농균의 치료 범위로 기대하지 않는다.",
       "back": {
         "sections": [
@@ -33908,6 +34116,10 @@
       "kind": "drug",
       "name": "Gentamicin",
       "family": "Aminoglycoside",
+      "searchAliases": [
+        "겐타마이신",
+        "젠타마이신"
+      ],
       "summary": "호기성 그람음성균 감염과 일부 심내막염의 병합요법에서 쓰는 주사제다. 신독성·청력독성이 주요 제약이며 장알균에는 단독으로 쓰지 않는다.",
       "back": {
         "sections": [
@@ -33961,6 +34173,9 @@
       "kind": "drug",
       "name": "Amikacin",
       "family": "Aminoglycoside",
+      "searchAliases": [
+        "아미카신"
+      ],
       "summary": "일부 내성 그람음성균 감염과 감수성 기반 NTM 병합요법에서 쓰인다. 신독성·청력독성을 감시해야 하며 장알균 단독치료에는 효과가 없다.",
       "back": {
         "sections": [
@@ -34014,6 +34229,10 @@
       "kind": "drug",
       "name": "Metronidazole",
       "family": "Nitroimidazole",
+      "searchAliases": [
+        "메트로니다졸",
+        "메트로니더졸"
+      ],
       "summary": "복강·골반의 혐기균 감염과 일부 원충 감염에 쓰인다. 호기성균은 덮지 못하고 침습성 아메바증은 장강 치료제를 따로 병용해야 한다.",
       "back": {
         "sections": [
@@ -34067,6 +34286,10 @@
       "kind": "drug",
       "name": "Tigecycline",
       "family": "Glycylcycline",
+      "searchAliases": [
+        "티게사이클린",
+        "타이제사이클린"
+      ],
       "summary": "일부 내성균을 포함한 복잡한 조직·혼합감염에서 고려한다. 혈중·요중 노출이 낮아 균혈증·요로감염에 불리하고 녹농균도 덮지 못한다.",
       "back": {
         "sections": [
@@ -34119,6 +34342,10 @@
       "kind": "drug",
       "name": "Azithromycin",
       "family": "Azalide macrolide",
+      "searchAliases": [
+        "아지트로마이신",
+        "아지스로마이신"
+      ],
       "summary": "비정형 호흡기감염·백일해와 일부 성매개감염에 쓰인다. NTM에는 병합하며 M. genitalium에는 내성 확인 없이 단회요법을 선택하지 않는다.",
       "back": {
         "sections": [
@@ -34181,6 +34408,10 @@
       "kind": "drug",
       "name": "Clarithromycin",
       "family": "14-membered macrolide",
+      "searchAliases": [
+        "클라리트로마이신",
+        "클래리트로마이신"
+      ],
       "summary": "감수성 NTM 병합요법과 H. pylori 제균요법에서 쓰인다. 내성 확인과 CYP3A 상호작용·QT 연장이 선택의 중요한 제약이다.",
       "back": {
         "sections": [
@@ -34238,6 +34469,10 @@
       "kind": "drug",
       "name": "Rifampicin",
       "family": "Rifamycin",
+      "searchAliases": [
+        "리팜피신",
+        "리팜핀"
+      ],
       "summary": "결핵·NTM의 병합요법에서 중요한 약이다. 단독 사용은 빠른 내성을 선택하며 강한 효소유도 때문에 병용약을 확인해야 한다.",
       "back": {
         "sections": [
@@ -34290,6 +34525,10 @@
       "kind": "drug",
       "name": "Isoniazid",
       "family": "Antimycobacterial prodrug",
+      "searchAliases": [
+        "이소니아지드",
+        "아이소니아지드"
+      ],
       "summary": "활동성 결핵 병합요법의 주요 구성약이다. 간독성·말초신경병증을 감시하며 위험군에는 pyridoxine 병용을 고려한다.",
       "back": {
         "sections": [
@@ -34342,6 +34581,9 @@
       "kind": "drug",
       "name": "Ethambutol",
       "family": "Arabinose-analog antimycobacterial",
+      "searchAliases": [
+        "에탐부톨"
+      ],
       "summary": "결핵·MAC 병합요법에서 쓰는 약이다. 시력·적녹 색각 변화와 신기능을 살펴야 하며 활동성 감염에 단독으로 쓰지 않는다.",
       "back": {
         "sections": [
@@ -34394,6 +34636,10 @@
       "kind": "drug",
       "name": "Pyrazinamide",
       "family": "Nicotinamide-analog antimycobacterial prodrug",
+      "searchAliases": [
+        "피라진아미드",
+        "피라지나미드"
+      ],
       "summary": "결핵 초기 강화기 병합요법에서 중요한 약이다. 간독성·고요산혈증이 제약이며 M. bovis에는 고유 내성 때문에 효과가 없다.",
       "back": {
         "sections": [
@@ -34446,6 +34692,9 @@
       "kind": "drug",
       "name": "Amoxicillin",
       "family": "Aminopenicillin",
+      "searchAliases": [
+        "아목시실린"
+      ],
       "summary": "감수성 지역사회 호흡기감염 등에 쓰며 H. pylori 제균요법의 구성약이기도 하다. β-lactamase 생성균에는 단독 효과를 기대하기 어렵다.",
       "back": {
         "sections": [
@@ -34498,6 +34747,9 @@
       "kind": "drug",
       "name": "Moxifloxacin",
       "family": "Fluoroquinolone",
+      "searchAliases": [
+        "목시플록사신"
+      ],
       "summary": "호흡기감염과 내성에 따른 M. genitalium 치료 등에 쓰인다. QT 연장·상호작용을 확인하고 결핵 의심 상황의 단독 노출에 주의한다.",
       "back": {
         "sections": [
@@ -34555,6 +34807,9 @@
       "kind": "drug",
       "name": "Fluconazole",
       "family": "Triazole",
+      "searchAliases": [
+        "플루코나졸"
+      ],
       "summary": "감수성 Candida 감염과 일부 진균증의 치료·유지요법에서 쓰인다. Aspergillus·Mucorales에는 효과가 없고 Candida 종별 감수성 차이가 크다.",
       "back": {
         "sections": [
@@ -34617,6 +34872,9 @@
       "kind": "drug",
       "name": "Voriconazole",
       "family": "Triazole",
+      "searchAliases": [
+        "보리코나졸"
+      ],
       "summary": "침습성 Aspergillus 감염에서 중요한 약이다. Mucorales에는 신뢰할 효과가 없으며 상호작용과 혈중농도 관리가 중요하다.",
       "back": {
         "sections": [
@@ -34669,6 +34927,10 @@
       "kind": "drug",
       "name": "Posaconazole",
       "family": "Triazole",
+      "searchAliases": [
+        "포사코나졸",
+        "포자코나졸"
+      ],
       "summary": "넓은 진균 범위가 필요한 예방·치료에서 쓰인다. 제형별 흡수와 병용약 상호작용을 확인해야 실제 노출을 확보할 수 있다.",
       "back": {
         "sections": [
@@ -34726,6 +34988,9 @@
       "kind": "drug",
       "name": "Isavuconazole",
       "family": "Triazole",
+      "searchAliases": [
+        "이사부코나졸"
+      ],
       "summary": "침습성 Aspergillus·Mucorales 감염의 치료 옵션이다. 같은 진균증이라도 종·침범 부위에 따른 근거와 감수성을 확인해 선택한다.",
       "back": {
         "sections": [
@@ -34783,6 +35048,11 @@
       "kind": "drug",
       "name": "Amphotericin B",
       "family": "Polyene",
+      "searchAliases": [
+        "암포테리신 비",
+        "암포테리신 B",
+        "암포테리신"
+      ],
       "summary": "중증 침습진균증과 일부 원충 감염에서 중요한 약이다. Liposomal·deoxycholate 제형은 독성·노출이 달라 임의로 바꾸어 쓰지 않는다.",
       "back": {
         "sections": [
@@ -34855,6 +35125,10 @@
       "kind": "drug",
       "name": "Micafungin",
       "family": "Echinocandin",
+      "searchAliases": [
+        "미카펀진",
+        "미카풍긴"
+      ],
       "summary": "칸디다혈증·침습성 Candida 감염에서 쓰는 주사제다. Cryptococcus·Mucorales는 덮지 못하고 중추신경계·안구·요로 노출도 제한적이다.",
       "back": {
         "sections": [
@@ -34912,6 +35186,10 @@
       "kind": "drug",
       "name": "Flucytosine",
       "family": "Pyrimidine analogue",
+      "searchAliases": [
+        "플루시토신",
+        "플루싸이토신"
+      ],
       "summary": "Cryptococcus 수막염 등의 병합치료에 쓰인다. 단독 사용은 빠른 내성을 선택하며 골수·간 독성을 감시해야 한다.",
       "back": {
         "sections": [
@@ -34965,6 +35243,10 @@
       "kind": "drug",
       "name": "Terbinafine",
       "family": "Allylamine",
+      "searchAliases": [
+        "테르비나핀",
+        "터비나핀"
+      ],
       "summary": "피부사상균에 의한 피부·손발톱 진균증 치료가 중심이다. 침습성 진균증의 표준 약제로 쓰는 약은 아니다.",
       "back": {
         "sections": [
@@ -35022,6 +35304,9 @@
       "kind": "drug",
       "name": "Albendazole",
       "family": "Benzimidazole",
+      "searchAliases": [
+        "알벤다졸"
+      ],
       "summary": "장내 선충과 일부 조직 유충 감염에 쓰인다. 신경·조직 병변은 약물로 유발되는 염증과 병변 위치까지 고려해야 한다.",
       "back": {
         "sections": [
@@ -35069,6 +35354,9 @@
       "kind": "drug",
       "name": "Mebendazole",
       "family": "Benzimidazole",
+      "searchAliases": [
+        "메벤다졸"
+      ],
       "summary": "장내 선충 감염을 주로 치료하는 구충제다. 조직 침투가 제한적이어서 조직 기생충 감염까지 같은 효과를 기대하지 않는다.",
       "back": {
         "sections": [
@@ -35116,6 +35404,10 @@
       "kind": "drug",
       "name": "Ivermectin",
       "family": "Macrocyclic lactone",
+      "searchAliases": [
+        "이버멕틴",
+        "이베르멕틴"
+      ],
       "summary": "Strongyloides 감염·옴 등에서 중요한 약이다. Loa loa 고미세사상충혈증에서는 중증 반응 위험을 고려해야 한다.",
       "back": {
         "sections": [
@@ -35163,6 +35455,10 @@
       "kind": "drug",
       "name": "Praziquantel",
       "family": "Pyrazinoisoquinoline",
+      "searchAliases": [
+        "프라지콴텔",
+        "프라지퀀텔"
+      ],
       "summary": "여러 흡충과 장내 성충 조충 감염에 쓰인다. Fasciola는 별도 약제가 필요하며 조직 낭미충은 병변별 치료 판단이 필요하다.",
       "back": {
         "sections": [
@@ -35210,6 +35506,11 @@
       "kind": "drug",
       "name": "Nitazoxanide",
       "family": "Thiazolide",
+      "searchAliases": [
+        "니타족사니드",
+        "니타조사니드",
+        "니타조사나이드"
+      ],
       "summary": "면역정상자의 Cryptosporidium 등 장내 원충 감염에 쓰인다. 중증 면역저하에서는 효과가 제한될 수 있다.",
       "back": {
         "sections": [
@@ -35257,6 +35558,9 @@
       "kind": "drug",
       "name": "Paromomycin",
       "family": "Aminoglycoside",
+      "searchAliases": [
+        "파로모마이신"
+      ],
       "summary": "경구제는 장강 내 아메바 감염을 치료하는 데 쓰인다. 조직 침투가 낮아 아메바 간농양·침습성 대장염을 단독으로 치료하는 약은 아니다.",
       "back": {
         "sections": [
@@ -35305,6 +35609,9 @@
       "kind": "drug",
       "name": "Pyrimethamine",
       "family": "Antifolate",
+      "searchAliases": [
+        "피리메타민"
+      ],
       "summary": "Toxoplasma 감염의 병합요법에 쓰인다. 골수억제를 줄이기 위한 leucovorin 병용이 중요하다.",
       "back": {
         "sections": [
@@ -35353,6 +35660,10 @@
       "kind": "drug",
       "name": "Sulfadiazine",
       "family": "Sulfonamide",
+      "searchAliases": [
+        "설파디아진",
+        "술파디아진"
+      ],
       "summary": "Toxoplasma 감염에서 pyrimethamine 등과 병합한다. 과민반응·결정뇨·골수독성이 중요한 사용 제약이다.",
       "back": {
         "sections": [
@@ -35401,6 +35712,10 @@
       "kind": "drug",
       "name": "Artemether–lumefantrine",
       "family": "Artemisinin combination",
+      "searchAliases": [
+        "아르테메터 루메판트린",
+        "아르테메테르 루메판트린"
+      ],
       "summary": "비중증 혈액기 말라리아 치료에 쓰는 병합제다. 중증 말라리아 치료나 P. vivax·ovale의 간 휴면체 제거를 대신하지 않는다.",
       "back": {
         "sections": [
@@ -35448,6 +35763,10 @@
       "kind": "drug",
       "name": "Atovaquone–proguanil",
       "family": "Antimalarial combination",
+      "searchAliases": [
+        "아토바쿠온 프로구아닐",
+        "아토바퀀 프로구아닐"
+      ],
       "summary": "비중증 말라리아의 혈액기 치료에 쓰는 병합제다. 중증 말라리아나 P. vivax·ovale의 재발 원인인 간 휴면체는 별도 치료가 필요하다.",
       "back": {
         "sections": [
@@ -35495,6 +35814,9 @@
       "kind": "drug",
       "name": "Primaquine",
       "family": "8-aminoquinoline",
+      "searchAliases": [
+        "프리마퀸"
+      ],
       "summary": "P. vivax·ovale의 재발 방지와 일부 말라리아 전파 차단에 쓰인다. G6PD 관련 용혈 위험 때문에 검사와 임신·수유 조건을 확인한다.",
       "back": {
         "sections": [
@@ -35542,6 +35864,9 @@
       "kind": "drug",
       "name": "Miltefosine",
       "family": "Alkylphosphocholine",
+      "searchAliases": [
+        "밀테포신"
+      ],
       "summary": "일부 리슈만편모충 감염을 치료하는 약이다. 종·획득 지역에 따라 효과가 다르고 최기형성이 중요한 사용 제약이다.",
       "back": {
         "sections": [
@@ -35589,6 +35914,9 @@
       "kind": "drug",
       "name": "Triclabendazole",
       "family": "Benzimidazole flukicide",
+      "searchAliases": [
+        "트리클라벤다졸"
+      ],
       "summary": "Fasciola 감염의 간이행기부터 담도기까지 치료하는 약이다. 다른 흔한 흡충 치료를 대신하는 일반 구충제는 아니다.",
       "back": {
         "sections": [
@@ -35636,6 +35964,11 @@
       "kind": "drug",
       "name": "Permethrin",
       "family": "Topical pyrethroid",
+      "searchAliases": [
+        "퍼메트린",
+        "페르메트린",
+        "퍼메쓰린"
+      ],
       "summary": "옴에 쓰는 외용제다. 도포 누락과 접촉자 미치료에 따른 재감염이 흔한 실패 원인이다.",
       "back": {
         "sections": [
@@ -35683,6 +36016,9 @@
       "kind": "drug",
       "name": "Benznidazole",
       "family": "Nitroimidazole antitrypanosomal",
+      "searchAliases": [
+        "벤즈니다졸"
+      ],
       "summary": "샤가스병의 원인 감염을 치료하는 약이다. 이미 진행된 만성 심장·소화기 병증에서는 이득이 불확실하며 독성을 함께 고려한다.",
       "back": {
         "sections": [
@@ -35730,6 +36066,10 @@
       "kind": "drug",
       "name": "Itraconazole",
       "family": "Triazole",
+      "searchAliases": [
+        "이트라코나졸",
+        "이뜨라코나졸"
+      ],
       "summary": "Sporothrix·여러 이형성 진균과 피부사상균 감염에 쓰인다. 제형·흡수·상호작용과 심부전 위험이 중요하며 중추신경계·요로에는 불리하다.",
       "back": {
         "sections": [
@@ -35787,6 +36127,9 @@
       "kind": "drug",
       "name": "Pentamidine",
       "family": "Aromatic diamidine",
+      "searchAliases": [
+        "펜타미딘"
+      ],
       "summary": "PCP 등의 대안 치료에 쓰이며 정맥제와 흡입 예방제의 역할이 다르다. 신장·췌장·혈당·전해질 독성이 중요한 사용 제약이다.",
       "back": {
         "sections": [
@@ -35835,6 +36178,10 @@
       "kind": "drug",
       "name": "Atovaquone",
       "family": "Hydroxynaphthoquinone",
+      "searchAliases": [
+        "아토바쿠온",
+        "아토바퀀"
+      ],
       "summary": "비중증 Babesia 병합요법과 PCP 대안 치료 등에 쓰인다. 지방식과 복용해야 흡수가 개선되며 중증 감염에서는 같은 역할을 기대하지 않는다.",
       "back": {
         "sections": [
@@ -35888,6 +36235,10 @@
       "kind": "drug",
       "name": "Quinine",
       "family": "Quinoline antiprotozoal",
+      "searchAliases": [
+        "퀴닌",
+        "키니네"
+      ],
       "summary": "일부 말라리아·Babesia 감염에서 병합요법의 구성약으로 쓰인다. 단독요법이 아니며 cinchonism·QT 연장·저혈당이 사용을 제한한다.",
       "back": {
         "sections": [
@@ -35935,6 +36286,11 @@
       "kind": "drug",
       "name": "Acyclovir",
       "family": "Guanosine nucleoside analogue",
+      "searchAliases": [
+        "아시클로비르",
+        "아씨클로버",
+        "아시클로버"
+      ],
       "summary": "HSV·VZV의 점막·피부감염부터 중증 감염까지 쓰인다. 감염 부위에 따라 경구·정맥 치료가 달라지며 정맥제의 신독성을 살펴야 한다.",
       "back": {
         "sections": [
@@ -35987,6 +36343,10 @@
       "kind": "drug",
       "name": "Ganciclovir",
       "family": "Guanosine nucleoside analogue",
+      "searchAliases": [
+        "간시클로비르",
+        "간시클로버"
+      ],
       "summary": "활동성 CMV 장기질환, 특히 망막염 치료에서 중요한 약이다. 골수억제가 주요 제약이며 예방 목적과 치료 목적은 구별한다.",
       "back": {
         "sections": [
@@ -36040,6 +36400,10 @@
       "kind": "drug",
       "name": "Foscarnet",
       "family": "Pyrophosphate analogue",
+      "searchAliases": [
+        "포스카넷",
+        "포스카르네트"
+      ],
       "summary": "Ganciclovir 내성·불내성 CMV와 acyclovir 내성 HSV의 대안 치료에 쓰인다. 신독성·전해질 이상이 커 전문적인 감시가 필요하다.",
       "back": {
         "sections": [
@@ -36093,6 +36457,10 @@
       "kind": "drug",
       "name": "Cidofovir",
       "family": "Nucleotide analogue",
+      "searchAliases": [
+        "시도포비르",
+        "시도포버"
+      ],
       "summary": "선택된 내성·불내성 CMV 감염 등에서 고려하는 대안 약이다. 신독성 때문에 대부분의 DNA 바이러스 감염에 일률적으로 쓰지 않는다.",
       "back": {
         "sections": [
@@ -36146,6 +36514,10 @@
       "kind": "drug",
       "name": "Letermovir",
       "family": "CMV terminase inhibitor",
+      "searchAliases": [
+        "레테르모비르",
+        "레터모비르"
+      ],
       "summary": "이식 등 특정 상황에서 CMV 예방을 위해 쓰는 약이다. 이미 발생한 CMV 장기질환의 표준 치료제는 아니다.",
       "back": {
         "sections": [
@@ -36193,6 +36565,10 @@
       "kind": "drug",
       "name": "Oseltamivir",
       "family": "Neuraminidase inhibitor",
+      "searchAliases": [
+        "오셀타미비르",
+        "오셀타미버"
+      ],
       "summary": "Influenza A·B 치료에 쓰며 일찍 시작할수록 이득이 크다. 입원·중증·고위험 환자는 초기 시간창이 지났다고 치료를 일률적으로 배제하지 않는다.",
       "back": {
         "sections": [
@@ -36241,6 +36617,11 @@
       "kind": "drug",
       "name": "Baloxavir marboxil",
       "family": "Cap-dependent endonuclease inhibitor",
+      "searchAliases": [
+        "발록사비르 마르복실",
+        "발록사비르",
+        "발록사버"
+      ],
       "summary": "발병 초기 비복잡 외래 독감 치료에서 쓰인다. 중증·입원 독감에 같은 근거로 단독 사용하지 않는다.",
       "back": {
         "sections": [
@@ -36289,6 +36670,10 @@
       "kind": "drug",
       "name": "Remdesivir",
       "family": "Adenosine nucleotide prodrug",
+      "searchAliases": [
+        "렘데시비르",
+        "렘데시버"
+      ],
       "summary": "중증 진행 위험이 있는 COVID-19 등에서 쓰는 정맥 항바이러스제다. 발병 시점과 정맥 투여 가능성이 선택을 가른다.",
       "back": {
         "sections": [
@@ -36336,6 +36721,11 @@
       "kind": "drug",
       "name": "Nirmatrelvir–ritonavir",
       "family": "Coronavirus protease inhibitor plus pharmacokinetic enhancer",
+      "searchAliases": [
+        "니르마트렐비르 리토나비르",
+        "니르마트렐비르",
+        "리토나비르"
+      ],
       "summary": "고위험 외래 COVID-19의 발병 초기 치료에 쓰인다. 병용약 상호작용과 신장·간 기능 조건을 먼저 확인해야 한다.",
       "back": {
         "sections": [
@@ -36383,6 +36773,9 @@
       "kind": "drug",
       "name": "Ribavirin",
       "family": "Broad-spectrum nucleoside analogue",
+      "searchAliases": [
+        "리바비린"
+      ],
       "summary": "일부 바이러스 질환에서 제한적으로 고려하지만 질환별 근거가 다르다. 독성과 불확실한 효과 때문에 일반적인 광범위 항바이러스제로 쓰지 않는다.",
       "back": {
         "sections": [
@@ -36435,6 +36828,10 @@
       "kind": "drug",
       "name": "Tenofovir (TDF/TAF)",
       "family": "Nucleotide reverse-transcriptase inhibitor",
+      "searchAliases": [
+        "테노포비르",
+        "테노포버"
+      ],
       "summary": "만성 HBV 치료와 HIV 병합요법에서 쓰인다. HIV 단독치료제로 쓰지 않으며 TDF·TAF의 신장·뼈 영향과 제형 차이를 고려한다.",
       "back": {
         "sections": [
@@ -36487,6 +36884,10 @@
       "kind": "drug",
       "name": "Entecavir",
       "family": "Guanosine nucleoside analogue",
+      "searchAliases": [
+        "엔테카비르",
+        "엔테카버"
+      ],
       "summary": "만성 HBV 치료에 쓰는 약이다. Lamivudine 내성 병력은 효과에 영향을 주며 HIV 동시감염을 단독으로 치료하지 못한다.",
       "back": {
         "sections": [
@@ -36534,6 +36935,11 @@
       "kind": "drug",
       "name": "Sofosbuvir–velpatasvir",
       "family": "HCV NS5B nucleotide inhibitor plus NS5A inhibitor",
+      "searchAliases": [
+        "소포스부비르 벨파타스비르",
+        "소포스부비르",
+        "벨파타스비르"
+      ],
       "summary": "여러 HCV 유전자형의 만성 C형간염 치료에 쓰는 병합제다. 간경변 상태·이전 치료력과 약물상호작용이 요법 선택을 가른다.",
       "back": {
         "sections": [
@@ -36581,6 +36987,10 @@
       "kind": "drug",
       "name": "Dolutegravir",
       "family": "HIV integrase strand-transfer inhibitor",
+      "searchAliases": [
+        "돌루테그라비르",
+        "돌루테그라버"
+      ],
       "summary": "HIV의 완전한 병합 항레트로바이러스 요법에 포함되는 약이다. 단독치료가 아니며 철·칼슘 등 다가 양이온과의 상호작용을 확인한다.",
       "back": {
         "sections": [
@@ -36628,6 +37038,10 @@
       "kind": "drug",
       "name": "Lamivudine",
       "family": "Nucleoside reverse-transcriptase inhibitor",
+      "searchAliases": [
+        "라미부딘",
+        "라미뷰딘"
+      ],
       "summary": "HIV 병합요법과 HBV 치료에서 쓰인다. HBV 단독 사용은 내성을 빠르게 선택할 수 있고 완전한 HIV 치료를 대신하지 않는다.",
       "back": {
         "sections": [
@@ -36680,6 +37094,10 @@
       "kind": "drug",
       "name": "Peginterferon alfa",
       "family": "Host-directed immunomodulator",
+      "searchAliases": [
+        "페그인터페론 알파",
+        "페길화 인터페론"
+      ],
       "summary": "신중히 선택한 만성 HBV 환자에서 고려하는 약이다. 독성·금기가 많아 모든 만성간염 환자에게 같은 방식으로 쓰지 않는다.",
       "back": {
         "sections": [
@@ -36727,6 +37145,9 @@
       "kind": "drug",
       "name": "Fidaxomicin",
       "family": "Macrocyclic antibacterial",
+      "searchAliases": [
+        "피닥소마이신"
+      ],
       "summary": "C. difficile 대장염 치료에 쓰는 경구제다. 전신흡수가 낮아 균혈증·심부감염을 치료하는 약은 아니며 전격성 장염의 근거는 별도로 본다.",
       "back": {
         "sections": [
