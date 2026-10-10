@@ -9,6 +9,8 @@ const unique = values => [...new Set(values.filter(Boolean))];
 export function createCardCatalog(catalog) {
   const pathogenCards = new Map(), drugCards = new Map();
   const references = ids => unique(ids).filter(id => catalog.sources[id]).map(id => ({ id, ...catalog.sources[id] }));
+  const therapies = recordId => (catalog.variants[recordId]?.therapyIds || []).map(id=>catalog.therapyContexts?.[id]).filter(Boolean);
+  const drugTherapies = drugId => Object.values(catalog.therapyContexts || {}).filter(context=>context.drugIds.includes(drugId));
   const response = (recordId,drugId) => catalog.responseProfiles[catalog.responses[recordId]?.[drugId]];
   const summary = (kind,id) => (kind === 'drug' ? catalog.drugs[id] : catalog.variants[id]).summary;
 
@@ -29,7 +31,7 @@ export function createCardCatalog(catalog) {
       back:{
         label:variant.label, summary:variant.summary, sections:[...sections.values()], responses,
         responseLabel:variant.observationType === 'regimen' ? '이 임상형의 요법 구성' : '이 교육용 분리주의 약제 반응',
-        references:references([...entity.sourceIds,...variant.sourceIds]),
+        references:references([...entity.sourceIds,...variant.sourceIds,...therapies(recordId).flatMap(context=>context.sourceIds)]),
         reviewStatus:variant.reviewStatus
       }
     };
@@ -44,11 +46,11 @@ export function createCardCatalog(catalog) {
     const card = {
       kind:'drug', id:drugId.toUpperCase(), name:entity.name, subtitle:entity.family,
       summary:entity.summary,
-      back:{ label:entity.family, summary:entity.summary, sections:entity.back.sections, references:references(entity.sourceIds), reviewStatus:entity.reviewStatus }
+      back:{ label:entity.family, summary:entity.summary, sections:entity.back.sections, references:references([...entity.sourceIds,...drugTherapies(drugId).flatMap(context=>context.sourceIds)]), reviewStatus:entity.reviewStatus }
     };
     drugCards.set(drugId,card);
     return card;
   }
 
-  return { pathogen, drug, response, summary };
+  return { pathogen, drug, response, summary, therapies, drugTherapies };
 }

@@ -67,3 +67,23 @@ main.card-gallery-main { max-width:1280px; padding:30px 24px 64px; }
   .card-gallery-grid { gap:28px 18px; }
   .card-gallery-caption { padding-top:13px; }
 }
+
+main.card-gallery-main { max-width:1440px; }
+.card-gallery-grid.card-collection { grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--thumbnail-min,190px)),1fr)); gap:26px 18px; }
+.card-gallery-item { width:100%; }
+.card-gallery-resultbar { margin-bottom:20px; }
+.card-gallery-legend .preferred { background:#dfb957; box-shadow:0 0 4px #d2ac5166; }
+.card-gallery-legend .lit { background:#f7faf4; border:1px solid #9ca99b; box-shadow:none; }
+.card-gallery-legend .blocked { background:#ce8a7b; }
+.card-gallery-legend .condition-dot { width:5px; height:5px; background:#789cbe; }
+@media(max-width:599px) {
+ .card-gallery-grid.card-collection { grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px 13px; }
+ .card-gallery-size { flex-basis:110px; }
+ .card-gallery-heading { margin-bottom:18px; }
+ .card-gallery-totals { font-size:.6875rem; }
+ .card-gallery-filters { padding:13px 0; }
+ .card-gallery-domains button { font-size:.75rem; padding:8px 9px; }
+ .card-gallery-guide { margin-bottom:18px; }
+ .card-gallery-resultbar { font-size:.75rem; }
+ .card-gallery-resultbar > span { font-size:.6875rem; }
+}

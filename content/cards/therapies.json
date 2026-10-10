@@ -1,0 +1,517 @@
+{
+  "schemaVersion": 1,
+  "locale": "ko-KR",
+  "interpretation": "Preferred treatment in the explicitly named clinical context, independent of susceptibility. Missing preference metadata never implies an alternative or a contraindication.",
+  "references": {
+    "card-therapy-hap": {
+      "title": "ATS/IDSA HAP/VAP guideline — MSSA and MRSA directed therapy",
+      "url": "https://www.idsociety.org/practice-guideline/hap_vap/",
+      "accessedAt": "2026-10-11"
+    },
+    "card-therapy-mrsa": {
+      "title": "IDSA MRSA guideline — bacteremia and endocarditis",
+      "url": "https://www.idsociety.org/practice-guideline/mrsa/",
+      "accessedAt": "2026-10-11"
+    },
+    "card-therapy-gas": {
+      "title": "CDC — Group A streptococcal pharyngitis: recommended antibiotics",
+      "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+      "accessedAt": "2026-10-11"
+    }
+  },
+  "contexts": [
+    {
+      "id": "mssa-pneumonia",
+      "recordIds": [
+        "SAU-001"
+      ],
+      "context": "MSSA 확진 폐렴의 표적치료",
+      "drugIds": [
+        "oxacillin",
+        "cefazolin"
+      ],
+      "sourceIds": [
+        "card-therapy-hap"
+      ],
+      "note": "확진 MSSA에는 oxacillin·cefazolin 같은 좁은 표적 β-lactam을 우선 선택한다. 균혈증·다른 감염 부위의 판단은 별도로 한다.",
+      "combination": false
+    },
+    {
+      "id": "mrsa-bacteremia",
+      "recordIds": [
+        "SAU-002"
+      ],
+      "context": "성인 MRSA 균혈증·심내막염",
+      "drugIds": [
+        "vancomycin",
+        "daptomycin"
+      ],
+      "sourceIds": [
+        "card-therapy-mrsa"
+      ],
+      "note": "Vancomycin 또는 daptomycin을 사용하는 혈류감염 맥락이다. Daptomycin의 금색 표시를 폐렴에 적용하지 않는다.",
+      "combination": false
+    },
+    {
+      "id": "mrsa-pneumonia",
+      "recordIds": [
+        "SAU-002"
+      ],
+      "context": "성인 MRSA 병원획득·인공호흡기 폐렴",
+      "drugIds": [
+        "vancomycin",
+        "linezolid"
+      ],
+      "sourceIds": [
+        "card-therapy-hap"
+      ],
+      "note": "MRSA HAP/VAP의 주요 표적 선택지이다. 신기능·혈구 수·상호작용 등 환자 조건을 반영한다. Daptomycin은 폐렴 치료에 사용하지 않는다.",
+      "combination": false,
+      "excludedDrugIds": [
+        "daptomycin"
+      ]
+    },
+    {
+      "id": "gas-pharyngitis",
+      "recordIds": [
+        "SPY-101",
+        "SPY-102"
+      ],
+      "context": "확진 GAS 인두염",
+      "drugIds": [
+        "penicillin"
+      ],
+      "sourceIds": [
+        "card-therapy-gas"
+      ],
+      "note": "Penicillin 또는 amoxicillin이 우선 선택이며 이 카드에는 penicillin을 표시한다. 약물 알레르기는 대안 선택에 반영한다.",
+      "combination": false
+    },
+    {
+      "id": "esbl-invasive",
+      "recordIds": [
+        "ECO-010",
+        "KPN-011",
+        "GNX-202"
+      ],
+      "context": "ESBL 장내세균의 요로 외 침습 감염",
+      "drugIds": [
+        "meropenem"
+      ],
+      "sourceIds": [
+        "idsa-amr-2026"
+      ],
+      "note": "요로 외 ESBL 감염의 carbapenem 우선 맥락이다. 단순 방광염의 우선 약제까지 뜻하지 않는다.",
+      "combination": false
+    },
+    {
+      "id": "ampc-invasive",
+      "recordIds": [
+        "ECL-015",
+        "ECL-016",
+        "GNX-207",
+        "GNX-209"
+      ],
+      "context": "감수성·노출 조건을 충족한 AmpC 감염",
+      "drugIds": [
+        "cefepime"
+      ],
+      "sourceIds": [
+        "idsa-amr-2026"
+      ],
+      "note": "실제 cefepime MIC·적절한 노출과 ESBL 동반 여부를 확인한 AmpC 감염의 선택이다. I 기록은 노출 증가 조건을 함께 읽는다.",
+      "combination": false
+    },
+    {
+      "id": "kpc-directed",
+      "recordIds": [
+        "KPN-012",
+        "ECO-410"
+      ],
+      "context": "KPC 확인 장내세균 감염의 표적치료",
+      "drugIds": [
+        "ceftazavi"
+      ],
+      "sourceIds": [
+        "idsa-amr-2026"
+      ],
+      "note": "Ceftazidime-avibactam은 KPC 감염의 우선 선택지 중 수록된 약제다. Meropenem-vaborbactam 등 다른 우선 선택지는 이 약제 목록 밖이다.",
+      "combination": false
+    },
+    {
+      "id": "oxa48-directed",
+      "recordIds": [
+        "ECO-407",
+        "KPN-408"
+      ],
+      "context": "OXA-48-like 확인 장내세균 감염",
+      "drugIds": [
+        "ceftazavi"
+      ],
+      "sourceIds": [
+        "idsa-amr-2026"
+      ],
+      "note": "OXA-48-like 감염에서 ceftazidime-avibactam을 우선하는 맥락이다. MBL 동반 등 다른 내성기전과 실제 감수성을 확인한다.",
+      "combination": false
+    },
+    {
+      "id": "initial-cdi",
+      "recordIds": [
+        "CDF-121"
+      ],
+      "context": "성인 초발 비전격성 C. difficile 감염",
+      "drugIds": [
+        "fidaxomicin"
+      ],
+      "sourceIds": [
+        "idsa-cdi-2021"
+      ],
+      "note": "Fidaxomicin 선호, 경구 vancomycin은 허용 대안이다. 가용성·비용을 반영하며 전격성 CDI에는 이 기준을 적용하지 않는다.",
+      "combination": false
+    },
+    {
+      "id": "invasive-hib",
+      "recordIds": [
+        "GNX-225",
+        "GNX-226",
+        "GNX-227"
+      ],
+      "context": "침습성 Hib 감염의 초기 치료",
+      "drugIds": [
+        "ceftriaxone"
+      ],
+      "sourceIds": [
+        "cdc-pinkbook-hib-management"
+      ],
+      "note": "초기 3세대 cephalosporin 선택지다. BLNAR 등에서 실제 감수성을 확인해 조정하며, 요법에 있는 ampicillin을 단독 감수성으로 읽지 않는다.",
+      "combination": false
+    },
+    {
+      "id": "adult-sinusitis",
+      "recordIds": [
+        "GNX-228"
+      ],
+      "context": "성인 비복잡 급성 세균성 비부비동염",
+      "drugIds": [
+        "amoxclav"
+      ],
+      "sourceIds": [
+        "idsa-abrs-2012"
+      ],
+      "note": "Moraxella 등 β-lactamase 생성 호흡기균을 고려한 초기 선택이다. Penicillin 알레르기 대안은 별도이다.",
+      "combination": false
+    },
+    {
+      "id": "pertussis",
+      "recordIds": [
+        "BGX-504"
+      ],
+      "context": "백일해 치료·고위험 접촉자 예방",
+      "drugIds": [
+        "azithromycin",
+        "clarithromycin"
+      ],
+      "sourceIds": [
+        "pertussis-cdc"
+      ],
+      "note": "권고 macrolide 선택지 중 수록된 약제다. 연령·QT·상호작용 및 치료 시작 시점을 확인한다.",
+      "combination": false
+    },
+    {
+      "id": "drug-susceptible-tb",
+      "recordIds": [
+        "BGX-505"
+      ],
+      "context": "약제감수성 폐결핵 표준 6개월 요법의 초기 단계",
+      "drugIds": [
+        "isoniazid",
+        "rifampicin",
+        "pyrazinamide",
+        "ethambutol"
+      ],
+      "sourceIds": [
+        "tb-cdc-clinical"
+      ],
+      "note": "초기 2개월의 다제 병용 구성 약제다. 개별 약제 단독 치료를 뜻하지 않으며 DST·환자 조건에 따라 조정한다.",
+      "combination": true
+    },
+    {
+      "id": "uncomplicated-gonorrhea",
+      "recordIds": [
+        "BGX-509"
+      ],
+      "context": "성인 단순 임질의 권고 초기 요법",
+      "drugIds": [
+        "ceftriaxone"
+      ],
+      "sourceIds": [
+        "gonorrhea-cdc"
+      ],
+      "note": "체중에 따른 ceftriaxone 근육주사 요법이다. Chlamydia를 배제하지 못하면 별도 치료를 추가한다.",
+      "combination": false
+    },
+    {
+      "id": "nonpregnant-chlamydia",
+      "recordIds": [
+        "BGX-510"
+      ],
+      "context": "비임신 청소년·성인의 단순 Chlamydia 감염",
+      "drugIds": [
+        "doxycycline"
+      ],
+      "sourceIds": [
+        "chlamydia-cdc"
+      ],
+      "note": "비임신 성인의 권고 요법이다. 임신·복약순응도·감염 부위는 다른 선택의 근거가 된다.",
+      "combination": false
+    },
+    {
+      "id": "early-syphilis",
+      "recordIds": [
+        "BGX-512"
+      ],
+      "context": "신경·안·이과 침범 없는 일차·이차 매독",
+      "drugIds": [
+        "penicillin"
+      ],
+      "sourceIds": [
+        "syphilis-early-cdc"
+      ],
+      "note": "Benzathine penicillin G 근육주사 제형의 맥락이다. 신경매독에 쓰는 정맥 제형·요법과 구분한다.",
+      "combination": false
+    },
+    {
+      "id": "initial-candidemia",
+      "recordIds": [
+        "CAL-601",
+        "CGL-602",
+        "CPA-604",
+        "CTR-605",
+        "CKR-606"
+      ],
+      "context": "비호중구감소 성인 칸디다혈증의 초기 치료",
+      "drugIds": [
+        "micafungin"
+      ],
+      "sourceIds": [
+        "idsa-candida"
+      ],
+      "note": "초기 echinocandin 선택지 중 수록된 micafungin이다. 안정화·감수성 확인 후 azole 전환은 별도 단계다.",
+      "combination": false
+    },
+    {
+      "id": "invasive-cauris",
+      "recordIds": [
+        "CAU-603"
+      ],
+      "context": "성인 침습성 C. auris 초기 치료",
+      "drugIds": [
+        "micafungin"
+      ],
+      "sourceIds": [
+        "cdc-candida-auris"
+      ],
+      "note": "초기 echinocandin 권고 맥락이다. 감염 없는 집락화에 약제를 투여한다는 뜻은 아니다.",
+      "combination": false
+    },
+    {
+      "id": "invasive-aspergillosis",
+      "recordIds": [
+        "AFU-609",
+        "AFL-610",
+        "ATE-611"
+      ],
+      "context": "침습성 aspergillosis 초기 치료",
+      "drugIds": [
+        "voriconazole"
+      ],
+      "sourceIds": [
+        "idsa-aspergillus"
+      ],
+      "note": "Voriconazole 우선 맥락이다. Isavuconazole은 대안 초기 선택, micafungin 단독은 일반적인 초기 우선요법이 아니다.",
+      "combination": false
+    },
+    {
+      "id": "hiv-pcp",
+      "recordIds": [
+        "PJI-613"
+      ],
+      "context": "HIV 성인의 확진 PCP 치료",
+      "drugIds": [
+        "tmpsmx"
+      ],
+      "sourceIds": [
+        "nih-pcp"
+      ],
+      "note": "TMP-SMX 선호요법이다. 중증도·산소화에 따른 보조치료와 약물 불내성 대안을 별도로 판단한다.",
+      "combination": false
+    },
+    {
+      "id": "first-genital-herpes",
+      "recordIds": [
+        "HSV-802"
+      ],
+      "context": "첫 임상 생식기헤르페스",
+      "drugIds": [
+        "acyclovir"
+      ],
+      "sourceIds": [
+        "cdc-sti-herpes"
+      ],
+      "note": "권고 경구 항바이러스 선택지 중 수록된 acyclovir이다. Valacyclovir·famciclovir도 권고 선택지이나 이 목록 밖이다.",
+      "combination": false
+    },
+    {
+      "id": "uncomplicated-falciparum",
+      "recordIds": [
+        "PFA-701"
+      ],
+      "context": "비중증 falciparum 말라리아의 경구 치료",
+      "drugIds": [
+        "artemetherlumefantrine"
+      ],
+      "sourceIds": [
+        "cdc-malaria"
+      ],
+      "note": "획득지역·내성·환자 조건에 맞는 경우의 선호 경구 병합제다. 중증 말라리아의 IV artesunate 치료를 대체하지 않는다.",
+      "combination": true
+    },
+    {
+      "id": "babesiosis",
+      "recordIds": [
+        "BMI-731"
+      ],
+      "context": "면역정상 성인의 비중증 B. microti 감염",
+      "drugIds": [
+        "atovaquone",
+        "azithromycin"
+      ],
+      "sourceIds": [
+        "idsa-babesia"
+      ],
+      "note": "Atovaquone + azithromycin 선호 병용요법의 두 구성 약제다. 각 성분 단독 치료를 뜻하지 않는다.",
+      "combination": true
+    },
+    {
+      "id": "cyclosporiasis",
+      "recordIds": [
+        "CYC-709"
+      ],
+      "context": "증상성 cyclosporiasis",
+      "drugIds": [
+        "tmpsmx"
+      ],
+      "sourceIds": [
+        "cdc-cyclospora"
+      ],
+      "note": "TMP-SMX가 치료 선택 약제다. Sulfa 알레르기 대안은 제한적이다.",
+      "combination": false
+    },
+    {
+      "id": "cystoisosporiasis",
+      "recordIds": [
+        "CYS-710"
+      ],
+      "context": "HIV 연관 cystoisosporiasis",
+      "drugIds": [
+        "tmpsmx"
+      ],
+      "sourceIds": [
+        "nih-cystoisospora"
+      ],
+      "note": "TMP-SMX 선호 치료이며 면역 상태·재발에 따라 치료 기간과 2차 예방을 구분한다.",
+      "combination": false
+    },
+    {
+      "id": "strongyloidiasis",
+      "recordIds": [
+        "SST-715"
+      ],
+      "context": "만성 strongyloidiasis의 치료",
+      "drugIds": [
+        "ivermectin"
+      ],
+      "sourceIds": [
+        "cdc-strongyloides"
+      ],
+      "note": "Ivermectin 일차요법 맥락이다. 과감염은 더 긴 치료·음전 확인이 필요하며 면역억제 조건을 함께 확인한다.",
+      "combination": false
+    },
+    {
+      "id": "schistosomiasis",
+      "recordIds": [
+        "SCH-720"
+      ],
+      "context": "Schistosoma 감염의 치료",
+      "drugIds": [
+        "praziquantel"
+      ],
+      "sourceIds": [
+        "cdc-schisto"
+      ],
+      "note": "Praziquantel은 주요 Schistosoma 종의 선택 약제다. 종·노출 시점에 따른 투여·추적 조건을 확인한다.",
+      "combination": false
+    },
+    {
+      "id": "fascioliasis",
+      "recordIds": [
+        "FHE-723"
+      ],
+      "context": "Fasciola 간질의 치료",
+      "drugIds": [
+        "triclabendazole"
+      ],
+      "sourceIds": [
+        "cdc-fasciola"
+      ],
+      "note": "Triclabendazole 선택 맥락이다. 다른 흡충에 쓰는 praziquantel을 그대로 적용하지 않는다.",
+      "combination": false
+    },
+    {
+      "id": "classic-scabies",
+      "recordIds": [
+        "SCA-730"
+      ],
+      "context": "고전옴의 국소 치료",
+      "drugIds": [
+        "permethrin"
+      ],
+      "sourceIds": [
+        "cdc-scabies"
+      ],
+      "note": "Permethrin 5% 국소제의 일차 선택 맥락이다. 경구 ivermectin도 일차 선택지가 될 수 있으며 환자 조건·접촉자 관리가 중요하다.",
+      "combination": false
+    },
+    {
+      "id": "crusted-scabies",
+      "recordIds": [
+        "SCA-730"
+      ],
+      "context": "가피옴의 병합 치료",
+      "drugIds": [
+        "permethrin",
+        "ivermectin"
+      ],
+      "sourceIds": [
+        "cdc-scabies"
+      ],
+      "note": "국소 permethrin + 경구 ivermectin 병합 맥락이다. 개별 약제 단독과 구분한다.",
+      "combination": true
+    },
+    {
+      "id": "high-risk-covid",
+      "recordIds": [
+        "COV-820"
+      ],
+      "context": "고위험 외래 경증·중등도 COVID-19 초기 치료",
+      "drugIds": [
+        "nirmatrelvir-ritonavir"
+      ],
+      "sourceIds": [
+        "cdc-covid-treatment"
+      ],
+      "note": "증상 시작 후 투여 가능 시기의 선호 경구 치료다. 상호작용·금기·신장/간기능을 확인하고 remdesivir 등 다른 선택을 판단한다.",
+      "combination": false
+    }
+  ]
+}

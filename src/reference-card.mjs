@@ -52,16 +52,16 @@ export function cardIcon(name, className = '') {
   return `<svg class="card-glyph ${esc(className)}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${CARD_ICONS[name] || CARD_ICONS.artwork}</svg>`;
 }
 
-function propertyRune(property) {
-  const active = Boolean(property.active);
-  const state = property.conditional && active ? 'conditional' : active ? 'lit' : 'dim';
-  const status = active ? (property.conditional ? '조건부 해당' : '해당') : '비해당';
-  const description = `${property.label} · ${status}${property.note ? ' · ' + property.note : ''}`;
-  return `<span class="card-rune is-${state}" tabindex="0" role="img" aria-label="${esc(description)}" data-tooltip="${esc(description)}">${cardIcon(property.icon)}</span>`;
+function propertyRune(property, preview=false) {
+  const active=Boolean(property.active);
+  const state=active ? property.negative ? 'blocked' : property.preferred ? 'preferred' : 'lit' : 'dim';
+  const status=active ? property.negative ? '내성·비활성 기록' : property.preferred ? '우선요법' : '유효·요법 포함' : '비해당·기록 없음';
+  const description=property.label+' · '+status+(property.conditional&&active?' · 적용 조건 있음':'')+(property.note?' · '+property.note:'');
+  const tag=preview?'span':'button';
+  return '<'+tag+(preview?'':' type="button" data-card-property')+' class="card-rune is-'+state+(property.conditional&&active?' has-condition':'')+'" '+(preview?'':'aria-label="'+esc(description)+'" data-tooltip="'+esc(description)+'"')+'>'+cardIcon(property.icon)+(property.shortLabel?'<small>'+esc(property.shortLabel)+'</small>':'')+'</'+tag+'>';
 }
-
-function propertyRail(properties, label, side) {
-  return `<aside class="card-rail card-rail--${side}" aria-label="${esc(label)}"><span class="card-rail-caption" aria-hidden="true">${side === 'left' ? '+' : '−'}</span><div class="card-runes">${(properties || []).map(propertyRune).join('')}</div></aside>`;
+function propertyRail(properties, label, side, heading, preview) {
+  return '<aside class="card-rail card-rail--'+side+'" aria-label="'+esc(label)+'"><span class="card-rail-caption" aria-hidden="true">'+esc(heading || (side==='left'?'유효':'약제'))+'</span><div class="card-runes">'+(properties || []).map(property=>propertyRune(property,preview)).join('')+'</div></aside>';
 }
 
 // The artwork can be exchanged without replacing any card text or glyphs.
@@ -83,45 +83,113 @@ export function renderCardBackContent(model) {
   </div>`;
 }
 
-/**
- * Shared card model: kind, id, name, subtitle, lineage, route, artwork,
- * summary, back, left/rightLabel, left/rightProperties[], optional resistance.
- * The same 2:3 slot holds the front and its scrollable reverse face.
- */
-export function renderReferenceCard(model) {
-  const kind = model.kind === 'drug' ? 'drug' : 'pathogen';
-  const route = model.route || { icon:'artwork', label:'—', description:'경로 미지정' };
-  const resistance = model.resistance;
-  const face = model.face === 'back' ? 'back' : 'front';
-  const domainClass = ['bacteria','fungi','viruses','parasites','drugs'].includes(model.domain) ? ' reference-card-domain--' + model.domain : '';
-  const nameClass = model.name.length > 38 ? ' has-long-name' : '';
-  const caption = model.summary || (model.features || []).join(' · ');
-  const summaryUnits = [...caption].reduce((total,char)=>total+(/[가-힣一-龯]/.test(char)?1:.55),0);
-  const summaryClass = summaryUnits > 100 ? ' has-long-summary' : '';
-  return `<div class="reference-card-slot"><article class="reference-card reference-card--front reference-card--${kind}${domainClass}${nameClass}${summaryClass} ${resistance ? 'has-resistance' : ''}" ${face === 'back' ? 'hidden' : ''} aria-label="${esc(model.name + (resistance ? ' · ' + resistance.code : ''))}">
-    <header class="card-nameplate"><h2>${esc(model.name)}</h2><p>${esc(model.subtitle || '')}</p></header>
-    <span class="card-route" role="img" tabindex="0" aria-label="${esc(route.description || route.label)}" data-tooltip="${esc(route.description || route.label)}">${cardIcon(route.icon)}<span>${esc(route.label)}</span></span>
-    ${propertyRail(model.leftProperties, model.leftLabel, 'left')}
-    <div class="card-artwork">${artwork(model)}</div>
-    ${propertyRail(model.rightProperties, model.rightLabel, 'right')}
-    <div class="card-lineage"><span class="card-lineage-mark" aria-hidden="true">◆</span><span>${esc(model.lineage)}</span><span class="card-lineage-mark" aria-hidden="true">◆</span></div>
-    <div class="card-text"><p class="card-summary">${esc(caption)}</p><footer><span>${esc(model.id)}</span><button type="button" class="card-turn" data-card-face="back" aria-label="${esc(model.name)} 뒷장 보기">뒷장 <span aria-hidden="true">↻</span></button></footer></div>
-    ${resistance ? `<div class="card-ribbon-clip"><div class="card-resistance-ribbon"><strong>${esc(resistance.code)}</strong><span>${esc(resistance.label)}</span></div></div>` : ''}
-  </article><article class="reference-card reference-card--back reference-card--${kind}${domainClass}${nameClass}" ${face === 'front' ? 'hidden' : ''} aria-label="${esc(model.name)} 뒷장">
-    <header class="card-back-heading"><span>DETAILS / ${esc(model.id)}</span><h2>${esc(model.name)}</h2><p>${esc(model.subtitle || '')}</p></header>
-    <div class="card-back-content" tabindex="0" role="region" aria-label="${esc(model.name)} 상세 정보">${renderCardBackContent(model)}</div>
-    <footer class="card-back-footer"><span>PATHOPEDIA</span><button type="button" class="card-turn" data-card-face="front" aria-label="${esc(model.name)} 앞장 보기">앞장 <span aria-hidden="true">↺</span></button></footer>
-  </article></div>`;
+function renderBackPanels(model) {
+  const back=model.back || {},sections=back.sections || [];
+  const coreIds=new Set(model.kind==='drug'?['spectrum','limitations']:['clinicalContext','diseases','pearl','diagnostics']);
+  const core=sections.filter(section=>coreIds.has(section.id)).sort((a,b)=>[...coreIds].indexOf(a.id)-[...coreIds].indexOf(b.id)),other=sections.filter(section=>!coreIds.has(section.id));
+  const sectionMarkup=items=>items.map(section=>'<section class="card-back-section"><h3>'+esc(section.title)+'</h3><p>'+esc(section.text)+'</p></section>').join('');
+  const therapy=model.therapyContext;
+  const clinical='<p class="card-back-summary">'+esc(model.summary)+'</p>'+
+    (therapy?'<section class="card-back-section card-therapy-note"><h3>금색 표시의 기준</h3><p>'+esc(therapy.context)+'</p><p>'+esc(therapy.note)+'</p></section>':'')+
+    sectionMarkup(core)+(other.length?'<details><summary>구조·기전·추가 특징</summary>'+sectionMarkup(other)+'</details>':'');
+  const responses=(back.responses || []).length?'<p class="card-back-label">'+esc(back.responseLabel)+'</p><dl class="card-response-list">'+back.responses.map(response=>'<div><dt>'+esc(response.name)+'<span>'+esc(response.label)+'</span></dt><dd>'+esc(response.note)+(response.applicability?'<small>'+esc(response.applicability)+'</small>':'')+'</dd></div>').join('')+'</dl>':'<p>수록된 약제 반응이 없습니다.</p>';
+  const properties=[{label:model.leftLabel,items:model.leftProperties},{label:model.rightLabel,items:model.rightProperties}].map(rail=>'<section class="card-back-section"><h3>'+esc(rail.label)+'</h3><ul class="card-property-list">'+(rail.items || []).map(property=>'<li>'+propertyRune(property,true)+'<div><b>'+esc(property.label)+'</b><p>'+esc(property.note || (property.active?'해당':'비해당·기록 없음'))+'</p></div></li>').join('')+'</ul></section>').join('');
+  const refs=(back.references || []).length?'<ul class="card-reference-list">'+back.references.map(source=>'<li>'+(safeURL(source.url)?'<a href="'+esc(source.url)+'" target="_blank" rel="noopener noreferrer">'+esc(source.title || source.name || source.id)+' ↗</a>':esc(source.title || source.name || source.id))+'</li>').join('')+'</ul>':'<p>별도 근거 기록이 없습니다.</p>';
+  const tabs=[['clinical','임상',clinical],['responses',model.kind==='drug'?'대상':'약제',responses],['icons','기호',properties],['sources','근거',refs]];
+  const prefix='card-back-'+model.kind+'-'+model.id;
+  return '<div class="card-back-tabs" role="tablist" aria-label="카드 뒷면 내용">'+tabs.map(([id,label])=>'<button type="button" role="tab" data-card-back-tab="'+id+'" id="'+esc(prefix+'-'+id)+'-tab" aria-controls="'+esc(prefix+'-'+id)+'" aria-selected="'+(id==='clinical')+'" tabindex="'+(id==='clinical'?'0':'-1')+'">'+label+'</button>').join('')+'</div><div class="card-back-content">'+tabs.map(([id,,markup])=>'<div class="card-back-pane card-back-prose" id="'+esc(prefix+'-'+id)+'" data-card-back-pane="'+id+'" role="tabpanel" aria-labelledby="'+esc(prefix+'-'+id)+'-tab" tabindex="0" '+(id!=='clinical'?'hidden':'')+'>'+markup+'</div>').join('')+'</div>';
 }
 
-export function handleReferenceCardClick(button) {
-  const face = button.dataset.cardFace;
-  if (!['front','back'].includes(face)) return false;
-  const slot = button.closest('.reference-card-slot');
-  if (!slot) return false;
-  const front = slot.querySelector('.reference-card--front'), back = slot.querySelector('.reference-card--back');
-  front.hidden = face !== 'front';
-  back.hidden = face !== 'back';
-  (face === 'front' ? front : back).querySelector('[data-card-face]')?.focus({preventScroll:true});
+/** Shared 2:3 geometry; both faces stay mounted for the physical flip. */
+export function renderReferenceCard(model) {
+  const kind=model.kind==='drug'?'drug':'pathogen',preview=Boolean(model.preview);
+  const route=model.route || {icon:'artwork',label:'—',description:'경로 미지정'};
+  const resistance=model.resistance,face=model.face==='back'&&!preview?'back':'front';
+  const domainClass=['bacteria','fungi','viruses','parasites','drugs'].includes(model.domain)?' reference-card-domain--'+model.domain:'';
+  const nameClass=model.name.length>38?' has-long-name':'';
+  const caption=model.summary || (model.features || []).join(' · ');
+  const units=[...caption].reduce((total,char)=>total+(/[가-힣一-龯]/.test(char)?1:.55),0);
+  const classes='reference-card--'+kind+domainClass+nameClass;
+  return '<div class="reference-card-slot '+(face==='back'?'is-flipped':'')+'" data-card-state="'+face+'" '+(preview?'data-card-preview':'')+'><div class="reference-card-tilt"><div class="reference-card-rotor"><article class="reference-card reference-card--front '+classes+(units>100?' has-long-summary':'')+(resistance?' has-resistance':'')+'" aria-label="'+esc(model.name+(resistance?' · '+resistance.code:''))+'" aria-hidden="'+(face==='back')+'" '+(face==='back'?'inert':'')+'>'+
+    '<header class="card-nameplate"><h2>'+esc(model.name)+'</h2><p>'+esc(model.subtitle || '')+'</p></header>'+
+    '<'+(preview?'span':'button type="button" data-card-property')+' class="card-route" '+(preview?'':'aria-label="'+esc(route.description || route.label)+'" data-tooltip="'+esc(route.description || route.label)+'"')+'>'+cardIcon(route.icon)+'<span>'+esc(route.label)+'</span></'+(preview?'span':'button')+'>'+
+    propertyRail(model.leftProperties,model.leftLabel,'left',model.leftHeading,preview)+
+    '<div class="card-artwork">'+artwork(model)+'</div>'+
+    propertyRail(model.rightProperties,model.rightLabel,'right',model.rightHeading,preview)+
+    '<div class="card-lineage"><span class="card-lineage-mark" aria-hidden="true">◆</span><span>'+esc(model.lineage)+'</span><span class="card-lineage-mark" aria-hidden="true">◆</span></div>'+
+    '<div class="card-text"><p class="card-summary">'+esc(caption)+'</p><footer><span>'+esc(model.id)+'</span>'+(preview?'<span>확대 ↗</span>':'<button type="button" class="card-turn" data-card-face="back" aria-label="'+esc(model.name)+' 뒷장 보기">뒷장 <span aria-hidden="true">↻</span></button>')+'</footer></div>'+
+    (resistance?'<div class="card-ribbon-clip"><div class="card-resistance-ribbon"><strong>'+esc(resistance.code)+'</strong><span>'+esc(resistance.label)+'</span></div></div>':'')+
+    '</article>'+(preview?'':'<article class="reference-card reference-card--back '+classes+'" aria-label="'+esc(model.name)+' 뒷장" aria-hidden="'+(face==='front')+'" '+(face==='front'?'inert':'')+'><header class="card-back-heading"><span>DETAILS / '+esc(model.id)+'</span><h2>'+esc(model.name)+'</h2><p>'+esc(model.subtitle || '')+'</p></header>'+renderBackPanels(model)+'<footer class="card-back-footer"><span>PATHOPEDIA</span><button type="button" class="card-turn" data-card-face="front" aria-label="'+esc(model.name)+' 앞장 보기">앞장 <span aria-hidden="true">↺</span></button></footer></article>')+'</div></div></div>';
+}
+export function renderCardLegend() {
+  return '<div class="card-gallery-legend" aria-label="카드 기호 설명"><span><i class="preferred" aria-hidden="true"></i>우선요법</span><span><i class="lit" aria-hidden="true"></i>유효·요법 포함</span><span><i class="blocked" aria-hidden="true"></i>내성·비활성</span><span><i class="dim" aria-hidden="true"></i>비해당·기록 없음</span><span><i class="condition-dot" aria-hidden="true"></i>병용·노출 등 조건</span></div>';
+}
+
+export function renderCardThumbnail(model,{key,badge='',caption=''}={}) {
+  return '<div class="card-mini"><div class="card-mini-visual" aria-hidden="true" inert>'+renderReferenceCard({...model,preview:true})+'</div><div class="card-mini-caption" aria-hidden="true"><strong>'+esc(model.name)+'</strong><span>'+esc(caption || model.subtitle || model.lineage)+'</span>'+(badge?'<small>'+esc(badge)+'</small>':'')+'</div><button type="button" class="card-mini-open" data-card-open="'+esc(key || model.kind+':'+(model.entityId || model.id))+'" aria-label="'+esc(model.name+' · '+(caption || model.subtitle || '')+' 확대 보기')+'"></button></div>';
+}
+export function setReferenceCardFace(slot,face,{focus=true}={}) {
+  if(!slot || !['front','back'].includes(face) || slot.hasAttribute('data-card-preview'))return false;
+  slot.dataset.cardState=face;slot.classList.toggle('is-flipped',face==='back');
+  for(const side of ['front','back']){
+    const article=slot.querySelector('.reference-card--'+side);
+    if(article){article.setAttribute('aria-hidden',String(side!==face));article.inert=side!==face;}
+  }
+  if(focus)slot.querySelector('.reference-card--'+face+' [data-card-face]')?.focus({preventScroll:true});
   return true;
+}
+export function handleReferenceCardClick(button) {
+  const slot=button.closest('.reference-card-slot');
+  if(button.hasAttribute('data-card-property')){button.focus({preventScroll:true});return true;}
+  if(button.dataset.cardBackTab && slot){
+    const selected=button.dataset.cardBackTab;
+    for(const tab of slot.querySelectorAll('[data-card-back-tab]')){
+      const active=tab.dataset.cardBackTab===selected;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;
+    }
+    for(const pane of slot.querySelectorAll('[data-card-back-pane]'))pane.hidden=pane.dataset.cardBackPane!==selected;
+    return true;
+  }
+  return setReferenceCardFace(slot,button.dataset.cardFace);
+}
+export function handleCardTabKeydown(event) {
+  if(!event.target.dataset?.cardBackTab || !['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return false;
+  const tabs=[...event.target.closest('.card-back-tabs').querySelectorAll('button')];
+  const index=tabs.indexOf(event.target),next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+  event.preventDefault();handleReferenceCardClick(tabs[next]);tabs[next].focus();return true;
+}
+export function bindCardMotion(root) {
+  let pressed=null,pending=null,frame=0;
+  const reduced=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const findSlot=target=>target.closest?.('.reference-card-slot') || target.closest?.('.card-mini')?.querySelector('.reference-card-slot');
+  const reset=slot=>{if(slot){slot.style.setProperty('--card-tilt-x','0deg');slot.style.setProperty('--card-tilt-y','0deg');slot.classList.remove('is-handled');}};
+  const tilt=(slot,x,y)=>{
+    const rect=slot.getBoundingClientRect();
+    slot.style.setProperty('--card-tilt-x',Math.max(-6,Math.min(6,(.5-(y-rect.top)/rect.height)*12))+'deg');
+    slot.style.setProperty('--card-tilt-y',Math.max(-7,Math.min(7,((x-rect.left)/rect.width-.5)*14))+'deg');
+  };
+  root.addEventListener('pointermove',event=>{
+    const slot=findSlot(event.target);
+    if(!slot || reduced() || (event.pointerType!=='mouse'&&pressed?.slot!==slot))return;
+    pending={slot,x:event.clientX,y:event.clientY};
+    if(!frame)frame=requestAnimationFrame(()=>{frame=0;if(pending){tilt(pending.slot,pending.x,pending.y);pending=null;}});
+  });
+  root.addEventListener('pointerout',event=>{
+    const slot=findSlot(event.target);
+    if(slot && slot!==findSlot(event.relatedTarget || {})){if(pending?.slot===slot)pending=null;reset(slot);}
+  });
+  root.addEventListener('pointerdown',event=>{
+    const slot=findSlot(event.target);
+    if(!slot || slot.hasAttribute('data-card-preview') || event.button!==0 || event.target.closest('button,a,input,select,summary,.card-rune,.card-route,.card-back-content'))return;
+    pressed={slot,id:event.pointerId,x:event.clientX,y:event.clientY};
+    if(!reduced())slot.classList.add('is-handled');
+    slot.setPointerCapture?.(event.pointerId);
+  });
+  const release=event=>{
+    if(!pressed || event.pointerId!==pressed.id)return;
+    const {slot,x,y}=pressed;pressed=null;pending=null;
+    if(slot.hasPointerCapture?.(event.pointerId))slot.releasePointerCapture(event.pointerId);
+    if(event.type==='pointerup' && Math.abs(event.clientX-x)>45 && Math.abs(event.clientX-x)>Math.abs(event.clientY-y)*1.5)setReferenceCardFace(slot,slot.dataset.cardState==='front'?'back':'front');
+    reset(slot);
+  };
+  root.addEventListener('pointerup',release);root.addEventListener('pointercancel',release);
 }

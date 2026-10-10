@@ -5,7 +5,7 @@ export const CARD_DOMAINS = Object.freeze({
 });
 const POSITIVE = new Set(['S','I','ACT','ACTIVE','REGIMEN']);
 const NEGATIVE = new Set(['R','INACTIVE']);
-const CONDITIONAL = new Set(['I','ACT','REGIMEN']);
+const CONDITIONAL = new Set(['I','ACT']);
 const RESULTS = {
   S:'S · 감수성', I:'I · 노출 증가 필요', R:'R · 내성',
   ACT:'조건부 활성', ACTIVE:'문헌상 활성', INACTIVE:'활성 없음',
@@ -32,7 +32,7 @@ const TRANSMISSION = [
   {icon:'vertical',label:'수직',pattern:/수직|분만|주산기|태반|vertical/i},
   {icon:'contact',label:'접촉',pattern:/접촉|contact/i}
 ];
-const PREFERRED_DRUGS = {
+const RAIL_DRUGS = {
   'bacterial-ast':['oxacillin','cefazolin','ampicillin','vancomycin','linezolid','daptomycin','clindamycin','tmpsmx'],
   'bacterial-clinical':['ceftriaxone','penicillin','doxycycline','azithromycin','rifampicin','tmpsmx','metronidazole','amoxicillin'],
   'fungal-clinical':['fluconazole','voriconazole','amphotericinb','micafungin','flucytosine','itraconazole','tmpsmx','terbinafine'],
@@ -51,6 +51,13 @@ const GROUPS = [
   {id:'viruses',icon:'virus',label:'바이러스',matches:r=>r.domain==='viruses'},
   {id:'parasites',icon:'parasite',label:'기생충',matches:r=>r.domain==='parasites'}
 ];
+
+
+const ORGAN_LABELS={skin:'피부',blood:'혈류',heart:'판막',bone:'뼈',lungs:'폐',urinary:'요로',abdomen:'장',brain:'뇌',liver:'간',eye:'눈'};
+const GROUP_LABELS={staph:'포도',strep:'사슬',entero:'장알',enterics:'장내',nonfermenters:'비발',other:'기타',fungi:'진균',viruses:'바이',parasites:'기생'};
+const DRUG_CODES={oxacillin:'OXA',cefazolin:'CZO',vancomycin:'VAN',linezolid:'LZD',daptomycin:'DAP',ceftriaxone:'CTX',cefepime:'FEP',ceftazidime:'CAZ',meropenem:'MEM',imipenem:'IPM',piptazo:'TZP',ceftazavi:'CZA',ampicillin:'AMP',amoxicillin:'AMX',amoxclav:'AMC',penicillin:'PEN',teicoplanin:'TEI',ceftaroline:'CPT',aztreonam:'ATM',tmpsmx:'SXT',ciprofloxacin:'CIP',levofloxacin:'LEV',moxifloxacin:'MOX',gentamicin:'GEN',amikacin:'AMK',clindamycin:'CLI',doxycycline:'DOX',azithromycin:'AZM',clarithromycin:'CLR',erythromycin:'ERY',rifampicin:'RIF',isoniazid:'INH',ethambutol:'EMB',pyrazinamide:'PZA',metronidazole:'MTZ',fidaxomicin:'FDX',fluconazole:'FLC',voriconazole:'VRC',amphotericinb:'AMB',micafungin:'MCF',flucytosine:'5FC',itraconazole:'ITR',terbinafine:'TER',acyclovir:'ACY',ganciclovir:'GCV',oseltamivir:'OSE',remdesivir:'REM','nirmatrelvir-ritonavir':'N/R',tenofovir:'TDF',entecavir:'ETV',ribavirin:'RBV',albendazole:'ALB',ivermectin:'IVM',praziquantel:'PZQ',primaquine:'PQ',pyrimethamine:'PYR',sulfadiazine:'SDZ',paromomycin:'PAR',artemetherlumefantrine:'A/L',atovaquone:'ATQ',permethrin:'PER',triclabendazole:'TCB'};
+const drugCode=id=>DRUG_CODES[id] || id.slice(0,3).toUpperCase();
+const preferenceNote=context=>'우선요법: '+context.context+' · '+context.note;
 
 export function drugGlyph(drug) {
   const family = drug.family.toLowerCase();
@@ -144,36 +151,50 @@ export function createCardModels(data, catalog) {
     groups.get(group?.id || 'other').push(record);
   }
 
-  function pathogen(id) {
-    const key='pathogen:'+id;
+  function pathogen(id,contextId=null) {
+    const therapyContexts=content.therapies(id);
+    const therapyContext=therapyContexts.find(context=>context.id===contextId) || therapyContexts[0] || null;
+    const key='pathogen:'+id+':'+(therapyContext?.id || 'all');
     if (models.has(key)) return models.get(key);
     const record=records.get(id);
     if (!record) return null;
-    const preferred=record.panelId==='bacterial-ast' && /Gram[ -]negative/i.test(record.hints.morphology.text) ? NEGATIVE_AST : PREFERRED_DRUGS[record.panelId] || [];
+    const preferred=record.panelId==='bacterial-ast' && /Gram[ -]negative/i.test(record.hints.morphology.text) ? NEGATIVE_AST : RAIL_DRUGS[record.panelId] || [];
     const available=Object.keys(catalog.responses[id] || {});
     const active=available.filter(drugId=>POSITIVE.has(content.response(id,drugId)?.category));
     // Keep small, reusable glyph slots, including dim examples. The reverse
     // face contains the complete response panel and all applicability notes.
-    const chosen=[...new Set([...active.filter(drugId=>preferred.includes(drugId)),...active,...preferred,...available])].slice(0,10);
+    const chosen=[...new Set([...(therapyContext?.drugIds || []),...active.filter(drugId=>preferred.includes(drugId)),...active,...preferred,...available])].slice(0,10);
     const model={
-      ...content.pathogen(id),domain:record.domain,
+      ...content.pathogen(id),domain:record.domain,entityId:id,therapyContexts,therapyContext,
       subtitle:record.koreanName,
       lineage:pathogenLineage(record),route:pathogenRoute(record),
       artwork:{placeholder:pathogenArt(record),label:CARD_DOMAINS[record.domain]},
-      leftLabel:'공격 가능 · 주요 친화 장기',
-      leftProperties:ORGANS.map(({icon,label,pattern})=>({icon,label,active:pattern.test(record.hints.tropism.text),note:record.hints.tropism.text})),
+      leftHeading:'장기',rightHeading:'약제',
+      leftLabel:'공격 가능 · 주요 감염 장기',
+      leftProperties:ORGANS.map(({icon,label,pattern})=>({icon,label,shortLabel:ORGAN_LABELS[icon],active:pattern.test(record.hints.tropism.text),note:record.hints.tropism.text})),
       rightLabel:record.observationType==='regimen'?'공격받음 · 해당 임상형의 요법 구성 약제':'공격받음 · 이 교육용 분리주에 효과 있는 약제',
       rightProperties:chosen.map(drugId=>{
         const response=content.response(id,drugId);
-        return {icon:drugGlyph(drugs.get(drugId)),label:drugs.get(drugId).name,active:POSITIVE.has(response?.category),conditional:CONDITIONAL.has(response?.category),note:(RESULTS[response?.category] || '이 기록에 결과 없음') + (response?.applicability?' · '+response.applicability:'')};
+        const item=drugs.get(drugId),excluded=therapyContext?.excludedDrugIds?.includes(drugId);
+        const preferred=!excluded && therapyContext?.drugIds.includes(drugId) && POSITIVE.has(response?.category);
+        return {
+          icon:drugRoute(item).icon==='syringe'?'syringe':'capsule',shortLabel:drugCode(drugId),label:item.name,
+          active:!excluded && POSITIVE.has(response?.category),preferred:Boolean(preferred),
+          conditional:CONDITIONAL.has(response?.category) || Boolean(response?.applicability) || Boolean(preferred && therapyContext.combination),
+          note:excluded?'선택한 임상 상황에서 사용하지 않는 약제 · '+therapyContext.context+' · '+therapyContext.note:
+            (preferred?preferenceNote(therapyContext)+' · ':'')+(RESULTS[response?.category] || '이 기록에 결과 없음')+(response?.applicability?' · '+response.applicability:'')
+        };
       })
     };
     models.set(key,model);
     return model;
   }
 
-  function drug(id) {
-    const key='drug:'+id;
+  function drug(id,contextId=null) {
+    const therapyContexts=content.drugTherapies(id);
+    const therapyContext=therapyContexts.find(context=>context.id===contextId) || null;
+    const preferenceContexts=therapyContext?[therapyContext]:therapyContexts;
+    const key='drug:'+id+':'+(therapyContext?.id || 'all');
     if (models.has(key)) return models.get(key);
     const item=drugs.get(id);
     if (!item) return null;
@@ -182,11 +203,12 @@ export function createCardModels(data, catalog) {
       const matching=entries.filter(({response})=>(positive?POSITIVE:NEGATIVE).has(response.category));
       const examples=matching.slice(0,2).map(({record,response})=>record.organism+' · '+record.phenotype+' · '+RESULTS[response.category]).join(' / ');
       const hasOther=entries.some(({response})=>(positive?NEGATIVE:POSITIVE).has(response.category));
+      const preferredContexts=positive?preferenceContexts.filter(context=>context.recordIds.some(recordId=>matching.some(entry=>entry.record.id===recordId))):[];
       return {
-        icon:group.icon,label:group.label,active:matching.length>0,
-        conditional:positive && matching.length>0 && (matching.some(({response})=>CONDITIONAL.has(response.category)) || hasOther),
-        note:matching.length ? '해당 DB 기록 '+matching.length+'개'+(hasOther?' · 표현형·임상형별로 판정이 다름':'')+' · '+examples :
-          entries.length ? '이 DB에 해당 판정 없음 · 요법 목록 밖은 무효로 세지 않음' : '이 DB에 약제 반응 기록 없음'
+        icon:group.icon,shortLabel:GROUP_LABELS[group.id],label:group.label,active:matching.length>0,negative:!positive,preferred:preferredContexts.length>0,
+        conditional:positive && matching.length>0 && (matching.some(({response})=>CONDITIONAL.has(response.category) || response.applicability) || hasOther || preferredContexts.some(context=>context.combination)),
+        note:matching.length ? (preferredContexts.map(preferenceNote).join(' / ')+(preferredContexts.length?' · ':''))+'해당 수록 기록 '+matching.length+'개'+(hasOther?' · 표현형·임상형별로 판정이 다름':'')+' · '+examples :
+          entries.length ? '수록 기록에 해당 판정 없음 · 요법 목록 밖은 무효로 세지 않음' : '수록 기록에 약제 반응 기록 없음'
       };
     });
     const responses=data.records.flatMap(record=>{
@@ -195,11 +217,12 @@ export function createCardModels(data, catalog) {
     });
     const base=content.drug(id);
     const model={
-      ...base,domain:'drugs',lineage:drugLineage(item),route:drugRoute(item),
+      ...base,domain:'drugs',entityId:id,therapyContexts,therapyContext,lineage:drugLineage(item),route:drugRoute(item),
       subtitle:'약제 · '+item.family,
       artwork:{placeholder:drugGlyph(item),label:'약제'},
-      leftLabel:'유효 · 활성 또는 임상형 요법에 포함된 DB 기록',
-      leftProperties:properties(true),rightLabel:'무효 · R 또는 활성 없음으로 명시된 DB 기록',
+      leftHeading:'유효',rightHeading:'무효',
+      leftLabel:'유효 · 활성 또는 임상형 요법에 포함된 기록',
+      leftProperties:properties(true),rightLabel:'무효 · R 또는 활성 없음으로 명시된 수록 기록',
       rightProperties:properties(false),
       back:{...base.back,responses,responseLabel:'병원체·표현형별 약제 반응'}
     };
