@@ -1,5 +1,5 @@
 import { createCardStacks } from './card-stacks.mjs';
-import { renderCardThumbnail, renderCardLegend } from './reference-card.mjs';
+import { renderCardThumbnail } from './reference-card.mjs';
 import { CARD_DOMAINS, createCardModels } from './card-models.mjs';
 
 const esc=value=>String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -55,7 +55,7 @@ export function createCardGallery(data,{render,catalog,cardStacks}) {
     const count=matching.length
       ? '<strong>'+matching.length+'</strong>장'+(groups.length!==matching.length?' · '+groups.length+'개 목록':'')+' · '+(start+1)+'–'+Math.min(start+PAGE_SIZE,groups.length)+' · '+(page+1)+' / '+pages+' 페이지'
       : '일치하는 카드가 없습니다.';
-    return '<div class="card-gallery-resultbar"><p role="status" aria-live="polite">'+count+'</p><span>작은 카드를 눌러 확대 · 묶음은 펼쳐 보기</span></div>'+
+    return '<p class="card-gallery-status" role="status" aria-live="polite">'+count+'</p>'+
       (items.length ? '<ul class="card-gallery-grid card-collection" style="--thumbnail-min:'+width+'px">'+items.map(group=>{
         if(group.type==='stack')return stacks.render(group,entryCard,{prefix:'card-gallery',tag:'li',className:'card-gallery-item'});
         const entry=group.items[0];
@@ -64,16 +64,40 @@ export function createCardGallery(data,{render,catalog,cardStacks}) {
       (pages>1?'<nav class="card-gallery-pagination" aria-label="카드 목록 페이지"><button type="button" data-card-page="prev" '+(page===0?'disabled':'')+'>← 이전</button><span>'+(page+1)+' / '+pages+'</span><button type="button" data-card-page="next" '+(page===pages-1?'disabled':'')+'>다음 →</button></nav>':'');
   }
 
-  function renderGallery() {
-    return '<header class="card-gallery-heading"><div><span class="eyebrow">PATHOPEDIA / CARD LIBRARY</span><h1>카드 도감<span class="heading-dot">.</span></h1><p>작게 훑어보고, 한 장을 골라 펼쳐보세요.</p></div><div class="card-gallery-totals"><span><b>'+data.records.length+'</b> 병원체·표현형</span><span><b>'+data.drugs.length+'</b> 약제</span></div></header>'+
-      '<div class="card-gallery-filters"><div class="card-gallery-domains" role="group" aria-label="카드 분류">'+FILTERS.map(filter=>'<button type="button" data-card-domain="'+filter.id+'" aria-pressed="'+(filter.id===domain)+'">'+filter.label+'<small>'+entries.filter(entry=>filter.id==='all' || entry.domain===filter.id).length+'</small></button>').join('')+'</div>'+
-      '<div class="card-gallery-controls"><label class="card-gallery-search">카드 검색<input id="card-gallery-search" type="search" autocomplete="off" placeholder="이름 · 표현형 · 계열 · 임상 특징" value="'+esc(query)+'"></label>'+
+  function optionsContent() {
+    return '<header class="card-gallery-options-heading"><h2 id="card-gallery-options-title">검색·보기 설정</h2><button type="button" data-card-options="close" aria-label="설정 닫기">✕</button></header>'+
+      '<div class="card-gallery-domains" role="group" aria-label="카드 분류">'+FILTERS.map(filter=>'<button type="button" data-card-domain="'+filter.id+'" aria-pressed="'+(filter.id===domain)+'">'+filter.label+'</button>').join('')+'</div>'+
+      '<div class="card-gallery-controls"><label class="card-gallery-search">검색<input id="card-gallery-search" type="search" autocomplete="off" placeholder="이름 · 표현형 · 계열" value="'+esc(query)+'"></label>'+
       (domain==='drugs'?'<label class="card-gallery-family">약제 계열<select id="card-gallery-family"><option value="all">모든 계열</option>'+families.map(value=>'<option value="'+esc(value)+'" '+(value===family?'selected':'')+'>'+esc(value)+'</option>').join('')+'</select></label>':'')+
       '<label class="card-gallery-size">목록 밀도<select id="card-gallery-size">'+WIDTHS.map(value=>'<option value="'+value+'" '+(value===width?'selected':'')+'>'+({160:'촘촘하게',190:'기본',220:'넓게'})[value]+'</option>').join('')+'</select></label>'+
-      (domain!=='drugs'?'<label class="card-gallery-resistance"><input id="card-gallery-resistance" type="checkbox" '+(resistanceOnly?'checked':'')+'>내성 표시 카드만</label>':'')+'</div></div>'+
-      (domain!=='drugs'?stacks.controls('card-gallery'):'')+renderCardLegend()+
-      '<details class="card-gallery-guide"><summary>양쪽 기호와 금색 표시 읽기</summary><p>병원체: 왼쪽은 주요 감염 장기, 오른쪽은 약제입니다. 약제: 왼쪽은 유효·요법 포함 기록이 있는 병원체군, 오른쪽은 내성·비활성이 명시된 군입니다. 금색은 특정 임상 상황의 우선요법이며 감수성 S만으로 붙이지 않습니다. 약제의 전체 보기에서 금색은 그 군에 우선요법으로 사용하는 임상형이 있다는 뜻입니다. 확대 화면에서 기준을 선택하고 기호를 눌러 정확한 대상·조건을 읽으세요.</p></details>'+
-      '<section id="card-gallery-results" class="card-gallery-results" tabindex="-1" aria-label="카드 목록">'+resultMarkup()+'</section>';
+      (domain!=='drugs'?'<label class="card-gallery-resistance"><input id="card-gallery-resistance" type="checkbox" '+(resistanceOnly?'checked':'')+'>내성 표시 카드만</label><label class="card-gallery-resistance"><input id="card-gallery-stacks" type="checkbox" '+(stacks.enabled()?'checked':'')+'>내성형 겹쳐 보기</label>':'')+
+      '</div><button type="button" class="card-gallery-options-reset" data-card-reset>필터 초기화</button>';
+  }
+
+  function renderGallery() {
+    return '<section id="card-gallery-results" class="card-gallery-results" tabindex="-1" aria-label="카드 도감">'+resultMarkup()+'</section>'+
+      '<button type="button" class="card-gallery-options-open" data-card-options="open" aria-label="카드 검색과 보기 설정" aria-haspopup="dialog" aria-controls="card-gallery-options"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="currentColor"/><circle cx="15" cy="12" r="2" fill="currentColor"/><circle cx="9" cy="18" r="2" fill="currentColor"/></svg><span>필터</span></button>'+
+      '<dialog id="card-gallery-options" class="card-gallery-options" aria-labelledby="card-gallery-options-title">'+optionsContent()+'</dialog>';
+  }
+
+  function refreshOptions(focusSelector) {
+    const host=document.querySelector('#card-gallery-options');
+    if(!host)return;
+    host.innerHTML=optionsContent();
+    if(host.open && focusSelector)host.querySelector(focusSelector)?.focus({preventScroll:true});
+    else if(focusSelector)document.querySelector('[data-card-options="open"]')?.focus({preventScroll:true});
+  }
+
+  function openOptions() {
+    const host=document.querySelector('#card-gallery-options');
+    if(!host || host.open)return;
+    host.addEventListener('close',()=>document.querySelector('[data-card-options="open"]')?.focus({preventScroll:true}),{once:true});
+    host.onclick=event=>{
+      if(event.target!==host)return;
+      const rect=host.getBoundingClientRect();
+      if(event.clientX<rect.left || event.clientX>rect.right || event.clientY<rect.top || event.clientY>rect.bottom)host.close();
+    };
+    host.showModal();
   }
 
   function refreshResults() {
@@ -82,6 +106,11 @@ export function createCardGallery(data,{render,catalog,cardStacks}) {
   }
 
   function handleClick(button) {
+    if(button.dataset.cardOptions){
+      if(button.dataset.cardOptions==='open')openOptions();
+      else document.querySelector('#card-gallery-options')?.close();
+      return true;
+    }
     if(button.dataset.cardStackView==='card-gallery'){
       stacks.toggle(button.dataset.cardStackToggle);refreshResults();
       document.querySelector('#card-gallery-stack-'+button.dataset.cardStackToggle+'-toggle')?.focus();
@@ -92,7 +121,7 @@ export function createCardGallery(data,{render,catalog,cardStacks}) {
       if (FILTERS.some(filter=>filter.id===next)) {
         rememberFaces();domain=next;page=0;
         if (next==='drugs') resistanceOnly=false;
-        render('[data-card-domain="'+next+'"]');
+        refreshResults();refreshOptions('[data-card-domain="'+next+'"]');
       }
       return true;
     }
@@ -107,7 +136,7 @@ export function createCardGallery(data,{render,catalog,cardStacks}) {
     }
     if (Object.hasOwn(button.dataset,'cardReset')) {
       rememberFaces();domain='all';query='';family='all';resistanceOnly=false;page=0;
-      render('#card-gallery-search');
+      refreshResults();refreshOptions('#card-gallery-search');
       return true;
     }
     return false;
