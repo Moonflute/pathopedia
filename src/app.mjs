@@ -4,8 +4,9 @@ import { createLibrary } from './library-ui.mjs';
 import { createCardGallery } from './card-gallery-ui.mjs';
 import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion } from './reference-card.mjs';
 import { createCardInspector } from './card-inspector.mjs';
+import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.14.0';
+const VERSION = '0.14.1';
 const KEY = 'pathopedia.v1';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -25,7 +26,7 @@ let data, sources, treatmentGame, library, cardGallery, cardInspector, morpholog
 const root = $('#app');
 bindCardMotion(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.14.0" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.14.1" alt="" width="27" height="27">';
 const arrow = '<span aria-hidden="true">↗</span>';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
@@ -198,8 +199,9 @@ try {
  const morphologyResponse=await fetch(new URL('../data/morphology-visuals.json',import.meta.url)).catch(()=>null);
  if(morphologyResponse?.ok){morphologyVisuals=await morphologyResponse.json();morphologyAssets=new Map(morphologyVisuals.assets.map(asset=>[asset.id,asset]));morphologyTaxa=new Map(morphologyVisuals.taxa.map(entry=>[entry.taxonId,entry]));}
  treatmentGame=createTreatmentGame(treatmentCatalog,{render,openDetail});
- library=createLibrary(data,{getArchive:()=>archive,render,openDetail,catalog:cardDatabase});
- cardGallery=createCardGallery(data,{render,catalog:cardDatabase});
+ const cardStacks=createCardStacks(cardDatabase);
+ library=createLibrary(data,{getArchive:()=>archive,render,openDetail,catalog:cardDatabase,cardStacks});
+ cardGallery=createCardGallery(data,{render,catalog:cardDatabase,cardStacks});
  cardInspector=createCardInspector(data,{catalog:cardDatabase});
   load();persist();render();
   if('serviceWorker' in navigator) {

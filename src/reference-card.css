@@ -447,3 +447,46 @@ dialog.card-inspector { width:min(520px,calc(100vw - 20px)); max-width:520px; ma
 
 .card-back-content { font-size:clamp(12px,3.65cqw,15px); }
 .card-property-list li { font-size:inherit; line-height:1.6; }
+
+
+/* Resistance variants share one shelf slot until the reader unfolds the pile. */
+.card-stack-controls { display:flex; flex-wrap:wrap; align-items:center; gap:5px 16px; margin:0 0 17px; color:#5d6d52; }
+.card-stack-controls label { display:flex; align-items:center; gap:8px; min-height:40px; font-size:.8125rem; font-weight:600; cursor:pointer; }
+.card-stack-controls input { width:17px; height:17px; accent-color:#4b6641; }
+.card-stack-controls > span { font-size:.6875rem; line-height:1.5; }
+.card-stack-controls input:focus-visible { outline:2px solid #607c58; outline-offset:3px; }
+.card-stack-group { width:100%; min-width:0; }
+.card-stack-group.is-collapsed { max-width:230px; justify-self:center; display:flex; align-items:center; flex-direction:column; }
+.library-card-collection .card-stack-group.is-collapsed { max-width:220px; }
+.card-stack-pile { width:calc(100% - 13px); margin-right:13px; position:relative; isolation:isolate; }
+.card-stack-pile > .card-mini { position:relative; z-index:2; }
+.card-stack-underlay { position:absolute; top:0; left:0; width:100%; aspect-ratio:2/3; box-sizing:border-box; border:2px solid #a28b67; border-radius:5px; background:linear-gradient(135deg,#54483a,#26382f); box-shadow:0 2px 4px #172a2529; transform:translate(calc(var(--stack-step)*5px),calc(var(--stack-step)*3px)) rotate(calc(var(--stack-step)*1.2deg)); transform-origin:50% 85%; transition:transform 200ms ease; overflow:hidden; z-index:0; pointer-events:none; }
+.card-stack-underlay > span { position:absolute; top:20px; right:-23px; transform:rotate(40deg); padding:3px 20px; background:#7a4435; color:#f4e4c4; font:650 .5rem var(--mono); white-space:nowrap; }
+.card-stack-heading { width:100%; display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; margin-top:10px; }
+.card-stack-heading > span { flex:1; font-size:.625rem; color:#667859; white-space:nowrap; }
+.card-stack-heading h3 { flex:1 1 auto; margin:0; font:650 .9375rem/1.3 var(--sans); color:#3e5235; }
+.card-stack-toggle { min-height:36px; border:1px solid #aab89d; border-radius:5px; padding:6px 9px; background:#f5f7ed; color:#425a37; font:600 .6875rem var(--sans); cursor:pointer; }
+.card-stack-toggle:hover { background:#e4ead9; }
+.card-stack-toggle:focus-visible { outline:2px solid #607c58; outline-offset:3px; }
+.card-stack-variants { width:100%; margin:4px 0 0; font-size:.625rem; line-height:1.6; color:#897455; overflow-wrap:anywhere; }
+.card-stack-group.is-expanded { grid-column:1/-1; display:block; max-width:none; box-sizing:border-box; padding:15px 13px 18px; border:1px solid #b7c3a8; border-radius:8px; background:#ffffff33; }
+.card-stack-group.is-expanded .card-stack-heading { margin-top:0; }
+.card-stack-group.is-expanded .card-stack-heading > span { flex:0 1 auto; }
+.card-stack-group.is-expanded .card-stack-variants { margin-top:6px; }
+.card-stack-members { margin-top:17px; animation:card-stack-unfold 180ms ease-out; }
+.card-inspector.has-card-stack .card-inspector-stage { width:min(400px,calc(100vw - 64px),max(260px,calc((100dvh - 235px)*2/3))); }
+@keyframes card-stack-unfold { from { opacity:.4; transform:translateY(-5px); } to { opacity:1; transform:none; } }
+@media(hover:hover) and (prefers-reduced-motion:no-preference) {
+ .card-stack-pile:hover .card-stack-underlay { transform:translate(calc(var(--stack-step)*6px),calc(var(--stack-step)*2px)) rotate(calc(var(--stack-step)*1.6deg)); }
+}
+@media(max-width:599px) {
+ .card-stack-controls { gap:0 10px; margin-bottom:15px; }
+ .card-stack-controls > span { flex-basis:100%; margin-left:25px; font-size:.625rem; }
+ .card-stack-heading { gap:5px; }
+ .card-stack-heading > span { font-size:.5625rem; white-space:normal; }
+ .card-stack-toggle { padding:6px 7px; font-size:.625rem; }
+ .card-stack-group.is-expanded { padding:12px 9px 16px; }
+ .card-stack-group.is-expanded .card-stack-heading h3 { flex-basis:100%; font-size:.875rem; }
+ .card-inspector.has-card-stack .card-inspector-stage { width:min(380px,calc(100vw - 52px),max(250px,calc((100dvh - 230px)*2/3))); }
+}
+@media(prefers-reduced-motion:reduce) { .card-stack-underlay { transition:none; } .card-stack-members { animation:none; } }

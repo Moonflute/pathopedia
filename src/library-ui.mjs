@@ -1,3 +1,4 @@
+import { createCardStacks } from './card-stacks.mjs';
 import { createCardCatalog } from './card-catalog.mjs';
 import { renderCardThumbnail, renderCardLegend } from './reference-card.mjs';
 import { createCardModels } from './card-models.mjs';
@@ -12,9 +13,10 @@ const SECTIONS = [
   { id:'archive', view:'archive', name:'발견 기록' }
 ];
 
-export function createLibrary(data, { getArchive, render, openDetail, catalog }) {
+export function createLibrary(data, { getArchive, render, openDetail, catalog, cardStacks }) {
   const cardContent = createCardCatalog(catalog);
   const models = createCardModels(data,catalog);
+  const stacks=cardStacks || createCardStacks(catalog);
   let section = 'organisms';
   const filters = Object.fromEntries(SECTIONS.map(({id}) => [id, { query:'', category:'all', page:0 }]));
   const state = () => filters[section];
@@ -48,21 +50,27 @@ export function createLibrary(data, { getArchive, render, openDetail, catalog })
   }
 
   function results() {
-    const items = matchingItems(), pages = Math.max(1,Math.ceil(items.length/PAGE_SIZE));
-    state().page = Math.min(state().page,pages-1);
-    const start = state().page*PAGE_SIZE, visible = items.slice(start,start+PAGE_SIZE);
-    const title = section === 'drugs' ? '약제 정보' : section === 'archive' ? '발견한 기록' : '병원체 기록';
-    const count = section === 'drugs' ? `${items.length}개 약제` : `${items.length}개 기록 · ${taxonCount(items)}종·군`;
+    const items=matchingItems(),groups=stacks.groups(items),pages=Math.max(1,Math.ceil(groups.length/PAGE_SIZE));
+    state().page=Math.min(state().page,pages-1);
+    const start=state().page*PAGE_SIZE,visible=groups.slice(start,start+PAGE_SIZE);
+    const title=section==='drugs'?'약제 정보':section==='archive'?'발견한 기록':'병원체 기록';
+    const count=section==='drugs'?items.length+'개 약제':items.length+'개 기록 · '+taxonCount(items)+'종·군'+(groups.length!==items.length?' · '+groups.length+'개 목록':'');
     let content;
-    if (section === 'archive' && !discoveries().length) {
-      content = '<div class="library-empty"><span class="eyebrow">NO RECORDS DISCOVERED</span><h3>첫 번째 기록을 기다립니다.</h3><p>동정실에서 맞힌 병원체의 기록과 최고 점수를 여기에서 확인할 수 있습니다.</p><button class="submit-button" data-view="lab">동정실로 이동 →</button></div>';
-    } else if (!items.length) {
-      content = '<div class="library-empty"><h3>검색 결과가 없습니다.</h3><p>다른 검색어나 분류로 찾아보세요.</p><button class="library-reset" data-library-action="reset">검색 조건 초기화</button></div>';
-    } else {
-      content = `<div class="card-collection library-card-collection">${visible.map(section==='drugs'?drugCard:recordCard).join('')}</div>`;
+    if(section==='archive' && !discoveries().length){
+      content='<div class="library-empty"><span class="eyebrow">NO RECORDS DISCOVERED</span><h3>첫 번째 기록을 기다립니다.</h3><p>동정실에서 맞힌 병원체의 기록과 최고 점수를 여기에서 확인할 수 있습니다.</p><button class="submit-button" data-view="lab">동정실로 이동 →</button></div>';
+    }else if(!items.length){
+      content='<div class="library-empty"><h3>검색 결과가 없습니다.</h3><p>다른 검색어나 분류로 찾아보세요.</p><button class="library-reset" data-library-action="reset">검색 조건 초기화</button></div>';
+    }else{
+      const renderCard=section==='drugs'?drugCard:recordCard;
+      content='<div class="card-collection library-card-collection">'+visible.map(group=>group.type==='stack'?stacks.render(group,renderCard,{prefix:'library'}):renderCard(group.items[0])).join('')+'</div>';
     }
-    return `<div class="library-result-heading"><h2 id="library-result-title" tabindex="-1">${title}</h2><span role="status" aria-live="polite">${count}</span></div>${content}
-      ${items.length?`<nav class="library-pagination" aria-label="라이브러리 페이지"><span>${start+1}–${Math.min(start+PAGE_SIZE,items.length)} / ${items.length}</span><div><button data-library-action="page" data-library-direction="prev" aria-label="이전 페이지" ${state().page===0?'disabled':''}>←</button><span>${state().page+1} / ${pages}</span><button data-library-action="page" data-library-direction="next" aria-label="다음 페이지" ${state().page>=pages-1?'disabled':''}>→</button></div></nav>`:''}`;
+    return '<div class="library-result-heading"><h2 id="library-result-title" tabindex="-1">'+title+'</h2><span role="status" aria-live="polite">'+count+'</span></div>'+content+
+      (items.length?'<nav class="library-pagination" aria-label="라이브러리 페이지"><span>목록 '+(start+1)+'–'+Math.min(start+PAGE_SIZE,groups.length)+' / '+groups.length+'</span><div><button data-library-action="page" data-library-direction="prev" aria-label="이전 페이지" '+(state().page===0?'disabled':'')+'>←</button><span>'+(state().page+1)+' / '+pages+'</span><button data-library-action="page" data-library-direction="next" aria-label="다음 페이지" '+(state().page>=pages-1?'disabled':'')+'>→</button></div></nav>':'');
+  }
+
+  function refreshResults(){
+    const host=document.querySelector('#library-results');
+    if(host)host.innerHTML=results();
   }
 
   function renderLibrary(view) {
@@ -74,11 +82,17 @@ export function createLibrary(data, { getArchive, render, openDetail, catalog })
       <p class="library-description">${section==='organisms'?'수록된 모든 병원체의 분류, 형태, 진단, 약제 반응과 근거를 열람할 수 있습니다.':section==='drugs'?'약제별 작용 기전, 활성 범위, 사용 제한과 내성 기전을 확인하세요.':'직접 동정한 병원체와 표현형·임상형별 기록입니다. 이 브라우저에 저장됩니다.'}</p>
       ${section==='archive'?`<div class="library-collection"><span>발견 ${found} / ${records.length}</span><progress value="${found}" max="${records.length}" aria-label="병원체 발견 진행률"></progress></div>`:''}
       <div class="library-controls"><label class="library-search-label" for="library-search"><span>검색</span><input id="library-search" type="search" placeholder="${section==='drugs'?'약제 이름·계열·기전 검색':'병원체 이름·한글명·표현형 검색'}" value="${esc(state().query)}" autocomplete="off"></label><label for="library-filter"><span>${section==='drugs'?'계열':'분류'}</span><select id="library-filter"><option value="all">전체 ${section==='drugs'?'계열':'분류'}</option>${categoryOptions().map(([id,label]) => `<option value="${esc(id)}" ${state().category===id?'selected':''}>${esc(label)}</option>`).join('')}</select></label></div>
+      ${section!=='drugs'?stacks.controls('library'):''}
       ${renderCardLegend()}
       <section id="library-results" aria-labelledby="library-result-title">${results()}</section>`;
   }
 
   function handleClick(button) {
+    if(button.dataset.cardStackView==='library'){
+      stacks.toggle(button.dataset.cardStackToggle);refreshResults();
+      document.querySelector('#library-stack-'+button.dataset.cardStackToggle+'-toggle')?.focus();
+      return true;
+    }
     if (button.dataset.libraryAction === 'reset') {
       Object.assign(state(),{query:'',category:'all',page:0});
       render('#library-search');
@@ -86,7 +100,7 @@ export function createLibrary(data, { getArchive, render, openDetail, catalog })
     }
     if (button.dataset.libraryAction === 'page') {
       const direction = button.dataset.libraryDirection;
-      const pages = Math.max(1,Math.ceil(matchingItems().length/PAGE_SIZE));
+      const pages = Math.max(1,Math.ceil(stacks.groups(matchingItems()).length/PAGE_SIZE));
       state().page = Math.max(0,Math.min(pages-1,state().page+(direction==='next'?1:-1)));
       render('#library-result-title');
       document.querySelector('#library-results')?.scrollIntoView({block:'start'});
@@ -96,6 +110,9 @@ export function createLibrary(data, { getArchive, render, openDetail, catalog })
   }
 
   function handleChange(input) {
+    if(input.id==='library-stacks'){
+      stacks.setEnabled(input.checked);state().page=0;refreshResults();return true;
+    }
     if (input.id !== 'library-filter') return false;
     state().category = input.value;
     state().page = 0;
@@ -107,7 +124,7 @@ export function createLibrary(data, { getArchive, render, openDetail, catalog })
     if (input.id !== 'library-search') return false;
     state().query = input.value;
     state().page = 0;
-    document.querySelector('#library-results').innerHTML = results();
+    refreshResults();
     return true;
   }
 
