@@ -1,0 +1,99 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { validateCardCatalog } from '../scripts/validate-cards.mjs';
+import { compileLibraryCatalog } from '../scripts/seed-cards.mjs';
+import { createCardCatalog } from '../src/card-catalog.mjs';
+import { createCardGallery } from '../src/card-gallery-ui.mjs';
+import { createCardStacks } from '../src/card-stacks.mjs';
+
+const read=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url),'utf8'));
+const data=read('data/organisms.json'),db=read('data/library.json');
+const diseaseIndex=read('content/diseases/index.json');
+const authored={
+  pathogens:Object.fromEntries(Object.entries(db.pathogens).map(([id,item])=>[id,item.summary])),
+  drugs:Object.fromEntries(Object.entries(db.drugs).map(([id,item])=>[id,item.summary])),
+  variants:Object.fromEntries(Object.entries(db.variants).map(([id,item])=>[id,{summary:item.summary,...(item.resistance?{resistance:item.resistance}:{})}])),
+  therapyContexts:Object.values(db.therapyContexts),
+  diseaseContent:{index:diseaseIndex,entities:diseaseIndex.files.flatMap(file=>read('content/diseases/'+file).entities)}
+};
+
+test('card DB retains every game record, response and clinical relationship',()=>{
+  const counts=validateCardCatalog(db,data);
+  assert.equal(counts.variants,data.records.length);
+  assert.equal(counts.drugs,data.drugs.length);
+  assert.equal(counts.responses,data.records.reduce((sum,record)=>sum+Object.keys(record.susceptibility).length,0));
+  assert.equal(counts.therapyContexts,Object.keys(db.therapyContexts).length);
+});
+
+test('card validation blocks dangling IDs, missing sources, altered responses and inconsistent totals',()=>{
+  const record=data.records[0],drugId=Object.keys(record.susceptibility)[0],therapy=Object.values(db.therapyContexts)[0];
+  const corruptions=[
+    [copy=>{copy.variants[record.id].pathogenId='missing';},/pathogen reference/],
+    [copy=>{copy.variants[record.id].panelId='missing';},/panel reference/],
+    [copy=>{copy.responses[record.id][drugId]='rsp_missing';},/missing response profile/],
+    [copy=>{copy.pathogens[record.taxonId].back.sections[0].sourceIds=['missing'];},/missing sources/],
+    [copy=>{copy.responseProfiles[copy.responses[record.id][drugId]].note='altered';},/response differs/],
+    [copy=>{copy.variants[therapy.recordIds[0]].therapyIds=[];},/asymmetric therapy references/],
+    [copy=>{copy.responseProfiles.rsp_deadbeefdeadbeef=structuredClone(Object.values(copy.responseProfiles)[0]);},/unreferenced response profile/],
+    [copy=>{copy.counts.responses++;},/stored counts/],
+    [copy=>{copy.sourceDatasetVersion='outdated';},/source dataset version mismatch/]
+  ];
+  for(const [mutate,message]of corruptions){
+    const copy=structuredClone(db);mutate(copy);
+    assert.throws(()=>validateCardCatalog(copy,data),message);
+  }
+});
+
+test('new detail categories and their own sources reach the portable card without losing response sources',()=>{
+  const expanded=structuredClone(data),sources=structuredClone(db.sources);
+  expanded.categories.push({id:'testExtension',label:'Extra detail',ko:'확장 상세',number:99});
+  sources['test-detail']={title:'Fixture detail source',url:'https://example.com/detail'};
+  sources['test-response']={title:'Fixture response source',url:'https://example.com/response'};
+  for(const record of expanded.records)record.hints.testExtension={text:'확장된 상세 내용',sourceIds:record.sourceIds};
+  const record=expanded.records[0],drugId=Object.keys(record.susceptibility)[0];
+  record.hints.testExtension.sourceIds=['test-detail'];
+  record.susceptibility[drugId].sourceIds.push('test-response');
+  const compiled=compileLibraryCatalog(expanded,sources,structuredClone(authored));
+  const card=createCardCatalog(compiled).pathogen(record.id);
+  assert.equal(card.back.sections.find(section=>section.id==='testExtension').title,'확장 상세');
+  assert.equal(card.back.sections.find(section=>section.id==='testExtension').text,'확장된 상세 내용');
+  assert(card.back.references.some(reference=>reference.id==='test-detail'));
+  assert(card.back.references.some(reference=>reference.id==='test-response'));
+  const reordered=structuredClone(expanded);reordered.records.reverse();reordered.drugs.reverse();
+  assert.deepEqual(compileLibraryCatalog(reordered,sources,structuredClone(authored)).responses,compiled.responses);
+});
+
+test('duplicate game IDs cannot silently overwrite cards during generation',()=>{
+  const duplicated=structuredClone(data);duplicated.records.push(structuredClone(data.records[0]));
+  assert.throws(()=>compileLibraryCatalog(duplicated,db.sources,structuredClone(authored)),/duplicate record IDs/);
+});
+
+test('discovery collection keeps scores and only exposes discovered variants inside each classification',()=>{
+  const previousDocument=globalThis.document;
+  globalThis.document={querySelectorAll:()=>[],querySelector:()=>null};
+  try{
+    const resistant=data.records.find(record=>record.id==='SAU-002');
+    const fungus=data.records.find(record=>record.domain==='fungi');
+    let archive={[resistant.id]:{bestScore:820,solves:3},[fungus.id]:{bestScore:700,solves:1}};
+    const snapshot=structuredClone(archive);
+    const stacks=createCardStacks(db,{storage:{getItem:()=>null,setItem:()=>{}}});
+    const gallery=createCardGallery(data,{catalog:db,cardStacks:stacks,getArchive:()=>archive});
+    assert.equal(gallery.setRoute('all',true),true);
+    const all=gallery.render();
+    assert.match(all,/최고 820점/);assert.match(all,/3회 동정/);
+    assert.match(all,new RegExp('발견 2 / '+data.records.length));
+    assert.match(all,new RegExp('data-card-open="pathogen:'+fungus.id+'"'));
+    assert.doesNotMatch(all,/data-card-open="pathogen:SAU-001"/);
+    assert.equal(gallery.setRoute('bacteria',true),true);
+    const bacteria=gallery.render();
+    assert.match(bacteria,/data-card-open="pathogen:SAU-002"/);
+    assert.doesNotMatch(bacteria,new RegExp('data-card-open="pathogen:'+fungus.id+'"'));
+    assert.equal(gallery.setRoute('drugs',true),false);
+    assert.deepEqual(archive,snapshot);
+    archive={};
+    assert.match(gallery.render(),/첫 번째 기록을 기다립니다/);
+  }finally{
+    if(previousDocument===undefined)delete globalThis.document;else globalThis.document=previousDocument;
+  }
+});

@@ -1,0 +1,1096 @@
+{
+  "schemaVersion": 1,
+  "category": "ent",
+  "entities": [
+    {
+      "id": "streptococcal-pharyngitis",
+      "kind": "disease",
+      "name": "사슬알균 인두염",
+      "englishName": "Group A streptococcal pharyngitis",
+      "category": "ent",
+      "entityType": "specific",
+      "summary": "갑작스러운 인후통·발열·편도 삼출·전경부 림프절통. 기침·콧물 등 뚜렷한 바이러스 소견이 없으면 GAS 검사를 고려한다.",
+      "searchAliases": [
+        "GAS 인두염",
+        "연쇄상구균 인두염",
+        "편도염",
+        "strep throat"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "임상만으로 바이러스와 확실히 구분하기 어렵다. 확인된 감염의 치료는 류마티스열 예방에도 의미가 있다.",
+        "diagnostics": "신속항원검사 또는 배양. 소아의 음성 신속검사는 배양으로 보완할 수 있다.",
+        "management": "확진 GAS에는 좁은 범위 Penicillin 또는 Amoxicillin. 알레르기 유형·Macrolide 내성을 구분한다.",
+        "redFlags": "연하 불가·편측 부종·기도 증상·농양."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spy",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "streptococcal-pharyngitis-tx-1",
+          "rank": "preferred",
+          "context": "확인된 GAS 인두염·중증 Penicillin 알레르기 없음",
+          "components": [
+            {
+              "drugId": "amoxicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "streptococcal-pharyngitis-tx-2",
+          "rank": "alternative",
+          "context": "중증 알레르기 등 대안이 필요하며 감수성 고려",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "scarlet-fever",
+        "peritonsillar-abscess"
+      ],
+      "sourceIds": [
+        "cdc-gas"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "사슬알균 인두염 (Streptococcal Pharyngitis)",
+          "path": "source_notes/02 Diseases/08 감염/사슬알균 인두염 (Streptococcal Pharyngitis).md"
+        }
+      ]
+    },
+    {
+      "id": "scarlet-fever",
+      "kind": "disease",
+      "name": "성홍열",
+      "englishName": "Scarlet fever",
+      "category": "ent",
+      "entityType": "specific",
+      "summary": "인두염과 사포 같은 발진·딸기혀가 함께 나타나는 GAS 독소 관련 감염. 발진만으로 확진하지 않고 인두검사로 확인한다.",
+      "searchAliases": [
+        "scarlet fever",
+        "딸기혀"
+      ],
+      "anatomicSites": [
+        "skin",
+        "lungs"
+      ],
+      "transmission": [
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "피부 주름의 발진 강조와 이후 낙설이 단서. Kawasaki병·바이러스 발진과 감별한다.",
+        "diagnostics": "임상 양상과 GAS 신속검사·배양 등으로 확인.",
+        "management": "확인된 GAS 감염을 Amoxicillin 등으로 치료하고 전파 예방을 시행한다.",
+        "redFlags": "독성 외관·저혈압·기도 또는 심부 합병증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spy",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "scarlet-fever-tx-1",
+          "rank": "preferred",
+          "context": "GAS 확인·Penicillin 알레르기 없음",
+          "components": [
+            {
+              "drugId": "amoxicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "streptococcal-pharyngitis"
+      ],
+      "sourceIds": [
+        "cdc-gas"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "성홍열 (Scarlet Fever)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/성홍열 (Scarlet Fever).md"
+        }
+      ]
+    },
+    {
+      "id": "diphtheria",
+      "kind": "disease",
+      "name": "디프테리아",
+      "englishName": "Diphtheria",
+      "category": "ent",
+      "entityType": "specific",
+      "summary": "인후의 잘 떨어지지 않는 회색 위막과 목 부종. 국소 기도 문제뿐 아니라 독소에 의한 심근염·신경병증이 중요하다.",
+      "searchAliases": [
+        "diphtheria",
+        "위막 인두염"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "heart",
+        "brain"
+      ],
+      "transmission": [
+        "droplet",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "위막을 억지로 떼면 출혈할 수 있다. 예방접종력이 있어도 노출·임상 양상을 함께 판단한다.",
+        "diagnostics": "배양·독소 생성 확인과 공중보건 협조; 의심이 강하면 결과를 기다려 치료를 지연하지 않는다.",
+        "management": "호흡기 디프테리아는 Antitoxin과 항균제, 격리·기도 관리. 회복 후 접종 상태도 정비한다.",
+        "redFlags": "기도 폐쇄·부정맥·심근염·신경마비."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cdi",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "diphtheria-tx-1",
+          "rank": "preferred",
+          "context": "Antitoxin 등과 함께 세균 제거에 사용하는 요법",
+          "components": [
+            {
+              "drugId": "erythromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "diphtheria-tx-2",
+          "rank": "alternative",
+          "context": "감수성·금기에 따른 대안",
+          "components": [
+            {
+              "drugId": "penicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-diphtheria"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "pertussis",
+      "kind": "disease",
+      "name": "백일해",
+      "englishName": "Pertussis",
+      "category": "ent",
+      "entityType": "specific",
+      "summary": "발작성 기침·흡기성 whoop·기침 후 구토. 영아는 특징적 기침 없이 무호흡·청색증만 보일 수 있다.",
+      "searchAliases": [
+        "whooping cough",
+        "Bordetella pertussis"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "발작성 단계에서는 기침이 오래 지속하며 늦은 항균제 투여는 증상 호전보다 전파 감소 목적이 클 수 있다.",
+        "diagnostics": "비인두 검체 PCR·배양을 시기에 맞춰 시행. 성인의 오래가는 기침도 확인한다.",
+        "management": "초기 Macrolide 치료와 고위험 접촉자의 노출 후 예방을 판단. 영아의 호흡 상태를 면밀히 본다.",
+        "redFlags": "영아 무호흡·청색증·수유 불가."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx504",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "pertussis-tx-1",
+          "rank": "preferred",
+          "context": "치료 시기·연령별 주의사항을 반영한 선택",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "pertussis-tx-2",
+          "rank": "alternative",
+          "context": "Macrolide 사용 불가·연령 등 금기 확인",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "pertussis-cdc"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "백일해 (Pertussis)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/백일해 (Pertussis).md"
+        }
+      ]
+    },
+    {
+      "id": "epiglottitis",
+      "kind": "disease",
+      "name": "급성 후두개염",
+      "englishName": "Acute epiglottitis",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "고열·심한 인후통·침 흘림·연하곤란과 숨쉬기 편한 자세. 빠르게 기도가 막힐 수 있어 기도 확보가 우선이다.",
+      "searchAliases": [
+        "후두개염",
+        "epiglottitis"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "Hib 접종 이후에도 성인·다른 세균에 의한 감염이 발생한다. 불안정한 소아의 인후를 억지로 검사하지 않는다.",
+        "diagnostics": "안정성 평가 후 기도 확보 가능한 환경에서 후두 관찰·배양. 영상 때문에 처치를 지연하지 않는다.",
+        "management": "기도 관리와 정주 항균제; 원인균·내성 위험에 맞춰 보완한다.",
+        "redFlags": "협착음·침 흘림·삼각대 자세·호흡 피로."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hin",
+          "context": ""
+        },
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "epiglottitis-tx-1",
+          "rank": "preferred",
+          "context": "기도 관리와 함께 시행하는 경험적 기본 구성",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "epiglottitis-tx-2",
+          "rank": "conditional",
+          "context": "MRSA 위험·중증 감염이면 필요에 따라 병용",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "croup"
+      ],
+      "sourceIds": [
+        "cdc-pinkbook-hib-management"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "급성 후두개염 (Acute Epiglottitis)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/급성 후두개염 (Acute Epiglottitis).md"
+        }
+      ]
+    },
+    {
+      "id": "bacterial-sinusitis",
+      "kind": "disease",
+      "name": "급성 세균성 부비동염",
+      "englishName": "Acute bacterial rhinosinusitis",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "감기 증상이 오래 호전되지 않거나 심한 발열·농성 분비물, 호전 뒤 재악화할 때 의심. 단순 콧물과 구분한다.",
+      "searchAliases": [
+        "축농증",
+        "급성 부비동염",
+        "ABRS",
+        "비부비동염"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous",
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "증상의 경과가 세균성 가능성 판단에 중요하다. 눈·두개강 합병증 징후를 확인한다.",
+        "diagnostics": "대개 임상 진단. 합병증·비전형적 경과가 없으면 CT를 일률적으로 시행하지 않는다.",
+        "management": "적응증이 있으면 Amoxicillin–clavulanate 등; 중증도·내성 위험·알레르기에 맞춰 선택한다.",
+        "redFlags": "안구운동 통증·안구 돌출·시력 저하·심한 두통."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "hin",
+          "context": ""
+        },
+        {
+          "pathogenId": "mca",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "bacterial-sinusitis-tx-1",
+          "rank": "preferred",
+          "context": "항균제 적응증이 있는 세균성 부비동염",
+          "components": [
+            {
+              "drugId": "amoxclav"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "bacterial-sinusitis-tx-2",
+          "rank": "alternative",
+          "context": "적절한 성인·금기와 알레르기 확인",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "orbital-cellulitis"
+      ],
+      "sourceIds": [
+        "idsa-abrs-2012",
+        "disease-nice-ent"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "급성 부비동염 (Acute sinusitis)",
+          "path": "source_notes/02 Diseases/17 이비인후과/급성 부비동염 (Acute sinusitis).md"
+        }
+      ]
+    },
+    {
+      "id": "acute-otitis-media",
+      "kind": "disease",
+      "name": "급성 중이염",
+      "englishName": "Acute otitis media",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "급성 귀 통증·발열과 고막 팽륜·중이 삼출이 핵심. 고막 발적만으로 진단하지 않고 경증에서는 관찰 전략도 고려한다.",
+      "searchAliases": [
+        "AOM",
+        "화농성 중이염",
+        "중이염"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous",
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "영유아에서 흔하며 상기도 감염 뒤 발생한다. 나이·양측성·이루·중증도에 따라 치료가 달라진다.",
+        "diagnostics": "이경·가능하면 공기이경 검사로 고막 팽륜과 삼출 확인.",
+        "management": "항균제 필요 시 Amoxicillin; 최근 사용·결막염 동반 등에서는 Amoxicillin–clavulanate를 고려한다.",
+        "redFlags": "귀 뒤 부종·압통·안면마비·수막 자극."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "hin",
+          "context": ""
+        },
+        {
+          "pathogenId": "mca",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "acute-otitis-media-tx-1",
+          "rank": "preferred",
+          "context": "항균제 적응증이 있고 최근 Amoxicillin 사용 등 위험이 없음",
+          "components": [
+            {
+              "drugId": "amoxicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-otitis-media-tx-2",
+          "rank": "conditional",
+          "context": "최근 투약·치료 실패·화농성 결막염 등",
+          "components": [
+            {
+              "drugId": "amoxclav"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "mastoiditis"
+      ],
+      "sourceIds": [
+        "disease-nice-otitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "chronic-suppurative-otitis",
+      "kind": "disease",
+      "name": "만성 화농성 중이염",
+      "englishName": "Chronic suppurative otitis media",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "고막 천공을 통한 지속·반복 이루. 단순 급성 중이염과 달리 청력 저하·진주종·유양돌기 합병증을 평가한다.",
+      "searchAliases": [
+        "CSOM",
+        "만성화농성중이염"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "Pseudomonas·S. aureus 등이 관여하며 습기·고막 상태가 중요하다.",
+        "diagnostics": "이경·청력검사; 치료 실패·합병증 의심 시 배양과 영상.",
+        "management": "귀 청소·건조 유지와 적절한 국소 항균제, 진주종·수술 적응증 평가.",
+        "redFlags": "현훈·안면마비·심한 두통·귀 뒤 부종."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pae",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "chronic-suppurative-otitis-tx-1",
+          "rank": "conditional",
+          "context": "고막 상태를 고려한 국소 Fluoroquinolone 치료",
+          "components": [
+            {
+              "drugId": "ciprofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "mastoiditis"
+      ],
+      "sourceIds": [
+        "disease-merck-chronic-otitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "만성화농성중이염 (Chronic suppurative otitis media)",
+          "path": "source_notes/02 Diseases/17 이비인후과/만성화농성중이염 (Chronic suppurative otitis media).md"
+        }
+      ]
+    },
+    {
+      "id": "otitis-externa",
+      "kind": "disease",
+      "name": "급성 외이도염",
+      "englishName": "Acute otitis externa",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "이주 압박·귓바퀴 당김에 통증이 심해지고 외이도에 부종·분비물이 보이는 감염. 물 노출·귀 후비기가 흔한 단서다.",
+      "searchAliases": [
+        "수영장 귀",
+        "swimmer's ear",
+        "외이도염"
+      ],
+      "anatomicSites": [
+        "skin",
+        "lungs"
+      ],
+      "transmission": [
+        "water",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "Pseudomonas와 S. aureus가 흔하다. 당뇨·면역저하자의 심한 통증은 괴사성 외이도염을 구분한다.",
+        "diagnostics": "외이도·고막 평가. 대개 임상 진단이며 심한 부종에서는 약물 전달 상태도 확인한다.",
+        "management": "국소 항균제와 외이도 관리가 기본. 전신 항균제는 주변 확산·특수 숙주 등 별도 적응증에서 사용한다.",
+        "redFlags": "야간 심한 통증·뇌신경 이상·외이도 밖 확산."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pae",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "otitis-externa-tx-1",
+          "rank": "conditional",
+          "context": "고막 상태를 고려한 국소 치료의 한 선택",
+          "components": [
+            {
+              "drugId": "ciprofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "necrotizing-otitis-externa"
+      ],
+      "sourceIds": [
+        "disease-aao-hns-aoe"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "necrotizing-otitis-externa",
+      "kind": "disease",
+      "name": "괴사성 외이도염",
+      "englishName": "Necrotizing otitis externa",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "당뇨·면역저하자에서 지속되는 심한 귀 통증·이루·외이도 육아조직. 두개저 골수염과 뇌신경 침범을 동반할 수 있다.",
+      "searchAliases": [
+        "악성 외이도염",
+        "두개저 골수염"
+      ],
+      "anatomicSites": [
+        "bone",
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "Pseudomonas가 대표 원인이나 다른 세균·진균도 가능. 일반 외이도염 치료에 반응하지 않을 때 의심한다.",
+        "diagnostics": "배양·조직 평가와 CT/MRI로 범위·종양 감별.",
+        "management": "전신 antipseudomonal 치료를 감수성에 맞춰 시행하고 혈당·국소 상태를 관리한다.",
+        "redFlags": "안면마비·연하장애·심부 두개저 확산."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pae",
+          "context": ""
+        },
+        {
+          "pathogenId": "afu",
+          "context": "비전형적·진균성 감염"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "necrotizing-otitis-externa-tx-1",
+          "rank": "conditional",
+          "context": "Pseudomonas 감수성과 환자 조건에 맞춘 전신 치료",
+          "components": [
+            {
+              "drugId": "ciprofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "necrotizing-otitis-externa-tx-2",
+          "rank": "alternative",
+          "context": "중증·내성 또는 정주 치료 필요 시",
+          "components": [
+            {
+              "drugId": "cefepime"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "otitis-externa",
+        "vertebral-osteomyelitis"
+      ],
+      "sourceIds": [
+        "disease-merck-necrotizing-otitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "mastoiditis",
+      "kind": "disease",
+      "name": "급성 유양돌기염",
+      "englishName": "Acute mastoiditis",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "중이염 뒤 귀 뒤의 통증·부종·발적과 귓바퀴 돌출. 골 파괴·두개강 확산 여부가 처치의 중요 기준이다.",
+      "searchAliases": [
+        "유양돌기염",
+        "mastoiditis"
+      ],
+      "anatomicSites": [
+        "bone",
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "지속 발열·이루·귀 뒤 압통이 단서. 단순 영상상 유양돌기 액체만으로 임상 감염을 확정하지 않는다.",
+        "diagnostics": "이비인후과 평가; 합병증 의심 시 CT/MRI와 배양.",
+        "management": "정주 항균제·중이 배액; 농양·골 파괴·치료 실패는 수술을 고려한다.",
+        "redFlags": "수막염·정맥동 혈전·뇌농양·안면마비."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "pae",
+          "context": "만성 중이염 동반"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "mastoiditis-tx-1",
+          "rank": "conditional",
+          "context": "발생 환경과 배양에 맞춘 정주 치료 구성",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "mastoiditis-tx-2",
+          "rank": "conditional",
+          "context": "MRSA 위험을 반영해 추가",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "acute-otitis-media",
+        "brain-abscess"
+      ],
+      "sourceIds": [
+        "disease-nice-otitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "peritonsillar-abscess",
+      "kind": "disease",
+      "name": "편도주위농양",
+      "englishName": "Peritonsillar abscess",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "한쪽의 심한 인후통·개구장애·먹먹한 목소리와 목젖 편위. 항균제 외에 배농 필요성을 평가한다.",
+      "searchAliases": [
+        "편도 주위 농양",
+        "PTA"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "Streptococci와 구강 혐기성균의 혼합감염이 흔하다. 연하 불가와 기도 위험을 먼저 본다.",
+        "diagnostics": "인후 진찰; 불확실하거나 심부 확산이 의심되면 초음파·CT.",
+        "management": "배농과 구강균·혐기성균을 고려한 항균요법, 수분·기도 관리.",
+        "redFlags": "기도 폐쇄·심경부 확산·패혈증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "streptococcus-anginosus-group",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx516",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "peritonsillar-abscess-tx-1",
+          "rank": "preferred",
+          "context": "배농 후 경구 치료가 가능한 혼합감염",
+          "components": [
+            {
+              "drugId": "amoxclav"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "peritonsillar-abscess-tx-2",
+          "rank": "conditional",
+          "context": "정주 치료와 혐기성균 범위가 필요한 경우",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "streptococcal-pharyngitis",
+        "retropharyngeal-abscess"
+      ],
+      "sourceIds": [
+        "disease-merck-peritonsillar"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "편도 주위 농양 (Peritonsillar Abscess)",
+          "path": "source_notes/02 Diseases/17 이비인후과/편도 주위 농양 (Peritonsillar Abscess).md"
+        }
+      ]
+    },
+    {
+      "id": "retropharyngeal-abscess",
+      "kind": "disease",
+      "name": "인두후부농양",
+      "englishName": "Retropharyngeal abscess",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "발열·경부 통증·연하곤란·목 움직임 제한, 때로 침 흘림·협착음. 소아와 이물·외상 뒤 심경부 감염을 의심한다.",
+      "searchAliases": [
+        "후인두농양",
+        "인두 후부 농양",
+        "RPA"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "경부 림프절 감염·외상에서 시작할 수 있다. 종격동 확산과 기도 폐쇄를 경계한다.",
+        "diagnostics": "기도 안정성 평가 후 조영 CT; 배액 검체 배양.",
+        "management": "기도 관리·정주 항균제와 배액 적응증 평가.",
+        "redFlags": "협착음·기도 폐쇄·종격동염·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx518",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "retropharyngeal-abscess-tx-1",
+          "rank": "conditional",
+          "context": "구강균·혐기성균을 포함해야 하는 정주 병용 구성",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "retropharyngeal-abscess-tx-2",
+          "rank": "conditional",
+          "context": "MRSA 위험이면 필요에 따라 추가",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "peritonsillar-abscess"
+      ],
+      "sourceIds": [
+        "disease-merck-retropharyngeal"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "인두후부 농양 (Retropharyngeal Abscess)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/인두후부 농양 (Retropharyngeal Abscess).md"
+        }
+      ]
+    },
+    {
+      "id": "ludwig-angina",
+      "kind": "disease",
+      "name": "루드비히 협심증",
+      "englishName": "Ludwig angina",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "치성 감염 뒤 구강저·턱밑이 단단히 붓고 혀가 들리는 심경부 감염. 이름과 달리 심장질환이 아니라 기도 응급이다.",
+      "searchAliases": [
+        "Ludwig's angina",
+        "루드비히 앙기나"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "skin"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "아래 어금니 감염과 구강 혼합균이 흔한 시작점.",
+        "diagnostics": "기도 확보 가능성을 먼저 평가하고 안정 후 조영 CT·치과 원인 확인.",
+        "management": "조기 기도 관리·정주 광범위 구강균 요법·배액과 치성 감염원 제거.",
+        "redFlags": "혀 상승·침 흘림·연하 불가·기도 폐쇄."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "streptococcus-anginosus-group",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx516",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "ludwig-angina-tx-1",
+          "rank": "conditional",
+          "context": "중증 구강 혼합감염의 정주 치료 구성",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "dental-abscess"
+      ],
+      "sourceIds": [
+        "disease-merck-ludwig"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "dental-abscess",
+      "kind": "disease",
+      "name": "치성 농양",
+      "englishName": "Odontogenic abscess",
+      "category": "ent",
+      "entityType": "syndrome",
+      "summary": "치통과 잇몸·얼굴의 국소 부종. 배농·근관치료·발치 등 원인 제거가 핵심이며 항균제만으로 해결하지 않는다.",
+      "searchAliases": [
+        "치아 농양",
+        "치근단 농양",
+        "치성 감염"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "skin"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "국소 치수·치주 감염이 주위로 확산한다. 전신 증상·심부 확산 여부를 판단한다.",
+        "diagnostics": "치과 진찰·치과영상; 심경부 확산 의심 시 조영 CT.",
+        "management": "국소 감염원 처치; 전신 증상·확산이 있으면 적절한 구강균 항균요법을 병행한다.",
+        "redFlags": "개구장애·안와 부종·연하곤란·기도 증상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "streptococcus-anginosus-group",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx518",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "dental-abscess-tx-1",
+          "rank": "conditional",
+          "context": "전신 증상·확산 등 항균제 적응증이 있을 때",
+          "components": [
+            {
+              "drugId": "amoxclav"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "ludwig-angina"
+      ],
+      "sourceIds": [
+        "disease-ada-dental"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    }
+  ]
+}

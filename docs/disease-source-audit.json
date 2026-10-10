@@ -1,0 +1,1060 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-11",
+  "referenceRepository": "19 the medicine resource",
+  "access": "read-only",
+  "scope": "장기별 분류·임상 질환 노트를 기본 참고로 사용하고 공식 임상 자료로 보충했다. 원문 전체·개인 기록은 복제하지 않았다.",
+  "mappingNote": "같은 이름 및 충분히 구체적인 검색 별칭을 가진 노트를 임상 배경으로 연결했다. 이 매핑으로 원인균·치료요법을 자동 생성하지 않았다.",
+  "sourceDatasets": [
+    {
+      "path": "_webapp/data/diseases.json",
+      "sha256": "64185726c1dbfaf2d09a81657de43831ad9d78142b65d554c0a8e853801357f3"
+    },
+    {
+      "path": "_webapp/data/infection-pathways.json",
+      "sha256": "7e8b87226f5931201b4290655ab9561a4a77216a5898338ae17eec0a6c4446dc"
+    },
+    {
+      "path": "infection_dev_plan.md",
+      "sha256": "a93b9d21f2937cddd1d36ad88a474ac9e443f633a04bd8a485fdf294b25506db"
+    }
+  ],
+  "noteMappings": [
+    {
+      "diseaseId": "common-cold",
+      "title": "감기 (Common Cold)",
+      "path": "source_notes/02 Diseases/08 감염/감기 (Common Cold).md",
+      "sha256": "b32ed3fdf85eaa0bade5fdb8d4939b1520ace0446e188b8214dc24dceea5ddeb",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "common-cold",
+      "title": "감기 (Common Cold)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/감기 (Common Cold).md",
+      "sha256": "b11cc80bbe85a598c647aeadfb951dff0acc4a003e7c87b13154ac3eeb283ce0",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "bronchiolitis",
+      "title": "급성 세기관지염 (Acute Bronchiolitis)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/급성 세기관지염 (Acute Bronchiolitis).md",
+      "sha256": "0a3731308ea0673d97c12b38017e112166d2864de4b98f7f0a203c96c2dbe9e8",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "croup",
+      "title": "크룹 (Croup)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/크룹 (Croup).md",
+      "sha256": "4bceeb4df499d7a322d9555504e602d1d7b1aa25d4bea879b74e10726542e6d8",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "lung-abscess",
+      "title": "폐 농양 (Lung Abscess)",
+      "path": "source_notes/02 Diseases/02 호흡기/폐 농양 (Lung Abscess).md",
+      "sha256": "d005d239b395ac9afb35a2fe2c161e06aa35420f46c1ff26098b0661593f599e",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "mycoplasma-pneumonia",
+      "title": "마이코플라스마 폐렴 (Mycoplasma Pneumonia)",
+      "path": "source_notes/02 Diseases/02 호흡기/마이코플라스마 폐렴 (Mycoplasma Pneumonia).md",
+      "sha256": "4ab61daa22f000ebdcdb936fe808e592101c0e2122b81d60572fc7294f151570",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "mycoplasma-pneumonia",
+      "title": "비정형 폐렴 (Atypical Pneumonia)",
+      "path": "source_notes/02 Diseases/02 호흡기/비정형 폐렴 (Atypical Pneumonia).md",
+      "sha256": "799707e1af4f13788c27b856d3b5944a58905d489067a3c276498ed3f6c34e17",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "mycoplasma-pneumonia",
+      "title": "마이코플라스마 폐렴 (Mycoplasma Pneumonia)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/마이코플라스마 폐렴 (Mycoplasma Pneumonia).md",
+      "sha256": "acedad6893b918299b973c55d028b7d1cb6dc912263b38d6343bec4072b92565",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "pulmonary-tuberculosis",
+      "title": "폐결핵 (Pulmonary Tuberculosis)",
+      "path": "source_notes/02 Diseases/02 호흡기/폐결핵 (Pulmonary Tuberculosis).md",
+      "sha256": "8abb53cde60d6dbf03de1d757f66f5e64d2464f604d8344def7fdc943a40d124",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "pulmonary-tuberculosis",
+      "title": "폐결핵",
+      "path": "source_notes/02 Diseases/02 호흡기/폐결핵.md",
+      "sha256": "fc33b9208039a05b70bb30322ee3a44069e83411178d2561b8ad968b53696f33",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "miliary-tuberculosis",
+      "title": "좁쌀 결핵 (Miliary Tuberculosis)",
+      "path": "source_notes/02 Diseases/02 호흡기/좁쌀 결핵 (Miliary Tuberculosis).md",
+      "sha256": "e3145b3ee6821813ef81f68fb4e38e5a249106c4bf49863e8197d4604ed15fde",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "tuberculous-pleurisy",
+      "title": "결핵성 흉막염 (Tuberculous Pleurisy)",
+      "path": "source_notes/02 Diseases/02 호흡기/결핵성 흉막염 (Tuberculous Pleurisy).md",
+      "sha256": "f4f4526d29e66dc588afcc37d0b5469b688faa62d8bd034f3ed0b2fb69f20d23",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "streptococcal-pharyngitis",
+      "title": "사슬알균 인두염 (Streptococcal Pharyngitis)",
+      "path": "source_notes/02 Diseases/08 감염/사슬알균 인두염 (Streptococcal Pharyngitis).md",
+      "sha256": "58a1e3c7f2cc0fd010e59cd64f6628602a0656542ba1f2905def5a5dc5c4e706",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "scarlet-fever",
+      "title": "성홍열 (Scarlet Fever)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/성홍열 (Scarlet Fever).md",
+      "sha256": "994f9797c866924acc1c209a3f809a7f483116c5db789ffd87bac013544cff55",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "pertussis",
+      "title": "백일해 (Pertussis)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/백일해 (Pertussis).md",
+      "sha256": "a3e4f94b045fec52ac66773bdb0dffa88ef6221e43ccfe7eb090d5730dcde0f8",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "epiglottitis",
+      "title": "급성 후두개염 (Acute Epiglottitis)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/급성 후두개염 (Acute Epiglottitis).md",
+      "sha256": "cdd7e140e31efa5a87b0cbff140ebf6ad06a1e4d0f8166ec06384489f999bd8a",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "bacterial-sinusitis",
+      "title": "급성 부비동염 (Acute sinusitis)",
+      "path": "source_notes/02 Diseases/17 이비인후과/급성 부비동염 (Acute sinusitis).md",
+      "sha256": "9d65c107ecb1d0da866587b2dda91725870267e7f0aa4d106d7805eb87c6c03b",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "chronic-suppurative-otitis",
+      "title": "만성화농성중이염 (Chronic suppurative otitis media)",
+      "path": "source_notes/02 Diseases/17 이비인후과/만성화농성중이염 (Chronic suppurative otitis media).md",
+      "sha256": "f1551370df5ce6bbe0b863b199052ede49f89c254f9bfea76ddefacee3fc939d",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "peritonsillar-abscess",
+      "title": "편도 주위 농양 (Peritonsillar Abscess)",
+      "path": "source_notes/02 Diseases/17 이비인후과/편도 주위 농양 (Peritonsillar Abscess).md",
+      "sha256": "374b74259a41519a90f41f02bdf567f325f751f7a39487b2dbe5330a206f48d4",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "retropharyngeal-abscess",
+      "title": "인두후부 농양 (Retropharyngeal Abscess)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/인두후부 농양 (Retropharyngeal Abscess).md",
+      "sha256": "f1885af47a95709254b5e4b484fb2773ff7451153a662aa33b32eb2a9966bfb4",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "sepsis",
+      "title": "패혈증 (Sepsis)",
+      "path": "source_notes/02 Diseases/08 감염/패혈증 (Sepsis).md",
+      "sha256": "d7296fc80fbf6aeacc75beef1902fe6727c6943cee7420e69b4673757702a6e8",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "septic-shock",
+      "title": "패혈성 쇼크 (Septic Shock)",
+      "path": "source_notes/02 Diseases/11 외과/패혈성 쇼크 (Septic Shock).md",
+      "sha256": "c6a4b02225f6f8fc874bd0a218efacf6f2562d35b16fb0fb62b72d9b843fb942",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "endocarditis",
+      "title": "감염 심내막염 (Infective Endocarditis)",
+      "path": "source_notes/02 Diseases/01 순환기/감염 심내막염 (Infective Endocarditis).md",
+      "sha256": "4d056308c4f072ae54c9aadd132a3d334dd2bdf5ff778a5cf3b01ec83a03ad5a",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "neonatal-sepsis",
+      "title": "신생아 패혈증 (Neonatal Sepsis)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 총론/신생아 패혈증 (Neonatal Sepsis).md",
+      "sha256": "54b1cdf4c73208e688ac66d9bd456ae5c308bff5ca75288f56534d4ba42b0d1e",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "bacterial-meningitis",
+      "title": "세균성 뇌수막염 (Bacterial Meningitis)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/세균성 뇌수막염 (Bacterial Meningitis).md",
+      "sha256": "e839bce107e73043dde25cfff984c9ec517195b141f945b448de177d56a90741",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "viral-meningitis",
+      "title": "바이러스성 뇌수막염 (Viral Meningitis)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/바이러스성 뇌수막염 (Viral Meningitis).md",
+      "sha256": "4ea824d4f5eb416cf1fafc9b8f83011ae2dbaa9f3a8a9a248f16be8468f26057",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "clostridioides-colitis",
+      "title": "거짓막 결장염 (Pseudomembranous Colitis)",
+      "path": "source_notes/02 Diseases/08 감염/거짓막 결장염 (Pseudomembranous Colitis).md",
+      "sha256": "f4971b04b46ae1680cf0d884453bdb03ef6c41101769124bce091a639b9b20ce",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "typhoid-fever",
+      "title": "장티푸스 (Typhoid Fever)",
+      "path": "source_notes/02 Diseases/08 감염/장티푸스 (Typhoid Fever).md",
+      "sha256": "a3a49f395c9a1abe5e23950e9bd69234f70cb43231e454aab689f7dabcb5a559",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "cholera",
+      "title": "콜레라 (Cholera)",
+      "path": "source_notes/02 Diseases/08 감염/콜레라 (Cholera).md",
+      "sha256": "d0c0dad55f134afdd972dd9a45a38de7d436fef43b7ac1af1d9852342f8fd81c",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "anorectal-abscess",
+      "title": "항문직장 농양 (Anorectal Abscess)",
+      "path": "source_notes/02 Diseases/03 소화기/위장관/항문직장 농양 (Anorectal Abscess).md",
+      "sha256": "36aa09731e65ec0195f53f72f4cec21c960c09f020ec00bf10850c516241ecbf",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "infected-pancreatic-necrosis",
+      "title": "감염성 췌장 괴사 (Infected Pancreatic Necrosis)",
+      "path": "source_notes/02 Diseases/03 소화기/간담췌/감염성 췌장 괴사 (Infected Pancreatic Necrosis).md",
+      "sha256": "6c1bfba9c45951b4928ce1562f7ce09631bf47c4567108db3f0dbf3fede699b9",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "spontaneous-peritonitis",
+      "title": "자발성 세균 복막염 (Spontaneous Bacterial Peritonitis)",
+      "path": "source_notes/02 Diseases/03 소화기/간담췌/자발성 세균 복막염 (Spontaneous Bacterial Peritonitis).md",
+      "sha256": "8d39c3f24b2fdd8b84eaa3508c9a5bed2d1fa10098b4d7409806be55fa7e84c2",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "acute-cholangitis",
+      "title": "쓸개관염 (Cholangitis)",
+      "path": "source_notes/02 Diseases/03 소화기/간담췌/쓸개관염 (Cholangitis).md",
+      "sha256": "78adc5e07dff8a2cc559614110dd3f228f663efcc7d663ed058c4cda0d08f382",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "pyogenic-liver-abscess",
+      "title": "간 농양 (Liver Abscess)",
+      "path": "source_notes/02 Diseases/03 소화기/간담췌/간 농양 (Liver Abscess).md",
+      "sha256": "b376cee34f1a3d2308963adcae9793b04240b0041c43dfabbefc775d3cc568fe",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "hepatitis-a",
+      "title": "급성 A형 간염 (Acute Hepatitis A)",
+      "path": "source_notes/02 Diseases/03 소화기/간담췌/급성 A형 간염 (Acute Hepatitis A).md",
+      "sha256": "f6624a34b279ce2e02eb2ded3c981f47fbbeff6bd735bbdbc92e848cc8b1d68b",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "acute-hepatitis-b",
+      "title": "급성 B형 간염 (Acute Hepatitis B)",
+      "path": "source_notes/02 Diseases/03 소화기/간담췌/급성 B형 간염 (Acute Hepatitis B).md",
+      "sha256": "37aca0ee3792b3d3e0df2e460bea44877c1c79c0256e543ef271274bfcb91fc9",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "acute-hepatitis-c",
+      "title": "급성 C형 간염 (HCV) (Acute Hepatitis C)",
+      "path": "source_notes/02 Diseases/03 소화기/간담췌/급성 C형 간염 (HCV) (Acute Hepatitis C).md",
+      "sha256": "5be7df51ec38034ea853ce709ba69cf047115945bc0ec9758afa8e666770d2e1",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "intestinal-tuberculosis",
+      "title": "장결핵 (Intestinal Tuberculosis)",
+      "path": "source_notes/02 Diseases/03 소화기/위장관/장결핵 (Intestinal Tuberculosis).md",
+      "sha256": "76de2f3ec701d3dddd25b2cf6e6b383806d28fb64f280bb8287036f2f10572f6",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "acute-cystitis",
+      "title": "급성 방광염 (Acute Cystitis)",
+      "path": "source_notes/02 Diseases/05 신장/급성 방광염 (Acute Cystitis).md",
+      "sha256": "32eec9ff1fc179412cc67455336e2d7c72abbe02cfd460ca57a0109d93aead10",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "acute-cystitis",
+      "title": "요로감염",
+      "path": "source_notes/02 Diseases/05 신장/요로감염.md",
+      "sha256": "36c78c7c4c65005867a166bcda3d36e6e529a47c5f2e24057678f66ec220e8db",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "acute-cystitis",
+      "title": "요로 감염 (Urinary Tract Infection)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/요로 감염 (Urinary Tract Infection).md",
+      "sha256": "3b4d060013cd8d4d36f7f1b0b193029bd2f0e8d8a8e44d717b56250d09a2d509",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "acute-pyelonephritis",
+      "title": "급성 신우신염 (Acute Pyelonephritis)",
+      "path": "source_notes/02 Diseases/05 신장/급성 신우신염 (Acute Pyelonephritis).md",
+      "sha256": "b123ad0d4d91c785d4f49c4aead9a23ba7e8c2cf4f2939182d0487e4b4fa1eb0",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "acute-pyelonephritis",
+      "title": "급성 신우신염 (Acute Pyelonephritis)",
+      "path": "source_notes/02 Diseases/11 외과/급성 신우신염 (Acute Pyelonephritis).md",
+      "sha256": "ad20e9ec7fa1525110583ca89500387891e1b17491e201247f8051e9c229de81",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "emphysematous-pyelonephritis",
+      "title": "기종성 신우신염 (Emphysematous Pyelonephritis)",
+      "path": "source_notes/02 Diseases/05 신장/기종성 신우신염 (Emphysematous Pyelonephritis).md",
+      "sha256": "9c9a11db03fdfae7c2df58649a8a4df6a131af903665c9ebd54011a0b97c058a",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "renal-abscess",
+      "title": "콩팥 농양 (Renal Abscess)",
+      "path": "source_notes/02 Diseases/05 신장/콩팥 농양 (Renal Abscess).md",
+      "sha256": "8da21989815a274765bd6e16beaf8f439a8d96881222379921e04a743a8e22ad",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "acute-prostatitis",
+      "title": "전립샘염 (Prostatitis)",
+      "path": "source_notes/02 Diseases/20 비뇨기과/전립샘염 (Prostatitis).md",
+      "sha256": "6b1e2bc7708f698a94436387c82df139428745b9f30b978e1671be2b201f06ce",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "pelvic-inflammatory-disease",
+      "title": "골반내 감염 (Pelvic Inflammatory Disease)",
+      "path": "source_notes/02 Diseases/13 부인과/골반내 감염 (Pelvic Inflammatory Disease).md",
+      "sha256": "3a6e9e4c030f7fe9622f7b17b99a6ed87f4712cc5c87a47feb76507f5f85bfb8",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "postpartum-endometritis",
+      "title": "산욕기 자궁 감염 (Postpartum Uterine Infection)",
+      "path": "source_notes/02 Diseases/12 산과/산욕기 자궁 감염 (Postpartum Uterine Infection).md",
+      "sha256": "f1c29684ef1478b00a326618e66cd3e4f7eda92f122b8d2235114788abf31472",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "postpartum-endometritis",
+      "title": "산욕기자궁감염 (Puerperal Endometritis)",
+      "path": "source_notes/02 Diseases/12 산과/산욕기자궁감염 (Puerperal Endometritis).md",
+      "sha256": "2a842c3ee4ca338f76535b6906951d8dc24b978f462fbef9cb7f09b96ff50e10",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "intraamniotic-infection",
+      "title": "융모 양막염 (Chorioamnionitis)",
+      "path": "source_notes/02 Diseases/12 산과/융모 양막염 (Chorioamnionitis).md",
+      "sha256": "d621ce7e54180784f49c78b3698b555b83f54b2bf6e3f17d358d9c10d7f63927",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "bacterial-mastitis",
+      "title": "수유기 유방염 (Lactational Mastitis)",
+      "path": "source_notes/02 Diseases/13 부인과/수유기 유방염 (Lactational Mastitis).md",
+      "sha256": "252bb95cbd362c3b358c66ebc68aa6d2f7b11aff910a85e279c31a2fd51fd056",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "breast-abscess",
+      "title": "산욕기 유방 농양 (Puerperal Breast Abscess)",
+      "path": "source_notes/02 Diseases/12 산과/산욕기 유방 농양 (Puerperal Breast Abscess).md",
+      "sha256": "8772f87e493c38db4c508f644d88952fcd1ad6f5a6ffc6e5e7db49983313c7ca",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "breast-abscess",
+      "title": "유방 농양 (Breast Abscess)",
+      "path": "source_notes/02 Diseases/13 부인과/유방 농양 (Breast Abscess).md",
+      "sha256": "1fa08005e72cce3f0139583b6a001e4f625a7558aec3fdeb8408f69316a78e40",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "cellulitis",
+      "title": "연조직염 (Cellulitis)",
+      "path": "source_notes/02 Diseases/08 감염/연조직염 (Cellulitis).md",
+      "sha256": "6137d2416f1c6aab57eeb829582546744380936d0b624f78a3708bae275c4ed4",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "erysipelas",
+      "title": "단독 (Erysipelas)",
+      "path": "source_notes/02 Diseases/08 감염/단독 (Erysipelas).md",
+      "sha256": "2bf2b65cc7eeead3a3084f9eb5e6be9d2a2d9c601d7cabd402dcf0f076d77916",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "necrotizing-fasciitis",
+      "title": "괴사성 근막염 (Necrotizing Fasciitis)",
+      "path": "source_notes/02 Diseases/08 감염/괴사성 근막염 (Necrotizing Fasciitis).md",
+      "sha256": "d3b772b1e7001f2d3a5ffec1c86d59d689a8ec14bf4b749b116d0837b4b694b0",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "fournier-gangrene",
+      "title": "푸르니에 괴저 (Fournier's Gangrene)",
+      "path": "source_notes/02 Diseases/08 감염/푸르니에 괴저 (Fournier's Gangrene).md",
+      "sha256": "f2d6bd2a91492c0756ca0c09c319959d286788a077335fa3aa93ce295f9f7d56",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "gas-gangrene",
+      "title": "가스 괴저 (Gas Gangrene)",
+      "path": "source_notes/02 Diseases/08 감염/가스 괴저 (Gas Gangrene).md",
+      "sha256": "dc3920569f10ef6a55cade63e3f0ce69be83e9d85dd8dd139abf1a27aed26fae",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "surgical-site-infection",
+      "title": "창상 감염 (Wound Infection)",
+      "path": "source_notes/02 Diseases/11 외과/창상 감염 (Wound Infection).md",
+      "sha256": "c393aca5af36facef846a33baf8dba22e078a1b710360b2e6e3d1653c4c49c65",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "staphylococcal-scalded-skin",
+      "title": "포도알균 열상 피부 증후군 (Staphylococcal Scalded Skin Syndrome)",
+      "path": "source_notes/02 Diseases/19 피부과/포도알균 열상 피부 증후군 (Staphylococcal Scalded Skin Syndrome).md",
+      "sha256": "337da050feaa30bd750e605ae837a376904d63fe3c3f3ffaf49f703d58c51915",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "osteomyelitis",
+      "title": "골수염 (Osteomyelitis)",
+      "path": "source_notes/02 Diseases/08 감염/골수염 (Osteomyelitis).md",
+      "sha256": "99fb595e7fa5d1b59c4aa820289fa5cb5e40f3b3c8c284346f649026d31e8d63",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "septic-arthritis",
+      "title": "감염 관절염 (Infectious Arthritis)",
+      "path": "source_notes/02 Diseases/07 류마티스/감염 관절염 (Infectious Arthritis).md",
+      "sha256": "8bd948a4d0e8e2216dae7f599cf24406ce3735f3b5818f7bc5b10346bd60900b",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "septic-arthritis",
+      "title": "화농성 관절염 (Suppurative Arthritis)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/화농성 관절염 (Suppurative Arthritis).md",
+      "sha256": "e169839d8691f6f7ec4ac160066710fbf876ab8114b3dc0d188cc774556719f9",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "adenoviral-conjunctivitis",
+      "title": "유행각결막염 (epidemic keratoconjunctivitis)",
+      "path": "source_notes/02 Diseases/18 안과/유행각결막염 (epidemic keratoconjunctivitis).md",
+      "sha256": "aec7dce11cd57f25c912173de50aca34b92941477fc976bed3b4cf8f139b50c9",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "herpes-keratitis",
+      "title": "단순포진각막염 (HSV keratitis)",
+      "path": "source_notes/02 Diseases/18 안과/단순포진각막염 (HSV keratitis).md",
+      "sha256": "eb2140c14d798542904c14501a31f3752337ee3c559c67ada45586e2e82f5746",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "gonorrhea",
+      "title": "임균 감염 (Gonococcal Infection)",
+      "path": "source_notes/02 Diseases/08 감염/임균 감염 (Gonococcal Infection).md",
+      "sha256": "c8ebc1244ae925ca499f381af1dcc32c428e63aca72a60fc6852e25053dc7e87",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "gonorrhea",
+      "title": "임균요도염 (Gonococcal urethritis)",
+      "path": "source_notes/02 Diseases/20 비뇨기과/임균요도염 (Gonococcal urethritis).md",
+      "sha256": "f091423be2ba3c7a224f3f637a63beaee095a0c7561039c164995aa84d5c7ca5",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "chlamydia-infection",
+      "title": "비임균요도염 (Nongonococcal urethritis)",
+      "path": "source_notes/02 Diseases/20 비뇨기과/비임균요도염 (Nongonococcal urethritis).md",
+      "sha256": "f7cdc24bf5cabaa65fcfc037cfb01240aa6d1afefaff4f27ae2d94020e2e1689",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "syphilis",
+      "title": "매독 (Syphilis)",
+      "path": "source_notes/02 Diseases/08 감염/매독 (Syphilis).md",
+      "sha256": "9ad744845ad0816b474d90cd4cbf86febac788ad8b78d41309f8c8a1e6f3e106",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "syphilis",
+      "title": "매독 (Syphilis)",
+      "path": "source_notes/02 Diseases/13 부인과/매독 (Syphilis).md",
+      "sha256": "262562e3f51b45f988d26541b0b55464cee182fb7f61c921f710dd84c00506d2",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "congenital-syphilis",
+      "title": "선천 매독 (Congenital Syphilis)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/선천 매독 (Congenital Syphilis).md",
+      "sha256": "509a755d5b61e89df8debd814d1471a8b48be08d02bcabee18ff41f6b56e3d91",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "genital-herpes",
+      "title": "단순포진 (Genital herpes)",
+      "path": "source_notes/02 Diseases/20 비뇨기과/단순포진 (Genital herpes).md",
+      "sha256": "a7ecfdf74ddbd3f98f156e4a034a9c38e64cbdf577fb53399243bb1f56ccc560",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "trichomoniasis",
+      "title": "트리코모나스 (Trichomoniasis)",
+      "path": "source_notes/02 Diseases/13 부인과/트리코모나스 (Trichomoniasis).md",
+      "sha256": "8a5801e14729637839f13ae1dbd15d1404c21d539cfc32a0b3573b2b0082dbbe",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "lymphogranuloma-venereum",
+      "title": "성병림프육아종 (Lymphogranuloma venereum)",
+      "path": "source_notes/02 Diseases/20 비뇨기과/성병림프육아종 (Lymphogranuloma venereum).md",
+      "sha256": "44a92b1dbc29cce567e282f6c61a073055af31d20c2d741c83f5511a65765a8a",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "tetanus",
+      "title": "파상풍 (Tetanus)",
+      "path": "source_notes/02 Diseases/08 감염/파상풍 (Tetanus).md",
+      "sha256": "88ea10254bf6f17cb660117603d4bb8cd582df44045a59eda47293794d588e5f",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "leprosy",
+      "title": "한센병 (Leprosy)",
+      "path": "source_notes/02 Diseases/08 감염/한센병 (Leprosy).md",
+      "sha256": "e07e43995c6f034c3dbf3af1a62fc89456927c3ba97512933ee041b6dbb7e26f",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "nocardiosis",
+      "title": "노카르디아증 (Nocardiosis)",
+      "path": "source_notes/02 Diseases/08 감염/노카르디아증 (Nocardiosis).md",
+      "sha256": "99a03449bb29ed3f9efb6ab142d54e0fbb54f053010c923009a66dfd7fbb968b",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "actinomycosis",
+      "title": "방선균증 (Actinomycosis)",
+      "path": "source_notes/02 Diseases/08 감염/방선균증 (Actinomycosis).md",
+      "sha256": "231c81393283be220823bc64f95d38b27d362543962eff3249b9303095407bda",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "leptospirosis",
+      "title": "렙토스피라증 (Leptospirosis)",
+      "path": "source_notes/02 Diseases/08 감염/렙토스피라증 (Leptospirosis).md",
+      "sha256": "f1aa1966a9486e6b0e7dd7a2ed0a180bfe4d2f7a5da71004b7df8953bafc3b28",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "scrub-typhus",
+      "title": "쯔쯔가무시병 (Tsutsugamushi Disease)",
+      "path": "source_notes/02 Diseases/08 감염/쯔쯔가무시병 (Tsutsugamushi Disease).md",
+      "sha256": "0b083675589c87e2484685275dd6b6daf044b01c2e8bdc8c006b9ba7392240de",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "q-fever",
+      "title": "큐열 (Q Fever)",
+      "path": "source_notes/02 Diseases/08 감염/큐열 (Q Fever).md",
+      "sha256": "ab06417e3b97dff2c9e51b73d282c4e38b0d6b9647755650b4f183e708dd98cf",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "brucellosis",
+      "title": "브루셀라증 (Brucellosis)",
+      "path": "source_notes/02 Diseases/08 감염/브루셀라증 (Brucellosis).md",
+      "sha256": "fbf10deb8e2e5dc8845caa1709786ba09e48716e81434d59051abf4ec1421704",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "cat-scratch-disease",
+      "title": "묘소병 (Cat Scratch Disease)",
+      "path": "source_notes/02 Diseases/08 감염/묘소병 (Cat Scratch Disease).md",
+      "sha256": "5acf49b67bcebde7cd01d4089f359fc87af6e4fc7c7b3bd01c927f42856ec675",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "lyme-disease",
+      "title": "라임병 (Lyme Disease)",
+      "path": "source_notes/02 Diseases/08 감염/라임병 (Lyme Disease).md",
+      "sha256": "77a4f5913d4c4ea24df4233b74e05cc72bf00392d6a08ffa00cf03db15b48033",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "relapsing-fever",
+      "title": "재귀열 (Relapsing Fever)",
+      "path": "source_notes/02 Diseases/08 감염/재귀열 (Relapsing Fever).md",
+      "sha256": "966bfd151a628d031684173da66a07f8fe6ddda42dad4e336745f6794f6c709d",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "influenza",
+      "title": "인플루엔자 (Influenza)",
+      "path": "source_notes/02 Diseases/08 감염/인플루엔자 (Influenza).md",
+      "sha256": "c1939c362575a37863b9205721333acfa4511846ec69e2d4efe548fd62f298df",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "influenza",
+      "title": "인플루엔자 (Influenza)",
+      "path": "source_notes/02 Diseases/11 외과/인플루엔자 (Influenza).md",
+      "sha256": "76a033936e478b3413ed016d228a4189caaa721630856674629059d75d0b0300",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "covid-19",
+      "title": "코로나바이러스감염증-19 (COVID-19)",
+      "path": "source_notes/02 Diseases/08 감염/코로나바이러스감염증-19 (COVID-19).md",
+      "sha256": "c80e451ad81ba114e694b124b8a3ee2956ccdbaf8620110e173de620b6bd8118",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "adenovirus-infection",
+      "title": "아데노바이러스 감염 (Adenovirus Infection)",
+      "path": "source_notes/02 Diseases/08 감염/아데노바이러스 감염 (Adenovirus Infection).md",
+      "sha256": "fa71b1d1e94d32e915da23058e8e24369db03ee063365ea05d9f053e47ce09e5",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "mononucleosis",
+      "title": "전염성 단핵구증 (Infectious Mononucleosis)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/전염성 단핵구증 (Infectious Mononucleosis).md",
+      "sha256": "7667ac5711051583f3ad5dce65a94b2140978777ad9f93c1d1c444c0986d7ead",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "hiv-infection",
+      "title": "후천성 면역결핍 증후군 (AIDS) (Acquired Immunodeficiency Syndrome (AIDS))",
+      "path": "source_notes/02 Diseases/08 감염/후천성 면역결핍 증후군 (AIDS) (Acquired Immunodeficiency Syndrome (AIDS)).md",
+      "sha256": "c1a1ec641e482964bcbd330f031bfc079e4c471d55faccee5f11dd04a81b4eb0",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "measles",
+      "title": "홍역 (Measles)",
+      "path": "source_notes/02 Diseases/12 산과/홍역 (Measles).md",
+      "sha256": "af14ad96d8b1c58eaaa5d0954ac68c564ab6402d6e7cf8fc684592308b9091e6",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "measles",
+      "title": "홍역 (Measles)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/홍역 (Measles).md",
+      "sha256": "10dbb07c65874d98b6a5c1ffd2866fc209b24dadae862a056388b3f833678bef",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "rubella",
+      "title": "풍진 (Rubella)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/풍진 (Rubella).md",
+      "sha256": "7c1a483e4c1042449a79a62ea84cba8568119558a3ab61da6aa8284b5b236341",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "congenital-rubella",
+      "title": "선천성 풍진 증후군 (Congenital Rubella Syndrome)",
+      "path": "source_notes/02 Diseases/12 산과/선천성 풍진 증후군 (Congenital Rubella Syndrome).md",
+      "sha256": "b292774040bb7d6db8e1f0c44b4850455bca86dffe37a052a60501b5def4263c",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "mumps",
+      "title": "볼거리 (Mumps)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/볼거리 (Mumps).md",
+      "sha256": "e67859e65bb92127cb0f10e8c030d4adbbe9014719f954f7f198b10c4f25910e",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "varicella",
+      "title": "수두 (Varicella)",
+      "path": "source_notes/02 Diseases/12 산과/수두 (Varicella).md",
+      "sha256": "803ac776365ff24c2ed4c2c50bc87fbe11911c12a70b54d184c4d1f38faa0e07",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "varicella",
+      "title": "수두 (Varicella)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/수두 (Varicella).md",
+      "sha256": "6f970382ccf1e4db2079a1de367beca04386b427f8c39038b5e7b948602ff4e4",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "herpes-zoster",
+      "title": "대상 포진 (Herpes Zoster)",
+      "path": "source_notes/02 Diseases/19 피부과/대상 포진 (Herpes Zoster).md",
+      "sha256": "7ed7d76d7dd18113be5d69465f4e054d307b6205ddd8b523310a88942523277f",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "roseola",
+      "title": "돌발진 (Exanthem Subitum)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/돌발진 (Exanthem Subitum).md",
+      "sha256": "0b6a0457c7f74e48b85e57b9414a367fb71b1a4f1f50134b236a0e9d7f05db60",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "erythema-infectiosum",
+      "title": "전염성 홍반 (Erythema Infectiosum)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/전염성 홍반 (Erythema Infectiosum).md",
+      "sha256": "3120120b52392c5f8b91e182d254b35ffbf5fa124db1f8132bb53d733ad4788a",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "hand-foot-mouth",
+      "title": "수족구병 (Hand-Foot-Mouth Disease)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/수족구병 (Hand-Foot-Mouth Disease).md",
+      "sha256": "5679b5b7fab9a1085b2171e11aa2c92dd18690e5bc22ae433b316d2a99c04cb6",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "rabies",
+      "title": "공수병 (Rabies)",
+      "path": "source_notes/02 Diseases/08 감염/공수병 (Rabies).md",
+      "sha256": "981bf4ba548cb50b43d3eea9f74ff1d1bd54f3bbe0facd7e2b56fa420ff299f0",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "dengue",
+      "title": "뎅기열 (Dengue Fever)",
+      "path": "source_notes/02 Diseases/08 감염/뎅기열 (Dengue Fever).md",
+      "sha256": "8fcda3d998358d83a67fa79cc620df6ee26c7c9a92dee34e3ab4946308a82dff",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "chikungunya",
+      "title": "치쿤구니아열 (Chikungunya Fever)",
+      "path": "source_notes/02 Diseases/08 감염/치쿤구니아열 (Chikungunya Fever).md",
+      "sha256": "aef4f3e146a15ced0cf95c0b3552deffc3b631ae39aa23ce3f59ee153547e79c",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "zika",
+      "title": "지카바이러스 감염 (Zika Virus Infection)",
+      "path": "source_notes/02 Diseases/08 감염/지카바이러스 감염 (Zika Virus Infection).md",
+      "sha256": "288e9f60f4dce14299c549eba126d8cd93d7712cf214f6bfa8739a7cdfadac2f",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "hfrs",
+      "title": "신증후군 출혈열 (Hemorrhagic Fever with Renal Syndrome)",
+      "path": "source_notes/02 Diseases/08 감염/신증후군 출혈열 (Hemorrhagic Fever with Renal Syndrome).md",
+      "sha256": "10d100767e69302abdeea4afbb2547e13d75199fb32c095921be0ccaf89741e3",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "sfts",
+      "title": "중증열성 혈소판감소 증후군 (SFTS) (Severe Fever with Thrombocytopenia Syndrome (SFTS))",
+      "path": "source_notes/02 Diseases/08 감염/중증열성 혈소판감소 증후군 (SFTS) (Severe Fever with Thrombocytopenia Syndrome (SFTS)).md",
+      "sha256": "c3c138e3b1418363147922e62619f45ee0e1d98df27239bf649d04e2d1cf40cd",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "molluscum",
+      "title": "물사마귀 (Molluscum Contagiosum)",
+      "path": "source_notes/02 Diseases/19 피부과/물사마귀 (Molluscum Contagiosum).md",
+      "sha256": "81ce9fcd9583f3282c53a47c5d3d090c3a3418b737c3d21a887ddf34ec811838",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "mers",
+      "title": "중동 호흡기 증후군 (MERS) (Middle East Respiratory Syndrome (MERS))",
+      "path": "source_notes/02 Diseases/08 감염/중동 호흡기 증후군 (MERS) (Middle East Respiratory Syndrome (MERS)).md",
+      "sha256": "040c61c952dc875e7571900658bf6c9ea73f8baed34c0c18f969e224b94e0743",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "oral-candidiasis",
+      "title": "아구창 (Oral Thrush)",
+      "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/아구창 (Oral Thrush).md",
+      "sha256": "2bcca7b53a6446d5c4295f25011a593516b937eab72f196ad3630b83ba2617e6",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "esophageal-candidiasis",
+      "title": "칸디다 식도염 (Candida Esophagitis)",
+      "path": "source_notes/02 Diseases/03 소화기/위장관/칸디다 식도염 (Candida Esophagitis).md",
+      "sha256": "aa514658fb8b07889bc57683e3b4a18fc6b42959c72cead5defea79242385164",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "vulvovaginal-candidiasis",
+      "title": "칸디다 (Vulvovaginal Candidiasis)",
+      "path": "source_notes/02 Diseases/13 부인과/칸디다 (Vulvovaginal Candidiasis).md",
+      "sha256": "15ae0198251b923d081095fe521618aff4a4e1d429ca54847cfff565b498170e",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "mucormycosis",
+      "title": "털곰팡이증 (Mucormycosis)",
+      "path": "source_notes/02 Diseases/08 감염/털곰팡이증 (Mucormycosis).md",
+      "sha256": "f2ea8ae766b9036d54295765628a7dfd58856367ea0b6b29d1ec4aaeacff8833",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "pneumocystis-pneumonia",
+      "title": "폐포자충 폐렴 (Pneumocystis Pneumonia)",
+      "path": "source_notes/02 Diseases/02 호흡기/폐포자충 폐렴 (Pneumocystis Pneumonia).md",
+      "sha256": "376c42d4587f19ae857c638d7655b5803627b02ff350a0a4cfd1ed1b7e5de3b8",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "pneumocystis-pneumonia",
+      "title": "폐포자충 폐렴 (Pneumocystis Pneumonia)",
+      "path": "source_notes/02 Diseases/08 감염/폐포자충 폐렴 (Pneumocystis Pneumonia).md",
+      "sha256": "dfaf9b1e31dcfac3307da6a9259d006cc6f48e61b9bdaf025cf5f6a67b507a60",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "dermatophytosis",
+      "title": "백선 (Tinea)",
+      "path": "source_notes/02 Diseases/19 피부과/백선 (Tinea).md",
+      "sha256": "b69bf4e6728940faa1e9b6ed382e5085eca72464f89be18bc97a7b8de1dea534",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "pityriasis-versicolor",
+      "title": "어루러기 (Tinea Versicolor)",
+      "path": "source_notes/02 Diseases/19 피부과/어루러기 (Tinea Versicolor).md",
+      "sha256": "6929415ae7acda946ae3d0a022f84c24ba0622ffbf78087bbe136f87872f3a82",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "falciparum-malaria",
+      "title": "말라리아 (Malaria)",
+      "path": "source_notes/02 Diseases/08 감염/말라리아 (Malaria).md",
+      "sha256": "92e946ea85e8e74fa9789a2ddfa34d2f39786fd6cf0f142969e9eb82f33b5ca7",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "toxoplasmosis",
+      "title": "톡소플라즈마증 (Toxoplasmosis)",
+      "path": "source_notes/02 Diseases/08 감염/톡소플라즈마증 (Toxoplasmosis).md",
+      "sha256": "d86a76ad1b9428766dfb20d0be2feb32089f66c958261604022ce058b52bc6ab",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "amebic-colitis",
+      "title": "아메바 장염 (Amebic Colitis)",
+      "path": "source_notes/02 Diseases/08 감염/아메바 장염 (Amebic Colitis).md",
+      "sha256": "408c4b232291eb144cc8c9e626edbeb7217f87166a64bb0516b6d0f758fc4b10",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "enterobiasis",
+      "title": "요충증 (Enterobiasis)",
+      "path": "source_notes/02 Diseases/08 감염/요충증 (Enterobiasis).md",
+      "sha256": "92643e93317c9d75e5e24d722f8fc31c9df73cbdd6e49c3c27c208ebad9e2fe0",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "clonorchiasis",
+      "title": "간흡충증 (Clonorchiasis)",
+      "path": "source_notes/02 Diseases/08 감염/간흡충증 (Clonorchiasis).md",
+      "sha256": "b421823c8a14ccb2f1abf35d3c7569a83a2faffc672e6b7a0373ec9f8b197c74",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "paragonimiasis",
+      "title": "폐흡충증 (Pulmonary Paragonimiasis)",
+      "path": "source_notes/02 Diseases/02 호흡기/폐흡충증 (Pulmonary Paragonimiasis).md",
+      "sha256": "0a69262a14f691f72ea168dbcb61fb3d9a9b09775e676f94c90bfda8f4152e37",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "paragonimiasis",
+      "title": "폐흡충증 (Paragonimiasis)",
+      "path": "source_notes/02 Diseases/08 감염/폐흡충증 (Paragonimiasis).md",
+      "sha256": "6e31b80d88706e0bfc7a2a1bd26fc32f34e4a7965a8780d2c1575071379eaa27",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "anisakiasis",
+      "title": "고래회충 유충증 (Anisakiasis)",
+      "path": "source_notes/02 Diseases/08 감염/고래회충 유충증 (Anisakiasis).md",
+      "sha256": "dca7c853c96cc40b9bf023e747847db6e8d9fea3e3d7bee68295183c49c706ba",
+      "use": "clinical-background"
+    },
+    {
+      "diseaseId": "scabies",
+      "title": "옴 (Scabies)",
+      "path": "source_notes/02 Diseases/19 피부과/옴 (Scabies).md",
+      "sha256": "18ee9780db633206046d89296783ae853ac3d6456b59fa68de48ce052daeea46",
+      "use": "clinical-background"
+    }
+  ],
+  "publicReferences": [
+    "disease-idsa-cap-2019",
+    "disease-idsa-cap-pathway",
+    "disease-idsa-cuti-2025",
+    "disease-idsa-uti-2010",
+    "disease-idsa-ssti-2014",
+    "disease-ssc-2026",
+    "disease-idsa-hap-vap-2016",
+    "disease-who-meningitis-2025",
+    "disease-idsa-nvo-2015",
+    "disease-idsa-neutropenia-2010",
+    "disease-asco-idsa-neutropenia-2018",
+    "disease-idsa-crbsi-2009",
+    "disease-aasld-ascites-2021",
+    "disease-kdca-antibiotic-practice-2026",
+    "disease-idsa-endocarditis-2015",
+    "disease-nice-sepsis-2025",
+    "disease-nice-pneumonia-2025",
+    "disease-nice-meningitis-2024",
+    "disease-bsg-ascites-2021",
+    "disease-tokyo-cholangitis-2018",
+    "disease-idsa-cdi-2021",
+    "disease-escmid-cdi-2021",
+    "disease-wjes-nsti-2018",
+    "disease-cdc-gonorrhea-2021",
+    "disease-cdc-strep-pharyngitis-2025",
+    "disease-idsa-pharyngitis-2012",
+    "disease-cdc-index",
+    "disease-who-ntd",
+    "disease-yellowbook-index",
+    "disease-idsa-sab-2026",
+    "disease-cdc-ltbi",
+    "disease-who-tb-2025",
+    "disease-idsa-histoplasmosis-2025",
+    "disease-cdc-pid",
+    "disease-cdc-chlamydia",
+    "disease-cdc-mgen",
+    "disease-cdc-syphilis",
+    "disease-cdc-neurosyphilis",
+    "disease-cdc-congenital-syphilis",
+    "disease-cdc-bv",
+    "disease-cdc-epididymitis",
+    "disease-cdc-lgv",
+    "disease-idsa-pji",
+    "disease-idsa-diabetic-foot",
+    "disease-idsa-intra-abdominal",
+    "disease-nice-ent",
+    "disease-nice-otitis",
+    "disease-nice-bronchiolitis",
+    "disease-nice-prostatitis",
+    "disease-cdc-acute-bronchitis",
+    "disease-cdc-leprosy",
+    "disease-cdc-tularemia",
+    "disease-cdc-plague",
+    "disease-cdc-melioidosis",
+    "disease-who-buruli",
+    "disease-who-yaws",
+    "disease-who-trachoma",
+    "disease-who-yellow-fever",
+    "disease-who-ebola",
+    "disease-who-marburg",
+    "disease-who-nipah",
+    "disease-who-filariasis",
+    "disease-who-onchocerciasis",
+    "disease-who-dracunculiasis",
+    "disease-who-food-flukes",
+    "disease-who-mycetoma",
+    "disease-cdc-acanthamoeba",
+    "disease-cdc-naegleria",
+    "disease-cdc-balantidium",
+    "disease-cdc-molluscum",
+    "disease-cdc-mers",
+    "disease-cdc-sssss",
+    "disease-who-postpartum",
+    "disease-aao-keratitis",
+    "disease-aao-conjunctivitis",
+    "disease-idsa-ventriculitis",
+    "disease-idsa-diarrhea",
+    "disease-cdc-typhoid",
+    "disease-cdc-stec",
+    "disease-cdc-ecoli-clinical",
+    "disease-aga-pancreatic-necrosis",
+    "disease-idsa-cauti",
+    "disease-acog-intraamniotic",
+    "disease-abm-mastitis",
+    "disease-merck-ssss",
+    "disease-sanj-2023",
+    "disease-aao-hsv-keratitis",
+    "disease-cdc-acanthamoeba-keratitis",
+    "disease-merck-orbital-cellulitis",
+    "disease-merck-endophthalmitis",
+    "disease-merck-actinomycosis",
+    "disease-cdc-relapsing-fever",
+    "disease-cdc-spotted-fever",
+    "disease-cdc-congenital-cmv",
+    "disease-cdc-hps",
+    "disease-cdc-vvc",
+    "disease-global-crypto-2024",
+    "disease-cdc-mucor",
+    "disease-ecmm-mucor",
+    "disease-cdc-histoplasma",
+    "disease-cdc-blastomyces",
+    "disease-idsa-blastomyces",
+    "disease-cdc-sporothrix",
+    "disease-aad-nail-fungus",
+    "disease-aad-versicolor",
+    "disease-who-chromoblastomycosis",
+    "disease-cdc-malaria-2026",
+    "disease-cdc-malaria-severe",
+    "disease-cdc-babesia",
+    "disease-cdc-toxoplasma",
+    "disease-who-hat-2024",
+    "disease-cdc-hat",
+    "disease-cdc-strongyloides",
+    "disease-cdc-soil-helminths",
+    "disease-cdc-cysticercosis",
+    "disease-idsa-cysticercosis",
+    "disease-who-echinococcus",
+    "disease-cdc-zoonotic-hookworm",
+    "disease-cdc-lymphatic-filariasis",
+    "disease-cdc-onchocerciasis",
+    "disease-cdc-loiasis",
+    "disease-cdc-acanthamoeba-gae",
+    "disease-cdc-balamuthia",
+    "disease-escmid-brain-abscess",
+    "disease-aao-hns-aoe",
+    "disease-merck-necrotizing-otitis",
+    "disease-merck-chronic-otitis",
+    "disease-merck-peritonsillar",
+    "disease-merck-retropharyngeal",
+    "disease-merck-ludwig",
+    "disease-ada-dental",
+    "disease-cps-croup",
+    "disease-cdc-mpox-2026",
+    "disease-who-gonorrhoea-2024"
+  ],
+  "exclusions": [
+    "비감염성 염증질환",
+    "불명열·설사·호중구감소증 자체",
+    "감염 후 면역합병증",
+    "병원체 연관 종양",
+    "단순 집락화",
+    "비감염성 흡인성 폐손상",
+    "무균성 췌장 괴사",
+    "비감염성 괴저",
+    "감염이 중심 기전이 아닌 질내 세균총 불균형"
+  ]
+}

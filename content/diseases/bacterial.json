@@ -1,0 +1,1562 @@
+{
+  "schemaVersion": 1,
+  "category": "bacterial",
+  "entities": [
+    {
+      "id": "listeriosis",
+      "kind": "disease",
+      "name": "리스테리아증",
+      "englishName": "Listeriosis",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "고령·임신·면역저하 환자의 발열·균혈증·수막염에서 중요. 임신 중 가벼운 전신 증상도 태아·신생아 위험과 연결된다.",
+      "searchAliases": [
+        "Listeria monocytogenes",
+        "리스테리아 감염"
+      ],
+      "anatomicSites": [
+        "blood",
+        "brain",
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "식품 매개이며 건강한 성인의 장염과 침습성 감염을 구분한다. Cephalosporin을 치료 약제로 삼지 않는다.",
+        "diagnostics": "혈액·CSF·태반 등 임상 부위 배양.",
+        "management": "침습성 감염은 Ampicillin 중심; 부위·숙주·병용 필요성을 전문적으로 판단한다.",
+        "redFlags": "CNS 감염·태아 손실·신생아 감염·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "lmo",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "listeriosis-tx-1",
+          "rank": "preferred",
+          "context": "침습성 Listeria 감염의 기본 성분",
+          "components": [
+            {
+              "drugId": "ampicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "listeriosis-tx-2",
+          "rank": "alternative",
+          "context": "알레르기 등 대안 적응증·금기 확인",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "bacterial-meningitis",
+        "neonatal-sepsis"
+      ],
+      "sourceIds": [
+        "cdc-listeria"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "anthrax",
+      "kind": "disease",
+      "name": "탄저",
+      "englishName": "Anthrax",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "통증이 적은 검은 가피·주위 부종, 흡입 노출 뒤 중증 호흡기·전신 질환. 노출 경로별 임상형과 수막염 가능성을 나눈다.",
+      "searchAliases": [
+        "anthrax",
+        "Bacillus anthracis",
+        "탄저병"
+      ],
+      "anatomicSites": [
+        "skin",
+        "lungs",
+        "abdomen",
+        "blood"
+      ],
+      "transmission": [
+        "inoculation",
+        "air",
+        "food"
+      ],
+      "clinical": {
+        "presentation": "피부·흡입·장관·주사 관련 감염이 가능. 의심 시 공중보건·검사실에 즉시 알린다.",
+        "diagnostics": "배양·분자검사와 감염 부위·전신/CNS 침범 평가, 검체 취급 협조.",
+        "management": "단순 피부형과 전신형 요법을 구분. 전신형은 병용 항균제·Antitoxin·소생 등을 전문팀이 결정한다.",
+        "redFlags": "호흡부전·중증 부종·수막염·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "ban",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "anthrax-tx-1",
+          "rank": "preferred",
+          "context": "수막염·전신침범 없는 단순 피부형의 적절한 선택",
+          "components": [
+            {
+              "drugId": "ciprofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "anthrax-tx-2",
+          "rank": "alternative",
+          "context": "같은 단순 피부형·금기에 맞는 대안",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "anthrax-tx-3",
+          "rank": "conditional",
+          "context": "전신/CNS형 병용 요법의 성분·단독 요법 아님",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-anthrax-treatment-2023"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "tetanus",
+      "kind": "disease",
+      "name": "파상풍",
+      "englishName": "Tetanus",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "개구장애·근육 강직·통증성 경련과 자율신경 불안정. 상처가 작거나 기억나지 않아도 가능하며 임상 진단한다.",
+      "searchAliases": [
+        "tetanus",
+        "lockjaw"
+      ],
+      "anatomicSites": [
+        "brain",
+        "skin"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "신경독소 질환으로 감염 후 면역이 충분히 생기지 않는다.",
+        "diagnostics": "임상 소견·상처·접종력 평가; 배양 음성이 배제 근거가 아니다.",
+        "management": "면역글로불린·상처 처치·항균제·경련/기도 관리와 접종을 병행한다.",
+        "redFlags": "기도 폐쇄·호흡부전·자율신경 불안정."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cte",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "tetanus-tx-1",
+          "rank": "preferred",
+          "context": "상처의 균 제거를 위한 성분·면역글로불린 및 소생과 병행",
+          "components": [
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "tail-who-tetanus"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "파상풍 (Tetanus)",
+          "path": "source_notes/02 Diseases/08 감염/파상풍 (Tetanus).md"
+        }
+      ]
+    },
+    {
+      "id": "botulism",
+      "kind": "disease",
+      "name": "보툴리눔독소증",
+      "englishName": "Botulism",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "복시·연하곤란 등 뇌신경 증상 뒤 대칭적 하행성 이완마비. 감각은 대체로 보존되고 호흡부전을 경계한다.",
+      "searchAliases": [
+        "보툴리즘",
+        "botulinum",
+        "하행성 마비"
+      ],
+      "anatomicSites": [
+        "brain",
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "음식형·창상형·영아형을 구분. 미리 형성된 독소 섭취와 장·상처 내 독소 생성은 발생 기전이 다르다.",
+        "diagnostics": "임상 의심과 공중보건 협조·독소 검사; 결과를 기다려 Antitoxin을 늦추지 않는다.",
+        "management": "조기 Antitoxin과 호흡 지원. 음식형에는 항균제가 기본이 아니며 창상형은 변연절제·적절한 항균치료를 병행한다.",
+        "redFlags": "호흡근 마비·흡인·자율신경 이상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cbo",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "botulism-tx-1",
+          "rank": "conditional",
+          "context": "창상형 균 제거에서 전문 판단으로 선택·음식형 일반 치료 아님",
+          "components": [
+            {
+              "drugId": "penicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "tail-cdc-botulism"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "leprosy",
+      "kind": "disease",
+      "name": "한센병",
+      "englishName": "Leprosy",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "감각이 떨어진 피부 반점·결절과 말초신경 비후·손상. 피부 병변만 보지 말고 감각·운동 기능을 확인한다.",
+      "searchAliases": [
+        "나병",
+        "Hansen disease"
+      ],
+      "anatomicSites": [
+        "skin",
+        "brain"
+      ],
+      "transmission": [
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "만성 감염으로 장기간 밀접 노출 맥락을 확인한다. 면역반응성 악화는 균 치료와 별도 관리가 필요하다.",
+        "diagnostics": "피부·신경 진찰, 피부/신경 조직과 항산균 검사 등으로 확인.",
+        "management": "병형에 따른 다제 병용 치료와 신경·반응성 합병증 관리.",
+        "redFlags": "신경 기능 저하·눈 손상·궤양·장애."
+      },
+      "etiologies": [
+        {
+          "name": "Mycobacterium leprae",
+          "domain": "bacteria",
+          "context": "한센병 원인균"
+        },
+        {
+          "name": "Mycobacterium lepromatosis",
+          "domain": "bacteria",
+          "context": "일부 감염"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "leprosy-tx-1",
+          "rank": "preferred",
+          "context": "WHO 다제요법의 구성·병형별 기간 조정",
+          "components": [
+            {
+              "drugId": "rifampicin"
+            },
+            {
+              "name": "Dapsone"
+            },
+            {
+              "name": "Clofazimine"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-leprosy"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "한센병 (Leprosy)",
+          "path": "source_notes/02 Diseases/08 감염/한센병 (Leprosy).md"
+        }
+      ]
+    },
+    {
+      "id": "nocardiosis",
+      "kind": "disease",
+      "name": "노카르디아증",
+      "englishName": "Nocardiosis",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "면역저하자의 폐결절·공동·뇌농양 또는 피부 감염. 폐 감염이 확인되면 CNS 전이 가능성을 함께 평가한다.",
+      "searchAliases": [
+        "Nocardia",
+        "노카르디아 감염"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "brain",
+        "skin"
+      ],
+      "transmission": [
+        "air",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "균종별 감수성이 달라 고정 요법을 모든 Nocardia에 적용하지 않는다.",
+        "diagnostics": "감염 부위 배양·균종/감수성, 침습성 감염은 뇌영상 평가.",
+        "management": "부위·중증도·균종에 맞춘 장기간 활성 요법; CNS·파종 중증은 병용을 고려한다.",
+        "redFlags": "CNS 농양·파종·면역저하."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx508",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "nocardiosis-tx-1",
+          "rank": "preferred",
+          "context": "감수성 확인·비중증 감염의 적절한 기본 성분",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "nocardiosis-tx-2",
+          "rank": "conditional",
+          "context": "중증·파종 감염의 감수성 기반 병용 성분",
+          "components": [
+            {
+              "drugId": "imipenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "nocardiosis-tx-3",
+          "rank": "conditional",
+          "context": "중증 감염의 균종·감수성 기반 병용 성분",
+          "components": [
+            {
+              "drugId": "amikacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "brain-abscess"
+      ],
+      "sourceIds": [
+        "nocardia-merck"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "노카르디아증 (Nocardiosis)",
+          "path": "source_notes/02 Diseases/08 감염/노카르디아증 (Nocardiosis).md"
+        }
+      ]
+    },
+    {
+      "id": "actinomycosis",
+      "kind": "disease",
+      "name": "방선균증",
+      "englishName": "Actinomycosis",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "경계를 넘어 퍼지는 만성 경결·농양·누공, 때로 황 과립. 종양·결핵처럼 보일 수 있는 구강·장관 상재균 감염이다.",
+      "searchAliases": [
+        "Actinomyces",
+        "황 과립"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "abdomen",
+        "skin"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "치성 손상·장관 병변·장기 IUD 등 점막 장벽 손상 맥락을 확인한다.",
+        "diagnostics": "심부 검체·조직과 적절한 혐기성 배양; 표면 분리만으로 확진하지 않는다.",
+        "management": "Penicillin 계열과 필요한 배액·감염원 제거. 침범 정도·반응에 맞춰 충분한 치료를 계획한다.",
+        "redFlags": "광범위 심부 침범·누공·기저 종양 감별."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "ais",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "actinomycosis-tx-1",
+          "rank": "preferred",
+          "context": "확진 방선균증의 Penicillin 기반 치료",
+          "components": [
+            {
+              "drugId": "penicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "actinomycosis-tx-2",
+          "rank": "alternative",
+          "context": "경구 치료·전환이 적합한 경우",
+          "components": [
+            {
+              "drugId": "amoxicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-merck-actinomycosis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "방선균증 (Actinomycosis)",
+          "path": "source_notes/02 Diseases/08 감염/방선균증 (Actinomycosis).md"
+        }
+      ]
+    },
+    {
+      "id": "leptospirosis",
+      "kind": "disease",
+      "name": "렙토스피라증",
+      "englishName": "Leptospirosis",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "오염된 물·동물 소변 노출 뒤 발열·종아리 근육통·결막 충혈. 황달·신손상·폐출혈이 중증 단서다.",
+      "searchAliases": [
+        "Leptospira",
+        "Weil disease",
+        "바일병"
+      ],
+      "anatomicSites": [
+        "blood",
+        "liver",
+        "urinary",
+        "lungs"
+      ],
+      "transmission": [
+        "water",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "피부·점막으로 감염되며 홍수·농업·야외 활동 노출을 확인한다.",
+        "diagnostics": "발병 시기에 맞춘 PCR·혈청 검사와 간·신장·폐 상태 평가.",
+        "management": "임상 의심이 높으면 조기 치료. 경증·중증과 임신 등 조건에 맞춰 경구·정주 약제를 선택한다.",
+        "redFlags": "폐출혈·신부전·황달·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "lep",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "leptospirosis-tx-1",
+          "rank": "preferred",
+          "context": "경증·금기에 맞는 경구 요법",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "leptospirosis-tx-2",
+          "rank": "preferred",
+          "context": "중증·정주 치료 필요",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "leptospirosis-tx-3",
+          "rank": "alternative",
+          "context": "중증 감염의 적절한 정주 대안",
+          "components": [
+            {
+              "drugId": "penicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "tail-cdc-lepto"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "렙토스피라증 (Leptospirosis)",
+          "path": "source_notes/02 Diseases/08 감염/렙토스피라증 (Leptospirosis).md"
+        }
+      ]
+    },
+    {
+      "id": "scrub-typhus",
+      "kind": "disease",
+      "name": "쯔쯔가무시병",
+      "englishName": "Scrub typhus",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "야외 활동 뒤 발열·두통·발진과 가피. 가피가 없어도 배제하지 않으며 폐·신장·CNS 합병증을 경계한다.",
+      "searchAliases": [
+        "쯔쯔가무시증",
+        "tsutsugamushi",
+        "Orientia"
+      ],
+      "anatomicSites": [
+        "blood",
+        "skin",
+        "lungs",
+        "brain"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "털진드기 유충 매개 Orientia 감염. 국내 가을철 노출이 중요한 단서다.",
+        "diagnostics": "PCR·시기별 혈청 검사와 전신 상태 평가; 초기 혈청 음성만으로 배제하지 않는다.",
+        "management": "의심이 강하면 조기 적절한 치료. 임신·중증·금기에 따라 요법을 조정한다.",
+        "redFlags": "호흡부전·의식 변화·신손상·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "ots",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "scrub-typhus-tx-1",
+          "rank": "preferred",
+          "context": "쯔쯔가무시병의 기본 치료·환자 조건 확인",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "scrub-typhus-tx-2",
+          "rank": "alternative",
+          "context": "임신 등 환자 조건에 맞춰 선택하는 대안",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "tail-cdc-scrub"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "쯔쯔가무시병 (Tsutsugamushi Disease)",
+          "path": "source_notes/02 Diseases/08 감염/쯔쯔가무시병 (Tsutsugamushi Disease).md"
+        }
+      ]
+    },
+    {
+      "id": "q-fever",
+      "kind": "disease",
+      "name": "큐열",
+      "englishName": "Q fever",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "가축·분만 부산물 노출 뒤 발열·폐렴·간염. 판막·혈관 위험이 있으면 지속 국소 감염·심내막염을 따로 평가한다.",
+      "searchAliases": [
+        "Coxiella burnetii",
+        "Q열"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "liver",
+        "heart"
+      ],
+      "transmission": [
+        "air"
+      ],
+      "clinical": {
+        "presentation": "급성 감염과 만성/지속 국소 감염은 검사 해석·치료 기간·요법이 다르다.",
+        "diagnostics": "시기별 PCR·phase I/II 혈청과 필요한 심장·혈관 평가.",
+        "management": "급성은 Doxycycline 중심. 확인된 지속 국소 감염은 전문 병용요법과 장기 추적.",
+        "redFlags": "심내막염·혈관 감염·임신 관련 위험."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cbu",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "q-fever-tx-1",
+          "rank": "preferred",
+          "context": "급성 증상성 Q fever",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "q-fever-tx-2",
+          "rank": "preferred",
+          "context": "확인된 지속 국소 감염·전문 병용 및 독성 감시",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            },
+            {
+              "name": "Hydroxychloroquine",
+              "role": "adjunct"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "endocarditis"
+      ],
+      "sourceIds": [
+        "tail-cdc-qfever"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "큐열 (Q Fever)",
+          "path": "source_notes/02 Diseases/08 감염/큐열 (Q Fever).md"
+        }
+      ]
+    },
+    {
+      "id": "brucellosis",
+      "kind": "disease",
+      "name": "브루셀라증",
+      "englishName": "Brucellosis",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "비살균 유제품·가축 노출 뒤 지속·재발 발열·발한·관절통. 골관절·심장·신경의 국소 감염을 확인한다.",
+      "searchAliases": [
+        "Brucella",
+        "파상열"
+      ],
+      "anatomicSites": [
+        "blood",
+        "bone",
+        "liver"
+      ],
+      "transmission": [
+        "food",
+        "contact",
+        "air"
+      ],
+      "clinical": {
+        "presentation": "검사실 감염 위험이 있어 배양 의심 시 미리 알린다.",
+        "diagnostics": "혈액·침범 부위 배양과 혈청, 국소 증상별 영상·추가 검사.",
+        "management": "재발을 줄이는 다제 병용요법. 임신·소아·신경·심내막염은 별도 조건에 맞춘다.",
+        "redFlags": "심내막염·척추염·신경브루셀라증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bru",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "brucellosis-tx-1",
+          "rank": "preferred",
+          "context": "비복잡성 성인 감염·금기 확인 후 병용 예시",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            },
+            {
+              "drugId": "rifampicin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "brucellosis-tx-2",
+          "rank": "alternative",
+          "context": "적합한 비복잡성 감염의 병용 대안",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            },
+            {
+              "drugId": "gentamicin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "vertebral-osteomyelitis",
+        "endocarditis"
+      ],
+      "sourceIds": [
+        "tail-cdc-brucella"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "브루셀라증 (Brucellosis)",
+          "path": "source_notes/02 Diseases/08 감염/브루셀라증 (Brucellosis).md"
+        }
+      ]
+    },
+    {
+      "id": "cat-scratch-disease",
+      "kind": "disease",
+      "name": "묘소병",
+      "englishName": "Cat-scratch disease",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "고양이 접촉·긁힘 뒤 국소 림프절 종창. 면역저하·시력 증상·장기 침범에서는 단순 림프절염과 다른 감염형을 평가한다.",
+      "searchAliases": [
+        "고양이 할큄병",
+        "Bartonella henselae",
+        "cat scratch"
+      ],
+      "anatomicSites": [
+        "skin",
+        "liver",
+        "eye"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "Bartonella henselae가 원인. 대부분 면역정상 단순 림프절형은 자연 호전할 수 있다.",
+        "diagnostics": "노출·임상과 혈청/PCR 등; 비전형·지속 병변은 다른 림프절 질환 감별.",
+        "management": "단순형과 안·간비장·심내막·혈관 증식성 감염을 구분해 관찰·항균제를 선택한다.",
+        "redFlags": "신경망막염·심내막염·파종 감염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bhe",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "cat-scratch-disease-tx-1",
+          "rank": "conditional",
+          "context": "단순 림프절형에서 항균치료를 선택하는 경우",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "cat-scratch-disease-tx-2",
+          "rank": "conditional",
+          "context": "복잡한 Bartonella 감염에서 전문 병용 요법 성분",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "tail-cdc-bartonella"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "묘소병 (Cat Scratch Disease)",
+          "path": "source_notes/02 Diseases/08 감염/묘소병 (Cat Scratch Disease).md"
+        }
+      ]
+    },
+    {
+      "id": "lyme-disease",
+      "kind": "disease",
+      "name": "라임병",
+      "englishName": "Lyme disease",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "진드기 노출 뒤 커지는 이동성 홍반. 이후 안면마비·심장 전도장애·관절염 등 임상형에 따라 치료가 달라진다.",
+      "searchAliases": [
+        "Lyme",
+        "Borrelia burgdorferi",
+        "이동성 홍반"
+      ],
+      "anatomicSites": [
+        "skin",
+        "bone",
+        "heart",
+        "brain"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "초기 전형적 홍반에서는 혈청검사가 음성일 수 있다.",
+        "diagnostics": "전형적 초기 병변은 임상 진단, 다른 임상형은 적절한 두 단계 혈청검사·부위 평가.",
+        "management": "초기·신경·심장·관절 임상형별 요법과 경로를 선택한다.",
+        "redFlags": "고도 심차단·실신·신경 결손."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bbu",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "lyme-disease-tx-1",
+          "rank": "preferred",
+          "context": "초기 이동성 홍반·금기 확인",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "lyme-disease-tx-2",
+          "rank": "alternative",
+          "context": "같은 초기 감염에서 적합한 대안",
+          "components": [
+            {
+              "drugId": "amoxicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "lyme-disease-tx-3",
+          "rank": "conditional",
+          "context": "중증 심장·특정 신경 임상형의 정주 요법",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "tail-cdc-lyme"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "라임병 (Lyme Disease)",
+          "path": "source_notes/02 Diseases/08 감염/라임병 (Lyme Disease).md"
+        }
+      ]
+    },
+    {
+      "id": "murine-typhus",
+      "kind": "disease",
+      "name": "발진열",
+      "englishName": "Murine typhus",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "벼룩·동물 노출 뒤 발열·두통·발진. 발진이 뚜렷하지 않아도 원인 불명 발열에서 노출 맥락을 확인한다.",
+      "searchAliases": [
+        "murine typhus",
+        "쥐벼룩 발진열"
+      ],
+      "anatomicSites": [
+        "blood",
+        "skin",
+        "liver"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "Rickettsia typhi 감염으로 폐·간·신경 합병증이 가능하다.",
+        "diagnostics": "시기별 혈청/PCR과 장기 기능 평가; 초기 검사 음성만으로 배제하지 않는다.",
+        "management": "의심이 높으면 Doxycycline을 조기에 시작하고 합병증을 관리한다.",
+        "redFlags": "중증 폐렴·의식 변화·다장기 이상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "rty",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "murine-typhus-tx-1",
+          "rank": "preferred",
+          "context": "의심·확진 벼룩 매개 발진열",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "tail-cdc-fleaborne"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "anaplasmosis",
+      "kind": "disease",
+      "name": "아나플라스마증",
+      "englishName": "Anaplasmosis",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "진드기 노출 뒤 발열·근육통과 백혈구·혈소판 감소, 간수치 상승. 발진이 흔하지 않아도 감염을 의심한다.",
+      "searchAliases": [
+        "Anaplasma",
+        "과립구성 아나플라스마증"
+      ],
+      "anatomicSites": [
+        "blood",
+        "liver"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "Ixodes 매개 감염으로 Lyme·Babesia 동시감염도 가능하다.",
+        "diagnostics": "초기 전혈 PCR, 시기별 혈청; 혈구·장기 기능 평가.",
+        "management": "의심 시 Doxycycline을 검사 결과 때문에 지연하지 않는다.",
+        "redFlags": "중증 혈구 감소·장기부전·동시 감염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "aph",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "anaplasmosis-tx-1",
+          "rank": "preferred",
+          "context": "의심·확진 Anaplasma 감염",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "tail-cdc-anaplasmosis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "relapsing-fever",
+      "kind": "disease",
+      "name": "재귀열",
+      "englishName": "Relapsing fever",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "발열이 호전과 재발을 반복하는 Borrelia 감염. 이·진드기 노출과 여행 지역에 따라 유형을 나눈다.",
+      "searchAliases": [
+        "회귀열",
+        "재발열",
+        "relapsing fever"
+      ],
+      "anatomicSites": [
+        "blood"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "Lyme병과 다른 Borrelia 감염이며 치료 뒤 Jarisch–Herxheimer 반응을 경계한다.",
+        "diagnostics": "발열기 혈액 도말·PCR 등과 노출력, 유형별 검사 선택.",
+        "management": "유형·숙주·CNS 침범에 맞춘 항균치료와 투여 후 반응 관찰.",
+        "redFlags": "치료 직후 저혈압·신경 침범·임신 위험."
+      },
+      "etiologies": [
+        {
+          "name": "Relapsing-fever Borrelia species",
+          "domain": "bacteria",
+          "context": "이·진드기 매개 유형별"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "relapsing-fever-tx-1",
+          "rank": "preferred",
+          "context": "적합한 비CNS 감염·유형과 금기에 맞는 요법",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "relapsing-fever-tx-2",
+          "rank": "conditional",
+          "context": "CNS 침범 등 정주 치료가 필요한 경우",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-relapsing-fever"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "재귀열 (Relapsing Fever)",
+          "path": "source_notes/02 Diseases/08 감염/재귀열 (Relapsing Fever).md"
+        }
+      ]
+    },
+    {
+      "id": "tularemia",
+      "kind": "disease",
+      "name": "야토병",
+      "englishName": "Tularemia",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "진드기·토끼 등 노출 뒤 궤양·국소 림프절염 또는 폐렴·전신 감염. 검사실에 Francisella 의심을 미리 알린다.",
+      "searchAliases": [
+        "야토",
+        "토끼열",
+        "Francisella"
+      ],
+      "anatomicSites": [
+        "skin",
+        "lungs",
+        "blood"
+      ],
+      "transmission": [
+        "vector",
+        "inoculation",
+        "air"
+      ],
+      "clinical": {
+        "presentation": "노출 경로별 궤양선형·폐형 등 다양한 형태가 가능하다.",
+        "diagnostics": "배양·PCR·시기별 혈청과 노출력; 검사실 안전 협조.",
+        "management": "중증도·발병 기간·노출 조건에 따라 권고 활성 약제를 조기에 선택한다.",
+        "redFlags": "폐렴·패혈증·치료 지연·림프절 농양."
+      },
+      "etiologies": [
+        {
+          "name": "Francisella tularensis",
+          "domain": "bacteria",
+          "context": "야토병 원인"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "tularemia-tx-1",
+          "rank": "preferred",
+          "context": "중증 감염 등에서 권고되는 활성 요법 선택",
+          "components": [
+            {
+              "drugId": "gentamicin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "tularemia-tx-2",
+          "rank": "alternative",
+          "context": "중증도·금기·지침에 맞는 대안",
+          "components": [
+            {
+              "drugId": "ciprofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "tularemia-tx-3",
+          "rank": "conditional",
+          "context": "비중증 등 적합한 조건의 선택",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-tularemia"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "plague",
+      "kind": "disease",
+      "name": "페스트",
+      "englishName": "Plague",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "벼룩·설치류 노출 뒤 심한 통증성 림프절 또는 급격한 폐렴·쇼크. 폐형은 사람 간 비말 전파를 관리한다.",
+      "searchAliases": [
+        "plague",
+        "흑사병"
+      ],
+      "anatomicSites": [
+        "blood",
+        "lungs",
+        "skin"
+      ],
+      "transmission": [
+        "vector",
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "선형·패혈증형·폐형에 따라 노출·공중보건 대응이 다르다.",
+        "diagnostics": "배양·분자검사와 공중보건·검사실 협조; 결과를 기다려 치료를 늦추지 않는다.",
+        "management": "조기 활성 항균제와 소생, 폐형 비말주의·접촉자 노출 후 예방 평가.",
+        "redFlags": "급격한 폐렴·쇼크·DIC."
+      },
+      "etiologies": [
+        {
+          "name": "Yersinia pestis",
+          "domain": "bacteria",
+          "context": "페스트 원인"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "plague-tx-1",
+          "rank": "preferred",
+          "context": "중증도·투여 경로에 맞는 권고 활성 요법",
+          "components": [
+            {
+              "drugId": "gentamicin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "plague-tx-2",
+          "rank": "alternative",
+          "context": "환자·경로·지침에 맞는 대안",
+          "components": [
+            {
+              "drugId": "levofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-plague"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "melioidosis",
+      "kind": "disease",
+      "name": "멜리오이도시스",
+      "englishName": "Melioidosis",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "유행 지역의 흙·물 노출 뒤 폐렴·패혈증·다발 농양. 당뇨·신질환 등 숙주 위험과 여행력을 확인한다.",
+      "searchAliases": [
+        "melioidosis",
+        "유비저"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "blood",
+        "skin",
+        "liver"
+      ],
+      "transmission": [
+        "water",
+        "inoculation",
+        "air"
+      ],
+      "clinical": {
+        "presentation": "Burkholderia pseudomallei 감염으로 집중치료와 재발 예방 제거치료 단계를 구분한다.",
+        "diagnostics": "혈액·병소 배양·검사실 협조, 여러 장기 농양과 CNS 침범 평가.",
+        "management": "먼저 정주 집중치료, 이후 적절한 경구 제거치료로 이어간다. 병소 배액·지속 추적이 중요하다.",
+        "redFlags": "쇼크·다발 농양·CNS 침범·재발."
+      },
+      "etiologies": [
+        {
+          "name": "Burkholderia pseudomallei",
+          "domain": "bacteria",
+          "context": "유행 지역의 토양·물 노출"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "melioidosis-tx-1",
+          "rank": "preferred",
+          "context": "집중치료 단계의 정주 선택",
+          "components": [
+            {
+              "drugId": "ceftazidime"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "melioidosis-tx-2",
+          "rank": "preferred",
+          "context": "중증·CNS 등 조건의 집중치료 선택",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "melioidosis-tx-3",
+          "rank": "preferred",
+          "context": "집중치료 뒤 제거치료 단계·금기 확인",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-melioidosis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "buruli-ulcer",
+      "kind": "disease",
+      "name": "부룰리 궤양",
+      "englishName": "Buruli ulcer",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "통증이 적은 결절·부종이 큰 피부 궤양으로 진행. 독소에 의한 조직 손상과 기능 장애를 줄이는 조기 치료가 중요하다.",
+      "searchAliases": [
+        "Buruli",
+        "Mycobacterium ulcerans"
+      ],
+      "anatomicSites": [
+        "skin",
+        "bone"
+      ],
+      "transmission": [
+        "multiple"
+      ],
+      "clinical": {
+        "presentation": "M. ulcerans 감염이며 전파 경로는 완전히 규명되지 않았다.",
+        "diagnostics": "병변 검체 PCR·조직 등과 감별 진단.",
+        "management": "Rifampicin–Clarithromycin 병용과 상처·기능 관리, 필요 시 수술·재활.",
+        "redFlags": "광범위 궤양·골 침범·장애."
+      },
+      "etiologies": [
+        {
+          "name": "Mycobacterium ulcerans",
+          "domain": "bacteria",
+          "context": "피부 감염"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "buruli-ulcer-tx-1",
+          "rank": "preferred",
+          "context": "권고 병용 치료·상호작용과 환자 조건 확인",
+          "components": [
+            {
+              "drugId": "rifampicin"
+            },
+            {
+              "drugId": "clarithromycin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-who-buruli"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "yaws",
+      "kind": "disease",
+      "name": "요스",
+      "englishName": "Yaws",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "주로 열대 지역 아동의 피부 유두종·궤양과 이후 뼈·피부 병변. 비성적 피부 접촉으로 전파되는 Treponema 감염이다.",
+      "searchAliases": [
+        "yaws",
+        "프람베지아"
+      ],
+      "anatomicSites": [
+        "skin",
+        "bone"
+      ],
+      "transmission": [
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "매독 혈청검사만으로 성매개 매독과 구별할 수 없어 역학·병변이 중요하다.",
+        "diagnostics": "임상·혈청과 가능하면 병변 분자검사, 내성·재발 평가.",
+        "management": "권고 항균치료와 밀접 접촉자·지역 관리, 치료 반응·내성 감시.",
+        "redFlags": "뼈 병변·변형·치료 실패."
+      },
+      "etiologies": [
+        {
+          "name": "Treponema pallidum subsp. pertenue",
+          "domain": "bacteria",
+          "context": "요스 원인"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "yaws-tx-1",
+          "rank": "preferred",
+          "context": "WHO 권고 치료·내성 및 환자 조건 확인",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "yaws-tx-2",
+          "rank": "alternative",
+          "context": "대안이 필요한 조건의 Benzathine Penicillin G",
+          "components": [
+            {
+              "drugId": "penicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-who-yaws"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "spotted-fever-rickettsiosis",
+      "kind": "disease",
+      "name": "홍반열군 리케차증",
+      "englishName": "Spotted fever rickettsiosis",
+      "category": "bacterial",
+      "entityType": "specific",
+      "summary": "진드기 노출 뒤 발열·두통·발진, 일부는 가피. 발진이 늦게 생기거나 없을 수 있어 초기 검사를 기다려 치료를 늦추지 않는다.",
+      "searchAliases": [
+        "RMSF",
+        "록키산홍반열",
+        "반점열"
+      ],
+      "anatomicSites": [
+        "blood",
+        "skin",
+        "brain"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "RMSF 등 종·지역에 따라 중증도가 다르다.",
+        "diagnostics": "노출·임상과 PCR·급성/회복기 혈청검사, 혈구·장기 기능.",
+        "management": "의심이 높으면 조기 Doxycycline과 중증 합병증 관리.",
+        "redFlags": "혈관 누출·의식 변화·장기부전."
+      },
+      "etiologies": [
+        {
+          "name": "Spotted-fever group Rickettsia",
+          "domain": "bacteria",
+          "context": "종·지역에 따른 감염"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "spotted-fever-rickettsiosis-tx-1",
+          "rank": "preferred",
+          "context": "의심·확진 홍반열군 리케차 감염",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-spotted-fever"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    }
+  ]
+}

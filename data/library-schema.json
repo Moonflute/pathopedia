@@ -16,7 +16,14 @@
     "sources",
     "interpretation",
     "panels",
-    "categories"
+    "categories",
+    "diseases",
+    "diseaseCategories",
+    "diseaseRoutes",
+    "diseaseEntityTypes",
+    "diseaseContent",
+    "counts",
+    "therapyContexts"
   ],
   "properties": {
     "schemaVersion": {
@@ -103,19 +110,162 @@
       "additionalProperties": {
         "type": "object",
         "required": [
-          "url"
+          "title"
+        ],
+        "anyOf": [
+          {
+            "required": [
+              "url"
+            ]
+          },
+          {
+            "required": [
+              "note"
+            ]
+          }
         ],
         "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
           "url": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
           }
-        }
+        },
+        "description": "A titled public URL or a titled local reference with a provenance note."
       }
     },
     "therapyContexts": {
       "type": "object",
       "additionalProperties": {
         "$ref": "#/$defs/therapyContext"
+      }
+    },
+    "diseases": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/disease"
+      }
+    },
+    "diseaseCategories": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "icon": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "diseaseRoutes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "icon": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "diseaseEntityTypes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "icon": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "diseaseContent": {
+      "type": "object"
+    },
+    "counts": {
+      "type": "object",
+      "required": [
+        "pathogens",
+        "variants",
+        "drugs",
+        "responses",
+        "responseProfiles"
+      ],
+      "properties": {
+        "diseases": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pathogens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "variants": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "drugs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "responses": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "responseProfiles": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
       }
     }
   },
@@ -197,7 +347,8 @@
         "classification",
         "summary",
         "back",
-        "sourceIds"
+        "sourceIds",
+        "representativeRecordId"
       ],
       "properties": {
         "id": {
@@ -237,6 +388,18 @@
         },
         "organDiseases": {
           "$ref": "#/$defs/organDiseases"
+        },
+        "diseaseIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "representativeRecordId": {
+          "type": "string",
+          "minLength": 1
         }
       }
     },
@@ -249,7 +412,9 @@
         "summary",
         "back",
         "observationType",
-        "sourceIds"
+        "sourceIds",
+        "panelId",
+        "phenotypeId"
       ],
       "properties": {
         "id": {
@@ -284,6 +449,14 @@
         },
         "organDiseases": {
           "$ref": "#/$defs/organDiseases"
+        },
+        "panelId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phenotypeId": {
+          "type": "string",
+          "minLength": 1
         }
       }
     },
@@ -322,6 +495,14 @@
         },
         "searchAliases": {
           "$ref": "#/$defs/searchAliases"
+        },
+        "diseaseIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
         }
       }
     },
@@ -353,7 +534,13 @@
           "type": "string"
         },
         "sourceIds": {
-          "$ref": "#/$defs/sourceIds"
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Preserves the original game observation and its content-derived profile ID, including legacy repeated citations. Card reference lists deduplicate these IDs; every ID must resolve to sources."
         },
         "applicability": {
           "type": "string"
@@ -529,6 +716,468 @@
           }
         }
       }
+    },
+    "disease": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "englishName",
+        "category",
+        "entityType",
+        "summary",
+        "searchAliases",
+        "anatomicSites",
+        "transmission",
+        "clinical",
+        "etiologies",
+        "treatments",
+        "relatedDiseaseIds",
+        "sourceIds",
+        "reviewStatus",
+        "authoredAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "kind": {
+          "const": "disease"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "englishName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entityType": {
+          "enum": [
+            "syndrome",
+            "specific",
+            "infection"
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/summary"
+        },
+        "searchAliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "anatomicSites": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "skin",
+              "blood",
+              "heart",
+              "bone",
+              "lungs",
+              "urinary",
+              "abdomen",
+              "brain",
+              "liver",
+              "eye"
+            ]
+          }
+        },
+        "transmission": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "clinical": {
+          "type": "object",
+          "required": [
+            "presentation",
+            "diagnostics",
+            "management",
+            "redFlags"
+          ],
+          "properties": {
+            "presentation": {
+              "type": "string",
+              "minLength": 1
+            },
+            "diagnostics": {
+              "type": "string",
+              "minLength": 1
+            },
+            "management": {
+              "type": "string",
+              "minLength": 1
+            },
+            "redFlags": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "etiologies": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "context"
+            ],
+            "properties": {
+              "pathogenId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "cardId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "domain": {
+                "enum": [
+                  "bacteria",
+                  "fungi",
+                  "viruses",
+                  "parasites"
+                ]
+              },
+              "context": {
+                "type": "string"
+              }
+            },
+            "oneOf": [
+              {
+                "required": [
+                  "pathogenId"
+                ]
+              },
+              {
+                "required": [
+                  "name",
+                  "domain"
+                ],
+                "not": {
+                  "required": [
+                    "pathogenId"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "treatments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "rank",
+              "context",
+              "mode",
+              "components",
+              "coverage"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "rank": {
+                "enum": [
+                  "preferred",
+                  "alternative",
+                  "conditional"
+                ]
+              },
+              "context": {
+                "type": "string",
+                "minLength": 1
+              },
+              "mode": {
+                "enum": [
+                  "single",
+                  "combination",
+                  "sequence"
+                ]
+              },
+              "components": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "drugId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "role": {
+                      "enum": [
+                        "antimicrobial",
+                        "adjunct"
+                      ]
+                    }
+                  },
+                  "oneOf": [
+                    {
+                      "required": [
+                        "drugId"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "name"
+                      ],
+                      "not": {
+                        "required": [
+                          "drugId"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              "coverage": {
+                "enum": [
+                  "regimen",
+                  "component"
+                ],
+                "description": "A named regimen or selected components requiring the rest of the clinical management."
+              }
+            }
+          }
+        },
+        "relatedDiseaseIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "sourceIds": {
+          "$ref": "#/$defs/sourceIds"
+        },
+        "reviewStatus": {
+          "const": "educational-source-reviewed"
+        },
+        "authoredAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "localReferenceNotes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "title",
+              "path"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "back": {
+          "$ref": "#/$defs/back"
+        }
+      }
+    },
+    "diseaseTreatment": {
+      "type": "object",
+      "required": [
+        "id",
+        "rank",
+        "context",
+        "mode",
+        "components",
+        "coverage"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rank": {
+          "enum": [
+            "preferred",
+            "alternative",
+            "conditional"
+          ]
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "enum": [
+            "single",
+            "combination",
+            "sequence"
+          ]
+        },
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "drugId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "role": {
+                "enum": [
+                  "antimicrobial",
+                  "adjunct"
+                ]
+              }
+            },
+            "oneOf": [
+              {
+                "required": [
+                  "drugId"
+                ]
+              },
+              {
+                "required": [
+                  "name"
+                ],
+                "not": {
+                  "required": [
+                    "drugId"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "coverage": {
+          "enum": [
+            "regimen",
+            "component"
+          ],
+          "description": "A named regimen or selected components requiring the rest of the clinical management."
+        }
+      }
+    },
+    "diseaseEtiology": {
+      "type": "object",
+      "required": [
+        "context"
+      ],
+      "properties": {
+        "pathogenId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cardId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "domain": {
+          "enum": [
+            "bacteria",
+            "fungi",
+            "viruses",
+            "parasites"
+          ]
+        },
+        "context": {
+          "type": "string"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "pathogenId"
+          ]
+        },
+        {
+          "required": [
+            "name",
+            "domain"
+          ],
+          "not": {
+            "required": [
+              "pathogenId"
+            ]
+          }
+        }
+      ]
+    },
+    "diseaseTreatmentComponent": {
+      "type": "object",
+      "properties": {
+        "drugId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "enum": [
+            "antimicrobial",
+            "adjunct"
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "drugId"
+          ]
+        },
+        {
+          "required": [
+            "name"
+          ],
+          "not": {
+            "required": [
+              "drugId"
+            ]
+          }
+        }
+      ]
     }
   }
 }

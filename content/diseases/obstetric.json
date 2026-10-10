@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "category": "obstetric",
+  "entities": [
+    {
+      "id": "pelvic-inflammatory-disease",
+      "kind": "disease",
+      "name": "골반염",
+      "englishName": "Pelvic inflammatory disease",
+      "category": "obstetric",
+      "entityType": "syndrome",
+      "summary": "하복부 통증·자궁경부 움직임 통증·자궁/부속기 압통. 검사 음성만으로 배제하지 않고 임상 의심이 높으면 조기 치료한다.",
+      "searchAliases": [
+        "PID",
+        "골반내 감염",
+        "골반 염증성 질환"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "abdomen"
+      ],
+      "transmission": [
+        "sexual",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "자궁경부에서 상부 생식기로 확산하는 혼합감염. 임신·난관난소농양·다른 수술성 복통을 감별한다.",
+        "diagnostics": "임신검사·GC/CT NAAT, 필요 시 초음파와 농양 평가.",
+        "management": "GC·CT·혐기성균을 포함한 병용요법, 파트너 치료·재검 계획. 중증·임신·농양은 입원 평가.",
+        "redFlags": "자궁외임신 감별·농양·패혈증·불임 위험."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx509",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx510",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx511",
+          "context": "지속·특정 원인"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "pelvic-inflammatory-disease-tx-1",
+          "rank": "preferred",
+          "context": "경증·중등도 외래 PID의 병용 구성·임신 등 제외",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "doxycycline"
+            },
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "gonorrhea",
+        "chlamydia-infection"
+      ],
+      "sourceIds": [
+        "disease-cdc-pid"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "골반내 감염 (Pelvic Inflammatory Disease)",
+          "path": "source_notes/02 Diseases/13 부인과/골반내 감염 (Pelvic Inflammatory Disease).md"
+        }
+      ]
+    },
+    {
+      "id": "postpartum-endometritis",
+      "kind": "disease",
+      "name": "산욕기 자궁내막염",
+      "englishName": "Postpartum endometritis",
+      "category": "obstetric",
+      "entityType": "syndrome",
+      "summary": "분만 뒤 발열·자궁 압통·악취 오로. 제왕절개·양막파수 등 위험을 확인하고 잔류 조직·수술 부위 감염을 구분한다.",
+      "searchAliases": [
+        "산욕기자궁감염",
+        "산후 자궁 감염",
+        "산욕열"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "산도·장관 혼합균이 원인. 지속 발열은 농양·잔류 조직·혈전성 합병증을 재평가한다.",
+        "diagnostics": "임상 평가와 중증·치료 실패 시 배양·영상.",
+        "management": "혼합균을 포함하는 정주 병용요법과 필요한 감염원 조절. 반응·Enterococcus 위험에 따라 요법 보완.",
+        "redFlags": "쇼크·골반 농양·지속 고열."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx518",
+          "context": ""
+        },
+        {
+          "pathogenId": "efa",
+          "context": ""
+        },
+        {
+          "pathogenId": "sag",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "postpartum-endometritis-tx-1",
+          "rank": "preferred",
+          "context": "산욕기 자궁내막염의 정주 병용 요법 예시",
+          "components": [
+            {
+              "drugId": "clindamycin"
+            },
+            {
+              "drugId": "gentamicin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "postpartum-endometritis-tx-2",
+          "rank": "conditional",
+          "context": "Enterococcus 위험·반응 불량 등 필요 시 추가",
+          "components": [
+            {
+              "drugId": "ampicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-who-postpartum"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "산욕기 자궁 감염 (Postpartum Uterine Infection)",
+          "path": "source_notes/02 Diseases/12 산과/산욕기 자궁 감염 (Postpartum Uterine Infection).md"
+        },
+        {
+          "title": "산욕기자궁감염 (Puerperal Endometritis)",
+          "path": "source_notes/02 Diseases/12 산과/산욕기자궁감염 (Puerperal Endometritis).md"
+        }
+      ]
+    },
+    {
+      "id": "intraamniotic-infection",
+      "kind": "disease",
+      "name": "양막내감염",
+      "englishName": "Intraamniotic infection",
+      "category": "obstetric",
+      "entityType": "syndrome",
+      "summary": "분만 전후 발열과 자궁 압통·태아 빈맥·농성 분비물 등으로 의심. 모체뿐 아니라 신생아 감염 위험을 함께 다룬다.",
+      "searchAliases": [
+        "융모양막염",
+        "chorioamnionitis",
+        "양막 내 감염"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "산도에서 상행하는 혼합감염이 흔하다. 산과적 분만 계획과 신생아팀 공유가 중요하다.",
+        "diagnostics": "모체·태아 임상 상태와 감염 소견 평가; 산후 병리·배양은 상황에 맞춰 해석.",
+        "management": "신속한 항균제와 산과 관리; 분만 방식·상황에 따라 혐기성균 범위를 보완한다.",
+        "redFlags": "모체 패혈증·태아/신생아 감염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "sag",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        },
+        {
+          "name": "Ureaplasma species",
+          "domain": "bacteria",
+          "context": "혼합감염의 한 원인"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "intraamniotic-infection-tx-1",
+          "rank": "preferred",
+          "context": "의심 양막내감염의 기본 정주 병용 예시",
+          "components": [
+            {
+              "drugId": "ampicillin"
+            },
+            {
+              "drugId": "gentamicin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "intraamniotic-infection-tx-2",
+          "rank": "conditional",
+          "context": "제왕절개 등에서 적응증에 맞춘 추가 성분",
+          "components": [
+            {
+              "drugId": "clindamycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "neonatal-sepsis",
+        "postpartum-endometritis"
+      ],
+      "sourceIds": [
+        "disease-acog-intraamniotic"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "융모 양막염 (Chorioamnionitis)",
+          "path": "source_notes/02 Diseases/12 산과/융모 양막염 (Chorioamnionitis).md"
+        }
+      ]
+    },
+    {
+      "id": "bacterial-mastitis",
+      "kind": "disease",
+      "name": "세균성 유방염",
+      "englishName": "Bacterial mastitis",
+      "category": "obstetric",
+      "entityType": "syndrome",
+      "summary": "유방의 국소 발적·통증에 지속 전신 증상과 세균 감염이 의심되는 상태. 단순 울혈·염증성 유방염과 구분한다.",
+      "searchAliases": [
+        "감염성 유방염",
+        "수유기 유방염"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "수유 관련 발생이 흔하나 비수유 감염도 가능. 덩이가 지속되면 농양·다른 병변을 평가한다.",
+        "diagnostics": "임상 판단; 재발·치료 실패·MRSA 위험이면 배양, 농양 의심이면 초음파.",
+        "management": "수유·유방 상태를 적절히 관리하고 세균성 감염의 적응증에서 항균제를 선택한다.",
+        "redFlags": "농양·빠른 확산·치료 실패."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "spy",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "bacterial-mastitis-tx-1",
+          "rank": "preferred",
+          "context": "MSSA가 예상되는 세균성 감염·정주 치료 필요 시",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "bacterial-mastitis-tx-2",
+          "rank": "conditional",
+          "context": "MRSA 위험·배양 결과와 수유 조건에 맞는 선택",
+          "components": [
+            {
+              "drugId": "clindamycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "breast-abscess"
+      ],
+      "sourceIds": [
+        "disease-abm-mastitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "수유기 유방염 (Lactational Mastitis)",
+          "path": "source_notes/02 Diseases/13 부인과/수유기 유방염 (Lactational Mastitis).md"
+        }
+      ]
+    },
+    {
+      "id": "breast-abscess",
+      "kind": "disease",
+      "name": "유방농양",
+      "englishName": "Breast abscess",
+      "category": "obstetric",
+      "entityType": "syndrome",
+      "summary": "지속되는 유방 통증·국소 덩이·열감 또는 치료에도 발열. 초음파로 농양을 확인하고 배농을 함께 계획한다.",
+      "searchAliases": [
+        "유방 농양",
+        "산욕기 유방 농양"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "수유 관련 S. aureus 감염과 비수유 혼합감염을 구분한다.",
+        "diagnostics": "초음파·흡인/배액 검체 배양; 재발·비전형 병변은 추가 평가.",
+        "management": "초음파 유도 흡인·배액 등 감염원 조절과 원인별 항균치료.",
+        "redFlags": "피부 괴사·누공·재발·패혈증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": "비수유·혼합감염"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "breast-abscess-tx-1",
+          "rank": "preferred",
+          "context": "MSSA 감염·정주 치료가 필요한 경우",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "breast-abscess-tx-2",
+          "rank": "conditional",
+          "context": "MRSA·내성 위험에 맞는 치료 성분",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "breast-abscess-tx-3",
+          "rank": "conditional",
+          "context": "비수유 혼합감염에서 적합한 경구 요법",
+          "components": [
+            {
+              "drugId": "amoxclav"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "bacterial-mastitis"
+      ],
+      "sourceIds": [
+        "disease-abm-mastitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "산욕기 유방 농양 (Puerperal Breast Abscess)",
+          "path": "source_notes/02 Diseases/12 산과/산욕기 유방 농양 (Puerperal Breast Abscess).md"
+        },
+        {
+          "title": "유방 농양 (Breast Abscess)",
+          "path": "source_notes/02 Diseases/13 부인과/유방 농양 (Breast Abscess).md"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1407 @@
+{
+  "schemaVersion": 1,
+  "category": "respiratory",
+  "entities": [
+    {
+      "id": "common-cold",
+      "kind": "disease",
+      "name": "감기",
+      "englishName": "Common cold",
+      "category": "respiratory",
+      "entityType": "specific",
+      "summary": "콧물·코막힘·인후통이 중심인 바이러스성 상기도 감염. 기침이 남을 수 있지만 고열·호흡곤란은 다른 진단을 먼저 본다.",
+      "searchAliases": [
+        "급성 상기도감염",
+        "URI",
+        "상기도 감염"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "여러 호흡기 바이러스가 원인이며 대부분 자연 호전한다. 화농성 콧물만으로 세균감염을 판단하지 않는다.",
+        "diagnostics": "보통 임상 진단. 중증·고위험 환자는 influenza/COVID-19 검사를 구별해 시행한다.",
+        "management": "수분·휴식과 증상 완화가 기본. 단순 감기에 항균제를 사용하지 않는다.",
+        "redFlags": "지속 고열·저산소증·호흡곤란·호전 뒤 악화."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "rhinovirus",
+          "context": ""
+        },
+        {
+          "pathogenId": "adenovirus",
+          "context": ""
+        },
+        {
+          "pathogenId": "parainfluenza",
+          "context": ""
+        },
+        {
+          "pathogenId": "hmpv",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [
+        "influenza",
+        "covid-19"
+      ],
+      "sourceIds": [
+        "cdc-rhinovirus"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "감기 (Common Cold)",
+          "path": "source_notes/02 Diseases/08 감염/감기 (Common Cold).md"
+        },
+        {
+          "title": "감기 (Common Cold)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/감기 (Common Cold).md"
+        }
+      ]
+    },
+    {
+      "id": "acute-bronchitis",
+      "kind": "disease",
+      "name": "급성 바이러스성 기관지염",
+      "englishName": "Acute viral bronchitis",
+      "category": "respiratory",
+      "entityType": "syndrome",
+      "summary": "감기 뒤 기침이 주증상이고 폐렴 소견이 없는 급성 기관지 감염. 객담 색만으로 항생제 적응증을 정하지 않는다.",
+      "searchAliases": [
+        "급성 기관지염",
+        "기관지 감기",
+        "bronchitis"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "바이러스가 대부분이며 기침은 수주 지속할 수 있다. 천식·백일해·폐렴과 감별한다.",
+        "diagnostics": "활력징후·청진으로 폐렴 가능성 평가. 이상 소견이면 흉부영상; 지속 발작 기침이면 백일해 검사.",
+        "management": "증상 완화가 기본. 폐렴·백일해 등 별도 적응증이 없으면 항균제를 쓰지 않는다.",
+        "redFlags": "빈호흡·저산소증·흉통·지속 고열."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "rhinovirus",
+          "context": ""
+        },
+        {
+          "pathogenId": "influenza-a",
+          "context": ""
+        },
+        {
+          "pathogenId": "influenza-b",
+          "context": ""
+        },
+        {
+          "pathogenId": "hmpv",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [
+        "pertussis",
+        "community-pneumonia"
+      ],
+      "sourceIds": [
+        "disease-cdc-acute-bronchitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "bronchiolitis",
+      "kind": "disease",
+      "name": "급성 세기관지염",
+      "englishName": "Acute bronchiolitis",
+      "category": "respiratory",
+      "entityType": "syndrome",
+      "summary": "영아에서 콧물 뒤 빈호흡·천명·수유 감소가 나타나는 하기도 바이러스 감염. 어린 영아는 무호흡으로 나타날 수 있다.",
+      "searchAliases": [
+        "모세기관지염",
+        "RSV 세기관지염"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "RSV가 대표 원인. 탈수·호흡 노력·기저 심폐질환과 어린 연령이 중증도 판단에 중요하다.",
+        "diagnostics": "임상 진단이 기본; 산소포화도·수유와 탈수 평가. 전형적 경증에서 영상·혈액검사를 일률적으로 시행하지 않는다.",
+        "management": "산소·수분·비강 분비물 관리 등 지지요법. 기관지확장제·항균제·스테로이드를 일률적으로 사용하지 않는다.",
+        "redFlags": "무호흡·청색증·심한 흉벽 함몰·수유 불가."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "rsv",
+          "context": ""
+        },
+        {
+          "pathogenId": "hmpv",
+          "context": ""
+        },
+        {
+          "pathogenId": "parainfluenza",
+          "context": ""
+        },
+        {
+          "pathogenId": "rhinovirus",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [
+        "rsv-infection"
+      ],
+      "sourceIds": [
+        "disease-nice-bronchiolitis",
+        "cdc-rsv-care"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "급성 세기관지염 (Acute Bronchiolitis)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/급성 세기관지염 (Acute Bronchiolitis).md"
+        }
+      ]
+    },
+    {
+      "id": "croup",
+      "kind": "disease",
+      "name": "크룹",
+      "englishName": "Croup",
+      "category": "respiratory",
+      "entityType": "syndrome",
+      "summary": "영유아의 개 짖는 기침·쉰목소리·흡기성 협착음. 안정 시에도 협착음이 들리면 상기도 폐쇄 위험을 평가한다.",
+      "searchAliases": [
+        "급성 후두기관염",
+        "크루프",
+        "후두염"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "주로 parainfluenza에 의한 후두·기관 염증. 침 흘림·심한 연하곤란·독성 외관은 후두개염 등을 의심한다.",
+        "diagnostics": "대개 임상 진단. 기도 위험이 크면 진단 검사보다 기도 확보를 우선한다.",
+        "management": "Dexamethasone; 중등도 이상에서는 흡입 epinephrine과 반응·재악화 관찰.",
+        "redFlags": "안정 시 협착음·피로·저산소증·기도 폐쇄."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "parainfluenza",
+          "context": ""
+        },
+        {
+          "pathogenId": "influenza-a",
+          "context": ""
+        },
+        {
+          "pathogenId": "hmpv",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [
+        "epiglottitis"
+      ],
+      "sourceIds": [
+        "disease-cps-croup",
+        "cdc-parainfluenza"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "크룹 (Croup)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/크룹 (Croup).md"
+        }
+      ]
+    },
+    {
+      "id": "community-pneumonia",
+      "kind": "disease",
+      "name": "지역사회획득폐렴",
+      "englishName": "Community-acquired pneumonia",
+      "category": "respiratory",
+      "entityType": "syndrome",
+      "summary": "발열·기침·호흡곤란과 새 폐침윤이 핵심. 중증도와 동반질환, MRSA·Pseudomonas 위험에 따라 초기 요법을 나눈다.",
+      "searchAliases": [
+        "CAP",
+        "폐렴",
+        "지역사회 폐렴"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet",
+        "multiple"
+      ],
+      "clinical": {
+        "presentation": "고령자는 혼돈·기능 저하로 나타날 수 있다. 세균과 호흡기 바이러스가 모두 원인이 될 수 있다.",
+        "diagnostics": "흉부영상·산소포화도 평가. 중증 또는 내성균 위험이면 객담·혈액배양 및 원인별 검사.",
+        "management": "표준 위험 외래와 입원 환자의 요법을 구분한다. 배양·임상 경과에 맞춰 좁히고 농흉·농양을 확인한다.",
+        "redFlags": "저산소증·혼돈·저혈압·다엽성 병변."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "hin",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx502",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx501",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": "인플루엔자 후 또는 MRSA 위험"
+        },
+        {
+          "pathogenId": "influenza-a",
+          "context": ""
+        },
+        {
+          "pathogenId": "sars-cov-2",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "community-pneumonia-tx-1",
+          "rank": "preferred",
+          "context": "성인 외래·주요 동반질환과 내성 위험이 낮음",
+          "components": [
+            {
+              "drugId": "amoxicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "community-pneumonia-tx-2",
+          "rank": "alternative",
+          "context": "같은 외래 조건의 대안·임신 등 금기 확인",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "community-pneumonia-tx-3",
+          "rank": "conditional",
+          "context": "입원·MRSA와 Pseudomonas 위험이 낮음, 병용",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pneumococcal-pneumonia",
+        "mycoplasma-pneumonia",
+        "legionnaires",
+        "hospital-pneumonia"
+      ],
+      "sourceIds": [
+        "disease-idsa-cap-2019",
+        "disease-idsa-cap-pathway"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "hospital-pneumonia",
+      "kind": "disease",
+      "name": "병원획득폐렴",
+      "englishName": "Hospital-acquired pneumonia",
+      "category": "respiratory",
+      "entityType": "syndrome",
+      "summary": "입원 48시간 이후 새로 생긴 폐렴. 최근 항균제·과거 배양·기관 내성 양상이 경험적 치료 범위를 결정한다.",
+      "searchAliases": [
+        "HAP",
+        "원내 폐렴",
+        "병원감염 폐렴"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "MRSA와 그람음성균 위험을 별도로 평가한다. HCAP라는 이유만으로 모두 광범위 요법을 적용하지 않는다.",
+        "diagnostics": "호흡기 검체와 필요 시 혈액배양, 새 침윤과 임상 변화 확인. 배양 결과로 치료를 조정한다.",
+        "management": "기관 감수성에 맞는 antipseudomonal 약제를 선택; MRSA 위험이면 Vancomycin 또는 Linezolid를 추가한다.",
+        "redFlags": "패혈성 쇼크·환기 지원 필요·치료에도 악화."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pae",
+          "context": ""
+        },
+        {
+          "pathogenId": "aba",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "hospital-pneumonia-tx-1",
+          "rank": "preferred",
+          "context": "기관 내성률·개별 위험에 맞는 경험적 선택",
+          "components": [
+            {
+              "drugId": "cefepime"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "hospital-pneumonia-tx-2",
+          "rank": "alternative",
+          "context": "기관 감수성에 맞는 경험적 대안",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "hospital-pneumonia-tx-3",
+          "rank": "conditional",
+          "context": "MRSA 위험·Cefepime 감수성이 예상되는 초기 병합 예시",
+          "components": [
+            {
+              "drugId": "cefepime"
+            },
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "hospital-pneumonia-tx-4",
+          "rank": "alternative",
+          "context": "MRSA 폐렴의 대안, 개별 금기 확인",
+          "components": [
+            {
+              "drugId": "linezolid"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "ventilator-pneumonia",
+        "community-pneumonia"
+      ],
+      "sourceIds": [
+        "disease-idsa-hap-vap-2016"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "ventilator-pneumonia",
+      "kind": "disease",
+      "name": "인공호흡기 관련 폐렴",
+      "englishName": "Ventilator-associated pneumonia",
+      "category": "respiratory",
+      "entityType": "syndrome",
+      "summary": "삽관 48시간 이후 새 침윤·발열·화농성 분비물·산소화 악화로 의심. 기관 검체의 집락화와 실제 폐렴을 구분한다.",
+      "searchAliases": [
+        "VAP",
+        "인공호흡기 폐렴"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "S. aureus·Pseudomonas·기타 그람음성균을 고려하고 MRSA·다제내성 위험을 따로 평가한다.",
+        "diagnostics": "기관흡인 검체 배양과 임상 평가. 양성 배양 하나만으로 폐렴을 확정하지 않는다.",
+        "management": "지역 antibiogram에 맞춰 시작하고 결과에 따라 축소. MRSA·이중 그람음성 치료는 위험이 있을 때 선택한다.",
+        "redFlags": "쇼크·빠른 산소화 악화·새 장기부전."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pae",
+          "context": ""
+        },
+        {
+          "pathogenId": "aba",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "ecl",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "ventilator-pneumonia-tx-1",
+          "rank": "preferred",
+          "context": "기관 내성 자료에 맞춘 초기 선택",
+          "components": [
+            {
+              "drugId": "cefepime"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "ventilator-pneumonia-tx-2",
+          "rank": "alternative",
+          "context": "초기 선택의 대안",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "ventilator-pneumonia-tx-3",
+          "rank": "conditional",
+          "context": "MRSA 위험일 때 병용",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "ventilator-pneumonia-tx-4",
+          "rank": "conditional",
+          "context": "ESBL 등 내성 위험과 감수성을 반영한 선택",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "hospital-pneumonia"
+      ],
+      "sourceIds": [
+        "disease-idsa-hap-vap-2016"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "aspiration-pneumonia",
+      "kind": "disease",
+      "name": "감염성 흡인성 폐렴",
+      "englishName": "Aspiration pneumonia",
+      "category": "respiratory",
+      "entityType": "syndrome",
+      "summary": "연하장애·의식 저하 뒤 생긴 감염성 폐렴. 위 내용물 흡인 직후의 화학성 폐손상과 구분한다.",
+      "searchAliases": [
+        "흡인성 폐렴",
+        "aspiration"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "구강·상기도 균의 흡인이 원인. 혐기성균 추가 치료는 농양·농흉 등 맥락에서 판단한다.",
+        "diagnostics": "흉부영상과 흡인 위험 평가. 초기 급격한 호흡 악화만으로 감염을 확정하지 않는다.",
+        "management": "발생 환경에 맞는 폐렴 요법과 연하·구강 관리. 농양·농흉이 없으면 혐기성균 치료를 일률적으로 덧붙이지 않는다.",
+        "redFlags": "저산소증·반복 흡인·폐농양·농흉."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "hin",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": "원내 발생"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "aspiration-pneumonia-tx-1",
+          "rank": "conditional",
+          "context": "외래 경구 치료가 가능하며 적절한 범위가 필요한 경우",
+          "components": [
+            {
+              "drugId": "amoxclav"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "aspiration-pneumonia-tx-2",
+          "rank": "conditional",
+          "context": "입원 CAP의 적응증에 맞춘 병용 요법",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "lung-abscess",
+        "empyema"
+      ],
+      "sourceIds": [
+        "disease-idsa-cap-2019"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "lung-abscess",
+      "kind": "disease",
+      "name": "폐농양",
+      "englishName": "Lung abscess",
+      "category": "respiratory",
+      "entityType": "syndrome",
+      "summary": "지속 발열·악취 객담과 공동성 폐병변. 흡인 위험을 찾고 폐암·결핵·진균성 공동과 구별한다.",
+      "searchAliases": [
+        "폐 농양",
+        "폐 화농증"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "구강 혐기성균과 혼합감염이 흔하다. 기관지 폐쇄·혈행 감염도 가능한 발생 경로다.",
+        "diagnostics": "흉부 CT; 객담·혈액배양 및 필요 시 기관지 평가. 악성 종양이나 폐쇄를 놓치지 않는다.",
+        "management": "혐기성균을 포함한 항균요법. 큰 병변·폐쇄·반응 불량이면 배액이나 수술 적응증 평가.",
+        "redFlags": "객혈·농흉·패혈증·치료 반응 없음."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx516",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx518",
+          "context": ""
+        },
+        {
+          "pathogenId": "streptococcus-anginosus-group",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "lung-abscess-tx-1",
+          "rank": "preferred",
+          "context": "흡인 관련 경구 치료·전환이 가능한 경우",
+          "components": [
+            {
+              "drugId": "amoxclav"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "lung-abscess-tx-2",
+          "rank": "conditional",
+          "context": "중증 혼합감염·정주 치료 필요",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "aspiration-pneumonia",
+        "empyema"
+      ],
+      "sourceIds": [
+        "lung-abscess-merck"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "폐 농양 (Lung Abscess)",
+          "path": "source_notes/02 Diseases/02 호흡기/폐 농양 (Lung Abscess).md"
+        }
+      ]
+    },
+    {
+      "id": "empyema",
+      "kind": "disease",
+      "name": "농흉",
+      "englishName": "Pleural empyema",
+      "category": "respiratory",
+      "entityType": "syndrome",
+      "summary": "폐렴 뒤 발열·흉통이 지속하고 흉수에 감염이 생긴 상태. 항균제와 함께 적절한 흉강 배액이 치료의 핵심이다.",
+      "searchAliases": [
+        "흉막농양",
+        "복잡성 부폐렴성 흉수",
+        "pleural infection"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "농성 흉수·양성 배양·복잡한 격벽성 흉수는 단순 반응성 흉수와 구분한다.",
+        "diagnostics": "흉부 초음파·CT와 흉수 천자; pH·배양·생화학을 확인하고 배액 필요성 판단.",
+        "management": "발생 환경에 맞는 항균제와 흉관 배액. 격벽·불충분한 배액은 흉강 내 치료 또는 수술을 논의한다.",
+        "redFlags": "지속 패혈증·배액 실패·기관지흉막루."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "streptococcus-anginosus-group",
+          "context": ""
+        },
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "empyema-tx-1",
+          "rank": "conditional",
+          "context": "지역사회 혼합감염, 혐기성균 병용이 필요한 경우",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "empyema-tx-2",
+          "rank": "conditional",
+          "context": "원내·그람음성 위험에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "lung-abscess",
+        "community-pneumonia"
+      ],
+      "sourceIds": [
+        "disease-nice-pneumonia-2025",
+        "lung-abscess-merck"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "pneumococcal-pneumonia",
+      "kind": "disease",
+      "name": "폐렴알균 폐렴",
+      "englishName": "Pneumococcal pneumonia",
+      "category": "respiratory",
+      "entityType": "specific",
+      "summary": "급성 발열·기침·흉통으로 나타나는 대표적 세균성 폐렴. 균혈증·농흉이 동반되면 침습성 감염으로 평가한다.",
+      "searchAliases": [
+        "폐구균 폐렴",
+        "폐렴구균 폐렴",
+        "Streptococcus pneumoniae pneumonia"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "blood"
+      ],
+      "transmission": [
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "전형적 대엽성 양상만으로 원인균을 확정하지 않는다. 무비장·고령·만성질환은 침습성 위험을 높인다.",
+        "diagnostics": "배양·중증도에 따른 요중항원 검사. 수막염 동반 여부는 치료 기준을 바꾼다.",
+        "management": "확정된 감수성·감염 부위에 맞춰 좁힌다. 폐렴과 수막염의 감수성 적용 기준을 혼용하지 않는다.",
+        "redFlags": "저산소증·균혈증·수막 자극 증상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spn",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "pneumococcal-pneumonia-tx-1",
+          "rank": "preferred",
+          "context": "감수성 확인·비수막염 경구 치료 가능",
+          "components": [
+            {
+              "drugId": "amoxicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "pneumococcal-pneumonia-tx-2",
+          "rank": "conditional",
+          "context": "입원 또는 침습성 폐렴",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "community-pneumonia",
+        "bacterial-meningitis"
+      ],
+      "sourceIds": [
+        "cdc-pneumo",
+        "disease-idsa-cap-2019"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "mycoplasma-pneumonia",
+      "kind": "disease",
+      "name": "마이코플라스마 폐렴",
+      "englishName": "Mycoplasma pneumonia",
+      "category": "respiratory",
+      "entityType": "specific",
+      "summary": "지속되는 마른기침과 폐렴, 피부·신경계 등 폐외 증상이 단서. 세포벽이 없어 beta-lactam 단독으로 치료하지 않는다.",
+      "searchAliases": [
+        "비정형 폐렴",
+        "Mycoplasma pneumoniae"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "학령기·젊은 성인에서 흔하고 유행·집단생활과 연관. Macrolide 내성이 치료 반응에 영향을 준다.",
+        "diagnostics": "호흡기 NAAT와 임상 양상; 단일 항체 양성만으로 현재 감염을 확정하지 않는다.",
+        "management": "연령·임신·지역 macrolide 내성에 맞춰 선택. 지속 악화는 내성 및 다른 원인을 재평가한다.",
+        "redFlags": "저산소증·중증 점막 병변·신경계 이상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx502",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "mycoplasma-pneumonia-tx-1",
+          "rank": "conditional",
+          "context": "Macrolide 감수성 및 지역 내성을 고려한 선택",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "mycoplasma-pneumonia-tx-2",
+          "rank": "alternative",
+          "context": "연령·임신 등 금기 확인 후 대안",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "community-pneumonia"
+      ],
+      "sourceIds": [
+        "mycoplasma-cdc"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "마이코플라스마 폐렴 (Mycoplasma Pneumonia)",
+          "path": "source_notes/02 Diseases/02 호흡기/마이코플라스마 폐렴 (Mycoplasma Pneumonia).md"
+        },
+        {
+          "title": "비정형 폐렴 (Atypical Pneumonia)",
+          "path": "source_notes/02 Diseases/02 호흡기/비정형 폐렴 (Atypical Pneumonia).md"
+        },
+        {
+          "title": "마이코플라스마 폐렴 (Mycoplasma Pneumonia)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/마이코플라스마 폐렴 (Mycoplasma Pneumonia).md"
+        }
+      ]
+    },
+    {
+      "id": "legionnaires",
+      "kind": "disease",
+      "name": "레지오넬라 폐렴",
+      "englishName": "Legionnaires' disease",
+      "category": "respiratory",
+      "entityType": "specific",
+      "summary": "폐렴에 설사·혼돈·저나트륨혈증, 물 시설 노출이 동반되면 의심. 일반 beta-lactam만으로는 충분하지 않다.",
+      "searchAliases": [
+        "레지오넬라병",
+        "Legionella pneumonia"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "air",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "오염된 물의 에어로졸·흡인이 주 경로. 통상 사람 간 전파는 드물다.",
+        "diagnostics": "요중항원과 하기도 PCR·배양을 함께 고려; 요중항원은 모든 종·혈청군을 검출하지 않는다.",
+        "management": "세포 내 활성이 있는 Macrolide 또는 호흡기 Fluoroquinolone; 중증도와 금기를 반영한다.",
+        "redFlags": "중증 폐렴·쇼크·급성 신손상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx501",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "legionnaires-tx-1",
+          "rank": "preferred",
+          "context": "확진 또는 강한 의심·금기 확인",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "legionnaires-tx-2",
+          "rank": "alternative",
+          "context": "같은 조건의 대안",
+          "components": [
+            {
+              "drugId": "levofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "community-pneumonia"
+      ],
+      "sourceIds": [
+        "legionella-cdc"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "pulmonary-tuberculosis",
+      "kind": "disease",
+      "name": "폐결핵",
+      "englishName": "Pulmonary tuberculosis",
+      "category": "respiratory",
+      "entityType": "specific",
+      "summary": "오래가는 기침·체중 감소·야간 발한, 때로 객혈. 활동성 결핵이 의심되면 공기주의와 미생물학적 확인을 함께 진행한다.",
+      "searchAliases": [
+        "TB",
+        "결핵",
+        "활동성 결핵",
+        "폐 결핵"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "air"
+      ],
+      "clinical": {
+        "presentation": "공동·상엽 병변은 단서지만 영상만으로 확진하지 않는다. 잠복감염과 활동성 질환의 진단·치료를 구분한다.",
+        "diagnostics": "객담 신속 분자검사·항산균 도말·배양과 약제내성 검사. IGRA 양성만으로 활동성 결핵을 확진할 수 없다.",
+        "management": "약제감수성 결핵은 다제 병용 치료; 내성·숙주·부위에 따라 지침 경로를 나눈다. 접촉자 조사도 필요하다.",
+        "redFlags": "객혈·호흡부전·파종성 또는 중추신경 결핵."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx505",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "pulmonary-tuberculosis-tx-1",
+          "rank": "preferred",
+          "context": "약제감수성 활동성 결핵의 표준 초기 병용 구성",
+          "components": [
+            {
+              "drugId": "isoniazid"
+            },
+            {
+              "drugId": "rifampicin"
+            },
+            {
+              "drugId": "pyrazinamide"
+            },
+            {
+              "drugId": "ethambutol"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "latent-tuberculosis",
+        "miliary-tuberculosis",
+        "tuberculous-pleurisy",
+        "tuberculous-meningitis"
+      ],
+      "sourceIds": [
+        "disease-who-tb-2025",
+        "tb-cdc-diagnosis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "폐결핵 (Pulmonary Tuberculosis)",
+          "path": "source_notes/02 Diseases/02 호흡기/폐결핵 (Pulmonary Tuberculosis).md"
+        },
+        {
+          "title": "폐결핵",
+          "path": "source_notes/02 Diseases/02 호흡기/폐결핵.md"
+        }
+      ]
+    },
+    {
+      "id": "latent-tuberculosis",
+      "kind": "disease",
+      "name": "잠복결핵감염",
+      "englishName": "Latent tuberculosis infection",
+      "category": "respiratory",
+      "entityType": "infection",
+      "summary": "결핵균 감염 검사는 양성이지만 활동성 질환의 증거가 없는 상태. 증상·전염성이 없는 잠복감염과 활동성 결핵을 구분한다.",
+      "searchAliases": [
+        "LTBI",
+        "잠복 결핵",
+        "결핵 예방치료"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "air"
+      ],
+      "clinical": {
+        "presentation": "향후 발병 위험을 줄이는 예방치료가 목적. 면역억제 예정·최근 접촉 등에서 평가가 중요하다.",
+        "diagnostics": "IGRA 또는 TST와 임상·흉부영상으로 활동성 질환 배제; 필요 시 객담검사.",
+        "management": "활동성 결핵을 먼저 배제하고 짧은 Rifamycin 기반 요법 등을 선택. 약물 상호작용·간독성 확인.",
+        "redFlags": "활동성 결핵 증상·영상 이상·간독성."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx505",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "latent-tuberculosis-tx-1",
+          "rank": "preferred",
+          "context": "활동성 결핵 배제·상호작용 확인 후 단기 요법의 한 선택",
+          "components": [
+            {
+              "drugId": "rifampicin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "latent-tuberculosis-tx-2",
+          "rank": "alternative",
+          "context": "Rifamycin 사용이 어렵고 적합한 경우",
+          "components": [
+            {
+              "drugId": "isoniazid"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pulmonary-tuberculosis"
+      ],
+      "sourceIds": [
+        "disease-cdc-ltbi"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "miliary-tuberculosis",
+      "kind": "disease",
+      "name": "좁쌀결핵",
+      "englishName": "Miliary tuberculosis",
+      "category": "respiratory",
+      "entityType": "specific",
+      "summary": "결핵균이 혈행으로 퍼져 여러 장기를 침범. 지속 발열·전신 쇠약과 미만성 작은 폐결절이 단서다.",
+      "searchAliases": [
+        "속립성 결핵",
+        "miliary TB"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "blood",
+        "liver",
+        "brain"
+      ],
+      "transmission": [
+        "air"
+      ],
+      "clinical": {
+        "presentation": "면역저하·어린 연령에서 위험이 높다. 초기 흉부영상이 비전형적이어도 파종성 결핵을 고려한다.",
+        "diagnostics": "호흡기 및 침범 장기 검체의 분자검사·배양. 신경 증상이 있으면 CNS 침범 평가.",
+        "management": "다제 결핵요법과 장기별 합병증 관리. 중추신경 침범·내성에 따라 기간과 보조치료를 조정한다.",
+        "redFlags": "호흡부전·의식 변화·다장기부전."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx505",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "miliary-tuberculosis-tx-1",
+          "rank": "preferred",
+          "context": "약제감수성 파종성 결핵의 초기 병용 구성",
+          "components": [
+            {
+              "drugId": "isoniazid"
+            },
+            {
+              "drugId": "rifampicin"
+            },
+            {
+              "drugId": "pyrazinamide"
+            },
+            {
+              "drugId": "ethambutol"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pulmonary-tuberculosis",
+        "tuberculous-meningitis"
+      ],
+      "sourceIds": [
+        "disease-who-tb-2025"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "좁쌀 결핵 (Miliary Tuberculosis)",
+          "path": "source_notes/02 Diseases/02 호흡기/좁쌀 결핵 (Miliary Tuberculosis).md"
+        }
+      ]
+    },
+    {
+      "id": "tuberculous-pleurisy",
+      "kind": "disease",
+      "name": "결핵성 흉막염",
+      "englishName": "Tuberculous pleurisy",
+      "category": "respiratory",
+      "entityType": "specific",
+      "summary": "발열·흉막성 흉통과 주로 일측 흉수. 림프구 우세 흉수가 단서지만 ADA 상승만으로 결핵을 확정하지 않는다.",
+      "searchAliases": [
+        "결핵 흉수",
+        "TB pleuritis"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "air"
+      ],
+      "clinical": {
+        "presentation": "흉막 감염에 대한 면역반응이 중요하며 폐결핵이 함께 있는지 확인한다.",
+        "diagnostics": "흉수 ADA·배양·분자검사와 필요 시 흉막 생검. 악성 종양·다른 감염을 감별한다.",
+        "management": "약제감수성 결핵의 다제 치료와 증상에 따른 흉수 배액.",
+        "redFlags": "호흡곤란·결핵성 농흉·동반 활동성 폐결핵."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx505",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "tuberculous-pleurisy-tx-1",
+          "rank": "preferred",
+          "context": "약제감수성 결핵성 흉막염의 초기 병용 구성",
+          "components": [
+            {
+              "drugId": "isoniazid"
+            },
+            {
+              "drugId": "rifampicin"
+            },
+            {
+              "drugId": "pyrazinamide"
+            },
+            {
+              "drugId": "ethambutol"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pulmonary-tuberculosis"
+      ],
+      "sourceIds": [
+        "disease-who-tb-2025",
+        "tb-cdc-diagnosis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "결핵성 흉막염 (Tuberculous Pleurisy)",
+          "path": "source_notes/02 Diseases/02 호흡기/결핵성 흉막염 (Tuberculous Pleurisy).md"
+        }
+      ]
+    },
+    {
+      "id": "ntm-pulmonary",
+      "kind": "disease",
+      "name": "비결핵항산균 폐질환",
+      "englishName": "Nontuberculous mycobacterial pulmonary disease",
+      "category": "respiratory",
+      "entityType": "specific",
+      "summary": "만성 기침과 기관지확장·결절 또는 공동성 병변. NTM이 한 번 검출됐다는 사실만으로 폐질환을 확정하거나 치료하지 않는다.",
+      "searchAliases": [
+        "NTM",
+        "MAC 폐질환",
+        "비결핵 마이코박테리아"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "air",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "MAC·M. abscessus 등 균종에 따라 요법이 달라진다. 환경 노출이 흔하고 집락화·오염을 구분해야 한다.",
+        "diagnostics": "증상·영상·반복 미생물학적 기준을 함께 충족하는지 확인; 균종과 주요 약제 감수성 평가.",
+        "management": "진행·중증도·숙주에 따라 치료 여부 결정. MAC은 Macrolide 기반 다제요법; 단독 Macrolide는 피한다.",
+        "redFlags": "공동성 진행·객혈·유도 Macrolide 내성."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx506",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx507",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "ntm-pulmonary-tx-1",
+          "rank": "conditional",
+          "context": "Macrolide 감수성 MAC 폐질환의 병용 예시·균종별 조정",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            },
+            {
+              "drugId": "ethambutol"
+            },
+            {
+              "drugId": "rifampicin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "ntm-pulmonary-tx-2",
+          "rank": "conditional",
+          "context": "중증 MAC 또는 일부 균종에서 전문의 판단에 따라 추가",
+          "components": [
+            {
+              "drugId": "amikacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pulmonary-tuberculosis"
+      ],
+      "sourceIds": [
+        "ntm"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    }
+  ]
+}

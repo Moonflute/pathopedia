@@ -1,0 +1,651 @@
+{
+  "schemaVersion": 1,
+  "category": "neurologic",
+  "entities": [
+    {
+      "id": "bacterial-meningitis",
+      "kind": "disease",
+      "name": "세균성 수막염",
+      "englishName": "Bacterial meningitis",
+      "category": "neurologic",
+      "entityType": "syndrome",
+      "summary": "발열·두통·경부강직·의식 변화의 조합. 전형적인 세 증상이 모두 없어도 배제하지 않으며 치료를 지연하지 않는다.",
+      "searchAliases": [
+        "세균성 뇌수막염",
+        "meningitis"
+      ],
+      "anatomicSites": [
+        "brain",
+        "blood"
+      ],
+      "transmission": [
+        "droplet",
+        "vertical",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "연령·면역저하·신경외과 수술·수직감염에 따라 원인이 달라진다. 폐렴알균·수막알균·Listeria 위험을 구분한다.",
+        "diagnostics": "혈액배양·CSF 검사. CT 선행 적응증을 판단하고 검사 지연 시 경험적 치료를 먼저 시작한다.",
+        "management": "즉시 정주 3세대 cephalosporin 기반 치료; 내성 폐렴알균·Listeria 위험에 따라 성분 추가. 보조치료 시점도 평가.",
+        "redFlags": "경련·의식 저하·국소 신경 결손·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "nme",
+          "context": ""
+        },
+        {
+          "pathogenId": "hin",
+          "context": ""
+        },
+        {
+          "pathogenId": "lmo",
+          "context": "고령·임신·면역저하"
+        },
+        {
+          "pathogenId": "sag",
+          "context": "신생아"
+        },
+        {
+          "pathogenId": "eco",
+          "context": "신생아"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "bacterial-meningitis-tx-1",
+          "rank": "preferred",
+          "context": "신생아를 제외한 지역사회 수막염의 경험적 기본 성분",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "bacterial-meningitis-tx-2",
+          "rank": "conditional",
+          "context": "신생아 제외·내성 폐렴알균 위험이 있을 때의 경험적 구성",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "component"
+        },
+        {
+          "id": "bacterial-meningitis-tx-3",
+          "rank": "conditional",
+          "context": "Listeria 위험이 있으면 기본 요법에 추가하는 성분",
+          "components": [
+            {
+              "drugId": "ampicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "viral-meningitis",
+        "tuberculous-meningitis",
+        "meningococcal-disease"
+      ],
+      "sourceIds": [
+        "disease-who-meningitis-2025",
+        "disease-nice-meningitis-2024"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "세균성 뇌수막염 (Bacterial Meningitis)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/세균성 뇌수막염 (Bacterial Meningitis).md"
+        }
+      ]
+    },
+    {
+      "id": "viral-meningitis",
+      "kind": "disease",
+      "name": "바이러스성 수막염",
+      "englishName": "Viral meningitis",
+      "category": "neurologic",
+      "entityType": "syndrome",
+      "summary": "두통·발열·광과민과 수막 자극이 주된 바이러스 감염. 경과가 비교적 가벼워도 초기에는 세균성 수막염을 배제해야 한다.",
+      "searchAliases": [
+        "무균성 수막염",
+        "바이러스성 뇌수막염",
+        "aseptic meningitis"
+      ],
+      "anatomicSites": [
+        "brain"
+      ],
+      "transmission": [
+        "food",
+        "droplet",
+        "sexual"
+      ],
+      "clinical": {
+        "presentation": "Enterovirus가 흔하고 HSV-2·VZV 등도 가능. 의식 저하·국소 이상은 뇌염을 평가한다.",
+        "diagnostics": "CSF 세포·당·단백과 원인별 PCR; 세균성 감염을 감별한다.",
+        "management": "대부분 지지요법. HSV·VZV 등 특정 원인·중증도에서는 항바이러스 치료를 선택한다.",
+        "redFlags": "의식 변화·경련·중증 면역저하."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "non-polio-enterovirus",
+          "context": ""
+        },
+        {
+          "pathogenId": "hsv2",
+          "context": ""
+        },
+        {
+          "pathogenId": "vzv",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "viral-meningitis-tx-1",
+          "rank": "conditional",
+          "context": "확인 또는 강한 의심의 HSV·VZV 관련 중증 감염",
+          "components": [
+            {
+              "drugId": "acyclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "bacterial-meningitis",
+        "herpes-encephalitis"
+      ],
+      "sourceIds": [
+        "cdc-enterovirus",
+        "cdc-sti-herpes",
+        "nih-oi-vzv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "바이러스성 뇌수막염 (Viral Meningitis)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/바이러스성 뇌수막염 (Viral Meningitis).md"
+        }
+      ]
+    },
+    {
+      "id": "herpes-encephalitis",
+      "kind": "disease",
+      "name": "단순포진 뇌염",
+      "englishName": "Herpes simplex encephalitis",
+      "category": "neurologic",
+      "entityType": "specific",
+      "summary": "발열·의식 변화·행동 이상·경련, 때로 측두엽 병변. 의심 시 CSF PCR 결과를 기다리지 않고 Acyclovir를 시작한다.",
+      "searchAliases": [
+        "HSV 뇌염",
+        "측두엽 뇌염"
+      ],
+      "anatomicSites": [
+        "brain"
+      ],
+      "transmission": [
+        "endogenous",
+        "contact",
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "HSV-1이 대표 원인이며 신생아에서는 HSV-2도 중요하다. 초기 정상 CSF나 MRI만으로 배제하지 않는다.",
+        "diagnostics": "CSF HSV PCR·MRI·뇌파. 초기 PCR 음성인데 의심이 높으면 시기에 맞춰 재검한다.",
+        "management": "신속한 정주 Acyclovir와 경련·뇌압·신기능 관리.",
+        "redFlags": "의식 저하·경련 지속·뇌부종."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hsv1",
+          "context": ""
+        },
+        {
+          "pathogenId": "hsv2",
+          "context": "신생아 등"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "herpes-encephalitis-tx-1",
+          "rank": "preferred",
+          "context": "의심 또는 확진 HSV 뇌염의 정주 치료",
+          "components": [
+            {
+              "drugId": "acyclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "viral-meningitis"
+      ],
+      "sourceIds": [
+        "cdc-sti-herpes"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "brain-abscess",
+      "kind": "disease",
+      "name": "뇌농양",
+      "englishName": "Brain abscess",
+      "category": "neurologic",
+      "entityType": "syndrome",
+      "summary": "두통·발열·국소 신경 이상 또는 경련. 치성·부비동·중이 감염과 심내막염 등 혈행 감염원을 함께 찾는다.",
+      "searchAliases": [
+        "뇌 농양",
+        "cerebral abscess"
+      ],
+      "anatomicSites": [
+        "brain"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "발열이 없어도 가능하며 면역저하자에서는 진균·Nocardia·Toxoplasma와 감별한다.",
+        "diagnostics": "조영 MRI/CT와 혈액배양, 가능하면 배액 검체. 공간 점유 병변에서는 LP 위험을 평가한다.",
+        "management": "신경외과 배액과 침투 가능한 항균요법; 원인·수술·숙주별로 조정한다.",
+        "redFlags": "뇌압 상승·의식 저하·새 신경 결손·파열."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "streptococcus-anginosus-group",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx508",
+          "context": "면역저하"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "brain-abscess-tx-1",
+          "rank": "conditional",
+          "context": "지역사회 구강·부비동 관련 혼합감염의 병용 구성",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "brain-abscess-tx-2",
+          "rank": "conditional",
+          "context": "수술 후·포도알균 위험이면 추가",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "endocarditis",
+        "mastoiditis",
+        "dental-abscess"
+      ],
+      "sourceIds": [
+        "disease-escmid-brain-abscess"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "spinal-epidural-abscess",
+      "kind": "disease",
+      "name": "척추 경막외농양",
+      "englishName": "Spinal epidural abscess",
+      "category": "neurologic",
+      "entityType": "syndrome",
+      "summary": "심한 등통증에 발열·신경 결손이 동반되면 의심. 세 증상이 모두 나타날 때까지 기다리면 척수 손상을 놓칠 수 있다.",
+      "searchAliases": [
+        "SEA",
+        "경막외 농양"
+      ],
+      "anatomicSites": [
+        "brain",
+        "bone"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "S. aureus가 중요하며 균혈증·척추 감염·시술이 위험 맥락이다.",
+        "diagnostics": "긴급 조영 MRI와 혈액배양, 배액·수술 검체.",
+        "management": "신경 결손·압박·불안정성은 신속한 수술 평가. 항균제는 배양·감수성에 맞춰 조정한다.",
+        "redFlags": "마비·배뇨 장애·진행성 신경 결손."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "sep",
+          "context": "척추 시술"
+        },
+        {
+          "pathogenId": "eco",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "spinal-epidural-abscess-tx-1",
+          "rank": "conditional",
+          "context": "MRSA·그람음성 범위가 필요한 초기 경험적 병합 예시",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            },
+            {
+              "drugId": "cefepime"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "spinal-epidural-abscess-tx-2",
+          "rank": "conditional",
+          "context": "그람음성 범위가 필요한 초기 성분",
+          "components": [
+            {
+              "drugId": "cefepime"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "spinal-epidural-abscess-tx-3",
+          "rank": "preferred",
+          "context": "MSSA 확인 후 표적치료",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "vertebral-osteomyelitis",
+        "staphylococcal-bacteremia"
+      ],
+      "sourceIds": [
+        "disease-idsa-nvo-2015"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "tuberculous-meningitis",
+      "kind": "disease",
+      "name": "결핵성 수막염",
+      "englishName": "Tuberculous meningitis",
+      "category": "neurologic",
+      "entityType": "specific",
+      "summary": "서서히 진행하는 두통·발열·의식 변화와 뇌신경 이상. 수두증·기저 수막 병변·뇌경색이 주요 합병증이다.",
+      "searchAliases": [
+        "결핵성 뇌수막염",
+        "TB meningitis"
+      ],
+      "anatomicSites": [
+        "brain"
+      ],
+      "transmission": [
+        "endogenous",
+        "air"
+      ],
+      "clinical": {
+        "presentation": "폐외·파종성 결핵의 한 형태. 낮은 CSF 당·높은 단백은 단서지만 단독 진단 기준은 아니다.",
+        "diagnostics": "CSF 분자검사·배양과 MRI, 다른 장기의 결핵 검사; 초기 음성만으로 배제하지 않는다.",
+        "management": "다제 결핵요법과 적응증에 맞는 Corticosteroid, 수두증·뇌압 관리.",
+        "redFlags": "수두증·뇌경색·의식 저하."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx505",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "tuberculous-meningitis-tx-1",
+          "rank": "preferred",
+          "context": "약제감수성 CNS 결핵의 초기 병용 구성·기간은 별도 결정",
+          "components": [
+            {
+              "drugId": "isoniazid"
+            },
+            {
+              "drugId": "rifampicin"
+            },
+            {
+              "drugId": "pyrazinamide"
+            },
+            {
+              "drugId": "ethambutol"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "miliary-tuberculosis",
+        "pulmonary-tuberculosis"
+      ],
+      "sourceIds": [
+        "disease-who-tb-2025"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "meningococcal-disease",
+      "kind": "disease",
+      "name": "침습성 수막알균 감염",
+      "englishName": "Invasive meningococcal disease",
+      "category": "neurologic",
+      "entityType": "specific",
+      "summary": "급격한 발열·독성 외관·자반, 수막염 또는 쇼크. 피부 발진이 나타나기 전에도 빠르게 악화할 수 있다.",
+      "searchAliases": [
+        "수막구균혈증",
+        "meningococcemia",
+        "수막알균혈증"
+      ],
+      "anatomicSites": [
+        "blood",
+        "brain",
+        "skin"
+      ],
+      "transmission": [
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "수막알균혈증은 수막염 없이 발생할 수 있다. 밀접 접촉자 예방과 공중보건 대응이 중요하다.",
+        "diagnostics": "혈액·CSF 배양 또는 PCR; 치료를 검체 결과 때문에 늦추지 않는다.",
+        "management": "즉각 정주 항균제·소생·비말주의. 접촉자 예방요법과 접종 필요성을 따로 평가한다.",
+        "redFlags": "자반성 전격성 병변·DIC·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "nme",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "meningococcal-disease-tx-1",
+          "rank": "preferred",
+          "context": "의심·확진 침습성 감염의 초기 치료",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "meningococcal-disease-tx-2",
+          "rank": "alternative",
+          "context": "감수성 확인 후 표적치료",
+          "components": [
+            {
+              "drugId": "penicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "bacterial-meningitis",
+        "septic-shock"
+      ],
+      "sourceIds": [
+        "tail-cdc-meningococcus",
+        "disease-nice-meningitis-2024"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "neurosurgical-infection",
+      "kind": "disease",
+      "name": "신경외과 시술 관련 중추신경 감염",
+      "englishName": "Healthcare-associated ventriculitis and meningitis",
+      "category": "neurologic",
+      "entityType": "syndrome",
+      "summary": "션트·뇌실 배액관·신경외과 수술 뒤 발열·의식 변화 또는 배액 기능 이상. 일반 지역사회 수막염과 원인·요법이 다르다.",
+      "searchAliases": [
+        "뇌실염",
+        "션트 감염",
+        "뇌실배액관 감염"
+      ],
+      "anatomicSites": [
+        "brain"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "CoNS·S. aureus와 내성 그람음성균을 고려한다. CSF 세포·당 변화가 뚜렷하지 않을 수 있다.",
+        "diagnostics": "기기·CSF 배양과 영상, 감염된 기기의 상태 평가.",
+        "management": "기기 감염원 조절과 CNS 침투·감수성에 맞춘 요법; 난치성 경우 전문팀이 추가 투여 경로를 판단한다.",
+        "redFlags": "션트 기능 부전·수두증·신경 악화."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sep",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "pae",
+          "context": ""
+        },
+        {
+          "pathogenId": "aba",
+          "context": ""
+        },
+        {
+          "pathogenId": "ecl",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "neurosurgical-infection-tx-1",
+          "rank": "preferred",
+          "context": "의심 기기 관련 CNS 감염의 경험적 병용 예시",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            },
+            {
+              "drugId": "cefepime"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "neurosurgical-infection-tx-2",
+          "rank": "alternative",
+          "context": "내성 위험·감수성에 맞춘 병용 대안",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            },
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "bacterial-meningitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-ventriculitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    }
+  ]
+}

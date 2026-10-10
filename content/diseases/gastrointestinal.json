@@ -1,0 +1,1333 @@
+{
+  "schemaVersion": 1,
+  "category": "gastrointestinal",
+  "entities": [
+    {
+      "id": "infectious-gastroenteritis",
+      "kind": "disease",
+      "name": "감염성 위장관염",
+      "englishName": "Infectious gastroenteritis",
+      "category": "gastrointestinal",
+      "entityType": "syndrome",
+      "summary": "급성 설사·구토·복통에서 탈수와 혈변·고열을 먼저 구분. 대부분 지지요법이지만 침습성 감염·위험 숙주는 원인 검사가 중요하다.",
+      "searchAliases": [
+        "급성 장염",
+        "감염성 설사",
+        "위장염",
+        "AGE"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "여행·음식·집단 발생·항균제 노출이 원인 추정에 중요하다. 비감염성 설사도 감별한다.",
+        "diagnostics": "중증·혈변·면역저하·지속 설사에서 대변 PCR/배양 등 선택; 전해질·신기능·탈수 평가.",
+        "management": "경구 또는 정주 수분 보충. 항균제는 원인·중증도에 따라 선택하고 STEC 의심에서는 피한다.",
+        "redFlags": "심한 탈수·혈변·소변 감소·패혈증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "norovirus",
+          "context": ""
+        },
+        {
+          "pathogenId": "rotavirus",
+          "context": ""
+        },
+        {
+          "pathogenId": "sen",
+          "context": ""
+        },
+        {
+          "pathogenId": "ssh",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx514",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": "병원성 장관형"
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [
+        "norovirus-gastroenteritis",
+        "stec-colitis",
+        "clostridioides-colitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-diarrhea",
+        "cdc-norovirus"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "norovirus-gastroenteritis",
+      "kind": "disease",
+      "name": "노로바이러스 장염",
+      "englishName": "Norovirus gastroenteritis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "갑작스러운 구토·수양성 설사와 가족·시설의 집단 발생. 짧은 경과가 흔하지만 노인·영유아의 탈수를 경계한다.",
+      "searchAliases": [
+        "노로 장염",
+        "norovirus"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "적은 양으로도 전파되며 음식·물·환경·구토물 노출을 통해 확산한다.",
+        "diagnostics": "보통 임상 진단; 집단 발생·고위험 환경에서 대변 PCR 등 확인.",
+        "management": "수분·전해질 보충과 접촉·환경 관리. 비누 손씻기와 적절한 소독이 중요하고 항균제는 쓰지 않는다.",
+        "redFlags": "탈수·수유 불가·취약 숙주의 지속 경과."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "norovirus",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-norovirus"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "rotavirus-gastroenteritis",
+      "kind": "disease",
+      "name": "로타바이러스 장염",
+      "englishName": "Rotavirus gastroenteritis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "영유아의 구토·발열 뒤 수양성 설사와 탈수. 예방접종 여부와 수분 상태가 중요하다.",
+      "searchAliases": [
+        "로타 장염",
+        "rotavirus"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "어린 소아에서 심한 탈수를 유발할 수 있다.",
+        "diagnostics": "임상·탈수 평가; 필요 시 대변 항원·분자검사.",
+        "management": "수분·전해질 보충이 기본; 항균제는 필요하지 않다. 접종으로 중증 감염을 예방한다.",
+        "redFlags": "무기력·소변 감소·순환 저하."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "rotavirus",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-rotavirus"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "clostridioides-colitis",
+      "kind": "disease",
+      "name": "C. difficile 감염",
+      "englishName": "Clostridioides difficile infection",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "항균제·의료기관 노출 뒤 설사·복통·백혈구 증가. 무증상 양성 검사와 실제 감염을 구분한다.",
+      "searchAliases": [
+        "CDI",
+        "CDAD",
+        "거짓막 결장염",
+        "위막성 대장염",
+        "pseudomembranous colitis"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "독소성 대장염으로 재발이 흔하다. 장마비·독성 거대결장이 있는 전격성 감염은 별도 경로다.",
+        "diagnostics": "증상이 있는 환자의 적절한 대변검사; 치료 뒤 양성 지속을 확인하려는 완치 검사는 하지 않는다.",
+        "management": "유발 항균제 조정과 접촉 관리. 비전격성 초기 CDI는 Fidaxomicin 우선 고려, 경구 Vancomycin도 적절한 대안.",
+        "redFlags": "저혈압·장마비·독성 거대결장·급성 신손상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cdf",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "clostridioides-colitis-tx-1",
+          "rank": "preferred",
+          "context": "초기 비전격성 CDI·접근성과 재발 위험 고려",
+          "components": [
+            {
+              "drugId": "fidaxomicin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "clostridioides-colitis-tx-2",
+          "rank": "alternative",
+          "context": "비전격성 CDI의 경구 치료 대안·정주 제형과 구분",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "clostridioides-colitis-tx-3",
+          "rank": "conditional",
+          "context": "전격성 CDI·경구/위관 Vancomycin + 정주 Metronidazole·장마비는 별도 보완",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            },
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-idsa-cdi-2021",
+        "cdc-cdiff"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "거짓막 결장염 (Pseudomembranous Colitis)",
+          "path": "source_notes/02 Diseases/08 감염/거짓막 결장염 (Pseudomembranous Colitis).md"
+        }
+      ]
+    },
+    {
+      "id": "campylobacter-enteritis",
+      "kind": "disease",
+      "name": "캄필로박터 장염",
+      "englishName": "Campylobacter enteritis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "덜 익힌 가금류 등 노출 뒤 발열·복통·설사, 때로 혈변. 대부분 자연 호전하지만 중증·고위험 환자는 치료를 고려한다.",
+      "searchAliases": [
+        "Campylobacter jejuni",
+        "캄필로박터증"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "오른쪽 아랫배 통증이 충수염처럼 보일 수 있다. 후속 반응성 관절염·Guillain–Barré는 별도 합병증이다.",
+        "diagnostics": "대변 PCR/배양; 항균치료가 필요하면 감수성·지역 내성 고려.",
+        "management": "수분 보충; 치료 적응증이 있으면 Macrolide 등 선택. Fluoroquinolone 내성이 흔한 지역을 고려한다.",
+        "redFlags": "탈수·균혈증·중증 면역저하."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx514",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "campylobacter-enteritis-tx-1",
+          "rank": "preferred",
+          "context": "중증·고위험 등 항균치료 적응증이 있는 경우",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "campylobacter-cdc"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "shigellosis",
+      "kind": "disease",
+      "name": "세균성이질",
+      "englishName": "Shigellosis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "고열·복통·뒤무직과 소량의 잦은 혈성 설사. 적은 균량으로 전파되며 항균제 내성을 먼저 고려해야 한다.",
+      "searchAliases": [
+        "이질",
+        "Shigella",
+        "시겔라",
+        "뒤무직"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "시설·여행·성접촉 관련 노출도 확인한다.",
+        "diagnostics": "대변검사와 가능하면 배양·감수성; 분자검사 양성 뒤 배양 확보가 치료 선택에 도움.",
+        "management": "수분 보충, 적응증이 있으면 감수성에 맞춘 항균치료. 중증·내성 의심은 전문가와 조정한다.",
+        "redFlags": "탈수·균혈증·독성 거대결장."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "ssh",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "shigellosis-tx-1",
+          "rank": "conditional",
+          "context": "감수성과 임상 적응증을 확인한 경구 치료 예시",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "shigellosis-tx-2",
+          "rank": "conditional",
+          "context": "중증·정주 치료 필요 및 감수성 적합",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-shigella"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "salmonella-enteritis",
+      "kind": "disease",
+      "name": "비장티푸스 살모넬라 장염",
+      "englishName": "Nontyphoidal Salmonella gastroenteritis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "음식 노출 뒤 설사·발열·복통. 건강한 성인의 단순 장염은 대개 항균제 없이 호전하지만 침습성 위험 숙주는 다르게 본다.",
+      "searchAliases": [
+        "살모넬라 장염",
+        "NTS",
+        "식중독"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "blood"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "영아·면역저하·혈관질환 등에서는 균혈증과 전이 감염을 경계한다.",
+        "diagnostics": "대변검사, 전신 감염이면 혈액배양과 감수성 확인.",
+        "management": "수분 보충; 중증·균혈증·고위험 숙주에서 항균제를 선택한다.",
+        "redFlags": "균혈증·혈관 감염·국소 전이병소."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sen",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "salmonella-enteritis-tx-1",
+          "rank": "conditional",
+          "context": "침습성 감염 또는 고위험 환자·감수성 적합",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "salmonella-enteritis-tx-2",
+          "rank": "alternative",
+          "context": "감수성·숙주 조건에 맞는 대안",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-salmonella"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "typhoid-fever",
+      "kind": "disease",
+      "name": "장티푸스",
+      "englishName": "Typhoid fever",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "유행 지역 방문 뒤 지속 발열·전신 쇠약·복부 증상. 설사가 없어도 가능하며 지역별 다제내성 위험이 요법을 결정한다.",
+      "searchAliases": [
+        "enteric fever",
+        "Salmonella Typhi",
+        "장티푸스열"
+      ],
+      "anatomicSites": [
+        "blood",
+        "abdomen"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "전신 감염이며 장출혈·천공이 중요한 합병증. 여행지와 이전 항균제 사용을 확인한다.",
+        "diagnostics": "혈액배양·감수성 중심; 대변배양과 검사 시기를 함께 해석한다.",
+        "management": "여행지·감수성·중증도에 맞춘 요법. XDR 위험·치료 실패에서는 전문가와 약제를 조정한다.",
+        "redFlags": "장출혈·복막 자극·의식 변화·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sty",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "typhoid-fever-tx-1",
+          "rank": "conditional",
+          "context": "비복잡성 감염·여행지 내성에 맞는 선택",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "typhoid-fever-tx-2",
+          "rank": "conditional",
+          "context": "감수성이 예상되거나 확인된 정주 치료",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "typhoid-fever-tx-3",
+          "rank": "conditional",
+          "context": "XDR 등 적응증과 감수성이 맞는 중증 감염",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-typhoid"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "장티푸스 (Typhoid Fever)",
+          "path": "source_notes/02 Diseases/08 감염/장티푸스 (Typhoid Fever).md"
+        }
+      ]
+    },
+    {
+      "id": "cholera",
+      "kind": "disease",
+      "name": "콜레라",
+      "englishName": "Cholera",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "갑작스러운 대량 수양성 설사로 빠르게 탈수·쇼크가 발생. 항균제보다 즉각적인 수분·전해질 보충이 치료의 중심이다.",
+      "searchAliases": [
+        "쌀뜨물 설사",
+        "Vibrio cholerae"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "유행 지역·오염된 물과 음식 노출을 확인한다.",
+        "diagnostics": "탈수·관류 평가와 대변검사; 유행에서는 공중보건 대응을 병행한다.",
+        "management": "ORS·필요 시 정주 수액. 중증 등 적응증에서 지역 감수성에 맞춰 항균제를 추가한다.",
+        "redFlags": "대량 체액 손실·무뇨·저혈압."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "vch",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "cholera-tx-1",
+          "rank": "conditional",
+          "context": "중증 등 항균제 적응증·지역 감수성 적합",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "cholera-tx-2",
+          "rank": "alternative",
+          "context": "연령·임신·지역 내성에 맞는 대안",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-yellowbook-cholera-2026"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "콜레라 (Cholera)",
+          "path": "source_notes/02 Diseases/08 감염/콜레라 (Cholera).md"
+        }
+      ]
+    },
+    {
+      "id": "stec-colitis",
+      "kind": "disease",
+      "name": "STEC 대장염",
+      "englishName": "Shiga toxin-producing E. coli colitis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "심한 복통·혈성 설사, 때로 발열이 뚜렷하지 않음. 용혈성요독증후군 위험 때문에 항균제와 장운동 억제제를 피한다.",
+      "searchAliases": [
+        "EHEC",
+        "STEC",
+        "장출혈성 대장균",
+        "O157",
+        "HUS"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "urinary",
+        "blood"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "Shiga toxin이 내피 손상을 일으킨다. 혈변 뒤 빈혈·혈소판 감소·신손상을 확인한다.",
+        "diagnostics": "Shiga toxin 또는 유전자 검사와 배양, 혈구·신기능·전해질 추적.",
+        "management": "수분·전해질 보충과 HUS 감시. 항균제·장운동 억제제를 사용하지 않는다.",
+        "redFlags": "소변 감소·창백·멍·혈소판 감소."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": "STEC/EHEC 장관형, 기존 요로 분리주 AST와 별개"
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-stec"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "etec-diarrhea",
+      "kind": "disease",
+      "name": "장독소형 대장균 설사",
+      "englishName": "Enterotoxigenic E. coli diarrhea",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "여행·오염된 음식과 물 노출 뒤 주로 수양성 설사. 혈변·고열이 있으면 침습성 감염과 STEC를 구분한다.",
+      "searchAliases": [
+        "ETEC",
+        "여행자 설사",
+        "traveler's diarrhea"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "장독소에 의한 분비성 설사로 여행자 설사의 한 원인이다.",
+        "diagnostics": "경증은 임상 판단; 중증·지속·혈변이면 대변검사.",
+        "management": "수분 보충; 일상 활동을 크게 방해하는 여행자 설사 등 적응증에서 지역별 요법을 선택한다.",
+        "redFlags": "심한 탈수·혈변·발열로 다른 원인 의심."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": "ETEC 장관형"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "etec-diarrhea-tx-1",
+          "rank": "conditional",
+          "context": "중등도 이상 여행자 설사·지역 내성에 맞는 선택",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-ecoli-clinical"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "yersinia-enteritis",
+      "kind": "disease",
+      "name": "예르시니아 장염",
+      "englishName": "Yersinia enterocolitica enteritis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "설사·발열과 오른쪽 아랫배 통증·장간막 림프절염. 돼지고기 노출 뒤 충수염처럼 나타날 수 있다.",
+      "searchAliases": [
+        "예르시니아증",
+        "가성 충수염"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "대부분 자연 호전하지만 철 과부하·면역저하에서는 침습성 감염 위험이 증가한다.",
+        "diagnostics": "대변검사·배양과 중증이면 혈액배양; 영상으로 수술성 복통 감별.",
+        "management": "수분 보충; 중증·침습성 감염은 감수성에 맞춘 항균제.",
+        "redFlags": "균혈증·심한 복통·탈수."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "yen",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "yersinia-enteritis-tx-1",
+          "rank": "conditional",
+          "context": "중증·침습성 감염이고 감수성이 맞는 경우",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "yersinia-enteritis-tx-2",
+          "rank": "alternative",
+          "context": "감수성·숙주 조건에 맞는 대안",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-yersinia"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "vibrio-enteritis",
+      "kind": "disease",
+      "name": "비콜레라 비브리오 장염",
+      "englishName": "Non-cholera Vibrio gastroenteritis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "날것의 해산물 뒤 수양성 설사·복통. 간질환 환자의 발열·저혈압·수포는 단순 장염을 넘어 침습성 감염을 의심한다.",
+      "searchAliases": [
+        "장염비브리오",
+        "해산물 장염"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "V. parahaemolyticus는 해산물 관련 장염의 대표 원인이다.",
+        "diagnostics": "대변검사, 전신 증상과 고위험 숙주는 혈액배양·침습성 평가.",
+        "management": "경증은 수분 보충; 중증·침습성 감염은 균종·감수성에 맞춘 치료.",
+        "redFlags": "간질환·쇼크·출혈성 수포."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "vpa",
+          "context": ""
+        },
+        {
+          "pathogenId": "vvu",
+          "context": "고위험 숙주·침습성 감염"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "vibrio-enteritis-tx-1",
+          "rank": "conditional",
+          "context": "중증 등 치료 적응증·감수성 적합",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "vibrio-wound-infection"
+      ],
+      "sourceIds": [
+        "cdc-vibrio"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "helicobacter-infection",
+      "kind": "disease",
+      "name": "헬리코박터 파일로리 감염",
+      "englishName": "Helicobacter pylori infection",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "위염·소화성 궤양의 중요한 감염 원인. 제균은 병용요법으로 시행하고 증상 호전만으로 성공을 판단하지 않는다.",
+      "searchAliases": [
+        "H. pylori",
+        "HP",
+        "헬리코박터",
+        "파일로리"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "위암 위험과도 연관되지만 종양 카드는 별도로 다룬다. 과거 제균·Macrolide 노출과 내성 여부가 중요하다.",
+        "diagnostics": "요소호기·대변항원·내시경 검사; 치료 뒤 적절한 약제 중단 간격을 두고 제균 확인.",
+        "management": "감수성 미확인 시 최적화 Bismuth 4제 등 권고 경로를 고려. Clarithromycin 3제는 감수성 확인 등 조건에서 사용한다.",
+        "redFlags": "궤양 출혈·체중 감소·지속 제균 실패."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx513",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "helicobacter-infection-tx-1",
+          "rank": "preferred",
+          "context": "감수성 미확인 제균의 Bismuth 4제 병용 구성·Doxycycline 대체와 구분",
+          "components": [
+            {
+              "name": "PPI",
+              "role": "adjunct"
+            },
+            {
+              "name": "Bismuth",
+              "role": "adjunct"
+            },
+            {
+              "name": "Tetracycline"
+            },
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "helicobacter-infection-tx-2",
+          "rank": "conditional",
+          "context": "Clarithromycin 감수성 등 조건을 충족한 병용 요법",
+          "components": [
+            {
+              "name": "PPI",
+              "role": "adjunct"
+            },
+            {
+              "drugId": "amoxicillin"
+            },
+            {
+              "drugId": "clarithromycin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "hpylori-acg-2024"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "secondary-peritonitis",
+      "kind": "disease",
+      "name": "이차성 복막염",
+      "englishName": "Secondary bacterial peritonitis",
+      "category": "gastrointestinal",
+      "entityType": "syndrome",
+      "summary": "장 천공·수술 누출 등 복강 내 감염원에서 발생. 복막 자극·패혈증이 있으면 항균제와 함께 원인 조절을 서두른다.",
+      "searchAliases": [
+        "복강내감염",
+        "cIAI",
+        "복강 감염"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "장내 그람음성균·혐기성균 등의 혼합감염이 흔하며 원내 발생은 내성 위험이 달라진다.",
+        "diagnostics": "복부 CT·혈액배양과 배액/수술 검체. 천공·농양·허혈을 평가한다.",
+        "management": "배액·수술 등 source control과 감염원·중증도에 맞춘 항균치료.",
+        "redFlags": "쇼크·천공·농양·배액 실패."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": ""
+        },
+        {
+          "pathogenId": "efa",
+          "context": "원내·위험 맥락"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "secondary-peritonitis-tx-1",
+          "rank": "conditional",
+          "context": "지역사회 복강 내 혼합감염의 병용 예시",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "secondary-peritonitis-tx-2",
+          "rank": "conditional",
+          "context": "중증·의료관련 위험에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "secondary-peritonitis-tx-3",
+          "rank": "conditional",
+          "context": "ESBL 위험·감수성에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "spontaneous-peritonitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-intra-abdominal"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "anorectal-abscess",
+      "kind": "disease",
+      "name": "항문직장농양",
+      "englishName": "Anorectal abscess",
+      "category": "gastrointestinal",
+      "entityType": "syndrome",
+      "summary": "항문 주위 통증·부종·발열 또는 심부 골반통. 배농이 핵심이며 깊은 농양은 겉으로 뚜렷하지 않을 수 있다.",
+      "searchAliases": [
+        "항문 농양",
+        "직장 주위 농양"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "skin"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "항문샘 감염과 장관·피부 혼합균이 관여한다. 재발·누공·Crohn병 등 기저 요인을 확인한다.",
+        "diagnostics": "진찰; 깊거나 불명확한 농양·면역저하는 영상 평가.",
+        "management": "적절한 절개·배농. 항균제는 전신 반응·주위 봉와직염·면역저하 등 적응증에 맞춰 추가한다.",
+        "redFlags": "패혈증·회음부 괴사·재발 누공."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx518",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "anorectal-abscess-tx-1",
+          "rank": "conditional",
+          "context": "전신·확산 등 항균제 적응증이 있고 경구 치료 가능",
+          "components": [
+            {
+              "drugId": "amoxclav"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "fournier-gangrene"
+      ],
+      "sourceIds": [
+        "disease-idsa-intra-abdominal"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "항문직장 농양 (Anorectal Abscess)",
+          "path": "source_notes/02 Diseases/03 소화기/위장관/항문직장 농양 (Anorectal Abscess).md"
+        }
+      ]
+    },
+    {
+      "id": "infected-pancreatic-necrosis",
+      "kind": "disease",
+      "name": "감염성 췌장괴사",
+      "englishName": "Infected pancreatic necrosis",
+      "category": "gastrointestinal",
+      "entityType": "syndrome",
+      "summary": "췌장염의 괴사 병소에 감염이 더해져 발열·패혈증·임상 악화가 나타난 상태. 무균성 괴사와 구분한다.",
+      "searchAliases": [
+        "감염된 췌장 괴사",
+        "infected necrosis"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "괴사 병소의 가스·배양과 임상 경과가 단서. 모든 췌장괴사에 예방적 항균제를 주지 않는다.",
+        "diagnostics": "조영 CT와 임상·배양 평가; 침습적 검사는 필요성에 맞춰 선택.",
+        "management": "감염 병소에 적절한 항균제와 단계적 배액·괴사 제거 전략. 안정성에 따라 처치 시점을 조정한다.",
+        "redFlags": "쇼크·다장기부전·지속 감염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "efa",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "infected-pancreatic-necrosis-tx-1",
+          "rank": "conditional",
+          "context": "중증·내성 위험과 감수성에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "infected-pancreatic-necrosis-tx-2",
+          "rank": "alternative",
+          "context": "환자·기관 내성 자료에 맞는 대안",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "secondary-peritonitis"
+      ],
+      "sourceIds": [
+        "disease-aga-pancreatic-necrosis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "감염성 췌장 괴사 (Infected Pancreatic Necrosis)",
+          "path": "source_notes/02 Diseases/03 소화기/간담췌/감염성 췌장 괴사 (Infected Pancreatic Necrosis).md"
+        }
+      ]
+    },
+    {
+      "id": "cmv-esophagitis",
+      "kind": "disease",
+      "name": "CMV 식도염",
+      "englishName": "CMV esophagitis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "진행성 면역저하 환자의 삼킴통증·연하곤란에서 생각한다. 내시경 궤양의 조직으로 장기 감염을 확인하며 혈액 PCR만으로 진단하지 않는다.",
+      "searchAliases": [
+        "거대세포바이러스식도염",
+        "씨엠브이식도염"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "흉골 뒤 통증·삼킴통증·섭취 감소와 식도 궤양이 나타날 수 있다.",
+        "diagnostics": "내시경 조직 검사·면역염색 등으로 확인하고 Candida·HSV 등 다른 원인을 감별한다.",
+        "management": "Ganciclovir 등 전신 항바이러스제를 사용한다. 임상 반응·흡수·면역 상태에 따라 경구 전환과 치료 기간을 결정한다.",
+        "redFlags": "출혈·심한 탈수·천공 의심·치료 무반응은 긴급 재평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cmv",
+          "context": "면역저하에서 재활성화"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "cmv-esophagitis-tx-1",
+          "rank": "preferred",
+          "context": "섭취·흡수 저하 또는 중증의 초기 정맥 요법",
+          "components": [
+            {
+              "drugId": "ganciclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "cmv-esophagitis-tx-2",
+          "rank": "conditional",
+          "context": "호전·경구 흡수 양호 시 선택",
+          "components": [
+            {
+              "name": "Valganciclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "cmv-organ-disease",
+        "esophageal-candidiasis"
+      ],
+      "sourceIds": [
+        "nih-oi-cmv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "intestinal-tuberculosis",
+      "kind": "disease",
+      "name": "장결핵",
+      "englishName": "Intestinal tuberculosis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "만성 복통·체중 감소·발열·회맹부 병변. Crohn병과 유사할 수 있어 면역억제 전 감염을 구분한다.",
+      "searchAliases": [
+        "회맹부 결핵",
+        "장 결핵"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "endogenous",
+        "food"
+      ],
+      "clinical": {
+        "presentation": "폐·파종 결핵이 동반될 수 있으며 협착·폐쇄·천공이 합병증이다.",
+        "diagnostics": "내시경·조직검사·배양/분자검사와 흉부·복부 평가.",
+        "management": "약제감수성에 맞는 다제 결핵 치료; 폐쇄·천공 등은 수술적 평가.",
+        "redFlags": "장폐쇄·출혈·천공."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx505",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "intestinal-tuberculosis-tx-1",
+          "rank": "preferred",
+          "context": "약제감수성 장결핵의 초기 병용 구성",
+          "components": [
+            {
+              "drugId": "isoniazid"
+            },
+            {
+              "drugId": "rifampicin"
+            },
+            {
+              "drugId": "pyrazinamide"
+            },
+            {
+              "drugId": "ethambutol"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pulmonary-tuberculosis",
+        "tuberculous-peritonitis"
+      ],
+      "sourceIds": [
+        "disease-who-tb-2025"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "장결핵 (Intestinal Tuberculosis)",
+          "path": "source_notes/02 Diseases/03 소화기/위장관/장결핵 (Intestinal Tuberculosis).md"
+        }
+      ]
+    },
+    {
+      "id": "tuberculous-peritonitis",
+      "kind": "disease",
+      "name": "결핵성 복막염",
+      "englishName": "Tuberculous peritonitis",
+      "category": "gastrointestinal",
+      "entityType": "specific",
+      "summary": "원인 불명의 복수·만성 복통·발열·체중 감소. 간경변성 복수·복막암종증과 감별한다.",
+      "searchAliases": [
+        "복수 결핵",
+        "복막 결핵"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "복막의 결핵 감염으로 림프구 우세 복수 등이 단서.",
+        "diagnostics": "복수검사·영상과 가능하면 복막 조직·배양/분자검사. 단일 ADA 결과만으로 확정하지 않는다.",
+        "management": "약제감수성에 맞춘 다제 결핵요법과 동반 결핵·숙주 평가.",
+        "redFlags": "장폐쇄·영양 저하·파종 감염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx505",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "tuberculous-peritonitis-tx-1",
+          "rank": "preferred",
+          "context": "약제감수성 복막 결핵의 초기 병용 구성",
+          "components": [
+            {
+              "drugId": "isoniazid"
+            },
+            {
+              "drugId": "rifampicin"
+            },
+            {
+              "drugId": "pyrazinamide"
+            },
+            {
+              "drugId": "ethambutol"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "intestinal-tuberculosis",
+        "miliary-tuberculosis"
+      ],
+      "sourceIds": [
+        "disease-who-tb-2025"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    }
+  ]
+}

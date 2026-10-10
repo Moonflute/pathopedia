@@ -1,7 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
+import { compileDiseases } from './compile-diseases.mjs';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateCardCatalog } from './validate-cards.mjs';
 
 const DOMAINS = ['bacteria','fungi','viruses','parasites'];
 const LABELS = {
@@ -30,13 +32,14 @@ function summaryFor(map, id, label) {
   if ([...summary].length > 160) throw Error(`${id}: keep the front summary within 160 characters`);
   return summary.trim();
 }
-function sectionsFor(record) {
+function sectionsFor(record, categories) {
   const section = (id,value,sourceIds) => ({ id, title:DOMAIN_LABELS[record.domain]?.[id] || LABELS[id], text:text(value), sourceIds:unique(sourceIds || record.sourceIds || []) });
   const sections = [];
   if (record.biology) sections.push(section('biology',record.biology));
-  for (const id of ['morphology','culture','biochemistry','virulence','reservoir','diseases','tropism','geography']) {
-    const hint = record.hints[id];
-    if (hint?.text) sections.push(section(id,hint.text,hint.sourceIds));
+  for (const category of categories) {
+    if(category.id==='resistance')continue;
+    const hint=record.hints[category.id];
+    if(hint?.text)sections.push({...section(category.id,hint.text,hint.sourceIds),title:DOMAIN_LABELS[record.domain]?.[category.id] || LABELS[category.id] || category.ko || category.label});
   }
   for (const id of ['diagnostics','pearl']) if (record[id]) sections.push(section(id,record[id]));
   return sections;
@@ -52,7 +55,7 @@ export function compileLibraryCatalog(dataset, sources, authored) {
   }
   const pathogens = {}, variants = {}, drugs = {}, responses = {}, responseProfiles = {};
   for (const [taxonId,records] of grouped) {
-    const base = records[0], common = sectionsFor(base);
+    const base = records[0], common = sectionsFor(base,dataset.categories);
     pathogens[taxonId] = {
       id:taxonId, kind:'pathogen', domain:base.domain, name:base.organism, koreanName:base.koreanName,
       classification:base.classification, representativeRecordId:base.id,
@@ -65,11 +68,11 @@ export function compileLibraryCatalog(dataset, sources, authored) {
     for (const record of records) {
       const override = authored.variants[record.id];
       if (records.length > 1 && !override?.summary) throw Error(`Missing distinct phenotype summary: ${record.id}`);
-      const recordSections = sectionsFor(record);
+      const recordSections = sectionsFor(record,dataset.categories);
       const changed = recordSections.filter(section => !same(section,common.find(item => item.id === section.id)));
       const resistance = record.hints.resistance;
-      if (resistance?.text) changed.push({ id:'resistance', title:DOMAIN_LABELS[record.domain]?.resistance || LABELS.resistance, text:resistance.text, sourceIds:resistance.sourceIds });
-      if (record.clinicalContext) changed.push({ id:'clinicalContext', title:LABELS.clinicalContext, text:text(record.clinicalContext), sourceIds:record.sourceIds });
+      if (resistance?.text) changed.push({ id:'resistance', title:DOMAIN_LABELS[record.domain]?.resistance || LABELS.resistance, text:resistance.text, sourceIds:unique(resistance.sourceIds) });
+      if (record.clinicalContext) changed.push({ id:'clinicalContext', title:LABELS.clinicalContext, text:text(record.clinicalContext), sourceIds:unique(record.sourceIds) });
       variants[record.id] = {
         id:record.id, pathogenId:taxonId, label:record.phenotype, phenotypeId:record.phenotypeId,
         description:record.phenotypeDescription, aliases:record.aliases || [],
@@ -78,7 +81,7 @@ export function compileLibraryCatalog(dataset, sources, authored) {
         ...(authored.organDiseases?.variants?.[record.id]?{organDiseases:authored.organDiseases.variants[record.id]}:{}),
         back:{ sections:changed }, observationType:record.observationType, panelId:record.panelId,
         isolateModel:record.isolateModel, reviewStatus:record.reviewStatus, reviewedAt:record.reviewedAt,
-        sourceIds:record.sourceIds
+        sourceIds:unique(record.sourceIds)
       };
       responses[record.id] = {};
       for (const [drugId,response] of Object.entries(record.susceptibility)) {
@@ -130,16 +133,19 @@ export function compileLibraryCatalog(dataset, sources, authored) {
   for (const [map,known,label] of [[authored.pathogens,pathogens,'pathogen'],[authored.drugs,drugs,'drug'],[authored.variants,variants,'variant']]) {
     for (const id of Object.keys(map)) if (!known[id]) throw Error(`Unknown authored ${label} ID: ${id}`);
   }
-  return {
-    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.3.0',
+  const diseaseCatalog=compileDiseases(authored.diseaseContent,{pathogens,drugs,sources});
+  const catalog = {
+    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.4.0',
     sourceDatasetVersion:dataset.datasetVersion, locale:'ko-KR', reviewStatus:dataset.reviewStatus,
-    contentOrigin:'content/cards/*.json',
+    contentOrigin:'content/cards/*.json + content/diseases/*.json',
     interpretation:dataset.interpretation,
     panels:Object.fromEntries(dataset.panels.map(panel => [panel.id,panel])),
     categories:Object.fromEntries(dataset.categories.map(category => [category.id,category])),
-    counts:{ pathogens:Object.keys(pathogens).length, variants:Object.keys(variants).length, drugs:Object.keys(drugs).length, responses:Object.values(responses).reduce((sum,entries) => sum + Object.keys(entries).length,0), responseProfiles:Object.keys(responseProfiles).length },
-    pathogens, variants, drugs, responses, responseProfiles, therapyContexts, sources
+    counts:{ diseases:Object.keys(diseaseCatalog.diseases).length, pathogens:Object.keys(pathogens).length, variants:Object.keys(variants).length, drugs:Object.keys(drugs).length, responses:Object.values(responses).reduce((sum,entries) => sum + Object.keys(entries).length,0), responseProfiles:Object.keys(responseProfiles).length },
+    ...diseaseCatalog, pathogens, variants, drugs, responses, responseProfiles, therapyContexts, sources
   };
+  validateCardCatalog(catalog,dataset);
+  return catalog;
 }
 
 export async function generateLibraryCatalog(dataset, sources) {
@@ -159,8 +165,17 @@ export async function generateLibraryCatalog(dataset, sources) {
   const organDiseases=await json('content/cards/organ-diseases.json');
   if(dataset.records.some(record=>!organDiseases.pathogens?.[record.taxonId]))throw Error('Missing organ disease card data');
   if(dataset.drugs.some(drug=>!searchNames.drugs?.[drug.id]?.length))throw Error('Missing Korean drug search names');
+  const diseaseIndex=await json('content/diseases/index.json');
+  const diseaseEntities=[];
+  for(const filename of diseaseIndex.files){
+    if(!/^[a-z]+\.json$/.test(filename))throw Error('Invalid disease content filename');
+    const document=await json('content/diseases/'+filename);
+    if(document.schemaVersion!==1 || document.category!==filename.replace('.json',''))throw Error('Invalid disease content category: '+filename);
+    if(document.entities.some(entity=>entity.category!==document.category))throw Error('Disease category mismatch: '+filename);
+    diseaseEntities.push(...document.entities);
+  }
   const cardSources = {...sources};
-  for (const [id,reference] of Object.entries({...drugContent.references,...therapyContent.references})) {
+  for (const [id,reference] of Object.entries({...drugContent.references,...therapyContent.references,...diseaseIndex.references})) {
     if (!reference.title?.trim() || !/^https:\/\//.test(reference.url)) throw Error('Invalid card reference: ' + id);
     if (cardSources[id] && !same(cardSources[id],reference)) throw Error('Conflicting card reference: ' + id);
     cardSources[id] = reference;
@@ -168,10 +183,10 @@ export async function generateLibraryCatalog(dataset, sources) {
   for (const [drugId,ids] of Object.entries(drugContent.summarySourceIds || {})) {
     if (!dataset.drugs.some(drug => drug.id === drugId) || !Array.isArray(ids) || ids.some(id => !cardSources[id])) throw Error('Unknown drug summary reference: ' + drugId);
   }
-  const authored = { pathogens, drugs:drugContent.summaries, drugSummarySourceIds:drugContent.summarySourceIds || {}, variants:(await json('content/cards/variants.json')).overrides, therapyContexts:therapyContent.contexts, searchNames, organDiseases };
+  const authored = { pathogens, drugs:drugContent.summaries, drugSummarySourceIds:drugContent.summarySourceIds || {}, variants:(await json('content/cards/variants.json')).overrides, therapyContexts:therapyContent.contexts, searchNames, organDiseases, diseaseContent:{index:diseaseIndex,entities:diseaseEntities} };
   const catalog = compileLibraryCatalog(dataset,cardSources,authored);
   await writeFile(new URL('../data/library.json',import.meta.url),JSON.stringify(catalog,null,2)+'\n');
-  console.log(`Card DB: ${catalog.counts.pathogens} pathogens / ${catalog.counts.variants} variants / ${catalog.counts.drugs} drugs → data/library.json`);
+  console.log(`Card DB: ${catalog.counts.pathogens} pathogens / ${catalog.counts.variants} variants / ${catalog.counts.drugs} drugs / ${catalog.counts.diseases} diseases → data/library.json`);
   return catalog;
 }
 

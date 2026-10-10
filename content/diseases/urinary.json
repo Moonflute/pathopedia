@@ -1,0 +1,658 @@
+{
+  "schemaVersion": 1,
+  "category": "urinary",
+  "entities": [
+    {
+      "id": "acute-cystitis",
+      "kind": "disease",
+      "name": "급성 방광염",
+      "englishName": "Acute cystitis",
+      "category": "urinary",
+      "entityType": "syndrome",
+      "summary": "배뇨통·빈뇨·절박뇨가 중심인 하부 요로감염. 발열·옆구리 통증·전신 쇠약이면 신우신염 등 상부 감염을 먼저 구분한다.",
+      "searchAliases": [
+        "방광염",
+        "UTI",
+        "요로감염",
+        "하부 요로감염"
+      ],
+      "anatomicSites": [
+        "urinary"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "여성에서 흔하고 E. coli가 대표 원인. 무증상 세균뇨·질염·요도염과 감별한다.",
+        "diagnostics": "전형적 증상·소변검사; 재발·특수 숙주·비전형적 경과·치료 실패는 배양.",
+        "management": "단순 하부 감염은 적절한 좁은 요법을 선택. 신기능·임신·지역 내성·과거 배양에 맞춰 조정한다.",
+        "redFlags": "발열·옆구리 통증·임신·폐쇄·패혈증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "ssa",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "acute-cystitis-tx-1",
+          "rank": "preferred",
+          "context": "비임신 성인 여성의 단순 하부 UTI·신기능 등 적합",
+          "components": [
+            {
+              "name": "Nitrofurantoin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-cystitis-tx-2",
+          "rank": "alternative",
+          "context": "같은 하부 UTI 상황에서 적절한 선택",
+          "components": [
+            {
+              "name": "Fosfomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-cystitis-tx-3",
+          "rank": "conditional",
+          "context": "감수성 또는 지역 내성 조건이 적합",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "acute-pyelonephritis"
+      ],
+      "sourceIds": [
+        "disease-idsa-uti-2010",
+        "disease-idsa-cuti-2025"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "급성 방광염 (Acute Cystitis)",
+          "path": "source_notes/02 Diseases/05 신장/급성 방광염 (Acute Cystitis).md"
+        },
+        {
+          "title": "요로감염",
+          "path": "source_notes/02 Diseases/05 신장/요로감염.md"
+        },
+        {
+          "title": "요로 감염 (Urinary Tract Infection)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/요로 감염 (Urinary Tract Infection).md"
+        }
+      ]
+    },
+    {
+      "id": "acute-pyelonephritis",
+      "kind": "disease",
+      "name": "급성 신우신염",
+      "englishName": "Acute pyelonephritis",
+      "category": "urinary",
+      "entityType": "syndrome",
+      "summary": "발열·옆구리 통증·늑골척추각 압통이 있는 상부 요로감염. 배양을 확보하고 폐쇄·패혈증·내성 위험을 평가한다.",
+      "searchAliases": [
+        "신우신염",
+        "pyelo",
+        "상부 요로감염"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "하부 요로 증상이 없을 수도 있다. Nitrofurantoin·경구 Fosfomycin을 신실질 감염 치료로 그대로 쓰지 않는다.",
+        "diagnostics": "소변배양·신기능; 패혈증이면 혈액배양. 폐쇄 위험·호전 없음·중증은 영상.",
+        "management": "감수성·중증도에 맞춰 정주 또는 경구 요법, 폐쇄는 배액. 상태 호전 후 적절한 경구 전환을 고려한다.",
+        "redFlags": "쇼크·요로 폐쇄·임신·신농양."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "pmi",
+          "context": ""
+        },
+        {
+          "pathogenId": "pae",
+          "context": "원내·기기·과거 배양"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "acute-pyelonephritis-tx-1",
+          "rank": "preferred",
+          "context": "중증 sepsis·ESBL·Pseudomonas 위험이 낮은 초기 정주 선택",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-pyelonephritis-tx-2",
+          "rank": "conditional",
+          "context": "감수성 확인·경구 전환 조건에 적합",
+          "components": [
+            {
+              "drugId": "ciprofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-pyelonephritis-tx-3",
+          "rank": "conditional",
+          "context": "감수성 확인·경구 전환 조건에 적합",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-pyelonephritis-tx-4",
+          "rank": "conditional",
+          "context": "ESBL·중증 위험에서 적절한 선택",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "acute-cystitis",
+        "renal-abscess",
+        "emphysematous-pyelonephritis"
+      ],
+      "sourceIds": [
+        "disease-idsa-cuti-2025"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "급성 신우신염 (Acute Pyelonephritis)",
+          "path": "source_notes/02 Diseases/05 신장/급성 신우신염 (Acute Pyelonephritis).md"
+        },
+        {
+          "title": "급성 신우신염 (Acute Pyelonephritis)",
+          "path": "source_notes/02 Diseases/11 외과/급성 신우신염 (Acute Pyelonephritis).md"
+        }
+      ]
+    },
+    {
+      "id": "complicated-uti",
+      "kind": "disease",
+      "name": "복잡성 요로감염",
+      "englishName": "Complicated urinary tract infection",
+      "category": "urinary",
+      "entityType": "syndrome",
+      "summary": "전신 증상·상부 요로 침범 또는 복잡한 임상 조건이 있는 UTI. 중증도·폐쇄·과거 내성균 배양이 초기 치료 선택의 핵심이다.",
+      "searchAliases": [
+        "cUTI",
+        "복잡 요로감염"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "해부·기능 이상과 기기·숙주 위험을 확인한다. 원인균 목록만으로 모든 환자에게 같은 광범위 요법을 적용하지 않는다.",
+        "diagnostics": "소변배양·신기능·중증도 평가, 폐쇄·농양 등 감염원 영상.",
+        "management": "지역·과거 배양에 맞춰 시작하고 표적치료로 좁힌다. 폐쇄 해소·도관 조정과 경구 전환 적합성 평가.",
+        "redFlags": "쇼크·폐쇄·지속 감염·급성 신손상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "pmi",
+          "context": ""
+        },
+        {
+          "pathogenId": "pae",
+          "context": ""
+        },
+        {
+          "pathogenId": "efa",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "complicated-uti-tx-1",
+          "rank": "conditional",
+          "context": "환자·기관 감수성이 맞는 초기 선택",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "complicated-uti-tx-2",
+          "rank": "conditional",
+          "context": "Pseudomonas 등 위험에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "cefepime"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "complicated-uti-tx-3",
+          "rank": "conditional",
+          "context": "높은 ESBL 위험 또는 감수성에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "acute-pyelonephritis",
+        "catheter-uti"
+      ],
+      "sourceIds": [
+        "disease-idsa-cuti-2025"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "catheter-uti",
+      "kind": "disease",
+      "name": "도뇨관 관련 요로감염",
+      "englishName": "Catheter-associated urinary tract infection",
+      "category": "urinary",
+      "entityType": "syndrome",
+      "summary": "도뇨관 환자의 새 발열·전신 증상 또는 요로 증상과 감염 근거. 세균뇨·농뇨·탁한 소변만으로 감염을 진단하지 않는다.",
+      "searchAliases": [
+        "CAUTI",
+        "카테터 요로감염",
+        "도뇨관 감염"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "blood"
+      ],
+      "transmission": [
+        "inoculation",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "도뇨관의 집락화가 흔해 다른 감염원과 비감염성 원인을 확인한다.",
+        "diagnostics": "치료 전 적절한 도관 검체의 소변배양; 교체·제거 필요성을 평가한다.",
+        "management": "불필요한 도관 제거·필요 시 교체와 배양에 맞춘 항균치료. 무증상 세균뇨는 별도 적응증 없으면 치료하지 않는다.",
+        "redFlags": "균혈증·쇼크·요로 폐쇄."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "pmi",
+          "context": ""
+        },
+        {
+          "pathogenId": "pae",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "efa",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "catheter-uti-tx-1",
+          "rank": "conditional",
+          "context": "증상성 감염·과거 배양과 내성 위험에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "catheter-uti-tx-2",
+          "rank": "conditional",
+          "context": "Pseudomonas 위험과 감수성이 적합한 경우",
+          "components": [
+            {
+              "drugId": "cefepime"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "complicated-uti"
+      ],
+      "sourceIds": [
+        "disease-idsa-cuti-2025",
+        "disease-idsa-cauti"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "emphysematous-pyelonephritis",
+      "kind": "disease",
+      "name": "기종성 신우신염",
+      "englishName": "Emphysematous pyelonephritis",
+      "category": "urinary",
+      "entityType": "syndrome",
+      "summary": "당뇨·폐쇄 위험 환자에서 신장 주위 가스를 만드는 중증 요로감염. 패혈증과 신실질 파괴를 동반할 수 있다.",
+      "searchAliases": [
+        "기종 신우신염",
+        "EPN"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "E. coli·Klebsiella가 흔하며 가스의 위치·범위·숙주 상태를 함께 본다.",
+        "diagnostics": "CT로 가스·폐쇄·농양과 범위를 평가하고 소변·혈액배양.",
+        "management": "소생·적절한 항균제·혈당 관리와 폐쇄 배액. 반응·범위에 따라 경피 배액 또는 수술을 결정한다.",
+        "redFlags": "쇼크·신손상·양측 침범·의식 저하."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "emphysematous-pyelonephritis-tx-1",
+          "rank": "conditional",
+          "context": "기관 내성과 과거 배양을 반영한 중증 요법",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "emphysematous-pyelonephritis-tx-2",
+          "rank": "conditional",
+          "context": "ESBL 위험·중증도에 따라 적절한 선택",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "acute-pyelonephritis"
+      ],
+      "sourceIds": [
+        "disease-idsa-cuti-2025"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "기종성 신우신염 (Emphysematous Pyelonephritis)",
+          "path": "source_notes/02 Diseases/05 신장/기종성 신우신염 (Emphysematous Pyelonephritis).md"
+        }
+      ]
+    },
+    {
+      "id": "renal-abscess",
+      "kind": "disease",
+      "name": "신농양",
+      "englishName": "Renal abscess",
+      "category": "urinary",
+      "entityType": "syndrome",
+      "summary": "요로감염 치료에도 발열·옆구리 통증이 지속하면 신장·신주위 농양을 평가. 혈행 S. aureus 감염도 가능하다.",
+      "searchAliases": [
+        "콩팥 농양",
+        "신주위 농양",
+        "perinephric abscess"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "당뇨·폐쇄·반복 UTI와 균혈증 위험을 확인한다.",
+        "diagnostics": "조영 CT/초음파와 소변·혈액·배액 검체 배양.",
+        "management": "균종별 항균치료, 크기·위치·반응에 따른 배액과 폐쇄 해소.",
+        "redFlags": "패혈증·농양 확대·배액 실패."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": "혈행 감염"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "renal-abscess-tx-1",
+          "rank": "conditional",
+          "context": "감수성 장내세균 요로 기원 농양",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "renal-abscess-tx-2",
+          "rank": "preferred",
+          "context": "MSSA 혈행 감염 확인 후 표적치료",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "acute-pyelonephritis",
+        "staphylococcal-bacteremia"
+      ],
+      "sourceIds": [
+        "disease-idsa-cuti-2025"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "콩팥 농양 (Renal Abscess)",
+          "path": "source_notes/02 Diseases/05 신장/콩팥 농양 (Renal Abscess).md"
+        }
+      ]
+    },
+    {
+      "id": "acute-prostatitis",
+      "kind": "disease",
+      "name": "급성 세균성 전립선염",
+      "englishName": "Acute bacterial prostatitis",
+      "category": "urinary",
+      "entityType": "syndrome",
+      "summary": "발열·배뇨통·회음부 통증·배뇨 장애. 패혈증·요폐를 확인하고 전립선 마사지는 시행하지 않는다.",
+      "searchAliases": [
+        "전립선염",
+        "prostatitis"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "E. coli 등 요로균이 흔하고 비뇨기 시술·과거 내성균 배양을 고려한다.",
+        "diagnostics": "소변배양·중증이면 혈액배양; 호전 없음·농양 의심이면 영상.",
+        "management": "전립선 침투·감수성·중증도에 맞춘 요법. 요폐·농양의 배액 필요성을 평가한다.",
+        "redFlags": "요폐·패혈증·전립선 농양."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "pmi",
+          "context": ""
+        },
+        {
+          "pathogenId": "pae",
+          "context": "시술·의료 노출"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "acute-prostatitis-tx-1",
+          "rank": "conditional",
+          "context": "감수성·금기에 맞는 경구 치료 또는 전환",
+          "components": [
+            {
+              "drugId": "ciprofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-prostatitis-tx-2",
+          "rank": "alternative",
+          "context": "감수성에 맞는 경구 대안",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-prostatitis-tx-3",
+          "rank": "conditional",
+          "context": "중증·정주 치료 필요하고 감수성이 적합",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-nice-prostatitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "전립샘염 (Prostatitis)",
+          "path": "source_notes/02 Diseases/20 비뇨기과/전립샘염 (Prostatitis).md"
+        }
+      ]
+    }
+  ]
+}

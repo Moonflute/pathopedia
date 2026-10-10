@@ -1,7 +1,7 @@
 import { createCardCatalog } from './card-catalog.mjs';
 
 export const CARD_DOMAINS = Object.freeze({
-  bacteria:'세균', fungi:'진균', viruses:'바이러스', parasites:'기생충', drugs:'약제'
+  bacteria:'세균', fungi:'진균', viruses:'바이러스', parasites:'기생충', drugs:'약제', diseases:'감염질환'
 });
 const POSITIVE = new Set(['S','I','ACT','ACTIVE','REGIMEN']);
 const NEGATIVE = new Set(['R','INACTIVE']);
@@ -230,5 +230,67 @@ export function createCardModels(data, catalog) {
     return model;
   }
 
-  return {pathogen,drug};
+
+  function disease(id,contextId=null) {
+    const base=content.disease(id);if(!base)return null;
+    const treatments=base.treatments;
+    const selectedTreatment=treatments.find(item=>item.id===contextId) || treatments[0] || null;
+    const key='disease:'+id+':'+(selectedTreatment?.id || 'none');
+    if(models.has(key))return models.get(key);
+    const causeGroups=new Map(GROUPS.map(group=>[group.id,[]]));
+    for(const cause of base.etiologies){
+      const record=cause.pathogenId?records.get(cause.cardId):null;
+      const group=record?GROUPS.find(group=>group.matches?.(record)):
+        GROUPS.find(group=>group.id===cause.domain);
+      causeGroups.get(group?.id || 'other').push(cause);
+    }
+    const components=new Map();
+    // Prioritize the selected context. Other contexts remain dim on the front;
+    // they are selectable, named regimens on the reverse face.
+    for(const regimen of [...(selectedTreatment?[selectedTreatment]:[]),...treatments]){
+      for(const component of regimen.components){
+        const componentKey=component.drugId || component.name;
+        if(!components.has(componentKey))components.set(componentKey,component);
+      }
+    }
+    const category=catalog.diseaseCategories[base.category];
+    const routeItems=base.transmission.map(route=>catalog.diseaseRoutes[route]);
+    const route=routeItems.length===1
+      ? {...routeItems[0],description:routeItems[0].description}
+      : {icon:'routes',label:'복수',description:routeItems.map(item=>item.label+' · '+item.description).join('\n')};
+    const model={
+      ...base,entityId:id,domain:'diseases',lineage:category.label+' · '+catalog.diseaseEntityTypes[base.entityType].label,
+      route,selectedTreatment,
+      artwork:{placeholder:category.icon,label:category.label},
+      leftHeading:'원인',rightHeading:'치료',leftLabel:'원인 병원체',rightLabel:'치료 약제',
+      leftProperties:GROUPS.map(group=>{
+        const causes=causeGroups.get(group.id);
+        const note=causes.map(cause=>cause.name+(cause.context?' · '+cause.context:'')).join('\n');
+        return {icon:group.icon,label:group.label,shortLabel:GROUP_LABELS[group.id],active:causes.length>0,note:note || '—',tooltip:{title:group.label,body:note || '—'}};
+      }),
+      rightProperties:[...components.values()].slice(0,10).map(component=>{
+        const componentKey=component.drugId || component.name;
+        const selected=selectedTreatment?.components.some(item=>(item.drugId || item.name)===componentKey);
+        const item=component.drugId?drugs.get(component.drugId):null;
+        const uses=treatments.filter(regimen=>regimen.components.some(part=>(part.drugId || part.name)===componentKey));
+        const modeLabel=selectedTreatment?.mode==='sequence'?'순차 요법':selectedTreatment?.mode==='combination'?'병합 요법':'';
+        const context=selected?selectedTreatment.context:uses.map(regimen=>regimen.context).join('\n');
+        const role=component.role==='adjunct'?'보조 약제':selectedTreatment?.coverage==='component'?'병용 구성 약제':selectedTreatment?.rank==='conditional'?'조건부 선택':selectedTreatment?.rank==='alternative'?'대안':selectedTreatment?.coverage==='component'?'우선 구성 약제':'우선 약제';
+        return {
+          icon:item && drugRoute(item).icon==='syringe'?'syringe':'capsule',
+          label:component.name,shortLabel:component.drugId?drugCode(component.drugId):component.name.slice(0,3).toUpperCase(),
+          active:Boolean(selected),preferred:Boolean(selected && selectedTreatment.rank==='preferred' && component.role!=='adjunct'),
+          conditional:Boolean(selected && (selectedTreatment.mode!=='single' || selectedTreatment.coverage==='component' || selectedTreatment.rank==='conditional')),
+          note:context,tooltip:{title:component.name,body:[selected?role:'다른 치료 상황',context,selected?modeLabel:''].filter(Boolean).join('\n')}
+        };
+      })
+    };
+    models.set(key,model);return model;
+  }
+
+  function get(kind,id,contextId=null) {
+    return kind==='disease'?disease(id,contextId):kind==='drug'?drug(id,contextId):kind==='pathogen'?pathogen(id,contextId):null;
+  }
+
+  return {pathogen,drug,disease,get};
 }

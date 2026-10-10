@@ -485,3 +485,22 @@ dialog.card-inspector { width:max-content; height:max-content; max-width:calc(10
 .reference-card-tooltip[hidden] { display:none; }
 .reference-card-tooltip > strong { display:block; font-size:14px; font-weight:650; color:#f7f8ed; }
 .reference-card-tooltip > span { display:block; margin-top:5px; white-space:pre-line; color:#d4ddcf; }
+
+
+/* Disease cards reuse the same 2:3 faces and small side glyphs. */
+.reference-card-domain--diseases { --card-tone:#91bbae; --card-deep:#233d37; --card-line:#759b8c; --card-light:#c1ded1; background:linear-gradient(145deg,#45665b,var(--card-deep) 38%,#182927); }
+.reference-card--disease .card-text footer > span { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.card-related-list { display:grid; gap:.55em; margin:.6em 0 0; }
+.card-related-link,.card-related-name { min-width:0; padding:.6em .7em; border:1px solid #7d967659; border-radius:.35em; background:#ffffff55; text-align:left; color:inherit; overflow-wrap:anywhere; }
+.card-related-link { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; column-gap:.6em; width:100%; font:inherit; cursor:pointer; }
+.card-related-link > span { font-weight:600; }
+.card-related-link > small,.card-related-name > small { display:block; margin-top:.25em; grid-column:1; font-size:.85em; line-height:1.5; color:#56694e; }
+.card-related-link > i { grid-column:2; grid-row:1 / 3; font-style:normal; color:#537947; }
+.card-related-link:hover { background:#fff9; border-color:#6a8a5d; }
+.card-related-link:focus-visible,.card-treatment-select select:focus-visible { outline:2px solid #5c8254; outline-offset:2px; }
+.card-related-name { font-size:inherit; }
+.card-related-name > b { font-weight:600; }
+.card-treatment-select { display:block; min-width:0; }
+.card-treatment-select select { display:block; width:100%; max-width:100%; padding:8px; border:1px solid #7c9670; border-radius:5px; font:500 16px / 1.4 var(--sans); background:#f8f8ed; color:#33462f; text-overflow:ellipsis; }
+.card-disease-treatment .card-treatment-context { margin-top:.6em; }
+.card-disease-treatment .card-treatment-mode { margin-top:.4em; color:#576c4f; font-size:.85em; }

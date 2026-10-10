@@ -1,0 +1,704 @@
+{
+  "schemaVersion": 1,
+  "category": "eye",
+  "entities": [
+    {
+      "id": "bacterial-conjunctivitis",
+      "kind": "disease",
+      "name": "세균성 결막염",
+      "englishName": "Bacterial conjunctivitis",
+      "category": "eye",
+      "entityType": "syndrome",
+      "summary": "충혈·농성 분비물·눈꺼풀 붙음. 심한 통증·광과민·시력 저하는 단순 결막염으로 넘기지 않는다.",
+      "searchAliases": [
+        "세균 결막염",
+        "눈병"
+      ],
+      "anatomicSites": [
+        "eye"
+      ],
+      "transmission": [
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "대부분 국소 감염이지만 신생아·임균성·콘택트렌즈 환자는 별도 위험 평가.",
+        "diagnostics": "시력·각막·분비물 평가; 심한 화농·신생아·치료 실패는 배양·원인검사.",
+        "management": "국소 관리·필요한 국소 항균제. 임균·신생아 감염은 전신 치료와 긴급 안과 평가.",
+        "redFlags": "각막 침범·시력 저하·초급성 화농성 분비물."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "hin",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx509",
+          "context": "초급성·신생아"
+        },
+        {
+          "pathogenId": "bgx510",
+          "context": "신생아 등"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "bacterial-conjunctivitis-tx-1",
+          "rank": "conditional",
+          "context": "적응증·각막과 렌즈 위험에 맞춘 국소 항균제 예시",
+          "components": [
+            {
+              "drugId": "ciprofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "bacterial-conjunctivitis-tx-2",
+          "rank": "preferred",
+          "context": "확인된 임균성 안감염의 전신 치료 구성",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "bacterial-keratitis",
+        "gonorrhea"
+      ],
+      "sourceIds": [
+        "disease-aao-conjunctivitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "adenoviral-conjunctivitis",
+      "kind": "disease",
+      "name": "아데노바이러스 결막염",
+      "englishName": "Adenoviral conjunctivitis",
+      "category": "eye",
+      "entityType": "specific",
+      "summary": "물 같은 분비물·충혈과 접촉성 집단 발생. 각막 침범이 동반된 유행각결막염은 광과민·시력 저하가 생길 수 있다.",
+      "searchAliases": [
+        "유행각결막염",
+        "EKC",
+        "유행성 눈병"
+      ],
+      "anatomicSites": [
+        "eye"
+      ],
+      "transmission": [
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "귀앞 림프절·상기도 증상이 단서. 전염성이 높아 손·물건·진료 기구 관리가 중요하다.",
+        "diagnostics": "임상·각막 평가; 필요 시 항원·분자검사.",
+        "management": "인공눈물·냉찜질 등 지지요법과 전파 예방. 항균제·스테로이드를 임의로 일률 사용하지 않는다.",
+        "redFlags": "각막 혼탁·광과민·시력 저하."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "adenovirus",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-adenovirus",
+        "disease-aao-conjunctivitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "유행각결막염 (epidemic keratoconjunctivitis)",
+          "path": "source_notes/02 Diseases/18 안과/유행각결막염 (epidemic keratoconjunctivitis).md"
+        }
+      ]
+    },
+    {
+      "id": "herpes-keratitis",
+      "kind": "disease",
+      "name": "단순포진 각막염",
+      "englishName": "Herpes simplex keratitis",
+      "category": "eye",
+      "entityType": "specific",
+      "summary": "눈 통증·광과민·충혈과 수지상 각막 병변. 상피 감염과 기질성 염증을 나눠 치료해야 한다.",
+      "searchAliases": [
+        "HSV keratitis",
+        "헤르페스 각막염"
+      ],
+      "anatomicSites": [
+        "eye"
+      ],
+      "transmission": [
+        "endogenous",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "대개 HSV-1 재활성화. 스테로이드 단독 사용은 상피 감염을 악화시킬 수 있다.",
+        "diagnostics": "세극등·형광염색 등 안과 평가, 비전형 시 원인검사.",
+        "management": "상피·기질·포도막 침범에 따라 항바이러스와 필요한 전문 치료를 조정한다.",
+        "redFlags": "시력 저하·각막 얇아짐·흉터."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hsv1",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "herpes-keratitis-tx-1",
+          "rank": "preferred",
+          "context": "안과 평가로 병변 유형·투여 경로를 정한 항바이러스 요법",
+          "components": [
+            {
+              "drugId": "acyclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "oral-herpes"
+      ],
+      "sourceIds": [
+        "disease-aao-hsv-keratitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "단순포진각막염 (HSV keratitis)",
+          "path": "source_notes/02 Diseases/18 안과/단순포진각막염 (HSV keratitis).md"
+        }
+      ]
+    },
+    {
+      "id": "bacterial-keratitis",
+      "kind": "disease",
+      "name": "세균성 각막염",
+      "englishName": "Bacterial keratitis",
+      "category": "eye",
+      "entityType": "syndrome",
+      "summary": "통증·광과민·시력 저하와 각막 침윤·상피 결손. 콘택트렌즈 사용자는 Pseudomonas 등 급속 진행 감염을 경계한다.",
+      "searchAliases": [
+        "각막궤양",
+        "세균 각막염"
+      ],
+      "anatomicSites": [
+        "eye"
+      ],
+      "transmission": [
+        "inoculation",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "외상·각막 손상·렌즈 위생이 위험 요인.",
+        "diagnostics": "긴급 안과 평가·세극등, 크거나 깊은 병변·특수 상황은 각막 긁음 배양.",
+        "management": "즉각적인 적절한 고농도 국소 항균치료와 면밀한 경과 관찰; 렌즈 중단·감염원 관리.",
+        "redFlags": "각막 천공·시력 소실·급속 진행."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pae",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "spn",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "bacterial-keratitis-tx-1",
+          "rank": "conditional",
+          "context": "병변 중증도·지역 내성에 맞춘 국소 치료 예시",
+          "components": [
+            {
+              "drugId": "moxifloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "bacterial-keratitis-tx-2",
+          "rank": "conditional",
+          "context": "MRSA 등 원인·감수성에 따라 조제 국소 요법 성분",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "fungal-keratitis",
+        "acanthamoeba-keratitis"
+      ],
+      "sourceIds": [
+        "disease-aao-keratitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "fungal-keratitis",
+      "kind": "disease",
+      "name": "진균성 각막염",
+      "englishName": "Fungal keratitis",
+      "category": "eye",
+      "entityType": "syndrome",
+      "summary": "식물성 외상 뒤 서서히 진행하는 각막 침윤·위성 병변. 세균성 치료에 반응하지 않는 각막염에서 고려한다.",
+      "searchAliases": [
+        "진균 각막염",
+        "곰팡이 각막염"
+      ],
+      "anatomicSites": [
+        "eye"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "Fusarium·Aspergillus·Candida 등 원인에 따라 약제가 다르다.",
+        "diagnostics": "안과 평가와 각막 검체의 현미경·배양.",
+        "management": "균종별 국소 항진균제, 깊이·범위에 따른 전신 치료·수술 평가.",
+        "redFlags": "각막 천공·안내 확산·시력 소실."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "fus",
+          "context": ""
+        },
+        {
+          "pathogenId": "afu",
+          "context": ""
+        },
+        {
+          "pathogenId": "cal",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "fungal-keratitis-tx-1",
+          "rank": "preferred",
+          "context": "사상균 각막염에서 적합한 국소 치료의 대표 선택",
+          "components": [
+            {
+              "name": "Natamycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "fungal-keratitis-tx-2",
+          "rank": "conditional",
+          "context": "Candida 등 감수성에 맞춘 국소·전문 요법",
+          "components": [
+            {
+              "drugId": "amphotericinb"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-aao-keratitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "acanthamoeba-keratitis",
+      "kind": "disease",
+      "name": "가시아메바 각막염",
+      "englishName": "Acanthamoeba keratitis",
+      "category": "eye",
+      "entityType": "specific",
+      "summary": "콘택트렌즈·물 노출과 심한 눈 통증, 때로 고리 모양 각막 침윤. 초기에는 특징적 고리가 없을 수 있다.",
+      "searchAliases": [
+        "아칸타메바",
+        "가시아메바",
+        "AK"
+      ],
+      "anatomicSites": [
+        "eye"
+      ],
+      "transmission": [
+        "water",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "렌즈와 수돗물·수영 노출이 중요한 단서.",
+        "diagnostics": "긴급 안과 평가, 각막 검체 PCR/배양·공초점현미경 등.",
+        "management": "전문 국소 Biguanide 기반 치료 등으로 장기간 조정하고 렌즈·물 노출을 관리한다.",
+        "redFlags": "각막 천공·지속 감염·시력 소실."
+      },
+      "etiologies": [
+        {
+          "name": "Acanthamoeba species",
+          "domain": "parasites",
+          "context": "각막 감염"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "acanthamoeba-keratitis-tx-1",
+          "rank": "preferred",
+          "context": "안과 전문 치료의 국소 구성·요법과 병용은 병변별 선택",
+          "components": [
+            {
+              "name": "Polyhexamethylene biguanide"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-acanthamoeba-keratitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "orbital-cellulitis",
+      "kind": "disease",
+      "name": "안와봉와직염",
+      "englishName": "Orbital cellulitis",
+      "category": "eye",
+      "entityType": "syndrome",
+      "summary": "발열·눈 주위 부종에 안구운동 통증·제한·안구 돌출. 눈꺼풀 앞 감염과 달리 안와 심부 감염으로 시력을 위협한다.",
+      "searchAliases": [
+        "안와 감염",
+        "안와 연조직염"
+      ],
+      "anatomicSites": [
+        "eye"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "부비동 감염에서 확산하는 경우가 흔하다.",
+        "diagnostics": "긴급 안과·이비인후과 평가와 조영 CT/MRI, 배양·농양 확인.",
+        "management": "정주 항균제와 원인·농양의 배액 필요성 판단. MRSA·혐기성균 위험에 따라 범위 조정.",
+        "redFlags": "시력 저하·안와농양·두개강 확산."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "orbital-cellulitis-tx-1",
+          "rank": "conditional",
+          "context": "발생 원인에 맞춘 초기 정주 기본 성분",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "orbital-cellulitis-tx-2",
+          "rank": "conditional",
+          "context": "MRSA 위험이면 병용",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "orbital-cellulitis-tx-3",
+          "rank": "conditional",
+          "context": "혐기성균 위험이 있고 별도 범위가 필요하면 병용",
+          "components": [
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "bacterial-sinusitis"
+      ],
+      "sourceIds": [
+        "disease-merck-orbital-cellulitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "endophthalmitis",
+      "kind": "disease",
+      "name": "감염성 안내염",
+      "englishName": "Infectious endophthalmitis",
+      "category": "eye",
+      "entityType": "syndrome",
+      "summary": "수술·주사·외상 뒤 또는 균혈증 중 갑작스러운 눈 통증·시력 저하. 안구 내 감염은 즉각적인 전문 처치가 필요하다.",
+      "searchAliases": [
+        "endophthalmitis",
+        "안내 감염"
+      ],
+      "anatomicSites": [
+        "eye",
+        "blood"
+      ],
+      "transmission": [
+        "inoculation",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "외인성 CoNS·S. aureus와 내인성 Candida·Klebsiella 등 맥락을 구분한다.",
+        "diagnostics": "긴급 안과 평가와 안구 검체, 혈행 원인 의심이면 혈액배양·기저 감염원 조사.",
+        "management": "유리체내 항균제 등 국소 처치와 필요 시 수술. 전신 감염·진균 원인에서는 해당 전신 치료를 병행한다.",
+        "redFlags": "빠른 시력 소실·전안구염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sep",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": "혈행·간농양"
+        },
+        {
+          "pathogenId": "cal",
+          "context": "혈행 진균"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "endophthalmitis-tx-1",
+          "rank": "conditional",
+          "context": "세균성 안내염의 유리체내 병용 예시·전신 투여와 구분",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            },
+            {
+              "drugId": "ceftazidime"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "endophthalmitis-tx-2",
+          "rank": "conditional",
+          "context": "Candida 등 원인·안구 침투를 고려한 전신 요법",
+          "components": [
+            {
+              "drugId": "fluconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pyogenic-liver-abscess",
+        "candidemia"
+      ],
+      "sourceIds": [
+        "disease-merck-endophthalmitis",
+        "idsa-candida"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "trachoma",
+      "kind": "disease",
+      "name": "트라코마",
+      "englishName": "Trachoma",
+      "category": "eye",
+      "entityType": "specific",
+      "summary": "반복 Chlamydia 안감염이 결막 흉터·속눈썹 안쪽 말림을 거쳐 각막 손상을 일으킨다. 유행 지역의 접촉·환경 관리가 중요하다.",
+      "searchAliases": [
+        "사안",
+        "trachoma"
+      ],
+      "anatomicSites": [
+        "eye"
+      ],
+      "transmission": [
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "어린이 감염과 성인의 흉터 합병증을 구분한다.",
+        "diagnostics": "유행 지역의 임상 안과 평가·공중보건 기준에 따른 진단.",
+        "management": "SAFE 전략: 흉터 합병증 수술·항균제·얼굴 위생·환경 개선을 함께 시행한다.",
+        "redFlags": "속눈썹 마찰·각막 혼탁·실명."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx510",
+          "context": "트라코마 관련 혈청형"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "trachoma-tx-1",
+          "rank": "preferred",
+          "context": "공중보건·개별 적응증에 맞는 감염 치료",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-who-trachoma"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "cmv-retinitis",
+      "kind": "disease",
+      "name": "CMV 망막염",
+      "englishName": "CMV retinitis",
+      "category": "eye",
+      "entityType": "specific",
+      "summary": "진행성 HIV·이식 환자의 비문증·시야 결손·시력 저하에서 의심한다. 통증이 적어도 망막 괴사가 진행할 수 있어 신속한 안과 평가가 필요하다.",
+      "searchAliases": [
+        "거대세포바이러스망막염",
+        "씨엠브이망막염"
+      ],
+      "anatomicSites": [
+        "eye"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "무증상 말초 병변부터 흐린 시야·시력 저하까지 다양하다.",
+        "diagnostics": "산동 안저 검사로 진단하며 비전형적이면 안구 내 검사를 검토한다. 혈액 CMV PCR만으로 망막염을 진단하지 않는다.",
+        "management": "Valganciclovir 또는 IV Ganciclovir 등의 전신 치료를 사용한다. 황반·시신경 근처 위협 병변은 안구 내 병합 치료를 검토하고 면역 회복까지 유지 전략을 정한다.",
+        "redFlags": "갑작스런 시력 저하·망막박리·황반 인접 병변은 긴급 안과 치료가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cmv",
+          "context": "주로 재활성화"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "cmv-retinitis-tx-1",
+          "rank": "preferred",
+          "context": "경구 가능·흡수 양호한 전신 치료 선택",
+          "components": [
+            {
+              "name": "Valganciclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "cmv-retinitis-tx-2",
+          "rank": "preferred",
+          "context": "IV가 필요한 전신 치료 선택",
+          "components": [
+            {
+              "drugId": "ganciclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "cmv-retinitis-tx-3",
+          "rank": "conditional",
+          "context": "내성·불내약 등에 따른 전문 대안",
+          "components": [
+            {
+              "drugId": "foscarnet"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "cmv-organ-disease",
+        "hiv-infection"
+      ],
+      "sourceIds": [
+        "nih-oi-cmv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    }
+  ]
+}

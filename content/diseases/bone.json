@@ -1,0 +1,372 @@
+{
+  "schemaVersion": 1,
+  "category": "bone",
+  "entities": [
+    {
+      "id": "osteomyelitis",
+      "kind": "disease",
+      "name": "골수염",
+      "englishName": "Osteomyelitis",
+      "category": "bone",
+      "entityType": "syndrome",
+      "summary": "국소 골통·발열·기능 저하 또는 만성 배농. 혈행·창상·당뇨발·수술 등 발생 경로에 따라 원인균이 달라진다.",
+      "searchAliases": [
+        "뼈 감염",
+        "골수염증"
+      ],
+      "anatomicSites": [
+        "bone"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "S. aureus가 대표 원인. 만성 감염에서는 괴사골·인공물과 주위 연조직 감염을 함께 본다.",
+        "diagnostics": "MRI 등 영상과 혈액배양, 가능한 골·심부조직 검체. 표면 면봉만으로 원인균을 단정하지 않는다.",
+        "management": "원인균별 항균치료와 괴사조직·감염원 조절. 부위·숙주·배액 상태에 따라 기간·수술 필요성 결정.",
+        "redFlags": "신경 압박·농양·병적 골절·패혈증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "pae",
+          "context": "천자·특정 창상"
+        },
+        {
+          "pathogenId": "eco",
+          "context": "숙주·경로별"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "osteomyelitis-tx-1",
+          "rank": "preferred",
+          "context": "확인된 MSSA 골수염의 표적치료",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "osteomyelitis-tx-2",
+          "rank": "preferred",
+          "context": "확인된 MRSA 감염의 표적치료",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "vertebral-osteomyelitis",
+        "diabetic-foot-infection"
+      ],
+      "sourceIds": [
+        "disease-idsa-nvo-2015"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "골수염 (Osteomyelitis)",
+          "path": "source_notes/02 Diseases/08 감염/골수염 (Osteomyelitis).md"
+        }
+      ]
+    },
+    {
+      "id": "vertebral-osteomyelitis",
+      "kind": "disease",
+      "name": "척추 골수염",
+      "englishName": "Native vertebral osteomyelitis",
+      "category": "bone",
+      "entityType": "syndrome",
+      "summary": "새롭거나 지속되는 등통증에 균혈증·발열·염증수치 상승. 발열이 없더라도 척추염과 경막외농양을 평가한다.",
+      "searchAliases": [
+        "척추염",
+        "추간판염",
+        "discitis",
+        "spondylodiscitis"
+      ],
+      "anatomicSites": [
+        "bone",
+        "brain"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "혈행 S. aureus 감염이 중요하다. 결핵·Brucella 등은 노출·지역·경과에 따라 고려한다.",
+        "diagnostics": "혈액배양·척추 MRI; 필요 시 영상 유도 조직검사. 안정적이면 균 동정에 필요한 검체를 우선 확보한다.",
+        "management": "균종별 표적치료. 패혈증·진행 신경 결손은 즉시 치료하며 압박·불안정성·배액 필요성을 평가한다.",
+        "redFlags": "마비·배뇨 장애·경막외농양·척추 불안정."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "bru",
+          "context": "역학 위험"
+        },
+        {
+          "pathogenId": "bgx505",
+          "context": "결핵 위험"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "vertebral-osteomyelitis-tx-1",
+          "rank": "preferred",
+          "context": "MSSA 확인 후 표적치료",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "vertebral-osteomyelitis-tx-2",
+          "rank": "conditional",
+          "context": "패혈증·신경 결손으로 경험적 병용 치료가 필요한 경우",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            },
+            {
+              "drugId": "cefepime"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "spinal-epidural-abscess",
+        "staphylococcal-bacteremia"
+      ],
+      "sourceIds": [
+        "disease-idsa-nvo-2015"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "septic-arthritis",
+      "kind": "disease",
+      "name": "화농성 관절염",
+      "englishName": "Septic arthritis",
+      "category": "bone",
+      "entityType": "syndrome",
+      "summary": "급성 통증·열감·운동 제한이 있는 관절. 결정이 발견돼도 동반 감염을 배제하지 않으며 신속히 관절액을 확보한다.",
+      "searchAliases": [
+        "감염 관절염",
+        "감염성 관절염",
+        "화농 관절염"
+      ],
+      "anatomicSites": [
+        "bone",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "S. aureus가 중요하며 연령·성접촉·인공관절·균혈증에 따라 원인을 나눈다.",
+        "diagnostics": "관절액 세포·Gram 염색·배양과 혈액배양. 임상 의심과 배양 결과를 함께 해석한다.",
+        "management": "관절 배액·세척과 원인균별 항균치료. 급성 관절 손상을 줄이기 위해 처치를 지연하지 않는다.",
+        "redFlags": "관절 파괴·패혈증·배액 불충분."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx509",
+          "context": "파종 임균감염"
+        },
+        {
+          "pathogenId": "kki",
+          "context": "어린 소아"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "septic-arthritis-tx-1",
+          "rank": "conditional",
+          "context": "MRSA 위험을 반영한 경험적 성분",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "septic-arthritis-tx-2",
+          "rank": "preferred",
+          "context": "MSSA 확인 후 표적치료",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "septic-arthritis-tx-3",
+          "rank": "preferred",
+          "context": "확인된 파종 임균 관절염",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "gonorrhea",
+        "prosthetic-joint-infection"
+      ],
+      "sourceIds": [
+        "disease-sanj-2023",
+        "disease-cdc-gonorrhea-2021"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "감염 관절염 (Infectious Arthritis)",
+          "path": "source_notes/02 Diseases/07 류마티스/감염 관절염 (Infectious Arthritis).md"
+        },
+        {
+          "title": "화농성 관절염 (Suppurative Arthritis)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/화농성 관절염 (Suppurative Arthritis).md"
+        }
+      ]
+    },
+    {
+      "id": "prosthetic-joint-infection",
+      "kind": "disease",
+      "name": "인공관절 감염",
+      "englishName": "Prosthetic joint infection",
+      "category": "bone",
+      "entityType": "syndrome",
+      "summary": "인공관절 주위 지속 통증·배농·누공 또는 새 균혈증. 수술 시점과 혈행 감염 여부가 임상형을 나눈다.",
+      "searchAliases": [
+        "PJI",
+        "인공 관절 감염",
+        "보철 관절 감염"
+      ],
+      "anatomicSites": [
+        "bone"
+      ],
+      "transmission": [
+        "inoculation",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "Biofilm이 치료를 어렵게 한다. 기기와 연결된 누공은 중요한 감염 소견이다.",
+        "diagnostics": "관절액·여러 심부조직 배양과 영상·조직 평가; 표면 배양만으로 요법을 정하지 않는다.",
+        "management": "세척·기기 보존 또는 단계적 교체 등 수술 전략과 항균제를 함께 결정한다. Rifampicin은 적절한 포도알균 병용 상황에서만 선택.",
+        "redFlags": "지속 배농·기기 이완·균혈증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sep",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "cac",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "prosthetic-joint-infection-tx-1",
+          "rank": "conditional",
+          "context": "MRSA·내성 CoNS 감수성에 맞춘 요법 구성",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "prosthetic-joint-infection-tx-2",
+          "rank": "preferred",
+          "context": "MSSA 확인 후 적절한 표적치료 성분",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "prosthetic-joint-infection-tx-3",
+          "rank": "conditional",
+          "context": "감수성 포도알균·보존 인공물에서 다른 활성 약제와 병용",
+          "components": [
+            {
+              "drugId": "rifampicin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "osteomyelitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-pji"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    }
+  ]
+}

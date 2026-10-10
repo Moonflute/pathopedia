@@ -1,0 +1,738 @@
+{
+  "schemaVersion": 1,
+  "category": "sti",
+  "entities": [
+    {
+      "id": "gonorrhea",
+      "kind": "disease",
+      "name": "임균감염",
+      "englishName": "Gonorrhea",
+      "category": "sti",
+      "entityType": "specific",
+      "summary": "화농성 요도 분비물·배뇨통·자궁경부염, 또는 무증상 감염. 노출 부위별 검사를 하고 파종 감염과 동반 Chlamydia를 구분한다.",
+      "searchAliases": [
+        "임질",
+        "GC",
+        "gonococcal infection",
+        "임균 요도염"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "lungs",
+        "eye",
+        "bone"
+      ],
+      "transmission": [
+        "sexual",
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "인두·직장 감염도 가능하며 항균제 내성이 중요하다.",
+        "diagnostics": "노출 부위 NAAT; 치료 실패·내성 의심은 배양·감수성.",
+        "management": "단순 감염은 Ceftriaxone 중심, Chlamydia 미배제 시 적절한 추가 치료. 파트너·재감염·인두 완치 확인을 관리한다.",
+        "redFlags": "PID·관절염·파종 감염·신생아 안염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx509",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "gonorrhea-tx-1",
+          "rank": "preferred",
+          "context": "단순 비뇨생식기·직장·인두 임균감염",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "gonorrhea-tx-2",
+          "rank": "conditional",
+          "context": "Chlamydia가 배제되지 않았고 비임신 등 조건이 맞으면 추가",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pelvic-inflammatory-disease",
+        "septic-arthritis"
+      ],
+      "sourceIds": [
+        "disease-cdc-gonorrhea-2021"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "임균 감염 (Gonococcal Infection)",
+          "path": "source_notes/02 Diseases/08 감염/임균 감염 (Gonococcal Infection).md"
+        },
+        {
+          "title": "임균요도염 (Gonococcal urethritis)",
+          "path": "source_notes/02 Diseases/20 비뇨기과/임균요도염 (Gonococcal urethritis).md"
+        }
+      ]
+    },
+    {
+      "id": "chlamydia-infection",
+      "kind": "disease",
+      "name": "클라미디아 감염",
+      "englishName": "Chlamydial infection",
+      "category": "sti",
+      "entityType": "specific",
+      "summary": "무증상 감염이 흔하며 요도염·자궁경부염·직장염으로 나타난다. 치료뿐 아니라 파트너 관리와 재감염 확인이 중요하다.",
+      "searchAliases": [
+        "CT",
+        "Chlamydia trachomatis",
+        "비임균 요도염"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "eye"
+      ],
+      "transmission": [
+        "sexual",
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "PID·부고환염·신생아 안염/폐렴으로 이어질 수 있다.",
+        "diagnostics": "노출 부위 NAAT; 임신·치료 실패 등은 완치 확인 조건을 따로 적용한다.",
+        "management": "비임신 성인은 Doxycycline 등 권고 요법; 임신은 다른 적합 요법을 선택한다.",
+        "redFlags": "PID·부고환염·임신 관련 합병증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx510",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "chlamydia-infection-tx-1",
+          "rank": "preferred",
+          "context": "비임신 청소년·성인의 단순 감염",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "chlamydia-infection-tx-2",
+          "rank": "preferred",
+          "context": "임신 중 Chlamydia 감염의 적절한 요법",
+          "components": [
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pelvic-inflammatory-disease",
+        "epididymitis",
+        "lymphogranuloma-venereum"
+      ],
+      "sourceIds": [
+        "disease-cdc-chlamydia"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "비임균요도염 (Nongonococcal urethritis)",
+          "path": "source_notes/02 Diseases/20 비뇨기과/비임균요도염 (Nongonococcal urethritis).md"
+        }
+      ]
+    },
+    {
+      "id": "mycoplasma-genitalium",
+      "kind": "disease",
+      "name": "마이코플라스마 제니탈리움 감염",
+      "englishName": "Mycoplasma genitalium infection",
+      "category": "sti",
+      "entityType": "specific",
+      "summary": "지속·재발성 비임균 요도염·자궁경부염의 원인. Macrolide 내성이 중요하며 Azithromycin 단회 경험요법은 피한다.",
+      "searchAliases": [
+        "Mgen",
+        "M. genitalium",
+        "재발성 요도염"
+      ],
+      "anatomicSites": [
+        "urinary"
+      ],
+      "transmission": [
+        "sexual"
+      ],
+      "clinical": {
+        "presentation": "세포벽이 없어 beta-lactam은 대상이 아니다. 내성 검사를 이용한 순차 치료가 핵심이다.",
+        "diagnostics": "NAAT와 가능하면 내성 검사; 단순 무증상 전수 검진과 구분한다.",
+        "management": "Doxycycline 뒤 내성 결과에 맞춘 약제로 이어지는 순차 요법. 검사 불가 시 지침의 대안 경로를 사용한다.",
+        "redFlags": "지속 증상·재발·약제 내성."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx511",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "mycoplasma-genitalium-tx-1",
+          "rank": "preferred",
+          "context": "내성 검사 불가 등 권고 순차 경로·동시 병용이 아님",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            },
+            {
+              "drugId": "moxifloxacin"
+            }
+          ],
+          "mode": "sequence",
+          "coverage": "regimen"
+        },
+        {
+          "id": "mycoplasma-genitalium-tx-2",
+          "rank": "conditional",
+          "context": "Macrolide 감수성 확인 후 Doxycycline 다음 Azithromycin 순차 요법",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            },
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "sequence",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-mgen"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "syphilis",
+      "kind": "disease",
+      "name": "매독",
+      "englishName": "Syphilis",
+      "category": "sti",
+      "entityType": "specific",
+      "summary": "무통성 궤양 또는 손바닥·발바닥 발진, 때로 무증상. 병기를 나누고 신경·눈·귀 증상과 임신을 따로 평가한다.",
+      "searchAliases": [
+        "syphilis",
+        "Treponema pallidum",
+        "경성하감"
+      ],
+      "anatomicSites": [
+        "skin",
+        "blood",
+        "urinary"
+      ],
+      "transmission": [
+        "sexual"
+      ],
+      "clinical": {
+        "presentation": "임상형과 감염 기간에 따라 요법이 다르며 신경매독은 Benzathine 근주 요법으로 대체하지 않는다.",
+        "diagnostics": "Treponemal·nontreponemal 검사와 병기 평가; 정량 역가로 추적.",
+        "management": "병기별 Benzathine Penicillin G 등; 임신은 Penicillin 요법이 중요하고 Jarisch–Herxheimer 반응을 설명한다.",
+        "redFlags": "신경·시력·청력 증상·임신·선천감염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx512",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "syphilis-tx-1",
+          "rank": "preferred",
+          "context": "신경·안·이매독이 아닌 병기별 Benzathine Penicillin G 근주 요법",
+          "components": [
+            {
+              "drugId": "penicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "syphilis-tx-2",
+          "rank": "alternative",
+          "context": "비임신·적절한 추적이 가능하고 지침상 대안 조건 충족",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "neurosyphilis",
+        "congenital-syphilis"
+      ],
+      "sourceIds": [
+        "disease-cdc-syphilis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "매독 (Syphilis)",
+          "path": "source_notes/02 Diseases/08 감염/매독 (Syphilis).md"
+        },
+        {
+          "title": "매독 (Syphilis)",
+          "path": "source_notes/02 Diseases/13 부인과/매독 (Syphilis).md"
+        }
+      ]
+    },
+    {
+      "id": "neurosyphilis",
+      "kind": "disease",
+      "name": "신경매독·안매독·이매독",
+      "englishName": "Neurosyphilis, ocular syphilis and otosyphilis",
+      "category": "sti",
+      "entityType": "specific",
+      "summary": "매독 환자의 신경 이상·시력 저하·청력 변화. 일반 병기별 근주 치료와 다른 정주 Penicillin 요법이 필요하다.",
+      "searchAliases": [
+        "neurosyphilis",
+        "안매독",
+        "이매독"
+      ],
+      "anatomicSites": [
+        "brain",
+        "eye"
+      ],
+      "transmission": [
+        "sexual"
+      ],
+      "clinical": {
+        "presentation": "모든 병기에서 가능. 안매독·이매독은 CSF 정상이어도 전문 평가와 해당 치료 경로가 필요할 수 있다.",
+        "diagnostics": "혈청 매독검사·신경/안과/이과 평가; 신경 소견에 따라 CSF 검사.",
+        "management": "Aqueous crystalline Penicillin G 정주 중심의 요법; 임신·알레르기·추적 조건을 따로 판단한다.",
+        "redFlags": "시력 소실·청력 소실·수막/혈관성 신경 합병증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx512",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "neurosyphilis-tx-1",
+          "rank": "preferred",
+          "context": "신경·안·이매독의 Aqueous crystalline Penicillin G 정주 요법",
+          "components": [
+            {
+              "drugId": "penicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "syphilis"
+      ],
+      "sourceIds": [
+        "disease-cdc-neurosyphilis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "congenital-syphilis",
+      "kind": "disease",
+      "name": "선천매독",
+      "englishName": "Congenital syphilis",
+      "category": "sti",
+      "entityType": "specific",
+      "summary": "산모 매독이 태아·신생아로 전파된 감염. 무증상 신생아도 산모 치료·역가·영아 검사에 따라 평가와 치료가 필요하다.",
+      "searchAliases": [
+        "선천성 매독",
+        "congenital lues"
+      ],
+      "anatomicSites": [
+        "blood",
+        "skin",
+        "bone",
+        "brain"
+      ],
+      "transmission": [
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "콧물·발진·간비장비대·뼈 병변 등이 단서지만 증상 유무만으로 배제하지 않는다.",
+        "diagnostics": "산모·영아 정량 역가와 치료력 비교, 상황에 따라 CSF·혈액·장골영상.",
+        "management": "위험 시나리오별 Penicillin 제형·기간·추적을 선택. 평가·추적 불확실성을 포함해 판단한다.",
+        "redFlags": "신경 침범·골병변·혈액/간 이상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx512",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "congenital-syphilis-tx-1",
+          "rank": "preferred",
+          "context": "확진·고위험 선천매독의 권고 Penicillin 요법·제형별 경로 구분",
+          "components": [
+            {
+              "drugId": "penicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "syphilis"
+      ],
+      "sourceIds": [
+        "disease-cdc-congenital-syphilis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "선천 매독 (Congenital Syphilis)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/선천 매독 (Congenital Syphilis).md"
+        }
+      ]
+    },
+    {
+      "id": "genital-herpes",
+      "kind": "disease",
+      "name": "생식기 단순포진",
+      "englishName": "Genital herpes",
+      "category": "sti",
+      "entityType": "specific",
+      "summary": "통증성 군집 수포·궤양과 재발. 눈에 보이는 병변이 없을 때도 바이러스 배출·전파가 가능하다.",
+      "searchAliases": [
+        "genital HSV",
+        "음부포진",
+        "성기 헤르페스"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "skin"
+      ],
+      "transmission": [
+        "sexual",
+        "contact",
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "HSV-2가 대표지만 HSV-1도 가능. 첫 감염·재발·억제치료와 임신·분만 맥락을 구분한다.",
+        "diagnostics": "병변 PCR/NAAT; 혈청 검사는 목적·위양성을 고려해 선택.",
+        "management": "Acyclovir 계열로 초기·재발·억제치료를 구분; 파트너와 전파 예방, 임신·신생아 위험 관리.",
+        "redFlags": "요폐·수막염·파종 감염·신생아 노출."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hsv2",
+          "context": ""
+        },
+        {
+          "pathogenId": "hsv1",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "genital-herpes-tx-1",
+          "rank": "preferred",
+          "context": "적응증에 맞춘 초기·재발 또는 억제 요법",
+          "components": [
+            {
+              "drugId": "acyclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "neonatal-herpes",
+        "herpes-encephalitis"
+      ],
+      "sourceIds": [
+        "cdc-sti-herpes"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "단순포진 (Genital herpes)",
+          "path": "source_notes/02 Diseases/20 비뇨기과/단순포진 (Genital herpes).md"
+        }
+      ]
+    },
+    {
+      "id": "trichomoniasis",
+      "kind": "disease",
+      "name": "트리코모나스증",
+      "englishName": "Trichomoniasis",
+      "category": "sti",
+      "entityType": "specific",
+      "summary": "질 분비물·냄새·가려움 또는 요도염, 무증상도 흔한 성매개 원충 감염. 파트너를 함께 관리해야 재감염을 줄인다.",
+      "searchAliases": [
+        "Trichomonas vaginalis",
+        "트리코모나스 질염"
+      ],
+      "anatomicSites": [
+        "urinary"
+      ],
+      "transmission": [
+        "sexual"
+      ],
+      "clinical": {
+        "presentation": "점상 자궁경부 소견은 단서지만 모든 환자에서 나타나지 않는다.",
+        "diagnostics": "NAAT 등이 민감하며 젖은 도말 음성만으로 배제하지 않는다.",
+        "management": "성별·병력에 맞는 경구 Nitroimidazole 요법과 파트너 치료·재검.",
+        "redFlags": "지속·재발 감염·동반 STI·임신 관련 위험."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tva",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "trichomoniasis-tx-1",
+          "rank": "preferred",
+          "context": "성별·재발 여부에 맞는 경구 요법",
+          "components": [
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-trichomonas"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "트리코모나스 (Trichomoniasis)",
+          "path": "source_notes/02 Diseases/13 부인과/트리코모나스 (Trichomoniasis).md"
+        }
+      ]
+    },
+    {
+      "id": "lymphogranuloma-venereum",
+      "kind": "disease",
+      "name": "성병림프육아종",
+      "englishName": "Lymphogranuloma venereum",
+      "category": "sti",
+      "entityType": "specific",
+      "summary": "성접촉 뒤 직장통·혈성 분비물·뒤무직 또는 통증성 서혜 림프절. Chlamydia L1–L3에 의한 침습성 감염이다.",
+      "searchAliases": [
+        "LGV",
+        "성병 림프 육아종"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "abdomen"
+      ],
+      "transmission": [
+        "sexual"
+      ],
+      "clinical": {
+        "presentation": "단순 CT 요도염보다 림프·직장 침범과 치료 기간이 중요하다.",
+        "diagnostics": "노출 부위 CT NAAT, 가능하면 유전자형 검사; 임상 의심에 따라 선제 치료.",
+        "management": "지침의 충분한 기간 Doxycycline 요법과 파트너 관리, 농양성 림프절은 배액 평가.",
+        "redFlags": "직장 협착·누공·림프절 농양."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx510",
+          "context": "L1–L3 혈청형"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "lymphogranuloma-venereum-tx-1",
+          "rank": "preferred",
+          "context": "비임신 등 적합한 LGV 치료 조건",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-lgv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "성병림프육아종 (Lymphogranuloma venereum)",
+          "path": "source_notes/02 Diseases/20 비뇨기과/성병림프육아종 (Lymphogranuloma venereum).md"
+        }
+      ]
+    },
+    {
+      "id": "epididymitis",
+      "kind": "disease",
+      "name": "급성 감염성 부고환염",
+      "englishName": "Acute infectious epididymitis",
+      "category": "sti",
+      "entityType": "syndrome",
+      "summary": "한쪽 음낭 통증·부종·부고환 압통. 갑자기 시작한 심한 통증은 고환염전을 먼저 배제한다.",
+      "searchAliases": [
+        "부고환염",
+        "부고환고환염",
+        "epididymo-orchitis"
+      ],
+      "anatomicSites": [
+        "urinary"
+      ],
+      "transmission": [
+        "sexual",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "성매개 GC/CT와 장내 요로균 원인을 성행동·기기·요로 맥락으로 구분한다.",
+        "diagnostics": "GC/CT NAAT·소변배양, 염전 의심은 즉각 비뇨기 평가와 적절한 영상.",
+        "management": "예상 원인별 요법과 통증·음낭 지지. 치료 후에도 호전 없으면 농양·염전 등 재평가.",
+        "redFlags": "고환염전·농양·경색·패혈증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bgx510",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx509",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": "장내균·요로 기원"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "epididymitis-tx-1",
+          "rank": "preferred",
+          "context": "GC/CT가 예상되는 성매개 원인의 병용 요법",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "epididymitis-tx-2",
+          "rank": "conditional",
+          "context": "임균이 배제되고 장내균 원인·감수성이 적합",
+          "components": [
+            {
+              "drugId": "levofloxacin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "gonorrhea",
+        "chlamydia-infection"
+      ],
+      "sourceIds": [
+        "disease-cdc-epididymitis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "anogenital-warts",
+      "kind": "disease",
+      "name": "첨형콘딜로마",
+      "englishName": "Anogenital warts",
+      "category": "sti",
+      "entityType": "specific",
+      "summary": "생식기·항문 주변 사마귀. 병변을 없애도 HPV 자체를 완전히 제거하거나 전파가 즉시 없어지는 것은 아니다.",
+      "searchAliases": [
+        "곤지름",
+        "생식기 사마귀",
+        "HPV 사마귀",
+        "콘딜로마"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "skin"
+      ],
+      "transmission": [
+        "sexual",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "주로 낮은 종양 위험 HPV형이 원인. 색소·출혈·궤양·면역저하의 비전형 병변은 생검을 고려한다.",
+        "diagnostics": "임상 진단; 비전형 병변은 조직검사. HPV 검사를 사마귀 확진용으로 사용하지 않는다.",
+        "management": "병변별 국소·절제·냉동치료 등을 선택. 예방접종과 동반 STI 위험을 관리한다.",
+        "redFlags": "비전형·빠른 성장·출혈·면역저하."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hpv",
+          "context": "주로 사마귀 관련 형"
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-hpv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    }
+  ]
+}

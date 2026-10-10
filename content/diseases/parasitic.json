@@ -1,0 +1,2815 @@
+{
+  "schemaVersion": 1,
+  "category": "parasitic",
+  "entities": [
+    {
+      "id": "falciparum-malaria",
+      "kind": "disease",
+      "name": "열대열 말라리아",
+      "englishName": "Falciparum malaria",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "말라리아 위험 지역 방문 뒤 발열은 즉시 검사한다. 열대열은 빠르게 중증화할 수 있어 주기적인 열이 없다고 배제하면 안 된다.",
+      "searchAliases": [
+        "열대열",
+        "말라리아",
+        "악성말라리아"
+      ],
+      "anatomicSites": [
+        "blood",
+        "liver",
+        "brain"
+      ],
+      "transmission": [
+        "vector",
+        "blood"
+      ],
+      "clinical": {
+        "presentation": "발열·오한·두통·빈혈·혈소판감소가 흔하며 의식 변화·호흡부전·신손상이 동반될 수 있다.",
+        "diagnostics": "말초혈액 도말·신속 검사로 종과 원충혈증을 확인한다. 첫 검사가 음성이어도 의심이 높으면 반복하며 중증도를 평가한다.",
+        "management": "비중증은 노출 지역·내성에 맞는 경구 병합 요법을 선택한다. 중증은 종에 관계없이 IV Artesunate 후 완전한 경구 요법을 이어간다.",
+        "redFlags": "의식 저하·쇼크·저산소증·산증·고원충혈증은 중증 말라리아로 긴급 치료한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pfa",
+          "context": "Plasmodium falciparum"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "falciparum-malaria-tx-1",
+          "rank": "preferred",
+          "context": "비중증 열대열의 대표 ACT 선택지",
+          "components": [
+            {
+              "drugId": "artemetherlumefantrine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "falciparum-malaria-tx-2",
+          "rank": "alternative",
+          "context": "비중증의 다른 경구 선택지",
+          "components": [
+            {
+              "drugId": "atovaquoneproguanil"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "falciparum-malaria-tx-3",
+          "rank": "preferred",
+          "context": "중증 말라리아 초기 정맥 치료",
+          "components": [
+            {
+              "name": "Artesunate (IV)"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "vivax-ovale-malaria",
+        "other-malaria"
+      ],
+      "sourceIds": [
+        "disease-cdc-malaria-2026",
+        "disease-cdc-malaria-severe"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "말라리아 (Malaria)",
+          "path": "source_notes/02 Diseases/08 감염/말라리아 (Malaria).md"
+        }
+      ]
+    },
+    {
+      "id": "vivax-ovale-malaria",
+      "kind": "disease",
+      "name": "삼일열·난형 말라리아",
+      "englishName": "Vivax and ovale malaria",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "삼일열·난형은 간에 남는 휴면체 때문에 재발할 수 있다. 혈액 단계 치료와 G6PD 확인 후 재발 방지 치료를 구분한다.",
+      "searchAliases": [
+        "삼일열말라리아",
+        "난형말라리아",
+        "국내말라리아",
+        "vivax",
+        "ovale"
+      ],
+      "anatomicSites": [
+        "blood",
+        "liver"
+      ],
+      "transmission": [
+        "vector",
+        "blood"
+      ],
+      "clinical": {
+        "presentation": "발열·오한·두통·빈혈·비장비대가 나타나며 국내 삼일열도 초기 발열이 규칙적이지 않을 수 있다.",
+        "diagnostics": "도말·신속 검사로 종을 확인한다. Primaquine·Tafenoquine 전에 정량 G6PD와 임신·수유 상태를 확인한다.",
+        "management": "혈액 단계는 지역 내성에 맞춰 Chloroquine 또는 ACT 등을 선택한다. 휴면체 치료는 별도 단계이며 임신·G6PD 결핍에서는 제한된다.",
+        "redFlags": "용혈 위험·임신·비장 파열·장기 손상에 주의한다. 중증이면 IV Artesunate 치료가 우선이다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pvo",
+          "context": "Plasmodium vivax·P. ovale"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "vivax-ovale-malaria-tx-1",
+          "rank": "preferred",
+          "context": "Chloroquine 감수성 지역의 혈액 단계",
+          "components": [
+            {
+              "name": "Chloroquine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "vivax-ovale-malaria-tx-2",
+          "rank": "preferred",
+          "context": "내성 지역 등 혈액 단계 ACT 선택",
+          "components": [
+            {
+              "drugId": "artemetherlumefantrine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "vivax-ovale-malaria-tx-3",
+          "rank": "conditional",
+          "context": "G6PD 정상·비임신 등 조건 충족 후 휴면체 제거",
+          "components": [
+            {
+              "drugId": "primaquine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "falciparum-malaria",
+        "other-malaria"
+      ],
+      "sourceIds": [
+        "disease-cdc-malaria-2026",
+        "disease-cdc-malaria-severe"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "other-malaria",
+      "kind": "disease",
+      "name": "사일열·원숭이 말라리아",
+      "englishName": "Malariae and knowlesi malaria",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "사일열은 오래 지속할 수 있고 원숭이 말라리아는 빠르게 중증화할 수 있다. 종 동정과 중증도에 맞춰 혈액 단계 감염을 치료한다.",
+      "searchAliases": [
+        "사일열말라리아",
+        "원숭이말라리아",
+        "노울레시말라리아",
+        "knowlesi"
+      ],
+      "anatomicSites": [
+        "blood",
+        "liver"
+      ],
+      "transmission": [
+        "vector",
+        "blood"
+      ],
+      "clinical": {
+        "presentation": "동남아 노출 후 발열·혈소판감소는 P. knowlesi를 고려한다. P. malariae는 낮은 원충혈증으로 오래 남을 수 있다.",
+        "diagnostics": "혈액 도말로 다른 종과 혼동할 수 있어 필요하면 분자 검사로 구분한다. 장기 손상과 원충혈증을 평가한다.",
+        "management": "비중증은 종·노출 지역에 맞는 ACT 또는 Chloroquine 등을 선택한다. 두 종에는 vivax·ovale의 휴면체 제거 요법을 일률 적용하지 않는다.",
+        "redFlags": "Knowlesi의 빠른 원충 증가·의식 변화·신손상·호흡부전은 IV Artesunate 적응을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pma",
+          "context": "Plasmodium malariae"
+        },
+        {
+          "pathogenId": "pkn",
+          "context": "Plasmodium knowlesi"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "other-malaria-tx-1",
+          "rank": "preferred",
+          "context": "비중증의 ACT 선택지",
+          "components": [
+            {
+              "drugId": "artemetherlumefantrine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "other-malaria-tx-2",
+          "rank": "preferred",
+          "context": "중증 감염 초기 정맥 치료",
+          "components": [
+            {
+              "name": "Artesunate (IV)"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "falciparum-malaria",
+        "vivax-ovale-malaria"
+      ],
+      "sourceIds": [
+        "disease-cdc-malaria-2026",
+        "disease-cdc-malaria-severe"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "babesiosis",
+      "kind": "disease",
+      "name": "바베시아증",
+      "englishName": "Babesiosis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "진드기·수혈 노출 뒤 발열과 용혈성 빈혈이 나타난다. 무비증·면역저하·고령에서는 중증화 위험이 크다.",
+      "searchAliases": [
+        "바베시오시스",
+        "바베시아감염"
+      ],
+      "anatomicSites": [
+        "blood"
+      ],
+      "transmission": [
+        "vector",
+        "blood"
+      ],
+      "clinical": {
+        "presentation": "오한·피로·황달·혈소판감소가 흔하며 말라리아와 유사할 수 있다.",
+        "diagnostics": "혈액 도말·PCR로 확인한다. 항체 양성만으로 현재 활동성 감염을 확정하지 않으며 원충혈증과 용혈 정도를 평가한다.",
+        "management": "대개 Atovaquone과 Azithromycin 병합을 사용한다. 면역저하에서는 기간·추적을 조정하고 일부 중증은 교환수혈을 검토한다.",
+        "redFlags": "높은 원충혈증·심한 용혈·호흡부전·신손상은 중증 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bmi",
+          "context": "Babesia microti"
+        },
+        {
+          "name": "Other Babesia species",
+          "domain": "parasites",
+          "context": "지역별 원인"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "babesiosis-tx-1",
+          "rank": "preferred",
+          "context": "대표 병합 요법",
+          "components": [
+            {
+              "drugId": "atovaquone"
+            },
+            {
+              "drugId": "azithromycin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "babesiosis-tx-2",
+          "rank": "alternative",
+          "context": "상황에 따른 병합 대안",
+          "components": [
+            {
+              "drugId": "clindamycin"
+            },
+            {
+              "drugId": "quinine"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "idsa-babesia",
+        "disease-cdc-babesia"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "toxoplasmosis",
+      "kind": "disease",
+      "name": "톡소포자충증",
+      "englishName": "Toxoplasmosis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "면역이 정상일 때는 무증상이나 림프절 비대가 흔하다. 임신·안구 침범·면역저하에서는 단순 림프절형과 다르게 접근한다.",
+      "searchAliases": [
+        "톡소플라스마증",
+        "톡소포자충감염"
+      ],
+      "anatomicSites": [
+        "blood",
+        "eye"
+      ],
+      "transmission": [
+        "food",
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "경부 림프절 비대·피로·미열이 나타날 수 있고 안구형은 흐림·비문증·시력 저하로 나타난다.",
+        "diagnostics": "혈청 검사와 노출·시간 경과를 함께 판단한다. 임신은 감염 시점 확인이 중요하며 안구형은 안과 평가가 필요하다.",
+        "management": "경증 면역 정상 림프절형은 관찰할 수 있다. 치료 필요 장기 감염은 병합 요법을 쓰며 Pyrimethamine에는 Leucovorin을 함께 투여한다.",
+        "redFlags": "임신 중 새 감염·시력 저하·새 신경학적 증상은 전문 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tgo",
+          "context": "Toxoplasma gondii"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "toxoplasmosis-tx-1",
+          "rank": "conditional",
+          "context": "치료가 필요한 장기 감염의 병합 선택·Leucovorin 필수",
+          "components": [
+            {
+              "drugId": "pyrimethamine"
+            },
+            {
+              "drugId": "sulfadiazine"
+            },
+            {
+              "name": "Leucovorin",
+              "role": "adjunct"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "toxoplasma-encephalitis",
+        "congenital-toxoplasmosis"
+      ],
+      "sourceIds": [
+        "disease-cdc-toxoplasma",
+        "nih-toxo"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "톡소플라즈마증 (Toxoplasmosis)",
+          "path": "source_notes/02 Diseases/08 감염/톡소플라즈마증 (Toxoplasmosis).md"
+        }
+      ]
+    },
+    {
+      "id": "toxoplasma-encephalitis",
+      "kind": "disease",
+      "name": "톡소포자충 뇌염",
+      "englishName": "Toxoplasma encephalitis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "진행성 HIV 등에서 두통·발작·국소 신경 결손과 다발성 뇌 병변이 단서다. 대개 기존 감염이 재활성화하며 CNS 림프종 등과 감별한다.",
+      "searchAliases": [
+        "톡소플라스마뇌염",
+        "뇌톡소포자충증"
+      ],
+      "anatomicSites": [
+        "brain"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "발열·두통·편마비·발작·의식 변화가 나타나며 뇌 영상에서 고리 조영 병변이 흔하다.",
+        "diagnostics": "뇌 MRI·혈청 검사·임상 반응을 함께 판단한다. 비전형적 병변이나 치료 무반응은 다른 원인·조직 검사를 검토한다.",
+        "management": "Pyrimethamine·Sulfadiazine·Leucovorin 또는 TMP-SMX 등의 권고 요법을 선택한다. 급성 치료 뒤 면역 회복까지 유지 치료가 필요하다.",
+        "redFlags": "의식 저하·발작·뇌압 상승은 긴급 처치한다. 스테로이드는 의미 있는 종괴 효과 등 적응증에서만 고려한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tgo",
+          "context": "주로 잠복 감염 재활성화"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "toxoplasma-encephalitis-tx-1",
+          "rank": "preferred",
+          "context": "급성 CNS 감염의 병합 선택·Leucovorin 필수",
+          "components": [
+            {
+              "drugId": "pyrimethamine"
+            },
+            {
+              "drugId": "sulfadiazine"
+            },
+            {
+              "name": "Leucovorin",
+              "role": "adjunct"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "toxoplasma-encephalitis-tx-2",
+          "rank": "preferred",
+          "context": "권고되는 다른 급성 치료 선택지",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "toxoplasmosis",
+        "hiv-infection"
+      ],
+      "sourceIds": [
+        "nih-toxo"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "congenital-toxoplasmosis",
+      "kind": "disease",
+      "name": "선천성 톡소포자충증",
+      "englishName": "Congenital toxoplasmosis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "임신 중 모체 감염이 태아로 전파되어 뇌·눈을 침범할 수 있다. 출생 시 무증상이어도 나중에 안구 증상이 생길 수 있다.",
+      "searchAliases": [
+        "선천톡소플라스마증",
+        "선천톡소포자충감염"
+      ],
+      "anatomicSites": [
+        "brain",
+        "eye"
+      ],
+      "transmission": [
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "맥락망막염·수두증·두개 내 석회화 등이 가능하며 전형적인 세 소견이 모두 나타나지는 않는다.",
+        "diagnostics": "모체 감염 시점과 태아·신생아 혈청·PCR 등을 함께 평가한다. 뇌 영상·안과·청력 등 추적이 필요하다.",
+        "management": "태아·신생아 상태에 맞는 전문 병합 치료를 시행한다. 확인된 선천 감염은 Pyrimethamine·Sulfadiazine·Leucovorin 등을 사용하며 혈구를 추적한다.",
+        "redFlags": "태아 이상·신생아 발작·수두증·시력 장애는 긴급 전문 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tgo",
+          "context": "태반을 통한 전파"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "congenital-toxoplasmosis-tx-1",
+          "rank": "preferred",
+          "context": "확인된 선천 감염의 전문 병합 치료·Leucovorin 필수",
+          "components": [
+            {
+              "drugId": "pyrimethamine"
+            },
+            {
+              "drugId": "sulfadiazine"
+            },
+            {
+              "name": "Leucovorin",
+              "role": "adjunct"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "toxoplasmosis"
+      ],
+      "sourceIds": [
+        "disease-cdc-toxoplasma"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "giardiasis",
+      "kind": "disease",
+      "name": "람블편모충증",
+      "englishName": "Giardiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "오염된 물 노출 뒤 악취 나는 기름진 설사·복부 팽만이 단서다. 흡수장애와 체중 감소가 생기며 혈변·고열은 전형적이지 않다.",
+      "searchAliases": [
+        "지아르디아증",
+        "지아르디아감염",
+        "람블편모충감염"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "water",
+        "food",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "지방변·가스·복통·오심이 나타나고 증상이 오래 이어질 수 있다.",
+        "diagnostics": "대변 항원·PCR·현미경 검사를 사용하며 간헐 배출을 고려한다.",
+        "management": "Tinidazole·Nitazoxanide·Metronidazole 등 상황에 맞는 약을 선택한다. 지속 증상은 재감염·복약·면역 상태·감염 후 증상을 구분한다.",
+        "redFlags": "탈수·성장 저하·지속 체중 감소를 평가한다. 증상만 남았다고 무조건 재치료하지 않는다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "gla",
+          "context": "Giardia duodenalis"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "giardiasis-tx-1",
+          "rank": "preferred",
+          "context": "대표 경구 선택지 중 하나",
+          "components": [
+            {
+              "name": "Tinidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "giardiasis-tx-2",
+          "rank": "alternative",
+          "context": "경구 대안",
+          "components": [
+            {
+              "drugId": "nitazoxanide"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "giardiasis-tx-3",
+          "rank": "alternative",
+          "context": "경구 대안",
+          "components": [
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-giardia"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "amebic-colitis",
+      "kind": "disease",
+      "name": "아메바성 대장염",
+      "englishName": "Amebic colitis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "혈변·복통·뒤무직이 나타나며 염증성 장질환과 비슷할 수 있다. 조직 침범 약 뒤에 장내 제거 약을 이어야 한다.",
+      "searchAliases": [
+        "아메바장염",
+        "아메바성장염",
+        "아메바이질"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "점액혈변·복통·체중 감소가 흔하며 일부는 전격성 대장염으로 진행한다.",
+        "diagnostics": "대변 항원·PCR 등으로 병원성 E. histolytica를 비병원성 종과 구별한다. 필요하면 내시경·조직 검사를 한다.",
+        "management": "침습성 감염은 Metronidazole 또는 Tinidazole 후 Paromomycin 등 장내 제거 요법을 시행한다. 스테로이드 투여 전 감염을 감별한다.",
+        "redFlags": "복막 자극·중독성 거대결장·천공·쇼크는 긴급 수술·중증 치료가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "ehi",
+          "context": "Entamoeba histolytica"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "amebic-colitis-tx-1",
+          "rank": "preferred",
+          "context": "조직 침범 치료 후 장내 제거·순차 사용",
+          "components": [
+            {
+              "drugId": "metronidazole"
+            },
+            {
+              "drugId": "paromomycin"
+            }
+          ],
+          "mode": "sequence",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "amebic-liver-abscess"
+      ],
+      "sourceIds": [
+        "cdc-amebiasis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "아메바 장염 (Amebic Colitis)",
+          "path": "source_notes/02 Diseases/08 감염/아메바 장염 (Amebic Colitis).md"
+        }
+      ]
+    },
+    {
+      "id": "amebic-liver-abscess",
+      "kind": "disease",
+      "name": "아메바성 간농양",
+      "englishName": "Amebic liver abscess",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "발열과 우상복부 통증이 흔하며 설사가 없어도 생긴다. 조직 치료 뒤 장내 제거가 필요하고 모든 농양을 일률적으로 배액하지 않는다.",
+      "searchAliases": [
+        "아메바간농양",
+        "아메바성간농양"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "food",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "간비대·흉막통·우측 어깨 통증이 동반될 수 있다.",
+        "diagnostics": "영상·노출력·혈청 검사와 다른 간농양 원인을 함께 판단한다. 대변 검사가 음성일 수 있다.",
+        "management": "Metronidazole 등 조직 치료 뒤 장내 제거 약을 사용한다. 파열 위험·진단 불확실·치료 무반응 등에 따라 배액을 검토한다.",
+        "redFlags": "좌엽 병변·파열·흉부 또는 심낭 침범·복막 자극은 긴급 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "ehi",
+          "context": "장외 침범"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "amebic-liver-abscess-tx-1",
+          "rank": "preferred",
+          "context": "조직 침범 치료 후 장내 제거·순차 사용",
+          "components": [
+            {
+              "drugId": "metronidazole"
+            },
+            {
+              "drugId": "paromomycin"
+            }
+          ],
+          "mode": "sequence",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "amebic-colitis",
+        "pyogenic-liver-abscess"
+      ],
+      "sourceIds": [
+        "cdc-amebiasis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "cryptosporidiosis",
+      "kind": "disease",
+      "name": "크립토스포리디움증",
+      "englishName": "Cryptosporidiosis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "수영장·오염된 물 노출 뒤 물설사가 생긴다. 진행성 HIV에서는 오래 지속하는 심한 설사·체중 감소와 담도 침범이 가능하다.",
+      "searchAliases": [
+        "와포자충증",
+        "크립토스포리디움감염"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "liver"
+      ],
+      "transmission": [
+        "water",
+        "food",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "물설사·복통·오심·탈수가 나타나며 면역저하에서는 만성화할 수 있다.",
+        "diagnostics": "대변 PCR·항원·특수 염색 등으로 확인하며 일반 충란 검사만으로 놓칠 수 있다.",
+        "management": "수액·영양 보충과 면역 회복이 중요하다. Nitazoxanide는 면역 정상 환자의 선택지이며 면역저하 효과는 제한적이다.",
+        "redFlags": "심한 탈수·영양실조·지속 설사·담도 통증은 중증 또는 장외 침범을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cry",
+          "context": "Cryptosporidium species"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "cryptosporidiosis-tx-1",
+          "rank": "conditional",
+          "context": "면역 정상의 적응증에 맞는 치료",
+          "components": [
+            {
+              "drugId": "nitazoxanide"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "hiv-infection"
+      ],
+      "sourceIds": [
+        "cdc-crypto-par"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "cyclosporiasis",
+      "kind": "disease",
+      "name": "원포자충증",
+      "englishName": "Cyclosporiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "신선 채소·과일 등 노출 뒤 물설사가 오래가며 호전과 재발을 반복한다. 일반 충란 검사에 포함되지 않아 따로 요청해야 할 수 있다.",
+      "searchAliases": [
+        "사이클로스포라증",
+        "원포자충감염"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "복부 팽만·식욕 저하·피로·체중 감소가 동반될 수 있다.",
+        "diagnostics": "대변 PCR·특수 염색·자가형광 등으로 확인한다. 역학적 노출과 집단 발생 여부를 확인한다.",
+        "management": "TMP-SMX가 대표 치료다. 면역저하에서는 기간·재발 관리가 달라지며 알레르기 대안은 효과가 제한적이다.",
+        "redFlags": "심한 탈수·장기 설사·체중 감소는 적극적인 수액·영양 치료가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cyc",
+          "context": "Cyclospora cayetanensis"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "cyclosporiasis-tx-1",
+          "rank": "preferred",
+          "context": "확인된 감염의 대표 치료",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-cyclospora"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "cystoisosporiasis",
+      "kind": "disease",
+      "name": "등포자충증",
+      "englishName": "Cystoisosporiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "면역저하 환자의 만성 물설사·체중 감소와 때로 호산구 증가가 단서다. 진행성 HIV에서는 치료 뒤 재발 예방도 고려한다.",
+      "searchAliases": [
+        "시스토이소스포라증",
+        "이소스포라증"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "복통·탈수·흡수장애가 나타날 수 있다.",
+        "diagnostics": "대변 특수 염색·PCR 등을 시행하며 반복 검체가 필요할 수 있다.",
+        "management": "TMP-SMX와 수액·영양 치료를 시행한다. 면역 회복 전에는 재발 예방과 약제 흡수·내약성을 평가한다.",
+        "redFlags": "심한 탈수·지속 체중 감소·경구 흡수 불량은 입원 치료를 고려한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cys",
+          "context": "Cystoisospora belli"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "cystoisosporiasis-tx-1",
+          "rank": "preferred",
+          "context": "활동성 감염의 대표 요법",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "hiv-infection"
+      ],
+      "sourceIds": [
+        "nih-cystoisospora"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "cutaneous-leishmaniasis",
+      "kind": "disease",
+      "name": "피부 리슈만편모충증",
+      "englishName": "Cutaneous leishmaniasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "모래파리 노출 뒤 잘 낫지 않는 피부 궤양이 생긴다. 발생 지역·균종에 따라 점막 침범 위험과 국소·전신 치료가 달라진다.",
+      "searchAliases": [
+        "피부리슈마니아증",
+        "피부리슈만편모충증",
+        "점막리슈마니아증"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "통증이 적은 구진·결절이 궤양으로 변하며 점막형은 코·입 조직을 파괴할 수 있다.",
+        "diagnostics": "병변 조직·PCR·배양으로 확인하고 여행 지역·균종을 평가한다.",
+        "management": "일부는 국소 치료·관찰이 가능하나 점막 위험·병변 위치·범위에 따라 전신 치료한다. Miltefosine은 균종·지역·임신 금기를 확인한다.",
+        "redFlags": "코막힘·코피·구강 병변·얼굴 침범은 점막형 전문 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "lei",
+          "context": "Leishmania species"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "cutaneous-leishmaniasis-tx-1",
+          "rank": "conditional",
+          "context": "균종·지역·병변·금기 조건에 맞는 전신 선택",
+          "components": [
+            {
+              "drugId": "miltefosine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "cutaneous-leishmaniasis-tx-2",
+          "rank": "conditional",
+          "context": "전신 치료의 다른 선택·Liposomal 제형",
+          "components": [
+            {
+              "drugId": "amphotericinb"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "visceral-leishmaniasis"
+      ],
+      "sourceIds": [
+        "cdc-leish"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "visceral-leishmaniasis",
+      "kind": "disease",
+      "name": "내장 리슈만편모충증",
+      "englishName": "Visceral leishmaniasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "장기간 발열·체중 감소·거대한 비장·혈구감소가 핵심이다. 치료하지 않으면 치명적이며 HIV에서는 재발하기 쉽다.",
+      "searchAliases": [
+        "칼라아자르",
+        "내장리슈마니아증",
+        "내장리슈만편모충증"
+      ],
+      "anatomicSites": [
+        "liver",
+        "blood"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "간비장비대·빈혈·혈소판감소·면역저하가 나타난다.",
+        "diagnostics": "지역에 맞는 혈청·분자 검사와 조직·골수 검사를 선택한다. 침습 검체의 출혈 위험을 고려한다.",
+        "management": "Liposomal Amphotericin B 등 지역·면역 상태에 맞는 전신 요법을 선택한다. HIV에서는 면역 회복·재발 관리도 중요하다.",
+        "redFlags": "출혈·중증 빈혈·세균 동시 감염·쇠약은 중증 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "lei",
+          "context": "내장 침범 원인종"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "visceral-leishmaniasis-tx-1",
+          "rank": "preferred",
+          "context": "지역·숙주 조건을 확인한 대표 치료·Liposomal 제형",
+          "components": [
+            {
+              "drugId": "amphotericinb"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "visceral-leishmaniasis-tx-2",
+          "rank": "conditional",
+          "context": "균종·지역·임신 금기에 따른 선택",
+          "components": [
+            {
+              "drugId": "miltefosine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "cutaneous-leishmaniasis",
+        "hiv-infection"
+      ],
+      "sourceIds": [
+        "cdc-leish"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "chagas-disease",
+      "kind": "disease",
+      "name": "샤가스병",
+      "englishName": "Chagas disease",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "중남미 노출 뒤 감염되며 수년 후 심근병증·부정맥·거대식도·거대결장이 생길 수 있다. 급성·재활성화와 만성기의 치료 판단이 다르다.",
+      "searchAliases": [
+        "차가스병",
+        "샤가스감염",
+        "미주트리파노소마증"
+      ],
+      "anatomicSites": [
+        "heart",
+        "abdomen"
+      ],
+      "transmission": [
+        "vector",
+        "food",
+        "blood",
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "급성 발열·부종 또는 무증상 감염 이후 심장·소화기 질환으로 나타난다.",
+        "diagnostics": "급성은 혈액 도말·PCR, 만성은 서로 다른 혈청 검사로 확인한다. 심전도·심초음파 등 장기 침범을 평가한다.",
+        "management": "Benznidazole 또는 Nifurtimox를 병기·연령·금기에 맞게 검토한다. 부정맥·심부전·소화기 합병증은 별도로 관리한다.",
+        "redFlags": "실신·치명적 부정맥·급성 심부전·면역저하 재활성화는 긴급 치료가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tcr",
+          "context": "Trypanosoma cruzi"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "chagas-disease-tx-1",
+          "rank": "preferred",
+          "context": "치료 적응증을 확인한 구충제 선택지",
+          "components": [
+            {
+              "drugId": "benznidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "chagas-disease-tx-2",
+          "rank": "alternative",
+          "context": "다른 구충제 선택지",
+          "components": [
+            {
+              "name": "Nifurtimox"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-chagas"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "african-trypanosomiasis",
+      "kind": "disease",
+      "name": "아프리카 수면병",
+      "englishName": "Human African trypanosomiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "체체파리 노출 뒤 발열·림프절 비대에 이어 수면·신경 장애가 나타난다. 감비엔스형·로데시엔스형과 CNS 병기에 따라 치료가 달라진다.",
+      "searchAliases": [
+        "수면병",
+        "아프리카트리파노소마증",
+        "HAT"
+      ],
+      "anatomicSites": [
+        "blood",
+        "brain"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "피로·두통·림프절 비대·수면 주기 이상·정신 및 신경 증상이 나타난다.",
+        "diagnostics": "혈액·림프절 등에서 원충을 확인하고 아종·CNS 침범·중증도를 평가한다.",
+        "management": "2024 WHO 지침의 Fexinidazole 적격 조건·섭취 가능 여부를 확인한다. 중증 CNS형·소아 등은 별도 전문 요법을 사용한다.",
+        "redFlags": "의식 변화·심한 신경 장애·섭취 불가·빠른 진행은 전문 치료가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tbr",
+          "context": "T. brucei gambiense·rhodesiense"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "african-trypanosomiasis-tx-1",
+          "rank": "conditional",
+          "context": "아종·병기·연령·체중·복용 조건이 맞는 경구 선택",
+          "components": [
+            {
+              "name": "Fexinidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "african-trypanosomiasis-tx-2",
+          "rank": "conditional",
+          "context": "중증 CNS 감비엔스형 등 전문 병합 요법",
+          "components": [
+            {
+              "name": "Nifurtimox"
+            },
+            {
+              "name": "Eflornithine"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-who-hat-2024",
+        "disease-cdc-hat"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "strongyloidiasis",
+      "kind": "disease",
+      "name": "분선충증",
+      "englishName": "Strongyloidiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "과거 열대 지역 노출만 있어도 감염이 수십 년 지속할 수 있다. 스테로이드 투여 전에는 과감염 위험을 확인해야 한다.",
+      "searchAliases": [
+        "분선충감염",
+        "스트롱길로이데스증"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "skin",
+        "lungs"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "무증상·복통·설사·빠르게 이동하는 피부 발진과 호산구 증가가 나타날 수 있다.",
+        "diagnostics": "대변 유충 검사·혈청 검사 등을 선택한다. 한 번의 대변 음성으로 배제하지 않으며 면역저하에서는 호산구가 없을 수도 있다.",
+        "management": "Ivermectin이 대표 치료다. Loa loa 동반 위험·임신·체중 등을 확인하고 면역억제 전 감염 평가·치료를 고려한다.",
+        "redFlags": "스테로이드 후 폐·장 증상 악화·그람음성 패혈증은 과감염을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sst",
+          "context": "Strongyloides stercoralis"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "strongyloidiasis-tx-1",
+          "rank": "preferred",
+          "context": "비파종성 감염의 대표 치료",
+          "components": [
+            {
+              "drugId": "ivermectin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "strongyloidiasis-tx-2",
+          "rank": "alternative",
+          "context": "상황에 따른 대안",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "strongyloides-hyperinfection"
+      ],
+      "sourceIds": [
+        "disease-cdc-strongyloides"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "strongyloides-hyperinfection",
+      "kind": "disease",
+      "name": "분선충 과감염·파종증",
+      "englishName": "Strongyloides hyperinfection and dissemination",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "스테로이드·면역억제 뒤 기존 분선충이 폭증해 폐·장 감염과 세균성 패혈증을 일으킨다. 일반 분선충증처럼 짧게 치료하면 안 된다.",
+      "searchAliases": [
+        "분선충과다감염",
+        "파종분선충증"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "lungs",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "복통·장마비·설사·호흡부전·패혈증이 나타나며 호산구 증가가 없을 수 있다.",
+        "diagnostics": "대변·객담·BAL 등에서 유충을 확인하고 세균 동시 감염을 검사한다.",
+        "management": "매일 Ivermectin을 투여하며 반복 검체의 지속 음전을 확인한다. 가능한 면역억제를 줄이고 장마비·흡수 불량·세균 동시 감염을 관리한다.",
+        "redFlags": "호흡부전·쇼크·장폐색·장출혈은 중환자 치료와 투여 경로의 전문 검토가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sst",
+          "context": "자가감염 폭증"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "strongyloides-hyperinfection-tx-1",
+          "rank": "preferred",
+          "context": "과감염·파종형의 연장 치료·음전 추적 필요",
+          "components": [
+            {
+              "drugId": "ivermectin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "strongyloidiasis",
+        "sepsis"
+      ],
+      "sourceIds": [
+        "disease-cdc-strongyloides"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "ascariasis",
+      "kind": "disease",
+      "name": "회충증",
+      "englishName": "Ascariasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "감염 초기에는 기침·호산구 증가, 장내 성충기에는 복통이 나타날 수 있다. 많은 충체는 장폐색이나 담도 폐색을 일으킨다.",
+      "searchAliases": [
+        "회충감염",
+        "회충"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "lungs",
+        "liver"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "무증상이 흔하지만 복통·영양 장애·충체 배출이 단서가 된다.",
+        "diagnostics": "대변 충란 검사와 필요 시 영상·내시경으로 확인한다.",
+        "management": "Albendazole 또는 Mebendazole 등을 사용한다. 장폐색·담도 침범은 구충제만으로 해결하지 않고 중재 필요성을 평가한다.",
+        "redFlags": "담관염·췌장염·장폐색·천공 소견은 긴급 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "alu",
+          "context": "Ascaris lumbricoides"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "ascariasis-tx-1",
+          "rank": "preferred",
+          "context": "장내 감염의 대표 선택지",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "ascariasis-tx-2",
+          "rank": "alternative",
+          "context": "장내 감염의 다른 선택지",
+          "components": [
+            {
+              "drugId": "mebendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "acute-cholangitis"
+      ],
+      "sourceIds": [
+        "cdc-ascariasis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "enterobiasis",
+      "kind": "disease",
+      "name": "요충증",
+      "englishName": "Enterobiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "밤에 심해지는 항문 가려움이 특징이다. 재감염이 흔해 두 차례 치료와 동거인·손 위생 관리가 중요하다.",
+      "searchAliases": [
+        "요충감염",
+        "요충",
+        "핀웜"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "skin"
+      ],
+      "transmission": [
+        "food",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "수면 장애·항문 주변 자극이 흔하며 일부는 외음부 자극을 호소한다.",
+        "diagnostics": "아침에 씻거나 배변하기 전 테이프 검사로 확인한다. 일반 대변 검사는 진단 민감도가 낮다.",
+        "management": "Albendazole·Mebendazole·Pyrantel 등을 쓰며 일정 간격으로 반복한다. 동거인 동시 치료·침구 세탁·손톱 관리가 필요하다.",
+        "redFlags": "지속 증상은 재감염·치료 누락·다른 항문 질환을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eve",
+          "context": "Enterobius vermicularis"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "enterobiasis-tx-1",
+          "rank": "preferred",
+          "context": "반복 투여가 필요한 대표 선택지",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "enterobiasis-tx-2",
+          "rank": "alternative",
+          "context": "반복 투여가 필요한 대안",
+          "components": [
+            {
+              "drugId": "mebendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-pinworm"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "요충증 (Enterobiasis)",
+          "path": "source_notes/02 Diseases/08 감염/요충증 (Enterobiasis).md"
+        }
+      ]
+    },
+    {
+      "id": "trichuriasis",
+      "kind": "disease",
+      "name": "편충증",
+      "englishName": "Trichuriasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "대량 감염에서는 만성 설사·빈혈·성장 장애가 생긴다. 소아의 혈변·직장 탈출은 심한 편충 감염의 단서다.",
+      "searchAliases": [
+        "편충감염",
+        "편충"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "경증은 무증상이며 복통·점액혈변·빈혈이 나타날 수 있다.",
+        "diagnostics": "대변 충란 검사로 확인하고 빈혈·영양 상태를 평가한다.",
+        "management": "Albendazole 또는 Mebendazole 등 적절한 다일 요법을 선택한다. 위생·영양·빈혈을 함께 관리한다.",
+        "redFlags": "심한 빈혈·탈수·직장 탈출은 중증 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "ttr",
+          "context": "Trichuris trichiura"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "trichuriasis-tx-1",
+          "rank": "preferred",
+          "context": "다일 요법의 대표 선택지",
+          "components": [
+            {
+              "drugId": "mebendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "trichuriasis-tx-2",
+          "rank": "alternative",
+          "context": "다일 요법의 다른 선택지",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-soil-helminths"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "hookworm-infection",
+      "kind": "disease",
+      "name": "구충증",
+      "englishName": "Hookworm infection",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "맨발의 토양 노출 뒤 장에 자리 잡아 만성 혈액 손실을 일으킨다. 철결핍 빈혈·피로·성장 저하가 임상 핵심이다.",
+      "searchAliases": [
+        "십이지장충증",
+        "구충감염",
+        "갈고리충"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "skin"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "노출 부위 가려움·초기 기침 이후 복통·빈혈·저알부민혈증이 나타날 수 있다.",
+        "diagnostics": "대변 충란 검사와 혈구·철 상태 등을 확인한다.",
+        "management": "Albendazole 또는 Mebendazole을 사용하고 철분·영양을 보충한다. 신발·위생으로 재감염을 줄인다.",
+        "redFlags": "심한 빈혈·호흡곤란·영양실조는 추가 치료가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hoo",
+          "context": "Ancylostoma·Necator"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "hookworm-infection-tx-1",
+          "rank": "preferred",
+          "context": "대표 구충제 선택지",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "hookworm-infection-tx-2",
+          "rank": "alternative",
+          "context": "다른 구충제 선택지",
+          "components": [
+            {
+              "drugId": "mebendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-hookworm"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "schistosomiasis",
+      "kind": "disease",
+      "name": "주혈흡충증",
+      "englishName": "Schistosomiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "유행 지역의 민물 노출 뒤 감염된다. 종에 따라 혈뇨·요로 손상 또는 장·간 섬유화·문맥고혈압이 생긴다.",
+      "searchAliases": [
+        "주혈흡충감염",
+        "빌하르츠병"
+      ],
+      "anatomicSites": [
+        "urinary",
+        "liver",
+        "abdomen"
+      ],
+      "transmission": [
+        "water"
+      ],
+      "clinical": {
+        "presentation": "급성 발열·두드러기·호산구 증가 또는 만성 혈뇨·복통·간비장비대가 나타난다.",
+        "diagnostics": "노출력과 소변·대변 충란·혈청 검사 등을 함께 해석한다. 초기 감염은 검사·치료 시점에 주의한다.",
+        "management": "Praziquantel이 대표 치료이며 성숙 충체와 치료 시기를 고려한다. 이미 생긴 섬유화·요로 손상은 별도 관리가 필요하다.",
+        "redFlags": "신경학적 이상·심한 혈뇨·문맥고혈압·장출혈은 장기 합병증을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sch",
+          "context": "Schistosoma species"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "schistosomiasis-tx-1",
+          "rank": "preferred",
+          "context": "종·치료 시기에 맞는 구충 요법",
+          "components": [
+            {
+              "drugId": "praziquantel"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-schisto"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "clonorchiasis",
+      "kind": "disease",
+      "name": "간흡충증",
+      "englishName": "Clonorchiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "민물고기를 날로 먹은 뒤 감염되어 담관을 침범한다. 만성 감염은 담도염·결석·담관암 위험과 연결되지만 암 자체는 별도 질환이다.",
+      "searchAliases": [
+        "간디스토마",
+        "간흡충",
+        "클로노르키스증"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "무증상부터 우상복부 통증·담도염·황달까지 다양하다.",
+        "diagnostics": "대변 충란 검사와 영상으로 확인하며 유사 흡충과 구분한다.",
+        "management": "Praziquantel을 사용하고 생민물고기 섭취를 중단한다. 담도 폐색·담관염은 배액·세균 감염 치료도 필요하다.",
+        "redFlags": "발열·황달·저혈압은 담관염·패혈증을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "csi",
+          "context": "Clonorchis sinensis"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "clonorchiasis-tx-1",
+          "rank": "preferred",
+          "context": "확인된 감염의 대표 치료",
+          "components": [
+            {
+              "drugId": "praziquantel"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "acute-cholangitis"
+      ],
+      "sourceIds": [
+        "cdc-clonorchis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "간흡충증 (Clonorchiasis)",
+          "path": "source_notes/02 Diseases/08 감염/간흡충증 (Clonorchiasis).md"
+        }
+      ]
+    },
+    {
+      "id": "paragonimiasis",
+      "kind": "disease",
+      "name": "폐흡충증",
+      "englishName": "Paragonimiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "민물 게·가재를 날로 먹은 뒤 만성 기침·객혈·흉수로 나타난다. 결핵과 비슷하며 호산구 증가가 감별의 단서다.",
+      "searchAliases": [
+        "폐디스토마",
+        "폐흡충",
+        "파라고니무스증"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "brain"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "흉통·녹슨 색 가래·호흡기 증상이 흔하며 일부는 뇌 등 이소성 감염이 생긴다.",
+        "diagnostics": "객담·대변 충란, 혈청·영상 검사를 임상형에 맞춰 선택한다.",
+        "management": "Praziquantel 등이 대표 치료다. CNS 침범은 염증 악화와 신경학적 합병증을 함께 관리한다.",
+        "redFlags": "발작·국소 신경 결손·심한 객혈은 뇌 또는 중증 폐 침범을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pwe",
+          "context": "Paragonimus species"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "paragonimiasis-tx-1",
+          "rank": "preferred",
+          "context": "대표 구충 치료",
+          "components": [
+            {
+              "drugId": "praziquantel"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "paragonimiasis-tx-2",
+          "rank": "alternative",
+          "context": "상황에 따른 대안",
+          "components": [
+            {
+              "drugId": "triclabendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pulmonary-tuberculosis"
+      ],
+      "sourceIds": [
+        "cdc-paragonimus"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "폐흡충증 (Pulmonary Paragonimiasis)",
+          "path": "source_notes/02 Diseases/02 호흡기/폐흡충증 (Pulmonary Paragonimiasis).md"
+        },
+        {
+          "title": "폐흡충증 (Paragonimiasis)",
+          "path": "source_notes/02 Diseases/08 감염/폐흡충증 (Paragonimiasis).md"
+        }
+      ]
+    },
+    {
+      "id": "fascioliasis",
+      "kind": "disease",
+      "name": "간질증",
+      "englishName": "Fascioliasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "오염된 수생 식물 등을 먹은 뒤 간 이동기에 발열·우상복부 통증·호산구 증가가 생긴다. 간흡충과 달리 Triclabendazole을 사용한다.",
+      "searchAliases": [
+        "간질충증",
+        "간질충",
+        "파스시올라증"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "food",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "급성 간 침범 후 만성 담도 폐색·담관염으로 나타날 수 있다.",
+        "diagnostics": "노출·혈청·영상과 병기에 따른 대변 충란 검사를 사용한다. 초기에는 충란이 없을 수 있다.",
+        "management": "Triclabendazole이 대표 치료다. Praziquantel을 같은 간흡충 치료처럼 대체하지 않으며 담도 폐색은 중재를 검토한다.",
+        "redFlags": "황달·담관염·지속 복통은 담도 합병증을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "fhe",
+          "context": "Fasciola hepatica·gigantica"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "fascioliasis-tx-1",
+          "rank": "preferred",
+          "context": "확인된 감염의 대표 치료",
+          "components": [
+            {
+              "drugId": "triclabendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-fasciola"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "taeniasis",
+      "kind": "disease",
+      "name": "유구·무구조충증",
+      "englishName": "Taeniasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "덜 익힌 돼지·소고기로 장내 성충 감염이 생기며 편절 배출이 단서다. 유구조충의 충란 섭취로 생기는 낭미충증과 구분한다.",
+      "searchAliases": [
+        "유구조충",
+        "무구조충",
+        "조충증",
+        "촌충증"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "대개 증상이 적으며 복부 불편·식욕 변화·편절 배출이 나타난다.",
+        "diagnostics": "대변·편절 검사로 확인하고 가능한 종 동정을 한다. 신경 증상이 있으면 낭미충증을 평가한다.",
+        "management": "Praziquantel 등이 대표 치료다. 숨어 있는 낭미충증 가능성과 치료 뒤 대변 추적·위생 관리를 고려한다.",
+        "redFlags": "발작·새 두통·시력 이상이 있으면 구충제 전에 신경·안구 평가를 고려한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tso",
+          "context": "Taenia solium"
+        },
+        {
+          "pathogenId": "tsa",
+          "context": "Taenia saginata"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "taeniasis-tx-1",
+          "rank": "preferred",
+          "context": "장내 성충 감염의 대표 요법",
+          "components": [
+            {
+              "drugId": "praziquantel"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "taeniasis-tx-2",
+          "rank": "alternative",
+          "context": "장내 성충 감염의 대안",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "neurocysticercosis"
+      ],
+      "sourceIds": [
+        "cdc-taeniasis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "neurocysticercosis",
+      "kind": "disease",
+      "name": "신경낭미충증",
+      "englishName": "Neurocysticercosis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "유구조충 충란을 먹어 유충이 CNS에 자리 잡는 감염이다. 발작·수두증이 핵심이며 병변의 위치·수·생존 여부가 치료를 결정한다.",
+      "searchAliases": [
+        "뇌낭미충증",
+        "낭미충증",
+        "유구낭미충증"
+      ],
+      "anatomicSites": [
+        "brain",
+        "eye"
+      ],
+      "transmission": [
+        "food",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "발작·두통·뇌압 상승·국소 신경 결손이 나타날 수 있다.",
+        "diagnostics": "뇌 MRI·CT와 필요 시 혈청 검사로 병변 상태를 평가한다. 안구 침범도 확인한다.",
+        "management": "발작·뇌압을 먼저 관리한다. 생존 병변은 조건에 따라 Albendazole 단독 또는 Praziquantel 병합과 보조 스테로이드를 쓰며 석회화 병변에는 구충제를 일률 사용하지 않는다.",
+        "redFlags": "수두증·뇌압 상승·안구 병변은 수술·전문 치료를 먼저 검토한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tso",
+          "context": "Taenia solium의 유충"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "neurocysticercosis-tx-1",
+          "rank": "conditional",
+          "context": "적응증이 있는 소수 생존 실질 병변",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "neurocysticercosis-tx-2",
+          "rank": "conditional",
+          "context": "적응증이 있는 다수 생존 실질 병변의 병합",
+          "components": [
+            {
+              "drugId": "albendazole"
+            },
+            {
+              "drugId": "praziquantel"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "taeniasis"
+      ],
+      "sourceIds": [
+        "disease-cdc-cysticercosis",
+        "disease-idsa-cysticercosis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "echinococcosis",
+      "kind": "disease",
+      "name": "포충증",
+      "englishName": "Echinococcosis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "개 등과 연관된 충란 노출 뒤 간·폐에 포낭성 또는 침윤성 병변이 생긴다. 병변 유형·활동성에 따라 관찰·약·중재가 달라진다.",
+      "searchAliases": [
+        "에키노코쿠스증",
+        "수포충증",
+        "다방포충증",
+        "포충"
+      ],
+      "anatomicSites": [
+        "liver",
+        "lungs"
+      ],
+      "transmission": [
+        "food",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "오래 무증상일 수 있으며 복통·기침·장기 압박으로 발견된다.",
+        "diagnostics": "영상의 낭종 단계와 혈청 검사 등을 함께 판단한다. 무계획 천자는 유출·파종·알레르기 위험이 있다.",
+        "management": "포낭형은 병기에 따라 관찰·Albendazole·PAIR·수술을 선택한다. 다방성은 가능한 완전 절제와 장기 약물 치료 등 전문 전략이 필요하다.",
+        "redFlags": "낭종 파열·담도 누출·아나필락시스·장기 압박은 긴급 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "ech",
+          "context": "Echinococcus species"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "echinococcosis-tx-1",
+          "rank": "conditional",
+          "context": "낭종 단계·침범·중재에 맞는 구충 치료",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-echinococcus",
+        "disease-who-echinococcus"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "toxocariasis",
+      "kind": "disease",
+      "name": "개회충증",
+      "englishName": "Toxocariasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "토양·오염 음식 등의 유충 노출 뒤 장기 침범과 호산구 증가가 생긴다. 안구형은 전신 검사 소견이 약해도 시력을 위협할 수 있다.",
+      "searchAliases": [
+        "개회충유충증",
+        "톡소카라증",
+        "내장유충이행증"
+      ],
+      "anatomicSites": [
+        "liver",
+        "lungs",
+        "eye"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "내장형은 발열·기침·간비대·호산구 증가, 안구형은 한쪽 시력 저하가 나타날 수 있다.",
+        "diagnostics": "노출·혈청·영상·안과 소견을 함께 판단한다. 사람에서는 성충·충란이 배출되지 않아 대변 충란 검사가 진단용이 아니다.",
+        "management": "증상 있는 내장형은 Albendazole 등을 고려한다. 안구형은 안과에서 염증·병변과 약물·수술 전략을 결정한다.",
+        "redFlags": "시력 저하·신경학적 증상·중증 장기 침범은 전문 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tox",
+          "context": "Toxocara canis·cati"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "toxocariasis-tx-1",
+          "rank": "preferred",
+          "context": "치료가 필요한 내장형의 대표 선택",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "toxocariasis-tx-2",
+          "rank": "alternative",
+          "context": "내장형 치료의 대안",
+          "components": [
+            {
+              "drugId": "mebendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-toxocara"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "trichinellosis",
+      "kind": "disease",
+      "name": "선모충증",
+      "englishName": "Trichinellosis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "덜 익힌 돼지·야생동물 고기 뒤 설사에 이어 발열·근육통·눈 주위 부종·호산구 증가가 나타난다. 초기에 치료할수록 유리하다.",
+      "searchAliases": [
+        "트리키넬라증",
+        "선모충감염"
+      ],
+      "anatomicSites": [
+        "abdomen",
+        "skin",
+        "heart",
+        "brain"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "근육통·발열·부종과 심근염·CNS 침범이 발생할 수 있다.",
+        "diagnostics": "고기 노출과 혈청 검사·혈구·근육 효소 등을 확인한다. 초기 혈청 음성은 배제 근거가 아니다.",
+        "management": "Albendazole 또는 Mebendazole을 사용한다. 중증 염증은 보조 스테로이드를 검토하며 조직에 자리 잡은 유충에서는 치료 효과가 제한될 수 있다.",
+        "redFlags": "흉통·부정맥·호흡곤란·의식 변화는 중증 장기 침범을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tri",
+          "context": "Trichinella species"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "trichinellosis-tx-1",
+          "rank": "preferred",
+          "context": "대표 구충 치료 선택지",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "trichinellosis-tx-2",
+          "rank": "alternative",
+          "context": "다른 구충 치료 선택지",
+          "components": [
+            {
+              "drugId": "mebendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-trichinella"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "anisakiasis",
+      "kind": "disease",
+      "name": "고래회충 유충증",
+      "englishName": "Anisakiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "생선·오징어를 날로 먹은 뒤 갑자기 심한 상복부 통증이 생긴다. 위 유충은 내시경으로 제거하는 것이 핵심이다.",
+      "searchAliases": [
+        "아니사키스증",
+        "고래회충",
+        "아니사키스"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "급성 복통·구역·구토가 흔하며 장형은 지연성 복통·폐색으로 나타날 수 있다.",
+        "diagnostics": "섭취력과 내시경으로 확인하며 장형은 영상·임상 경과를 함께 판단한다.",
+        "management": "위형은 내시경 제거를 우선한다. 장형은 경과·폐색·천공에 따라 보존적 치료 또는 수술을 검토하며 구충제를 일률적으로 쓰지 않는다.",
+        "redFlags": "장폐색·복막 자극·아나필락시스는 긴급 처치가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "ani",
+          "context": "Anisakis·Pseudoterranova"
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-anisakis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "고래회충 유충증 (Anisakiasis)",
+          "path": "source_notes/02 Diseases/08 감염/고래회충 유충증 (Anisakiasis).md"
+        }
+      ]
+    },
+    {
+      "id": "scabies",
+      "kind": "disease",
+      "name": "옴",
+      "englishName": "Scabies",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "밤에 심한 가려움과 손가락 사이·손목 등의 굴이 단서다. 증상 없는 밀접 접촉자도 함께 치료해야 재감염을 줄인다.",
+      "searchAliases": [
+        "옴진드기감염",
+        "개선충",
+        "각화형옴"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "가려운 구진·굴이 나타나며 면역저하·고령에서는 가려움이 적은 각화형이 가능하다.",
+        "diagnostics": "임상 양상과 필요 시 피부경·긁음 검사로 확인한다.",
+        "management": "Permethrin 또는 조건에 맞는 Ivermectin을 사용한다. 접촉자 동시 치료와 의류·침구 처리가 필요하며 치료 후 가려움만으로 실패를 판단하지 않는다.",
+        "redFlags": "각화형·시설 집단 발생·이차 세균 감염은 감염 관리와 전문 병합 치료가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sca",
+          "context": "Sarcoptes scabiei"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "scabies-tx-1",
+          "rank": "preferred",
+          "context": "일반 옴의 대표 국소 치료",
+          "components": [
+            {
+              "drugId": "permethrin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "scabies-tx-2",
+          "rank": "alternative",
+          "context": "연령·체중·임신 등을 확인한 경구 선택",
+          "components": [
+            {
+              "drugId": "ivermectin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "scabies-tx-3",
+          "rank": "conditional",
+          "context": "각화형 옴의 반복 병합 치료",
+          "components": [
+            {
+              "drugId": "permethrin"
+            },
+            {
+              "drugId": "ivermectin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-scabies"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "옴 (Scabies)",
+          "path": "source_notes/02 Diseases/19 피부과/옴 (Scabies).md"
+        }
+      ]
+    },
+    {
+      "id": "cutaneous-larva-migrans",
+      "kind": "disease",
+      "name": "피부 유충이행증",
+      "englishName": "Cutaneous larva migrans",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "오염된 모래·토양을 맨발로 밟은 뒤 매우 가려운 구불구불한 선이 피부에서 이동한다. 동물 구충 유충의 피부 감염이다.",
+      "searchAliases": [
+        "피부유충이행증",
+        "기어가는발진",
+        "CLM"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "발·엉덩이 등의 사행성 발진이 수일간 이동하며 이차 감염이 생길 수 있다.",
+        "diagnostics": "노출력과 특징적인 피부 병변으로 판단한다. 빠르게 이동하는 분선충 발진과 구별한다.",
+        "management": "Ivermectin 또는 Albendazole 등을 사용하고 노출·이차 감염을 관리한다.",
+        "redFlags": "넓은 병변·세균 감염·호흡기 증상은 추가 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "name": "Ancylostoma braziliense·caninum",
+          "domain": "parasites",
+          "context": "동물 구충 유충"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "cutaneous-larva-migrans-tx-1",
+          "rank": "preferred",
+          "context": "대표 경구 치료 선택지",
+          "components": [
+            {
+              "drugId": "ivermectin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "cutaneous-larva-migrans-tx-2",
+          "rank": "alternative",
+          "context": "다른 경구 치료 선택지",
+          "components": [
+            {
+              "drugId": "albendazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-zoonotic-hookworm"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "lymphatic-filariasis",
+      "kind": "disease",
+      "name": "림프사상충증",
+      "englishName": "Lymphatic filariasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "모기 매개 감염으로 림프관 손상·림프부종·음낭수종이 생긴다. 기생충 제거 치료와 이미 생긴 만성 부종 관리가 모두 필요하다.",
+      "searchAliases": [
+        "사상충증",
+        "림프사상충감염",
+        "코끼리피부병"
+      ],
+      "anatomicSites": [
+        "skin",
+        "urinary"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "무증상 감염·급성 림프관염·만성 부종·코끼리피부증으로 나타난다.",
+        "diagnostics": "노출 지역과 혈액 미세사상충·항원·영상 등을 확인한다. 종에 맞는 혈액 채취 시점을 고려한다.",
+        "management": "개별 치료는 원인종·동시 감염·지역에 따라 결정한다. DEC 전 Loa loa·Onchocerca 위험을 확인하며 위생·피부 관리·수종 수술도 필요하다.",
+        "redFlags": "미세사상충이 많은 동시 감염에서 약물 후 중증 반응이 생길 수 있어 전문 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "name": "Wuchereria bancrofti",
+          "domain": "parasites",
+          "context": "대표 원인"
+        },
+        {
+          "name": "Brugia species",
+          "domain": "parasites",
+          "context": "대표 원인"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "lymphatic-filariasis-tx-1",
+          "rank": "conditional",
+          "context": "개별 감염·동시 감염 금기 확인 후 선택",
+          "components": [
+            {
+              "name": "Diethylcarbamazine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "lymphatic-filariasis-tx-2",
+          "rank": "conditional",
+          "context": "특정 전문 전략의 보조 선택",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-lymphatic-filariasis",
+        "disease-who-filariasis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "onchocerciasis",
+      "kind": "disease",
+      "name": "회선사상충증",
+      "englishName": "Onchocerciasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "검정파리 매개 감염으로 심한 가려움·피부 변화와 시력 손상이 생긴다. 미세사상충을 줄이는 반복 치료와 안구 관리가 중요하다.",
+      "searchAliases": [
+        "강변실명증",
+        "회선사상충감염",
+        "river blindness"
+      ],
+      "anatomicSites": [
+        "skin",
+        "eye"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "피하 결절·피부염·색소 변화·각막 및 망막 손상이 나타날 수 있다.",
+        "diagnostics": "피부 검체·안과 검사 등을 노출 지역에 맞춰 선택하고 Loa loa 동시 감염 위험을 평가한다.",
+        "management": "Ivermectin을 반복 사용하며 일부에서는 Doxycycline을 보조 전략으로 고려한다. Loa loa 고미세사상충혈증에서는 중증 반응에 유의한다.",
+        "redFlags": "시력 저하·동시 Loa loa 고위험은 전문 치료가 필요하다. DEC를 같은 사상충 치료처럼 사용하지 않는다."
+      },
+      "etiologies": [
+        {
+          "name": "Onchocerca volvulus",
+          "domain": "parasites",
+          "context": "검정파리 매개"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "onchocerciasis-tx-1",
+          "rank": "preferred",
+          "context": "동시 감염 위험을 확인한 반복 치료",
+          "components": [
+            {
+              "drugId": "ivermectin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "onchocerciasis-tx-2",
+          "rank": "conditional",
+          "context": "전문 항-Wolbachia 전략",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-onchocerciasis",
+        "disease-who-onchocerciasis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "loiasis",
+      "kind": "disease",
+      "name": "로아사상충증",
+      "englishName": "Loiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "서·중부 아프리카 노출 뒤 이동하는 부종이나 눈을 지나는 성충이 단서다. 미세사상충이 많으면 치료 후 뇌병증 위험이 있다.",
+      "searchAliases": [
+        "로아로아증",
+        "눈벌레병",
+        "로아사상충"
+      ],
+      "anatomicSites": [
+        "skin",
+        "eye"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "일시적 Calabar 부종·가려움·호산구 증가와 안구 성충이 나타날 수 있다.",
+        "diagnostics": "낮 시간 혈액 도말로 미세사상충을 정량 확인하며 동시 사상충 감염을 평가한다.",
+        "management": "DEC 등 치료는 미세사상충 수·동시 감염·전처치 필요성에 따라 전문적으로 결정한다. Ivermectin을 무조건 사용하지 않는다.",
+        "redFlags": "높은 미세사상충혈증·신경 증상·치료 후 반응은 긴급 전문 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "name": "Loa loa",
+          "domain": "parasites",
+          "context": "사슴파리 매개"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "loiasis-tx-1",
+          "rank": "conditional",
+          "context": "정량 미세사상충·동시 감염·전처치 평가 후 전문 치료",
+          "components": [
+            {
+              "name": "Diethylcarbamazine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-loiasis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "dracunculiasis",
+      "kind": "disease",
+      "name": "메디나충증",
+      "englishName": "Dracunculiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "오염된 물을 마신 뒤 약 1년 후 성충이 피부 물집에서 나온다. 약으로 일괄 제거하기보다 충체·상처 관리와 전파 차단이 핵심이다.",
+      "searchAliases": [
+        "기니충병",
+        "메디나충",
+        "드라쿤쿨루스증"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "water"
+      ],
+      "clinical": {
+        "presentation": "통증 있는 물집·작열감·충체 노출과 이차 감염이 나타난다.",
+        "diagnostics": "전형적인 충체 배출과 노출력으로 판단한다.",
+        "management": "성충을 천천히 제거하고 상처·통증·이차 감염을 관리한다. 병변을 물에 담그지 않도록 하며 안전한 식수·환자 감시로 전파를 막는다.",
+        "redFlags": "성충 파열·관절 침범·심한 세균 감염은 전문 처치가 필요하다."
+      },
+      "etiologies": [
+        {
+          "name": "Dracunculus medinensis",
+          "domain": "parasites",
+          "context": "감염된 요각류 섭취"
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-who-dracunculiasis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "primary-amebic-meningoencephalitis",
+      "kind": "disease",
+      "name": "원발성 아메바성 수막뇌염",
+      "englishName": "Primary amebic meningoencephalitis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "따뜻한 민물 등이 코로 들어간 뒤 매우 빠르게 진행하는 수막뇌염이다. 물을 마시는 경로가 아니며 즉시 전문 진단·병합 치료가 필요하다.",
+      "searchAliases": [
+        "네글레리아감염",
+        "파울러자유아메바",
+        "뇌먹는아메바",
+        "PAM"
+      ],
+      "anatomicSites": [
+        "brain"
+      ],
+      "transmission": [
+        "water"
+      ],
+      "clinical": {
+        "presentation": "발열·극심한 두통·구토·목 경직 뒤 의식 저하가 급속히 진행한다.",
+        "diagnostics": "CSF 검사·PCR 등을 긴급 전문 검사와 연계한다. 세균성 수막염과 혼동할 수 있다.",
+        "management": "CDC 권고 전문 병합 치료와 적극적인 뇌압·중환자 관리를 시행한다. Amphotericin B는 제형·경로를 구분하며 Nitroxoline은 연구적 접근이다.",
+        "redFlags": "급속 의식 저하·뇌압 상승은 긴급 치료한다. 단독 Miltefosine 등 하나의 약으로 치료하지 않는다."
+      },
+      "etiologies": [
+        {
+          "name": "Naegleria fowleri",
+          "domain": "parasites",
+          "context": "코를 통한 침입"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "primary-amebic-meningoencephalitis-tx-1",
+          "rank": "conditional",
+          "context": "전문 병합 전략의 구성 약·Conventional Amphotericin B 포함",
+          "components": [
+            {
+              "drugId": "amphotericinb"
+            },
+            {
+              "drugId": "azithromycin"
+            },
+            {
+              "drugId": "posaconazole"
+            },
+            {
+              "drugId": "rifampicin"
+            },
+            {
+              "drugId": "miltefosine"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "component"
+        },
+        {
+          "id": "primary-amebic-meningoencephalitis-tx-2",
+          "rank": "conditional",
+          "context": "전문 기관의 연구적 추가 접근",
+          "components": [
+            {
+              "name": "Nitroxoline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "granulomatous-amebic-encephalitis"
+      ],
+      "sourceIds": [
+        "disease-cdc-naegleria"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "granulomatous-amebic-encephalitis",
+      "kind": "disease",
+      "name": "육아종성 아메바성 뇌염",
+      "englishName": "Granulomatous amebic encephalitis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "자유생활 아메바가 피부·호흡기 등으로 들어와 서서히 진행하는 CNS 감염을 일으킨다. 원인종에 맞는 전문 다제 치료가 필요하다.",
+      "searchAliases": [
+        "자유아메바뇌염",
+        "발라무티아뇌염",
+        "아칸트아메바뇌염",
+        "GAE"
+      ],
+      "anatomicSites": [
+        "brain",
+        "skin"
+      ],
+      "transmission": [
+        "inoculation",
+        "air"
+      ],
+      "clinical": {
+        "presentation": "두통·행동 변화·국소 신경 결손·발작과 때로 선행 피부 병변이 나타난다.",
+        "diagnostics": "뇌·피부 조직, PCR·특수 검사 등을 전문 기관과 연계한다.",
+        "management": "원인종별 병합 요법과 일부 연구적 약물 접근을 검토한다. PAM과 같은 단일 요법으로 취급하지 않는다.",
+        "redFlags": "의식 변화·발작·새 뇌 병변은 신속한 전문 진단·치료가 필요하다."
+      },
+      "etiologies": [
+        {
+          "name": "Acanthamoeba species",
+          "domain": "parasites",
+          "context": "면역저하 관련"
+        },
+        {
+          "name": "Balamuthia mandrillaris",
+          "domain": "parasites",
+          "context": "면역 정상에서도 가능"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "granulomatous-amebic-encephalitis-tx-1",
+          "rank": "conditional",
+          "context": "원인종별 전문 병합 치료의 구성 약 중 하나",
+          "components": [
+            {
+              "drugId": "miltefosine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "granulomatous-amebic-encephalitis-tx-2",
+          "rank": "conditional",
+          "context": "전문 기관의 연구적 접근",
+          "components": [
+            {
+              "name": "Nitroxoline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "primary-amebic-meningoencephalitis",
+        "acanthamoeba-keratitis"
+      ],
+      "sourceIds": [
+        "disease-cdc-acanthamoeba-gae",
+        "disease-cdc-balamuthia"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "balantidiasis",
+      "kind": "disease",
+      "name": "대장섬모충증",
+      "englishName": "Balantidiasis",
+      "category": "parasitic",
+      "entityType": "specific",
+      "summary": "돼지와 연관된 오염 음식·물 노출 뒤 설사·이질이 생길 수 있다. 드문 원충 감염으로 장염의 다른 원인과 구별한다.",
+      "searchAliases": [
+        "발란티디움증",
+        "발란티디아증"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "food",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "무증상부터 복통·점액혈변·뒤무직까지 다양하다.",
+        "diagnostics": "대변 현미경 검사 등으로 섬모충을 확인하며 장 침범이 있으면 조직 검사를 고려한다.",
+        "management": "Tetracycline 또는 Metronidazole 등의 권고 치료를 환자 조건에 맞게 선택하고 수분·위생을 관리한다.",
+        "redFlags": "심한 혈변·탈수·복막 자극은 전격성 대장염·천공을 평가한다."
+      },
+      "etiologies": [
+        {
+          "name": "Balantidium coli",
+          "domain": "parasites",
+          "context": "돼지와 연관"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "balantidiasis-tx-1",
+          "rank": "preferred",
+          "context": "적응증·금기를 확인한 대표 선택지",
+          "components": [
+            {
+              "name": "Tetracycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "balantidiasis-tx-2",
+          "rank": "alternative",
+          "context": "대표 경구 대안",
+          "components": [
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-balantidium"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    }
+  ]
+}

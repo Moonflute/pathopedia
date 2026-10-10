@@ -1,0 +1,702 @@
+{
+  "schemaVersion": 1,
+  "category": "hepatobiliary",
+  "entities": [
+    {
+      "id": "spontaneous-peritonitis",
+      "kind": "disease",
+      "name": "자발성 세균복막염",
+      "englishName": "Spontaneous bacterial peritonitis",
+      "category": "hepatobiliary",
+      "entityType": "syndrome",
+      "summary": "간경변·복수 환자의 발열·복통·의식 변화 또는 신기능 악화. 증상이 적어도 복수 천자를 통해 확인한다.",
+      "searchAliases": [
+        "SBP",
+        "자발성 세균 복막염",
+        "특발성 세균성 복막염"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "수술성 복강 감염원 없이 발생. 이차성 복막염과 원내·다제내성 위험을 구분한다.",
+        "diagnostics": "복수 PMN과 배양; PMN ≥250/µL이면 치료 판단. 천공·혼합균 등은 이차성 원인을 평가한다.",
+        "management": "획득 환경에 맞춘 항균치료와 Albumin 적응증 평가. 재발 예방은 별도로 결정한다.",
+        "redFlags": "신손상·쇼크·치료 반응 불량."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "spn",
+          "context": ""
+        },
+        {
+          "pathogenId": "efa",
+          "context": "원내·위험 맥락"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "spontaneous-peritonitis-tx-1",
+          "rank": "preferred",
+          "context": "지역사회 발생·MDR 위험 낮음",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "spontaneous-peritonitis-tx-2",
+          "rank": "conditional",
+          "context": "원내·내성 위험과 기관 자료에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "spontaneous-peritonitis-tx-3",
+          "rank": "conditional",
+          "context": "높은 ESBL 위험·중증도에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "secondary-peritonitis"
+      ],
+      "sourceIds": [
+        "disease-aasld-ascites-2021"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "자발성 세균 복막염 (Spontaneous Bacterial Peritonitis)",
+          "path": "source_notes/02 Diseases/03 소화기/간담췌/자발성 세균 복막염 (Spontaneous Bacterial Peritonitis).md"
+        }
+      ]
+    },
+    {
+      "id": "acute-cholangitis",
+      "kind": "disease",
+      "name": "급성 담관염",
+      "englishName": "Acute cholangitis",
+      "category": "hepatobiliary",
+      "entityType": "syndrome",
+      "summary": "담도 폐쇄에 발열·우상복부 통증·황달이 동반. 세 증상이 모두 없어도 패혈증·담도 감염을 의심할 수 있다.",
+      "searchAliases": [
+        "쓸개관염",
+        "담도 감염",
+        "ascending cholangitis"
+      ],
+      "anatomicSites": [
+        "liver",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "담석·협착·스텐트가 단서. 항균제와 함께 담도 배액이 중요한 감염원 조절이다.",
+        "diagnostics": "혈액배양·간담도 검사·초음파/CT 등으로 폐쇄와 중증도 평가.",
+        "management": "적절한 항균요법과 중증도에 따른 신속한 담도 배액. 혐기성균 범위는 담장문합 등 맥락에 맞춘다.",
+        "redFlags": "저혈압·의식 변화·장기부전·배액 지연."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "efa",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": "담장문합 등"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "acute-cholangitis-tx-1",
+          "rank": "preferred",
+          "context": "지역사회·비중증·MDR 위험 낮음",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-cholangitis-tx-2",
+          "rank": "conditional",
+          "context": "중증·원내·Pseudomonas 위험에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-cholangitis-tx-3",
+          "rank": "conditional",
+          "context": "혐기성균 위험이 있고 별도 범위가 필요하면 병용",
+          "components": [
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pyogenic-liver-abscess"
+      ],
+      "sourceIds": [
+        "disease-tokyo-cholangitis-2018",
+        "disease-kdca-antibiotic-practice-2026"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "쓸개관염 (Cholangitis)",
+          "path": "source_notes/02 Diseases/03 소화기/간담췌/쓸개관염 (Cholangitis).md"
+        }
+      ]
+    },
+    {
+      "id": "pyogenic-liver-abscess",
+      "kind": "disease",
+      "name": "화농성 간농양",
+      "englishName": "Pyogenic liver abscess",
+      "category": "hepatobiliary",
+      "entityType": "syndrome",
+      "summary": "발열·우상복부 통증과 간의 농양. 담도·장관 감염원을 찾고 Klebsiella 침습성 증후군에서는 눈·중추신경 증상을 확인한다.",
+      "searchAliases": [
+        "세균성 간농양",
+        "간 농양",
+        "liver abscess"
+      ],
+      "anatomicSites": [
+        "liver",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "단일 또는 다발 병변, 당뇨·담도 질환·균혈증 맥락을 확인한다.",
+        "diagnostics": "복부 초음파/CT, 혈액·농양 배양과 기저 감염원 평가.",
+        "management": "배액 필요성 평가와 그람음성균·혐기성균 등을 고려한 요법; 배양 후 표적치료.",
+        "redFlags": "패혈증·안내염·전이 농양·배액 실패."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "streptococcus-anginosus-group",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "pyogenic-liver-abscess-tx-1",
+          "rank": "conditional",
+          "context": "배양 전 지역사회 혼합감염의 병용 구성",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "pyogenic-liver-abscess-tx-2",
+          "rank": "preferred",
+          "context": "감수성 Klebsiella 단일 원인 확인 후 표적치료",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "amebic-liver-abscess",
+        "endophthalmitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-intra-abdominal"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "간 농양 (Liver Abscess)",
+          "path": "source_notes/02 Diseases/03 소화기/간담췌/간 농양 (Liver Abscess).md"
+        }
+      ]
+    },
+    {
+      "id": "hepatitis-a",
+      "kind": "disease",
+      "name": "A형 간염",
+      "englishName": "Hepatitis A",
+      "category": "hepatobiliary",
+      "entityType": "specific",
+      "summary": "급성 피로·오심·황달을 일으키는 분변–경구 바이러스 감염. 만성화하지 않으며 기저 간질환에서는 중증을 경계한다.",
+      "searchAliases": [
+        "급성 A형 간염",
+        "HAV",
+        "hepatitis A"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "무증상 감염도 가능하며 음식·밀접 접촉과 여행 노출을 확인한다.",
+        "diagnostics": "IgM anti-HAV와 간기능·응고 기능 평가.",
+        "management": "지지요법; 간부전 감시. 노출 후 예방접종·면역글로불린 적응증을 시기에 맞춰 평가한다.",
+        "redFlags": "의식 변화·응고 이상·급성 간부전."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hav",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-hav"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "급성 A형 간염 (Acute Hepatitis A)",
+          "path": "source_notes/02 Diseases/03 소화기/간담췌/급성 A형 간염 (Acute Hepatitis A).md"
+        }
+      ]
+    },
+    {
+      "id": "acute-hepatitis-b",
+      "kind": "disease",
+      "name": "급성 B형 간염",
+      "englishName": "Acute hepatitis B",
+      "category": "hepatobiliary",
+      "entityType": "specific",
+      "summary": "혈액·성접촉 등 노출 뒤 급성 간염. HBsAg와 IgM anti-HBc 등을 통해 신규 감염과 만성 감염 악화를 구별한다.",
+      "searchAliases": [
+        "급성 HBV",
+        "B형 간염"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "blood",
+        "sexual",
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "성인의 많은 급성 감염은 자연 소실하지만 중증·간부전은 별도 치료가 필요하다.",
+        "diagnostics": "혈청 표지·HBV DNA와 간기능·응고 기능, 지속 감염 여부 추적.",
+        "management": "일반적으로 지지요법; 중증·간부전 등에서는 활성 항바이러스 치료와 전문 평가.",
+        "redFlags": "응고 이상·간성뇌증·만성화."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hbv",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "acute-hepatitis-b-tx-1",
+          "rank": "conditional",
+          "context": "중증 급성 간염·간부전 등 항바이러스 적응증",
+          "components": [
+            {
+              "drugId": "tenofovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-hepatitis-b-tx-2",
+          "rank": "alternative",
+          "context": "적응증·신기능 등에 맞는 대안",
+          "components": [
+            {
+              "drugId": "entecavir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "chronic-hepatitis-b"
+      ],
+      "sourceIds": [
+        "who-hbv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "급성 B형 간염 (Acute Hepatitis B)",
+          "path": "source_notes/02 Diseases/03 소화기/간담췌/급성 B형 간염 (Acute Hepatitis B).md"
+        }
+      ]
+    },
+    {
+      "id": "chronic-hepatitis-b",
+      "kind": "disease",
+      "name": "만성 B형 간염",
+      "englishName": "Chronic hepatitis B",
+      "category": "hepatobiliary",
+      "entityType": "specific",
+      "summary": "지속 HBV 감염에서 간염·섬유화·간경변 위험을 평가. ALT 하나만으로 치료 여부를 결정하지 않고 바이러스량·섬유화·숙주를 함께 본다.",
+      "searchAliases": [
+        "HBV",
+        "만성 HBV",
+        "만성 B형 간염"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "blood",
+        "sexual",
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "무증상이어도 간암 위험 관리가 필요하다. 면역억제 치료 전 재활성화 위험을 평가한다.",
+        "diagnostics": "HBsAg·HBV DNA·ALT·섬유화와 간암 감시 적응증.",
+        "management": "적응증이 있으면 높은 내성 장벽의 Nucleos(t)ide analogue 등; 치료·추적을 장기적으로 계획한다.",
+        "redFlags": "간경변 악화·재활성화·간부전."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hbv",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "chronic-hepatitis-b-tx-1",
+          "rank": "preferred",
+          "context": "치료 적응증·신장/골 위험·과거 내성에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "tenofovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "chronic-hepatitis-b-tx-2",
+          "rank": "alternative",
+          "context": "적합한 환자에서 높은 내성 장벽의 대안",
+          "components": [
+            {
+              "drugId": "entecavir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "acute-hepatitis-b",
+        "hepatitis-d"
+      ],
+      "sourceIds": [
+        "who-hbv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "acute-hepatitis-c",
+      "kind": "disease",
+      "name": "급성 C형 간염",
+      "englishName": "Acute hepatitis C",
+      "category": "hepatobiliary",
+      "entityType": "specific",
+      "summary": "새 HCV 감염은 무증상인 경우가 많고 항체가 아직 음성일 수 있다. 신규 노출·RNA 결과·간기능 변화를 함께 해석한다.",
+      "searchAliases": [
+        "급성 HCV",
+        "C형 간염"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "blood"
+      ],
+      "clinical": {
+        "presentation": "혈액 노출이 주 경로이며 자연 소실 가능성과 지속 감염을 추적한다.",
+        "diagnostics": "HCV RNA 중심으로 확인; 항체 전환·과거 음성 결과와 임상 맥락 평가.",
+        "management": "확인된 바이러스혈증은 현재 HCV 치료 지침에 따라 DAA 치료를 계획하고 재감염 예방을 교육한다.",
+        "redFlags": "지속 바이러스혈증·드문 급성 간부전."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hcv",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "acute-hepatitis-c-tx-1",
+          "rank": "conditional",
+          "context": "확인된 HCV 바이러스혈증·상호작용·간 상태에 맞춘 DAA 조합 예시",
+          "components": [
+            {
+              "drugId": "sofosbuvir-velpatasvir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "chronic-hepatitis-c"
+      ],
+      "sourceIds": [
+        "hcv-guidance"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "급성 C형 간염 (HCV) (Acute Hepatitis C)",
+          "path": "source_notes/02 Diseases/03 소화기/간담췌/급성 C형 간염 (HCV) (Acute Hepatitis C).md"
+        }
+      ]
+    },
+    {
+      "id": "chronic-hepatitis-c",
+      "kind": "disease",
+      "name": "만성 C형 간염",
+      "englishName": "Chronic hepatitis C",
+      "category": "hepatobiliary",
+      "entityType": "specific",
+      "summary": "지속 HCV RNA 양성은 만성 감염을 뜻하며 DAA로 완치를 기대할 수 있다. 섬유화·간경변과 동반 HBV를 치료 전 평가한다.",
+      "searchAliases": [
+        "만성 HCV",
+        "HCV"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "blood"
+      ],
+      "clinical": {
+        "presentation": "간경변 환자는 바이러스 소실 후에도 간암 감시가 필요할 수 있다. 항체는 완치 뒤에도 양성일 수 있다.",
+        "diagnostics": "HCV RNA·간 섬유화·간기능·HBV 및 약물 상호작용 평가, 치료 후 RNA로 반응 확인.",
+        "management": "간 상태·과거 치료·상호작용에 맞춘 DAA 병용. 비보상성 간경변은 별도 전문 경로.",
+        "redFlags": "비보상성 간경변·HBV 재활성화·재감염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hcv",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "chronic-hepatitis-c-tx-1",
+          "rank": "preferred",
+          "context": "조건을 충족하는 환자의 범유전자형 DAA 병용 예시",
+          "components": [
+            {
+              "drugId": "sofosbuvir-velpatasvir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "acute-hepatitis-c"
+      ],
+      "sourceIds": [
+        "hcv-guidance"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "hepatitis-d",
+      "kind": "disease",
+      "name": "D형 간염",
+      "englishName": "Hepatitis D",
+      "category": "hepatobiliary",
+      "entityType": "specific",
+      "summary": "HBV가 있어야 감염을 유지하는 바이러스. HBV와 동시 감염 또는 기존 HBV의 중복 감염이 간질환을 더 악화시킬 수 있다.",
+      "searchAliases": [
+        "HDV",
+        "델타 간염",
+        "hepatitis delta"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "blood",
+        "sexual"
+      ],
+      "clinical": {
+        "presentation": "HBsAg 양성 환자에서 위험·간염 양상에 따라 검사한다.",
+        "diagnostics": "anti-HDV와 HDV RNA, HBV 표지 및 간 섬유화 평가.",
+        "management": "전문 평가로 HDV 치료·HBV 관리·간경변 감시를 계획. HBV 억제만으로 HDV가 해결되는 것은 아니다.",
+        "redFlags": "빠른 간경변 진행·간부전."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hdv",
+          "context": ""
+        },
+        {
+          "pathogenId": "hbv",
+          "context": "HDV 증식에 필요"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "hepatitis-d-tx-1",
+          "rank": "conditional",
+          "context": "선별된 환자에서 금기·반응을 고려한 HDV 치료",
+          "components": [
+            {
+              "drugId": "peginterferon-alfa"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "chronic-hepatitis-b"
+      ],
+      "sourceIds": [
+        "who-hdv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "hepatitis-e",
+      "kind": "disease",
+      "name": "E형 간염",
+      "englishName": "Hepatitis E",
+      "category": "hepatobiliary",
+      "entityType": "specific",
+      "summary": "오염된 물 또는 덜 익힌 육류 노출 뒤 급성 간염. 임신 중 중증 감염과 면역저하자의 만성 감염을 구분해 본다.",
+      "searchAliases": [
+        "HEV",
+        "급성 E형 간염"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "food"
+      ],
+      "clinical": {
+        "presentation": "유전자형·지역·숙주에 따라 양상과 경과가 달라진다.",
+        "diagnostics": "HEV 항체·RNA 검사와 간기능·응고 기능 평가.",
+        "management": "대부분 지지요법. 만성 면역저하 감염은 면역억제 조정과 전문 항바이러스 치료를 검토한다.",
+        "redFlags": "임신 중 간부전·면역저하자의 지속 RNA 양성."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hev",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "hepatitis-e-tx-1",
+          "rank": "conditional",
+          "context": "비임신 만성 HEV 등 전문의가 적응증을 정한 경우·임신 금기",
+          "components": [
+            {
+              "drugId": "ribavirin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "who-hepatitis-e"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    }
+  ]
+}

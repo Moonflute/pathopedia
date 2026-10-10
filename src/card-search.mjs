@@ -16,6 +16,16 @@ export function createCardSearch(data,catalog) {
     const entity=catalog.drugs[drug.id];
     add('drug',drug.id,[drug.id,drug.name,drug.family,drug.mechanism,...(entity?.searchAliases || []),entity?.summary]);
   }
+
+  for(const disease of Object.values(catalog.diseases || {})){
+    add('disease',disease.id,[
+      disease.id,disease.name,disease.englishName,...disease.searchAliases,disease.summary,
+      catalog.diseaseCategories[disease.category].label,
+      ...disease.etiologies.map(cause=>cause.name),
+      ...disease.treatments.flatMap(regimen=>regimen.components.map(component=>component.name))
+    ]);
+  }
+
   let lastQuery=null,words=[];
   return {
     matches(kind,id,query=''){

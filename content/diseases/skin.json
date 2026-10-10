@@ -1,0 +1,1087 @@
+{
+  "schemaVersion": 1,
+  "category": "skin",
+  "entities": [
+    {
+      "id": "impetigo",
+      "kind": "disease",
+      "name": "농가진",
+      "englishName": "Impetigo",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "얕은 수포·농포가 터져 꿀색 딱지가 생기는 피부 감염. 병변 수·수포형·집단 발생에 따라 국소와 전신 치료를 나눈다.",
+      "searchAliases": [
+        "impetigo",
+        "꿀색 딱지"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "S. aureus와 GAS가 대표 원인. 피부 위생·긁기·접촉 확산을 관리한다.",
+        "diagnostics": "대개 임상 진단; 재발·집단 발생·내성 의심은 배양.",
+        "management": "소수 국소 병변은 국소 치료, 다수·확산·특수 상황은 전신 항균제를 원인과 내성에 맞춰 선택한다.",
+        "redFlags": "빠른 확산·전신 증상·심부 감염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "spy",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "impetigo-tx-1",
+          "rank": "conditional",
+          "context": "다수·전신 치료 필요·MSSA/GAS 감수성에 맞는 정주 예시",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-idsa-ssti-2014"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "folliculitis",
+      "kind": "disease",
+      "name": "세균성 모낭염",
+      "englishName": "Bacterial folliculitis",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "모낭 중심의 작은 농포·발적. 포도알균 감염과 온수욕 뒤 Pseudomonas 모낭염을 노출 맥락으로 구분한다.",
+      "searchAliases": [
+        "모낭염",
+        "hot tub folliculitis"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "endogenous",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "면도·마찰·습한 환경이 단서. 진균성 모낭염·여드름 등 비세균성 원인도 감별한다.",
+        "diagnostics": "보통 임상 진단; 반복·확산·치료 실패는 배양.",
+        "management": "국소 관리가 기본이고 전신 치료는 확산·반복·숙주 위험에 맞춰 선택.",
+        "redFlags": "종기·농양·전신 증상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "pae",
+          "context": "온수욕·수영장"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "folliculitis-tx-1",
+          "rank": "conditional",
+          "context": "광범위 MSSA 감염·전신 치료 적응증과 제형이 적합",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "skin-abscess"
+      ],
+      "sourceIds": [
+        "disease-idsa-ssti-2014"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "skin-abscess",
+      "kind": "disease",
+      "name": "피부농양",
+      "englishName": "Cutaneous abscess",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "통증성 종창·파동·농성 분비물. 절개·배농이 기본이며 항균제 필요성은 전신 반응·숙주·주변 확산으로 판단한다.",
+      "searchAliases": [
+        "피부 농양",
+        "종기",
+        "furuncle",
+        "carbuncle"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "S. aureus·MRSA가 중요하다. 재발하면 이물·국소 병변·기저 위험을 찾는다.",
+        "diagnostics": "진찰·필요 시 초음파, 배농 검체 배양.",
+        "management": "배농과 감염원 관리; 항균제 적응증이 있으면 지역 감수성에 맞는 약제를 추가한다.",
+        "redFlags": "쇼크·빠른 확산·면역저하·배액 실패."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "skin-abscess-tx-1",
+          "rank": "conditional",
+          "context": "배농 뒤 항균제 적응증·MRSA 감수성 적합",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "skin-abscess-tx-2",
+          "rank": "alternative",
+          "context": "같은 상황에서 금기·감수성에 맞는 대안",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "skin-abscess-tx-3",
+          "rank": "conditional",
+          "context": "중증 MRSA 감염·정주 치료 필요",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "cellulitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-ssti-2014"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "cellulitis",
+      "kind": "disease",
+      "name": "연조직염",
+      "englishName": "Cellulitis",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "경계가 흐린 발적·열감·압통이 퍼지는 피부·피하 감염. 비화농성은 사슬알균 중심, 농성 병변은 농양·MRSA를 따로 본다.",
+      "searchAliases": [
+        "봉와직염",
+        "봉소염",
+        "연조직 염증"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "하지 부종·백선·피부 손상이 재발 요인. 양측성 발적은 정체피부염 등 감별이 중요하다.",
+        "diagnostics": "대개 임상 진단; 깊은 감염·농양·특수 노출 의심이면 추가 검사.",
+        "management": "비화농성은 적절한 좁은 항균제와 거상·원인 관리. 농양·MRSA 위험·중증도에 따라 조정한다.",
+        "redFlags": "통증 과다·급속 진행·괴사·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "sdy",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": "화농성·창상"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "cellulitis-tx-1",
+          "rank": "preferred",
+          "context": "비화농성·사슬알균 중심 경구 치료가 적합",
+          "components": [
+            {
+              "drugId": "amoxicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "cellulitis-tx-2",
+          "rank": "conditional",
+          "context": "정주 치료 필요·MSSA/GAS 범위가 적합",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "cellulitis-tx-3",
+          "rank": "conditional",
+          "context": "MRSA 위험·중증 전신 반응이 있는 경우",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "erysipelas",
+        "skin-abscess",
+        "necrotizing-fasciitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-ssti-2014"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "연조직염 (Cellulitis)",
+          "path": "source_notes/02 Diseases/08 감염/연조직염 (Cellulitis).md"
+        }
+      ]
+    },
+    {
+      "id": "erysipelas",
+      "kind": "disease",
+      "name": "단독",
+      "englishName": "Erysipelas",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "경계가 비교적 뚜렷하고 도드라진 뜨거운 발적과 발열. 표재성 피부·림프관 감염으로 사슬알균이 중요하다.",
+      "searchAliases": [
+        "단독증",
+        "erysipelas"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "얼굴·하지에 흔하며 피부 진입부와 부종 등 재발 요인을 확인한다.",
+        "diagnostics": "임상 진단; 비전형·중증에서 다른 연조직 감염·비감염성 원인을 평가.",
+        "management": "사슬알균을 겨냥한 좁은 항균제와 거상·진입부 관리.",
+        "redFlags": "급속 확산·수포·중증 전신 증상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "sdy",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "erysipelas-tx-1",
+          "rank": "preferred",
+          "context": "전형적 사슬알균 감염·제형과 금기에 맞춤",
+          "components": [
+            {
+              "drugId": "penicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "erysipelas-tx-2",
+          "rank": "alternative",
+          "context": "경구 치료가 적합한 경우",
+          "components": [
+            {
+              "drugId": "amoxicillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "cellulitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-ssti-2014"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "단독 (Erysipelas)",
+          "path": "source_notes/02 Diseases/08 감염/단독 (Erysipelas).md"
+        }
+      ]
+    },
+    {
+      "id": "necrotizing-fasciitis",
+      "kind": "disease",
+      "name": "괴사성 근막염",
+      "englishName": "Necrotizing fasciitis",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "겉으로 보이는 피부 소견보다 심한 통증·빠른 진행·전신 독성. 가스·수포가 없다고 배제하지 않으며 수술 평가를 서두른다.",
+      "searchAliases": [
+        "NSTI",
+        "괴사 근막염",
+        "nec fasc"
+      ],
+      "anatomicSites": [
+        "skin",
+        "blood"
+      ],
+      "transmission": [
+        "inoculation",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "GAS 단독 또는 혼합감염 등 여러 원인이 가능. 영상·점수만으로 수술 필요성을 배제하지 않는다.",
+        "diagnostics": "수술팀의 긴급 평가와 수술 검체·배양; 영상이 처치를 늦추지 않도록 한다.",
+        "management": "즉시 변연절제·소생과 광범위 병용 요법, 원인 확인 뒤 표적치료.",
+        "redFlags": "쇼크·피부 감각 소실·수포·괴사·장기부전."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": ""
+        },
+        {
+          "pathogenId": "vvu",
+          "context": "해수·해산물 노출"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "necrotizing-fasciitis-tx-1",
+          "rank": "preferred",
+          "context": "혼합균·MRSA를 함께 고려하는 초기 병용 예시",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            },
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "necrotizing-fasciitis-tx-2",
+          "rank": "preferred",
+          "context": "확인된 GAS 괴사성 감염의 표적 병용",
+          "components": [
+            {
+              "drugId": "penicillin"
+            },
+            {
+              "drugId": "clindamycin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "fournier-gangrene",
+        "gas-gangrene",
+        "streptococcal-toxic-shock"
+      ],
+      "sourceIds": [
+        "disease-idsa-ssti-2014",
+        "disease-wjes-nsti-2018"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "괴사성 근막염 (Necrotizing Fasciitis)",
+          "path": "source_notes/02 Diseases/08 감염/괴사성 근막염 (Necrotizing Fasciitis).md"
+        }
+      ]
+    },
+    {
+      "id": "fournier-gangrene",
+      "kind": "disease",
+      "name": "푸르니에 괴저",
+      "englishName": "Fournier gangrene",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "회음부·생식기 통증·부종·괴사성 감염. 당뇨·비뇨·항문 원인을 확인하되 수술을 지연하지 않는다.",
+      "searchAliases": [
+        "Fournier's gangrene",
+        "회음부 괴사"
+      ],
+      "anatomicSites": [
+        "skin",
+        "urinary",
+        "abdomen"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "혼합균 감염이 흔하며 국소 피부 소견이 초기에는 작아 보일 수 있다.",
+        "diagnostics": "긴급 수술 평가와 수술 검체, 안정성·범위에 맞는 영상.",
+        "management": "광범위 병용 항균제·소생·반복 변연절제와 원인 조절.",
+        "redFlags": "쇼크·빠른 회음부 확산·조직 괴사."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx518",
+          "context": ""
+        },
+        {
+          "pathogenId": "efa",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "fournier-gangrene-tx-1",
+          "rank": "preferred",
+          "context": "MRSA·장내균·혐기성균을 함께 고려하는 초기 병용 예시",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            },
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "necrotizing-fasciitis",
+        "anorectal-abscess"
+      ],
+      "sourceIds": [
+        "disease-idsa-ssti-2014",
+        "disease-wjes-nsti-2018"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "푸르니에 괴저 (Fournier's Gangrene)",
+          "path": "source_notes/02 Diseases/08 감염/푸르니에 괴저 (Fournier's Gangrene).md"
+        }
+      ]
+    },
+    {
+      "id": "gas-gangrene",
+      "kind": "disease",
+      "name": "가스괴저",
+      "englishName": "Clostridial myonecrosis",
+      "category": "skin",
+      "entityType": "specific",
+      "summary": "빠른 근육 통증·종창·독성 소견과 조직 가스. 단순 가스 영상만으로 균종을 확정하지 않고 즉시 수술·소생을 시행한다.",
+      "searchAliases": [
+        "가스 괴저",
+        "clostridial gas gangrene",
+        "근괴사"
+      ],
+      "anatomicSites": [
+        "skin",
+        "blood"
+      ],
+      "transmission": [
+        "inoculation",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "C. perfringens와 C. septicum 등이 원인. 자발성 C. septicum 감염은 혈액·대장 기저질환을 평가한다.",
+        "diagnostics": "수술 검체 Gram 염색·배양과 감염 범위 평가.",
+        "management": "즉시 변연절제와 초기 광범위 요법; 확진 Clostridial 감염은 Penicillin·Clindamycin 병용.",
+        "redFlags": "쇼크·용혈·급속 괴사."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "cpe",
+          "context": ""
+        },
+        {
+          "pathogenId": "cse",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "gas-gangrene-tx-1",
+          "rank": "preferred",
+          "context": "확인된 Clostridial 근괴사의 병용 요법",
+          "components": [
+            {
+              "drugId": "penicillin"
+            },
+            {
+              "drugId": "clindamycin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "necrotizing-fasciitis"
+      ],
+      "sourceIds": [
+        "tail-idsa-myonecrosis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "가스 괴저 (Gas Gangrene)",
+          "path": "source_notes/02 Diseases/08 감염/가스 괴저 (Gas Gangrene).md"
+        }
+      ]
+    },
+    {
+      "id": "pyomyositis",
+      "kind": "disease",
+      "name": "화농성 근염",
+      "englishName": "Pyomyositis",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "국소 근육 통증·발열·종창과 근육 내 농양. 피부 소견이 적어도 깊은 근육 감염을 의심할 수 있다.",
+      "searchAliases": [
+        "근농양",
+        "화농 근염"
+      ],
+      "anatomicSites": [
+        "skin",
+        "bone",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "S. aureus가 대표 원인. 면역저하·외상·균혈증 맥락을 확인한다.",
+        "diagnostics": "MRI와 혈액·농양 배양.",
+        "management": "농양 배액과 균종별 항균치료; 지속 균혈증은 다른 병소를 재평가한다.",
+        "redFlags": "깊은 농양·패혈증·배액 실패."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "spy",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "pyomyositis-tx-1",
+          "rank": "conditional",
+          "context": "MRSA 위험을 반영한 초기 선택",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "pyomyositis-tx-2",
+          "rank": "preferred",
+          "context": "MSSA 확인 후 표적치료",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "staphylococcal-bacteremia"
+      ],
+      "sourceIds": [
+        "disease-idsa-ssti-2014"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "diabetic-foot-infection",
+      "kind": "disease",
+      "name": "당뇨발 감염",
+      "englishName": "Diabetes-related foot infection",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "당뇨발 상처의 임상 염증·농성 분비물로 판단. 균이 배양됐다는 이유만으로 감염 없는 궤양에 항균제를 주지 않는다.",
+      "searchAliases": [
+        "DFI",
+        "당뇨병 발 감염",
+        "당뇨족"
+      ],
+      "anatomicSites": [
+        "skin",
+        "bone"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "깊이·중증도·혈류·골수염을 평가하며 모든 환자에게 Pseudomonas 범위를 넣지는 않는다.",
+        "diagnostics": "심부 조직 배양, 골수염 의심 시 probe-to-bone·영상·필요한 골 검체.",
+        "management": "변연절제·배액·혈류와 압력 관리, 중증도·배양에 맞춘 항균치료.",
+        "redFlags": "허혈·괴사·깊은 농양·골수염·패혈증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "spy",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": "깊은 혼합감염"
+        },
+        {
+          "pathogenId": "pae",
+          "context": "과거 배양·지역 및 노출 위험"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "diabetic-foot-infection-tx-1",
+          "rank": "conditional",
+          "context": "확인된 MSSA/GAS 경증 범위·정주 치료 적합",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "diabetic-foot-infection-tx-2",
+          "rank": "conditional",
+          "context": "중증 혼합감염·내성 위험에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "diabetic-foot-infection-tx-3",
+          "rank": "conditional",
+          "context": "MRSA 위험이 있으면 적절한 활성 성분 추가",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "osteomyelitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-diabetic-foot"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "surgical-site-infection",
+      "kind": "disease",
+      "name": "수술부위 감염",
+      "englishName": "Surgical site infection",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "수술 뒤 상처 발적·통증·농성 분비물 또는 깊은 장기 농양. 표재·심부·장기공간 감염을 나눠 평가한다.",
+      "searchAliases": [
+        "SSI",
+        "창상 감염",
+        "수술 감염"
+      ],
+      "anatomicSites": [
+        "skin",
+        "abdomen"
+      ],
+      "transmission": [
+        "inoculation",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "수술 부위와 오염 정도에 따라 피부균·장관균 등 원인이 달라진다.",
+        "diagnostics": "상처·심부 검체 배양과 필요 시 영상; 다른 수술 합병증 감별.",
+        "management": "절개·배농·봉합사/이물 조정 등 source control. 항균제는 전신 반응·확산·깊이에 맞춰 선택한다.",
+        "redFlags": "창상 이개·심부 농양·괴사성 감염·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "sep",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": "복부 등 수술"
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": "장관 수술"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "surgical-site-infection-tx-1",
+          "rank": "conditional",
+          "context": "MSSA가 원인인 피부·청결 수술 감염",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "surgical-site-infection-tx-2",
+          "rank": "conditional",
+          "context": "복강 혼합감염의 적응증에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "secondary-peritonitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-ssti-2014"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "창상 감염 (Wound Infection)",
+          "path": "source_notes/02 Diseases/11 외과/창상 감염 (Wound Infection).md"
+        }
+      ]
+    },
+    {
+      "id": "bite-infection",
+      "kind": "disease",
+      "name": "교상 감염",
+      "englishName": "Infected bite wound",
+      "category": "skin",
+      "entityType": "syndrome",
+      "summary": "사람·동물에 물린 상처의 발적·종창·농성 변화. 손·관절·힘줄 침범, 광견병·파상풍 예방 필요성을 함께 본다.",
+      "searchAliases": [
+        "동물 교상",
+        "개물림",
+        "고양이 물림",
+        "사람 교상"
+      ],
+      "anatomicSites": [
+        "skin",
+        "bone",
+        "blood"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "동물의 Pasteurella·Capnocytophaga, 사람 교상의 Eikenella와 구강 혼합균을 고려한다.",
+        "diagnostics": "상처 깊이·관절·이물 평가; 감염 검체 배양은 적응증에 맞춰 시행.",
+        "management": "세척·변연절제·배액과 호기/혐기 혼합균 요법. 예방 투여와 이미 생긴 감염의 치료를 구분한다.",
+        "redFlags": "손 심부 감염·패혈증·무비장 위험."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "pmu",
+          "context": ""
+        },
+        {
+          "pathogenId": "cca",
+          "context": ""
+        },
+        {
+          "pathogenId": "eikenella-corrodens",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx517",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "bite-infection-tx-1",
+          "rank": "preferred",
+          "context": "경구 치료가 적합한 감염된 교상 상처",
+          "components": [
+            {
+              "drugId": "amoxclav"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "rabies",
+        "tetanus"
+      ],
+      "sourceIds": [
+        "tail-idsa-bites",
+        "disease-idsa-ssti-2014"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "vibrio-wound-infection",
+      "kind": "disease",
+      "name": "비브리오 패혈증·창상감염",
+      "englishName": "Vibrio vulnificus wound infection and septicemia",
+      "category": "skin",
+      "entityType": "specific",
+      "summary": "해수·해산물 노출 뒤 급격한 통증·부종·출혈성 수포 또는 쇼크. 간질환·철 과부하 환자는 침습성 감염 위험이 높다.",
+      "searchAliases": [
+        "비브리오 패혈증",
+        "Vibrio vulnificus"
+      ],
+      "anatomicSites": [
+        "skin",
+        "blood"
+      ],
+      "transmission": [
+        "inoculation",
+        "food",
+        "water"
+      ],
+      "clinical": {
+        "presentation": "날해산물 섭취 뒤 일차 패혈증과 상처 접종 뒤 감염이 가능하다.",
+        "diagnostics": "혈액·상처 배양과 노출력; 치료·수술 평가를 배양 결과 때문에 늦추지 않는다.",
+        "management": "조기 적절한 항균 병용과 괴사 조직 수술·소생.",
+        "redFlags": "출혈성 수포·빠른 괴사·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "vvu",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "vibrio-wound-infection-tx-1",
+          "rank": "preferred",
+          "context": "의심·확진 중증 V. vulnificus 창상감염의 병용 예시",
+          "components": [
+            {
+              "drugId": "doxycycline"
+            },
+            {
+              "drugId": "ceftazidime"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "necrotizing-fasciitis",
+        "vibrio-enteritis"
+      ],
+      "sourceIds": [
+        "cdc-vibrio-clinical-2024"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "staphylococcal-scalded-skin",
+      "kind": "disease",
+      "name": "포도알균 열상피부증후군",
+      "englishName": "Staphylococcal scalded skin syndrome",
+      "category": "skin",
+      "entityType": "specific",
+      "summary": "영유아의 압통성 홍반·얕은 수포·피부 벗겨짐. 포도알균 독소가 원인이며 점막 침범이 보통 적다.",
+      "searchAliases": [
+        "SSSS",
+        "열상 피부",
+        "리터병"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "endogenous",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "원발 감염 부위는 피부 탈락 부위와 다를 수 있다. TEN·수포형 농가진과 감별한다.",
+        "diagnostics": "임상 진단과 원발 부위 배양; 비전형 병변은 조직검사 등 고려.",
+        "management": "포도알균 활성 항균제와 수분·체온·피부 관리. MRSA 위험·감수성에 따라 조정한다.",
+        "redFlags": "탈수·광범위 피부 손상·패혈증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "staphylococcal-scalded-skin-tx-1",
+          "rank": "preferred",
+          "context": "MSSA가 예상되거나 확인된 정주 치료",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "staphylococcal-scalded-skin-tx-2",
+          "rank": "conditional",
+          "context": "MRSA 위험·감수성에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-merck-ssss"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "포도알균 열상 피부 증후군 (Staphylococcal Scalded Skin Syndrome)",
+          "path": "source_notes/02 Diseases/19 피부과/포도알균 열상 피부 증후군 (Staphylococcal Scalded Skin Syndrome).md"
+        }
+      ]
+    }
+  ]
+}

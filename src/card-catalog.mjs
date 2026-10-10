@@ -7,12 +7,13 @@ const unique = values => [...new Set(values.filter(Boolean))];
 
 // Consumers share ID lookups; they never parse the name or copy card prose.
 export function createCardCatalog(catalog) {
-  const pathogenCards = new Map(), drugCards = new Map();
+  const pathogenCards = new Map(), drugCards = new Map(), diseaseCards = new Map();
+  const relatedDiseases=ids=>(ids || []).map(id=>catalog.diseases?.[id]).filter(Boolean).map(entity=>({kind:'disease',id:entity.id,name:entity.name,subtitle:entity.englishName}));
   const references = ids => unique(ids).filter(id => catalog.sources[id]).map(id => ({ id, ...catalog.sources[id] }));
   const therapies = recordId => (catalog.variants[recordId]?.therapyIds || []).map(id=>catalog.therapyContexts?.[id]).filter(Boolean);
   const drugTherapies = drugId => Object.values(catalog.therapyContexts || {}).filter(context=>context.drugIds.includes(drugId));
   const response = (recordId,drugId) => catalog.responseProfiles[catalog.responses[recordId]?.[drugId]];
-  const summary = (kind,id) => (kind === 'drug' ? catalog.drugs[id] : catalog.variants[id]).summary;
+  const summary = (kind,id) => (kind==='disease'?catalog.diseases?.[id]:kind==='drug'?catalog.drugs[id]:catalog.variants[id])?.summary;
 
   function pathogen(recordId) {
     if (pathogenCards.has(recordId)) return pathogenCards.get(recordId);
@@ -31,8 +32,9 @@ export function createCardCatalog(catalog) {
       organDiseases:variant.organDiseases || entity.organDiseases || {},
       back:{
         label:variant.label, summary:variant.summary, sections:[...sections.values()], responses,
+        relatedDiseases:relatedDiseases(entity.diseaseIds),
         responseLabel:variant.observationType === 'regimen' ? '이 임상형의 요법 구성' : '이 교육용 분리주의 약제 반응',
-        references:references([...entity.sourceIds,...variant.sourceIds,...therapies(recordId).flatMap(context=>context.sourceIds)]),
+        references:references([...entity.sourceIds,...variant.sourceIds,...[...sections.values()].flatMap(section=>section.sourceIds || []),...responses.flatMap(result=>result.sourceIds || []),...therapies(recordId).flatMap(context=>context.sourceIds)]),
         reviewStatus:variant.reviewStatus
       }
     };
@@ -47,11 +49,29 @@ export function createCardCatalog(catalog) {
     const card = {
       kind:'drug', id:drugId.toUpperCase(), name:entity.name, subtitle:entity.family,
       summary:entity.summary,
-      back:{ label:entity.family, summary:entity.summary, sections:entity.back.sections, references:references([...entity.sourceIds,...drugTherapies(drugId).flatMap(context=>context.sourceIds)]), reviewStatus:entity.reviewStatus }
+      back:{ relatedDiseases:relatedDiseases(entity.diseaseIds), label:entity.family, summary:entity.summary, sections:entity.back.sections, references:references([...entity.sourceIds,...entity.back.sections.flatMap(section=>section.sourceIds || []),...drugTherapies(drugId).flatMap(context=>context.sourceIds)]), reviewStatus:entity.reviewStatus }
     };
     drugCards.set(drugId,card);
     return card;
   }
 
-  return { pathogen, drug, response, summary, therapies, drugTherapies };
+
+  function disease(id) {
+    if(diseaseCards.has(id))return diseaseCards.get(id);
+    const entity=catalog.diseases?.[id];
+    if(!entity)return null;
+    const card={
+      kind:'disease',id:entity.id,name:entity.name,subtitle:entity.englishName,summary:entity.summary,
+      category:entity.category,entityType:entity.entityType,anatomicSites:entity.anatomicSites,
+      transmission:entity.transmission,etiologies:entity.etiologies,treatments:entity.treatments,
+      back:{
+        label:catalog.diseaseCategories[entity.category].label,summary:entity.summary,sections:entity.back.sections,
+        etiologies:entity.etiologies,treatments:entity.treatments,relatedDiseases:relatedDiseases(entity.relatedDiseaseIds),
+        references:references(entity.sourceIds),reviewStatus:entity.reviewStatus
+      }
+    };
+    diseaseCards.set(id,card);return card;
+  }
+
+  return { pathogen, drug, disease, response, summary, therapies, drugTherapies };
 }

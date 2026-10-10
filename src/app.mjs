@@ -1,12 +1,12 @@
-import { RULES, newRound, reveal, guess, score, showAnswer, addDiscovery, restoreRound } from './engine.mjs';
+import { newRound, reveal, guess, score, showAnswer, addDiscovery, restoreRound } from './engine.mjs';
 import { createTreatmentGame } from './treatment-ui.mjs';
-import { createLibrary } from './library-ui.mjs';
+import { resolveAppRoute, cardRouteHash } from './app-routing.mjs';
 import { createCardGallery } from './card-gallery-ui.mjs';
 import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCardTooltips } from './reference-card.mjs';
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.14.5';
+const VERSION = '0.15.1';
 const KEY = 'pathopedia.v1';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -22,13 +22,12 @@ const hintCategories = (r=record()) => {
 const DRUG_PAGE_SIZE = 16;
 const shortResult = category => ({ACT:'조건부 활성',ACTIVE:'활성 있음',INACTIVE:'활성 없음',REGIMEN:'요법에 포함',OUTSIDE_REGIMEN:'요법 외'})[category] || category;
 const matchingDrugs = () => panelDrugs().filter(d=>(d.name+' '+d.family).toLowerCase().includes(filter.trim().toLowerCase()));
-let data, sources, treatmentGame, library, cardGallery, cardInspector, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = ['lab','treatment','library','archive','drugs','cards'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'lab', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
+let data, sources, treatmentGame, cardGallery, cardInspector, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = resolveAppRoute(location.hash)?.view || 'lab', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
 const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.14.5" alt="" width="27" height="27">';
-const arrow = '<span aria-hidden="true">↗</span>';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.15.1" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -67,11 +66,10 @@ function resultLabel(result) {
   return { S:'S · Susceptible', I:'I · Increased exposure', R:'R · Resistant', ACT:'조건부 활성 · 조건 확인 필요',ACTIVE:'활성 있음 · 문헌 기반',INACTIVE:'활성 없음 · 문헌 기반',REGIMEN:'표준·대안요법에 포함',OUTSIDE_REGIMEN:'선택 지침의 요법에 없음' }[result];
 }
 function shell() {
-  return `<header class="appbar"><a class="brand" href="#lab" aria-label="Pathopedia 동정실">${symbol}<span>PATHOPEDIA</span></a><nav class="appnav" aria-label="주 메뉴"><button data-view="lab" class="${view==='lab'?'active':''}" ${view==='lab'?'aria-current="page"':''}>동정실</button><button data-view="treatment" class="${view==='treatment'?'active':''}" ${view==='treatment'?'aria-current="page"':''}>항생제 선택</button><button data-view="library" class="${['library','archive','drugs'].includes(view)?'active':''}" ${['library','archive','drugs'].includes(view)?'aria-current="page"':''}>라이브러리</button><button data-view="cards" class="${view==='cards'?'active':''}" ${view==='cards'?'aria-current="page"':''}>카드 도감</button><button data-action="protocol">규칙</button></nav><span class="version">v ${VERSION}</span></header>
+  return `<header class="appbar"><a class="brand" href="#lab" aria-label="Pathopedia 동정실">${symbol}<span>PATHOPEDIA</span></a><nav class="appnav" aria-label="주 메뉴"><button data-view="lab" class="${view==='lab'?'active':''}" ${view==='lab'?'aria-current="page"':''}>동정실</button><button data-view="treatment" class="${view==='treatment'?'active':''}" ${view==='treatment'?'aria-current="page"':''}>항생제 선택</button><button data-view="cards" class="${view==='cards'?'active':''}" ${view==='cards'?'aria-current="page"':''}>카드 도감</button></nav><span class="version">v ${VERSION}</span></header>
   ${storageWarning ? `<div class="storage-warning" role="alert">${esc(storageWarning)}</div>` : ''}
-  <main id="main" class="${view==='lab'?'game-main':view==='treatment'?'treatment-main':view==='cards'?'card-gallery-main':'library-main'}" tabindex="-1">${view === 'lab' ? lab() : view === 'treatment' ? treatmentGame.render() : view === 'cards' ? cardGallery.render() : library.render(view)}</main>
-  <dialog id="detail-dialog" aria-labelledby="detail-title"></dialog>${cardInspector?.markup() || ''}
-  <dialog id="protocol"><div class="dialog-top"><span class="eyebrow">PROTOCOL / 001</span><button data-action="close-modal" aria-label="규칙 닫기">✕</button></div><h2>알고 있는 만큼,<br>적게 열어보세요.</h2><p>가려진 병원체의 정보와 약제 단서를 선택하고, <strong>병원체와 표현형·임상형을 모두</strong> 동정합니다.</p><ol class="rules"><li>선택한 출제 분야 안에서 기록은 동일 확률로 출제됩니다. 분야를 바꿔도 각 분야의 진행은 보존됩니다. 직전 검체의 연속 출제는 피합니다.</li><li>공개 비용 = ⌈6 + 18 × H(예상 결과)⌉. 현재 공개된 결과와 오답을 반영한 후보군의 Shannon entropy를 사용합니다. 같은 결과를 내는 후보가 많을수록 비용이 낮습니다.</li><li>검사 전 가격은 가능한 결과의 평균 정보량입니다. 숨은 정답의 희귀도로 가격을 바꾸지 않습니다. 중복 검사는 다시 청구하지 않습니다.</li><li>점수 = max(0, 1,000 − 누적 비용 × 4 − 서로 다른 오답 × 100). 틀린 조합은 다시 제출해도 추가 감점하지 않습니다.</li><li>정답이면 전체 기록이 공개되고 Archive에 등록됩니다. 답 보기는 정답과 전체 정보를 공개하며, 해당 라운드는 점수·Archive에 기록하지 않습니다. 검체를 교체해도 미완료 검체는 Archive에 등록되지 않습니다.</li></ol><h3>분야와 약제 단서</h3><p>세균 감수성 분야는 S/I/R 및 문헌상 활성을 사용합니다. 세균 치료 단서·진균·바이러스·기생충 분야는 특정 임상 상황에 대한 지침의 표준·대안요법 포함 여부를 묻습니다. 요법 외는 내성이나 비활성을 의미하지 않습니다.</p><h3>감수성 결과의 범위</h3><p>S/I/R은 EUCAST의 범주 의미와 문헌의 내성 관계를 반영해 작성한 <strong>고정 교육용 분리주</strong>의 정성 결과입니다. 모든 실제 분리주에 동일한 결과를 약속하지 않으며, S가 곧 임상적 최선의 선택이라는 뜻은 아닙니다.</p><p>조건부 활성은 S/I/R 판정과 구분합니다. 활성 있음·없음은 문헌 기반 항균 활성로 임상 S/I/R 판정과 구분합니다. 조건부 활성은 고노출·병용 등 명시된 조건에서만 적용합니다. E. coli cefazolin 결과는 요로 유래 감염에 한정합니다. 적용 조건과 출처는 동정 또는 답 보기 후 전체 기록에서 확인할 수 있습니다. Basic의 Effective도 이 분리주의 in vitro 활성 표현입니다.</p><p>이 panel의 I는 EUCAST의 Susceptible, increased exposure입니다. 적절히 증가된 노출에서 감수성이며 R이나 CLSI의 Intermediate와 같지 않습니다. EUCAST v16.1 (2026)의 범주 의미를 사용하며, 실측 MIC 판정을 재현한 것은 아닙니다. MIC 모드는 수치·부위·노출조건을 갖춘 검증 데이터가 준비될 때 활성화합니다.</p><h3>출처와 데이터</h3><p>개인 학습 자료는 읽기 전용으로 참고했고 원문을 배포하지 않았습니다. 아래 문헌은 교육용 설정의 기전을 뒷받침하며, 실측 AST 데이터의 출처라는 뜻은 아닙니다. 현재 seed는 임상 전문가의 최종 검토 전입니다.</p>${sourceList(Object.keys(sources))}${answerVisible()?`<a class="download" href="./data/organisms.json" target="_blank" rel="noopener">게임 데이터 JSON 열기 ${arrow}</a>`:''}<p class="tiny">v ${VERSION} · 임상 미생물학 복습용 · 개인 기기 내 저장</p></dialog>`;
+  <main id="main" class="${view==='lab'?'game-main':view==='treatment'?'treatment-main':'card-gallery-main'}" tabindex="-1">${view === 'lab' ? lab() : view === 'treatment' ? treatmentGame.render() : cardGallery.render()}</main>
+  <dialog id="detail-dialog" aria-labelledby="detail-title"></dialog>${cardInspector?.markup() || ''}`;
 }
 function lab() {
  const stats=score(round), done=answerVisible(), viewed=round.status==='revealed';
@@ -129,6 +127,14 @@ function render(focusSelector) {
  root.innerHTML=shell();
  if (focusSelector) $(focusSelector)?.focus({preventScroll:true});
 }
+function navigateTo(hash,{replace=false}={}) {
+ const route=resolveAppRoute(hash);if(!route)return;
+ if(view==='cards')cardGallery.rememberFaces();
+ view=route.view;
+ if(view==='cards')cardGallery.setRoute(route.domain,route.archiveOnly);
+ if(location.hash!==route.hash)history[replace?'replaceState':'pushState'](null,'',route.hash);
+ notice='';render('#main');window.scrollTo({top:0});
+}
 function switchPanel(id){
  if(!data.panels.some(p=>p.id===id)||id===round.panelId)return;
  panelRounds[round.panelId]=round;panelAnswers[round.panelId]={taxon:selectedTaxon,answer:selectedAnswer};
@@ -139,16 +145,15 @@ function reset() {
  mobileSection='hints';round=newRound(data.records,round.targetId,Math.random,round.panelId); selectedTaxon='';selectedAnswer='';notice='';confirmNext=false;filter='';drugPage=0;tab='hints';persist();render();window.scrollTo({top:0,behavior:'smooth'});
 }
 root.addEventListener('click',e=>{
- if(e.target.closest('.brand')){if(view==='cards')cardGallery.rememberFaces();e.preventDefault();view='lab';location.hash='lab';render();return;}
+ if(e.target.closest('.brand')){e.preventDefault();navigateTo('#lab');return;}
  const b=e.target.closest('button'); if (!b||b.disabled) return;
  if(cardInspector?.handleClick(b))return;
  if(handleReferenceCardClick(b))return;
  if(treatmentGame?.handleClick(b))return;
- if(library?.handleClick(b))return;
  if(cardGallery?.handleClick(b))return;
  if(b.dataset.drugPage){drugPage+=b.dataset.drugPage==='next'?1:-1;render(`[data-drug-page="${b.dataset.drugPage}"]`);return;}
  if (b.dataset.mobileSection) {mobileSection=b.dataset.mobileSection;render(`[data-mobile-section="${mobileSection}"] button[aria-pressed="true"]`);window.scrollTo({top:0});return;}
- if (b.dataset.view) {if(view==='cards')cardGallery.rememberFaces();view=b.dataset.view;location.hash=view;notice='';render('#main');window.scrollTo({top:0});return;}
+ if (b.dataset.view) {navigateTo('#'+b.dataset.view);return;}
  if (b.dataset.tab) {tab=b.dataset.tab;render(`#${tab}-tab`);return;}
  if(b.dataset.detailHint){const c=hintCategories().find(c=>c.id===b.dataset.detailHint),hint=record().hints[c.id],visual=c.id==='morphology'?morphologyVisual(record()):null;openDetail(c.ko,`${visual?morphologyFigure(record(),'detail'):''}<p class="detail-hint-text">${esc(hint.text)}</p>${visual&&answerVisible()?sourceList(visual.entry.sourceIds):''}<p class="tiny">${c.ko} · 이미 공개한 정보입니다. 추가 비용 없음.</p>`);return;}
  if(b.dataset.detailDrug){const drug=data.drugs.find(d=>d.id===b.dataset.detailDrug),ast=record().susceptibility[drug.id];openDetail(drug.name,`<p class="detail-ast ${ast.category.toLowerCase()}">${resultLabel(ast.category)}</p>${answerVisible()?`<p>${esc(ast.note)}</p>${sourceList(ast.sourceIds)}`:`<p>${isRegimen()?'이 기록에 설정된 감염·병기·숙주 조건에서, 인용 지침의 표준 또는 대안요법에 이 약제가 포함되는지를 보여줍니다. 요법 외는 내성·비활성을 뜻하지 않습니다.':'이 교육용 분리주의 결과입니다. I는 증가된 노출에서 감수성이며, 문헌상 활성과 조건부 활성은 임상 S/I/R과 구분합니다.'}</p><p class="tiny">병원체별 상세 해석·적용 조건·출처는 동정 또는 답 보기 후 공개됩니다.</p>`}<p class="tiny">이미 공개한 결과입니다. 추가 비용 없음.</p>`);return;}
@@ -158,14 +163,12 @@ root.addEventListener('click',e=>{
  }
  switch(b.dataset.action) {
   case 'regimen-help':openDetail('요법 단서의 의미','<p>이 기록에 설정된 감염·병기·숙주 조건에서, 인용 지침의 표준 또는 대안요법에 약제가 포함되는지를 확인합니다.</p><p><strong>요법에 포함</strong>: 명시된 병용·투여 경로·환자 조건을 충족할 때 해당 요법의 구성 약제입니다.</p><p><strong>요법 외</strong>: 이 기록에서 선택한 지침의 해당 요법 목록에 없습니다. 약제의 비활성·내성이나 모든 상황에서의 사용 금지를 의미하지 않습니다.</p><p>상황과 원문 근거는 동정 또는 답 보기 후 전체 기록에서 확인합니다.</p>');break;
-  case 'protocol': if(view==='treatment')openDetail('항생제 선택 · 규칙',treatmentGame.rules());else $('#protocol').showModal();break;
   case 'close-detail':$('#detail-dialog').close();break;
   case 'log':openDetail('검사 기록',logPanel());break;
   case 'show-answer':
    if(round.status!=='active')break;
    round=showAnswer(round);mobileSection='answer';notice='';persist();render('[data-action="record"]');window.scrollTo({top:0,behavior:'smooth'});break;
   case 'record':openDetail('Organism record',recordView(record()),true);break;
-  case 'close-modal': $('#protocol').close();break;
   case 'next': if(answerVisible()||(!round.actions.length&&!round.wrongIds.length)) reset(); else openDetail('검체를 교체할까요?', '<p>진행 중인 검체는 Archive에 등록되지 않습니다.</p><div class="dialog-actions"><button data-action="cancel-next">계속 풀기</button><button class="submit-button" data-action="confirm-next">교체하기 →</button></div>');break;
   case 'confirm-next':reset();break;
   case 'cancel-next':$('#detail-dialog').close();break;
@@ -174,14 +177,13 @@ root.addEventListener('click',e=>{
 root.addEventListener('change',e=>{
  if(cardInspector?.handleChange(e.target))return;
  if(treatmentGame?.handleChange(e.target))return;
- if(library?.handleChange(e.target))return;
  if(cardGallery?.handleChange(e.target))return;
  if(e.target.id==='question-panel'){switchPanel(e.target.value);return;}
  if(e.target.id==='taxon') {selectedTaxon=e.target.value;const options=panelRecords().filter(r=>r.taxonId===selectedTaxon);selectedAnswer=options.length===1?options[0].id:'';persist();render('#phenotype');}
  if(e.target.id==='phenotype') {selectedAnswer=e.target.value;persist();render('#phenotype');}
  if(e.target.id==='result-mode') {mode=e.target.value;persist();render('#result-mode');}
 });
-root.addEventListener('input',e=>{if(library?.handleInput(e.target))return;if(cardGallery?.handleInput(e.target))return;if(e.target.id==='drug-search'){filter=e.target.value;drugPage=0;$('.assay-grid').innerHTML=drugRows();$('.drug-pagination').innerHTML=drugPagination();}});
+root.addEventListener('input',e=>{if(cardGallery?.handleInput(e.target))return;if(e.target.id==='drug-search'){filter=e.target.value;drugPage=0;$('.assay-grid').innerHTML=drugRows();$('.drug-pagination').innerHTML=drugPagination();}});
 root.addEventListener('submit',e=>{
  if(cardGallery?.handleSubmit(e))return;
  if(treatmentGame?.handleSubmit(e))return;
@@ -191,8 +193,8 @@ root.addEventListener('submit',e=>{
  if(round.status==='solved'){mobileSection='answer';archive=addDiscovery(archive,round);notice='';persist();render();window.scrollTo({top:0,behavior:'smooth'});}
  else{notice=duplicate?'이미 제외한 조합입니다. 추가 감점 없음.':'일치하지 않습니다. −100점. 다른 조합을 검토하세요.';persist();render('#phenotype');}
 });
-root.addEventListener('keydown',e=>{if(e.target.getAttribute('role')==='tab'&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();tab=tab==='hints'?'drugs':'hints';render(`#${tab}-tab`);}});
-window.addEventListener('hashchange',()=>{const next=location.hash.slice(1);if(data&&treatmentGame&&library&&cardGallery&&['lab','treatment','library','archive','drugs','cards'].includes(next)&&view!==next){if(view==='cards')cardGallery.rememberFaces();view=next;render('#main');window.scrollTo({top:0});}});
+root.addEventListener('keydown',e=>{if(view==='lab'&&['hints-tab','drugs-tab'].includes(e.target.id)&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();tab=tab==='hints'?'drugs':'hints';render(`#${tab}-tab`);}});
+window.addEventListener('hashchange',()=>{if(data&&treatmentGame&&cardGallery)navigateTo(location.hash,{replace:true});});
 try {
  const responses=await Promise.all([fetch(new URL('../data/organisms.json',import.meta.url)),fetch(new URL('../data/sources.json',import.meta.url)),fetch(new URL('../data/treatment-questions.json',import.meta.url)),fetch(new URL('../data/library.json',import.meta.url))]);
  if(responses.some(r=>!r.ok))throw Error('Data unavailable');
@@ -202,10 +204,15 @@ try {
  if(morphologyResponse?.ok){morphologyVisuals=await morphologyResponse.json();morphologyAssets=new Map(morphologyVisuals.assets.map(asset=>[asset.id,asset]));morphologyTaxa=new Map(morphologyVisuals.taxa.map(entry=>[entry.taxonId,entry]));}
  treatmentGame=createTreatmentGame(treatmentCatalog,{render,openDetail});
  const cardStacks=createCardStacks(cardDatabase);
- library=createLibrary(data,{getArchive:()=>archive,render,openDetail,catalog:cardDatabase,cardStacks});
- cardGallery=createCardGallery(data,{render,catalog:cardDatabase,cardStacks});
+ cardGallery=createCardGallery(data,{catalog:cardDatabase,cardStacks,getArchive:()=>archive,onFilterChange:(domain,archiveOnly)=>{
+   const hash=cardRouteHash(domain,archiveOnly);if(location.hash!==hash)history.pushState(null,'',hash);
+ }});
  cardInspector=createCardInspector(data,{catalog:cardDatabase});
-  load();persist();render();
+  load();persist();
+  const initialRoute=resolveAppRoute(location.hash);
+  if(initialRoute?.view==='cards')cardGallery.setRoute(initialRoute.domain,initialRoute.archiveOnly);
+  if(initialRoute && location.hash!==initialRoute.hash)history.replaceState(null,'',initialRoute.hash);
+  render();
   if('serviceWorker' in navigator) {
     navigator.serviceWorker.register(new URL('../sw.js',import.meta.url),{scope:new URL('../',import.meta.url).pathname}).then(registration=>{
       const offerUpdate=()=>{

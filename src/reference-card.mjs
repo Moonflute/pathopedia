@@ -84,28 +84,60 @@ export function renderCardBackContent(model) {
   </div>`;
 }
 
+
+function relatedButton(kind,id,name,subtitle='') {
+  return '<button type="button" class="card-related-link" data-card-related="'+esc(kind+':'+id)+'"><span>'+esc(name)+'</span>'+(subtitle?'<small>'+esc(subtitle)+'</small>':'')+'<i aria-hidden="true">↗</i></button>';
+}
+function relatedDiseasesMarkup(items=[]) {
+  if(!items.length)return '';
+  const links='<div class="card-related-list">'+items.map(item=>relatedButton('disease',item.id,item.name,item.subtitle)).join('')+'</div>';
+  return items.length>8?'<details class="card-related-diseases"><summary>감염질환</summary>'+links+'</details>':'<section class="card-back-section card-related-diseases"><h3>감염질환</h3>'+links+'</section>';
+}
+const RANK_LABELS={preferred:'우선 선택',alternative:'대안',conditional:'조건부 선택'};
+function diseaseConnections(model) {
+  const causes='<section class="card-back-section"><h3>원인 병원체</h3><div class="card-related-list">'+model.etiologies.map(cause=>
+    cause.cardId?relatedButton('pathogen',cause.cardId,cause.name,cause.context):
+      '<div class="card-related-name"><b>'+esc(cause.name)+'</b>'+(cause.context?'<small>'+esc(cause.context)+'</small>':'')+'</div>'
+  ).join('')+'</div></section>';
+  const selected=model.selectedTreatment;
+  const mode=(selected?.coverage==='component'?'전체 요법의 일부 · ':'')+(selected?.mode==='sequence'?'순서대로 사용':selected?.mode==='combination'?'함께 사용하는 병합 요법':'단일 약제');
+  const treatment=selected?'<section class="card-back-section card-disease-treatment"><h3>치료 상황</h3>'+
+    '<label class="card-treatment-select"><select data-disease-treatment aria-label="치료 상황 선택">'+model.treatments.map(item=>'<option value="'+esc(item.id)+'" '+(item.id===selected.id?'selected':'')+'>'+esc(item.context)+'</option>').join('')+'</select></label>'+
+    '<p class="card-treatment-context">'+esc(selected.context)+'</p><p class="card-treatment-mode">'+esc(RANK_LABELS[selected.rank]+' · '+mode)+'</p>'+
+    '<div class="card-related-list">'+selected.components.map(component=>component.drugId?
+      relatedButton('drug',component.drugId,component.name,component.role==='adjunct'?'보조 약제':''):
+      '<div class="card-related-name"><b>'+esc(component.name)+'</b>'+(component.role==='adjunct'?'<small>보조 약제</small>':'')+'</div>'
+    ).join('')+'</div></section>':
+    '<section class="card-back-section"><h3>치료·관리</h3><p>'+esc(model.back.sections.find(section=>section.id==='management')?.text || '')+'</p></section>';
+  return causes+treatment+relatedDiseasesMarkup(model.back.relatedDiseases);
+}
+
+
 function renderBackPanels(model) {
   const back=model.back || {},sections=back.sections || [];
-  const coreIds=new Set(model.kind==='drug'?['spectrum','limitations']:['clinicalContext','diseases','pearl','diagnostics']);
+  const disease=model.kind==='disease';
+  const coreIds=new Set(disease?['presentation','diagnostics','management','redFlags']:model.kind==='drug'?['spectrum','limitations']:['clinicalContext','diseases','pearl','diagnostics']);
   const core=sections.filter(section=>coreIds.has(section.id)).sort((a,b)=>[...coreIds].indexOf(a.id)-[...coreIds].indexOf(b.id)),other=sections.filter(section=>!coreIds.has(section.id));
   const sectionMarkup=items=>items.map(section=>'<section class="card-back-section"><h3>'+esc(section.title)+'</h3><p>'+esc(section.text)+'</p></section>').join('');
   const therapy=model.therapyContext;
   const clinical='<p class="card-back-summary">'+esc(model.summary)+'</p>'+
     (therapy?'<section class="card-back-section card-therapy-note"><h3>금색 표시의 기준</h3><p>'+esc(therapy.context)+'</p><p>'+esc(therapy.note)+'</p></section>':'')+
     sectionMarkup(core)+(other.length?'<details><summary>구조·기전·추가 특징</summary>'+sectionMarkup(other)+'</details>':'');
-  const responses=(back.responses || []).length?'<p class="card-back-label">'+esc(back.responseLabel)+'</p><dl class="card-response-list">'+back.responses.map(response=>'<div><dt>'+esc(response.name)+'<span>'+esc(response.label)+'</span></dt><dd>'+esc(response.note)+(response.applicability?'<small>'+esc(response.applicability)+'</small>':'')+'</dd></div>').join('')+'</dl>':'<p>수록된 약제 반응이 없습니다.</p>';
-  const properties=[{label:model.leftLabel,items:model.leftProperties},{label:model.rightLabel,items:model.rightProperties}].map(rail=>'<section class="card-back-section"><h3>'+esc(rail.label)+'</h3><ul class="card-property-list">'+(rail.items || []).map(property=>'<li>'+propertyRune(property,true)+'<div><b>'+esc(property.label)+'</b><p>'+esc(property.note || (property.active?'해당':'비해당·기록 없음'))+'</p></div></li>').join('')+'</ul></section>').join('');
-  const tabs=[['clinical','임상',clinical],['responses',model.kind==='drug'?'대상':'약제',responses],['icons','기호',properties]];
+  const responses=disease?diseaseConnections(model):relatedDiseasesMarkup(back.relatedDiseases)+
+    ((back.responses || []).length?'<p class="card-back-label">'+esc(back.responseLabel)+'</p><dl class="card-response-list">'+back.responses.map(response=>'<div><dt>'+esc(response.name)+'<span>'+esc(response.label)+'</span></dt><dd>'+esc(response.note)+(response.applicability?'<small>'+esc(response.applicability)+'</small>':'')+'</dd></div>').join('')+'</dl>':'<p>수록된 약제 반응이 없습니다.</p>');
+  const properties=[{label:model.leftLabel,items:model.leftProperties},{label:model.rightLabel,items:model.rightProperties}].map(rail=>'<section class="card-back-section"><h3>'+esc(rail.label)+'</h3><ul class="card-property-list">'+(rail.items || []).map(property=>'<li>'+propertyRune(property,true)+'<div><b>'+esc(property.label)+'</b><p>'+esc(property.note || (property.active?'해당':'—'))+'</p></div></li>').join('')+'</ul></section>').join('');
+  const tabs=[['clinical','임상',clinical],['responses',disease?'연결':model.kind==='drug'?'대상':'약제',responses],['icons','기호',properties]];
+  const active=tabs.some(([id])=>id===model.backTab)?model.backTab:'clinical';
   const prefix='card-back-'+model.kind+'-'+model.id;
-  return '<div class="card-back-tabs" role="tablist" aria-label="카드 뒷면 내용">'+tabs.map(([id,label])=>'<button type="button" role="tab" data-card-back-tab="'+id+'" id="'+esc(prefix+'-'+id)+'-tab" aria-controls="'+esc(prefix+'-'+id)+'" aria-selected="'+(id==='clinical')+'" tabindex="'+(id==='clinical'?'0':'-1')+'">'+label+'</button>').join('')+'</div><div class="card-back-content">'+tabs.map(([id,,markup])=>'<div class="card-back-pane card-back-prose" id="'+esc(prefix+'-'+id)+'" data-card-back-pane="'+id+'" role="tabpanel" aria-labelledby="'+esc(prefix+'-'+id)+'-tab" tabindex="0" '+(id!=='clinical'?'hidden':'')+'>'+markup+'</div>').join('')+'</div>';
+  return '<div class="card-back-tabs" role="tablist" aria-label="카드 뒷면 내용">'+tabs.map(([id,label])=>'<button type="button" role="tab" data-card-back-tab="'+id+'" id="'+esc(prefix+'-'+id)+'-tab" aria-controls="'+esc(prefix+'-'+id)+'" aria-selected="'+(id===active)+'" tabindex="'+(id===active?'0':'-1')+'">'+label+'</button>').join('')+'</div><div class="card-back-content">'+tabs.map(([id,,markup])=>'<div class="card-back-pane card-back-prose" id="'+esc(prefix+'-'+id)+'" data-card-back-pane="'+id+'" role="tabpanel" aria-labelledby="'+esc(prefix+'-'+id)+'-tab" tabindex="0" '+(id!==active?'hidden':'')+'>'+markup+'</div>').join('')+'</div>';
 }
 
 /** Shared 2:3 geometry; both faces stay mounted for the physical flip. */
 export function renderReferenceCard(model) {
-  const kind=model.kind==='drug'?'drug':'pathogen',preview=Boolean(model.preview);
+  const kind=['pathogen','drug','disease'].includes(model.kind)?model.kind:'pathogen',preview=Boolean(model.preview);
   const route=model.route || {icon:'artwork',label:'—',description:'경로 미지정'};
   const resistance=model.resistance,face=model.face==='back'&&!preview?'back':'front';
-  const domainClass=['bacteria','fungi','viruses','parasites','drugs'].includes(model.domain)?' reference-card-domain--'+model.domain:'';
+  const domainClass=['bacteria','fungi','viruses','parasites','drugs','diseases'].includes(model.domain)?' reference-card-domain--'+model.domain:'';
   const nameClass=model.name.length>38?' has-long-name':'';
   const caption=model.summary || (model.features || []).join(' · ');
   const units=[...caption].reduce((total,char)=>total+(/[가-힣一-龯]/.test(char)?1:.55),0);
@@ -126,7 +158,7 @@ export function renderCardLegend() {
 }
 
 export function renderCardThumbnail(model,{key,badge='',caption=''}={}) {
-  return '<div class="card-mini"><div class="card-mini-visual" aria-hidden="true" inert>'+renderReferenceCard({...model,preview:true})+'</div><div class="card-mini-caption" aria-hidden="true"><strong>'+esc(model.name)+'</strong><span>'+esc(caption || model.subtitle || model.lineage)+'</span>'+(badge?'<small>'+esc(badge)+'</small>':'')+'</div><button type="button" class="card-mini-open" data-card-open="'+esc(key || model.kind+':'+(model.entityId || model.id))+'" aria-label="'+esc(model.name+' · '+(caption || model.subtitle || '')+' 확대 보기')+'"></button></div>';
+  return '<div class="card-mini"><div class="card-mini-visual" aria-hidden="true" inert>'+renderReferenceCard({...model,preview:true})+'</div><div class="card-mini-caption" aria-hidden="true"><strong>'+esc(model.name)+'</strong><span>'+esc(caption || model.subtitle || model.lineage)+'</span>'+(badge?'<small>'+esc(badge)+'</small>':'')+'</div><button type="button" class="card-mini-open" data-card-open="'+esc(key || model.kind+':'+(model.entityId || model.id))+'" aria-label="'+esc(model.name+' · '+(caption || model.subtitle || '')+(badge?' · '+badge:'')+' 확대 보기')+'"></button></div>';
 }
 export function setReferenceCardFace(slot,face,{focus=true}={}) {
   if(!slot || !['front','back'].includes(face) || slot.hasAttribute('data-card-preview'))return false;

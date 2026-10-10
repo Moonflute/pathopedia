@@ -1,0 +1,801 @@
+{
+  "checkedAt": "2026-10-11",
+  "note": "URL 접근 기록이며 임상 내용 검토 상태나 권고 강도를 뜻하지 않는다. 403·429·timeout은 자동 접근 제한일 수 있다.",
+  "results": [
+    {
+      "id": "disease-aad-nail-fungus",
+      "status": 200,
+      "url": "https://www.aad.org/public/diseases/a-z/nail-fungus-treatment",
+      "title": "Nail fungus: Diagnosis and treatment"
+    },
+    {
+      "id": "disease-aad-versicolor",
+      "status": 200,
+      "url": "https://www.aad.org/public/diseases/a-z/tinea-versicolor-treatment",
+      "title": "Tinea versicolor: Diagnosis and treatment"
+    },
+    {
+      "id": "disease-aao-conjunctivitis",
+      "status": 200,
+      "url": "https://linkinghub.elsevier.com/retrieve/pii/S0161642024000095",
+      "title": "Redirecting"
+    },
+    {
+      "id": "disease-aao-hns-aoe",
+      "status": 200,
+      "url": "https://www.entnet.org/quality-practice/quality-products/clinical-practice-guidelines/aoe/",
+      "title": "Clinical Practice Guideline: Acute Otitis Externa (Update) - American Academy of Otolaryngology-Head and Neck Surgery (AAO-HNS)"
+    },
+    {
+      "id": "disease-aao-hsv-keratitis",
+      "status": 200,
+      "url": "https://www.aao.org/education/clinical-statement/herpes-simplex-virus-keratitis-treatment-guideline",
+      "title": "Herpes Simplex Virus Keratitis: A Treatment Guideline - 2014 - American Academy of Ophthalmology"
+    },
+    {
+      "id": "disease-aao-keratitis",
+      "status": 200,
+      "url": "https://linkinghub.elsevier.com/retrieve/pii/S0161642024000071",
+      "title": "Redirecting"
+    },
+    {
+      "id": "disease-aasld-ascites-2021",
+      "status": 200,
+      "url": "https://www.aasld.org/practice-guidelines/diagnosis-evaluation-and-management-ascites-spontaneous-bacterial-peritonitis",
+      "title": "Diagnosis, Evaluation and Management of Ascites, Spontaneous Bacterial Peritonitis and Hepatorenal Syndrome | AASLD"
+    },
+    {
+      "id": "disease-abm-mastitis",
+      "status": 200,
+      "url": "https://www.bfmed.org/assets/ABM%20Protocol%20%2336.pdf"
+    },
+    {
+      "id": "disease-acog-intraamniotic",
+      "status": 200,
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/intrapartum-management-of-intraamniotic-infection",
+      "title": "value is what Coveo indexes and uses as the title in Search Results.--> <title>Intrapartum Management of Intraamniotic Infection | ACOG"
+    },
+    {
+      "id": "disease-ada-dental",
+      "status": 200,
+      "url": "https://www.ada.org/resources/ada-library/oral-health-topics/antibiotic-stewardship",
+      "title": "Antibiotic Stewardship | American Dental Association"
+    },
+    {
+      "id": "disease-aga-pancreatic-necrosis",
+      "status": 200,
+      "url": "https://gastro.org/clinical-guidance/management-of-pancreatic-necrosis/",
+      "title": "Management of pancreatic necrosis - American Gastroenterological Association"
+    },
+    {
+      "id": "disease-asco-idsa-neutropenia-2018",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/fever-and-neutropenia-in-adults-with-cancer/",
+      "title": "ASCO/IDSA Clinical Practice Guideline Update for Outpatient Management of Fever and Neutropenia in Adults Treated for Malignancy"
+    },
+    {
+      "id": "disease-bsg-ascites-2021",
+      "status": 403,
+      "url": "https://gut.bmj.com/content/70/1/9",
+      "title": "Just a moment..."
+    },
+    {
+      "id": "disease-cdc-acanthamoeba",
+      "status": 200,
+      "url": "https://www.cdc.gov/acanthamoeba/hcp/clinical-care/index.html",
+      "title": "Clinical Treatment of Non-keratitis Acanthamoeba Infections | Acanthamoeba Infections | CDC"
+    },
+    {
+      "id": "disease-cdc-acanthamoeba-gae",
+      "status": 200,
+      "url": "https://www.cdc.gov/acanthamoeba/hcp/clinical-care/index.html",
+      "title": "Clinical Treatment of Non-keratitis Acanthamoeba Infections | Acanthamoeba Infections | CDC"
+    },
+    {
+      "id": "disease-cdc-acanthamoeba-keratitis",
+      "status": 200,
+      "url": "https://www.cdc.gov/acanthamoeba/hcp/clinical-overview-acanthamoeba-keratitis/index.html",
+      "title": "Clinical Overview of Acanthamoeba Keratitis | Acanthamoeba Infections | CDC"
+    },
+    {
+      "id": "disease-cdc-acute-bronchitis",
+      "status": 200,
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+      "title": "Outpatient Clinical Care for Adults | Antibiotic Prescribing and Use | CDC"
+    },
+    {
+      "id": "disease-cdc-babesia",
+      "status": 200,
+      "url": "https://www.cdc.gov/babesiosis/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Babesiosis | Babesiosis | CDC"
+    },
+    {
+      "id": "disease-cdc-balamuthia",
+      "status": 200,
+      "url": "https://www.cdc.gov/balamuthia/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Balamuthia Infection | Balamuthia Infection | CDC"
+    },
+    {
+      "id": "disease-cdc-balantidium",
+      "status": 200,
+      "url": "https://www.cdc.gov/dpdx/balantidiasis/index.html",
+      "title": "Balantidiasis"
+    },
+    {
+      "id": "disease-cdc-blastomyces",
+      "status": 200,
+      "url": "https://www.cdc.gov/blastomycosis/hcp/clinical-overview/index.html",
+      "title": "Clinical Overview of Blastomycosis | Blastomycosis | CDC"
+    },
+    {
+      "id": "disease-cdc-bv",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/bv.htm",
+      "title": "Bacterial Vaginosis - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-chlamydia",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+      "title": "Chlamydial Infections - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-congenital-cmv",
+      "status": 200,
+      "url": "https://www.cdc.gov/cytomegalovirus/congenital-infection/index.html",
+      "title": "CMV in Newborns | Cytomegalovirus (CMV) and Congenital CMV Infection | CDC"
+    },
+    {
+      "id": "disease-cdc-congenital-syphilis",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/congenital-syphilis.htm",
+      "title": "Congenital Syphilis - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-cysticercosis",
+      "status": 200,
+      "url": "https://www.cdc.gov/cysticercosis/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Cysticercosis | Cysticercosis | CDC"
+    },
+    {
+      "id": "disease-cdc-ecoli-clinical",
+      "status": 200,
+      "url": "https://www.cdc.gov/ecoli/hcp/guidance/index.html",
+      "title": "Information for Clinicians | E. coli infection | CDC"
+    },
+    {
+      "id": "disease-cdc-epididymitis",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm",
+      "title": "Epididymitis - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-gonorrhea-2021",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
+      "title": "Gonococcal Infections Among Adolescents and Adults - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-hat",
+      "status": 200,
+      "url": "https://www.cdc.gov/sleeping-sickness/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Human African Trypanosomiasis | Sleeping Sickness (African Trypanosomiasis) | CDC"
+    },
+    {
+      "id": "disease-cdc-histoplasma",
+      "status": 200,
+      "url": "https://www.cdc.gov/histoplasmosis/hcp/clinical-overview/index.html",
+      "title": "Clinical Overview of Histoplasmosis | Histoplasmosis | CDC"
+    },
+    {
+      "id": "disease-cdc-hps",
+      "status": 200,
+      "url": "https://www.cdc.gov/hantavirus/hcp/clinical-overview/hps.html",
+      "title": "Clinician Brief: Hantavirus Pulmonary Syndrome (HPS) | Hantavirus | CDC"
+    },
+    {
+      "id": "disease-cdc-index",
+      "status": 200,
+      "url": "https://www.cdc.gov/health-topics.html",
+      "title": "Health Topics | CDC"
+    },
+    {
+      "id": "disease-cdc-leprosy",
+      "status": 200,
+      "url": "https://www.cdc.gov/leprosy/hcp/clinical-overview/index.html",
+      "title": "Clinical Overview of Leprosy | Leprosy (Hansen's Disease) | CDC"
+    },
+    {
+      "id": "disease-cdc-lgv",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/lgv.htm",
+      "title": "Lymphogranuloma Venereum (LGV) - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-loiasis",
+      "status": 200,
+      "url": "https://www.cdc.gov/filarial-worms/hcp/clinical-care/loiasis.html",
+      "title": "Clinical Treatment of Loiasis | Filarial Worms | CDC"
+    },
+    {
+      "id": "disease-cdc-ltbi",
+      "status": 200,
+      "url": "https://www.cdc.gov/tb/hcp/treatment/latent-tuberculosis-infection.html",
+      "title": "Treatment for Latent Tuberculosis Infection | Tuberculosis (TB) | CDC"
+    },
+    {
+      "id": "disease-cdc-lymphatic-filariasis",
+      "status": 200,
+      "url": "https://www.cdc.gov/filarial-worms/hcp/clinical-care/index.html",
+      "title": "Clinical Treatment of Lymphatic Filariasis | Filarial Worms | CDC"
+    },
+    {
+      "id": "disease-cdc-malaria-2026",
+      "status": 200,
+      "url": "https://www.cdc.gov/malaria/hcp/clinical-guidance/treatment-of-uncomplicated-malaria.html",
+      "title": "Treatment of Uncomplicated Malaria | Malaria | CDC"
+    },
+    {
+      "id": "disease-cdc-malaria-severe",
+      "status": 200,
+      "url": "https://www.cdc.gov/malaria/hcp/clinical-guidance/treatment-of-severe-malaria.html"
+    },
+    {
+      "id": "disease-cdc-melioidosis",
+      "status": 200,
+      "url": "https://www.cdc.gov/melioidosis/hcp/clinical-overview/index.html",
+      "title": "Clinical Overview of Melioidosis | Melioidosis | CDC"
+    },
+    {
+      "id": "disease-cdc-mers",
+      "status": 200,
+      "url": "https://www.cdc.gov/mers/hcp/clinical-overview/index.html",
+      "title": "Clinical Overview of MERS | MERS | CDC"
+    },
+    {
+      "id": "disease-cdc-mgen",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/mycoplasmagenitalium.htm",
+      "title": "Mycoplasma genitalium - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-molluscum",
+      "status": 200,
+      "url": "https://www.cdc.gov/molluscum-contagiosum/hcp/clinical-overview/index.html",
+      "title": "Clinical Overview of Molluscum Contagiosum | Molluscum Contagiosum | CDC"
+    },
+    {
+      "id": "disease-cdc-mpox-2026",
+      "status": 200,
+      "url": "https://www.cdc.gov/monkeypox/hcp/clinical-care/index.html",
+      "title": "Caring for Patients with Monkeypox | Monkeypox | CDC"
+    },
+    {
+      "id": "disease-cdc-mucor",
+      "status": 200,
+      "url": "https://www.cdc.gov/mucormycosis/hcp/clinical-overview/index.html",
+      "title": "Clinical Overview of Mucormycosis | Mucormycosis | CDC"
+    },
+    {
+      "id": "disease-cdc-naegleria",
+      "status": 200,
+      "url": "https://www.cdc.gov/naegleria/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Naegleria fowleri Infection | Naegleria fowleri Infection | CDC"
+    },
+    {
+      "id": "disease-cdc-neurosyphilis",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/neurosyphilis.htm",
+      "title": "Neurosyphilis, Ocular Syphilis, and Otosyphilis - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-onchocerciasis",
+      "status": 200,
+      "url": "https://www.cdc.gov/filarial-worms/hcp/clinical-care/onchocerciasis.html",
+      "title": "Clinical Treatment of Onchocerciasis | Filarial Worms | CDC"
+    },
+    {
+      "id": "disease-cdc-pid",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/pid.htm",
+      "title": "Pelvic Inflammatory Disease (PID) - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-plague",
+      "status": 200,
+      "url": "https://www.cdc.gov/plague/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Plague | Plague | CDC"
+    },
+    {
+      "id": "disease-cdc-relapsing-fever",
+      "status": 200,
+      "url": "https://www.cdc.gov/relapsing-fever/hcp/soft-tick-relapsing-fever/index.html",
+      "title": "Clinical Guidance for Soft Tick Relapsing Fever (STRF) | Tick and Louse-borne Relapsing Fevers | CDC"
+    },
+    {
+      "id": "disease-cdc-soil-helminths",
+      "status": 200,
+      "url": "https://www.cdc.gov/sth/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Soil-transmitted Helminths | Soil-Transmitted Helminths | CDC"
+    },
+    {
+      "id": "disease-cdc-sporothrix",
+      "status": 200,
+      "url": "https://www.cdc.gov/sporotrichosis/hcp/clinical-overview/",
+      "title": "Clinical Overview of Sporotrichosis | Sporotrichosis | CDC"
+    },
+    {
+      "id": "disease-cdc-spotted-fever",
+      "status": 200,
+      "url": "https://www.cdc.gov/other-spotted-fever/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Other Spotted Fever Rickettsioses | Other Spotted Fever Rickettsioses | CDC"
+    },
+    {
+      "id": "disease-cdc-sssss",
+      "status": 200,
+      "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/streptococcal-toxic-shock-syndrome.html",
+      "title": "Clinical Guidance for Streptococcal Toxic Shock Syndrome | Group A Strep | CDC"
+    },
+    {
+      "id": "disease-cdc-stec",
+      "status": 200,
+      "url": "https://www.cdc.gov/ecoli/treatment/index.html",
+      "title": "Treatment of E. coli Infection | E. coli infection | CDC"
+    },
+    {
+      "id": "disease-cdc-strep-pharyngitis-2025",
+      "status": 200,
+      "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+      "title": "Clinical Guidance for Group A Streptococcal Pharyngitis | Group A Strep | CDC"
+    },
+    {
+      "id": "disease-cdc-strongyloides",
+      "status": 200,
+      "url": "https://www.cdc.gov/strongyloides/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Strongyloides | Strongyloides | CDC"
+    },
+    {
+      "id": "disease-cdc-syphilis",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis.htm",
+      "title": "Syphilis - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-toxoplasma",
+      "status": 200,
+      "url": "https://www.cdc.gov/toxoplasmosis/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Toxoplasmosis | Toxoplasmosis | CDC"
+    },
+    {
+      "id": "disease-cdc-tularemia",
+      "status": 200,
+      "url": "https://www.cdc.gov/tularemia/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Tularemia | Tularemia | CDC"
+    },
+    {
+      "id": "disease-cdc-typhoid",
+      "status": 200,
+      "url": "https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/index.html",
+      "title": "Clinical Guidance for Typhoid Fever and Paratyphoid Fever | Typhoid Fever | CDC"
+    },
+    {
+      "id": "disease-cdc-vvc",
+      "status": 200,
+      "url": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm",
+      "title": "Vulvovaginal Candidiasis - STI Treatment Guidelines"
+    },
+    {
+      "id": "disease-cdc-zoonotic-hookworm",
+      "status": 200,
+      "url": "https://www.cdc.gov/zoonotic-hookworm/hcp/clinical-care/index.html",
+      "title": "Clinical Care of Zoonotic Hookworm | Zoonotic Hookworm | CDC"
+    },
+    {
+      "id": "disease-cps-croup",
+      "status": 200,
+      "url": "https://cps.ca/en/documents/position/acute-management-of-croup",
+      "title": "Acute management of croup in the emergency department | Canadian Paediatric Society"
+    },
+    {
+      "id": "disease-ecmm-mucor",
+      "status": 200,
+      "url": "https://linkinghub.elsevier.com/retrieve/pii/S1473309919303123",
+      "title": "Redirecting"
+    },
+    {
+      "id": "disease-escmid-brain-abscess",
+      "status": 200,
+      "url": "https://linkinghub.elsevier.com/retrieve/pii/S1198743X23003993",
+      "title": "Redirecting"
+    },
+    {
+      "id": "disease-escmid-cdi-2021",
+      "status": 200,
+      "url": "https://linkinghub.elsevier.com/retrieve/pii/S1198743X21005681",
+      "title": "Redirecting"
+    },
+    {
+      "id": "disease-global-crypto-2024",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/Diagnosis-and-Management-of-Cryptococcosis/",
+      "title": "ASM/ECMM/ISHAM Global Guideline for the Diagnosis and Management of Cryptococcosis"
+    },
+    {
+      "id": "disease-idsa-blastomyces",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/blastomycosis/",
+      "title": "IDSA 2008 Clinical Practice Guideline Update for the Management of Blastomycosis"
+    },
+    {
+      "id": "disease-idsa-cap-2019",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/community-acquired-pneumonia-cap-in-adults",
+      "title": "ATS/IDSA Guidelines for Diagnosis and Treatment of Adults with Community-Acquired Pneumonia"
+    },
+    {
+      "id": "disease-idsa-cap-pathway",
+      "status": 200,
+      "url": "https://www.idsociety.org/globalassets/idsa/practice-guidelines/community-acquired-pneumonia-in-adults/cap-clinical-pathway-final-online.pdf"
+    },
+    {
+      "id": "disease-idsa-cauti",
+      "status": 403,
+      "url": "https://academic.oup.com/cid/article/50/5/625/324341",
+      "title": "Just a moment..."
+    },
+    {
+      "id": "disease-idsa-cdi-2021",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/clostridioides-difficile-2021-focused-update/",
+      "title": "SHEA/IDSA 2021 Clinical Practice Guideline Update for the Management of Clostridioides difficile Infection in Adults"
+    },
+    {
+      "id": "disease-idsa-crbsi-2009",
+      "status": 200,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4039170/",
+      "title": "Clinical Practice Guidelines for the Diagnosis and Management of Intravascular Catheter-Related Infection: 2009 Update by the Infectious Diseases Society of America - PMC"
+    },
+    {
+      "id": "disease-idsa-cuti-2025",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/complicated-urinary-tract-infections/",
+      "title": "IDSA 2025 Guideline Update on Complicated Urinary Tract Infections"
+    },
+    {
+      "id": "disease-idsa-cysticercosis",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/neurocysticercosis/",
+      "title": "ASTMH/IDSA 2017 Clinical Practice Guideline Update for the Diagnosis and Treatment of Neurocysticercosis"
+    },
+    {
+      "id": "disease-idsa-diabetic-foot",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/diabetic-foot-infections/",
+      "title": "IWGDF/IDSA Guidelines on the Diagnosis and Treatment of Diabetes-Related Foot Infections"
+    },
+    {
+      "id": "disease-idsa-diarrhea",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/infectious-diarrhea/",
+      "title": "IDSA 2017 Clinical Practice Guidelines for the Diagnosis and Management of Infectious Diarrhea"
+    },
+    {
+      "id": "disease-idsa-endocarditis-2015",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/endocarditis-management/",
+      "title": "AHA Guidelines on Infective Endocarditis in Adults: Diagnosis, Antimicrobial Therapy, and Management of Complications"
+    },
+    {
+      "id": "disease-idsa-hap-vap-2016",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/hap_vap/",
+      "title": "ATS/IDSA 2016 Clinical Practice Guidelines for the Management of Adults With Hospital-Acquired and Ventilator-Associated Pneumonia"
+    },
+    {
+      "id": "disease-idsa-histoplasmosis-2025",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/histoplasmosis/",
+      "title": "Histoplasmosis in Adults, Children, and Pregnant Individuals"
+    },
+    {
+      "id": "disease-idsa-intra-abdominal",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/intra-abdominal-infections/",
+      "title": "IDSA 2024 Guideline Update on the Risk Assessment, Diagnostic Imaging, and Microbiological Evaluation of Complicated Intra-abdominal Infections in Adults, Children, and Pregnant People"
+    },
+    {
+      "id": "disease-idsa-neutropenia-2010",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/neutropenic-patients-with-cancer/",
+      "title": "IDSA 2010 Clinical Practice Guideline Update for the Use of Antimicrobial Agents in Neutropenic Patients with Cancer"
+    },
+    {
+      "id": "disease-idsa-nvo-2015",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/vertebral-osteomyelitis/",
+      "title": "IDSA 2015 Clinical Practice Guidelines for the Diagnosis and Treatment of Native Vertebral Osteomyelitis in Adults"
+    },
+    {
+      "id": "disease-idsa-pharyngitis-2012",
+      "status": 403,
+      "url": "https://academic.oup.com/cid/article/55/10/e86/321183",
+      "title": "Just a moment..."
+    },
+    {
+      "id": "disease-idsa-pji",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/prosthetic-joint-infection/",
+      "title": "IDSA Guidelines for the Diagnosis and Management of Prosthetic Joint Infection"
+    },
+    {
+      "id": "disease-idsa-sab-2026",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/staphylococcus-aureus-bacteremia/",
+      "title": "IDSA/ESCMID 2026 Consensus Statements on Staphylococcus aureus Bacteremia: Risk Stratification, Diagnostic Evaluation, and Management of Adults and Children"
+    },
+    {
+      "id": "disease-idsa-ssti-2014",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+      "title": "IDSA 2014 Guidelines for the Diagnosis and Management of Skin and Soft Tissue Infections"
+    },
+    {
+      "id": "disease-idsa-uti-2010",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/uncomplicated-cystitis-and-pyelonephritis-uti/",
+      "title": "IDSA 2010 Clinical Practice Guideline Update for the Treatment of Acute Uncomplicated Cystitis and Pyelonephritis in Women"
+    },
+    {
+      "id": "disease-idsa-ventriculitis",
+      "status": 200,
+      "url": "https://www.idsociety.org/practice-guideline/healthcare-associated-ventriculitis-and-meningitis/",
+      "title": "IDSA 2017 Clinical Practice Guidelines for Healthcare-Associated Ventriculitis and Meningitis"
+    },
+    {
+      "id": "disease-merck-actinomycosis",
+      "status": 200,
+      "url": "https://www.merckmanuals.com/professional/infectious-diseases/anaerobic-bacteria/actinomycosis",
+      "title": "Actinomycosis - Infectious Disease - Merck Manual Professional Edition"
+    },
+    {
+      "id": "disease-merck-chronic-otitis",
+      "status": 200,
+      "url": "https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/middle-ear-and-tympanic-membrane-disorders/otitis-media-chronic-suppurative",
+      "title": "Otitis Media (Chronic Suppurative) - Otolaryngology - Merck Manual Professional Edition"
+    },
+    {
+      "id": "disease-merck-endophthalmitis",
+      "status": 200,
+      "url": "https://www.merckmanuals.com/professional/eye-disorders/uveitis-and-related-disorders/endophthalmitis",
+      "title": "Endophthalmitis - Ophthalmology - Merck Manual Professional Edition"
+    },
+    {
+      "id": "disease-merck-ludwig",
+      "status": 200,
+      "url": "https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/oral-and-pharyngeal-disorders/submandibular-space-infection",
+      "title": "Submandibular Space Infection - Otolaryngology - Merck Manual Professional Edition"
+    },
+    {
+      "id": "disease-merck-necrotizing-otitis",
+      "status": 200,
+      "url": "https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/external-ear-disorders/malignant-external-otitis",
+      "title": "Malignant External Otitis - Otolaryngology - Merck Manual Professional Edition"
+    },
+    {
+      "id": "disease-merck-orbital-cellulitis",
+      "status": 200,
+      "url": "https://www.merckmanuals.com/home/eye-disorders/eye-socket-disorders/orbital-cellulitis",
+      "title": "Orbital Cellulitis - Eye Disorders - Merck Manual Consumer Version"
+    },
+    {
+      "id": "disease-merck-peritonsillar",
+      "status": 200,
+      "url": "https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/oral-and-pharyngeal-disorders/peritonsillar-abscess-and-cellulitis",
+      "title": "Peritonsillar Abscess and Cellulitis - Otolaryngology - Merck Manual Professional Edition"
+    },
+    {
+      "id": "disease-merck-retropharyngeal",
+      "status": 200,
+      "url": "https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/oral-and-pharyngeal-disorders/retropharyngeal-abscess",
+      "title": "Retropharyngeal Abscess - Otolaryngology - Merck Manual Professional Edition"
+    },
+    {
+      "id": "disease-merck-ssss",
+      "status": 200,
+      "url": "https://www.merckmanuals.com/professional/infectious-diseases/bacterial-skin-infections/staphylococcal-scalded-skin-syndrome?autoredirectid=45191",
+      "title": "Staphylococcal Scalded Skin Syndrome - Infectious Disease - Merck Manual Professional Edition"
+    },
+    {
+      "id": "disease-nice-bronchiolitis",
+      "status": 200,
+      "url": "https://www.nice.org.uk/guidance/ng9/chapter/Recommendations",
+      "title": "Recommendations | Bronchiolitis in children: diagnosis and management | Guidance | NICE"
+    },
+    {
+      "id": "disease-nice-ent",
+      "status": 200,
+      "url": "https://www.nice.org.uk/guidance/ng79/chapter/Recommendations",
+      "title": "Recommendations | Sinusitis (acute): antimicrobial prescribing | Guidance | NICE"
+    },
+    {
+      "id": "disease-nice-meningitis-2024",
+      "status": 200,
+      "url": "https://www.nice.org.uk/guidance/ng240",
+      "title": "Overview | Meningitis (bacterial) and meningococcal disease: recognition, diagnosis and management | Guidance | NICE"
+    },
+    {
+      "id": "disease-nice-otitis",
+      "status": 200,
+      "url": "https://www.nice.org.uk/guidance/ng91/chapter/Recommendations",
+      "title": "Recommendations | Otitis media (acute): antimicrobial prescribing | Guidance | NICE"
+    },
+    {
+      "id": "disease-nice-pneumonia-2025",
+      "status": 200,
+      "url": "https://www.nice.org.uk/guidance/ng250",
+      "title": "Overview | Pneumonia: diagnosis and management | Guidance | NICE"
+    },
+    {
+      "id": "disease-nice-prostatitis",
+      "status": 200,
+      "url": "https://www.nice.org.uk/guidance/ng110/chapter/Recommendations",
+      "title": "Recommendations | Prostatitis (acute): antimicrobial prescribing | Guidance | NICE"
+    },
+    {
+      "id": "disease-nice-sepsis-2025",
+      "status": 200,
+      "url": "https://www.nice.org.uk/guidance/ng253",
+      "title": "Overview | Suspected sepsis in people aged 16 or over: recognition, assessment and early management | Guidance | NICE"
+    },
+    {
+      "id": "disease-sanj-2023",
+      "status": 200,
+      "url": "https://jbji.copernicus.org/articles/8/29/2023/",
+      "title": "JBJI - Guideline for management of septic arthritis in native joints (SANJO)"
+    },
+    {
+      "id": "disease-ssc-2026",
+      "status": 200,
+      "url": "https://sccm.org/survivingsepsiscampaign/guidelines-and-resources/surviving-sepsis-campaign-adult-guidelines",
+      "title": "Surviving Sepsis Campaign Adult Guidelines | SCCM"
+    },
+    {
+      "id": "disease-tokyo-cholangitis-2018",
+      "status": 403,
+      "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/jhbp.518",
+      "title": "Just a moment..."
+    },
+    {
+      "id": "disease-who-buruli",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/buruli-ulcer-(mycobacterium-ulcerans-infection)",
+      "title": "Buruli ulcer"
+    },
+    {
+      "id": "disease-who-chromoblastomycosis",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/chromoblastomycosis",
+      "title": "Chromoblastomycosis"
+    },
+    {
+      "id": "disease-who-dracunculiasis",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/dracunculiasis-(guinea-worm-disease)",
+      "title": "Dracunculiasis (Guinea-worm disease)"
+    },
+    {
+      "id": "disease-who-ebola",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/ebola-disease",
+      "title": "Ebola disease"
+    },
+    {
+      "id": "disease-who-echinococcus",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/echinococcosis",
+      "title": "Echinococcosis"
+    },
+    {
+      "id": "disease-who-filariasis",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/lymphatic-filariasis",
+      "title": "Lymphatic filariasis"
+    },
+    {
+      "id": "disease-who-food-flukes",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/foodborne-trematode-infections",
+      "title": "Foodborne trematode infections"
+    },
+    {
+      "id": "disease-who-gonorrhoea-2024",
+      "status": 200,
+      "url": "https://www.who.int/publications/i/item/9789240090767",
+      "title": "Updated recommendations for the treatment of Neisseria gonorrhoeae, Chlamydia trachomatis, and Treponema pallidum and new recommendations on syphilis testing and partner services"
+    },
+    {
+      "id": "disease-who-hat-2024",
+      "status": 200,
+      "url": "https://www.who.int/publications/i/item/9789240096035",
+      "title": "Guidelines for the treatment of human African trypanosomiasis"
+    },
+    {
+      "id": "disease-who-marburg",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/marburg-virus-disease",
+      "title": "Marburg virus disease"
+    },
+    {
+      "id": "disease-who-meningitis-2025",
+      "status": 200,
+      "url": "https://www.who.int/publications/i/item/9789240108042",
+      "title": "WHO guidelines on meningitis diagnosis, treatment and care"
+    },
+    {
+      "id": "disease-who-mycetoma",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/mycetoma",
+      "title": "Mycetoma"
+    },
+    {
+      "id": "disease-who-nipah",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/nipah-virus",
+      "title": "Nipah virus fact sheet"
+    },
+    {
+      "id": "disease-who-ntd",
+      "status": 200,
+      "url": "https://www.who.int/health-topics/neglected-tropical-diseases",
+      "title": "Neglected tropical diseases -- GLOBAL"
+    },
+    {
+      "id": "disease-who-onchocerciasis",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/onchocerciasis",
+      "title": "Onchocerciasis"
+    },
+    {
+      "id": "disease-who-postpartum",
+      "status": 200,
+      "url": "https://www.who.int/publications/i/item/9789241549363",
+      "title": "WHO recommendations for prevention and treatment of maternal peripartum infections"
+    },
+    {
+      "id": "disease-who-tb-2025",
+      "status": 200,
+      "url": "https://www.who.int/publications/i/item/9789240107243",
+      "title": "WHO consolidated guidelines on tuberculosis: module 4: treatment and care"
+    },
+    {
+      "id": "disease-who-trachoma",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/trachoma",
+      "title": "Trachoma"
+    },
+    {
+      "id": "disease-who-yaws",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/yaws",
+      "title": "Yaws"
+    },
+    {
+      "id": "disease-who-yellow-fever",
+      "status": 200,
+      "url": "https://www.who.int/news-room/fact-sheets/detail/yellow-fever",
+      "title": "Yellow fever"
+    },
+    {
+      "id": "disease-wjes-nsti-2018",
+      "status": 200,
+      "url": "https://idp.springer.com/transit?redirect_uri=https%3A%2F%2Flink.springer.com%2Farticle%2F10.1186%2Fs13017-018-0180-7&code=8baabc82-495f-4a29-bf04-96f06a19b26c",
+      "title": "Client Challenge"
+    },
+    {
+      "id": "disease-yellowbook-index",
+      "status": 200,
+      "url": "https://www.cdc.gov/yellow-book/hcp/contents/index.html",
+      "title": "Table of Contents | CDC Yellow Book™"
+    }
+  ]
+}

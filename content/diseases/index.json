@@ -1,0 +1,922 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "locale": "ko-KR",
+  "scope": {
+    "inclusion": "병원체의 감염·증식·침입·독소 작용이 중심인 질환과 감염성 임상 증후군. 잠복감염은 활동성 질환과 구분한다.",
+    "exclusion": [
+      "비감염성 염증질환",
+      "불명열·설사·호중구감소증 자체",
+      "감염 후 면역합병증",
+      "병원체 연관 종양",
+      "단순 집락화",
+      "비감염성 흡인성 폐손상",
+      "무균성 췌장 괴사",
+      "비감염성 괴저",
+      "감염이 중심 기전이 아닌 질내 세균총 불균형"
+    ],
+    "granularity": "질환 자체·발생 환경·진단·치료가 달라지는 임상형은 별도 카드로 관리하며 동의어와 동일 질환의 중복 분과 노트는 합친다."
+  },
+  "categories": [
+    {
+      "id": "respiratory",
+      "label": "호흡기",
+      "icon": "lungs"
+    },
+    {
+      "id": "ent",
+      "label": "귀·코·목",
+      "icon": "lungs"
+    },
+    {
+      "id": "systemic",
+      "label": "혈류·심장",
+      "icon": "heart"
+    },
+    {
+      "id": "neurologic",
+      "label": "중추신경",
+      "icon": "brain"
+    },
+    {
+      "id": "gastrointestinal",
+      "label": "장·복강",
+      "icon": "abdomen"
+    },
+    {
+      "id": "hepatobiliary",
+      "label": "간·담도",
+      "icon": "liver"
+    },
+    {
+      "id": "urinary",
+      "label": "요로",
+      "icon": "urinary"
+    },
+    {
+      "id": "obstetric",
+      "label": "산과·생식기",
+      "icon": "vertical"
+    },
+    {
+      "id": "skin",
+      "label": "피부·연조직",
+      "icon": "skin"
+    },
+    {
+      "id": "bone",
+      "label": "뼈·관절",
+      "icon": "bone"
+    },
+    {
+      "id": "eye",
+      "label": "눈",
+      "icon": "eye"
+    },
+    {
+      "id": "sti",
+      "label": "성매개",
+      "icon": "urinary"
+    },
+    {
+      "id": "bacterial",
+      "label": "전신 세균감염",
+      "icon": "bacteria"
+    },
+    {
+      "id": "viral",
+      "label": "바이러스 감염",
+      "icon": "virus"
+    },
+    {
+      "id": "fungal",
+      "label": "진균 감염",
+      "icon": "fungus"
+    },
+    {
+      "id": "parasitic",
+      "label": "기생충 감염",
+      "icon": "parasite"
+    }
+  ],
+  "routes": [
+    {
+      "id": "droplet",
+      "label": "비말",
+      "icon": "lungs",
+      "description": "비말·호흡기 분비물"
+    },
+    {
+      "id": "air",
+      "label": "공기",
+      "icon": "lungs",
+      "description": "공기·에어로졸 또는 환경 흡입"
+    },
+    {
+      "id": "food",
+      "label": "섭취",
+      "icon": "abdomen",
+      "description": "분변–경구·오염된 음식과 물"
+    },
+    {
+      "id": "contact",
+      "label": "접촉",
+      "icon": "contact",
+      "description": "직접·간접 접촉"
+    },
+    {
+      "id": "sexual",
+      "label": "성접촉",
+      "icon": "urinary",
+      "description": "성접촉"
+    },
+    {
+      "id": "blood",
+      "label": "혈액",
+      "icon": "blood",
+      "description": "혈액·혈액제제·주사"
+    },
+    {
+      "id": "vertical",
+      "label": "수직",
+      "icon": "vertical",
+      "description": "태반·분만·주산기 전파"
+    },
+    {
+      "id": "vector",
+      "label": "매개",
+      "icon": "vector",
+      "description": "모기·진드기 등 절지동물 매개"
+    },
+    {
+      "id": "endogenous",
+      "label": "내인성",
+      "icon": "heart",
+      "description": "상재균의 침입·장기 간 확산·혈행 전파"
+    },
+    {
+      "id": "inoculation",
+      "label": "상처",
+      "icon": "skin",
+      "description": "상처·교상·오염 조직으로 직접 접종"
+    },
+    {
+      "id": "water",
+      "label": "물",
+      "icon": "abdomen",
+      "description": "오염된 물에 노출"
+    },
+    {
+      "id": "multiple",
+      "label": "복합",
+      "icon": "contact",
+      "description": "병원체·발생 환경에 따라 경로가 다름"
+    }
+  ],
+  "references": {
+    "disease-idsa-cap-2019": {
+      "title": "ATS/IDSA Adult CAP Guideline",
+      "url": "https://www.idsociety.org/practice-guideline/community-acquired-pneumonia-cap-in-adults",
+      "year": "2019",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-cap-pathway": {
+      "title": "IDSA CAP Clinical Pathway",
+      "url": "https://www.idsociety.org/globalassets/idsa/practice-guidelines/community-acquired-pneumonia-in-adults/cap-clinical-pathway-final-online.pdf",
+      "year": "2023",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-cuti-2025": {
+      "title": "IDSA Complicated UTI Guideline",
+      "url": "https://www.idsociety.org/practice-guideline/complicated-urinary-tract-infections/",
+      "year": "2025",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-uti-2010": {
+      "title": "IDSA Uncomplicated Cystitis and Pyelonephritis Guideline",
+      "url": "https://www.idsociety.org/practice-guideline/uncomplicated-cystitis-and-pyelonephritis-uti/",
+      "year": "2010",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-ssti-2014": {
+      "title": "IDSA Skin and Soft Tissue Infection Guideline",
+      "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+      "year": "2014",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-ssc-2026": {
+      "title": "Surviving Sepsis Campaign Adult Guidelines",
+      "url": "https://sccm.org/survivingsepsiscampaign/guidelines-and-resources/surviving-sepsis-campaign-adult-guidelines",
+      "year": "2026",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-hap-vap-2016": {
+      "title": "ATS/IDSA HAP/VAP Guideline",
+      "url": "https://www.idsociety.org/practice-guideline/hap_vap/",
+      "year": "2016",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-meningitis-2025": {
+      "title": "WHO Meningitis Diagnosis, Treatment and Care Guideline",
+      "url": "https://www.who.int/publications/i/item/9789240108042",
+      "year": "2025",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-nvo-2015": {
+      "title": "IDSA Native Vertebral Osteomyelitis Guideline",
+      "url": "https://www.idsociety.org/practice-guideline/vertebral-osteomyelitis/",
+      "year": "2015",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-neutropenia-2010": {
+      "title": "IDSA Fever and Neutropenia Guideline",
+      "url": "https://www.idsociety.org/practice-guideline/neutropenic-patients-with-cancer/",
+      "year": "2010",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-asco-idsa-neutropenia-2018": {
+      "title": "ASCO/IDSA Outpatient Fever and Neutropenia Guideline",
+      "url": "https://www.idsociety.org/practice-guideline/fever-and-neutropenia-in-adults-with-cancer/",
+      "year": "2018",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-crbsi-2009": {
+      "title": "IDSA Intravascular Catheter-Related Infection Guideline",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4039170/",
+      "year": "2009",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-aasld-ascites-2021": {
+      "title": "AASLD Ascites and Spontaneous Bacterial Peritonitis Guidance",
+      "url": "https://www.aasld.org/practice-guidelines/diagnosis-evaluation-and-management-ascites-spontaneous-bacterial-peritonitis",
+      "year": "2021",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-kdca-antibiotic-practice-2026": {
+      "title": "KDCA 2026 Practical Guidelines for Appropriate Antibiotic Use in Five Common Infections",
+      "url": "https://www.kdca.go.kr/kdca/2861/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGa2RjYSUyRjU1JTJGMzEwOTE2JTJGYXJ0Y2xWaWV3LmRvJTNG",
+      "year": "2026",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-endocarditis-2015": {
+      "title": "AHA/IDSA Infective Endocarditis in Adults",
+      "url": "https://www.idsociety.org/practice-guideline/endocarditis-management/",
+      "year": "2015",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-nice-sepsis-2025": {
+      "title": "NICE NG253 Suspected sepsis in people aged 16 or over",
+      "url": "https://www.nice.org.uk/guidance/ng253",
+      "year": "2025",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-nice-pneumonia-2025": {
+      "title": "NICE NG250 Pneumonia: diagnosis and management",
+      "url": "https://www.nice.org.uk/guidance/ng250",
+      "year": "2025",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-nice-meningitis-2024": {
+      "title": "NICE NG240 Bacterial meningitis and meningococcal disease",
+      "url": "https://www.nice.org.uk/guidance/ng240",
+      "year": "2024",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-bsg-ascites-2021": {
+      "title": "BSG/BASL Guidelines on the management of ascites in cirrhosis",
+      "url": "https://gut.bmj.com/content/70/1/9",
+      "year": "2021",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-tokyo-cholangitis-2018": {
+      "title": "Tokyo Guidelines 2018: antimicrobial therapy for acute cholangitis and cholecystitis",
+      "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/jhbp.518",
+      "year": "2018",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-cdi-2021": {
+      "title": "IDSA/SHEA Clostridioides difficile Focused Update (2021)",
+      "url": "https://www.idsociety.org/practice-guideline/clostridioides-difficile-2021-focused-update/",
+      "year": "2021",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-escmid-cdi-2021": {
+      "title": "ESCMID Clostridioides difficile Treatment Guideline (2021)",
+      "url": "https://doi.org/10.1016/j.cmi.2021.09.038",
+      "year": "2021",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-wjes-nsti-2018": {
+      "title": "WSES/SIS-E Necrotizing Soft-Tissue Infection Consensus (2018)",
+      "url": "https://wjes.biomedcentral.com/articles/10.1186/s13017-018-0180-7",
+      "year": "2018",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-gonorrhea-2021": {
+      "title": "CDC Gonococcal Infections STI Treatment Guidelines (2021)",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
+      "year": "2021",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-strep-pharyngitis-2025": {
+      "title": "CDC Clinical Guidance for Group A Streptococcal Pharyngitis",
+      "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+      "year": "2025",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-pharyngitis-2012": {
+      "title": "IDSA Group A Streptococcal Pharyngitis Guideline (2012)",
+      "url": "https://doi.org/10.1093/cid/cis629",
+      "year": "2012",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-index": {
+      "title": "CDC Health Topics A–Z",
+      "url": "https://www.cdc.gov/health-topics.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-ntd": {
+      "title": "WHO Neglected tropical diseases",
+      "url": "https://www.who.int/health-topics/neglected-tropical-diseases",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-yellowbook-index": {
+      "title": "CDC Yellow Book 2026: contents",
+      "url": "https://www.cdc.gov/yellow-book/hcp/contents/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-sab-2026": {
+      "title": "IDSA/ESCMID 2026 Staphylococcus aureus Bacteremia Consensus Statements",
+      "url": "https://www.idsociety.org/practice-guideline/staphylococcus-aureus-bacteremia/",
+      "year": "2026",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-ltbi": {
+      "title": "CDC Treatment for Latent Tuberculosis Infection",
+      "url": "https://www.cdc.gov/tb/hcp/treatment/latent-tuberculosis-infection.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-tb-2025": {
+      "title": "WHO consolidated guidelines on tuberculosis: module 4 treatment and care",
+      "url": "https://www.who.int/publications/i/item/9789240107243",
+      "year": "2025",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-histoplasmosis-2025": {
+      "title": "IDSA 2025 Histoplasmosis Update",
+      "url": "https://www.idsociety.org/practice-guideline/histoplasmosis/",
+      "year": "2025",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-pid": {
+      "title": "CDC STI Guidelines: Pelvic Inflammatory Disease",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/pid.htm",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-chlamydia": {
+      "title": "CDC STI Guidelines: Chlamydial Infections",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-mgen": {
+      "title": "CDC STI Guidelines: Mycoplasma genitalium",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/mycoplasmagenitalium.htm",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-syphilis": {
+      "title": "CDC STI Guidelines: Syphilis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis.htm",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-neurosyphilis": {
+      "title": "CDC STI Guidelines: Neurosyphilis, Ocular Syphilis and Otosyphilis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/neurosyphilis.htm",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-congenital-syphilis": {
+      "title": "CDC STI Guidelines: Congenital Syphilis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/congenital-syphilis.htm",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-bv": {
+      "title": "CDC STI Guidelines: Bacterial Vaginosis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/bv.htm",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-epididymitis": {
+      "title": "CDC STI Guidelines: Epididymitis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/epididymitis.htm",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-lgv": {
+      "title": "CDC STI Guidelines: Lymphogranuloma Venereum",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/lgv.htm",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-pji": {
+      "title": "IDSA Prosthetic Joint Infection Guideline",
+      "url": "https://www.idsociety.org/practice-guideline/prosthetic-joint-infection/",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-diabetic-foot": {
+      "title": "IWGDF/IDSA 2023 Diabetes-related Foot Infections",
+      "url": "https://www.idsociety.org/practice-guideline/diabetic-foot-infections/",
+      "year": "2023",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-intra-abdominal": {
+      "title": "IDSA 2024 Complicated Intra-abdominal Infection Update",
+      "url": "https://www.idsociety.org/practice-guideline/intra-abdominal-infections/",
+      "year": "2024",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-nice-ent": {
+      "title": "NICE Acute sinusitis antimicrobial prescribing",
+      "url": "https://www.nice.org.uk/guidance/ng79/chapter/Recommendations",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-nice-otitis": {
+      "title": "NICE Acute otitis media antimicrobial prescribing",
+      "url": "https://www.nice.org.uk/guidance/ng91/chapter/Recommendations",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-nice-bronchiolitis": {
+      "title": "NICE Bronchiolitis in children",
+      "url": "https://www.nice.org.uk/guidance/ng9/chapter/Recommendations",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-nice-prostatitis": {
+      "title": "NICE Acute prostatitis antimicrobial prescribing",
+      "url": "https://www.nice.org.uk/guidance/ng110/chapter/Recommendations",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-acute-bronchitis": {
+      "title": "CDC Chest Cold (Acute Bronchitis)",
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-leprosy": {
+      "title": "CDC Clinical Overview of Leprosy",
+      "url": "https://www.cdc.gov/leprosy/hcp/clinical-overview/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-tularemia": {
+      "title": "CDC Clinical Care of Tularemia",
+      "url": "https://www.cdc.gov/tularemia/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-plague": {
+      "title": "CDC Clinical Care of Plague",
+      "url": "https://www.cdc.gov/plague/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-melioidosis": {
+      "title": "CDC Clinical Overview of Melioidosis",
+      "url": "https://www.cdc.gov/melioidosis/hcp/clinical-overview/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-buruli": {
+      "title": "WHO Buruli ulcer",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/buruli-ulcer-(mycobacterium-ulcerans-infection)",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-yaws": {
+      "title": "WHO Yaws",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/yaws",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-trachoma": {
+      "title": "WHO Trachoma",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/trachoma",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-yellow-fever": {
+      "title": "WHO Yellow fever",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/yellow-fever",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-ebola": {
+      "title": "WHO Ebola disease",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/ebola-virus-disease",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-marburg": {
+      "title": "WHO Marburg virus disease",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/marburg-virus-disease",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-nipah": {
+      "title": "WHO Nipah virus infection",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/nipah-virus",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-filariasis": {
+      "title": "WHO Lymphatic filariasis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/lymphatic-filariasis",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-onchocerciasis": {
+      "title": "WHO Onchocerciasis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/onchocerciasis",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-dracunculiasis": {
+      "title": "WHO Dracunculiasis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/dracunculiasis-(guinea-worm-disease)",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-food-flukes": {
+      "title": "WHO Foodborne trematode infections",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/foodborne-trematode-infections",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-mycetoma": {
+      "title": "WHO Mycetoma",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/mycetoma",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-acanthamoeba": {
+      "title": "CDC Clinical Care of Acanthamoeba Infections",
+      "url": "https://www.cdc.gov/acanthamoeba/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-naegleria": {
+      "title": "CDC Clinical Care of Naegleria fowleri Infection",
+      "url": "https://www.cdc.gov/naegleria/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-balantidium": {
+      "title": "CDC DPDx Balantidiasis",
+      "url": "https://www.cdc.gov/dpdx/balantidiasis/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-molluscum": {
+      "title": "CDC Clinical Overview of Molluscum Contagiosum",
+      "url": "https://www.cdc.gov/molluscum-contagiosum/hcp/clinical-overview/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-mers": {
+      "title": "CDC Clinical Overview of MERS",
+      "url": "https://www.cdc.gov/mers/hcp/clinical-overview/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-sssss": {
+      "title": "CDC Group A Strep Clinical Guidance for Streptococcal Toxic Shock Syndrome",
+      "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/streptococcal-toxic-shock-syndrome.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-postpartum": {
+      "title": "WHO Recommendations for Prevention and Treatment of Maternal Peripartum Infections",
+      "url": "https://www.who.int/publications/i/item/9789241549363",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-aao-keratitis": {
+      "title": "American Academy of Ophthalmology Bacterial Keratitis Preferred Practice Pattern",
+      "url": "https://doi.org/10.1016/j.ophtha.2023.12.035",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-aao-conjunctivitis": {
+      "title": "American Academy of Ophthalmology Conjunctivitis Preferred Practice Pattern",
+      "url": "https://doi.org/10.1016/j.ophtha.2023.12.037",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-ventriculitis": {
+      "title": "IDSA: Healthcare-associated ventriculitis and meningitis (2017)",
+      "url": "https://www.idsociety.org/practice-guideline/healthcare-associated-ventriculitis-and-meningitis/",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-diarrhea": {
+      "title": "IDSA: Infectious diarrhea (2017)",
+      "url": "https://www.idsociety.org/practice-guideline/infectious-diarrhea/",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-typhoid": {
+      "title": "CDC: Clinical guidance for typhoid and paratyphoid fever",
+      "url": "https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-stec": {
+      "title": "CDC: Treatment of E. coli infection",
+      "url": "https://www.cdc.gov/ecoli/treatment/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-ecoli-clinical": {
+      "title": "CDC: Information for clinicians about E. coli infection",
+      "url": "https://www.cdc.gov/ecoli/hcp/guidance/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-aga-pancreatic-necrosis": {
+      "title": "AGA: Management of pancreatic necrosis",
+      "url": "https://gastro.org/clinical-guidance/management-of-pancreatic-necrosis/",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-cauti": {
+      "title": "IDSA: Catheter-associated urinary tract infection (2009/2010; archived)",
+      "url": "https://doi.org/10.1086/650482",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-acog-intraamniotic": {
+      "title": "ACOG: Intrapartum management of intraamniotic infection (Committee Opinion 712)",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/intrapartum-management-of-intraamniotic-infection",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-abm-mastitis": {
+      "title": "ABM Clinical Protocol 36: The mastitis spectrum (2022)",
+      "url": "https://www.bfmed.org/assets/ABM%20Protocol%20%2336.pdf",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-merck-ssss": {
+      "title": "Merck Manual Professional: Staphylococcal scalded skin syndrome",
+      "url": "https://www.merckmanuals.com/professional/dermatologic-disorders/bacterial-skin-infections/staphylococcal-scalded-skin-syndrome",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-sanj-2023": {
+      "title": "EBJIS: Septic arthritis in native joints (SANJO, 2023)",
+      "url": "https://jbji.copernicus.org/articles/8/29/2023/",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-aao-hsv-keratitis": {
+      "title": "AAO: Herpes simplex virus keratitis treatment guideline",
+      "url": "https://www.aao.org/clinical-statement/herpes-simplex-virus-keratitis-treatment-guideline",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-acanthamoeba-keratitis": {
+      "title": "CDC: Clinical overview of Acanthamoeba keratitis",
+      "url": "https://www.cdc.gov/acanthamoeba/hcp/clinical-overview-acanthamoeba-keratitis/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-merck-orbital-cellulitis": {
+      "title": "Merck Manual: Orbital cellulitis",
+      "url": "https://www.merckmanuals.com/home/eye-disorders/eye-socket-disorders/orbital-cellulitis",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-merck-endophthalmitis": {
+      "title": "Merck Manual Professional: Endophthalmitis",
+      "url": "https://www.merckmanuals.com/professional/eye-disorders/uveitis-and-related-disorders/endophthalmitis",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-merck-actinomycosis": {
+      "title": "Merck Manual Professional: Actinomycosis",
+      "url": "https://www.merckmanuals.com/professional/infectious-diseases/anaerobic-bacteria/actinomycosis",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-relapsing-fever": {
+      "title": "CDC: Clinical guidance for soft tick relapsing fever",
+      "url": "https://www.cdc.gov/relapsing-fever/hcp/soft-tick-relapsing-fever/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-spotted-fever": {
+      "title": "CDC: Clinical care of other spotted fever rickettsioses",
+      "url": "https://www.cdc.gov/other-spotted-fever/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-congenital-cmv": {
+      "title": "CDC: Congenital cytomegalovirus infection",
+      "url": "https://www.cdc.gov/cytomegalovirus/congenital-infection/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-hps": {
+      "title": "CDC: Clinical overview of hantavirus pulmonary syndrome",
+      "url": "https://www.cdc.gov/hantavirus/hcp/clinical-overview/hps.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-vvc": {
+      "title": "CDC STI guidelines: Vulvovaginal candidiasis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-global-crypto-2024": {
+      "title": "ASM/ECMM/ISHAM: Global cryptococcosis guideline (2024)",
+      "url": "https://www.idsociety.org/practice-guideline/Diagnosis-and-Management-of-Cryptococcosis/",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-mucor": {
+      "title": "CDC: Clinical overview of mucormycosis",
+      "url": "https://www.cdc.gov/mucormycosis/hcp/clinical-overview/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-ecmm-mucor": {
+      "title": "ECMM/MSG: Global mucormycosis guideline (2019)",
+      "url": "https://doi.org/10.1016/S1473-3099(19)30312-3",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-histoplasma": {
+      "title": "CDC: Clinical overview of histoplasmosis",
+      "url": "https://www.cdc.gov/histoplasmosis/hcp/clinical-overview/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-blastomyces": {
+      "title": "CDC: Clinical overview of blastomycosis",
+      "url": "https://www.cdc.gov/blastomycosis/hcp/clinical-overview/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-blastomyces": {
+      "title": "IDSA: Blastomycosis guideline (2008)",
+      "url": "https://www.idsociety.org/practice-guideline/blastomycosis/",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-sporothrix": {
+      "title": "CDC: Clinical overview of sporotrichosis",
+      "url": "https://www.cdc.gov/sporotrichosis/hcp/clinical-overview/",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-aad-nail-fungus": {
+      "title": "American Academy of Dermatology: Nail fungus diagnosis and treatment",
+      "url": "https://www.aad.org/public/diseases/a-z/nail-fungus-treatment",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-aad-versicolor": {
+      "title": "American Academy of Dermatology: Tinea versicolor diagnosis and treatment",
+      "url": "https://www.aad.org/public/diseases/a-z/tinea-versicolor-treatment",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-chromoblastomycosis": {
+      "title": "WHO: Chromoblastomycosis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/chromoblastomycosis",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-malaria-2026": {
+      "title": "CDC: Treatment of uncomplicated malaria (2026)",
+      "url": "https://www.cdc.gov/malaria/hcp/clinical-guidance/treatment-of-uncomplicated-malaria.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-malaria-severe": {
+      "title": "CDC: Treatment of severe malaria",
+      "url": "https://www.cdc.gov/malaria/hcp/clinical-guidance/treatment-of-severe-malaria.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-babesia": {
+      "title": "CDC: Clinical care of babesiosis",
+      "url": "https://www.cdc.gov/babesiosis/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-toxoplasma": {
+      "title": "CDC: Clinical care of toxoplasmosis",
+      "url": "https://www.cdc.gov/toxoplasmosis/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-hat-2024": {
+      "title": "WHO: Human African trypanosomiasis treatment guideline (2024)",
+      "url": "https://www.who.int/publications/i/item/9789240096035",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-hat": {
+      "title": "CDC: Clinical care of human African trypanosomiasis",
+      "url": "https://www.cdc.gov/sleeping-sickness/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-strongyloides": {
+      "title": "CDC: Clinical care of Strongyloides",
+      "url": "https://www.cdc.gov/strongyloides/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-soil-helminths": {
+      "title": "CDC: Clinical care of soil-transmitted helminths",
+      "url": "https://www.cdc.gov/sth/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-cysticercosis": {
+      "title": "CDC: Clinical care of cysticercosis",
+      "url": "https://www.cdc.gov/cysticercosis/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-idsa-cysticercosis": {
+      "title": "IDSA/ASTMH: Neurocysticercosis guideline (2017)",
+      "url": "https://www.idsociety.org/practice-guideline/neurocysticercosis/",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-echinococcus": {
+      "title": "WHO: Echinococcosis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/echinococcosis",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-zoonotic-hookworm": {
+      "title": "CDC: Clinical care of zoonotic hookworm",
+      "url": "https://www.cdc.gov/zoonotic-hookworm/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-lymphatic-filariasis": {
+      "title": "CDC: Clinical treatment of lymphatic filariasis",
+      "url": "https://www.cdc.gov/filarial-worms/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-onchocerciasis": {
+      "title": "CDC: Clinical treatment of onchocerciasis",
+      "url": "https://www.cdc.gov/filarial-worms/hcp/clinical-care/onchocerciasis.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-loiasis": {
+      "title": "CDC: Clinical treatment of loiasis",
+      "url": "https://www.cdc.gov/filarial-worms/hcp/clinical-care/loiasis.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-acanthamoeba-gae": {
+      "title": "CDC: Treatment of non-keratitis Acanthamoeba infections",
+      "url": "https://www.cdc.gov/acanthamoeba/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-balamuthia": {
+      "title": "CDC: Clinical care of Balamuthia infection",
+      "url": "https://www.cdc.gov/balamuthia/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-escmid-brain-abscess": {
+      "title": "ESCMID: Brain abscess in children and adults (2024)",
+      "url": "https://doi.org/10.1016/j.cmi.2023.08.016",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-aao-hns-aoe": {
+      "title": "AAO-HNS: Acute otitis externa guideline",
+      "url": "https://www.entnet.org/quality-practice/quality-products/clinical-practice-guidelines/aoe/",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-merck-necrotizing-otitis": {
+      "title": "Merck Manual Professional: Malignant external otitis",
+      "url": "https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/external-ear-disorders/malignant-external-otitis",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-merck-chronic-otitis": {
+      "title": "Merck Manual Professional: Chronic suppurative otitis media",
+      "url": "https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/middle-ear-and-tympanic-membrane-disorders/otitis-media-chronic-suppurative",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-merck-peritonsillar": {
+      "title": "Merck Manual Professional: Peritonsillar abscess and cellulitis",
+      "url": "https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/oral-and-pharyngeal-disorders/peritonsillar-abscess-and-cellulitis",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-merck-retropharyngeal": {
+      "title": "Merck Manual Professional: Retropharyngeal abscess",
+      "url": "https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/oral-and-pharyngeal-disorders/retropharyngeal-abscess",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-merck-ludwig": {
+      "title": "Merck Manual Professional: Submandibular space infection",
+      "url": "https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/oral-and-pharyngeal-disorders/submandibular-space-infection",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-ada-dental": {
+      "title": "ADA: Urgent dental pain and swelling antibiotic guideline (2019)",
+      "url": "https://www.ada.org/resources/ada-library/oral-health-topics/antibiotic-stewardship",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cps-croup": {
+      "title": "Canadian Paediatric Society: Acute management of croup",
+      "url": "https://cps.ca/en/documents/position/acute-management-of-croup",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-cdc-mpox-2026": {
+      "title": "CDC: Caring for patients with monkeypox (2026)",
+      "url": "https://www.cdc.gov/monkeypox/hcp/clinical-care/index.html",
+      "accessedAt": "2026-10-11"
+    },
+    "disease-who-gonorrhoea-2024": {
+      "title": "WHO: Updated STI treatment recommendations (2024; gonorrhoea update 2023)",
+      "url": "https://www.who.int/publications/i/item/9789240090767",
+      "accessedAt": "2026-10-11"
+    }
+  },
+  "files": [
+    "respiratory.json",
+    "ent.json",
+    "systemic.json",
+    "neurologic.json",
+    "gastrointestinal.json",
+    "hepatobiliary.json",
+    "urinary.json",
+    "obstetric.json",
+    "skin.json",
+    "bone.json",
+    "eye.json",
+    "sti.json",
+    "bacterial.json",
+    "viral.json",
+    "fungal.json",
+    "parasitic.json"
+  ],
+  "reviewStatus": "educational-source-reviewed",
+  "sourceRepository": {
+    "name": "19 the medicine resource",
+    "access": "read-only",
+    "basis": [
+      "장기별 질환 분류",
+      "감염 분과 질환 노트",
+      "infection-pathways.json의 원인균·경험요법·표적치료 분리"
+    ]
+  },
+  "relationshipPolicy": "질환의 원인·치료 관계는 명시적으로 작성하며 기존 교육용 AST에서 추론하지 않는다. 외부 병원체·약제는 이름만 저장하고 존재하지 않는 카드 ID를 만들지 않는다.",
+  "entityTypes": [
+    {
+      "id": "syndrome",
+      "label": "감염 증후군"
+    },
+    {
+      "id": "specific",
+      "label": "감염 질환"
+    },
+    {
+      "id": "infection",
+      "label": "감염 상태"
+    }
+  ]
+}
