@@ -164,3 +164,63 @@ body:has(#card-gallery-options[open]) { overflow:hidden; }
 @media(prefers-reduced-motion:reduce) {
  .card-deck-layer { transition:none; }
 }
+
+
+/* A small help button opens three annotated examples using the real card frame. */
+.card-gallery-info { display:grid; place-items:center; flex:none; width:44px; height:44px; padding:0; border:1px solid #aab89d; border-radius:50%; background:#edf1e6; color:#3b5134; cursor:pointer; }
+.card-gallery-info span { font:700 22px/1 Georgia,serif; }
+.card-gallery-info:hover { background:#e0e8d7; border-color:#708863; }
+.card-gallery-info:focus-visible { outline:2px solid #607c58; outline-offset:3px; }
+dialog.card-guide { width:min(1100px,calc(100vw - 24px)); max-width:1100px; max-height:calc(100dvh - 28px); box-sizing:border-box; padding:24px 28px 20px; overflow:auto; border:1px solid #a7b498; border-radius:16px; background:#eef0e5; color:#2b3f30; overscroll-behavior:contain; }
+.card-guide::backdrop { background:#10201bd4; backdrop-filter:blur(5px); }
+body:has(#card-guide[open]) { overflow:hidden; }
+.card-guide-heading { display:flex; align-items:start; justify-content:space-between; gap:16px; margin-bottom:16px; }
+.card-guide-heading h2 { margin:0; font:700 1.125rem/1.4 var(--sans); }
+.card-guide-heading p { margin:5px 0 0; color:#63745c; font:450 .8125rem/1.5 var(--sans); }
+.card-guide-heading > button { display:grid; place-items:center; flex:none; width:44px; height:44px; padding:0; border:1px solid #b0bfa5; border-radius:50%; background:#f9faf333; font-size:1rem; }
+.card-guide-kinds { display:none; }
+.card-guide-examples { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; }
+.card-guide-example { min-width:0; text-align:center; }
+.card-guide-example > h3 { margin:0 0 20px; font:700 .9375rem/1.4 var(--sans); }
+.card-guide-example > h3 span { margin-left:5px; color:#758369; font-size:.6875rem; font-weight:450; }
+.card-guide-stage { --card-width:100%; width:min(calc(100% - 30px),310px); margin:0 auto; }
+.card-guide-flip { min-height:44px; margin:17px 0 0; padding:9px 14px; border:1px solid #b2c0a8; border-radius:22px; background:#f7f8ee; color:#3b5334; font:600 .75rem/1.4 var(--sans); }
+.card-guide button:focus-visible { outline:2px solid #6b895b; outline-offset:3px; }
+.card-guide-colors { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:9px 18px; margin:23px 0 0; padding-top:17px; border-top:1px solid #b8c4ab7a; color:#5b6e51; font:500 .6875rem/1.5 var(--sans); }
+.card-guide-colors span { display:inline-flex; align-items:center; gap:6px; }
+.card-guide-colors i { width:9px; height:9px; border-radius:50%; border:1px solid #7e8e7544; }
+.card-guide-colors .is-gold { background:#ffd778; }
+.card-guide-colors .is-white { background:#f2f6f2; }
+.card-guide-colors .is-red { background:#ed9a8a; }
+.card-guide-colors .is-gray { background:#6e7772; }
+.card-guide-colors .is-condition { width:5px; height:5px; background:#8cbee3; }
+.card-guide-hint { margin:12px auto 0; max-width:780px; color:#63765b; text-align:center; font:450 .75rem/1.6 var(--sans); }
+.card-guide-markers { position:absolute; inset:0; z-index:14; pointer-events:none; }
+.card-guide-pin { position:absolute; display:grid; place-items:center; width:34px; height:34px; padding:0; border:0; background:transparent; color:#344b32; pointer-events:auto; transform:translate(-50%,-50%); cursor:pointer; }
+.card-guide-pin span { display:grid; place-items:center; width:23px; height:23px; border:1px solid #71835e; border-radius:50%; background:#f4edda; box-shadow:0 2px 5px #15251b40; font:750 12px/1 var(--sans); }
+.card-guide-pin:hover span { background:#fff8e3; box-shadow:0 0 0 3px #e7d69655; }
+.card-guide-pin--name { left:50%; top:0; }
+.card-guide-pin--route { left:0; top:8%; }
+.card-guide-pin--artwork { left:82%; top:18%; }
+.card-guide-pin--lineage { left:100%; top:69%; }
+.card-guide-pin--summary { left:0; top:82%; }
+.card-guide-pin--left { left:0; top:40%; }
+.card-guide-pin--right { left:100%; top:40%; }
+.card-guide-pin--resistance { left:100%; top:0; }
+.card-guide .card-guide-back-label { display:block; text-align:left; color:#cbd4bf; font:600 3.4cqw/1.4 var(--sans); padding:1cqw 2cqw; }
+.card-guide .card-guide-description { text-align:left; padding:1.7cqw; border-radius:1.5cqw; scroll-margin:3cqw; }
+.card-guide .card-guide-description:focus { outline:2px solid #799765; background:#dce6ce; }
+.card-guide .card-guide-description h3 { display:flex; align-items:center; gap:1.6cqw; font:700 3.8cqw/1.45 var(--sans); }
+.card-guide-description h3 > span { display:grid; place-items:center; flex:none; width:5.7cqw; height:5.7cqw; border-radius:50%; background:#375232; color:#f7f4df; font:700 3.2cqw/1 var(--sans); }
+.card-guide .card-guide-description p { font:450 3.9cqw/1.6 var(--sans); }
+@media(max-width:899px) {
+ dialog.card-guide { width:min(470px,calc(100vw - 20px)); padding:18px 16px; }
+ .card-guide-kinds { display:flex; gap:6px; margin-bottom:18px; }
+ .card-guide-kinds button { flex:1; min-height:44px; padding:8px 6px; border:1px solid #b1bfa6; border-radius:22px; background:#f7f8ee; font:600 .8125rem/1.4 var(--sans); }
+ .card-guide-kinds button[aria-pressed="true"] { border-color:#3e5935; background:#3e5935; color:#f6f5e7; }
+ .card-guide-examples { display:block; }
+ .card-guide-example:not(.is-current) { display:none; }
+ .card-guide-example > h3 { display:none; }
+ .card-guide-stage { width:min(calc(100% - 34px),310px); margin-top:19px; }
+ .card-guide-colors { gap:8px 13px; margin-top:17px; padding-top:13px; }
+}

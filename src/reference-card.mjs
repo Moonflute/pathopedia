@@ -115,6 +115,9 @@ function diseaseConnections(model) {
 
 
 function renderBackPanels(model) {
+  if(model.guide){
+    return '<div class="card-back-tabs card-guide-back-label">기호 읽는 법</div><div class="card-back-content"><div class="card-back-pane card-back-prose" tabindex="0" aria-label="예시 카드 설명">'+model.guide.notes.map((note,index)=>'<section class="card-back-section card-guide-description" data-card-guide-description="'+esc(note.id)+'" tabindex="-1"><h3><span>'+(index+1)+'</span>'+esc(note.title)+'</h3><p>'+esc(note.text)+'</p></section>').join('')+'</div></div>';
+  }
   const back=model.back || {},sections=back.sections || [];
   const disease=model.kind==='disease';
   const coreIds=new Set(disease?['presentation','diagnostics','management','redFlags']:model.kind==='drug'?['spectrum','limitations']:['clinicalContext','diseases','pearl','diagnostics']);
@@ -131,6 +134,11 @@ function renderBackPanels(model) {
   const active=tabs.some(([id])=>id===model.backTab)?model.backTab:'clinical';
   const prefix='card-back-'+model.kind+'-'+model.id;
   return '<div class="card-back-tabs" role="tablist" aria-label="카드 뒷면 내용">'+tabs.map(([id,label])=>'<button type="button" role="tab" data-card-back-tab="'+id+'" id="'+esc(prefix+'-'+id)+'-tab" aria-controls="'+esc(prefix+'-'+id)+'" aria-selected="'+(id===active)+'" tabindex="'+(id===active?'0':'-1')+'">'+label+'</button>').join('')+'</div><div class="card-back-content">'+tabs.map(([id,,markup])=>'<div class="card-back-pane card-back-prose" id="'+esc(prefix+'-'+id)+'" data-card-back-pane="'+id+'" role="tabpanel" aria-labelledby="'+esc(prefix+'-'+id)+'-tab" tabindex="0" '+(id!==active?'hidden':'')+'>'+markup+'</div>').join('')+'</div>';
+}
+
+function guideMarkers(model) {
+  if(!model.guide)return '';
+  return '<div class="card-guide-markers" aria-label="카드 구성 설명">'+model.guide.notes.map((note,index)=>'<button type="button" class="card-guide-pin card-guide-pin--'+esc(note.id)+'" data-card-guide-note="'+esc(note.id)+'" aria-label="'+esc((index+1)+'. '+note.title)+'"><span aria-hidden="true">'+(index+1)+'</span></button>').join('')+'</div>';
 }
 
 /** Shared 2:3 geometry; both faces stay mounted for the physical flip. */
@@ -152,7 +160,7 @@ export function renderReferenceCard(model) {
     '<div class="card-lineage"><span class="card-lineage-mark" aria-hidden="true">◆</span><span>'+esc(model.lineage)+'</span><span class="card-lineage-mark" aria-hidden="true">◆</span></div>'+
     '<div class="card-text"><p class="card-summary">'+esc(caption)+'</p><footer><span'+(model.supportiveCare?' class="card-care-label"':'')+'>'+esc(model.supportiveCare?'대증치료':model.id)+'</span>'+(preview?'<span>확대 ↗</span>':'<button type="button" class="card-turn" data-card-face="back" aria-label="'+esc(model.name)+' 뒷장 보기">뒷장 <span aria-hidden="true">↻</span></button>')+'</footer></div>'+
     (resistance?'<div class="card-ribbon-clip"><div class="card-resistance-ribbon"><strong>'+esc(resistance.code)+'</strong><span>'+esc(resistance.label)+'</span></div></div>':'')+
-    '</article>'+(preview?'':'<article class="reference-card reference-card--back '+classes+'" aria-label="'+esc(model.name)+' 뒷장" aria-hidden="'+(face==='front')+'" '+(face==='front'?'inert':'')+'><header class="card-back-heading"><span>DETAILS / '+esc(model.id)+'</span><h2>'+esc(model.name)+'</h2><p>'+esc(model.subtitle || '')+'</p></header>'+renderBackPanels(model)+'<footer class="card-back-footer"><span>PATHOPEDIA</span><button type="button" class="card-turn" data-card-face="front" aria-label="'+esc(model.name)+' 앞장 보기">앞장 <span aria-hidden="true">↺</span></button></footer></article>')+'</div></div></div>';
+    guideMarkers(model)+'</article>'+(preview?'':'<article class="reference-card reference-card--back '+classes+'" aria-label="'+esc(model.name)+' 뒷장" aria-hidden="'+(face==='front')+'" '+(face==='front'?'inert':'')+'><header class="card-back-heading"><span>DETAILS / '+esc(model.id)+'</span><h2>'+esc(model.name)+'</h2><p>'+esc(model.subtitle || '')+'</p></header>'+renderBackPanels(model)+'<footer class="card-back-footer"><span>PATHOPEDIA</span><button type="button" class="card-turn" data-card-face="front" aria-label="'+esc(model.name)+' 앞장 보기">앞장 <span aria-hidden="true">↺</span></button></footer></article>')+'</div></div></div>';
 }
 export function renderCardLegend() {
   return '<div class="card-gallery-legend" aria-label="카드 기호 설명"><span><i class="preferred" aria-hidden="true"></i>우선요법</span><span><i class="lit" aria-hidden="true"></i>유효·요법 포함</span><span><i class="blocked" aria-hidden="true"></i>내성·비활성</span><span><i class="dim" aria-hidden="true"></i>비해당·기록 없음</span><span><i class="condition-dot" aria-hidden="true"></i>병용·노출 등 조건</span></div>';

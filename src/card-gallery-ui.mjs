@@ -1,5 +1,6 @@
 import { createCardStacks } from './card-stacks.mjs';
 import { createCardSearch } from './card-search.mjs';
+import { createCardGuide } from './card-guide.mjs';
 import { renderCardThumbnail, renderCardLegend, cardIcon } from './reference-card.mjs';
 import { CARD_DOMAINS, createCardModels } from './card-models.mjs';
 import { CARD_FILTERS as FILTERS } from './app-routing.mjs';
@@ -15,6 +16,7 @@ const DECKS=[
 
 export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),onFilterChange=()=>{}}) {
   const models=createCardModels(data,catalog);
+  const guide=createCardGuide(models);
   const search=createCardSearch(data,catalog);
   const stacks=cardStacks || createCardStacks(catalog);
   const families=[...new Set(data.drugs.map(drug=>drug.family))].sort((a,b)=>a.localeCompare(b));
@@ -125,8 +127,8 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     return '<section id="card-gallery-results" class="card-gallery-results'+(isDeckOverview()?' is-deck-overview':'')+'" tabindex="-1" aria-label="카드 도감">'+resultMarkup()+'</section>'+
       '<form id="card-gallery-search-form" class="card-gallery-searchbar" role="search" aria-label="카드 검색">'+
       '<label class="card-gallery-search-field" for="card-gallery-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="card-gallery-search" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-label="카드 이름·표현형·계열 검색" placeholder="한글·영문 이름 검색" value="'+esc(query)+'"></label>'+
-      '<button type="button" class="card-gallery-options-open" data-card-options="open" aria-label="카드 보기 설정" aria-haspopup="dialog" aria-controls="card-gallery-options"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="currentColor"/><circle cx="15" cy="12" r="2" fill="currentColor"/><circle cx="9" cy="18" r="2" fill="currentColor"/></svg><span>'+filterLabel()+'</span></button></form>'+
-      '<dialog id="card-gallery-options" class="card-gallery-options" aria-labelledby="card-gallery-options-title">'+optionsContent()+'</dialog>';
+      '<button type="button" class="card-gallery-options-open" data-card-options="open" aria-label="카드 보기 설정" aria-haspopup="dialog" aria-controls="card-gallery-options"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="currentColor"/><circle cx="15" cy="12" r="2" fill="currentColor"/><circle cx="9" cy="18" r="2" fill="currentColor"/></svg><span>'+filterLabel()+'</span></button><button type="button" class="card-gallery-info" data-card-guide="open" aria-label="예시 카드로 읽는 법 보기" aria-haspopup="dialog" aria-expanded="false" aria-controls="card-guide"><span aria-hidden="true">i</span></button></form>'+
+      guide.markup()+'<dialog id="card-gallery-options" class="card-gallery-options" aria-labelledby="card-gallery-options-title">'+optionsContent()+'</dialog>';
   }
 
   function refreshOptions(focusSelector) {
@@ -163,6 +165,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
   }
 
   function handleClick(button) {
+    if(guide.handleClick(button,domain))return true;
     if(button.dataset.cardDeck){
       if(!DECKS.some(deck=>deck.id===button.dataset.cardDeck))return true;
       query='';family='all';diseaseCategory='all';resistanceOnly=false;
