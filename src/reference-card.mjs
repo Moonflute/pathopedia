@@ -109,7 +109,7 @@ function diseaseConnections(model) {
       relatedButton('drug',component.drugId,component.name,component.role==='adjunct'?'보조 약제':''):
       '<div class="card-related-name"><b>'+esc(component.name)+'</b>'+(component.role==='adjunct'?'<small>보조 약제</small>':'')+'</div>'
     ).join('')+'</div></section>':
-    '<section class="card-back-section"><h3>치료·관리</h3><p>'+esc(model.back.sections.find(section=>section.id==='management')?.text || '')+'</p></section>';
+    '<section class="card-back-section"><h3>'+esc(model.supportiveCare?'대증치료':'치료·관리')+'</h3><p>'+esc(model.back.sections.find(section=>section.id==='management')?.text || '')+'</p></section>';
   return causes+treatment+relatedDiseasesMarkup(model.back.relatedDiseases);
 }
 
@@ -150,7 +150,7 @@ export function renderReferenceCard(model) {
     '<div class="card-artwork">'+artwork(model)+'</div>'+
     propertyRail(model.rightProperties,model.rightLabel,'right',model.rightHeading,preview)+
     '<div class="card-lineage"><span class="card-lineage-mark" aria-hidden="true">◆</span><span>'+esc(model.lineage)+'</span><span class="card-lineage-mark" aria-hidden="true">◆</span></div>'+
-    '<div class="card-text"><p class="card-summary">'+esc(caption)+'</p><footer><span>'+esc(model.id)+'</span>'+(preview?'<span>확대 ↗</span>':'<button type="button" class="card-turn" data-card-face="back" aria-label="'+esc(model.name)+' 뒷장 보기">뒷장 <span aria-hidden="true">↻</span></button>')+'</footer></div>'+
+    '<div class="card-text"><p class="card-summary">'+esc(caption)+'</p><footer><span'+(model.supportiveCare?' class="card-care-label"':'')+'>'+esc(model.supportiveCare?'대증치료':model.id)+'</span>'+(preview?'<span>확대 ↗</span>':'<button type="button" class="card-turn" data-card-face="back" aria-label="'+esc(model.name)+' 뒷장 보기">뒷장 <span aria-hidden="true">↻</span></button>')+'</footer></div>'+
     (resistance?'<div class="card-ribbon-clip"><div class="card-resistance-ribbon"><strong>'+esc(resistance.code)+'</strong><span>'+esc(resistance.label)+'</span></div></div>':'')+
     '</article>'+(preview?'':'<article class="reference-card reference-card--back '+classes+'" aria-label="'+esc(model.name)+' 뒷장" aria-hidden="'+(face==='front')+'" '+(face==='front'?'inert':'')+'><header class="card-back-heading"><span>DETAILS / '+esc(model.id)+'</span><h2>'+esc(model.name)+'</h2><p>'+esc(model.subtitle || '')+'</p></header>'+renderBackPanels(model)+'<footer class="card-back-footer"><span>PATHOPEDIA</span><button type="button" class="card-turn" data-card-face="front" aria-label="'+esc(model.name)+' 앞장 보기">앞장 <span aria-hidden="true">↺</span></button></footer></article>')+'</div></div></div>';
 }

@@ -47,6 +47,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "influenza",
         "covid-19"
@@ -112,6 +113,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "pertussis",
         "community-pneumonia"
@@ -167,6 +169,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "rsv-infection"
       ],

@@ -54,6 +54,7 @@ export function compileDiseases(authored,{pathogens,drugs,sources}){
       if(!DOMAINS.has(cause.domain))fail(id,'invalid external pathogen domain');
       return {...cause};
     });
+    if(entry.supportiveCare!==undefined && typeof entry.supportiveCare!=='boolean')fail(id,'invalid supportive care flag');
     if(!Array.isArray(entry.treatments))fail(id,'missing treatment list');
     const treatments=entry.treatments.map(regimen=>{
       if(!text(regimen.id) || regimenIds.has(regimen.id) || !text(regimen.context))fail(id,'invalid treatment context');
@@ -79,7 +80,7 @@ export function compileDiseases(authored,{pathogens,drugs,sources}){
     });
     diseases[id]={
       ...entry,etiologies,treatments,
-      back:{sections:Object.entries(CLINICAL).map(([key,title])=>({id:key,title,text:entry.clinical[key],sourceIds:entry.sourceIds}))}
+      back:{sections:Object.entries(CLINICAL).map(([key,title])=>({id:key,title:key==='management' && entry.supportiveCare?'대증치료':title,text:entry.clinical[key],sourceIds:entry.sourceIds}))}
     };
   }
   const knownDiseases=new Set(Object.keys(diseases));

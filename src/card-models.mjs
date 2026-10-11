@@ -258,17 +258,21 @@ export function createCardModels(data, catalog) {
     const route=routeItems.length===1
       ? {...routeItems[0],description:routeItems[0].description}
       : {icon:'routes',label:'복수',description:routeItems.map(item=>item.label+' · '+item.description).join('\n')};
+    const careNote=base.back.sections.find(section=>section.id==='management')?.text || '';
     const model={
       ...base,entityId:id,domain:'diseases',lineage:category.label+' · '+catalog.diseaseEntityTypes[base.entityType].label,
       route,selectedTreatment,
       artwork:{placeholder:category.icon,label:category.label},
-      leftHeading:'원인',rightHeading:'치료',leftLabel:'원인 병원체',rightLabel:'치료 약제',
+      leftHeading:'원인',rightHeading:'치료',leftLabel:'원인 병원체',rightLabel:'치료·관리',
       leftProperties:GROUPS.map(group=>{
         const causes=causeGroups.get(group.id);
         const note=causes.map(cause=>cause.name+(cause.context?' · '+cause.context:'')).join('\n');
         return {icon:group.icon,label:group.label,shortLabel:GROUP_LABELS[group.id],active:causes.length>0,note:note || '—',tooltip:{title:group.label,body:note || '—'}};
       }),
-      rightProperties:[...components.values()].slice(0,10).map(component=>{
+      rightProperties:(base.supportiveCare?[{
+        icon:'clinical',label:'대증치료',shortLabel:'대증',active:true,preferred:false,
+        note:careNote,tooltip:{title:'대증치료',body:careNote}
+      }]:[]).concat([...components.values()].map(component=>{
         const componentKey=component.drugId || component.name;
         const selected=selectedTreatment?.components.some(item=>(item.drugId || item.name)===componentKey);
         const item=component.drugId?drugs.get(component.drugId):null;
@@ -283,7 +287,7 @@ export function createCardModels(data, catalog) {
           conditional:Boolean(selected && (selectedTreatment.mode!=='single' || selectedTreatment.coverage==='component' || selectedTreatment.rank==='conditional')),
           note:context,tooltip:{title:component.name,body:[selected?role:'다른 치료 상황',context,selected?modeLabel:''].filter(Boolean).join('\n')}
         };
-      })
+      })).slice(0,10)
     };
     models.set(key,model);return model;
   }

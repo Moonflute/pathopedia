@@ -135,7 +135,7 @@ export function compileLibraryCatalog(dataset, sources, authored) {
   }
   const diseaseCatalog=compileDiseases(authored.diseaseContent,{pathogens,drugs,sources});
   const catalog = {
-    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.4.0',
+    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.4.1',
     sourceDatasetVersion:dataset.datasetVersion, locale:'ko-KR', reviewStatus:dataset.reviewStatus,
     contentOrigin:'content/cards/*.json + content/diseases/*.json',
     interpretation:dataset.interpretation,

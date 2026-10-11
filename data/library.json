@@ -1,7 +1,7 @@
 {
   "$schema": "./library-schema.json",
   "schemaVersion": 1,
-  "catalogVersion": "1.4.0",
+  "catalogVersion": "1.4.1",
   "sourceDatasetVersion": "0.5.0",
   "locale": "ko-KR",
   "reviewStatus": "educational-draft",
@@ -282,6 +282,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "influenza",
         "covid-19"
@@ -321,7 +322,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "수분·휴식과 증상 완화가 기본. 단순 감기에 항균제를 사용하지 않는다.",
             "sourceIds": [
               "cdc-rhinovirus"
@@ -395,6 +396,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "pertussis",
         "community-pneumonia"
@@ -425,7 +427,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "증상 완화가 기본. 폐렴·백일해 등 별도 적응증이 없으면 항균제를 쓰지 않는다.",
             "sourceIds": [
               "disease-cdc-acute-bronchitis"
@@ -498,6 +500,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "rsv-infection"
       ],
@@ -535,7 +538,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "산소·수분·비강 분비물 관리 등 지지요법. 기관지확장제·항균제·스테로이드를 일률적으로 사용하지 않는다.",
             "sourceIds": [
               "disease-nice-bronchiolitis",
@@ -7139,6 +7142,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "norovirus-gastroenteritis",
         "stec-colitis",
@@ -7173,7 +7177,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "경구 또는 정주 수분 보충. 항균제는 원인·중증도에 따라 선택하고 STEC 의심에서는 피한다.",
             "sourceIds": [
               "disease-idsa-diarrhea",
@@ -7227,6 +7231,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "infectious-gastroenteritis"
       ],
@@ -7256,7 +7261,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "수분·전해질 보충과 접촉·환경 관리. 비누 손씻기와 적절한 소독이 중요하고 항균제는 쓰지 않는다.",
             "sourceIds": [
               "cdc-norovirus"
@@ -7308,6 +7313,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-rotavirus"
@@ -7335,7 +7341,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "수분·전해질 보충이 기본; 항균제는 필요하지 않다. 접종으로 중증 감염을 예방한다.",
             "sourceIds": [
               "cdc-rotavirus"
@@ -8070,6 +8076,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "infectious-gastroenteritis"
       ],
@@ -8099,7 +8106,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "수분·전해질 보충과 HUS 감시. 항균제·장운동 억제제를 사용하지 않는다.",
             "sourceIds": [
               "disease-cdc-stec"
@@ -9751,6 +9758,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-hav"
@@ -9783,7 +9791,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "지지요법; 간부전 감시. 노출 후 예방접종·면역글로불린 적응증을 시기에 맞춰 평가한다.",
             "sourceIds": [
               "cdc-hav"
@@ -14598,6 +14606,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "adenovirus-infection"
       ],
@@ -14635,7 +14644,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "인공눈물·냉찜질 등 지지요법과 전파 예방. 항균제·스테로이드를 임의로 일률 사용하지 않는다.",
             "sourceIds": [
               "cdc-adenovirus",
@@ -19702,6 +19711,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-ebv"
@@ -19734,7 +19744,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "대개 지지요법. 비장 상태를 고려해 접촉 스포츠·격한 활동 복귀를 조정하고 항바이러스는 일률 사용하지 않는다.",
             "sourceIds": [
               "cdc-ebv"
@@ -20241,6 +20251,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "congenital-rubella"
       ],
@@ -20275,7 +20286,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "지지요법·전파 예방과 공중보건 관리. 임신 노출은 산과·감염 전문 평가.",
             "sourceIds": [
               "cdc-rubella"
@@ -20329,6 +20340,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "rubella"
       ],
@@ -20363,7 +20375,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "장기 합병증·발달 지원과 전파 예방. 가임기 접종이 핵심 예방이며 임신 중 생백신 사용과 구분한다.",
             "sourceIds": [
               "cdc-rubella"
@@ -20416,6 +20428,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-mumps"
@@ -20448,7 +20461,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "지지요법과 비말·접촉 예방, 합병증 평가.",
             "sourceIds": [
               "cdc-mumps"
@@ -20919,6 +20932,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "nih-hhv6"
@@ -20951,7 +20965,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "해열·수분 등 지지요법. 면역정상 전형적 돌발진에 항바이러스를 일률 사용하지 않는다.",
             "sourceIds": [
               "nih-hhv6"
@@ -21107,6 +21121,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-enterovirus"
@@ -21139,7 +21154,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "수분·통증 관리와 전파 예방. 중증 경고 소견은 신속한 평가.",
             "sourceIds": [
               "cdc-enterovirus"
@@ -21191,6 +21206,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-polio"
@@ -21218,7 +21234,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "호흡·기능 지원과 재활; 예방접종·노출 대응이 핵심. 확립된 특이 항바이러스 치료는 없다.",
             "sourceIds": [
               "cdc-polio"
@@ -21270,6 +21286,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "bite-infection"
       ],
@@ -21304,7 +21321,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "발병 전 상처 세척·백신·면역글로불린의 노출 후 예방. 발병 후는 전문 지지치료이며 예방요법을 치료제로 혼동하지 않는다.",
             "sourceIds": [
               "cdc-rabies"
@@ -21357,6 +21374,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-dengue"
@@ -21389,7 +21407,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "적절한 수액·감시와 장기 지원. 출혈 위험 때문에 Aspirin·NSAID 등을 피하며 특이 항바이러스는 확립되지 않았다.",
             "sourceIds": [
               "cdc-dengue"
@@ -21442,6 +21460,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-chikungunya"
@@ -21474,7 +21493,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "수분·해열·통증 관리; 뎅기 배제 전 출혈 위험 약제 선택에 주의한다.",
             "sourceIds": [
               "cdc-chikungunya"
@@ -21528,6 +21547,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-zika-care"
@@ -21560,7 +21580,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "지지요법과 임신·태아 추적, 모기·성접촉 전파 예방.",
             "sourceIds": [
               "cdc-zika-care"
@@ -21611,6 +21631,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-je"
@@ -21638,7 +21659,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "신경·호흡·경련 지지치료. 특이 치료가 확립되지 않아 접종·모기 예방이 중요하다.",
             "sourceIds": [
               "cdc-je"
@@ -21690,6 +21711,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "cdc-west-nile"
@@ -21717,7 +21739,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "지지치료·경련·호흡 지원과 모기 예방; 확립된 특이 항바이러스는 없다.",
             "sourceIds": [
               "cdc-west-nile"
@@ -21770,6 +21792,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "hantavirus-pulmonary"
       ],
@@ -21807,7 +21830,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "세심한 수분·전해질·장기 지원, 필요 시 신대체치료. 특정 약제의 적용은 발병 시기·근거·지역 경로에 따라 전문 판단.",
             "sourceIds": [
               "cdc-hantavirus",
@@ -21860,6 +21883,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [
         "hfrs"
       ],
@@ -21889,7 +21913,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "신속한 호흡·순환 지원과 중환자 관리. 확립된 특이 항바이러스는 없다.",
             "sourceIds": [
               "disease-cdc-hps"
@@ -21943,6 +21967,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "kdca-sfts",
@@ -21978,7 +22003,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "지지·장기 지원과 엄격한 혈액·체액 노출 예방. 항균제를 바이러스 치료제로 혼동하지 않는다.",
             "sourceIds": [
               "kdca-sfts",
@@ -22367,6 +22392,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "disease-cdc-mers"
@@ -22399,7 +22425,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "지지·중환자 치료와 전파 차단; 표준 특이 항바이러스는 확립되지 않았다.",
             "sourceIds": [
               "disease-cdc-mers"
@@ -22449,6 +22475,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "disease-who-yellow-fever"
@@ -22476,7 +22503,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "지지·장기 지원, 출혈 위험 관리와 공중보건 대응. 예방접종·모기 예방이 핵심.",
             "sourceIds": [
               "disease-who-yellow-fever"
@@ -22620,6 +22647,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "disease-who-marburg"
@@ -22647,7 +22675,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "집중 수분·장기 지원과 전파 차단; 특이 치료는 해당 전문·연구 경로에서 판단한다.",
             "sourceIds": [
               "disease-who-marburg"
@@ -22699,6 +22727,7 @@
         }
       ],
       "treatments": [],
+      "supportiveCare": true,
       "relatedDiseaseIds": [],
       "sourceIds": [
         "disease-who-nipah"
@@ -22726,7 +22755,7 @@
           },
           {
             "id": "management",
-            "title": "치료·관리",
+            "title": "대증치료",
             "text": "집중 지지치료와 전파 차단; 표준 승인 특이 치료는 확립되지 않았다.",
             "sourceIds": [
               "disease-who-nipah"
@@ -30252,7 +30281,7 @@
     }
   },
   "diseaseContent": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scope": {
       "inclusion": "병원체의 감염·증식·침입·독소 작용이 중심인 질환과 감염성 임상 증후군. 잠복감염은 활동성 질환과 구분한다.",
       "exclusion": [

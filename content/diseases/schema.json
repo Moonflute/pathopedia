@@ -366,6 +366,10 @@
         },
         "back": {
           "$ref": "#/$defs/back"
+        },
+        "supportiveCare": {
+          "type": "boolean",
+          "description": "Explicitly authored supportive or symptomatic care. An empty drug regimen list alone does not imply supportive care; retain the clinical management and its conditions."
         }
       }
     }

@@ -70,7 +70,23 @@ test('sequential regimens and adjuncts cannot become a simultaneous antimicrobia
 test('unregistered agents keep names without false card IDs and supportive conditions have no invented antibiotic',()=>{
   const cystitis=catalog.diseases['acute-cystitis'];
   assert(cystitis.treatments.some(item=>item.components.some(component=>component.name==='Nitrofurantoin' && !component.drugId)));
-  assert.equal(models.disease('common-cold').rightProperties.length,0);
+  const cold=models.disease('common-cold');
+  assert.equal(cold.treatments.length,0);
+  assert.equal(cold.rightProperties.length,1);
+  assert.equal(cold.rightProperties[0].label,'대증치료');
+  assert.equal(cold.rightProperties[0].active,true);
+  assert.equal(cold.rightProperties[0].preferred,false);
+  for(const disease of authored.entities.filter(item=>item.supportiveCare)){
+    assert.equal(cards.disease(disease.id).supportiveCare,true);
+    assert.equal(models.disease(disease.id).rightProperties[0].label,'대증치료');
+    assert.match(renderReferenceCard(models.disease(disease.id)),/class="card-care-label">대증치료/);
+    assert.doesNotMatch(renderReferenceCard(models.disease(disease.id)),/data-card-related="drug:대증치료"/);
+    assert.equal(catalog.diseases[disease.id].back.sections.find(item=>item.id==='management').text,disease.clinical.management);
+  }
+  for(const id of ['croup','anogenital-warts','bk-nephropathy','progressive-multifocal-leukoencephalopathy','molluscum','anisakiasis','dracunculiasis']){
+    assert.equal(cards.disease(id).supportiveCare,false);
+    assert.equal(models.disease(id).rightProperties.some(item=>item.label==='대증치료'),false);
+  }
   assert.equal(models.get('missing','common-cold'),null);
   assert.equal(cards.disease('missing'),null);
   assert.equal(models.disease('rabies').kind,'disease');
@@ -85,6 +101,8 @@ test('disease names, Korean spacing, aliases and existing pathogen/drug links sh
     assert(search.matches('disease',disease.id,disease.englishName),disease.id);
     assert(disease.searchAliases.every(alias=>search.matches('disease',disease.id,alias)),disease.id);
   }
+  assert(search.matches('disease','common-cold','대증치료'));
+  assert.equal(search.matches('disease','anisakiasis','대증치료'),false);
   assert(search.matches('disease','community-pneumonia','지역사회 획득 폐렴'));
   assert(search.matches('disease','herpes-zoster','대상포진'.normalize('NFD')));
   assert(cards.pathogen('SAU-001').back.relatedDiseases.some(item=>item.id==='staphylococcal-bacteremia'));
@@ -104,5 +122,6 @@ test('unknown etiologies, treatment references, modes and sources are rejected b
   assert.throws(()=>compile(mutate(d=>d.treatments[0].components=[{drugId:'not-a-drug'}])),/unknown or ambiguous drug/);
   assert.throws(()=>compile(mutate(d=>d.treatments[0].mode='combination')),/mode does not match/);
   assert.throws(()=>compile(mutate(d=>d.sourceIds=['not-a-source'])),/invalid sources/);
+  assert.throws(()=>compile(mutate(d=>d.supportiveCare='true')),/invalid supportive care flag/);
   assert.throws(()=>compile([base,base]),/duplicate ID/);
 });

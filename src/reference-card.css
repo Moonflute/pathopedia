@@ -490,6 +490,7 @@ dialog.card-inspector { width:max-content; height:max-content; max-width:calc(10
 /* Disease cards reuse the same 2:3 faces and small side glyphs. */
 .reference-card-domain--diseases { --card-tone:#91bbae; --card-deep:#233d37; --card-line:#759b8c; --card-light:#c1ded1; background:linear-gradient(145deg,#45665b,var(--card-deep) 38%,#182927); }
 .reference-card--disease .card-text footer > span { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.reference-card--disease .card-text footer .card-care-label { font:650 3cqw/1 var(--sans); letter-spacing:0; color:#50664d; }
 .card-related-list { display:grid; gap:.55em; margin:.6em 0 0; }
 .card-related-link,.card-related-name { min-width:0; padding:.6em .7em; border:1px solid #7d967659; border-radius:.35em; background:#ffffff55; text-align:left; color:inherit; overflow-wrap:anywhere; }
 .card-related-link { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; column-gap:.6em; width:100%; font:inherit; cursor:pointer; }

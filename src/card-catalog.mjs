@@ -63,7 +63,7 @@ export function createCardCatalog(catalog) {
     const card={
       kind:'disease',id:entity.id,name:entity.name,subtitle:entity.englishName,summary:entity.summary,
       category:entity.category,entityType:entity.entityType,anatomicSites:entity.anatomicSites,
-      transmission:entity.transmission,etiologies:entity.etiologies,treatments:entity.treatments,
+      transmission:entity.transmission,etiologies:entity.etiologies,treatments:entity.treatments,supportiveCare:entity.supportiveCare===true,
       back:{
         label:catalog.diseaseCategories[entity.category].label,summary:entity.summary,sections:entity.back.sections,
         etiologies:entity.etiologies,treatments:entity.treatments,relatedDiseases:relatedDiseases(entity.relatedDiseaseIds),

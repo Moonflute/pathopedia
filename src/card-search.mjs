@@ -20,7 +20,7 @@ export function createCardSearch(data,catalog) {
   for(const disease of Object.values(catalog.diseases || {})){
     add('disease',disease.id,[
       disease.id,disease.name,disease.englishName,...disease.searchAliases,disease.summary,
-      catalog.diseaseCategories[disease.category].label,
+      catalog.diseaseCategories[disease.category].label,disease.supportiveCare?'대증치료 증상완화 지지요법':'',
       ...disease.etiologies.map(cause=>cause.name),
       ...disease.treatments.flatMap(regimen=>regimen.components.map(component=>component.name))
     ]);
