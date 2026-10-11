@@ -6,7 +6,7 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.15.5';
+const VERSION = '0.15.6';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
  {id:'lab',label:'동정실',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
@@ -33,7 +33,7 @@ const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.15.5" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.15.6" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -72,7 +72,7 @@ function resultLabel(result) {
   return { S:'S · Susceptible', I:'I · Increased exposure', R:'R · Resistant', ACT:'조건부 활성 · 조건 확인 필요',ACTIVE:'활성 있음 · 문헌 기반',INACTIVE:'활성 없음 · 문헌 기반',REGIMEN:'표준·대안요법에 포함',OUTSIDE_REGIMEN:'선택 지침의 요법에 없음' }[result];
 }
 function home() {
- return `<section class="tab-selection" aria-labelledby="tab-selection-title"><h1 id="tab-selection-title">탭을 선택하세요</h1><nav class="tab-choices" aria-label="학습 화면 선택">${APP_TABS.map(({id,label,icon})=>`<button type="button" class="tab-choice" data-view="${id}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></button>`).join('')}</nav></section>`;
+ return `<section class="tab-selection" aria-label="탭 선택"><nav class="tab-choices" aria-label="학습 화면 선택">${APP_TABS.map(({id,label,icon})=>`<button type="button" class="tab-choice" data-view="${id}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></button>`).join('')}</nav></section>`;
 }
 function shell() {
  const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',cards:'card-gallery-main'}[view];
