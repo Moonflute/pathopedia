@@ -6,8 +6,14 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.15.4';
+const VERSION = '0.15.5';
 const KEY = 'pathopedia.v1';
+const APP_TABS = [
+ {id:'lab',label:'동정실',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
+ {id:'treatment',label:'항생제 선택',icon:'<rect x="4" y="7" width="16" height="10" rx="5" transform="rotate(-45 12 12)"/><path d="m9 9 6 6"/>'},
+ {id:'cards',label:'카드 도감',icon:'<rect x="6" y="5" width="13" height="16" rx="2"/><path d="M4 18V4a2 2 0 0 1 2-2h10M10 10h5M10 14h5M10 18h3"/>'}
+];
+
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let mobileSection = 'hints', drugPage = 0, panelRounds = {}, panelAnswers = {};
@@ -22,12 +28,12 @@ const hintCategories = (r=record()) => {
 const DRUG_PAGE_SIZE = 16;
 const shortResult = category => ({ACT:'조건부 활성',ACTIVE:'활성 있음',INACTIVE:'활성 없음',REGIMEN:'요법에 포함',OUTSIDE_REGIMEN:'요법 외'})[category] || category;
 const matchingDrugs = () => panelDrugs().filter(d=>(d.name+' '+d.family).toLowerCase().includes(filter.trim().toLowerCase()));
-let data, sources, treatmentGame, cardGallery, cardInspector, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = resolveAppRoute(location.hash)?.view || 'lab', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
+let data, sources, treatmentGame, cardGallery, cardInspector, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = resolveAppRoute(location.hash)?.view || 'home', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
 const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.15.4" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.15.5" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -65,10 +71,15 @@ function resultLabel(result) {
   if (mode === 'basic') return { S:'In vitro · Effective', I:'In vitro · Effective · 노출 증가 필요', R:'In vitro · Ineffective', ACT:'Conditional activity · 조건부 활성',ACTIVE:'Activity supported · 활성 있음',INACTIVE:'Inactive · 활성 없음',REGIMEN:'표준·대안요법에 포함',OUTSIDE_REGIMEN:'선택 지침의 요법에 없음' }[result];
   return { S:'S · Susceptible', I:'I · Increased exposure', R:'R · Resistant', ACT:'조건부 활성 · 조건 확인 필요',ACTIVE:'활성 있음 · 문헌 기반',INACTIVE:'활성 없음 · 문헌 기반',REGIMEN:'표준·대안요법에 포함',OUTSIDE_REGIMEN:'선택 지침의 요법에 없음' }[result];
 }
+function home() {
+ return `<section class="tab-selection" aria-labelledby="tab-selection-title"><h1 id="tab-selection-title">탭을 선택하세요</h1><nav class="tab-choices" aria-label="학습 화면 선택">${APP_TABS.map(({id,label,icon})=>`<button type="button" class="tab-choice" data-view="${id}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></button>`).join('')}</nav></section>`;
+}
 function shell() {
-  return `<header class="appbar"><a class="brand" href="#lab" aria-label="Pathopedia 동정실">${symbol}<span>PATHOPEDIA</span></a><nav class="appnav" aria-label="주 메뉴"><button data-view="lab" class="${view==='lab'?'active':''}" ${view==='lab'?'aria-current="page"':''}>동정실</button><button data-view="treatment" class="${view==='treatment'?'active':''}" ${view==='treatment'?'aria-current="page"':''}>항생제 선택</button><button data-view="cards" class="${view==='cards'?'active':''}" ${view==='cards'?'aria-current="page"':''}>카드 도감</button></nav><span class="version">v ${VERSION}</span></header>
+ const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',cards:'card-gallery-main'}[view];
+ const content=view==='home'?home():view==='lab'?lab():view==='treatment'?treatmentGame.render():cardGallery.render();
+ return `<header class="appbar${view==='home'?' appbar--home':''}"><a class="brand" href="#home" aria-label="Pathopedia 탭 선택">${symbol}<span>PATHOPEDIA</span></a>${view==='home'?'':`<nav class="appnav" aria-label="주 메뉴">${APP_TABS.map(({id,label})=>`<button type="button" data-view="${id}" class="${view===id?'active':''}" ${view===id?'aria-current="page"':''}>${label}</button>`).join('')}</nav>`}<span class="version">v ${VERSION}</span></header>
   ${storageWarning ? `<div class="storage-warning" role="alert">${esc(storageWarning)}</div>` : ''}
-  <main id="main" class="${view==='lab'?'game-main':view==='treatment'?'treatment-main':'card-gallery-main'}" tabindex="-1">${view === 'lab' ? lab() : view === 'treatment' ? treatmentGame.render() : cardGallery.render()}</main>
+  <main id="main" class="${mainClass}" tabindex="-1">${content}</main>
   <dialog id="detail-dialog" aria-labelledby="detail-title"></dialog>${cardInspector?.markup() || ''}`;
 }
 function lab() {
@@ -145,7 +156,7 @@ function reset() {
  mobileSection='hints';round=newRound(data.records,round.targetId,Math.random,round.panelId); selectedTaxon='';selectedAnswer='';notice='';confirmNext=false;filter='';drugPage=0;tab='hints';persist();render();window.scrollTo({top:0,behavior:'smooth'});
 }
 root.addEventListener('click',e=>{
- if(e.target.closest('.brand')){e.preventDefault();navigateTo('#lab');return;}
+ if(e.target.closest('.brand')){e.preventDefault();navigateTo('#home');return;}
  const b=e.target.closest('button'); if (!b||b.disabled) return;
  if(cardInspector?.handleClick(b))return;
  if(handleReferenceCardClick(b))return;
@@ -210,6 +221,7 @@ try {
  cardInspector=createCardInspector(data,{catalog:cardDatabase});
   load();persist();
   const initialRoute=resolveAppRoute(location.hash);
+  view=initialRoute?.view || 'home';
   if(initialRoute?.view==='cards')cardGallery.setRoute(initialRoute.domain,initialRoute.archiveOnly);
   if(initialRoute && location.hash!==initialRoute.hash)history.replaceState(null,'',initialRoute.hash);
   render();

@@ -150,7 +150,7 @@ main.game-main{max-width:1760px;padding:8px 12px}
  .morphology-visual--detail{margin-bottom:14px}
 }
 
-/* Four primary tabs and the rules action remain visible on narrow screens. */
+/* Keep the three study tabs visible on narrow screens. */
 @media(max-width:620px) {
  .appbar { height:auto; min-height:76px; flex-wrap:wrap; gap:5px; padding-top:9px; }
  .appbar .brand { flex-basis:100%; }
@@ -158,3 +158,25 @@ main.game-main{max-width:1760px;padding:8px 12px}
  .appnav button { padding:0 5px; font-size:.8125rem; white-space:nowrap; }
  main.game-main { min-height:calc(100dvh - 80px); }
 }
+
+/* Choose one of the three study screens before entering the app. */
+.appbar--home .version{margin-left:auto}
+main.home-main{display:grid;place-items:center;max-width:none;width:100%;min-height:calc(100dvh - 48px);padding:48px 24px calc(48px + env(safe-area-inset-bottom))}
+.tab-selection{width:min(100%,760px);text-align:center}
+.tab-selection h1{font-size:clamp(1.25rem,3vw,1.75rem);font-weight:600;margin:0 0 40px}
+.tab-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,4vw,36px);max-width:700px;margin:0 auto}
+.tab-choice{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%;aspect-ratio:1;border-radius:50%;border:1px solid #a1b392;background:#f8f8f2;color:#29442f;padding:16px;box-shadow:0 5px 0 #23312e0a;font-size:clamp(1rem,2.5vw,1.25rem);font-weight:650;transition:transform .18s,background .18s,border-color .18s}
+.tab-choice:nth-child(2){background:#e4ebd9}.tab-choice:nth-child(3){background:#e6e9df}
+.tab-choice svg{width:40px;height:40px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tab-choice span{white-space:nowrap}.tab-choice:focus-visible{border-color:#688847}.tab-choice:active{transform:translateY(1px)}
+@media(hover:hover){.tab-choice:hover{background:#dce6ce;border-color:#688847;transform:translateY(-4px)}}
+@media(max-width:759px){
+ main.home-main{min-height:calc(100dvh - 50px);padding-inline:16px}
+ .tab-choices{gap:10px}.tab-choice{padding:10px;gap:12px;font-size:clamp(.8125rem,2.8vw,1.125rem)}
+ .tab-choice svg{width:clamp(24px,6vw,36px);height:clamp(24px,6vw,36px)}
+}
+@media(max-width:620px){
+ .appbar--home{height:50px;min-height:50px;padding-block:0;flex-wrap:nowrap}
+ .appbar--home .brand{flex-basis:auto}
+}
+@media(prefers-reduced-motion:reduce){.tab-choice{transition:none}.tab-choice:hover,.tab-choice:active{transform:none}}

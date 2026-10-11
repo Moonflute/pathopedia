@@ -28,7 +28,10 @@ test('card DB retains every game record, response and clinical relationship',()=
 
 test('card validation blocks dangling IDs, missing sources, altered responses and inconsistent totals',()=>{
   const record=data.records[0],drugId=Object.keys(record.susceptibility)[0],therapy=Object.values(db.therapyContexts)[0];
+  const sourceId=Object.keys(db.sources)[0];
   const corruptions=[
+    [copy=>{delete copy.sources[sourceId].title;},/source.*title is empty/],
+    [copy=>{delete copy.sources[sourceId].url;delete copy.sources[sourceId].note;},/source.*note is empty/],
     [copy=>{copy.variants[record.id].pathogenId='missing';},/pathogen reference/],
     [copy=>{copy.variants[record.id].panelId='missing';},/panel reference/],
     [copy=>{copy.responses[record.id][drugId]='rsp_missing';},/missing response profile/],

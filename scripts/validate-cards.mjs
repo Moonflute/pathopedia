@@ -27,6 +27,10 @@ export function validateCardCatalog(db,data) {
   for(const name of ['pathogens','variants','drugs','responses','responseProfiles','therapyContexts','sources','panels','categories','counts']){
     if(!db[name] || typeof db[name]!=='object' || Array.isArray(db[name]))fail('missing '+name);
   }
+  for(const [id,source]of Object.entries(db.sources)){
+    text(source?.title,'source/'+id+' title');
+    if(source.url!==undefined)text(source.url,'source/'+id+' URL');else text(source.note,'source/'+id+' note');
+  }
   validateDataset(data,db.sources);
   keys(db.pathogens,data.records.map(record=>record.taxonId),'pathogen');
   keys(db.variants,data.records.map(record=>record.id),'variant');
