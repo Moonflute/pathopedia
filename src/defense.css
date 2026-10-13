@@ -40,3 +40,10 @@ body:has(.defense-main) .appnav{height:100%;min-height:0}
 
 .df-speed-cycle{display:none}
 @media(max-width:700px){.df-game{grid-template-rows:41px minmax(0,1fr) 52px}.df-command .df-speed{display:none}.df-speed-cycle{display:block;min-width:39px;background:#25443f;border-color:#658779!important;font-size:11px!important}}
+
+/* The briefing exposes coverage gaps and costs without expanding the playfield. */
+.df-game .df-primary small{display:block;font-size:9px;font-weight:600;letter-spacing:0;line-height:1.2;margin-top:2px}
+.df-intel-bar .df-intel-gap{border-color:#db987b;color:#ffdec1}
+.df-brief-heading{display:flex;flex-wrap:wrap;gap:5px 14px;align-items:baseline;margin-top:15px}.df-brief-heading strong{color:#e8d1a2;font-size:15px}.df-brief-heading small{font-size:10px;color:#9ebcb7}
+.df-brief-list{display:grid;gap:7px;margin:10px 0}.df-brief-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;border:1px solid #526d68;border-radius:7px;background:#19343d}.df-brief-row.gap{border-color:#ac8865}.df-brief-row b{font-size:12px}.df-brief-row small{display:block;font-size:9px;color:#b0c4b9}.df-brief-row>span{font-size:11px;white-space:nowrap;color:#b2deb1}.df-brief-row button{padding:7px 10px;background:#435c4b;border-color:#a7bd82;color:#e9f0cd;white-space:nowrap;font-size:11px}.df-brief-budget{display:flex;align-items:center;gap:7px 12px;flex-wrap:wrap;background:#102b36;padding:10px 12px;border-radius:7px;font-size:11px;margin:12px 0}.df-brief-budget>span{font-size:9px;color:#9db7b2}.df-brief-budget button{padding:6px 9px;background:#66503d;border-color:#c29b6f;font-size:10px}
+@media(max-width:700px){.df-intel-types{max-width:75px}.df-intel-bar .df-source-alert{font-size:8px;padding:5px;white-space:nowrap}.df-game .df-command .df-primary small{font-size:8px}.df-brief-row{padding:8px;gap:6px}.df-brief-row b{font-size:11px}.df-brief-row button{font-size:10px;padding:6px}.df-brief-row small{font-size:8px}}

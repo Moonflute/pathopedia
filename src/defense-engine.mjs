@@ -1,22 +1,26 @@
 import {MAPS,HOSTS,PADS,PATH,SCHEDULES,WAVE_COUNT} from './defense-data.mjs';
 const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
+// Game-only efficiency multipliers: merging must not reduce total sustained firepower.
+export const POTENCY_DAMAGE=Object.freeze([1,1.8,3.2,5.9]);
+export const SOURCE_COST=70;
+export function waveIntel(run){const number=run.status==='prep'?run.wave+1:run.wave;return number<=3||run.retryIntelWave===number?2:run.status==='prep'?run.lab:Math.max(run.lab,run.elapsed>=8?2:run.elapsed>=4?1:0);}
 const lengths=PATH.slice(1).map((p,i)=>Math.hypot(p[0]-PATH[i][0],p[1]-PATH[i][1]));
 export const PATH_LENGTH=lengths.reduce((a,b)=>a+b,0);
 export function pathPosition(distance){let d=Math.max(0,distance);for(let i=0;i<lengths.length;i++){if(d<=lengths[i]){const t=d/lengths[i];return{x:PATH[i][0]+(PATH[i+1][0]-PATH[i][0])*t,y:PATH[i][1]+(PATH[i+1][1]-PATH[i][1])*t};}d-=lengths[i];}return{x:PATH.at(-1)[0],y:PATH.at(-1)[1]};}
 function seeded(seed){let value=seed>>>0;return()=>{value=(Math.imul(value,1664525)+1013904223)>>>0;return value/4294967296;};}
 export function newDefenseRun(catalog,{mapId='lung',hostId='normal',seed=Math.floor(Math.random()*4294967295)}={}){
- return{mapId:MAPS.some(m=>m.id===mapId)?mapId:'lung',hostId:HOSTS.some(h=>h.id===hostId)?hostId:'normal',seed:seed>>>0,status:'prep',wave:0,health:100,credits:300,pressure:0,microbiome:0,lab:0,unlocked:catalog.drugs.filter(d=>!d.unlock).map(d=>d.id),towers:[],enemies:[],projectiles:[],effects:[],plan:null,elapsed:0,spawned:0,kills:0,totalKills:0,leaks:0,totalLeaks:0,sourceControlled:false,serial:0,fxSerial:0,combo:0,comboTimer:0,bestCombo:0,freeUnits:{},kits:0,draft:[],draftRerolled:false,notice:'약제를 고른 뒤 길 옆에 자유롭게 배치하세요.',lastReport:null,bestWave:0};
+ return{mapId:MAPS.some(m=>m.id===mapId)?mapId:'lung',hostId:HOSTS.some(h=>h.id===hostId)?hostId:'normal',seed:seed>>>0,status:'prep',wave:0,health:100,credits:400,pressure:0,microbiome:0,lab:0,unlocked:catalog.drugs.filter(d=>!d.unlock).map(d=>d.id),towers:[],enemies:[],projectiles:[],effects:[],plan:null,elapsed:0,spawned:0,kills:0,totalKills:0,leaks:0,totalLeaks:0,sourceControlled:false,serial:0,fxSerial:0,combo:0,comboTimer:0,bestCombo:0,freeUnits:{},kits:0,draft:[],draftRerolled:false,notice:'약제를 고른 뒤 길 옆에 자유롭게 배치하세요.',lastReport:null,bestWave:0,checkpoint:null,retryIntelWave:0,operatingDebt:0};
 }
 export function wavePlan(run,index=run.wave){
  if(index<0||index>=WAVE_COUNT)return null;
  const random=seeded(run.seed+Math.imul(index+1,7919)),ids=[...SCHEDULES[run.mapId][index]];
  if(run.mapId==='lung'&&index===11)ids[1]=random()<0.5?'visa':'lzdr';
  const reserve=index>=9?'kpc':index>=4?(run.mapId==='lung'?'mrsa':'esbl'):null,selected=Boolean(reserve&&run.pressure>=30);
- const count=14+index*3+(selected?2:0),source=run.mapId==='abdomen'?[3,7,11].includes(index):run.mapId==='urinary'?[3,7].includes(index):[7,10].includes(index);
- const boss=[3,7,11].includes(index),rush=index%3===2;
+ const count=10+index*3+(selected?2:0),source=run.mapId==='abdomen'?[3,7,11].includes(index):run.mapId==='urinary'?[3,7].includes(index):[7,10].includes(index);
+ const boss=[3,7,11].includes(index),rush=index>=5&&index%3===2;
  const units=Array.from({length:count},(_,n)=>({pathogenId:selected&&n>=count-2?reserve:ids[Math.floor(random()*ids.length)],sourceBound:source&&n%3===0,elite:boss&&n===Math.floor(count*.65),scout:rush&&n%3===1}));
  ids.forEach((id,i)=>{units[i].pathogenId=id;});
- return{number:index+1,units,source,selected,boss,rush,pathogenIds:[...new Set(units.map(u=>u.pathogenId))],reward:65+(index+1)*5,interval:rush?.26:.4,title:boss?'고균량 개체 출현':rush?'빠른 집단 유입':ids.length>1?'복합 감염 방어':'방어선 구축'};
+ return{number:index+1,units,source,selected,boss,rush,pathogenIds:[...new Set(units.map(u=>u.pathogenId))],reward:65+(index+1)*5,interval:rush?.34:index<3?.6:.46,title:boss?'고균량 개체 출현':rush?'빠른 집단 유입':ids.length>1?'복합 감염 방어':'방어선 구축'};
 }
 export function placementCheck(run,point,ignoreId=null){
  if(!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||point.x<24||point.x>876||point.y<30||point.y>492)return{ok:false,reason:'지도 안에 배치하세요.'};
@@ -56,6 +60,7 @@ export function towerCoverage(run,catalog,tower,pathogenId) {
 }
 export function upkeep(run,catalog){return run.towers.reduce((n,t)=>n+catalog.drugById[t.drugId].upkeep,0)+run.lab*4;}
 function spend(run,cost){if(run.credits<cost){run.notice='자원 부족 · '+cost+' 필요';return false;}run.credits-=cost;return true;}
+function earn(run,amount){const settled=Math.min(run.operatingDebt,amount);run.operatingDebt-=settled;run.credits+=amount-settled;}
 function editable(run){return !['won','lost'].includes(run.status);}
 export function unlockDrug(run,catalog,id){const d=catalog.drugById[id];if(!editable(run)||!d||run.unlocked.includes(id))return false;if(drugBlocked(run,d)){run.notice=drugBlocked(run,d);return false;}if(!spend(run,d.unlock))return false;run.unlocked.push(id);run.notice=d.name+' 해금';return true;}
 export function deployDrug(run,catalog,id,position){
@@ -74,8 +79,8 @@ export function upgradeTower(run,catalog,id,kind){
  const t=run.towers.find(t=>t.id===id);if(!editable(run)||!t||!['potency','exposure','renal'].includes(kind))return false;
  if(kind==='potency'&&t.potency>=2||kind==='exposure'&&t.exposure>=1||kind==='renal'&&(t.renalAdjusted||run.hostId!=='renal'))return false;
  if(kind==='exposure'&&run.hostId==='renal'&&!t.renalAdjusted){run.notice='먼저 신기능 맞춤 투여를 적용하세요.';return false;}
- const cost=upgradeCost(t,kind);if(run.kits>0&&kind!=='renal')run.kits--;else if(!spend(run,cost))return false;
- t.spent+=cost;if(kind==='potency')t.potency++;if(kind==='exposure')t.exposure=1;if(kind==='renal')t.renalAdjusted=true;
+ const cost=upgradeCost(t,kind),usingKit=run.kits>0&&kind!=='renal';if(usingKit)run.kits--;else if(!spend(run,cost))return false;
+ t.spent+=usingKit?0:cost;if(kind==='potency')t.potency++;if(kind==='exposure')t.exposure=1;if(kind==='renal')t.renalAdjusted=true;
  emit(run,'upgrade',{x:t.x,y:t.y,color:catalog.drugById[t.drugId].color});run.notice=kind==='exposure'?'증가 노출 적용 · I 대응 가능':kind==='renal'?'신기능 맞춤 투여 완료':'투여 효율 '+t.potency+'단계 · 기존 coverage 유지';return true;
 }
 export function mergeCandidate(run,id){const t=run.towers.find(t=>t.id===id);if(!t||t.potency>=3)return null;return run.towers.filter(o=>o.id!==id&&o.drugId===t.drugId&&o.potency===t.potency).sort((a,b)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(b.x-t.x,b.y-t.y))[0]||null;}
@@ -88,11 +93,14 @@ export function mergeTowers(run,catalog,id){
 export function setTarget(run,id,target){const t=run.towers.find(t=>t.id===id);if(!editable(run)||!t||!['first','strong','near'].includes(target))return false;t.target=target;return true;}
 export function sellTower(run,id){const i=run.towers.findIndex(t=>t.id===id);if(!editable(run)||i<0)return false;const refund=Math.floor(run.towers[i].spent*.7);run.towers.splice(i,1);run.credits+=refund;run.notice='설비 철수 · +'+refund;return true;}
 export function improveLab(run){if(!editable(run)||run.lab>=2)return false;if(!spend(run,run.lab===0?45:65))return false;run.lab++;run.notice=run.lab===1?'배양실 가동 · 다음 집단 사전 확인':'AST 가동 · 감수성과 다음다음 집단까지 공개';return true;}
-export function controlSource(run){if(!['running','paused'].includes(run.status)||!run.plan?.source||run.sourceControlled)return false;if(!spend(run,70))return false;run.sourceControlled=true;for(const e of run.enemies.filter(e=>e.sourceBound))emit(run,'source',{x:e.x,y:e.y,color:'#69eddb'});run.notice=MAPS.find(m=>m.id===run.mapId).sourceAction+' 완료 · 감염원 보호 해제';return true;}
+export function controlSource(run){const plan=run.status==='prep'?wavePlan(run):run.plan;if(!['prep','running','paused'].includes(run.status)||!plan?.source||run.sourceControlled)return false;if(!spend(run,SOURCE_COST))return false;run.sourceControlled=true;for(const e of run.enemies.filter(e=>e.sourceBound))emit(run,'source',{x:e.x,y:e.y,color:'#69eddb'});run.notice=MAPS.find(m=>m.id===run.mapId).sourceAction+' 완료 · 감염원 보호 해제';return true;}
 export function supplyChoices(run,catalog,salt=0){
  const random=seeded(run.seed+Math.imul(run.wave+1,8191)+salt),plan=wavePlan(run);
  const candidates=catalog.drugs.filter(d=>!drugBlocked(run,d)&&plan?.pathogenIds.some(id=>getCoverage(catalog,d.id,id,{mapId:run.mapId,wave:plan.number,source:plan.source,exposure:1}).factor>0));
- const locked=candidates.filter(d=>!run.unlocked.includes(d.id)),pool=locked.length&&random()<.75?locked:candidates;
+ const gaps=plan?.pathogenIds.filter(id=>!run.towers.some(t=>towerCoverage(run,catalog,t,id).factor>0))||[];
+ const coverage=d=>gaps.filter(id=>getCoverage(catalog,d.id,id,{mapId:run.mapId,wave:plan.number,source:plan.source,exposure:1}).factor>0).length;
+ const best=Math.max(0,...candidates.map(coverage)),relevant=best?candidates.filter(d=>coverage(d)===best):candidates;
+ const locked=relevant.filter(d=>!run.unlocked.includes(d.id)),pool=locked.length&&random()<.75?locked:relevant;
  const drug=pool[Math.floor(random()*pool.length)]||catalog.drugs.find(d=>!drugBlocked(run,d));
  return[{id:'unit',kind:'unit',drugId:drug.id,title:drug.short+' 보급',detail:drug.name+' · 해금 + 무료 배치 1기'},{id:'funds',kind:'funds',amount:70+run.wave*3,title:'추가 예산',detail:'자원 +'+(70+run.wave*3)+' · 지금 필요한 곳에 투자'},{id:'kit',kind:'kit',title:'투여 장비',detail:'효율 또는 노출 강화 1회 무료'}];
 }
@@ -100,9 +108,34 @@ export function chooseSupply(run,catalog,id){if(run.status!=='prep'||!run.draft.
 export function rerollSupply(run,catalog){if(run.status!=='prep'||!run.draft.length||run.draftRerolled||!spend(run,15))return false;run.draft=supplyChoices(run,catalog,104729);run.draftRerolled=true;run.notice='보급 후보 갱신';return true;}
 export function beginWave(run,catalog){
  if(run.status!=='prep'||run.wave>=WAVE_COUNT)return false;if(run.draft.length){run.notice='먼저 보급 1개를 선택하세요.';return false;}
- if(!spend(run,upkeep(run,catalog)))return false;
- run.plan=wavePlan(run);run.wave++;run.status='running';run.elapsed=0;run.spawned=0;run.kills=0;run.leaks=0;run.combo=0;run.comboTimer=0;run.sourceControlled=false;run.enemies=[];run.projectiles=[];
- emit(run,'wave',{text:'WAVE '+String(run.wave).padStart(2,'0'),boss:run.plan.boss});run.notice=run.plan.source?MAPS.find(m=>m.id===run.mapId).sourceAction+' 필요 · 감염원 보호 개체 출현':run.plan.title;return true;
+ const {checkpoint,...snapshot}=run;run.checkpoint=structuredClone(snapshot);
+ const fee=upkeep(run,catalog),paid=Math.min(run.credits,fee);run.credits-=paid;run.operatingDebt+=fee-paid;
+ run.plan=wavePlan(run);run.wave++;run.status='running';run.elapsed=0;run.spawned=0;run.kills=0;run.leaks=0;run.combo=0;run.comboTimer=0;run.enemies=[];run.projectiles=[];
+ emit(run,'wave',{text:'WAVE '+String(run.wave).padStart(2,'0'),boss:run.plan.boss});run.notice=run.plan.source?MAPS.find(m=>m.id===run.mapId).sourceAction+(run.sourceControlled?' 완료 · 방어를 시작합니다.':' 필요 · 감염원 보호 개체 출현'):run.plan.title;return true;
+}
+export function retryWave(run){
+ if(run.status!=='lost'||!run.checkpoint)return false;
+ const snapshot=structuredClone(run.checkpoint);Object.assign(run,snapshot,{checkpoint:null,retryIntelWave:snapshot.wave+1,effects:[],notice:'실패한 WAVE 재도전 · 시작 전 자원·체력 복원. AST를 보고 진형을 바꾸세요.'});return true;
+}
+export function defenseReadiness(run,catalog){
+ const plan=run.status==='prep'?wavePlan(run):run.plan,known=waveIntel(run);
+ const profiles=known>=2&&plan?plan.pathogenIds.map(pathogenId=>{
+  const active=run.towers.filter(t=>towerCoverage(run,catalog,t,pathogenId).factor>0);
+  const options=[];
+  if(!active.length)for(const d of catalog.drugs){
+   if(drugBlocked(run,d))continue;
+   const coverage=getCoverage(catalog,d.id,pathogenId,{mapId:run.mapId,wave:plan.number,source:plan.source,exposure:1});if(!coverage.factor)continue;
+   for(const t of run.towers.filter(t=>t.drugId===d.id)){
+    const renal=!t.renalAdjusted,exposure=coverage.category==='I'&&!t.exposure;
+    if(renal||exposure)options.push({drugId:d.id,towerId:t.id,kind:renal?'renal':'exposure',cost:(renal?20:0)+(exposure?run.kits?0:45:0)});
+   }
+   const cost=(run.unlocked.includes(d.id)?0:d.unlock)+(run.freeUnits[d.id]?0:d.cost)+(run.hostId==='renal'&&d.renal?20:0)+(coverage.category==='I'&&!run.kits?45:0);
+   options.push({drugId:d.id,kind:'deploy',cost,exposure:coverage.category==='I',renal:run.hostId==='renal'&&d.renal});
+  }
+  options.sort((a,b)=>a.cost-b.cost||catalog.drugById[a.drugId].upkeep-catalog.drugById[b.drugId].upkeep);
+  return{pathogenId,covered:active.length>0,towers:active.length,suggestion:options[0]||null};
+ }):[];
+ return{known,profiles,missing:profiles.filter(p=>!p.covered).length,upkeep:upkeep(run,catalog),sourceCost:plan?.source&&!run.sourceControlled?SOURCE_COST:0};
 }
 export function pauseRun(run){if(run.status==='running'){run.status='paused';run.notice='일시정지 · 배치와 설비를 조정하세요.';return true;}return false;}
 export function resumeRun(run){if(run.status==='paused'){run.status='running';run.notice='방어 재개';return true;}return false;}
@@ -112,18 +145,20 @@ export function tickDefense(run,catalog,dt){
  dt=Math.min(dt,.1);run.elapsed+=dt;run.comboTimer=Math.max(0,run.comboTimer-dt);if(!run.comboTimer)run.combo=0;
  run.effects=run.effects.filter(e=>(e.ttl-=dt)>0);
  while(run.spawned<run.plan.units.length&&run.elapsed>=.3+run.spawned*run.plan.interval){
-  const unit=run.plan.units[run.spawned++],p=catalog.pathogenById[unit.pathogenId],maxHp=p.hp*(1+(run.wave-1)*.09)*(unit.elite?4.6:unit.scout?.65:1);
-  run.enemies.push({...unit,id:++run.serial,hp:maxHp,maxHp,distance:0,x:PATH[0][0],y:PATH[0][1],speed:p.speed*(unit.elite?.66:unit.scout?1.35:1),flash:0});
+  const unit=run.plan.units[run.spawned++],p=catalog.pathogenById[unit.pathogenId],maxHp=p.hp*(1+(run.wave-1)*.09)*(unit.elite?3.6:unit.scout?.65:1);
+  run.enemies.push({...unit,id:++run.serial,hp:maxHp,maxHp,distance:0,x:PATH[0][0],y:PATH[0][1],speed:p.speed*Math.min(1,.8+(run.wave-1)*.02)*(unit.elite?.66:unit.scout?1.35:1),flash:0});
  }
  const immune=HOSTS.find(h=>h.id===run.hostId).immune;
+ const incoming=new Map();for(const p of run.projectiles)incoming.set(p.targetId,(incoming.get(p.targetId)||0)+p.damage);
  for(const e of run.enemies){e.distance+=e.speed*dt;Object.assign(e,pathPosition(e.distance));e.flash=Math.max(0,e.flash-dt);const floor=e.sourceBound&&!run.sourceControlled?e.maxHp*.22:0;e.hp=Math.max(floor,e.hp-immune*dt);}
  for(const t of run.towers){
-  t.cooldown=Math.max(0,t.cooldown-dt);t.recoil=Math.max(0,t.recoil-dt*5);if(t.cooldown>0)continue;
-  const d=catalog.drugById[t.drugId],targets=run.enemies.filter(e=>e.hp>0&&e.distance<PATH_LENGTH&&Math.hypot(e.x-t.x,e.y-t.y)<=d.range&&towerCoverage(run,catalog,t,e.pathogenId).factor>0);
+  t.cooldown-=dt;t.recoil=Math.max(0,t.recoil-dt*5);if(t.cooldown>0)continue;
+  const d=catalog.drugById[t.drugId],targets=run.enemies.filter(e=>e.hp>(e.sourceBound&&!run.sourceControlled?e.maxHp*.22:0)+(incoming.get(e.id)||0)+.001&&e.distance<PATH_LENGTH&&Math.hypot(e.x-t.x,e.y-t.y)<=d.range&&towerCoverage(run,catalog,t,e.pathogenId).factor>0);
   targets.sort(t.target==='strong'?(a,b)=>b.hp-a.hp:t.target==='near'?(a,b)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(b.x-t.x,b.y-t.y):(a,b)=>b.distance-a.distance);
-  const target=targets[0];if(!target)continue;
-  t.angle=Math.atan2(target.y-t.y,target.x-t.x);t.recoil=1;t.shots++;t.cooldown=d.interval/(1+t.potency*.18+(t.exposure?.12:0));
-  run.projectiles.push({id:++run.serial,towerId:t.id,drugId:d.id,targetId:target.id,x:t.x+Math.cos(t.angle)*18,y:t.y+Math.sin(t.angle)*18,damage:d.damage*([1,1.65,2.3,4.6][t.potency]||1),speed:d.shape==='beam'?1100:660,color:d.color,shape:d.shape,life:2});
+  const target=targets[0];if(!target){t.cooldown=0;continue;}
+  t.angle=Math.atan2(target.y-t.y,target.x-t.x);t.recoil=1;t.shots++;t.cooldown+=d.interval/(1+t.potency*.18+(t.exposure?.12:0));
+  run.projectiles.push({id:++run.serial,towerId:t.id,drugId:d.id,targetId:target.id,x:t.x+Math.cos(t.angle)*18,y:t.y+Math.sin(t.angle)*18,damage:d.damage*(POTENCY_DAMAGE[t.potency]||1),speed:d.shape==='beam'?1100:660,color:d.color,shape:d.shape,life:2});
+  incoming.set(target.id,(incoming.get(target.id)||0)+run.projectiles.at(-1).damage);
   emit(run,'shot',{x:t.x,y:t.y,color:d.color});run.pressure=clamp(run.pressure+d.upkeep*.012,0,100);run.microbiome=clamp(run.microbiome+d.upkeep*.009,0,100);
  }
  run.projectiles=run.projectiles.filter(p=>{
@@ -135,13 +170,13 @@ export function tickDefense(run,catalog,dt){
   emit(run,damage?'hit':'shield',{x:e.x,y:e.y,color:p.color,text:damage?String(Math.ceil(damage)):'배액',big:e.elite});return false;
  });
  run.enemies=run.enemies.filter(e=>{
-  if(e.hp<=0){run.kills++;run.totalKills++;run.combo++;run.comboTimer=2.5;run.bestCombo=Math.max(run.bestCombo,run.combo);const bounty=e.elite?30:4,bonus=run.combo%5===0?Math.min(8,run.combo/5):0;run.credits+=bounty+bonus;emit(run,'kill',{x:e.x,y:e.y,color:catalog.pathogenById[e.pathogenId].color,big:e.elite,text:'+'+(bounty+bonus)});return false;}
-  if(e.distance>=PATH_LENGTH){run.leaks++;run.totalLeaks++;run.combo=0;run.health=Math.max(0,run.health-(e.elite?18:e.sourceBound&&!run.sourceControlled?9:5));emit(run,'leak',{x:862,y:465,color:'#ff6e80'});return false;}return true;
+  if(e.hp<=0){run.kills++;run.totalKills++;run.combo++;run.comboTimer=2.5;run.bestCombo=Math.max(run.bestCombo,run.combo);const bounty=e.elite?30:5,bonus=run.combo%5===0?Math.min(8,run.combo/5):0;earn(run,bounty+bonus);emit(run,'kill',{x:e.x,y:e.y,color:catalog.pathogenById[e.pathogenId].color,big:e.elite,text:'+'+(bounty+bonus)});return false;}
+  if(e.distance>=PATH_LENGTH){run.leaks++;run.totalLeaks++;run.combo=0;run.health=Math.max(0,run.health-(e.elite?15:e.sourceBound&&!run.sourceControlled?7:4));emit(run,'leak',{x:862,y:465,color:'#ff6e80'});return false;}return true;
  });
  if(run.health<=0){run.status='lost';run.notice='방어 종료 · 감수성과 감염원 대응을 바꿔 다시 도전하세요.';return true;}
  if(run.spawned===run.plan.units.length&&!run.enemies.length){
-  const perfect=run.leaks===0?25:0,reward=Math.max(30,run.plan.reward-Math.floor(run.microbiome*.35))+perfect;run.credits+=reward;run.bestWave=run.wave;run.lastReport={wave:run.wave,kills:run.kills,leaks:run.leaks,reward,perfect,sourceMissed:run.plan.source&&!run.sourceControlled};
-  run.pressure=Math.max(0,run.pressure-3);run.microbiome=Math.max(0,run.microbiome-4);run.status=run.wave===WAVE_COUNT?'won':'prep';run.projectiles=[];run.draft=run.status==='prep'?supplyChoices(run,catalog):[];run.draftRerolled=false;run.notice=run.status==='won'?'12 WAVE 방어 성공!':'WAVE CLEAR · 보급 +'+reward+(perfect?' · 무손실 +25 포함':'');emit(run,'clear',{text:perfect?'PERFECT DEFENSE':'WAVE CLEAR'});return true;
+  const perfect=run.leaks===0?25:0,reward=Math.max(30,run.plan.reward-Math.floor(run.microbiome*.35))+perfect;earn(run,reward);run.bestWave=run.wave;run.lastReport={wave:run.wave,kills:run.kills,leaks:run.leaks,reward,perfect,sourceMissed:run.plan.source&&!run.sourceControlled};
+  run.pressure=Math.max(0,run.pressure-3);run.microbiome=Math.max(0,run.microbiome-4);run.status=run.wave===WAVE_COUNT?'won':'prep';run.projectiles=[];run.draft=run.status==='prep'?supplyChoices(run,catalog):[];run.draftRerolled=false;run.sourceControlled=false;run.notice=run.status==='won'?'12 WAVE 방어 성공!':'WAVE CLEAR · 보급 +'+reward+(perfect?' · 무손실 +25 포함':'');emit(run,'clear',{text:perfect?'PERFECT DEFENSE':'WAVE CLEAR'});return true;
  }
  return false;
 }
