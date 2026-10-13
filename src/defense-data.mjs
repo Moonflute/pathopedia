@@ -11,18 +11,18 @@ export const HOSTS = Object.freeze([
  {id:'allergy',name:'Aminopenicillin 알레르기',note:'확인된 즉시형 반응으로 Ampicillin·Amoxicillin–clavulanate를 제외. 다른 β-lactam은 개별 교차반응 평가 후 사용 가능하다고 설정합니다.',immune:0.55}
 ]);
 // Combat numbers are game balance, never doses, MICs or clinical effect sizes.
-const spec=(id,short,color,cost,upkeep,unlock,extra={})=>Object.freeze({id,short,color,cost,upkeep,unlock,damage:17,interval:0.92,range:158,renal:false,optimize:'PK/PD 최적화',...extra});
+const spec=(id,short,color,cost,upkeep,unlock,extra={})=>Object.freeze({id,short,color,cost,upkeep,unlock,damage:15,interval:0.68,range:155,renal:false,optimize:'PK/PD 최적화',...extra});
 export const DRUG_SPECS=Object.freeze([
- spec('ampicillin','AMP','#a9d78c',55,2,0,{renal:true,optimize:'투여 간격 최적화'}),
- spec('amoxclav','AMC','#c3d995',85,5,30,{renal:true,combo:['Amoxicillin','Clavulanate'],optimize:'투여 간격 최적화'}),
- spec('cefazolin','CFZ','#87d0b2',65,3,0,{renal:true,optimize:'고노출 투여 설계'}),
- spec('ceftriaxone','CRO','#75c9cc',95,7,0,{damage:20,optimize:'투여 설계 최적화'}),
- spec('metronidazole','MTZ','#d8b089',55,3,0,{damage:19,optimize:'투여·노출 모니터링'}),
- spec('cefepime','FEP','#85abe6',120,9,40,{renal:true,damage:21,optimize:'Extended infusion'}),
- spec('vancomycin','VAN','#ca9dcc',115,7,40,{renal:true,damage:22,interval:1.18,optimize:'AUC 기반 TDM'}),
- spec('linezolid','LZD','#dc9db5',125,8,45,{damage:19,optimize:'노출·안전성 모니터링'}),
- spec('meropenem','MEM','#ddbc7b',155,15,65,{renal:true,damage:23,optimize:'Extended infusion'}),
- spec('ceftazavi','CZA','#e8997d',175,18,85,{renal:true,damage:25,combo:['Ceftazidime','Avibactam'],optimize:'투여·노출 최적화'})
+ spec('ampicillin','AMP','#a9d78c',55,2,0,{renal:true,interval:0.55,range:145,role:'감수성 그람양성',shape:'capsule',optimize:'투여 간격 최적화'}),
+ spec('amoxclav','AMC','#c3d995',85,5,30,{renal:true,role:'Inhibitor 조합',shape:'linked',combo:['Amoxicillin','Clavulanate'],optimize:'투여 간격 최적화'}),
+ spec('cefazolin','CFZ','#87d0b2',65,3,0,{renal:true,interval:0.58,role:'MSSA · I는 노출 ↑',shape:'hex',optimize:'고노출 투여 설계'}),
+ spec('ceftriaxone','CRO','#75c9cc',95,7,0,{damage:23,interval:0.9,range:180,role:'감수성 장내세균',shape:'scope',optimize:'투여 설계 최적화'}),
+ spec('metronidazole','MTZ','#d8b089',55,3,0,{damage:22,interval:0.72,role:'복강 혐기성균',shape:'diamond',optimize:'투여·노출 모니터링'}),
+ spec('cefepime','FEP','#85abe6',120,9,40,{renal:true,damage:21,interval:0.64,range:175,role:'Pseudomonas · I ↑',shape:'hex',optimize:'Extended infusion'}),
+ spec('vancomycin','VAN','#ca9dcc',115,7,40,{renal:true,damage:33,interval:1.05,range:148,role:'MRSA 대응',shape:'pulse',optimize:'AUC 기반 TDM'}),
+ spec('linezolid','LZD','#dc9db5',125,8,45,{damage:19,interval:0.58,range:190,role:'MRSA · VISA',shape:'beam',optimize:'노출·안전성 모니터링'}),
+ spec('meropenem','MEM','#ddbc7b',155,15,65,{renal:true,damage:26,interval:0.7,range:178,role:'ESBL 대응',shape:'hex',optimize:'Extended infusion'}),
+ spec('ceftazavi','CZA','#e8997d',175,18,85,{renal:true,damage:30,interval:0.85,range:180,role:'KPC 대응',shape:'linked',combo:['Ceftazidime','Avibactam'],optimize:'투여·노출 최적화'})
 ]);
 export const PROFILE_SPECS=Object.freeze([
  {id:'pneumo',recordId:'SPN-105',name:'S. pneumoniae',short:'SP',color:'#b9d97e',hp:50,group:'그람양성'},
@@ -65,7 +65,7 @@ export function createDefenseCatalog(database,sources={}) {
    const entry=record.susceptibility[drug.id];
    return [drug.id,entry?Object.freeze({...entry,sourceIds:Object.freeze([...(entry.sourceIds||[])])}):null];
   })));
-  return Object.freeze({...spec,speed:spec.speed||45,phenotype:record.phenotype,ast,record});
+  return Object.freeze({...spec,speed:(spec.speed||45)*1.8,phenotype:record.phenotype,ast,record});
  });
  return Object.freeze({drugs:Object.freeze(drugs),pathogens:Object.freeze(pathogens),drugById:Object.freeze(Object.fromEntries(drugs.map(d=>[d.id,d]))),pathogenById:Object.freeze(Object.fromEntries(pathogens.map(p=>[p.id,p]))),sources});
 }

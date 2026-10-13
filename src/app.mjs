@@ -7,7 +7,7 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.17.0';
+const VERSION = '0.18.0';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
  {id:'lab',label:'동정실',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
@@ -35,7 +35,7 @@ const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.17.0" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.18.0" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -138,7 +138,8 @@ function recordView(r) {
 function render(focusSelector) {
  if(!focusSelector&&view==='defense'){
   const active=document.activeElement,attribute=active?.getAttributeNames?.().find(name=>name.startsWith('data-defense-'));
-  if(attribute)focusSelector='['+attribute+'="'+active.getAttribute(attribute)+'"]';
+  if(active?.id==='defense-canvas')focusSelector='#defense-canvas';
+  else if(attribute)focusSelector='['+attribute+'="'+active.getAttribute(attribute)+'"]';
  }
  cardInspector?.close();document.body.classList.remove('card-inspector-open');
  root.innerHTML=shell();
@@ -237,7 +238,7 @@ try {
   if('serviceWorker' in navigator) {
     navigator.serviceWorker.register(new URL('../sw.js',import.meta.url),{scope:new URL('../',import.meta.url).pathname}).then(registration=>{
       const offerUpdate=()=>{
-        if(!registration.waiting||document.querySelector('.update-banner'))return;
+        if(!navigator.serviceWorker.controller||!registration.waiting||document.querySelector('.update-banner'))return;
         const banner=document.createElement('div');banner.className='update-banner';banner.setAttribute('role','status');
         banner.innerHTML='<span>새 버전이 준비되었습니다. 진행 기록은 유지됩니다.</span><button>업데이트 적용 →</button>';
         banner.querySelector('button').onclick=()=>{navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload(),{once:true});registration.waiting?.postMessage('ACTIVATE_UPDATE');};
