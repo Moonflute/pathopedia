@@ -1,16 +1,18 @@
 import { newRound, reveal, guess, score, showAnswer, addDiscovery, restoreRound } from './engine.mjs';
 import { createTreatmentGame } from './treatment-ui.mjs';
+import { createDefenseGame } from './defense-ui.mjs';
 import { resolveAppRoute, cardRouteHash } from './app-routing.mjs';
 import { createCardGallery } from './card-gallery-ui.mjs';
 import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCardTooltips } from './reference-card.mjs';
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.15.6';
+const VERSION = '0.17.0';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
  {id:'lab',label:'동정실',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
  {id:'treatment',label:'항생제 선택',icon:'<rect x="4" y="7" width="16" height="10" rx="5" transform="rotate(-45 12 12)"/><path d="m9 9 6 6"/>'},
+ {id:'defense',label:'디펜스',icon:'<path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Z"/><path d="M12 8v8M8 12h8"/>'},
  {id:'cards',label:'카드 도감',icon:'<rect x="6" y="5" width="13" height="16" rx="2"/><path d="M4 18V4a2 2 0 0 1 2-2h10M10 10h5M10 14h5M10 18h3"/>'}
 ];
 
@@ -28,12 +30,12 @@ const hintCategories = (r=record()) => {
 const DRUG_PAGE_SIZE = 16;
 const shortResult = category => ({ACT:'조건부 활성',ACTIVE:'활성 있음',INACTIVE:'활성 없음',REGIMEN:'요법에 포함',OUTSIDE_REGIMEN:'요법 외'})[category] || category;
 const matchingDrugs = () => panelDrugs().filter(d=>(d.name+' '+d.family).toLowerCase().includes(filter.trim().toLowerCase()));
-let data, sources, treatmentGame, cardGallery, cardInspector, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = resolveAppRoute(location.hash)?.view || 'home', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
+let data, sources, treatmentGame, defenseGame, cardGallery, cardInspector, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = resolveAppRoute(location.hash)?.view || 'home', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
 const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.15.6" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.17.0" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -75,8 +77,8 @@ function home() {
  return `<section class="tab-selection" aria-label="탭 선택"><nav class="tab-choices" aria-label="학습 화면 선택">${APP_TABS.map(({id,label,icon})=>`<button type="button" class="tab-choice" data-view="${id}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></button>`).join('')}</nav></section>`;
 }
 function shell() {
- const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',cards:'card-gallery-main'}[view];
- const content=view==='home'?home():view==='lab'?lab():view==='treatment'?treatmentGame.render():cardGallery.render();
+ const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',defense:'defense-main',cards:'card-gallery-main'}[view];
+ const content=view==='home'?home():view==='lab'?lab():view==='treatment'?treatmentGame.render():view==='defense'?defenseGame.render():cardGallery.render();
  return `<header class="appbar${view==='home'?' appbar--home':''}"><a class="brand" href="#home" aria-label="Pathopedia 탭 선택">${symbol}<span>PATHOPEDIA</span></a>${view==='home'?'':`<nav class="appnav" aria-label="주 메뉴">${APP_TABS.map(({id,label})=>`<button type="button" data-view="${id}" class="${view===id?'active':''}" ${view===id?'aria-current="page"':''}>${label}</button>`).join('')}</nav>`}<span class="version">v ${VERSION}</span></header>
   ${storageWarning ? `<div class="storage-warning" role="alert">${esc(storageWarning)}</div>` : ''}
   <main id="main" class="${mainClass}" tabindex="-1">${content}</main>
@@ -134,8 +136,13 @@ function recordView(r) {
  return `<article class="organism-record"><header class="record-header"><div class="eyebrow">ORGANISM RECORD — ${r.id}</div><div class="record-name"><div><h2>${r.organism}</h2><span>${r.koreanName}</span></div><span class="record-seal">${r.phenotype}</span></div><p>${r.phenotypeDescription}</p>${d?`<div class="record-meta"><span>BEST ${d.bestScore} pt</span><span>${d.solves}회 동정</span><span>FIRST DISCOVERED ${new Date(d.firstSeen).toLocaleDateString('ko-KR')}</span></div>`:''}</header><div class="record-body"><section class="record-section"><span class="record-index">01 / CLASSIFICATION</span><h3>분류와 생물학</h3><p class="classification">${r.classification}</p><p>${r.biology}</p></section>${hintCategories(r).map((c,i)=>`<section class="record-section ${c.id==='morphology'&&morphologyVisual(r)?'has-morphology-visual':''}"><span class="record-index">${String(i+2).padStart(2,'0')} / ${c.label.toUpperCase()}</span><h3>${c.ko}</h3>${c.id==='morphology'?morphologyFigure(r,'record'):''}<p>${esc(r.hints[c.id].text)}</p></section>`).join('')}<section class="record-section"><span class="record-index">11 / DIAGNOSTICS</span><h3>진단과 해석</h3><p>${r.diagnostics}</p><aside class="clinical-pearl"><span>READ BETWEEN THE LINES</span><p>${r.pearl}</p></aside></section><section class="record-section"><span class="record-index">12 / SUSCEPTIBILITY</span><h3>${isRegimen(r)?'약제 요법 기록':'항균제 감수성 기록'}</h3><p class="tiny">${isRegimen(r)?'이 기록의 임상 상황에 대한 지침 요법 · 감수성 S/I/R 판정이 아님':'고정 교육용 분리주의 결과 · 실측 MIC 없음 · 균종 전체에 일반화하지 않음'}</p>${r.clinicalContext?`<p class="clinical-context"><strong>임상 상황</strong><br>${esc(r.clinicalContext)}</p>`:''}<div class="record-ast">${panelDrugs(r).map(dr=>`<details class="ast-note"><summary><span>${dr.name}</span><b class="${r.susceptibility[dr.id].category.toLowerCase()}">${shortResult(r.susceptibility[dr.id].category)} <span aria-hidden="true">+</span></b></summary><p>${esc(r.susceptibility[dr.id].note)}</p>${sourceList(r.susceptibility[dr.id].sourceIds)}</details>`).join('')}</div><p class="tiny">활성 있음·없음은 문헌 기반 항균 활성로 임상 S/I/R 범주와 구분합니다. 조건부 활성은 병용·노출 등 적용 조건을 확인하세요. 각 항목에 근거와 제한점을 기재했습니다.</p></section><details class="source-details"><summary>근거 자료 및 데이터 검토 상태 <span>+</span></summary><p class="tiny">EDUCATIONAL DRAFT · ${r.reviewedAt}<br>문헌 기반 교육용 기록이며, 전문가의 최종 검토 전입니다. 약제 요법 포함 여부는 임상 S/I/R 판정과 구분합니다.</p>${sourceList(r.sourceIds)}</details></div></article>`;
 }
 function render(focusSelector) {
+ if(!focusSelector&&view==='defense'){
+  const active=document.activeElement,attribute=active?.getAttributeNames?.().find(name=>name.startsWith('data-defense-'));
+  if(attribute)focusSelector='['+attribute+'="'+active.getAttribute(attribute)+'"]';
+ }
  cardInspector?.close();document.body.classList.remove('card-inspector-open');
  root.innerHTML=shell();
+ defenseGame?.mount(root,view==='defense');
  if (focusSelector) $(focusSelector)?.focus({preventScroll:true});
 }
 function navigateTo(hash,{replace=false}={}) {
@@ -160,6 +167,7 @@ root.addEventListener('click',e=>{
  const b=e.target.closest('button'); if (!b||b.disabled) return;
  if(cardInspector?.handleClick(b))return;
  if(handleReferenceCardClick(b))return;
+ if(defenseGame?.handleClick(b))return;
  if(treatmentGame?.handleClick(b))return;
  if(cardGallery?.handleClick(b))return;
  if(b.dataset.drugPage){drugPage+=b.dataset.drugPage==='next'?1:-1;render(`[data-drug-page="${b.dataset.drugPage}"]`);return;}
@@ -214,6 +222,7 @@ try {
  const morphologyResponse=await fetch(new URL('../data/morphology-visuals.json',import.meta.url)).catch(()=>null);
  if(morphologyResponse?.ok){morphologyVisuals=await morphologyResponse.json();morphologyAssets=new Map(morphologyVisuals.assets.map(asset=>[asset.id,asset]));morphologyTaxa=new Map(morphologyVisuals.taxa.map(entry=>[entry.taxonId,entry]));}
  treatmentGame=createTreatmentGame(treatmentCatalog,{render,openDetail});
+ defenseGame=createDefenseGame(data,sources,{render,openDetail,openRecord:id=>{const original=data.records.find(r=>r.id===id);if(original)openDetail(original.organism,recordView(original),true);}});
  const cardStacks=createCardStacks(cardDatabase);
  cardGallery=createCardGallery(data,{catalog:cardDatabase,cardStacks,getArchive:()=>archive,onFilterChange:(domain,archiveOnly)=>{
    const hash=cardRouteHash(domain,archiveOnly);if(location.hash!==hash)history.pushState(null,'',hash);

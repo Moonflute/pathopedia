@@ -2,14 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {resolveAppRoute} from '../src/app-routing.mjs';
 
-test('the first entry and home address open the three-tab selection screen',()=>{
+test('the first entry and home address open the four-tab selection screen',()=>{
  for(const hash of [undefined,null,'','#','#home']){
   assert.deepEqual(resolveAppRoute(hash),{view:'home',hash:'#home'});
  }
 });
 
 test('each selected screen retains its own direct address',()=>{
- for(const view of ['lab','treatment']){
+ for(const view of ['lab','treatment','defense']){
   assert.deepEqual(resolveAppRoute('#'+view),{view,hash:'#'+view});
  }
  assert.deepEqual(resolveAppRoute('#cards'),{view:'cards',domain:'all',archiveOnly:false,hash:'#cards'});

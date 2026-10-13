@@ -13,7 +13,7 @@ export function cardRouteHash(domain='all',archiveOnly=false) {
 export function resolveAppRoute(hash) {
   const path=String(hash || '').replace(/^#/,'');
   if(!path || path==='home')return {view:'home',hash:'#home'};
-  if(path==='lab' || path==='treatment')return {view:path,hash:'#'+path};
+  if(path==='lab' || path==='treatment' || path==='defense')return {view:path,hash:'#'+path};
   const legacy={library:'cards/pathogens',drugs:'cards/drugs',archive:'cards/archive',diseases:'cards/diseases'};
   const parts=(Object.hasOwn(legacy,path)?legacy[path]:path).split('/');
   if(parts.shift()!=='cards')return null;
