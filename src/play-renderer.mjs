@@ -1,4 +1,5 @@
 import {castRay,protectedBySource} from './play-engine.mjs';
+import {roomAt} from './play-data.mjs';
 
 const SIZE=64,FOV=.72;
 const surface=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;};
@@ -31,38 +32,38 @@ function createSprites(catalog){
   }
   return atlas;
 }
-function createWalls(){
+function createWalls(accent='#a9c4a1'){
   const atlas=surface(32*3,32),c=atlas.getContext('2d');
-  for(let i=0;i<3;i++){const x=i*32;c.fillStyle=['#61736a','#596c67','#556366'][i];c.fillRect(x,0,32,32);c.fillStyle='#253c38';c.fillRect(x,0,1,32);c.fillRect(x,31,32,1);c.fillStyle='#91a395';c.fillRect(x+1,1,30,1);c.fillRect(x+1,1,1,29);c.fillStyle='#263d39';c.fillRect(x,20,32,4);c.fillStyle=['#a9c4a1','#88bfb4','#bdb784'][i];c.fillRect(x+1,20,31,2);
+  for(let i=0;i<3;i++){const x=i*32;c.fillStyle=['#61736a','#596c67','#556366'][i];c.fillRect(x,0,32,32);c.fillStyle='#253c38';c.fillRect(x,0,1,32);c.fillRect(x,31,32,1);c.fillStyle='#91a395';c.fillRect(x+1,1,30,1);c.fillRect(x+1,1,1,29);c.fillStyle='#263d39';c.fillRect(x,20,32,4);c.fillStyle=[accent,'#88bfb4',accent][i];c.fillRect(x+1,20,31,2);
     c.fillStyle='#364a42';for(const y of [5,27])for(const n of [4,28])c.fillRect(x+n,y,2,2);
     if(i===1){c.fillStyle='#263d38';c.fillRect(x+6,5,20,11);c.fillStyle='#6daea0';c.fillRect(x+8,7,16,7);c.fillStyle='#a3d9bf';c.fillRect(x+9,8,13,1);}
     if(i===2){c.fillStyle='#a5b8a4';c.fillRect(x+10,5,12,12);c.fillStyle='#405f50';c.fillRect(x+14,7,4,8);c.fillRect(x+12,9,8,4);}
   }return atlas;
 }
 function createWeapons(catalog){
-  const atlas=surface(160*5,128),c=atlas.getContext('2d');
+  const atlas=surface(160*catalog.weapons.length,128),c=atlas.getContext('2d');
   catalog.weapons.forEach((w,i)=>{c.save();c.translate(i*160,0);
     c.fillStyle='#102027';c.fillRect(35,84,89,44);c.fillStyle='#627571';c.fillRect(27,103,32,25);c.fillRect(109,103,28,25);c.fillStyle='#adbcab';c.fillRect(29,100,27,20);c.fillRect(109,100,25,20);c.fillStyle='#445d53';c.fillRect(33,108,19,5);c.fillRect(115,108,19,5);
-    const barrel=i===2?18:i===3?50:i===1?42:28,top=i===2?9:23;
+    const barrel=[18,50,42][i-2]||(i===1||i===8?42:i===5?16:i===6?48:28),top=i===2||i===5?9:23;
     c.fillStyle='#15282b';c.fillRect(80-barrel/2-4,top,barrel+8,89);c.fillStyle='#87968b';c.fillRect(80-barrel/2,top+3,barrel,80);c.fillStyle='#b6c7b4';c.fillRect(80-barrel/2+2,top+5,4,70);c.fillStyle='#314b45';c.fillRect(80+barrel/2-7,top+4,6,80);
     c.fillStyle='#132a29';c.fillRect(80-barrel/2+3,top+6,barrel-6,8);c.fillStyle=w.color;c.fillRect(80-barrel/2+5,top+9,barrel-10,3);
-    if(i===1){c.fillStyle='#142b29';c.fillRect(77,top+5,5,38);}if(i===3){c.fillStyle=w.color;c.fillRect(58,49,44,13);c.fillStyle='#dce7c7';c.fillRect(65,52,30,3);}if(i===4){for(let n=0;n<3;n++){c.fillStyle='#1a3832';c.fillRect(61+n*13,18,10,42);c.fillStyle=w.color;c.fillRect(63+n*13,20,6,6);}}
+    if(i===1){c.fillStyle='#142b29';c.fillRect(77,top+5,5,38);}if(i===3){c.fillStyle=w.color;c.fillRect(58,49,44,13);c.fillStyle='#dce7c7';c.fillRect(65,52,30,3);}if(i===5||i===7){c.fillStyle=w.color;c.fillRect(68,32,24,8);c.fillStyle='#dfeae5';c.fillRect(76,34,8,4);}if(i===6||i===8){c.fillStyle='#233f36';c.fillRect(53,33,12,42);c.fillRect(97,33,12,42);c.fillStyle=w.color;c.fillRect(55,36,8,28);c.fillRect(99,36,8,28);}if(i===4){for(let n=0;n<3;n++){c.fillStyle='#1a3832';c.fillRect(61+n*13,18,10,42);c.fillStyle=w.color;c.fillRect(63+n*13,20,6,6);}}
     c.fillStyle='#223c37';c.fillRect(49,77,64,43);c.fillStyle='#759086';c.fillRect(53,79,56,32);c.fillStyle='#152c29';c.fillRect(62,86,36,18);c.fillStyle=w.color;c.fillRect(66,90,28,3);c.fillRect(66,96,18,3);c.restore();
   });return atlas;
 }
 export function createPlayRenderer(canvas,catalog,{quality='retro',reducedMotion=false}={}){
   const context=canvas.getContext('2d',{alpha:false});if(!context)throw Error('Canvas 2D를 사용할 수 없습니다.');
   let width,height,depth,frame,floorPixels,disposed=false;
-  const sprites=createSprites(catalog),walls=createWalls(),weapons=createWeapons(catalog),visible=[];
+  const sprites=createSprites(catalog),weapons=createWeapons(catalog),visible=[];let walls=createWalls(),mapId='',tone=[168,215,152];
   function resize(mode=quality){quality=mode;const maxW=mode==='low'?480:640,maxH=mode==='low'?270:360,cssW=canvas.clientWidth||maxW,cssH=canvas.clientHeight||maxH,scale=Math.min(maxW/cssW,maxH/cssH);width=Math.max(160,Math.floor(cssW*scale/2)*2);height=Math.max(120,Math.floor(cssH*scale/2)*2);canvas.width=width;canvas.height=height;context.imageSmoothingEnabled=false;depth=new Float32Array(width);frame=context.createImageData(width,height);floorPixels=new Uint32Array(frame.data.buffer);}
   resize();
   function render(run){
-    if(disposed)return;const ctx=context,p=run.player,cos=Math.cos(p.angle),sin=Math.sin(p.angle),planeX=-sin*FOV,planeY=cos*FOV,projection=width/(2*FOV),horizon=Math.floor(height*.46);
+    if(disposed)return;if(mapId!==run.map.id){walls.width=1;walls.height=1;walls=createWalls(run.map.color);mapId=run.map.id;tone=rgb(run.map.color);}const ctx=context,p=run.player,cos=Math.cos(p.angle),sin=Math.sin(p.angle),planeX=-sin*FOV,planeY=cos*FOV,projection=width/(2*FOV),horizon=Math.floor(height*.46);
     // Reused pixel buffer. Render at fixed resolution, independent of devicePixelRatio.
     for(let y=0;y<height;y+=2){const floor=y>=horizon,distance=projection*.5/Math.max(1,Math.abs(y-horizon)),stepX=distance*planeX*2/width,stepY=distance*planeY*2/width;
       let worldX=p.x+distance*(cos-planeX),worldY=p.y+distance*(sin-planeY);
       for(let x=0;x<width;x+=2){let r,g,b;if(floor){const grid=(worldX%1+1)%1<.045||(worldY%1+1)%1<.045,check=(Math.floor(worldX)+Math.floor(worldY))&1,k=Math.max(.3,1-distance*.034);
-        r=(grid?17:check?42:47)*k;g=(grid?35:check?57:64)*k;b=(grid?33:check?55:60)*k;
+        r=((grid?17:check?42:47)+tone[0]*.025)*k;g=((grid?35:check?57:64)+tone[1]*.025)*k;b=((grid?33:check?55:60)+tone[2]*.025)*k;
         if((Math.floor(worldX)===9||Math.floor(worldX)===18)&&((worldY%1+1)%1<.2)){r=69*k;g=111*k;b=93*k;}
       }else{const k=y/height;r=17+k*10;g=29+k*14;b=32+k*12;}
       const color=(255<<24)|((b|0)<<16)|((g|0)<<8)|(r|0),index=y*width+x;floorPixels[index]=color;floorPixels[index+1]=color;if(y+1<height){floorPixels[index+width]=color;floorPixels[index+width+1]=color;}worldX+=stepX*2;worldY+=stepY*2;
@@ -74,7 +75,7 @@ export function createPlayRenderer(canvas,catalog,{quality='retro',reducedMotion
     }
     const project=(obj,row,size=1,z=.5,kind='enemy')=>{const dx=obj.x-p.x,dy=obj.y-p.y,d=dx*cos+dy*sin,lateral=-dx*sin+dy*cos;if(d<.18||d>27)return;const screen=width/2+lateral*projection/d,h=projection*size/d;if(screen+h/2<0||screen-h/2>width)return;visible.push({obj,row,d,screen,h,z,kind});};
     visible.length=0;
-    for(const e of run.enemies)if(e.active)project(e,catalog.enemies.findIndex(p=>p.id===e.kind),e.elite?1.1:.9,.5);
+    for(const e of run.enemies)if(e.active)project(e,catalog.enemies.findIndex(p=>p.id===e.kind),e.state==='Dormant'?.46:e.boss?1.5:e.elite?1.1:.9,.5);
     for(const s of run.map.sources)if(s.active)project(s,catalog.enemies.length,1,.5,'source');
     for(const s of run.map.pickups)if(s.active)project(s,catalog.enemies.length+({health:1,supply:2,culture:3}[s.kind]),.6,.3,'pickup');
     visible.sort((a,b)=>b.d-a.d);
@@ -84,16 +85,17 @@ export function createPlayRenderer(canvas,catalog,{quality='retro',reducedMotion
       for(let x=x0;x<x1;x+=2){if(d>=depth[x])continue;const u=Math.min(63,Math.max(0,Math.floor((x-left)/h*64)));ctx.drawImage(sprites,frameIndex*64+u,v.row*64,1,64,x,top,2,h*squash);}
       ctx.globalAlpha=1;
       if(kind==='enemy'&&!dead&&d<depth[Math.max(0,Math.min(width-1,screen|0))]){
-        if(obj.shield>0||protectedBySource(run,obj)){ctx.strokeStyle=obj.shield>0?'#cfe8a78a':'#6ae6c898';ctx.lineWidth=2;ctx.strokeRect(screen-h*.42,top+h*.07,h*.84,h*.82);}
+        if(obj.cell>0){ctx.strokeStyle='#91b8e899';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(screen,top+h*.5,h*.48,h*.52,0,0,Math.PI*2);ctx.stroke();}if(obj.state==='Dormant'){ctx.fillStyle='#ead4a5';ctx.fillRect(screen-h*.14,top+h*.4,h*.28,h*.2);}if(obj.state==='Detect'||obj.telegraph>0){ctx.fillStyle=obj.telegraph>0?'#f49c76':'#f1d798';ctx.font='bold 13px monospace';ctx.fillText('!',screen-4,top-9);}if(obj.shield>0||protectedBySource(run,obj)){ctx.strokeStyle=obj.shield>0?'#cfe8a78a':'#6ae6c898';ctx.lineWidth=2;ctx.strokeRect(screen-h*.42,top+h*.07,h*.84,h*.82);}
         if(obj.elite){ctx.fillStyle='#ddbc7b';ctx.fillRect(screen-9,top-5,18,3);}
         if(obj.flash>0){ctx.fillStyle='#f7ffe647';ctx.fillRect(screen-h*.25,top+h*.2,h*.5,h*.5);}
       }
     }
     function dot(x,y,z,color,radius){const dx=x-p.x,dy=y-p.y,d=dx*cos+dy*sin;if(d<.2)return;const sx=width/2+(-dx*sin+dy*cos)*projection/d;if(sx<0||sx>=width||d>=depth[sx|0])return;const sy=horizon+(.5-z)*projection/d,r=Math.max(1,projection*radius/d);ctx.fillStyle=color;ctx.fillRect(sx-r,sy-r,r*2,r*2);}
-    for(const b of run.projectiles)if(b.active)dot(b.x,b.y,.5,'#efac7e',.075);
+    for(const h of run.hazards)if(h.active){for(let i=0;i<8;i++){const a=i*Math.PI/4;dot(h.x+Math.cos(a)*h.radius,h.y+Math.sin(a)*h.radius,.04,'#cc9b6380',.08);}dot(h.x,h.y,.1,'#dab06b',.13);}
+    for(const b of run.projectiles)if(b.active)dot(b.x,b.y,.5,b.color||'#efac7e',.075);
     for(const b of run.particles)if(b.life>0)dot(b.x,b.y,b.z,b.color,.025);
     // A single cached weapon sheet, rendered in chunky animation steps.
-    const bob=reducedMotion?0:Math.sin(run.walk)*3,kick=run.lastShot>0?Math.floor(run.lastShot*50):0,weaponW=Math.round(width*.3),weaponH=weaponW*.8,wx=width/2-weaponW/2+bob,wy=height-weaponH+8+kick+run.switchTime*180;
+    const bob=reducedMotion?0:Math.sin(run.walk)*3,kick=run.lastShot>0?Math.floor(run.lastShot*50):0,weaponW=Math.round(width*.3),weaponH=weaponW*.8,wx=width/2-weaponW/2+bob,wy=height-weaponH-Math.min(60,height*.19)+kick+run.switchTime*180;
     ctx.drawImage(weapons,run.weapon*160,0,160,128,wx,wy,weaponW,weaponH);
     if(run.lastShot>.09){ctx.fillStyle=catalog.weapons[run.weapon].color;const x=width/2+bob,y=wy+weaponH*.16;ctx.fillRect(x-4,y-15,8,23);ctx.fillRect(x-13,y-7,26,8);ctx.fillStyle='#faffdb';ctx.fillRect(x-3,y-9,6,12);}
     // Center aim and hit confirmation stay sharp at every display size.
@@ -103,12 +105,12 @@ export function createPlayRenderer(canvas,catalog,{quality='retro',reducedMotion
     if(run.hurt>0){ctx.fillStyle='rgba(196,62,48,'+run.hurt*.7+')';ctx.fillRect(0,0,width,height);}
     // The mini-map is also rendered into the fixed-size canvas; no extra DOM work per frame.
     const scale=2.6,mx=width-run.map.width*scale-12,my=12;ctx.fillStyle='#0a191ddd';ctx.fillRect(mx-5,my-5,run.map.width*scale+10,run.map.height*scale+17);
-    for(let y=0;y<run.map.height;y++)for(let x=0;x<run.map.width;x++)if(run.map.cells[y*run.map.width+x]){ctx.fillStyle='#556a62';ctx.fillRect(mx+x*scale,my+y*scale,scale,scale);}
+    for(let y=0;y<run.map.height;y++)for(let x=0;x<run.map.width;x++)if(run.map.cells[y*run.map.width+x]){ctx.fillStyle=run.visited.has(roomAt(run.map,x,y))?'#647f70':'#293c38';ctx.fillRect(mx+x*scale,my+y*scale,scale,scale);}
     for(const s of run.map.sources){ctx.fillStyle=s.active?'#94e3c8':'#52645d';ctx.fillRect(mx+s.x*scale-2,my+s.y*scale-2,4,4);}
-    for(const e of run.enemies)if(e.active&&e.state!=='Dead'){ctx.fillStyle='#cd9384';ctx.fillRect(mx+e.x*scale-1,my+e.y*scale-1,2,2);}
+    for(const e of run.enemies)if(e.active&&e.state!=='Dead'&&e.revealed){ctx.fillStyle=e.boss?'#ffd394':'#cd9384';ctx.fillRect(mx+e.x*scale-1,my+e.y*scale-1,2,2);}
     ctx.fillStyle='#e0c991';ctx.fillRect(mx+run.map.exit.x*scale-2,my+run.map.exit.y*scale-2,4,4);
     ctx.fillStyle='#f2f6df';ctx.beginPath();ctx.moveTo(mx+p.x*scale+cos*4,my+p.y*scale+sin*4);ctx.lineTo(mx+p.x*scale-sin*2-cos*2,my+p.y*scale+cos*2-sin*2);ctx.lineTo(mx+p.x*scale+sin*2-cos*2,my+p.y*scale-cos*2-sin*2);ctx.fill();
-    ctx.font='7px monospace';ctx.fillStyle='#9bb8aa';ctx.fillText('WARD 01 / EXIT',mx,my+run.map.height*scale+9);
+    ctx.font='7px monospace';ctx.fillStyle='#9bb8aa';ctx.fillText('SECTOR 0'+(run.wave+1)+' / EXIT',mx,my+run.map.height*scale+9);
   }
   return {render,resize,dispose(){disposed=true;for(const c of [sprites,walls,weapons,canvas]){c.width=1;c.height=1;}frame=null;floorPixels=null;depth=null;visible.length=0;}};
 }

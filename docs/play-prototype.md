@@ -1,59 +1,62 @@
-# Play: Isolation Protocol — vertical slice
+# Play: Isolation Protocol — v0.20 campaign
 
-`#play` adds a single-player retro 2.5D FPS to the existing static Pathopedia application. The implementation uses the existing HTML UI system, without adding React, Three.js or an npm runtime dependency.
+`#play` is a single-player Canvas 2D raycasting FPS inside Pathopedia. It reuses the existing MIT [Kontra.js 10.0.2](https://github.com/straker/kontra) GameLoop, the encyclopedia AST and the existing card inspector. No new package dependency, 3D engine, downloaded game asset or physics engine is required.
 
 ## Playable scope
 
-- One 26×22 laboratory map with connected loops, 3 removable infection sources and an extraction point.
-- Five **isolate/enemy types**, representing three species: penicillin-susceptible S. pneumoniae (SPN-105), MSSA (SAU-001), susceptible E. coli (ECO-009), MRSA (SAU-002), and ESBL E. coli (ECO-010). These are fixed educational isolates, not species-wide susceptibility assumptions.
-- Ampicillin, cefazolin, ceftriaxone, vancomycin and meropenem. All counters are available from the start to avoid an unwinnable random loadout. Each run starts with a random passive, followed by five 3-choice reward screens.
-- Six increasingly mixed waves; 115 enemies total before phenotype/elite selection. Finish all waves, remove the three sources, and return to EXIT.
-- WASD, horizontal mouse aim, left mouse/Space fire, numbers 1–5 or wheel switch, Shift dash, E scan, F source control, Esc/Tab pause, B pause and open the card list. With pointer lock unavailable, mouse drag and arrow-key turning remain available.
-- Touch joystick, right-side drag aiming, dedicated fire/scan/source/dash buttons. Landscape/fullscreen is available; portrait also fits without clipping controls.
-- Highest score and sound preference use separate `pathopedia.play.*` localStorage keys. In-progress runs survive tab changes in memory, but do not survive reload. Existing discovery data is never modified.
+Eight stages: Community, catheter-associated UTI, Pneumonia, Intra-abdominal infection, Hospital-acquired infection, ICU, Resistant outbreak and Sepsis. Each constructs a 26×22 grid on entry with different doors, obstacles, colors, infection site, enemy pool, source-control objectives and elite chance. Complete all contacts and sources, then return to EXIT for a 3-choice reward and the next map. The full campaign has 144 opponents and 17 sources. Single-stage practice can start at any stage.
 
-## Lightweight implementation
+The 13 enemy types join existing records: SPN-105, SAU-001, ECO-009, SAU-002, ECO-010, KPN-409, PAE-013, PAE-014, KPN-012, EFM-008, BGX-501, BGX-515 and CPE-122. They represent fixed educational isolates/clinical contexts, not species-wide susceptibility assumptions. The final KPC colony boss uses KPN-012's unchanged AST; its larger capsule, source protection and telegraphed projectile fan are arcade mechanics.
 
-`app.mjs` imports `play-ui.mjs` and adds `play.css` only on first Play entry. The game files stay out of the service-worker install precache. Runtime requests are cached; a `CACHE_PLAY` message after the first load also covers the case where the service worker takes control after the initial imports. The first visit needs a connection; a completed online load supports subsequent offline play.
+Nine fixed slots: AMP, CFZ, CRO, VAN, MEM, LEV, MTZ, LZD and CZA. The original five are issued initially. LEV/MTZ/LZD/CZA are guaranteed before stages 3/4/6/7 respectively. Rewards can issue them earlier, so random reward choices cannot remove a required counter. These are in-run unlocks. Highest score and sound preference persist; the active run remains in memory across tabs but resets on page reload.
 
-The existing [Kontra.js 10.0.2](https://github.com/straker/kontra) supplies its fixed-step game loop. The [MIT license](../src/vendor/KONTRA-LICENSE.txt) remains in the distribution. One reusable loop avoids creating additional library-global subscriptions on every mount. Game-specific listeners use AbortController; ResizeObserver, pointer lock, audio, canvas backing stores and sprite atlases are released on exit. The paused run holds only small gameplay state.
+## Controls and contact rules
 
-The renderer is an original grid/DDA raycaster. It uses generated wall, enemy and weapon atlases, rather than downloading textures, sprites, audio or 3D models. Audio is synthesized. Rendering is bounded by 640×360 (standard) or 480×270 (low), fitting the visible aspect ratio without multiplying by DPR. A reused floor pixel buffer and wall depth buffer provide perspective and occlusion. Off-screen/behind-camera sprites are culled. Pools cap enemies at 24 (14 simultaneously alive), projectiles at 24 and particles at 80. There is no physics engine or post-processing.
+WASD movement; horizontal mouse aim; left mouse/Space fire; 1–9 or wheel select; Q previous weapon; Shift dash; E scanner; F source control; Escape/Tab pause; B pause and open cards. Without pointer lock, dragging or arrow keys can turn. Mobile offers a joystick, drag aim and fire/scan/source/dash buttons.
 
-## Medical data and mechanics
+The central lower hotbar contains numbered item silhouettes, current shot counts, refill bars and future supply labels. Locked/allergy-restricted slots are skipped by cycling. Per-weapon cooldowns prevent inheriting another weapon's firing delay.
 
-`createPlayCatalog` joins game tuning to `data/organisms.json` by record/drug IDs. Drug labels, families, spectra, limitations, original AST entries, sources and site applicability come from the existing data. The existing defense drug palette is reused. Damage, shields, durations, resources and spawn odds are arcade tuning, not doses, MICs or clinical effect sizes.
+Idle enemies acquire contact only inside the player's current room, within 7.5 tiles, in the rendered horizontal view cone and with unobstructed line of sight. There is no age-based wakeup or global sound alert. A direct shot alerts only the struck target, even if resistant. Alerted enemies remember the last visible position for 5 seconds and search it; they do not navigate toward the player's hidden current position. Dormant spores do not chase. The minimap reveals explored room walls and discovered enemies.
 
-All hits and exposure ticks pass through `coverage` before shield or HP damage:
+Rooms are populated as the player approaches. The pressure roll occurs when an encounter is populated, preserving a reason to limit broad-spectrum use. Every scheduled encounter is included in the stage clear count.
 
-- R and INACTIVE always produce zero antibiotic damage, regardless of attack power or upgrades.
-- I requires increased exposure. Cefazolin starts with that condition enabled; extended infusion enables it for other applicable weapons. I remains visibly distinct from R.
-- The urinary-origin restriction on E. coli/cefazolin is not applied outside that site. Unsupported or unknown categories are not invented as susceptible.
-- ACTIVE stays a distinct literature-activity category, never relabeled S or I.
-- Capsule is a separate shield, depleted only by an active antibiotic. Biofilm sources reduce damage to nearby enemies with line of sight; F removes that protection. Neither mechanic changes AST.
-- Extended infusion adds short continuing exposure only after an active beta-lactam hit. Immune clearance periodically removes one nearby weak baseline organism, excluding resistant, shielded, elite or source-protected enemies; neutropenia lengthens its interval.
-- Drug energy recharges faster while another weapon is selected. Fire cooldowns are per weapon; switching does not inherit a different weapon's firing delay.
-- Broad-spectrum shots add more Resistance Pressure. At 40 and 70, resistant/elite selection probabilities increase (28% / 55%). The scheduler selects existing MRSA/ESBL records instead of mutating susceptibility. Appropriate narrow-weapon kills, source control and de-escalation reduce pressure.
+## Resource and progression changes
 
-The S/I/R interpretation follows the existing data and [EUCAST definitions](https://www.eucast.org/bacteria/clinical-breakpoints-and-interpretation/definition-of-s-i-and-r/). The source AST remains the authority for each authored isolate.
+Base energy is 200 (previously 100). Selected/stowed recovery is 8/26 per second (previously 4/17); kills restore 10 to each reservoir; supply pickups refill all reservoirs and respawn in 25 seconds. HUD shot counts divide energy by the actual upgraded cost. Reserve rewards add 60 capacity, up to three times. Source removal also supplies energy and modest host support.
 
-Normal mode exposes isolate identity/AST. Hard mode tracks `??? → morphology → culture → AST` per profile. Before AST, susceptibility hints and pathogen-card links stay hidden/disabled. A rapid scanner can advance two steps. Inspection and card browsing happen while combat is paused; drug cards remain available.
+17 rewards cover extended infusion, increased exposure, immune clearance, rapid scanner, de-escalation, efficiency, reserve capacity, firing intervals, biofilm penetration, host stabilization, source control, renal adjustment, mobility and four early weapon unlocks. Repeatable support/source/de-escalation options keep three choices available after capped upgrades.
 
-## Validation
+Host settings are normal, neutropenia, renal impairment and confirmed aminopenicillin allergy. Neutropenia lengthens immune-clearance intervals; ICU further reduces that passive. Renal impairment reduces regeneration for renally handled drugs by 25% until adjusted; these are resource abstractions, not dose recommendations. Allergy blocks AMP specifically; other beta-lactams have been individually assessed in this authored scenario. The game does not treat all beta-lactam allergies as interchangeable.
+
+## Coverage and special mechanics
+
+`createPlayCatalog` joins `data/organisms.json` by stable record/drug IDs. Names, families, AST objects, notes, applicability and sources come from the encyclopedia. All hits and DOT pass a coverage gate before shield/HP damage. R and INACTIVE always cause zero antibiotic damage, regardless of upgrades. Unknown pairs remain unknown and inactive in gameplay. OUTSIDE_REGIMEN is never relabeled R.
+
+I requires the appropriate increased exposure. CFZ starts with it; extended infusion supplies it only for beta-lactams, while the exposure reward can satisfy other supported I results. E. coli/CFZ's urinary-origin limit is active only in the UTI stage. ACTIVE retains its distinct literature-activity label. REGIMEN retains its label and is enabled only for the authored stage contexts: Legionella/lung and B. fragilis/abdomen. The player must independently cover the co-occurring organisms in mixed encounters.
+
+- Capsule is a separate shield and cannot be depleted by an inactive antibiotic.
+- Static sources and Pseudomonas biofilm carriers protect nearby enemies behind line-of-sight checks. F dismantles the protection; penetration improves active drug delivery but never changes AST.
+- Legionella has a host-cell enclosure. The stage-issued LEV reaches the authored intracellular target, removes the enclosure and briefly slows it. Other drugs retain their original classifications.
+- Clostridial spores are dormant, invulnerable to antibiotics, and germinate after contact. Close F source control removes the dormant contamination. Vegetative toxin-producing enemies leave short-lived local toxin hazards; killing bacteria does not immediately erase those hazards. These are spatial game abstractions, not a model of systemic toxin clearance or a complete clinical treatment regimen.
+- CZA is the existing ceftazidime–avibactam combination. The inhibitor reward unlocks that exact weapon; it never grants universal beta-lactam resistance bypass. KPC/DTR encounters use the corresponding fixed AST, not a universal rule for all CRE or Pseudomonas.
+
+Interpretation references remain the encyclopedia and [EUCAST S/I/R definitions](https://www.eucast.org/bacteria/clinical-breakpoints-and-interpretation/definition-of-s-i-and-r/). [IDSA AMR guidance](https://www.idsociety.org/practice-guideline/amr-guidance/) supports distinguishing KPC and DTR targets, and [CDC Legionella guidance](https://www.cdc.gov/legionella/hcp/clinical-guidance/index.html) emphasizes Legionella-directed treatment. Damage, timing, resource recovery, toxin areas and boss phases are not doses, MICs or clinical effect sizes.
+
+Hard mode preserves `??? → morphology → culture → AST`, including disabled pathogen-card links until AST. Drug cards remain available while paused. All cards use the original Pathopedia inspector.
+
+## Runtime and validation
+
+Only Play loads its five code/style files. Service-worker installation does not precache them; first entry caches them for later offline visits. Stage grids are constructed on entry and reuse small generated wall/enemy/weapon atlases. Exit stops the Kontra loop, aborts event listeners, releases pointer lock, disconnects observers, closes audio and disposes canvas/atlas backing stores.
+
+Rendering remains capped at 640×360 or 480×270, fitted to aspect ratio and independent of DPR. Reused pixel/depth buffers, occlusion culling, 24 enemy slots, 24 projectile slots, 80 particles and 12 toxin hazards bound memory. The path cache is bounded to 16 typed-array fields. A room encounter does not require every enemy to pathfind each frame.
 
 ```sh
 node --test tests/play.test.mjs tests/play-balance.test.mjs tests/app-routing.test.mjs
 npm run build
 ```
 
-Tests cover preserved AST, resistance under arbitrary attack power, exposure/site restrictions, shield and biofilm behavior, scanner secrecy, normalized movement, wall collision/occlusion, complete map reachability, bounded pools, pressure selection, AI lifecycle, independent weapon cooldowns, reward selection, pause/terminal states and extraction.
+28 engine/data regressions cover contact range/room/FOV/occlusion, lost-contact expiry, clinical gating, resource changes, all maps/encounter paths, host restrictions, spore/toxin/cell/biofilm mechanics, unlocks, rewards and extraction. Four full campaigns cover normal, allergy, renal and Hard+neutropenia. Eight additional cases verify each stage independently. The deterministic QA player uses actual movement, aiming, resources, scanner, F and reward selection, without teleportation or invulnerability. The tested full runs clear in 3:51–4:39 of simulated action time; human exploration and decision time is additional. These tests verify completion, not enjoyment.
 
-A deterministic QA player navigates cells, uses available weapons and their resources, scans in Hard Mode, selects rewards and removes sources. Three seeded runs (including Hard + neutropenia) complete in approximately 4:40–4:45 of simulated combat time, before the time a person spends reading or choosing rewards. This verifies completion and counters; it does not establish human enjoyment.
+Browser checks cover desktop/mouse and mobile/touch fighting, no Play downloads on home, pause and route cleanup, Hard scanning, all nine slots, Q/wheel, specialist cards, host restrictions and reward-to-map transitions. Visual fixtures are injected into QA responses only; no test globals ship. Screenshots, test logs and performance/offline probes live in ignored `.qa/`.
 
-Browser checks cover no game requests on home, lazy entry, actual mouse and touch firing, weapon switching, pause, both card types, Hard scanner, repeated tab transitions with zero pending game frames, mobile layout and console errors. Automated screenshots and local browser probes are kept in ignored `.qa/`.
-
-Release validation runs the complete `npm test` suite and `npm run build` from the isolated release snapshot, then checks the deployed Play route in a browser.
-
-## Deliberate next-slice boundaries
-
-CRE/MDR Pseudomonas, intracellular/spore/toxin mechanics, inhibitor combinations, beta-lactam allergy/renal weapon constraints, additional maps/bosses and persistent unlock progression are not included yet. New stages can extend map/site/host and isolate pools; additional weapons must join existing drug data and keep the coverage gate. The first slice is intended for evaluating movement, switching, encounter readability and five-to-ten-minute human sessions.
+Persistent campaign saves/meta-unlocks, additional inhibitor combinations/MBL counters, multiplayer and detailed pharmacokinetics are outside this version.
