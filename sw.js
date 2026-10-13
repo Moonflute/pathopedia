@@ -1,7 +1,7 @@
-const VERSION = '0.18.1';
+const VERSION = '0.19.0';
 const PREFIX = `pathopedia:${new URL(self.registration.scope).pathname}:`;
 const CACHE = PREFIX + VERSION;
-const FILES = ['./','./index.html','./src/app.mjs','./src/app-routing.mjs','./src/engine.mjs','./src/treatment-engine.mjs','./src/treatment-ui.mjs','./src/defense-data.mjs','./src/defense-engine.mjs','./src/defense-ui.mjs','./src/defense-renderer.mjs','./src/defense.css','./src/vendor/kontra-10.0.2.mjs','./src/vendor/KONTRA-LICENSE.txt','./src/card-prototype-ui.mjs','./src/reference-card.mjs','./src/card-catalog.mjs','./src/card-models.mjs','./src/card-gallery-ui.mjs','./src/card-guide.mjs','./src/card-inspector.mjs','./src/card-stacks.mjs','./src/card-search.mjs','./src/style.css','./src/compact.css','./src/treatment.css','./src/reference-card.css','./src/card-gallery.css','./data/organisms.json','./data/library.json','./data/library-schema.json','./data/sources.json','./data/schema.json','./data/treatment-questions.json','./assets/fonts/SUIT-Variable.woff2','./favicon.svg','./manifest.webmanifest','./assets/pathopedia-icon-180.png?v=0.18.1','./assets/pathopedia-icon-192.png?v=0.18.1','./assets/pathopedia-icon-512.png?v=0.18.1'];
+const FILES = ['./','./index.html','./src/app.mjs','./src/app-routing.mjs','./src/engine.mjs','./src/treatment-engine.mjs','./src/treatment-ui.mjs','./src/defense-data.mjs','./src/defense-engine.mjs','./src/defense-ui.mjs','./src/defense-renderer.mjs','./src/defense.css','./src/vendor/kontra-10.0.2.mjs','./src/vendor/KONTRA-LICENSE.txt','./src/card-prototype-ui.mjs','./src/reference-card.mjs','./src/card-catalog.mjs','./src/card-models.mjs','./src/card-gallery-ui.mjs','./src/card-guide.mjs','./src/card-inspector.mjs','./src/card-stacks.mjs','./src/card-search.mjs','./src/style.css','./src/compact.css','./src/treatment.css','./src/reference-card.css','./src/card-gallery.css','./data/organisms.json','./data/library.json','./data/library-schema.json','./data/sources.json','./data/schema.json','./data/treatment-questions.json','./assets/fonts/SUIT-Variable.woff2','./favicon.svg','./manifest.webmanifest','./assets/pathopedia-icon-180.png?v=0.19.0','./assets/pathopedia-icon-192.png?v=0.19.0','./assets/pathopedia-icon-512.png?v=0.19.0'];
 const absolute = path => new URL(path,self.registration.scope).href;
 self.addEventListener('install', event => event.waitUntil((async()=>{
  const cache=await caches.open(CACHE);
@@ -15,7 +15,15 @@ self.addEventListener('activate',event=>event.waitUntil((async()=>{
  for(const key of await caches.keys())if(key.startsWith(PREFIX)&&key!==CACHE)await caches.delete(key);
  await self.clients.claim();
 })()));
-self.addEventListener('message',event=>{if(event.data==='ACTIVATE_UPDATE')self.skipWaiting();});
+self.addEventListener('message',event=>{
+ if(event.data==='ACTIVATE_UPDATE')self.skipWaiting();
+ if(event.data==='CACHE_PLAY')event.waitUntil((async()=>{
+  const cache=await caches.open(CACHE);
+  for(const path of ['./src/play.css','./src/play-ui.mjs','./src/play-data.mjs','./src/play-engine.mjs','./src/play-renderer.mjs']){
+   const url=absolute(path);if(!await cache.match(url))await cache.add(url);
+  }
+ })().catch(()=>{}));
+});
 self.addEventListener('fetch',event=>{
  if(event.request.method!=='GET'||!event.request.url.startsWith(self.registration.scope))return;
  event.respondWith((async()=>{
@@ -34,6 +42,13 @@ self.addEventListener('fetch',event=>{
    }
   }
   if(event.request.mode==='navigate')return (await cache.match(absolute('./index.html')))||fetch(event.request);
-  return (await cache.match(event.request))||fetch(event.request);
+  const cached=await cache.match(event.request);if(cached)return cached;
+  const response=await fetch(event.request);
+  // Play stays out of the install precache and becomes available offline after first entry.
+  const pathname=new URL(event.request.url).pathname;
+  if(response.ok&&/\/src\/play(?:-[a-z]+)?\.(?:mjs|css)$/.test(pathname)){
+   event.waitUntil(cache.put(event.request,response.clone()).catch(()=>{}));
+  }
+  return response;
  })());
 });
