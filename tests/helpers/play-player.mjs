@@ -31,8 +31,8 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
   if(enemy){
    const d=distance(enemy);r.player.angle=Math.atan2(enemy.y-r.player.y,enemy.x-r.player.x);
    if((!hard||r.intel[enemy.kind]===3)&&enemy.state!=='Dormant'){
-    const options=catalog.weapons.map((w,i)=>({w,i,c:combatCoverage(r,w,enemy.kind)})).filter(o=>isWeaponReady(r,o.i)&&o.c.factor&&o.w.range>d&&r.energy[o.i]>=shotCost(r,o.w));
-    const favorite={pneumo:'ampicillin',ecoli:'ampicillin',mssa:'cefazolin',mrsa:'vancomycin',esbl:'meropenem',pseudo:'meropenem',mdr:'ceftazavi',kpc:'ceftazavi',vre:'linezolid',anaerobe:'metronidazole',legionella:'levofloxacin',clostridium:'metronidazole',klebs:'ceftriaxone'}[enemy.kind];
+    const options=catalog.weapons.map((w,i)=>({w,i,c:combatCoverage(r,w,enemy.kind)})).filter(o=>isWeaponReady(r,o.i)&&o.c.factor&&o.w.range>d&&r.energy[o.i]+r.magazines[o.i]>=shotCost(r,o.w));
+    const favorite={pneumo:'ampicillin',ecoli:'ampicillin',mssa:'cefazolin',mrsa:'vancomycin',esbl:'meropenem',pseudo:'meropenem',mdr:'ceftazavi',kpc:'ceftazavi',vre:'linezolid',anaerobe:'metronidazole',legionella:'levofloxacin',clostridium:'metronidazole',klebs:'ceftriaxone',cmv:'ganciclovir',strongyloides:'ivermectin'}[enemy.kind];
     options.sort((a,b)=>(a.w.id===favorite?-100:0)+a.w.pressure-(b.w.id===favorite?-100:0)-b.w.pressure);
     if(options.length){switchWeapon(r,options[0].i);fire=true;}
    }
