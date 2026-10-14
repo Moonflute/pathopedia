@@ -17,6 +17,41 @@
       "title": "CDC — Group A streptococcal pharyngitis: recommended antibiotics",
       "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
       "accessedAt": "2026-10-11"
+    },
+    "card-therapy-cap-directed": {
+      "title": "IDSA/ATS adult CAP — pathogen-directed therapy (2007, Table 9)",
+      "url": "https://academic.oup.com/cid/article/44/Supplement_2/S27/372079",
+      "accessedAt": "2026-10-14"
+    },
+    "card-therapy-cap-ampicillin": {
+      "title": "IDSA adult CAP update — susceptible bacteremic pneumococcal pneumonia (2003)",
+      "url": "https://academic.oup.com/cid/article/37/11/1405/370614",
+      "accessedAt": "2026-10-14"
+    },
+    "card-therapy-cuti-2025": {
+      "title": "IDSA 2025 complicated UTI — targeted definitive therapy",
+      "url": "https://www.idsociety.org/practice-guideline/complicated-urinary-tract-infections/",
+      "accessedAt": "2026-10-14"
+    },
+    "card-therapy-legionella": {
+      "title": "CDC — Clinical guidance for Legionella infections",
+      "url": "https://www.cdc.gov/legionella/hcp/clinical-guidance/index.html",
+      "accessedAt": "2026-10-14"
+    },
+    "card-therapy-iai-2024": {
+      "title": "SIS 2024 intra-abdominal infection — metronidazole in combination regimens",
+      "url": "https://journals.sagepub.com/doi/10.1089/sur.2024.137",
+      "accessedAt": "2026-10-14"
+    },
+    "card-therapy-crbsi-2009": {
+      "title": "IDSA 2009 catheter-related bloodstream infection — resistant enterococci",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/4039170/",
+      "accessedAt": "2026-10-14"
+    },
+    "card-therapy-ssti-2014": {
+      "title": "IDSA 2014 SSTI — clostridial myonecrosis and MSSA pyomyositis",
+      "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+      "accessedAt": "2026-10-14"
     }
   },
   "contexts": [
@@ -34,7 +69,10 @@
         "card-therapy-hap"
       ],
       "note": "확진 MSSA에는 oxacillin·cefazolin 같은 좁은 표적 β-lactam을 우선 선택한다. 균혈증·다른 감염 부위의 판단은 별도로 한다.",
-      "combination": false
+      "combination": false,
+      "sites": [
+        "lung"
+      ]
     },
     {
       "id": "mrsa-bacteremia",
@@ -50,7 +88,11 @@
         "card-therapy-mrsa"
       ],
       "note": "Vancomycin 또는 daptomycin을 사용하는 혈류감염 맥락이다. Daptomycin의 금색 표시를 폐렴에 적용하지 않는다.",
-      "combination": false
+      "combination": false,
+      "sites": [
+        "bloodstream"
+      ],
+      "learningDefault": true
     },
     {
       "id": "mrsa-pneumonia",
@@ -69,6 +111,9 @@
       "combination": false,
       "excludedDrugIds": [
         "daptomycin"
+      ],
+      "sites": [
+        "lung"
       ]
     },
     {
@@ -102,7 +147,13 @@
         "idsa-amr-2026"
       ],
       "note": "요로 외 ESBL 감염의 carbapenem 우선 맥락이다. 단순 방광염의 우선 약제까지 뜻하지 않는다.",
-      "combination": false
+      "combination": false,
+      "sites": [
+        "lung",
+        "abdomen",
+        "bloodstream"
+      ],
+      "learningDefault": true
     },
     {
       "id": "ampc-invasive",
@@ -136,7 +187,14 @@
         "idsa-amr-2026"
       ],
       "note": "Ceftazidime-avibactam은 KPC 감염의 우선 선택지 중 수록된 약제다. Meropenem-vaborbactam 등 다른 우선 선택지는 이 약제 목록 밖이다.",
-      "combination": false
+      "combination": false,
+      "sites": [
+        "lung",
+        "abdomen",
+        "bloodstream",
+        "urinary"
+      ],
+      "learningDefault": true
     },
     {
       "id": "oxa48-directed",
@@ -435,7 +493,11 @@
         "cdc-strongyloides"
       ],
       "note": "Ivermectin 일차요법 맥락이다. 과감염은 더 긴 치료·음전 확인이 필요하며 면역억제 조건을 함께 확인한다.",
-      "combination": false
+      "combination": false,
+      "scenarios": [
+        "strongyloidiasis"
+      ],
+      "learningDefault": true
     },
     {
       "id": "schistosomiasis",
@@ -512,6 +574,232 @@
       ],
       "note": "증상 시작 후 투여 가능 시기의 선호 경구 치료다. 상호작용·금기·신장/간기능을 확인하고 remdesivir 등 다른 선택을 판단한다.",
       "combination": false
+    },
+    {
+      "id": "pneumococcal-directed",
+      "recordIds": [
+        "SPN-105"
+      ],
+      "context": "Penicillin 감수성이 확인된 성인 폐렴구균 폐렴 · 수막염 제외",
+      "drugIds": [
+        "penicillin",
+        "ampicillin"
+      ],
+      "sourceIds": [
+        "card-therapy-cap-directed",
+        "card-therapy-cap-ampicillin"
+      ],
+      "note": "확진·감수성 폐렴은 penicillin G 또는 ampicillin으로 좁힐 수 있다. 경험적 CAP 치료나 수막염에 그대로 적용하지 않는다.",
+      "combination": false,
+      "sites": [
+        "lung"
+      ],
+      "learningDefault": true
+    },
+    {
+      "id": "mssa-pyomyositis",
+      "recordIds": [
+        "SAU-001"
+      ],
+      "context": "확진 MSSA 화농성 근염의 표적치료",
+      "drugIds": [
+        "cefazolin",
+        "oxacillin"
+      ],
+      "sourceIds": [
+        "card-therapy-ssti-2014"
+      ],
+      "note": "Cefazolin 또는 항포도알균 penicillin이 우선이며, 농양은 조기 배액한다.",
+      "combination": false,
+      "sites": [
+        "soft-tissue"
+      ],
+      "learningDefault": true
+    },
+    {
+      "id": "susceptible-enterobacterales-cuti",
+      "recordIds": [
+        "ECO-009",
+        "KPN-409"
+      ],
+      "context": "감수성이 확인된 비ESBL 장내세균 cUTI · 정주 치료 필요",
+      "drugIds": [
+        "ceftriaxone"
+      ],
+      "sourceIds": [
+        "card-therapy-cuti-2025"
+      ],
+      "note": "균명만으로 단일 1차약을 정하지 않는다. Ceftriaxone은 AST가 뒷받침되는 정주 선택지이며 배양 후 유효한 좁은 약제로 조정한다.",
+      "combination": false,
+      "sites": [
+        "urinary"
+      ],
+      "learningDefault": true,
+      "preferenceLabel": "표적 선택지"
+    },
+    {
+      "id": "esbl-cuti",
+      "recordIds": [
+        "ECO-010"
+      ],
+      "context": "ESBL E. coli 신우신염·cUTI · 감수성과 임상 안정성 확인",
+      "drugIds": [
+        "tmpsmx",
+        "meropenem"
+      ],
+      "sourceIds": [
+        "idsa-amr-2026"
+      ],
+      "note": "TMP-SMX·ciprofloxacin·levofloxacin은 감수성일 때 우선한다. 이 분리주는 FQ R이며, 경구약 사용 불가·중증이면 meropenem 등 carbapenem을 선택한다.",
+      "combination": false,
+      "sites": [
+        "urinary"
+      ]
+    },
+    {
+      "id": "pseudomonas-directed",
+      "recordIds": [
+        "PAE-013"
+      ],
+      "context": "비DTR 녹농균 · 전통적 항녹농균 β-lactam 활성 확인",
+      "drugIds": [
+        "cefepime",
+        "ceftazidime",
+        "piptazo"
+      ],
+      "sourceIds": [
+        "idsa-amr-2026"
+      ],
+      "note": "활성인 cefepime·ceftazidime·piperacillin-tazobactam 등을 carbapenem보다 우선 고려한다. 이 분리주의 I는 증가 노출을 전제로 한다.",
+      "combination": false,
+      "sites": [
+        "lung",
+        "bloodstream",
+        "urinary"
+      ],
+      "learningDefault": true
+    },
+    {
+      "id": "dtr-pseudomonas-directed",
+      "recordIds": [
+        "PAE-014"
+      ],
+      "context": "DTR 녹농균의 요로 외 감염 · 해당 신약 감수성 확인",
+      "drugIds": [
+        "ceftazavi"
+      ],
+      "sourceIds": [
+        "idsa-amr-2026"
+      ],
+      "note": "Ceftazidime-avibactam·ceftolozane-tazobactam·imipenem-relebactam이 우선 선택지이며, 폐렴에서는 ceftolozane-tazobactam을 선호한다.",
+      "combination": false,
+      "sites": [
+        "lung",
+        "bloodstream",
+        "abdomen"
+      ],
+      "learningDefault": true
+    },
+    {
+      "id": "vre-catheter-bloodstream",
+      "recordIds": [
+        "EFM-008"
+      ],
+      "context": "Ampicillin·vancomycin 내성 E. faecium 카테터 혈류감염",
+      "drugIds": [
+        "linezolid",
+        "daptomycin"
+      ],
+      "sourceIds": [
+        "card-therapy-crbsi-2009"
+      ],
+      "note": "AST에 따라 linezolid 또는 daptomycin을 선택하고 감염 카테터 제거를 평가한다. 심내막염의 요법·용량은 별도 판단한다.",
+      "combination": false,
+      "sites": [
+        "bloodstream"
+      ],
+      "learningDefault": true,
+      "preferenceLabel": "주요 표적 선택지"
+    },
+    {
+      "id": "legionella-pneumonia",
+      "recordIds": [
+        "BGX-501"
+      ],
+      "context": "Legionnaires’ disease · Legionella 폐렴",
+      "drugIds": [
+        "azithromycin",
+        "levofloxacin"
+      ],
+      "sourceIds": [
+        "card-therapy-legionella"
+      ],
+      "note": "세포내 표적에 도달하는 azithromycin 또는 호흡기 fluoroquinolone(예: levofloxacin)을 사용한다. Pontiac fever에는 항생제를 쓰지 않는다.",
+      "combination": false,
+      "sites": [
+        "lung"
+      ],
+      "learningDefault": true
+    },
+    {
+      "id": "bacteroides-abdominal",
+      "recordIds": [
+        "BGX-515"
+      ],
+      "context": "B. fragilis를 포함한 복강 내 혼합 감염의 혐기성 성분",
+      "drugIds": [
+        "metronidazole"
+      ],
+      "sourceIds": [
+        "card-therapy-iai-2024"
+      ],
+      "note": "Metronidazole은 병용요법의 우선 혐기성 약제다. 저위험 지역사회 감염의 예는 ceftriaxone + metronidazole이며 배액·감염원 조절을 함께 한다.",
+      "combination": false,
+      "sites": [
+        "abdomen"
+      ],
+      "learningDefault": true,
+      "preferenceLabel": "병용요법의 혐기성 성분",
+      "requiresCompanion": true
+    },
+    {
+      "id": "clostridial-myonecrosis",
+      "recordIds": [
+        "CPE-122"
+      ],
+      "context": "C. perfringens 가스괴저·근괴사 확진",
+      "drugIds": [
+        "penicillin",
+        "clindamycin"
+      ],
+      "sourceIds": [
+        "card-therapy-ssti-2014"
+      ],
+      "note": "응급 수술·괴사조직 제거와 penicillin + clindamycin 병용이 권고된다. Metronidazole의 활성 판정만으로 이 병용요법을 대체하지 않는다.",
+      "combination": true,
+      "sites": [
+        "soft-tissue"
+      ],
+      "learningDefault": true
+    },
+    {
+      "id": "cmv-retinitis",
+      "recordIds": [
+        "CMV-804"
+      ],
+      "context": "진행 HIV 성인의 CMV 망막염",
+      "drugIds": [
+        "ganciclovir"
+      ],
+      "sourceIds": [
+        "nih-oi-cmv"
+      ],
+      "note": "Valganciclovir 경구 또는 ganciclovir 정주가 우선요법이다. 시력위협 중심부 병변·흡수 우려는 정주를 선호하며 안과 협진이 필요하다.",
+      "combination": false,
+      "scenarios": [
+        "cmv-retinitis"
+      ],
+      "learningDefault": true
     }
   ]
 }

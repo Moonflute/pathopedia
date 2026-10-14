@@ -1,4 +1,4 @@
-import {newRun,tick,combatCoverage,switchWeapon,lineOfSight,canStand,chooseReward,controlSource,isWeaponReady,shotCost,selectScanner} from '../../src/play-engine.mjs';
+import {newRun,tick,combatCoverage,switchWeapon,lineOfSight,canStand,chooseReward,controlSource,isWeaponReady,shotCost,selectScanner,throwGrenade} from '../../src/play-engine.mjs';
 import {STAGES} from '../../src/play-data.mjs';
 
 // QA controls only movement, aiming, weapons, scanning and available rewards. No teleport or invulnerability.
@@ -23,13 +23,15 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
   const enemy=live.filter(e=>lineOfSight(r.map,r.player,e)).sort((a,b)=>distance(a)-distance(b))[0];
   const source=r.map.sources.filter(s=>s.active).sort((a,b)=>distance(a)-distance(b))[0];
   const unvisited=r.map.rooms.find(room=>!r.visited.has(room.id));
-  let goal=source||live.find(e=>e.boss)||r.map.exit;
+  let goal=source||live.sort((a,b)=>distance(a)-distance(b))[0]||r.map.exit;
   if(!source&&!live.length&&r.spawned<STAGES[r.wave].count)goal=unvisited||r.pending[0]||r.map.exit;
   const goalKey=r.map.id+':'+Math.floor(goal.x)+','+Math.floor(goal.y);
   navTime-=1/30;if(!waypoint||Math.hypot(waypoint.x-r.player.x,waypoint.y-r.player.y)<.15||goalKey!==lastGoal||navTime<=0){waypoint=navigate(goal);lastGoal=goalKey;navTime=1;}
   let dx=waypoint.x-r.player.x,dy=waypoint.y-r.player.y,fire=false,scope=false;
   if(enemy){
    const d=distance(enemy);r.player.angle=Math.atan2(enemy.y-r.player.y,enemy.x-r.player.x);
+   // Use the same finite throwable supply available to players when several contacts close in.
+   if(d<5&&live.filter(e=>distance(e)<5&&lineOfSight(r.map,r.player,e)).length>=2&&!r.fields.some(f=>f.active&&distance(f)<4.5))throwGrenade(r);
    if(hard&&r.intel[enemy.kind]<3){selectScanner(r);scope=true;}
    if((!hard||r.intel[enemy.kind]===3)&&enemy.state!=='Dormant'){
     const options=catalog.weapons.map((w,i)=>({w,i,c:combatCoverage(r,w,enemy.kind)})).filter(o=>isWeaponReady(r,o.i)&&o.c.factor&&o.w.range>d&&r.energy[o.i]+r.magazines[o.i]>=shotCost(r,o.w));
@@ -45,7 +47,7 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
    if(enemy.state==='Attack'&&d>=2.4&&d<8){const side=Math.sin(r.time*1.8)>0?1:-1,c=Math.cos(r.player.angle),s=Math.sin(r.player.angle);if(canStand(r.map,r.player.x-s*side*.6,r.player.y+c*side*.6)){dx=dx*.35-s*side;dy=dy*.35+c*side;}}
   }else if(Math.hypot(dx,dy)>.1)r.player.angle=Math.atan2(dy,dx);
   const norm=Math.max(.01,Math.hypot(dx,dy));dx/=norm;dy/=norm;const c=Math.cos(r.player.angle),s=Math.sin(r.player.angle);
-  controlSource(r);tick(r,{forward:dx*c+dy*s,strafe:-dx*s+dy*c,fire,scope},1/30);r.events.length=0;
+  controlSource(r);tick(r,{forward:dx*c+dy*s,strafe:-dx*s+dy*c,fire,scope,dash:Boolean(enemy&&distance(enemy)<1.7),jump:Boolean(enemy&&distance(enemy)<1.5&&steps%24===0)},1/30);r.events.length=0;
  }
  return {status:r.status,time:Math.round(r.time),hp:Math.round(r.player.hp),stage:r.wave+1,kills:r.kills,pressure:Math.round(r.pressure),sources:r.totalSources,completed:r.completedStages,position:r.player,pending:r.pending.length,remaining:r.enemies.filter(e=>e.active&&e.state!=='Dead').map(e=>({kind:e.kind,state:e.state,x:e.x,y:e.y,hp:e.hp})),reports};
 }

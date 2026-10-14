@@ -41,13 +41,25 @@ function createSprites(catalog){
   }
   return atlas;
 }
-function createWalls(accent='#a9c4a1'){
-  const atlas=surface(32*3,32),c=atlas.getContext('2d');
-  for(let i=0;i<3;i++){const x=i*32;c.fillStyle=['#61736a','#596c67','#556366'][i];c.fillRect(x,0,32,32);c.fillStyle='#253c38';c.fillRect(x,0,1,32);c.fillRect(x,31,32,1);c.fillStyle='#91a395';c.fillRect(x+1,1,30,1);c.fillRect(x+1,1,1,29);c.fillStyle='#263d39';c.fillRect(x,20,32,4);c.fillStyle=[accent,'#88bfb4',accent][i];c.fillRect(x+1,20,31,2);
-    c.fillStyle='#364a42';for(const y of [5,27])for(const n of [4,28])c.fillRect(x+n,y,2,2);
-    if(i===1){c.fillStyle='#263d38';c.fillRect(x+6,5,20,11);c.fillStyle='#6daea0';c.fillRect(x+8,7,16,7);c.fillStyle='#a3d9bf';c.fillRect(x+9,8,13,1);}
-    if(i===2){c.fillStyle='#a5b8a4';c.fillRect(x+10,5,12,12);c.fillStyle='#405f50';c.fillRect(x+14,7,4,8);c.fillRect(x+12,9,8,4);}
-  }return atlas;
+const WALL_PALETTES=[['#778c7d','#536d60','#a3bc9c'],['#8296a3','#415d72','#b1d2d7'],['#9d8975','#69584d','#d5c496'],['#8c899f','#514c6c','#c6b4d8']];
+function createWalls(accent='#a9c4a1',theme=0){
+ const atlas=surface(32*6,32),c=atlas.getContext('2d'),[base,dark,light]=WALL_PALETTES[theme%4];
+ for(let i=0;i<6;i++){c.save();c.translate(i*32,0);c.fillStyle=base;c.fillRect(0,0,32,32);
+  if(i===0){ // Glazed laboratory tiles.
+   c.fillStyle=dark;for(let n=0;n<32;n+=8){c.fillRect(0,n,32,1);c.fillRect(n,0,1,32);}c.fillStyle=light;for(let y=1;y<32;y+=8)c.fillRect(1,y,30,1);c.fillStyle=accent;c.fillRect(0,22,32,3);
+  }else if(i===1){ // Staggered masonry and a low conduit.
+   c.fillStyle=dark;for(let y=0;y<32;y+=8){c.fillRect(0,y,32,1);for(let x=(y%16?0:8);x<32;x+=16)c.fillRect(x,y,1,8);}c.fillStyle=light;for(let y=1;y<32;y+=8)c.fillRect(1,y,30,1);c.fillStyle='#26373e';c.fillRect(0,27,32,4);c.fillStyle=accent;c.fillRect(0,27,32,1);
+  }else if(i===2){ // Observation window with a specimen waveform.
+   c.fillStyle=dark;c.fillRect(3,3,26,23);c.fillStyle='#122f38';c.fillRect(5,5,22,19);c.fillStyle='#416f76';c.fillRect(6,6,20,3);c.fillRect(6,10,2,12);c.strokeStyle=accent;c.lineWidth=1;c.beginPath();c.moveTo(8,17);c.lineTo(12,17);c.lineTo(14,12);c.lineTo(17,21);c.lineTo(20,16);c.lineTo(24,16);c.stroke();c.fillStyle=light;c.fillRect(3,27,26,2);
+  }else if(i===3){ // Ventilation grille and heavy metal seams.
+   c.fillStyle=dark;c.fillRect(4,4,24,24);c.fillStyle=light;for(let y=6;y<27;y+=4)c.fillRect(6,y,20,2);c.fillStyle='#1d3339';for(const x of [1,29]){c.fillRect(x,0,2,32);for(const y of [3,27]){c.fillStyle=accent;c.fillRect(x,y,2,2);c.fillStyle='#1d3339';}}
+  }else if(i===4){ // Parallel utility pipes and pressure gauges.
+   c.fillStyle=dark;c.fillRect(0,0,32,32);for(const x of [7,21]){c.fillStyle='#263d3d';c.fillRect(x,0,7,32);c.fillStyle=base;c.fillRect(x+1,0,5,32);c.fillStyle=light;c.fillRect(x+2,0,1,32);c.fillStyle=accent;for(const y of [6,24])c.fillRect(x-1,y,9,3);}c.fillStyle='#d3d7bd';c.fillRect(13,11,8,8);c.fillStyle='#254347';c.fillRect(15,13,4,4);
+  }else{ // Isolation panel, hazard band and facility markings.
+   c.fillStyle=light;c.fillRect(2,2,28,26);c.fillStyle=dark;c.fillRect(5,6,22,1);c.fillRect(5,9,16,1);c.fillRect(5,12,20,1);c.fillStyle='#31564a';c.fillRect(20,17,7,6);c.fillStyle=accent;c.fillRect(22,18,3,4);c.fillStyle='#263439';c.fillRect(0,26,32,6);c.fillStyle='#cba968';for(let x=-4;x<32;x+=8){c.beginPath();c.moveTo(x,26);c.lineTo(x+4,26);c.lineTo(x+10,32);c.lineTo(x+6,32);c.fill();}
+  }
+  c.fillStyle='#11282b';c.fillRect(0,31,32,1);c.fillRect(31,0,1,32);c.restore();
+ }return atlas;
 }
 function createWeapons(catalog){
   const atlas=surface(240*(catalog.weapons.length+1),180),c=atlas.getContext('2d');
@@ -103,14 +115,14 @@ export function createPlayRenderer(canvas,catalog,{quality='retro',reducedMotion
   function resize(mode=quality){quality=mode;const maxW=mode==='low'?480:640,maxH=mode==='low'?270:360,cssW=canvas.clientWidth||maxW,cssH=canvas.clientHeight||maxH,scale=Math.min(maxW/cssW,maxH/cssH);width=Math.max(160,Math.floor(cssW*scale/2)*2);height=Math.max(120,Math.floor(cssH*scale/2)*2);canvas.width=width;canvas.height=height;context.imageSmoothingEnabled=false;depth=new Float32Array(width);frame=context.createImageData(width,height);floorPixels=new Uint32Array(frame.data.buffer);}
   resize();
   function render(run){
-    if(disposed)return;if(mapId!==run.map.id){walls.width=1;walls.height=1;walls=createWalls(run.map.color);mapId=run.map.id;tone=rgb(run.map.color);}const ctx=context,p=run.player,cos=Math.cos(p.angle),sin=Math.sin(p.angle),fov=run.scoped?.34:.72,planeX=-sin*fov,planeY=cos*fov,projection=width/(2*fov),horizon=Math.floor(height*.46+(reducedMotion?0:run.land*15)),cameraZ=.5+(p.z||0);
+    if(disposed)return;if(mapId!==run.map.id){walls.width=1;walls.height=1;walls=createWalls(run.map.color,run.map.theme);mapId=run.map.id;tone=rgb(run.map.color);}run.viewAspect=width/height;const ctx=context,p=run.player,cos=Math.cos(p.angle),sin=Math.sin(p.angle),fov=run.scoped?.34:.72,planeX=-sin*fov,planeY=cos*fov,projection=width/(2*fov),reticleY=height*.46,horizon=Math.floor(reticleY+Math.tan(p.pitch||0)*projection+(reducedMotion?0:run.land*15)),cameraZ=.5+(p.z||0);
     // Reused pixel buffer. Render at fixed resolution, independent of devicePixelRatio.
     for(let y=0;y<height;y+=2){const floor=y>=horizon,distance=projection*(floor?cameraZ:1-cameraZ)/Math.max(1,Math.abs(y-horizon)),stepX=distance*planeX*2/width,stepY=distance*planeY*2/width;
       let worldX=p.x+distance*(cos-planeX),worldY=p.y+distance*(sin-planeY);
-      for(let x=0;x<width;x+=2){let r,g,b;if(floor){const grid=(worldX%1+1)%1<.045||(worldY%1+1)%1<.045,check=(Math.floor(worldX)+Math.floor(worldY))&1,k=Math.max(.3,1-distance*.034);
+      for(let x=0;x<width;x+=2){let r,g,b;if(floor){const grid=(worldX%1+1)%1<.045||(worldY%1+1)%1<.045,check=run.map.theme%2?(Math.floor(worldX*2)&1):((Math.floor(worldX)+Math.floor(worldY))&1),k=Math.max(.3,1-distance*.034);
         r=((grid?17:check?42:47)+tone[0]*.025)*k;g=((grid?35:check?57:64)+tone[1]*.025)*k;b=((grid?33:check?55:60)+tone[2]*.025)*k;
         if((Math.floor(worldX)===9||Math.floor(worldX)===18)&&((worldY%1+1)%1<.2)){r=69*k;g=111*k;b=93*k;}
-      }else{const k=y/height;r=17+k*10;g=29+k*14;b=32+k*12;}
+      }else{const k=y/height,light=distance<14&&Math.floor(worldX)%6===0&&Math.floor(worldY)%4===0&&(worldX%1+1)%1>.2&&(worldX%1+1)%1<.8;r=light?95:17+k*10;g=light?120:29+k*14;b=light?114:32+k*12;}
       const color=(255<<24)|((b|0)<<16)|((g|0)<<8)|(r|0),index=y*width+x;floorPixels[index]=color;floorPixels[index+1]=color;if(y+1<height){floorPixels[index+width]=color;floorPixels[index+width+1]=color;}worldX+=stepX*2;worldY+=stepY*2;
       }
     }
@@ -118,7 +130,7 @@ export function createPlayRenderer(canvas,catalog,{quality='retro',reducedMotion
     for(let x=0;x<width;x+=2){const cameraX=2*x/width-1,ray=castRay(run.map,p.x,p.y,cos+planeX*cameraX,sin+planeY*cameraX),distance=Math.max(.05,ray.distance),h=projection/distance,top=horizon-h*(1-cameraZ),texture=(Math.max(1,ray.tile)-1)*32+(ray.u*32|0);
       depth[x]=distance;depth[x+1]=distance;ctx.drawImage(walls,texture,0,1,32,x,top,2,h);ctx.fillStyle='rgba(5,19,23,'+Math.min(.88,distance*.039+(ray.side?.15:0))+')';ctx.fillRect(x,top,2,h);
     }
-    const project=(obj,row,size=1,z=.5,kind='enemy')=>{const dx=obj.x-p.x,dy=obj.y-p.y,d=dx*cos+dy*sin,lateral=-dx*sin+dy*cos;if(d<.18||d>27)return;const screen=width/2+lateral*projection/d,h=projection*size/d;if(screen+h/2<0||screen-h/2>width)return;visible.push({obj,row,d,screen,h,z,kind});};
+    const project=(obj,row,size=1,z=.5,kind='enemy')=>{const dx=obj.x-p.x,dy=obj.y-p.y,d=dx*cos+dy*sin,lateral=-dx*sin+dy*cos;if(d<.18||d>27)return;const screen=width/2+lateral*projection/d,h=projection*size/d;const top=horizon+projection*cameraZ/d-h;if(screen+h/2<0||screen-h/2>width||top>height||top+h<0)return;visible.push({obj,row,d,screen,h,z,kind});};
     visible.length=0;
     for(const e of run.enemies)if(e.active)project(e,catalog.enemies.findIndex(p=>p.id===e.kind),e.state==='Dormant'?.46:e.boss?1.5:e.elite?1.1:.9,.5);
     for(const s of run.map.sources)if(s.active)project(s,catalog.enemies.length,1,.5,'source');
@@ -142,26 +154,31 @@ export function createPlayRenderer(canvas,catalog,{quality='retro',reducedMotion
     }
     function dot(x,y,z,color,radius){const dx=x-p.x,dy=y-p.y,d=dx*cos+dy*sin;if(d<.2)return;const sx=width/2+(-dx*sin+dy*cos)*projection/d;if(sx<0||sx>=width||d>=depth[sx|0])return;const sy=horizon+(cameraZ-z)*projection/d,r=Math.max(1,projection*radius/d);ctx.fillStyle=color;ctx.fillRect(sx-r,sy-r,r*2,r*2);}
     for(const h of run.hazards)if(h.active){for(let i=0;i<8;i++){const a=i*Math.PI/4;dot(h.x+Math.cos(a)*h.radius,h.y+Math.sin(a)*h.radius,.04,'#cc9b6380',.08);}dot(h.x,h.y,.1,'#dab06b',.13);}
+    for(const field of run.fields)if(field.active){for(let i=0;i<24;i++){const a=i*Math.PI/12;dot(field.x+Math.cos(a)*field.radius,field.y+Math.sin(a)*field.radius,.025,'#6ce1c180',.11);}for(let i=0;i<8;i++){const a=i*Math.PI/4+run.time*.4;dot(field.x+Math.cos(a)*field.radius*.55,field.y+Math.sin(a)*field.radius*.55,.06,'#a6ead06a',.12);}}
+    if(run.upgrades.isolation){const radius=2.5+run.upgrades.isolation*.45;for(let i=0;i<24;i++){const a=i*Math.PI/12;dot(p.x+Math.cos(a)*radius,p.y+Math.sin(a)*radius,.03,'#89b8e49a',.07);}}
+    for(const orb of run.orbs)if(orb.active){dot(orb.x,orb.y,.13,'#52dabb',.075);dot(orb.x,orb.y,.17,'#d5ffe2',.025);}
+    for(const g of run.thrown)if(g.active){dot(g.x,g.y,Math.max(.08,g.z),'#d7efe0',.1);dot(g.x,g.y,Math.max(.08,g.z)+.1,'#5ac8a7',.05);}
     for(const b of run.projectiles)if(b.active)dot(b.x,b.y,.5,b.color||'#efac7e',.075);
     for(const b of run.particles)if(b.life>0){dot(b.x,b.y,b.z,b.color,b.ricochet?.018:.025);if(b.ricochet){for(let n=1;n<=3;n++)dot(b.x-b.vx*n*.012,b.y-b.vy*n*.012,b.z-b.vz*n*.012,b.color,.012);}}
     // Both hands, muzzle and receiver share the same perspective and recoil pivot.
     if(!run.scoped){
       const bob=reducedMotion?0:Math.sin(run.walk)*2,kick=run.lastShot>0?Math.floor(run.lastShot*38):0,weaponW=width*.46,weaponH=weaponW*.75;
       const progress=run.reloadTime>0?1-run.reloadTime/run.reloadDuration:0,reloadStep=run.reloadTime>0?Math.floor(Math.sin(progress*Math.PI)*6)/6:0;
-      const left=width*.525+bob,bottom=height+14+kick+run.switchTime*160+reloadStep*weaponH*.38;
+      const left=width*.525+bob,bottom=height+14+kick+run.switchTime*160+run.throwTime*90+reloadStep*weaponH*.38;
       ctx.save();ctx.translate(left+weaponW*.7,bottom);ctx.rotate(reloadStep*.38);ctx.drawImage(weapons,(run.scannerActive?catalog.weapons.length:run.weapon)*240,0,240,180,-weaponW*.7,-weaponH,weaponW,weaponH);
       if(run.reloadTime>0&&progress>.22&&progress<.8){ctx.fillStyle='#436a5c';const y=-weaponH*.22+reloadStep*weaponH*.14;ctx.fillRect(-weaponW*.28,y,weaponW*.13,weaponH*.28);ctx.fillStyle=catalog.weapons[run.weapon].color;ctx.fillRect(-weaponW*.27,y+4,weaponW*.1,4);}
       if(run.lastShot>.09&&!run.scannerActive&&run.reloadTime<=0){const x=-weaponW*.59,y=-weaponH*.87;ctx.fillStyle=catalog.weapons[run.weapon].color;ctx.fillRect(x-8,y-3,20,6);ctx.fillRect(x-2,y-10,6,19);ctx.fillStyle='#faffdb';ctx.fillRect(x-3,y-3,6,6);}ctx.restore();
     }else{
-      const sw=Math.min(width*.65,height*1.35),sh=Math.min(height*.66,sw*.65),sx=(width-sw)/2,sy=horizon-sh/2;
+      const sw=Math.min(width*.65,height*1.35),sh=Math.min(height*.66,sw*.65),sx=(width-sw)/2,sy=reticleY-sh/2;
       ctx.fillStyle='#031611aa';ctx.fillRect(0,0,sx,height);ctx.fillRect(sx+sw,0,width-sx-sw,height);
       ctx.strokeStyle='#91d8c3';ctx.lineWidth=2;ctx.strokeRect(sx,sy,sw,sh);ctx.fillStyle='#aee7c9';ctx.font='10px monospace';ctx.fillText('SCANNER / 2x',sx+8,sy+16);
       ctx.fillStyle='#24473b';ctx.fillRect(sx+8,sy+sh-12,sw-16,3);ctx.fillStyle='#cde6a5';ctx.fillRect(sx+8,sy+sh-12,(sw-16)*run.scanFocus,3);
     }
     // Center aim and hit confirmation stay sharp at every display size.
-    const cx=width/2,cy=horizon;ctx.strokeStyle=run.ricochet>0?'#ffcb7c':run.hit>0?'#d8f3ac':'#d9e9dc';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx-7,cy);ctx.lineTo(cx-3,cy);ctx.moveTo(cx+3,cy);ctx.lineTo(cx+7,cy);ctx.moveTo(cx,cy-7);ctx.lineTo(cx,cy-3);ctx.moveTo(cx,cy+3);ctx.lineTo(cx,cy+7);ctx.stroke();
+    const cx=width/2,cy=reticleY;ctx.strokeStyle=run.ricochet>0?'#ffcb7c':run.hit>0?'#d8f3ac':'#d9e9dc';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx-7,cy);ctx.lineTo(cx-3,cy);ctx.moveTo(cx+3,cy);ctx.lineTo(cx+7,cy);ctx.moveTo(cx,cy-7);ctx.lineTo(cx,cy-3);ctx.moveTo(cx,cy+3);ctx.lineTo(cx,cy+7);ctx.stroke();
     if(run.hit>0){ctx.beginPath();for(const [a,b] of [[-1,-1],[1,-1],[-1,1],[1,1]]){ctx.moveTo(cx+a*9,cy+b*9);ctx.lineTo(cx+a*13,cy+b*13);}ctx.stroke();}
     if(run.scanPulse>0){ctx.strokeStyle='#9ae0c088';ctx.strokeRect(cx-90*(1-run.scanPulse),cy-55*(1-run.scanPulse),180*(1-run.scanPulse),110*(1-run.scanPulse));}
+    if(run.isolationPulse>0){ctx.strokeStyle='#8dc5ff66';ctx.lineWidth=2;ctx.strokeRect(3,3,width-6,height-6);}
     if(run.hurt>0){ctx.fillStyle='rgba(196,62,48,'+run.hurt*.7+')';ctx.fillRect(0,0,width,height);}
     // The mini-map is also rendered into the fixed-size canvas; no extra DOM work per frame.
     const scale=Math.min(2.2,width*.2/run.map.width),mx=width-run.map.width*scale-10,my=28,known=(x,y)=>run.mapMode==='full'||run.discovered[Math.floor(y)*run.map.width+Math.floor(x)];

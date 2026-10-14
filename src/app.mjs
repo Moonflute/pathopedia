@@ -7,7 +7,7 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.22.0';
+const VERSION = '0.23.0';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
  {id:'lab',label:'동정실',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
@@ -31,13 +31,13 @@ const hintCategories = (r=record()) => {
 const DRUG_PAGE_SIZE = 16;
 const shortResult = category => ({ACT:'조건부 활성',ACTIVE:'활성 있음',INACTIVE:'활성 없음',REGIMEN:'요법에 포함',OUTSIDE_REGIMEN:'요법 외'})[category] || category;
 const matchingDrugs = () => panelDrugs().filter(d=>(d.name+' '+d.family).toLowerCase().includes(filter.trim().toLowerCase()));
-let data, sources, treatmentGame, defenseGame, cardGallery, cardInspector, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = resolveAppRoute(location.hash)?.view || 'home', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
+let data, cardDatabase, sources, treatmentGame, defenseGame, cardGallery, cardInspector, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = resolveAppRoute(location.hash)?.view || 'home', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
 let playGame, playLoading, playLoadError='';
 const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.22.0" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.23.0" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -98,7 +98,7 @@ async function loadPlay(){
   const link=document.createElement('link');link.rel='stylesheet';link.href=new URL('./play.css',import.meta.url).href;link.dataset.playStyle='';link.onload=resolve;link.onerror=()=>{link.remove();reject(Error('Play stylesheet unavailable'));};document.head.append(link);
  });
  playLoading=Promise.all([import('./play-ui.mjs'),styleReady]);
- try{const [{createPlayGame}]=await playLoading;playGame=createPlayGame(data);
+ try{const [{createPlayGame}]=await playLoading;playGame=createPlayGame(data,cardDatabase);
   // On a first-ever direct visit, the worker may take control after the game imports.
   if('serviceWorker' in navigator)void navigator.serviceWorker.ready.then(reg=>reg.active?.postMessage('CACHE_PLAY')).catch(()=>{});
  }
@@ -243,7 +243,7 @@ window.addEventListener('hashchange',()=>{if(data&&treatmentGame&&cardGallery)na
 try {
  const responses=await Promise.all([fetch(new URL('../data/organisms.json',import.meta.url)),fetch(new URL('../data/sources.json',import.meta.url)),fetch(new URL('../data/treatment-questions.json',import.meta.url)),fetch(new URL('../data/library.json',import.meta.url))]);
  if(responses.some(r=>!r.ok))throw Error('Data unavailable');
- let treatmentCatalog,cardDatabase;[data,sources,treatmentCatalog,cardDatabase]=await Promise.all(responses.map(r=>r.json()));
+ let treatmentCatalog;[data,sources,treatmentCatalog,cardDatabase]=await Promise.all(responses.map(r=>r.json()));
  // An unfinished illustration catalog must not prevent the treatment game from loading.
  const morphologyResponse=await fetch(new URL('../data/morphology-visuals.json',import.meta.url)).catch(()=>null);
  if(morphologyResponse?.ok){morphologyVisuals=await morphologyResponse.json();morphologyAssets=new Map(morphologyVisuals.assets.map(asset=>[asset.id,asset]));morphologyTaxa=new Map(morphologyVisuals.taxa.map(entry=>[entry.taxonId,entry]));}

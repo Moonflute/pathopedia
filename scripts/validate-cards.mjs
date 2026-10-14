@@ -107,6 +107,10 @@ export function validateCardCatalog(db,data) {
   for(const [id,context]of Object.entries(db.therapyContexts)){
     if(context.id!==id)fail('therapy key/ID mismatch: '+id);
     text(context.context,id+' context');text(context.note,id+' note');
+    for(const key of ['sites','scenarios'])if(context[key]!==undefined){unique(context[key],id+' '+key);if(!context[key].length)fail(id+' has empty '+key);for(const value of context[key])text(value,id+' '+key);}
+    if(context.sites?.some(site=>!['community','urinary','lung','abdomen','bloodstream','soft-tissue'].includes(site)))fail(id+' has unknown clinical site');
+    for(const key of ['learningDefault','requiresCompanion'])if(context[key]!==undefined&&typeof context[key]!=='boolean')fail(id+' has invalid '+key);
+    if(context.preferenceLabel!==undefined)text(context.preferenceLabel,id+' preference label');
     unique(context.recordIds,id+' record IDs');unique(context.drugIds,id+' drug IDs');unique(context.excludedDrugIds || [],id+' excluded drug IDs');
     refs(context.sourceIds,id);
     if(!context.recordIds.length || !context.drugIds.length)fail(id+' has an empty therapy relationship');

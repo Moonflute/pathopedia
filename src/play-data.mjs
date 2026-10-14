@@ -43,17 +43,17 @@ export const STAGES=Object.freeze([
   {id:'uti',name:'URINARY TRACT',label:'카테터 연관 UTI',site:'urinary',count:14,pool:['ecoli','klebs','esbl'],color:'#91bfe6',note:'카테터의 biofilm 보호를 제거하세요. CFZ 요로 한정 결과가 적용됩니다.',source:'CATHETER',modifier:'요로 기원 판정 적용',elite:.04},
   {id:'pneumonia',name:'PNEUMONIA',label:'폐렴 구역',site:'lung',count:16,pool:['pneumo','mssa','legionella','klebs'],color:'#8ad1c0',note:'LEV 보급. Legionella는 세포내 표적이며 폐렴 요법 판정을 사용합니다.',source:'DRAINABLE FOCUS',modifier:'세포내 은신',elite:.05},
   {id:'abdomen',name:'ABDOMINAL',label:'복강 내 감염',site:'abdomen',count:18,pool:['anaerobe','ecoli','esbl','clostridium'],color:'#d8b587',note:'MTZ 보급. 혐기성균과 장내세균의 대응 약제를 전환하고 농양을 배액하세요.',source:'ABSCESS',modifier:'혐기성 · 잔류 독소',elite:.07},
-  {id:'hospital',name:'HOSPITAL',label:'병원 획득 감염',site:'lung',count:18,pool:['mrsa','pseudo','esbl','klebs'],color:'#9eb5ce',note:'녹농균은 주변 적을 보호합니다. 가까이서 F로 biofilm을 해체하세요.',source:'DEVICE BIOFILM',modifier:'이동성 biofilm 보호',elite:.08},
-  {id:'icu',name:'ICU',label:'중환자실',site:'bloodstream',count:20,pool:['vre','mrsa','pseudo','esbl','cmv'],scenarios:['cmv-retinitis'],color:'#bba2d7',note:'LZD·GCV 보급. VRE와 후기 바이러스 사례: 진행 HIV 성인의 CMV 망막염.',source:'INFECTED LINE',modifier:'면역 제거 주기 연장',immuneDelay:1.5,elite:.1},
-  {id:'outbreak',name:'RESISTANT OUTBREAK',label:'내성균 집단 발생',site:'bloodstream',count:22,pool:['kpc','mdr','vre','mrsa','strongyloides'],scenarios:['strongyloidiasis'],color:'#e3a383',note:'CZA·IVM 보급. KPC·DTR AST와 후기 기생충 사례: Strongyloidiasis.',source:'OUTBREAK FOCUS',modifier:'CRE · DTR · VRE',elite:.14},
-  {id:'sepsis',name:'SEPSIS / CORE',label:'패혈증 봉쇄 작전',site:'bloodstream',count:24,pool:['kpc','mdr','vre','mrsa','esbl','cmv','strongyloides'],scenarios:['cmv-retinitis','strongyloidiasis'],color:'#de947f',note:'감염원 3곳과 KPC 군체 보스를 제거하고 EXIT로 복귀하세요.',source:'SEPTIC FOCUS',modifier:'감염원 연동 보스',boss:true,elite:.16}
+  {id:'hospital',name:'HOSPITAL',label:'병원 획득 감염',site:'lung',count:18,pool:['mrsa','pseudo','esbl','klebs','mssa'],color:'#9eb5ce',note:'녹농균은 주변 적을 보호합니다. 가까이서 F로 biofilm을 해체하세요.',source:'DEVICE BIOFILM',modifier:'이동성 biofilm 보호',elite:.08},
+  {id:'icu',name:'ICU',label:'중환자실',site:'bloodstream',count:20,pool:['vre','mrsa','pseudo','esbl','cmv','ecoli','klebs'],scenarios:['cmv-retinitis'],color:'#bba2d7',note:'LZD·GCV 보급. VRE와 후기 바이러스 사례: 진행 HIV 성인의 CMV 망막염.',source:'INFECTED LINE',modifier:'면역 제거 주기 연장',immuneDelay:1.5,elite:.1},
+  {id:'outbreak',name:'RESISTANT OUTBREAK',label:'내성균 집단 발생',site:'bloodstream',count:22,pool:['kpc','mdr','vre','mrsa','strongyloides','ecoli','mssa','klebs'],scenarios:['strongyloidiasis'],color:'#e3a383',note:'CZA·IVM 보급. KPC·DTR AST와 후기 기생충 사례: Strongyloidiasis.',source:'OUTBREAK FOCUS',modifier:'CRE · DTR · VRE',elite:.14},
+  {id:'sepsis',name:'SEPSIS / CORE',label:'패혈증 봉쇄 작전',site:'bloodstream',count:24,pool:['kpc','mdr','vre','mrsa','esbl','cmv','strongyloides','ecoli','mssa','klebs'],scenarios:['cmv-retinitis','strongyloidiasis'],color:'#de947f',note:'일반 감수성균도 섞여 있습니다. 모든 적과 KPC 군체 보스를 제압하고 EXIT로 탈출하세요.',source:'SEPTIC FOCUS',modifier:'감염원 연동 보스',boss:true,elite:.16}
 ]);
 export const WAVES=STAGES;
 export const REWARDS=Object.freeze([
   {id:'infusion',title:'Extended infusion',tag:'PK / PD',text:'β-lactam 유효 명중 후 1.6초 지속 노출. 해당 약제 I 노출 조건 충족. R은 유지.',max:1},
   {id:'exposure',title:'Exposure optimization',tag:'PK / PD',text:'증가 노출이 필요한 I 판정의 투여 조건 충족. 모든 계열의 원본 R 판정은 유지.',max:1},
   {id:'immune',title:'건강한 면역계',tag:'HOST',text:'주변의 약한 기본형을 주기적으로 정리. 캡슐·biofilm·내성형·휴면 포자는 제외.',max:1},
-  {id:'scanner',title:'Rapid diagnostics',tag:'LAB',text:'한 번에 두 단계 검사. 형태 → 배양 → AST를 이동·사격 중 확인.',max:1},
+  {id:'scanner',title:'Rapid diagnostics',tag:'LAB',text:'한 번에 두 단계 검사. 형태 → 배양 → AST 검사 가속. 검사하는 동안에도 이동 가능.',max:1},
   {id:'stewardship',title:'De-escalation',tag:'ECOLOGY',text:'선택압 −35. 좁은 범위 약제 처치의 선택압 감소 강화.'},
   {id:'efficiency',title:'투여 효율 최적화',tag:'RESOURCE',text:'약제 소모 −20%. 감수성 범위는 유지. 최대 3회.',max:3},
   {id:'reserve',title:'확장 보급 카트리지',tag:'AMMO',text:'모든 약제 최대 보유량 +60, 전량 보급. 최대 3회.',max:3},
@@ -68,10 +68,10 @@ export const REWARDS=Object.freeze([
   {id:'unlock_linezolid',title:'Linezolid 보급',tag:'NEW WEAPON',text:'LZD 조기 해금. VRE·MRSA에 대응하는 빠른 beam 무기.',weapon:'linezolid',max:1},
   {id:'inhibitor',title:'Avibactam 조합',tag:'NEW WEAPON',text:'Ceftazidime–avibactam(CZA) 조기 해금. 조합 자체의 AST를 적용하며 다른 β-lactam을 강화하지 않음.',weapon:'ceftazavi',max:1}
 ]);
-export function createPlayCatalog(database){
+export function createPlayCatalog(database,library={}){
   const weapons=WEAPONS.map(spec=>{const original=database.drugs.find(d=>d.id===spec.id);if(!original)throw Error('Missing Play drug: '+spec.id);return {...original,...spec,color:spec.color||DRUG_SPECS.find(d=>d.id===spec.id)?.color||'#9cbbbf'};});
-  const enemies=ENEMIES.map(spec=>{const record=database.records.find(r=>r.id===spec.recordId);if(!record)throw Error('Missing Play isolate: '+spec.recordId);return {...spec,name:record.organism,phenotype:record.phenotype,record,ast:record.susceptibility};});
-  return {weapons,enemies,weaponById:Object.fromEntries(weapons.map(w=>[w.id,w])),enemyById:Object.fromEntries(enemies.map(e=>[e.id,e]))};
+  const enemies=ENEMIES.map(spec=>{const record=database.records.find(r=>r.id===spec.recordId);if(!record)throw Error('Missing Play isolate: '+spec.recordId);return {...spec,name:record.organism,phenotype:record.phenotype,record,ast:record.susceptibility,therapies:Object.values(library.therapyContexts||{}).filter(c=>c.recordIds.includes(record.id))};});
+  return {weapons,enemies,sources:library.sources||{},weaponById:Object.fromEntries(weapons.map(w=>[w.id,w])),enemyById:Object.fromEntries(enemies.map(e=>[e.id,e]))};
 }
 // Seeded room placement, a spanning tree, then extra links for flanking routes.
 // Inspired by Bob Nystrom's Rooms and Mazes article; original implementation, no runtime dependency.
@@ -107,13 +107,48 @@ export function createMap(stageIndex=0,seed=31){
   }
   // Free-standing cover cannot seal a room or its doorway. Keep the entry sightline empty.
   for(const r of rooms.slice(1)){const b=r.bounds;if(b.w>=6&&b.h>=6&&random()<.8){const x=b.x+1+int(0,1)*(b.w-4),y=b.y+1+int(0,1)*(b.h-4);cells[y*width+x]=2;if(b.w>=8)cells[y*width+x+1]=2;}}
-  for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(roomCells[y*width+x]<0){let nearest=0,best=Infinity;for(const r of rooms){const d=(x-r.x)**2+(y-r.y)**2;if(d<best){best=d;nearest=r.id;}}roomCells[y*width+x]=nearest;cells[y*width+x]=1+(nearest%3);}
+  for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(roomCells[y*width+x]<0){let nearest=0,best=Infinity;for(const r of rooms){const d=(x-r.x)**2+(y-r.y)**2;if(d<best){best=d;nearest=r.id;}}roomCells[y*width+x]=nearest;cells[y*width+x]=1+((nearest+stageIndex)%6);}
   const spawn={x:3.5,y:3.5,angle:0},dist=new Int16Array(cells.length).fill(-1),queue=[3*width+3];dist[queue[0]]=0;
   for(let head=0;head<queue.length;head++){const i=queue[head];for(const n of [i-1,i+1,i-width,i+width])if(n>=0&&n<cells.length&&!cells[n]&&dist[n]<0){dist[n]=dist[i]+1;queue.push(n);}}
   const point=(id,dx=0,dy=0)=>{const r=rooms[id],b=r.bounds,list=[];for(let y=b.y;y<b.y+b.h;y++)for(let x=b.x;x<b.x+b.w;x++)if(!cells[y*width+x]&&dist[y*width+x]>=0)list.push({x:x+.5,y:y+.5});list.sort((a,b)=>Math.hypot(a.x-r.x-dx,a.y-r.y-dy)-Math.hypot(b.x-r.x-dx,b.y-r.y-dy));return list[0];};
   const ranked=rooms.slice(1).map(r=>({r,p:point(r.id)})).sort((a,b)=>dist[Math.floor(b.p.y)*width+Math.floor(b.p.x)]-dist[Math.floor(a.p.y)*width+Math.floor(a.p.x)]);
   const exitRoom=ranked[0].r,exit=point(exitRoom.id,exitRoom.bounds.w/2-1,exitRoom.bounds.h/2-1),sourceRooms=[ranked[Math.floor(ranked.length/2)].r,exitRoom,...(stage.boss?[ranked.at(-1).r]:[])];
   const sourcePositions=sourceRooms.map(r=>point(r.id,-1,0)),pickups=[{x:5.5,y:2.5,kind:'supply'},...ranked.slice(0,5).map(({r},i)=>({...point(r.id,1,-1),kind:['supply','health','culture','health','supply'][i]}))];
-  return {id:stage.id+'-'+normalizeSeed(seed),name:stage.name,layout:name+' / '+rooms.length+' ROOMS',site:stage.site,scenarios:stage.scenarios||[],color:stage.color,width,height,cells,roomCells,rooms,spawn,exit,boss:stage.boss?point(exitRoom.id,0,1):null,portals:rooms.map(r=>point(r.id)),
+  return {id:stage.id+'-'+normalizeSeed(seed),theme:(normalizeSeed(seed)+stageIndex)%4,name:stage.name,layout:name+' / '+rooms.length+' ROOMS',site:stage.site,scenarios:stage.scenarios||[],color:stage.color,width,height,cells,roomCells,rooms,spawn,exit,boss:stage.boss?point(exitRoom.id,0,1):null,portals:rooms.map(r=>point(r.id)),
     sources:sourcePositions.map((p,id)=>({...p,id,label:String.fromCharCode(65+id)+' / '+stage.source,active:true})),pickups:pickups.map((p,id)=>({...p,id,active:true,cooldown:0}))};
+}
+
+// Optional CC0 audio; only the selected track is fetched after MUSIC is enabled.
+export const MUSIC_TRACKS=Object.freeze([
+ {id:'hallow',file:'hallow-quest-8bit.ogg',name:'Hallow Quest',mood:'긴장 / 8-bit',author:'Zane Little Music',source:'https://opengameart.org/content/spooky-action-loop-hallow-quest'},
+ {id:'fields',file:'flowerbed-fields.ogg',name:'Flowerbed Fields',mood:'밝은 탐험',author:'Zane Little Music',source:'https://opengameart.org/content/flowerbed-fields-loop'},
+ {id:'honey',file:'honey-bear.ogg',name:'Honey Bear',mood:'차분 / 휴식',author:'TinyWorlds',source:'https://opengameart.org/content/honey-bear'},
+ {id:'shrine',file:'dark-shrine.ogg',name:'Dark Shrine',mood:'불길한 실험실',author:'qubodup / yd',source:'https://opengameart.org/content/dark-shrine-loop'},
+ {id:'battle',file:'chiptune-battle.ogg',name:'Chiptune Battle',mood:'전투 / 생존',author:'pmiller',source:'https://opengameart.org/content/chiptune-battle-music'}
+]);
+export const AUGMENTS=Object.freeze([
+ {id:'cephaPulse',title:'Cephalosporin 위성',tag:'AUTO / CRO',text:'주변에 CRO 펄스. 감수성·노출·부위 조건을 충족한 적만 공격하고 선택압이 증가합니다.',max:5},
+ {id:'isolation',title:'격리 구역',tag:'CONTROL',text:'주변 3m에 감속장을 전개합니다. 강화 시 범위와 감속이 증가합니다.',max:4},
+ {id:'magnet',title:'검체 수집 드론',tag:'PICKUP',text:'경험치 흡수 범위를 넓힙니다. 벽 뒤의 검체는 통과하지 않습니다.',max:4},
+ {id:'fastReload',title:'신속 교체 장치',tag:'RELOAD',text:'탄창 교체가 더 빨라집니다. 원래 감수성은 바뀌지 않습니다.',max:4},
+ {id:'recovery',title:'회복 프로토콜',tag:'HOST',text:'지속적인 숙주 회복. 호중구 감소 숙주는 회복 주기가 길어집니다.',max:4},
+ {id:'grenadier',title:'환경 소독 장비',tag:'THROWABLE',text:'소독탄 +2, 소독장 지속시간 증가. 휴면 포자·기생충에는 효과가 없습니다.',max:4},
+ {id:'exposure',title:'노출 최적화',tag:'PK / PD',text:'I 판정의 증가 노출 조건을 충족합니다. R은 유지됩니다.',max:1},
+ {id:'infusion',title:'Extended infusion',tag:'PK / PD',text:'유효한 β-lactam 사격에 지속 노출을 더합니다. R에는 효과가 없습니다.',max:1},
+ {id:'rate',title:'자동 주입 장치',tag:'FIRE RATE',text:'약제 사격 간격 감소. 선택압과 탄창은 계속 관리해야 합니다.',max:5},
+ {id:'efficiency',title:'투여 효율',tag:'RESOURCE',text:'한 발에 소모하는 약제량 감소. 탄창과 예비 약제를 더 오래 사용합니다.',max:5},
+ {id:'support',title:'숙주 안정화',tag:'SUPPORT',text:'체력 +50. 생존 장비는 유지하고 즉시 회복합니다.'},
+ {id:'reserve',title:'예비 약제 보급',tag:'SUPPLY',text:'예비 약제 용량 +60 및 모든 약제 충전. 소독탄도 1개 보급합니다.'},
+ {id:'stewardship',title:'항생제 관리',tag:'PRESSURE',text:'선택압 −35 · 체력 +20. 좁은 약제로 처치하면 선택압이 더 감소합니다.'}
+]);
+// Survival is a mixed-case arena: regimen targets retain explicitly authored contexts.
+export const SURVIVAL_CASES=Object.freeze({legionella:{site:'lung',scenarios:[]},anaerobe:{site:'abdomen',scenarios:[]},cmv:{site:'bloodstream',scenarios:['cmv-retinitis']},strongyloides:{site:'bloodstream',scenarios:['strongyloidiasis']}});
+export function createSurvivalMap(seed){
+ const map=createMap(4,seed),random=seededRandom(normalizeSeed(seed)^0x51a7f0),w=map.width,h=map.height;
+ // A broad outer loop and cross lanes let a horde circulate; retain cover and a safe spawn.
+ for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++)if(x>=9&&(y<5||y>=h-5||x>=w-5||Math.abs(y-h/2)<1.5||Math.abs(x-w/2)<1.5))map.cells[y*w+x]=0;
+ map.id='survival-'+normalizeSeed(seed);map.name='ENDLESS / MIXED CASES';map.layout='CIRCUIT / '+map.rooms.length+' SECTORS';map.site='bloodstream';map.scenarios=[];map.sources=[];map.boss=null;
+ const spots=[];for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++)if(!map.cells[y*w+x]&&x>=9)spots.push({x:x+.5,y:y+.5,room:map.roomCells[y*w+x]});
+ for(let i=spots.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[spots[i],spots[j]]=[spots[j],spots[i]];}map.spawnSpots=spots;
+ map.pickups=[{x:5.5,y:2.5,kind:'supply'},...spots.filter((_,i)=>i%Math.max(1,Math.floor(spots.length/8))===0).slice(0,8).map((p,i)=>({...p,kind:i%2?'health':'supply'}))].map((p,id)=>({...p,id,active:true,cooldown:0}));return map;
 }

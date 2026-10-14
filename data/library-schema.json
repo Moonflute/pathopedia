@@ -597,6 +597,44 @@
         },
         "combination": {
           "type": "boolean"
+        },
+        "sites": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "community",
+              "urinary",
+              "lung",
+              "abdomen",
+              "bloodstream",
+              "soft-tissue"
+            ]
+          },
+          "description": "Clinical sites where this explicitly named context is relevant; patient/AST conditions still apply."
+        },
+        "scenarios": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "learningDefault": {
+          "type": "boolean",
+          "description": "Fallback teaching example when the current site does not match; never broadens applicability."
+        },
+        "preferenceLabel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requiresCompanion": {
+          "type": "boolean",
+          "description": "Only this pathogen-directed component is listed; the complete clinical regimen requires additional coverage."
         }
       },
       "description": "Clinical-context preference is authored independently of qualitative susceptibility; no metadata means preference is unknown."

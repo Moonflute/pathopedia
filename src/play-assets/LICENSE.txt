@@ -1,8 +1,27 @@
-Hallow Quest (8-bit version)
-Music by Zane Little Music
-Source: https://opengameart.org/content/spooky-action-loop-hallow-quest
-Original download: https://opengameart.org/sites/default/files/8_bit.zip
-License: CC0 1.0 Universal — https://creativecommons.org/publicdomain/zero/1.0/
-Retrieved: 2026-10-14
-The original Hallow Quest.ogg is included unchanged as hallow-quest-8bit.ogg.
-Loaded only when the player enables music.
+Pathopedia Play music — CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+Retrieved 2026-10-14. Original OGG loops included unchanged.
+Only the selected track loads when MUSIC is enabled; no music is precached.
+
+Hallow Quest — Zane Little Music
+File: hallow-quest-8bit.ogg
+Source / license declaration: https://opengameart.org/content/spooky-action-loop-hallow-quest
+
+Flowerbed Fields — Zane Little Music
+File: flowerbed-fields.ogg
+Source / license declaration: https://opengameart.org/content/flowerbed-fields-loop
+
+Honey Bear — TinyWorlds
+File: honey-bear.ogg
+Source / license declaration: https://opengameart.org/content/honey-bear
+
+Dark Shrine — qubodup / yd
+File: dark-shrine.ogg
+Source / license declaration: https://opengameart.org/content/dark-shrine-loop
+
+Chiptune Battle — pmiller
+File: chiptune-battle.ogg
+Source / license declaration: https://opengameart.org/content/chiptune-battle-music
+
+Dark Shrine is qubodup’s remix of yd’s Shrine, included under the CC0 license declared on the remix page.
+Hallow Quest original archive: https://opengameart.org/sites/default/files/8_bit.zip

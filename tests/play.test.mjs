@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createPlayCatalog,createMap,WAVES,STAGES,HOSTS,REWARDS,roomAt} from '../src/play-data.mjs';
-import {newRun,tick,coverage,applyHit,spawnEnemy,fire,scan,visibleLabel,controlSource,switchWeapon,protectedBySource,canStand,moveBody,lineOfSight,chooseReward,resistanceChance,MAX_ENEMIES,canDetect,maxAmmo,ammoCount,isWeaponReady,combatCoverage,rewardOptions,cycleWeapon,reload,reserveCount,magazineCapacity,scanHints,equipWeapon,selectScanner,revealMap,canExtract} from '../src/play-engine.mjs';
+import {newRun,tick,coverage,applyHit,spawnEnemy,fire,scan,visibleLabel,controlSource,switchWeapon,protectedBySource,canStand,moveBody,lineOfSight,chooseReward,resistanceChance,MAX_ENEMIES,canDetect,maxAmmo,ammoCount,isWeaponReady,combatCoverage,rewardOptions,cycleWeapon,reload,reserveCount,magazineCapacity,scanHints,equipWeapon,selectScanner,revealMap,canExtract,targetEnemy,throwGrenade,stageReport,chooseAugment,augmentOptions,MAX_SURVIVAL_ENEMIES} from '../src/play-engine.mjs';
 const data=JSON.parse(readFileSync(new URL('../data/organisms.json',import.meta.url),'utf8'));
-const catalog=createPlayCatalog(data);
+const library=JSON.parse(readFileSync(new URL('../data/library.json',import.meta.url),'utf8'));
+const catalog=createPlayCatalog(data,library);
 const setup=(options={})=>{const r=newRun(catalog,{seed:31,...options});r.status='running';r.spawnTimer=9999;return r;};
 
 test('Play uses the existing eleven drug cards and fifteen fixed isolates without reauthoring AST',()=>{
@@ -69,7 +70,7 @@ test('AI detects, chases, attacks, dies, and recycles the enemy slot',()=>{
  applyHit(r,e,catalog.weaponById.ampicillin,1000);assert.equal(e.state,'Dead');const hp=r.player.hp;for(let i=0;i<15;i++)tick(r,{},.05);assert.equal(e.active,false);assert.equal(r.player.hp,hp);
 });
 
-test('reward choice happens once; paused and terminal runs freeze; final extraction needs source control',()=>{
+test('reward choice happens once; paused and terminal runs freeze; extraction still needs the exit',()=>{
  const r=setup();r.spawned=WAVES[0].count;r.map.sources.forEach(s=>s.active=false);Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.status,'reward');assert.equal(r.rewards.length,3);const id=r.rewards[0].id;assert.ok(chooseReward(r,id));assert.equal(chooseReward(r,id),false);assert.equal(r.wave,1);assert.equal(r.status,'paused');const time=r.time;tick(r,{forward:1});assert.equal(r.time,time);
  r.status='running';r.wave=WAVES.length-1;r.spawned=WAVES.at(-1).count;tick(r);assert.equal(r.status,'running');r.map.sources.forEach(s=>s.active=false);Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.status,'won');const finished=r.time;tick(r);assert.equal(r.time,finished);
 });
@@ -154,8 +155,9 @@ test('inhibitor reward unlocks the named CZA combination without altering any or
  const r=setup();r.status='reward';r.rewards=[REWARDS.find(r=>r.id==='inhibitor')];assert.ok(chooseReward(r,'inhibitor'));assert.equal(r.unlocked[8],true);assert.equal(coverage(catalog,'meropenem','kpc').factor,0);assert.equal(coverage(catalog,'ceftazavi','kpc').factor,1);assert.equal(coverage(catalog,'ceftazavi','mrsa').factor,0);
 });
 
-test('extraction requires sources and a distant exit, allows living enemies, and resets the next stage',()=>{
- const r=setup();r.spawned=STAGES[0].count;const survivor=spawnEnemy(r,'mssa',{x:6.5,y:3.5});tick(r);assert.equal(r.status,'running');r.map.sources.forEach(s=>s.active=false);r.player.x=21.5;tick(r);assert.equal(r.status,'running');Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.status,'reward');assert.notEqual(survivor.state,'Dead');assert.ok(Math.hypot(r.map.exit.x-r.map.spawn.x,r.map.exit.y-r.map.spawn.y)>12);const id=r.rewards[0].id,oldMap=r.map;chooseReward(r,id);assert.notEqual(r.map,oldMap);assert.equal(r.map.site,'urinary');assert.ok(r.map.sources.every(s=>s.active));assert.equal(r.pending.length,STAGES[1].count);assert.equal(r.energy[0],maxAmmo(r));assert.equal(r.status,'paused');
+test('extraction requires all enemies, leaves optional sources intact, and records the sector before resetting',()=>{
+ const r=setup();r.spawned=STAGES[0].count;const survivor=spawnEnemy(r,'mssa',{x:6.5,y:3.5});Object.assign(r.player,r.map.exit);r.messageTime=0;tick(r);assert.equal(r.status,'running');assert.equal(canExtract(r),false);assert.match(r.message,/적이 남아 있습니다/);
+ applyHit(r,survivor,catalog.weaponById.cefazolin,9999);assert.ok(canExtract(r));tick(r);assert.equal(r.status,'reward');assert.ok(r.map.sources.every(s=>s.active));assert.equal(r.lastReport.rows[0].kills,1);const oldMap=r.map;chooseReward(r,r.rewards[0].id);assert.notEqual(r.map,oldMap);assert.equal(r.map.site,'urinary');assert.equal(r.pending.length,STAGES[1].count);assert.equal(r.status,'paused');assert.deepEqual(r.kindReports,{});
 });
 
 test('single-stage practice can extract, and the KPC boss keeps its resistant AST across phases',()=>{
@@ -169,7 +171,7 @@ test('reward choices exclude already supplied weapons and remain available after
 
 test('easy scan hints use current coverage, host and target, and never reveal hints in Hard',()=>{
  const r=setup({hints:true}),e=spawnEnemy(r,'ecoli',{x:6.5,y:3.5});assert.deepEqual(scanHints(r),[]);assert.ok(scan(r));assert.deepEqual(scanHints(r),[0,2,4]);
- r.host='allergy';assert.deepEqual(scanHints(r),[2,4]);r.player.angle=Math.PI;assert.deepEqual(scanHints(r),[]);r.player.angle=0;r.hintTime=0;assert.deepEqual(scanHints(r),[]);
+ r.host='allergy';assert.deepEqual(scanHints(r),[2,4]);r.player.angle=Math.PI;assert.deepEqual(scanHints(r),[]);r.player.angle=0;r.hintTime=0;assert.deepEqual(scanHints(r),[2,4]);e.scanned=false;assert.deepEqual(scanHints(r),[]);
  const h=setup({hard:true,hints:true});spawnEnemy(h,'ecoli',{x:6.5,y:3.5});scan(h);assert.equal(h.hints,false);assert.deepEqual(scanHints(h),[]);
  const d=setup({stage:3,hints:true});spawnEnemy(d,'clostridium',{x:6.5,y:3.5});scan(d);assert.deepEqual(scanHints(d),[]);
 });
@@ -200,11 +202,11 @@ test('map and encounter seeds reproduce a run while other seeds change both geom
  const a=newRun(catalog,{seed:'ward-7'}),b=newRun(catalog,{seed:'ward-7'}),c=newRun(catalog,{seed:'ward-8'});
  assert.equal(a.seed,b.seed);assert.deepEqual(a.map.cells,b.map.cells);assert.deepEqual(a.pending,b.pending);assert.notDeepEqual(a.map.cells,c.map.cells);assert.notDeepEqual(a.pending,c.pending);
 });
-test('scanner occupies slot 0, scopes and progressively scans, then immediately returns to the same weapon',()=>{
+test('holding the offhand scanner progressively scans without consuming ammo and release returns to the same gun',()=>{
  const r=setup({hard:true,hints:true});spawnEnemy(r,'mrsa',{x:6.5,y:3.5});fire(r);const rounds=ammoCount(r,0);selectScanner(r);assert.equal(fire(r),false);assert.equal(reload(r),false);
  for(let n=0;n<4;n++)tick(r,{scope:true},.05);assert.equal(r.intel.mrsa,0);assert.ok(r.scoped);
  for(let n=0;n<29;n++)tick(r,{scope:true},.05);assert.equal(r.intel.mrsa,3);assert.equal(ammoCount(r,0),rounds);assert.deepEqual(scanHints(r),[]);
- assert.ok(switchWeapon(r,0));assert.equal(r.scannerActive,false);assert.equal(r.scoped,false);tick(r,{scope:true},.05);assert.equal(r.scoped,false);
+ tick(r,{scope:false},.05);assert.equal(r.scannerActive,false);assert.equal(r.scoped,false);assert.equal(r.weapon,0);assert.equal(ammoCount(r,0),rounds);tick(r,{scope:true},.05);assert.equal(r.scoped,true);
 });
 test('exploration reveals only current sight rays, retains history and cannot see through a wall',()=>{
  const r=setup();r.map.cells[3*r.map.width+5]=1;r.discovered.fill(0);revealMap(r);
@@ -212,7 +214,41 @@ test('exploration reveals only current sight rays, retains history and cannot se
  r.player.angle=Math.PI;revealMap(r);assert.equal(r.discovered[3*r.map.width+2],1);assert.equal(r.discovered[3*r.map.width+5],1);
  assert.ok(r.discovered.some(n=>!n));assert.equal(newRun(catalog,{mapMode:'full'}).mapMode,'full');assert.equal(newRun(catalog,{mapMode:'invalid'}).mapMode,'explore');
 });
-test('final exit stays locked until the boss and sources are handled; normal enemies are optional',()=>{
- const r=setup({stage:7,mission:'single'});r.map.sources.forEach(s=>s.active=false);Object.assign(r.player,r.map.exit);tick(r);assert.equal(canExtract(r),false);assert.equal(r.status,'running');
- const boss=spawnEnemy(r,'kpc',{x:6.5,y:3.5},false,{boss:true});applyHit(r,boss,catalog.weaponById.ceftazavi,9999);assert.ok(canExtract(r));tick(r);assert.equal(r.status,'won');
+test('final exit stays locked while any opponent remains, including the resistant boss',()=>{
+ const r=setup({stage:7,mission:'single'});r.spawnTimer=0;tick(r);Object.assign(r.player,r.map.exit);assert.equal(canExtract(r),false);
+ for(const e of r.enemies.filter(e=>e.active)){e.biofilm=false;const w=catalog.weapons.find(w=>combatCoverage(r,w,e.kind).factor);applyHit(r,e,w,99999);}assert.ok(canExtract(r));tick(r);assert.equal(r.status,'won');assert.ok(r.map.sources.every(s=>s.active));
+});
+
+test('vertical looking cannot shoot or scan an enemy below the reticle and resets at the next stage',()=>{
+ const r=setup(),e=spawnEnemy(r,'ecoli',{x:6.5,y:3.5});r.player.pitch=.55;assert.equal(targetEnemy(r),null);assert.equal(scan(r),false);fire(r);assert.equal(e.hp,e.maxHp);r.player.pitch=0;assert.equal(targetEnemy(r),e);
+ r.status='reward';r.rewards=rewardOptions(r);chooseReward(r,r.rewards[0].id);assert.equal(r.player.pitch,0);
+});
+
+test('late pressure escalation preserves a susceptible cohort and covers every scheduled type',()=>{
+ for(const stage of [5,6,7]){const r=setup({stage});r.spawnTimer=0;r.pressure=95;tick(r);const ordinary=r.enemies.filter(e=>e.active&&!catalog.enemyById[e.kind].resistant&&!catalog.enemyById[e.kind].viral&&!catalog.enemyById[e.kind].parasite);assert.ok(ordinary.length>=Math.ceil(STAGES[stage].count*.3));}
+});
+
+test('stage review separates targeted effective, blocked and missed shots, uses shared clinical contexts',()=>{
+ const r=setup(),e=spawnEnemy(r,'mrsa',{x:6.5,y:3.5});fire(r);switchWeapon(r,3);r.switchTime=0;fire(r);r.player.angle=Math.PI;switchWeapon(r,2);r.switchTime=0;fire(r);
+ const report=stageReport(r),row=report.rows[0];assert.equal(report.shots,3);assert.equal(report.misses,1);assert.equal(row.effective,1);assert.equal(row.blocked,1);assert.equal(row.weapons.ampicillin.effective,0);assert.equal(row.weapons.vancomycin.effective,1);
+ for(const profile of catalog.enemies){assert.ok(profile.therapies.length);for(const context of profile.therapies){assert.equal(context,library.therapyContexts[context.id]);assert.ok(context.sourceIds.every(id=>catalog.sources[id]?.url.startsWith('https://')));}}
+});
+
+test('environmental throwable is pooled, finite, wall blocked and does not kill dormant spores or parasites',()=>{
+ const r=setup({stage:6}),e=spawnEnemy(r,'mssa',{x:5.5,y:3.5}),spore=spawnEnemy(r,'clostridium',{x:5.5,y:4.5}),worm=spawnEnemy(r,'strongyloides',{x:5.5,y:5.5});r.player.angle=Math.PI;assert.ok(throwGrenade(r));assert.equal(r.grenades,2);assert.equal(throwGrenade(r),false);
+ const f=r.fields[0];Object.assign(f,{active:true,x:5.5,y:3.5,radius:3,life:4.5});const hp=e.hp;tick(r,{},.05);assert.ok(e.hp<hp);assert.equal(spore.hp,spore.maxHp);assert.equal(worm.hp,worm.maxHp);assert.equal(r.shots,0);
+ r.map.cells[3*r.map.width+4]=1;f.x=3.5;e.state='Idle';const before=e.hp;tick(r,{},.05);assert.equal(e.hp,before);r.status='paused';const life=f.life;tick(r,{},.05);assert.equal(f.life,life);
+});
+
+test('endless waves use bounded pools, delayed specialists, valid per-case coverage and three augments',()=>{
+ const r=setup({mission:'survival'});r.spawnTimer=0;r.player.hp=100000;tick(r);assert.equal(r.enemies.length,MAX_SURVIVAL_ENEMIES);assert.equal(r.spawned,1);assert.ok(r.enemies.every(e=>!e.active||(!['cmv','strongyloides'].includes(e.kind)&&Math.hypot(e.x-r.player.x,e.y-r.player.y)>=5.5)));
+ const pools=[r.enemies.length,r.orbs.length,r.fields.length,r.thrown.length];r.time=425;r.spawnTimer=0;tick(r);assert.equal(r.wave,6);assert.ok(r.slots.includes(9)&&r.slots.includes(10));assert.equal(combatCoverage(r,catalog.weaponById.ganciclovir,'cmv').factor,1);assert.equal(combatCoverage(r,catalog.weaponById.metronidazole,'anaerobe').factor,1);assert.equal(combatCoverage(r,catalog.weaponById.levofloxacin,'legionella').factor,1);
+ r.xp=r.xpNeeded;tick(r);assert.equal(r.status,'augment');assert.equal(r.augmentChoices.length,3);assert.ok(chooseAugment(r,r.augmentChoices[0].id));assert.equal(r.status,'paused');assert.deepEqual([r.enemies.length,r.orbs.length,r.fields.length,r.thrown.length],pools);
+ for(const id of ['cephaPulse','isolation','magnet','fastReload','recovery','grenadier','exposure','infusion','rate','efficiency'])r.upgrades[id]=99;assert.equal(augmentOptions(r).length,3);
+});
+
+test('automatic CRO respects resistance, grants no manual accuracy and orb collection advances levels',()=>{
+ const r=setup({mission:'survival'});r.upgrades.cephaPulse=4;r.pulseTime=0;r.player.angle=Math.PI;
+ const resistant=spawnEnemy(r,'mrsa',{x:5.5,y:3.5}),susceptible=spawnEnemy(r,'ecoli',{x:6,y:3.5});tick(r,{},.05);assert.equal(resistant.hp,resistant.maxHp);assert.equal(susceptible.state,'Dead');assert.equal(r.effective,0);assert.equal(stageReport(r).rows.find(row=>row.kind==='ecoli').automaticKills,1);assert.ok(r.orbs.some(o=>o.active));
+ const orb=r.orbs.find(o=>o.active);Object.assign(orb,{x:r.player.x,y:r.player.y,value:r.xpNeeded});tick(r,{},.05);assert.equal(r.status,'augment');assert.equal(r.level,2);
 });
