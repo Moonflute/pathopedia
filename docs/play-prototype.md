@@ -1,16 +1,22 @@
-# Play: Isolation Protocol — v0.24
+# Play: Isolation Protocol — v0.26
 
 `#play` is a single-player Canvas 2D raycasting FPS inside Pathopedia. It reuses the existing MIT [Kontra.js 10.0.2](https://github.com/straker/kontra) GameLoop, encyclopedia AST and card inspector. There is no new package, 3D engine or physics engine. Music is optional and loaded one track at a time.
 
 ## Campaign and maps
 
-Eight stages: Community, catheter-associated UTI, Pneumonia, Intra-abdominal infection, Hospital-acquired infection, ICU, Resistant outbreak and Sepsis. Each constructs a seeded 30–38 × 26–32 tile map on entry. Non-overlapping rooms connect through a spanning tree plus flanking routes, with varied proportions and cover. The original generator is informed by [Bob Nystrom's Rooms and Mazes](https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/); it adds no runtime dependency.
+Eight campaign stages retain their authored enemy pools and clinical sites. A 52×38 tile facility contains six authored spaces: reception, culture hall, observation deck, focus chamber, recovery and containment. Seeds vary room dimensions, recessed bays, side approaches and encounter placement. The same map language also supports the two independent themes; it is one representative facility design, not a large collection of unrelated maps.
 
-A number or text seed reproduces geometry and starting encounters. Blank generates a new run. The campaign schedules 144 opponents and 17 optional sources; single-stage practice can start at any sector. Kill every opponent, including the final KPC boss, then reach the distant EXIT. Arriving early reports the remaining enemy count. Sources weaken biofilm and grant supplies rather than acting as collection-based exit gates.
+Three- to four-tile routes provide room to observe, switch drugs and retreat. The observation deck has five real 0.12-unit steps to a 0.6-unit upper floor. Floor/ceiling heights are shared by rendering, navigation, collision, aiming, projectiles and effects. Geometry is 2.5D and never stacks traversable rooms on top of each other. Beating the middle encounter opens a shortcut to the entry wing. No key collection is required.
 
-Every campaign enemy starts outside the entry room and sightline, at least six tiles away. All fit in the 24-slot pool and are materialized before exploration. At least ceil(stage count × 0.30) encounters are ordinary profiles protected from pressure substitutions. Later stages retain susceptible opponents. Pressure crossing 40/70 can replace only idle, undiscovered, hidden encounters; visible opponents never transform.
+The design uses landmarks, repeated views of familiar spaces and contrasting light levels, informed by [John Romero's discussion of DOOM](https://www.stuff.tv/features/stuff-meets-doom-and-wolfenstein-3d-creator-john-romero/). Weapon selection remains based on pathogen/AST/site, never room shape.
 
-Six generated wall materials (tile, masonry, observation window, vent, pipes, isolation panel) combine with four palettes. All wall, enemy and weapon atlases are created locally. No textures or models are downloaded.
+A number or text seed reproduces geometry and starting encounters. The campaign schedules 144 opponents, including one middle encounter per stage, MSSA and Pseudomonas stage bosses in Community/Hospital, and the final KPC boss. Two optional infection sources per stage weaken protection and grant supplies. Kill all opponents and reach EXIT; sources are not collection gates.
+
+Every campaign enemy starts outside the entry room and sightline, at least six tiles away. The 24-slot pool fits the full stage. At least ceil(stage count × 0.30) scheduled opponents remain ordinary profiles protected from pressure substitutions. Pressure crossing 40/70 can replace only idle, undiscovered, hidden encounters; visible opponents never transform.
+
+General enemy sprite height is 0.68 (previously 0.9), chase speed is 78% of the previous profile speed, and acquisition takes 0.6 seconds. Separation velocity is normalized; a 0.3-second melee grace prevents simultaneous overlapping hits. Elite, middle and stage bosses have distinct silhouettes/sizes. Higher stats never change susceptibility. Major encounters telegraph attacks, change patterns at half HP and award health, ammunition and a canister; their HUD appears only during engagement.
+
+Seven small unmodified Freedoom PNGs provide five materials, a floor and a medical pickup. They are lazily loaded into local atlases and combined with authored door trim, signs, static light levels, terminals, specimen racks and other procedural sprites. [Source, revision, copyright and license](../src/vendor/freedoom/README.md) accompany the assets. No runtime package or heavyweight rendering engine is added.
 
 ## Controls and display
 
@@ -19,7 +25,7 @@ Six generated wall materials (tile, masonry, observation window, vent, pipes, is
 - Hold right mouse to use the separate left offhand scanner; release to restore the same gun. It does not consume a numbered slot or ammunition.
 - F source control; Esc/Tab pause; B pause and open cards. Without pointer lock, drag to aim; arrow keys turn/look. Touch has joystick, drag look, hold scanner, throw, fire, reload, jump and dash.
 
-Vertical view shifts the raycasting horizon while keeping the reticle fixed. Hits and scans check the billboard's vertical extent. Looking at the ceiling cannot hit an enemy below the reticle. Collision stays on a flat grid; jumping cannot pass through walls, but can avoid low projectiles and floor toxin. This is 2.5D, without stacked floors or full 3D pitch geometry.
+Vertical view shifts the raycasting horizon while keeping the reticle fixed. Hits and scans check the billboard's vertical extent. Looking at the ceiling cannot hit an enemy below the reticle. Collision follows tile floor heights, permits stair steps, blocks taller ledges and ceilings, and uses gravity after a drop. Jumping cannot pass through walls. Projectiles interpolate height toward the target. This is 2.5D, without stacked floors or full 3D pitch geometry.
 
 The viewport fills available space with fullscreen/theater support; its aspect adapts to the browser while preserving vertical visibility on wide displays. Nine compact drug slots sit centrally below the view, alongside the offhand scanner, above a red 15px HP bar. Survival adds a small XP meter. Names/HP follow visible sprite heads and honor Hard information levels. Purple cocci/rods denote Gram-positive profiles, pink Gram-negative, gray anaerobes and green Pseudomonas. These are stylized morphology/Gram conventions, not culture photographs. The lower-right gun has authored perspective, both hands, recoil and reload movement.
 
@@ -35,7 +41,7 @@ Twelve weapons join original records: AMP, CFZ, CRO, VAN, MEM, LEV, MTZ, LZD, CZ
 
 ## Coverage and clinical boundaries
 
-`createPlayCatalog(database, library)` joins the existing 17 fixed isolates/clinical profiles and 11 drugs. Names, families and AST objects remain shared with the encyclopedia. R and INACTIVE always cause zero antibiotic damage, before shield, HP or DOT multipliers. Unknown pairs remain inactive. OUTSIDE_REGIMEN is not relabeled R. I requires increased exposure; CFZ starts with it, infusion supplies beta-lactam exposure and the broader optimization upgrade supplies other classes. CFZ urinary-only results remain site-limited. ACTIVE and REGIMEN are not relabeled S.
+`createPlayCatalog(database, library)` joins the existing 17 fixed isolates/clinical profiles and 12 drugs. Names, families and AST objects remain shared with the encyclopedia. R and INACTIVE always cause zero antibiotic damage, before shield, HP or DOT multipliers. Unknown pairs remain inactive. OUTSIDE_REGIMEN is not relabeled R. I requires increased exposure; CFZ starts with it, infusion supplies beta-lactam exposure and the broader optimization upgrade supplies other classes. CFZ urinary-only results remain site-limited. ACTIVE and REGIMEN are not relabeled S.
 
 Capsule absorbs damage, biofilm/source protection reduces incoming damage and F disrupts it. Intracellular targets have a cell barrier; LEV reaches that target. Dormant spores resist antibiotic damage until germination, can be removed with F, and vegetative toxin producers leave floor hazards. CMV's authored case is advanced-HIV adult retinitis, with GCV suppressing replication; Strongyloides uses its named treatment scenario and IVM slows the larvae. In the campaign and endless mode these cases enter only in later tiers; independent themes issue their counters from the start. KPC boss phases do not change its original AST.
 
@@ -51,9 +57,11 @@ Primary references include IDSA/ATS, CDC, NIH and SIS: MRSA lung versus bloodstr
 
 ## Endless survival
 
-ENDLESS is a separate mixed-case arena with broad circulation loops. Enemies spawn at least six tiles away outside the forward sightline, from precomputed safe positions. The pool caps at 40; one in three attempts selects an ordinary profile independently of resistance pressure. Threat tier increases every 70 seconds, issuing drugs before their cases appear. Late HP scaling never changes coverage. The exit permits optional extraction after 90 seconds; otherwise the run continues until death.
+ENDLESS is a separate mixed-case arena with three circulation routes through a broad commons and surrounding wings. Enemies spawn at least six tiles away outside the forward sightline, from precomputed safe positions. The pool caps at 40; two in three ordinary spawn attempts select an ordinary profile independently of resistance pressure. Threat tier increases every 70 seconds, issuing drugs before their cases appear. Late HP scaling never changes coverage. The exit permits optional extraction after 90 seconds; otherwise the run continues until death.
 
-Kills drop pooled specimen XP. Collecting it yields levels with three augment choices. Eighteen augments include a CRO satellite, isolation slowdown, collection drone, faster reload, recovery, environmental supplies, exposure/infusion, rate/efficiency and repeatable support. The starting CRO satellite checks the same coverage and adds pressure when attacking; it does not inflate manual accuracy. At capped upgrades, three repeatable support options remain.
+Kills drop pooled specimen XP. Collecting it yields levels with three augment choices. Augments include a CRO satellite, isolation slowdown, collection drone, faster reload, recovery, environmental supplies, exposure/infusion, rate/efficiency and repeatable support. The starting CRO satellite checks the same coverage and adds pressure when attacking; it does not inflate manual accuracy. Immune Echo adds a second visible engaged target within the companion's existing target group. Isolation Trail leaves a three-second slowing field at the dash origin, without drug damage. Grenadier increases field radius and duration. At capped upgrades, three repeatable support options remain.
+
+A 75-second build/surge/fade/recovery cycle modulates spawn rate and the active population cap without changing AST or despawning existing enemies. A major encounter is scheduled every 120 seconds, alternating middle and stage bosses; a surviving major blocks a duplicate. Defeat grants a 12-second recovery interval and pooled XP. This pacing takes inspiration from [Valve's Left 4 Dead presentation](https://cdn.akamai.steamstatic.com/apps/valve/2009/ai_systems_of_l4d_mike_booth.pdf).
 
 In this explicitly mixed-case arena, Legionella retains lung context, B. fragilis abdominal context, CMV advanced-HIV retinitis, and Strongyloides strongyloidiasis, regardless of threat tier. Each case's named clinical conditions also appear in results. Other fixed AST profiles use bloodstream context. The campaign's site-specific behavior remains unchanged.
 
@@ -69,7 +77,7 @@ Only the selected track is fetched after MUSIC ON during play. AUTO changes by c
 
 ## Runtime and verification
 
-Only Play loads its six code/style files. PWA installation does not precache them; first entry caches them for offline visits. Unmount stops Kontra, aborts listeners, releases pointer lock, disconnects observers, closes audio and disposes all canvas/atlas backing stores.
+Only Play loads its nine code/style files. PWA installation does not precache them; first entry caches them for offline visits. Unmount stops Kontra, aborts listeners, releases pointer lock, disconnects observers, closes audio and disposes all canvas/atlas backing stores.
 
 Rendering caps at 640×360 or 480×270, independent of DPR. Reused pixel/depth buffers, frustum/occlusion checks, 24 campaign/40 survival enemies, 24 hostile projectiles, 80 particles, 12 toxin hazards, 4 thrown canisters, 6 disinfectant fields and 64 XP orbs bound memory. The navigation cache holds at most 16 typed-array fields. Counters grow numerically; per-kind/per-drug review maps remain bounded by the fixed catalog.
 
@@ -82,26 +90,22 @@ Temporary verification images and release snapshots belong in ignored `.qa/`. Li
 THEME is separate from campaign tiers. Both operations are selectable immediately, have 14 encounters with a safe empty entry, use normal HP/damage and issue nine suitable slots before combat. Pressure does not replace their authored theme cases with resistant bacteria. A small bacterial cohort remains.
 
 - Viral Observatory: HSV-2's first genital-herpes case and advanced-HIV CMV retinitis remain separate clinical cases in the same abstract laboratory. ACV and GCV are issued immediately; each follows its original REGIMEN/OUTSIDE_REGIMEN entries. Effective antiviral hits suppress the replication mechanic. Violet diagnostic walls distinguish this map.
-- Parasite Conservatory: Giardia trophozoites use an original dual-nucleus/flagella sprite and the symptomatic-giardiasis scenario; Strongyloides retains the larval scenario. MTZ and IVM are issued immediately. Green trellis walls and vine motifs distinguish the theme. These are parallel educational cases, not one patient's combined diagnosis.
+- Parasite Conservatory: Giardia trophozoites use an original dual-nucleus/flagella sprite and the symptomatic-giardiasis scenario; Strongyloides retains the larval scenario. MTZ and IVM are issued immediately. Muted green departmental markings distinguish the theme. These are parallel educational cases, not one patient's combined diagnosis.
 
 The shared therapy DB adds the Giardia context and tags the existing HSV context. [CDC Giardia care](https://www.cdc.gov/giardia/hcp/clinical-care/index.html) lists metronidazole among effective options, not one universal first-line choice. [CDC genital-herpes guidance](https://www.cdc.gov/std/treatment-guidelines/herpes.htm) supplies the existing HSV case.
 
-One immune companion can be equipped. Pick a starter (or the theme recommendation), collect a non-respawning immune-support crate, or choose a companion reward/augment to recruit another. The pause terminal swaps only owned companions; unequipping is allowed. An activation upgrade improves range/frequency, not target classes. Acquisition never accumulates extra pet instances: one small world-space sprite, one timer and a short bounded visual trail are reused.
+One immune companion can be equipped. Collect a non-respawning immune-support crate or choose a companion reward/augment to recruit a companion. The menu starts without one. The pause terminal swaps only owned companions; unequipping is allowed. An activation upgrade improves range/frequency, not target classes. Acquisition never accumulates extra pet instances: one small world-space sprite, one timer and a short bounded visual trail are reused.
 
 The companion acts only against revealed, actively engaged targets in range with line of sight from both player and companion. It never initiates room-wide aggro, attacks through walls, or damages dormant spores. Neutrophils pulse bacteria rapidly; macrophages prioritize weakened bacteria; NK cells attack the viral infected-cell abstraction and briefly suppress replication; eosinophils attack helminth larvae, not Giardia protozoa. Neutropenia slows the neutrophil companion. Capsule, biofilm and intracellular barriers reduce appropriate phagocytic damage.
 
 These are deliberately restricted gameplay roles, informed by the [components of immunity](https://www.ncbi.nlm.nih.gov/books/NBK27092/), [phagocyte recognition](https://www.ncbi.nlm.nih.gov/books/NBK27105/), and [antibody-mediated effector functions](https://www.ncbi.nlm.nih.gov/books/NBK27171/). The simulation does not claim these cells have only those targets in biology. Viral avatars represent infected-cell cases for NK attacks. Host-support damage is separate from antibiotics: resistance is not immune evasion, drug AST never changes, and companion kills count as support rather than manual weapon-selection accuracy.
 
-The viewport fills available browser space, with adaptive horizontal FOV on wide displays and unchanged 640×360 / 480×270 rendering caps. Setup tabs separate operation, difficulty/host, display/audio, companion and controls. Pause tabs separate equipment, display/audio, companion, cards and controls; card links are paginated. Easy/Hard have fixed dimensions, independent of the Easy-only hint checkbox. Explanatory text follows the control guide.
+The viewport fills available browser space, with adaptive horizontal FOV on wide displays and unchanged 640×360 / 480×270 rendering caps. Setup has operation/information, environment/controls and advanced tabs. Pause has equipment/companions, environment/controls and encyclopedia tabs. Information buttons keep fixed dimensions. Explanatory text follows the control guide.
 
 Reload audio uses three lazily cached short mechanical Foley buffers: magazine release/slide, seating and bolt latch. Noise transients, damped metallic partials and short body impacts replace the previous pitched notification; no audio download is added. The buffers are disposed with the Play view.
 
 
-## Combat and review polish (v0.25)
-
-The campaign/theme generator now connects 8–9 ordered sectors along a seeded route. Orientation, room proportions, recessed corners and wall treatments vary. Supply/recovery sectors remain empty; encounters are distributed evenly among combat rooms. The entry and its sightline remain empty. The final boss gets a larger 9×9 room and two susceptible escorts; the susceptible quota is preserved. Endless retains its circulation arena. Stairs, elevated geometry and overlapping floors are deferred.
-
-Wall fixtures are spaced between plain structural panels. Numbered ENTRY/LAB/SUPPLY/EXIT signs and floor borders identify sectors. Health cases, cartridge racks, specimen tubes and immune pods use different silhouettes in the existing generated atlas. No image/audio files or runtime dependencies are added.
+## Combat, information and review
 
 Weapons now differ mechanically: AMP repeats; CFZ casts five spread rays with per-target damage capped; CRO/CZA charge briefly before firing; MEM/ACV deliver three delayed packets; LEV/IVM pierce up to three aligned visible targets; LZD emits frequent low-recoil beam ticks; VAN/MTZ/GCV use heavy pulses. Charging fits inside the original firing cadence. Releasing fire cancels a charge without cost. Switching, scanning and reloading cancel pending packets. Every packet/pellet/penetrated target retains the common coverage gate. These firing modes are arcade representations, not pharmacological claims.
 

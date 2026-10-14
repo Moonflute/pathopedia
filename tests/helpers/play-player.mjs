@@ -1,4 +1,4 @@
-import {newRun,tick,combatCoverage,switchWeapon,lineOfSight,canStand,chooseReward,controlSource,isWeaponReady,shotCost,selectScanner,throwGrenade} from '../../src/play-engine.mjs';
+import {newRun,tick,combatCoverage,switchWeapon,lineOfSight,canStand,chooseReward,controlSource,isWeaponReady,shotCost,selectScanner,throwGrenade,floorAt,enemyHeight,canTraverse} from '../../src/play-engine.mjs';
 import {STAGES} from '../../src/play-data.mjs';
 
 // QA controls only movement, aiming, weapons, scanning and available rewards. No teleport or invulnerability.
@@ -7,9 +7,9 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
  let waypoint=null,navigationGoal=null,lastGoal='',navTime=0,steps=0,lastMap=r.map.id;const reports=[];
  const navigate=goal=>{
   const m=r.map,start=Math.floor(r.player.y)*m.width+Math.floor(r.player.x),end=Math.floor(goal.y)*m.width+Math.floor(goal.x),queue=[end],dist=new Int16Array(m.cells.length).fill(-1);dist[end]=0;
-  for(let i=0;i<queue.length;i++)for(const n of [queue[i]-1,queue[i]+1,queue[i]-m.width,queue[i]+m.width])if(n>=0&&n<dist.length&&!m.cells[n]&&dist[n]===-1){dist[n]=dist[queue[i]]+1;queue.push(n);}
+  for(let i=0;i<queue.length;i++)for(const n of [queue[i]-1,queue[i]+1,queue[i]-m.width,queue[i]+m.width])if(n>=0&&n<dist.length&&canTraverse(m,n,queue[i])&&dist[n]===-1){dist[n]=dist[queue[i]]+1;queue.push(n);}
   if(start===end)return goal;
-  let best=start;for(const n of [start-1,start+1,start-m.width,start+m.width])if(dist[n]>=0&&(dist[best]<0||dist[n]<dist[best]))best=n;
+  let best=start;for(const n of [start-1,start+1,start-m.width,start+m.width])if(dist[n]>=0&&canTraverse(m,start,n)&&(dist[best]<0||dist[n]<dist[best]))best=n;
   return {x:best%m.width+.5,y:Math.floor(best/m.width)+.5};
  };
  while(steps++<limit*30&&r.status!=='won'&&r.status!=='lost'){
@@ -30,7 +30,7 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
   navTime-=1/30;if(!waypoint||Math.hypot(waypoint.x-r.player.x,waypoint.y-r.player.y)<.15||goalKey!==lastGoal||navTime<=0){waypoint=navigate(goal);lastGoal=goalKey;navTime=1;}
   let dx=waypoint.x-r.player.x,dy=waypoint.y-r.player.y,fire=false,scope=false;
   if(enemy){
-   const d=distance(enemy);r.player.angle=Math.atan2(enemy.y-r.player.y,enemy.x-r.player.x);
+   const d=distance(enemy);r.player.angle=Math.atan2(enemy.y-r.player.y,enemy.x-r.player.x);r.player.pitch=Math.atan2(floorAt(r.map,enemy.x,enemy.y)+enemyHeight(enemy)*.5-floorAt(r.map,r.player.x,r.player.y)-.5-r.player.z,d);
    // Use the same finite throwable supply available to players when several contacts close in.
    if(d<5&&live.filter(e=>distance(e)<5&&lineOfSight(r.map,r.player,e)).length>=2&&!r.fields.some(f=>f.active&&distance(f)<4.5))throwGrenade(r);
    if(hard&&r.intel[enemy.kind]<3){selectScanner(r);scope=true;}
@@ -46,7 +46,7 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
    }
    // Ranged projectiles are dodgeable; keep lateral movement while exchanging fire.
    if(enemy.state==='Attack'&&d>=2.4&&d<8){const side=Math.sin(r.time*1.8)>0?1:-1,c=Math.cos(r.player.angle),s=Math.sin(r.player.angle);if(canStand(r.map,r.player.x-s*side*.6,r.player.y+c*side*.6)){dx=dx*.35-s*side;dy=dy*.35+c*side;}}
-  }else if(Math.hypot(dx,dy)>.1)r.player.angle=Math.atan2(dy,dx);
+  }else if(Math.hypot(dx,dy)>.1){r.player.angle=Math.atan2(dy,dx);r.player.pitch=0;}
   const norm=Math.max(.01,Math.hypot(dx,dy));dx/=norm;dy/=norm;const c=Math.cos(r.player.angle),s=Math.sin(r.player.angle);
   controlSource(r);tick(r,{forward:dx*c+dy*s,strafe:-dx*s+dy*c,fire,scope,dash:Boolean(enemy&&distance(enemy)<1.7),jump:Boolean(enemy&&distance(enemy)<1.5&&steps%24===0)},1/30);r.events.length=0;
  }

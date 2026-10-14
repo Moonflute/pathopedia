@@ -320,3 +320,6 @@ main.play-main{max-width:none;width:100%;margin:0;padding:6px 8px 8px}
  .fp-comfort-grid .fp-config{margin-top:6px}
  .fp-result h2{font-size:25px}
 }
+
+/* Contextual major encounter HUD: visible only during its engagement. */
+.fp-major{position:absolute;z-index:4;top:18px;left:50%;transform:translateX(-50%);width:min(330px,36%);padding:8px 12px;background:#102023df;border:1px solid #b5976d80;color:#eee2bc;pointer-events:none;text-align:center}.fp-major small{display:block;font:11px var(--font-mono,monospace);letter-spacing:.1em;color:#d3b37f}.fp-major strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:4px 0 6px}.fp-major>div{height:5px;background:#483c3a}.fp-major i{display:block;height:100%;background:#e1ae75;transition:width .12s linear}.fp-major[hidden]{display:none}@media(max-width:600px){.fp-major{top:54px;width:55%;padding:5px 8px}.fp-major strong{font-size:12px}.fp-major small{font-size:10px}}

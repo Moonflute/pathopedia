@@ -99,7 +99,7 @@ test('unseen enemies never acquire global aggro, including after a long wait or 
 
 test('contact cancels when the player looks away; pursuit searches the last seen position and expires',()=>{
  const r=setup(),e=spawnEnemy(r,'mssa',{x:6.5,y:3.5});tick(r);assert.equal(e.state,'Detect');r.player.angle=Math.PI;tick(r);assert.equal(e.state,'Idle');
- r.player.angle=0;for(let i=0;i<10;i++)tick(r,{},.05);assert.equal(e.state,'Chase');const memory={...e.lastSeen};
+ r.player.angle=0;for(let i=0;i<7;i++)tick(r,{},.05);assert.equal(e.state,'Detect');for(let i=0;i<7;i++)tick(r,{},.05);assert.equal(e.state,'Chase');const memory={...e.lastSeen};
  r.player.x=21.5;r.player.y=17.5;for(let i=0;i<25;i++)tick(r,{},.05);assert.equal(e.state,'Search');assert.deepEqual(e.lastSeen,memory);
  for(let i=0;i<100;i++)tick(r,{},.05);assert.equal(e.state,'Idle');assert.equal(e.lastSeen,null);
 });
@@ -184,7 +184,7 @@ test('reload transfers real reserves only on completion and weapon switching can
 
 test('jump rises and lands without firing, repeated holding does not bunny-hop or bypass walls',()=>{
  const r=setup();tick(r,{jump:true},.05);assert.ok(r.player.z>0);assert.equal(r.shots,0);let max=r.player.z;for(let i=0;i<20;i++){tick(r,{jump:true},.05);max=Math.max(max,r.player.z);}assert.ok(max>.3&&max<.5);assert.equal(r.player.z,0);tick(r,{jump:false});tick(r,{jump:true});assert.ok(r.player.z>0);
- r.player.x=7.5;r.player.y=3.5;for(let i=0;i<20;i++)tick(r,{jump:true,forward:1},.05);assert.ok(r.player.x<8);assert.ok(canStand(r.map,r.player.x,r.player.y));
+ r.player.x=7.5;r.player.y=3.5;for(let i=0;i<20;i++)tick(r,{jump:true,forward:1},.05);assert.ok(r.player.x<r.map.rooms[0].bounds.x+r.map.rooms[0].bounds.w);assert.ok(canStand(r.map,r.player.x,r.player.y));
 });
 
 test('every starting room and sightline is empty, with all encounters pre-positioned before exploration',()=>{

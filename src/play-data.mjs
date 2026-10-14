@@ -1,4 +1,5 @@
 import { DRUG_SPECS } from './defense-data.mjs';
+import {buildFacility} from './play-map.mjs';
 
 // Arcade tuning only. Every drug, isolate and susceptibility entry joins the encyclopedia.
 export const WEAPONS = Object.freeze([
@@ -49,11 +50,11 @@ export const HOSTS=Object.freeze([
 ]);
 // Each stage constructs its small grid on entry. No stage texture/model downloads.
 export const STAGES=Object.freeze([
-  {id:'community',name:'COMMUNITY',label:'지역사회 감염',site:'community',count:12,pool:['pneumo','mssa','ecoli'],color:'#a8d798',note:'근접 시야에서만 접촉 · 방을 하나씩 확보하세요.',source:'LOCAL FOCUS',modifier:'면역 보존',elite:0},
+  {id:'community',bossKind:'mssa',name:'COMMUNITY',label:'지역사회 감염',site:'community',count:12,pool:['pneumo','mssa','ecoli'],color:'#a8d798',note:'관측 데크와 계단으로 접근하고, 중간보스 제압 후 지름길을 여세요. 마지막 MSSA 군체를 제압하면 철수합니다.',source:'LOCAL FOCUS',modifier:'면역 보존',elite:0},
   {id:'uti',name:'URINARY TRACT',label:'카테터 연관 UTI',site:'urinary',count:14,pool:['ecoli','klebs','esbl'],color:'#91bfe6',note:'카테터의 biofilm 보호를 제거하세요. CFZ 요로 한정 결과가 적용됩니다.',source:'CATHETER',modifier:'요로 기원 판정 적용',elite:.04},
   {id:'pneumonia',name:'PNEUMONIA',label:'폐렴 구역',site:'lung',count:16,pool:['pneumo','mssa','legionella','klebs'],color:'#8ad1c0',note:'LEV 보급. Legionella는 세포내 표적이며 폐렴 요법 판정을 사용합니다.',source:'DRAINABLE FOCUS',modifier:'세포내 은신',elite:.05},
   {id:'abdomen',name:'ABDOMINAL',label:'복강 내 감염',site:'abdomen',count:18,pool:['anaerobe','ecoli','esbl','clostridium'],color:'#d8b587',note:'MTZ 보급. 혐기성균과 장내세균의 대응 약제를 전환하고 농양을 배액하세요.',source:'ABSCESS',modifier:'혐기성 · 잔류 독소',elite:.07},
-  {id:'hospital',name:'HOSPITAL',label:'병원 획득 감염',site:'lung',count:18,pool:['mrsa','pseudo','esbl','klebs','mssa'],color:'#9eb5ce',note:'녹농균은 주변 적을 보호합니다. 가까이서 F로 biofilm을 해체하세요.',source:'DEVICE BIOFILM',modifier:'이동성 biofilm 보호',elite:.08},
+  {id:'hospital',bossKind:'pseudo',name:'HOSPITAL',label:'병원 획득 감염',site:'lung',count:18,pool:['mrsa','pseudo','esbl','klebs','mssa'],color:'#9eb5ce',note:'녹농균은 주변 적을 보호합니다. 가까이서 F로 biofilm을 해체하세요.',source:'DEVICE BIOFILM',modifier:'이동성 biofilm 보호',elite:.08},
   {id:'icu',name:'ICU',label:'중환자실',site:'bloodstream',count:20,pool:['vre','mrsa','pseudo','esbl','cmv','ecoli','klebs'],scenarios:['cmv-retinitis'],color:'#bba2d7',note:'LZD·GCV 보급. VRE와 후기 바이러스 사례: 진행 HIV 성인의 CMV 망막염.',source:'INFECTED LINE',modifier:'면역 제거 주기 연장',immuneDelay:1.5,elite:.1},
   {id:'outbreak',name:'RESISTANT OUTBREAK',label:'내성균 집단 발생',site:'bloodstream',count:22,pool:['kpc','mdr','vre','mrsa','strongyloides','ecoli','mssa','klebs'],scenarios:['strongyloidiasis'],color:'#e3a383',note:'CZA·IVM 보급. KPC·DTR AST와 후기 기생충 사례: Strongyloidiasis.',source:'OUTBREAK FOCUS',modifier:'CRE · DTR · VRE',elite:.14},
   {id:'sepsis',name:'SEPSIS / CORE',label:'패혈증 봉쇄 작전',site:'bloodstream',count:24,pool:['kpc','mdr','vre','mrsa','esbl','cmv','strongyloides','ecoli','mssa','klebs'],scenarios:['cmv-retinitis','strongyloidiasis'],color:'#de947f',note:'일반 감수성균도 섞여 있습니다. 모든 적과 KPC 군체 보스를 제압하고 EXIT로 탈출하세요.',source:'SEPTIC FOCUS',modifier:'감염원 연동 보스',boss:true,elite:.16}
@@ -100,70 +101,11 @@ export function normalizeSeed(value=Date.now()){
 }
 export function seededRandom(seed){let s=normalizeSeed(seed);return ()=>{s+=0x6D2B79F5;let t=Math.imul(s^s>>>15,1|s);t^=t+Math.imul(t^t>>>7,61|t);return ((t^t>>>14)>>>0)/4294967296;};}
 export function roomAt(map,x,y){const ix=Math.max(0,Math.min(map.width-1,Math.floor(x))),iy=Math.max(0,Math.min(map.height-1,Math.floor(y)));return map.roomCells[iy*map.width+ix];}
-const MAP_STYLES=[['COURTYARDS',30,26,8,3],['BRANCHES',32,28,9,2],['ATRIUM',34,28,8,4],['POCKETS',32,30,10,2],['WARD',36,26,9,3],['ISOLATION',34,30,10,2],['BYPASSES',36,30,10,5],['CORE',36,30,8,4]];
-function createArenaBaseMap(stageIndex=0,seed=31,themeStage=null){
-  const stage=themeStage||STAGES[stageIndex]||STAGES[0],[name,baseW,baseH,count,loops]=MAP_STYLES[themeStage?.mapStyle??stageIndex]||MAP_STYLES[0],random=seededRandom(normalizeSeed(seed)^Math.imul(stageIndex+1,0x9e3779b9)),int=(a,b)=>a+Math.floor(random()*(b-a+1));
-  const width=baseW+int(0,2),height=baseH+int(0,2),cells=new Uint8Array(width*height).fill(1),roomCells=new Int16Array(width*height).fill(-1);
-  const bounds=[{x:1,y:1,w:7,h:7}],anchorW=stage.boss?11:stageIndex===2?10:int(7,9),anchorH=stage.boss?10:int(6,8);
-  bounds.push({x:width-anchorW-2,y:height-anchorH-2,w:anchorW,h:anchorH});
-  for(let attempt=0;attempt<700&&bounds.length<count;attempt++){
-    const w=int(4,stageIndex===4?11:8),h=int(4,stageIndex===4?6:8),r={x:int(1,width-w-2),y:int(1,height-h-2),w,h};
-    if(bounds.every(b=>r.x+r.w+1<=b.x||b.x+b.w+1<=r.x||r.y+r.h+1<=b.y||b.y+b.h+1<=r.y))bounds.push(r);
-  }
-  const carve=(x,y,w,h,id)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++){if(i<1||j<1||i>=width-1||j>=height-1)continue;cells[j*width+i]=0;if(roomCells[j*width+i]<0)roomCells[j*width+i]=id;}};
-  const rooms=bounds.map((b,id)=>{carve(b.x,b.y,b.w,b.h,id);return {id,x:Math.floor(b.x+b.w/2)+.5,y:Math.floor(b.y+b.h/2)+.5,label:id===0?'ENTRY':String.fromCharCode(64+id),neighbors:[],bounds:b};});
-  const edges=[],connected=new Set([1]);
-  while(connected.size<rooms.length-1){let best=null,score=Infinity;for(const a of connected)for(let b=1;b<rooms.length;b++){if(connected.has(b))continue;const ra=rooms[a],rb=rooms[b],cost=Math.hypot(ra.x-rb.x,ra.y-rb.y)*(1+random()*.45);if(cost<score){score=cost;best=[a,b];}}edges.push(best);connected.add(best[1]);}
-  const extra=[];for(let a=1;a<rooms.length;a++)for(let b=a+1;b<rooms.length;b++)if(!edges.some(e=>e.includes(a)&&e.includes(b)))extra.push({a,b,score:Math.hypot(rooms[a].x-rooms[b].x,rooms[a].y-rooms[b].y)*(1+random())});
-  extra.sort((a,b)=>a.score-b.score);for(const e of extra.slice(0,loops))edges.push([e.a,e.b]);
-  const entryNeighbor=rooms.slice(1).sort((a,b)=>Math.hypot(a.x-6,a.y-8)-Math.hypot(b.x-6,b.y-8))[0];edges.push([0,entryNeighbor.id]);
-  for(const [a,b] of edges){const ra=rooms[a],rb=rooms[b];ra.neighbors.push(b);rb.neighbors.push(a);let ax=Math.floor(ra.x),ay=Math.floor(ra.y),bx=Math.floor(rb.x),by=Math.floor(rb.y);
-    if(a===0){ax=6;ay=8;carve(6,6,2,4,0);}
-    const horizontal=(x0,x1,y)=>{for(let x=Math.min(x0,x1);x<=Math.max(x0,x1);x++)carve(x,y,1,2,Math.abs(x-ax)<Math.abs(x-bx)?a:b);};
-    const vertical=(y0,y1,x)=>{for(let y=Math.min(y0,y1);y<=Math.max(y0,y1);y++)carve(x,y,2,1,Math.abs(y-ay)<Math.abs(y-by)?a:b);};
-    if(a===0||random()<.5){horizontal(ax,bx,ay);vertical(ay,by,bx);}else{vertical(ay,by,ax);horizontal(ax,bx,by);}
-  }
-  // Free-standing cover cannot seal a room or its doorway. Keep the entry sightline empty.
-  for(const r of rooms.slice(1)){const b=r.bounds;if(b.w>=6&&b.h>=6&&random()<.8){const x=b.x+1+int(0,1)*(b.w-4),y=b.y+1+int(0,1)*(b.h-4);cells[y*width+x]=2;if(b.w>=8)cells[y*width+x+1]=2;}}
-  for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(roomCells[y*width+x]<0){let nearest=0,best=Infinity;for(const r of rooms){const d=(x-r.x)**2+(y-r.y)**2;if(d<best){best=d;nearest=r.id;}}roomCells[y*width+x]=nearest;cells[y*width+x]=1+((nearest+stageIndex)%6);}
-  const spawn={x:3.5,y:3.5,angle:0},dist=new Int16Array(cells.length).fill(-1),queue=[3*width+3];dist[queue[0]]=0;
-  for(let head=0;head<queue.length;head++){const i=queue[head];for(const n of [i-1,i+1,i-width,i+width])if(n>=0&&n<cells.length&&!cells[n]&&dist[n]<0){dist[n]=dist[i]+1;queue.push(n);}}
-  const point=(id,dx=0,dy=0)=>{const r=rooms[id],b=r.bounds,list=[];for(let y=b.y;y<b.y+b.h;y++)for(let x=b.x;x<b.x+b.w;x++)if(!cells[y*width+x]&&dist[y*width+x]>=0)list.push({x:x+.5,y:y+.5});list.sort((a,b)=>Math.hypot(a.x-r.x-dx,a.y-r.y-dy)-Math.hypot(b.x-r.x-dx,b.y-r.y-dy));return list[0];};
-  const ranked=rooms.slice(1).map(r=>({r,p:point(r.id)})).sort((a,b)=>dist[Math.floor(b.p.y)*width+Math.floor(b.p.x)]-dist[Math.floor(a.p.y)*width+Math.floor(a.p.x)]);
-  const exitRoom=ranked[0].r,exit=point(exitRoom.id,exitRoom.bounds.w/2-1,exitRoom.bounds.h/2-1),sourceRooms=[ranked[Math.floor(ranked.length/2)].r,exitRoom,...(stage.boss?[ranked.at(-1).r]:[])];
-  const sourcePositions=sourceRooms.map(r=>point(r.id,-1,0)),pickups=[{x:5.5,y:2.5,kind:'supply'},...ranked.slice(0,5).map(({r},i)=>({...point(r.id,1,-1),kind:['supply','health','culture','health','supply'][i]}))];
-  pickups.push({...point(ranked.at(-1).r.id,-1,1),kind:'companion'});
-  return {id:stage.id+'-'+normalizeSeed(seed),theme:stage.theme??(normalizeSeed(seed)+stageIndex)%4,biome:themeStage?.id||'facility',name:stage.name,layout:name+' / '+rooms.length+' ROOMS',site:stage.site,scenarios:stage.scenarios||[],color:stage.color,width,height,cells,roomCells,rooms,spawn,exit,boss:stage.boss?point(exitRoom.id,0,1):null,portals:rooms.map(r=>point(r.id)),
-    sources:sourcePositions.map((p,id)=>({...p,id,label:String.fromCharCode(65+id)+' / '+stage.source,active:true})),pickups:pickups.map((p,id)=>({...p,id,active:true,cooldown:0}))};
-}
-
+// Facility sectors are authored in play-map.mjs; seeds alter approaches and dimensions.
 // Ordered adjacent sectors alternate combat and supply without a pillar maze.
 export function createMap(stageIndex=0,seed=31,themeStage=null){
- const stage=themeStage||STAGES[stageIndex]||STAGES[0],random=seededRandom(normalizeSeed(seed)^Math.imul(stageIndex+1,0x9e3779b9)),int=(a,b)=>a+Math.floor(random()*(b-a+1));
- const vertical=random()<.5,columns=stage.boss?3:int(2,3),rows=columns===2?4:3,cols=vertical?rows:columns,lines=vertical?columns:rows,stride=11;
- const width=cols*stride+2,height=lines*stride+2,cells=new Uint8Array(width*height).fill(1),roomCells=new Int16Array(width*height).fill(-1),rooms=[],route=[];
- const carve=(x,y,w,h,id)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)if(i>0&&j>0&&i<width-1&&j<height-1){cells[j*width+i]=0;roomCells[j*width+i]=id;}};
- const names=['RECEPTION','CULTURE HALL','OBSERVATION','SUPPLY BAY','ISOLATION','PROCESSING','RECOVERY','CONTAINMENT','EXTRACTION'];
- for(let row=0;row<rows;row++)for(let n=0;n<columns;n++){
-  const col=row%2?columns-1-n:n,gx=vertical?row:col,gy=vertical?col:row,id=rooms.length,w=id===0?7:stage.boss&&id===columns*rows-1?9:int(6,9),h=id===0?7:stage.boss&&id===columns*rows-1?9:int(5,8),x=id===0?1:gx*stride+int(1,stride-w),y=id===0?1:gy*stride+int(1,stride-h);
-  const rest=id>0&&id%3===0&&id<columns*rows-1,bounds={x,y,w,h};carve(x,y,w,h,id);
-  if(id>0&&random()<.7){cells[y*width+x]=2;cells[(y+h-1)*width+x+w-1]=2;if(w>=8){cells[y*width+x+1]=3;cells[(y+h-1)*width+x+w-2]=3;}}
-  rooms.push({id,x:Math.floor(x+w/2)+.5,y:Math.floor(y+h/2)+.5,label:String(id).padStart(2,'0'),name:id===columns*rows-1?'EXTRACTION':names[id],neighbors:[],bounds,encounter:id>0&&!rest,rest,order:id});
- }
- const line=(a,b,id)=>{let x=Math.floor(a.x),y=Math.floor(a.y),bx=Math.floor(b.x),by=Math.floor(b.y);while(x!==bx||y!==by){carve(x,y,2,2,id);if(x!==bx)x+=Math.sign(bx-x);else y+=Math.sign(by-y);}carve(x,y,2,2,id);};
- for(let i=1;i<rooms.length;i++){
-  const a=rooms[i-1],b=rooms[i];a.neighbors.push(i);b.neighbors.push(i-1);
-  if(i===1){const door={x:6,y:8},bend={x:vertical?6:b.x,y:vertical?b.y:9};line({x:6,y:6},door,0);line(door,bend,0);line(bend,b,b.id);route.push(door,bend);}
-  else{const bend=Math.floor(a.bounds.x/stride)===Math.floor(b.bounds.x/stride)?{x:a.x,y:b.y}:{x:b.x,y:a.y};line(a,bend,a.id);line(bend,b,b.id);route.push(bend);}
-  route.push({x:b.x,y:b.y});
- }
- for(const r of rooms)for(let y=r.bounds.y;y<r.bounds.y+r.bounds.h;y++)for(let x=r.bounds.x;x<r.bounds.x+r.bounds.w;x++)if(!cells[y*width+x])roomCells[y*width+x]=r.id;
- for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(roomCells[y*width+x]<0){let nearest=0,best=Infinity;for(const r of rooms){const d=(x-r.x)**2+(y-r.y)**2;if(d<best){best=d;nearest=r.id;}}roomCells[y*width+x]=nearest;cells[y*width+x]=1+((nearest+stageIndex+normalizeSeed(seed)%3)%6);}
- const point=(r,dx=0,dy=0)=>{const spots=[];for(let y=r.bounds.y;y<r.bounds.y+r.bounds.h;y++)for(let x=r.bounds.x;x<r.bounds.x+r.bounds.w;x++)if(!cells[y*width+x])spots.push({x:x+.5,y:y+.5});return spots.sort((a,b)=>Math.hypot(a.x-r.x-dx,a.y-r.y-dy)-Math.hypot(b.x-r.x-dx,b.y-r.y-dy))[0];};
- const combats=rooms.filter(r=>r.encounter),last=rooms.at(-1),exit=point(last,last.bounds.w/2-1,last.bounds.h/2-1);
- const sourceRooms=[combats[Math.floor(combats.length/2)],last,...(stage.boss?[combats[0]]:[])];
- const pickups=[{x:5.5,y:2.5,kind:'supply'},...rooms.filter(r=>r.rest).flatMap(r=>[{...point(r,-1,0),kind:'health'},{...point(r,1,-1),kind:'supply'}]),{...point(rooms[2],-1,1),kind:'companion'},{...point(combats[1],1,1),kind:'culture'}];
- return {id:stage.id+'-'+normalizeSeed(seed),theme:stage.theme??(normalizeSeed(seed)+stageIndex)%4,biome:themeStage?.id||'facility',name:stage.name,layout:(vertical?'TRANSIT':'LONGITUDINAL')+' / '+rooms.length+' SECTORS',site:stage.site,scenarios:stage.scenarios||[],color:stage.color,width,height,cells,roomCells,rooms,route,spawn:{x:3.5,y:3.5,angle:0},exit,boss:stage.boss?point(last,0,1):null,portals:rooms.map(r=>point(r)),sources:sourceRooms.map((r,id)=>({...point(r,-1,0),id,label:String.fromCharCode(65+id)+' / '+stage.source,active:true})),pickups:pickups.map((p,id)=>({...p,id,active:true,cooldown:0}))};
+ const stage=themeStage||STAGES[stageIndex]||STAGES[0],value=normalizeSeed(seed);
+ return buildFacility(stage,stageIndex,value,seededRandom(value^Math.imul(stageIndex+1,0x9e3779b9)));
 }
 
 // Optional CC0 audio; only the selected track is fetched after MUSIC is enabled.
@@ -175,12 +117,14 @@ export const MUSIC_TRACKS=Object.freeze([
  {id:'battle',file:'chiptune-battle.ogg',name:'Chiptune Battle',mood:'전투 / 생존',author:'pmiller',source:'https://opengameart.org/content/chiptune-battle-music'}
 ]);
 export const AUGMENTS=Object.freeze([
+ {id:'immuneEcho',title:'연계 면역 반응',tag:'COMPANION / CHAIN',text:'면역 동료가 같은 대상군의 두 번째 표적에 추가 공격합니다. 벽 뒤·미교전 표적은 제외.',requiresCompanion:true,max:2},
+ {id:'isolationTrail',title:'격리 잔상',tag:'DASH / CONTROL',text:'대시 출발점에 3초 감속 구역을 남깁니다. 추격을 끊고 약제를 바꿀 공간을 만드세요.',max:3},
  {id:'cephaPulse',title:'Cephalosporin 위성',tag:'AUTO / CRO',text:'주변에 CRO 펄스. 감수성·노출·부위 조건을 충족한 적만 공격하고 선택압이 증가합니다.',max:5},
  {id:'isolation',title:'격리 구역',tag:'CONTROL',text:'주변 3m에 감속장을 전개합니다. 강화 시 범위와 감속이 증가합니다.',max:4},
  {id:'magnet',title:'검체 수집 드론',tag:'PICKUP',text:'경험치 흡수 범위를 넓힙니다. 벽 뒤의 검체는 통과하지 않습니다.',max:4},
  {id:'fastReload',title:'신속 교체 장치',tag:'RELOAD',text:'탄창 교체가 더 빨라집니다. 원래 감수성은 바뀌지 않습니다.',max:4},
  {id:'recovery',title:'회복 프로토콜',tag:'HOST',text:'지속적인 숙주 회복. 호중구 감소 숙주는 회복 주기가 길어집니다.',max:4},
- {id:'grenadier',title:'환경 소독 장비',tag:'THROWABLE',text:'소독탄 +2, 소독장 지속시간 증가. 휴면 포자·기생충에는 효과가 없습니다.',max:4},
+ {id:'grenadier',title:'환경 소독 장비',tag:'THROWABLE',text:'소독탄 +2, 소독장 범위와 지속시간 증가. 휴면 포자·기생충에는 효과가 없습니다.',max:4},
  {id:'exposure',title:'노출 최적화',tag:'PK / PD',text:'I 판정의 증가 노출 조건을 충족합니다. R은 유지됩니다.',max:1},
  {id:'infusion',title:'Extended infusion',tag:'PK / PD',text:'유효한 β-lactam 사격에 지속 노출을 더합니다. R에는 효과가 없습니다.',max:1},
  {id:'rate',title:'자동 주입 장치',tag:'FIRE RATE',text:'약제 사격 간격 감소. 선택압과 탄창은 계속 관리해야 합니다.',max:5},
@@ -193,10 +137,14 @@ export const AUGMENTS=Object.freeze([
 // Survival is a mixed-case arena: regimen targets retain explicitly authored contexts.
 export const SURVIVAL_CASES=Object.freeze({legionella:{site:'lung',scenarios:[]},anaerobe:{site:'abdomen',scenarios:[]},cmv:{site:'bloodstream',scenarios:['cmv-retinitis']},strongyloides:{site:'bloodstream',scenarios:['strongyloidiasis']}});
 export function createSurvivalMap(seed){
- const map=createArenaBaseMap(4,seed),random=seededRandom(normalizeSeed(seed)^0x51a7f0),w=map.width,h=map.height;
- // A broad outer loop and cross lanes let a horde circulate; retain cover and a safe spawn.
- for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++)if(x>=9&&(y<5||y>=h-5||x>=w-5||Math.abs(y-h/2)<1.5||Math.abs(x-w/2)<1.5))map.cells[y*w+x]=0;
- map.id='survival-'+normalizeSeed(seed);map.name='ENDLESS / MIXED CASES';map.layout='CIRCUIT / '+map.rooms.length+' SECTORS';map.site='bloodstream';map.scenarios=[];map.sources=[];map.boss=null;
+ const map=createMap(4,seed),random=seededRandom(normalizeSeed(seed)^0x51a7f0),w=map.width,h=map.height;
+ // Connected wings and a broad central commons: three circulation routes, no pillar maze.
+ const commons={id:map.rooms.length,name:'COMMONS',label:'06',x:27,y:19,bounds:{x:13,y:16,w:27,h:7},type:'hall',encounter:true,neighbors:[1,2,3,4]};
+ map.rooms.push(commons);
+ for(let y=16;y<23;y++)for(let x=13;x<41;x++){const i=y*w+x;map.cells[i]=0;map.roomCells[i]=commons.id;map.lights[i]=.85;map.ceilings[i]=1.8;}
+ for(const gate of map.shortcuts){gate.open=true;for(const i of gate.cells)map.cells[i]=0;}
+ for(let y=12;y<28;y++)for(let x=20;x<24;x++)map.cells[y*w+x]=0;
+ map.id='survival-'+normalizeSeed(seed);map.name='ENDLESS / MIXED CASES';map.layout='COMMONS / 3 ROUTES';map.site='bloodstream';map.scenarios=[];map.sources=[];map.boss=null;map.miniboss=null;
  const spots=[];for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++)if(!map.cells[y*w+x]&&x>=9)spots.push({x:x+.5,y:y+.5,room:map.roomCells[y*w+x]});
  for(let i=spots.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[spots[i],spots[j]]=[spots[j],spots[i]];}map.spawnSpots=spots;
  map.pickups=[{x:5.5,y:2.5,kind:'supply'},{...spots[0],kind:'companion'},...spots.filter((_,i)=>i%Math.max(1,Math.floor(spots.length/8))===0).slice(0,8).map((p,i)=>({...p,kind:i%2?'health':'supply'}))].map((p,id)=>({...p,id,active:true,cooldown:0}));return map;
