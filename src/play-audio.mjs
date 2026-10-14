@@ -29,3 +29,22 @@ export function createReloadFoley(){
   source.connect(gain);gain.connect(destination);source.onended=()=>{source.disconnect();gain.disconnect();};source.start();
  },dispose(){buffers.clear();}};
 }
+
+// Bounded, lazily synthesized one-shots. Each mode has its own attack and tail.
+export function createCombatAudio(){
+ const buffers=new Map(),voices=new Set();
+ const specs={'shot-auto':[.085,160,.55],'shot-scatter':[.18,72,1],'shot-charge':[.17,430,.45],'shot-pulse':[.2,90,.38],'shot-burst':[.06,230,.62],'shot-rail':[.2,1100,.23],'shot-beam':[.13,470,.1],charge:[.26,310,.04],'effective-hit':[.065,820,.15],'shield-hit':[.13,210,.18],resist:[.16,1920,.3]};
+ function get(audio,kind){
+  if(buffers.has(kind))return buffers.get(kind);
+  const [duration,hz,noiseMix]=specs[kind]||specs['shot-auto'],b=audio.createBuffer(1,Math.ceil(audio.sampleRate*duration),audio.sampleRate),out=b.getChannelData(0);let seed=37,low=0;
+  for(let i=0;i<out.length;i++){const t=i/audio.sampleRate,u=t/duration;seed=(Math.imul(seed,1664525)+1013904223)>>>0;const n=seed/2147483648-1;low=low*.8+n*.2;
+   const charge=kind==='charge',freq=charge?hz*(1+u*2):hz*(1-u*.6),envelope=charge?Math.sin(u*Math.PI)*.32:Math.exp(-u*(kind==='resist'?4:7))*Math.min(1,t/.001);
+   const ring=Math.sin(t*freq*Math.PI*2)+(kind==='resist'?.4*Math.sin(t*3137*Math.PI*2):0);
+   out[i]=Math.max(-1,Math.min(1,(ring*(1-noiseMix)*.5+(kind==='shield-hit'?low:n)*noiseMix)*envelope));
+  }
+  buffers.set(kind,b);return b;
+ }
+ return {play(audio,destination,kind){
+  if(voices.size>=12)return;const source=audio.createBufferSource(),gain=audio.createGain();source.buffer=get(audio,kind);gain.gain.value=kind.startsWith('shot-')?.24:kind==='charge'?.12:.18;source.connect(gain);gain.connect(destination);voices.add(source);source.onended=()=>{source.disconnect();gain.disconnect();voices.delete(source);};source.start();
+ },dispose(){for(const source of voices){try{source.stop();}catch{}}voices.clear();buffers.clear();}};
+}

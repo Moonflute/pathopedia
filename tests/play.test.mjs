@@ -294,3 +294,29 @@ test('companions cannot pull idle enemies or fire through walls and neutropenia 
  for(const host of ['normal','neutropenia']){const n=setup({companion:'neutrophil',host}),target=spawnEnemy(n,'mssa',{x:6,y:3.5});target.state='Chase';target.revealed=true;n.pet.cooldown=0;tick(n,{},.01);intervals.push(n.pet.cooldown);}
  assert.ok(intervals[1]>intervals[0]*2);
 });
+
+
+test('scatter and rail hit distinct targets while each target retains its clinical gate',()=>{
+ const r=setup(),a=spawnEnemy(r,'mssa',{x:6.5,y:3.1}),b=spawnEnemy(r,'mrsa',{x:6.5,y:3.9});r.map.sources=[];r.weapon=1;fire(r);
+ assert.ok(a.hp<a.maxHp);assert.equal(b.hp,b.maxHp);assert.equal(stageReport(r).rows.find(row=>row.kind==='mrsa').blocked,1);
+ const rail=setup({stage:2});rail.map.sources=[];const front=spawnEnemy(rail,'mssa',{x:5.5,y:3.5}),back=spawnEnemy(rail,'mssa',{x:6.5,y:3.5});rail.weapon=5;fire(rail);assert.equal(front.hp,front.maxHp);assert.equal(back.hp,back.maxHp);rail.upgrades.exposure=1;rail.cooldowns[5]=0;fire(rail);assert.ok(front.hp<front.maxHp&&back.hp<back.maxHp);
+});
+test('charge cancels without consuming a round; burst packets are bounded and cancel on switching',()=>{
+ const r=setup();r.weapon=2;const before=r.magazines[2];tick(r,{fire:true},.05);assert.ok(r.chargeTime>0);assert.equal(r.magazines[2],before);tick(r,{},.05);assert.equal(r.chargeTime,0);
+ for(let i=0;i<6;i++)tick(r,{fire:true},.05);assert.ok(r.magazines[2]<before);assert.equal(r.shots,1);
+ const burst=setup();burst.weapon=4;spawnEnemy(burst,'ecoli',{x:6.5,y:3.5});fire(burst);assert.equal(burst.volley.left,2);const report=stageReport(burst);tick(burst,{},.05);assert.equal(stageReport(burst).rows[0].shots,report.rows[0].shots);switchWeapon(burst,0);assert.equal(burst.volley,null);assert.ok(burst.tracers.length<=12);
+});
+test('debrief separates a narrower available choice from resistance and unavailable alternatives',()=>{
+ const r=setup();r.map.sources=[];const e=spawnEnemy(r,'mssa',{x:6.5,y:3.5});r.weapon=4;fire(r);assert.equal(stageReport(r).rows[0].broad,1);
+ const empty=setup();empty.map.sources=[];empty.magazines[1]=0;spawnEnemy(empty,'mssa',{x:6.5,y:3.5});empty.weapon=4;fire(empty);assert.equal(stageReport(empty).rows[0].broad,0);
+ const unknown=setup({information:'blind'});spawnEnemy(unknown,'mssa',{x:6.5,y:3.5});unknown.weapon=4;fire(unknown);assert.equal(stageReport(unknown).rows[0].broad,0);
+ const wrong=setup();spawnEnemy(wrong,'mrsa',{x:6.5,y:3.5});fire(wrong);wrong.time+=.8;switchWeapon(wrong,3);wrong.switchTime=0;fire(wrong);const row=stageReport(wrong).rows[0];assert.equal(row.firstCorrect,0);assert.equal(row.firstAttempts,1);assert.equal(row.switchCount,1);assert.equal(row.switchTotal,.8);
+});
+test('four information levels are distinct and progression reserves safe supply rooms',()=>{
+ for(const [information,intel,hints] of [['guided',3,true],['open',3,false],['identify',2,false],['blind',0,false]]){const r=newRun(catalog,{information});assert.equal(r.intel.mrsa,intel);assert.equal(r.hints,hints);}
+ const r=newRun(catalog,{seed:23});assert.ok(r.map.rooms.some(room=>room.rest));for(const plan of r.pending)assert.ok(r.map.rooms[plan.room].encounter);assert.equal(roomAt(r.map,r.map.exit.x,r.map.exit.y),r.map.rooms.at(-1).id);
+});
+test('last-contact guide follows walkable cells and pressure reports count actual replacements',()=>{
+ const r=setup();r.spawned=STAGES[0].count;const target=spawnEnemy(r,'mssa',r.map.portals.at(-1));tick(r,{},.05);assert.equal(r.guide.remaining,1);assert.ok(canStand(r.map,r.guide.x,r.guide.y));assert.ok(Math.hypot(r.guide.x-r.player.x,r.guide.y-r.player.y)<2);assert.equal(r.intel.mssa,3);
+ const pressured=setup({seed:12});pressured.pressure=95;pressured.spawnTimer=0;tick(pressured);assert.equal(pressured.pressureReplacements,pressured.enemies.filter(e=>e.active&&e.pressureSpawn).length);assert.ok(pressured.pressureReplacements>0);
+});

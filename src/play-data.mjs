@@ -2,18 +2,18 @@ import { DRUG_SPECS } from './defense-data.mjs';
 
 // Arcade tuning only. Every drug, isolate and susceptibility entry joins the encyclopedia.
 export const WEAPONS = Object.freeze([
-  {id:'ampicillin',short:'AMP',role:'NARROW / REPEATER',damage:22,interval:.19,cost:7,pressure:.08,range:15,spread:.065,exposure:0,beta:true,renal:true,stage:0,magazine:18,reload:0.95},
-  {id:'cefazolin',short:'CFZ',role:'FOCUSED / SCATTER',damage:52,interval:.55,cost:17,pressure:.25,range:9,spread:.16,exposure:1,beta:true,renal:true,stage:0,magazine:6,reload:1.15},
-  {id:'ceftriaxone',short:'CRO',role:'BROAD / PRECISION',damage:65,interval:.72,cost:19,pressure:1.7,range:22,spread:.045,exposure:0,beta:true,stage:0,magazine:6,reload:1.1},
-  {id:'vancomycin',short:'VAN',role:'SPECIALIST / PULSE',damage:78,interval:.82,cost:24,pressure:.5,range:11,spread:.13,exposure:0,renal:true,stage:0,magazine:5,reload:1.3},
-  {id:'meropenem',short:'MEM',role:'BROAD / RAPID',damage:35,interval:.23,cost:12,pressure:2.8,range:18,spread:.075,exposure:0,beta:true,renal:true,stage:0,magazine:20,reload:1.2},
-  {id:'levofloxacin',short:'LEV',color:'#91b8e8',role:'INTRACELLULAR / RAIL',damage:72,interval:.65,cost:16,pressure:1.3,range:24,spread:.055,exposure:0,renal:true,intracellular:true,stage:2,magazine:7,reload:1.05},
-  {id:'metronidazole',short:'MTZ',role:'ANAEROBE / BURST',damage:90,interval:.6,cost:16,pressure:.12,range:12,spread:.14,exposure:0,stage:3,magazine:5,reload:1.15},
-  {id:'linezolid',short:'LZD',role:'GRAM+ / BEAM',damage:46,interval:.33,cost:12,pressure:.6,range:19,spread:.07,exposure:0,stage:5,magazine:12,reload:1.05},
-  {id:'ceftazavi',short:'CZA',role:'KPC / INHIBITOR',damage:82,interval:.62,cost:21,pressure:2.5,range:20,spread:.07,exposure:0,beta:true,renal:true,stage:6,magazine:6,reload:1.2},
-  {id:'ganciclovir',short:'GCV',color:'#7dd8df',role:'ANTIVIRAL / PULSE',damage:58,interval:.4,cost:14,pressure:.1,range:20,spread:.09,renal:true,stage:5,magazine:8,reload:1.05},
-  {id:'ivermectin',short:'IVM',color:'#e8c878',role:'ANTIPARASITIC / BURST',damage:90,interval:.65,cost:18,pressure:.05,range:14,spread:.15,stage:6,magazine:6,reload:1.1},
-  {id:'acyclovir',short:'ACV',color:'#bda1ed',role:'ANTIVIRAL / BURST',damage:52,interval:.32,cost:12,pressure:.05,range:20,spread:.08,renal:true,stage:8,magazine:10,reload:1}
+  {id:'ampicillin',mode:'auto',fireLabel:'연사',recoil:0.55,charge:.28,short:'AMP',role:'NARROW / REPEATER',damage:22,interval:.19,cost:7,pressure:.08,range:15,spread:.065,exposure:0,beta:true,renal:true,stage:0,magazine:18,reload:0.95},
+  {id:'cefazolin',mode:'scatter',fireLabel:'5발 산탄',recoil:1.55,charge:.28,short:'CFZ',role:'FOCUSED / SCATTER',damage:52,interval:.55,cost:17,pressure:.25,range:9,spread:.16,exposure:1,beta:true,renal:true,stage:0,magazine:6,reload:1.15},
+  {id:'ceftriaxone',mode:'charge',fireLabel:'충전 정밀탄',recoil:1.35,charge:.28,short:'CRO',role:'BROAD / PRECISION',damage:65,interval:.72,cost:19,pressure:1.7,range:22,spread:.045,exposure:0,beta:true,stage:0,magazine:6,reload:1.1},
+  {id:'vancomycin',mode:'pulse',fireLabel:'중량 펄스',recoil:1.8,charge:.28,short:'VAN',role:'SPECIALIST / PULSE',damage:78,interval:.82,cost:24,pressure:.5,range:11,spread:.13,exposure:0,renal:true,stage:0,magazine:5,reload:1.3},
+  {id:'meropenem',mode:'burst',fireLabel:'3점사',recoil:0.85,charge:.28,short:'MEM',role:'BROAD / RAPID',damage:35,interval:.23,cost:12,pressure:2.8,range:18,spread:.075,exposure:0,beta:true,renal:true,stage:0,magazine:20,reload:1.2},
+  {id:'levofloxacin',mode:'rail',fireLabel:'직선 관통',recoil:1.15,charge:.28,short:'LEV',color:'#91b8e8',role:'INTRACELLULAR / RAIL',damage:72,interval:.65,cost:16,pressure:1.3,range:24,spread:.055,exposure:0,renal:true,intracellular:true,stage:2,magazine:7,reload:1.05},
+  {id:'metronidazole',mode:'pulse',fireLabel:'확산 펄스',recoil:1.5,charge:.28,short:'MTZ',role:'ANAEROBE / BURST',damage:90,interval:.6,cost:16,pressure:.12,range:12,spread:.14,exposure:0,stage:3,magazine:5,reload:1.15},
+  {id:'linezolid',mode:'beam',fireLabel:'지속 빔',recoil:0.18,charge:.28,short:'LZD',role:'GRAM+ / BEAM',damage:15.333,interval:.11,cost:4,pressure:.2,range:19,spread:.07,exposure:0,stage:5,magazine:36,reload:1.05},
+  {id:'ceftazavi',mode:'charge',fireLabel:'억제제 충전탄',recoil:1.4,charge:.28,short:'CZA',role:'KPC / INHIBITOR',damage:82,interval:.62,cost:21,pressure:2.5,range:20,spread:.07,exposure:0,beta:true,renal:true,stage:6,magazine:6,reload:1.2},
+  {id:'ganciclovir',mode:'pulse',fireLabel:'억제 펄스',recoil:0.8,charge:.28,short:'GCV',color:'#7dd8df',role:'ANTIVIRAL / PULSE',damage:58,interval:.4,cost:14,pressure:.1,range:20,spread:.09,renal:true,stage:5,magazine:8,reload:1.05},
+  {id:'ivermectin',mode:'rail',fireLabel:'유충 관통탄',recoil:1.2,charge:.28,short:'IVM',color:'#e8c878',role:'ANTIPARASITIC / BURST',damage:90,interval:.65,cost:18,pressure:.05,range:14,spread:.15,stage:6,magazine:6,reload:1.1},
+  {id:'acyclovir',mode:'burst',fireLabel:'3점사',recoil:0.7,charge:.28,short:'ACV',color:'#bda1ed',role:'ANTIVIRAL / BURST',damage:52,interval:.32,cost:12,pressure:.05,range:20,spread:.08,renal:true,stage:8,magazine:10,reload:1}
 ]);
 export const ENEMIES = Object.freeze([
   {id:'pneumo',recordId:'SPN-105',short:'S. pneumoniae',gram:'Gram-positive diplococci',shape:'diplo',color:'#b293e6',hp:64,shield:30,speed:1.1,damage:7,trait:'CAPSULE'},
@@ -101,7 +101,7 @@ export function normalizeSeed(value=Date.now()){
 export function seededRandom(seed){let s=normalizeSeed(seed);return ()=>{s+=0x6D2B79F5;let t=Math.imul(s^s>>>15,1|s);t^=t+Math.imul(t^t>>>7,61|t);return ((t^t>>>14)>>>0)/4294967296;};}
 export function roomAt(map,x,y){const ix=Math.max(0,Math.min(map.width-1,Math.floor(x))),iy=Math.max(0,Math.min(map.height-1,Math.floor(y)));return map.roomCells[iy*map.width+ix];}
 const MAP_STYLES=[['COURTYARDS',30,26,8,3],['BRANCHES',32,28,9,2],['ATRIUM',34,28,8,4],['POCKETS',32,30,10,2],['WARD',36,26,9,3],['ISOLATION',34,30,10,2],['BYPASSES',36,30,10,5],['CORE',36,30,8,4]];
-export function createMap(stageIndex=0,seed=31,themeStage=null){
+function createArenaBaseMap(stageIndex=0,seed=31,themeStage=null){
   const stage=themeStage||STAGES[stageIndex]||STAGES[0],[name,baseW,baseH,count,loops]=MAP_STYLES[themeStage?.mapStyle??stageIndex]||MAP_STYLES[0],random=seededRandom(normalizeSeed(seed)^Math.imul(stageIndex+1,0x9e3779b9)),int=(a,b)=>a+Math.floor(random()*(b-a+1));
   const width=baseW+int(0,2),height=baseH+int(0,2),cells=new Uint8Array(width*height).fill(1),roomCells=new Int16Array(width*height).fill(-1);
   const bounds=[{x:1,y:1,w:7,h:7}],anchorW=stage.boss?11:stageIndex===2?10:int(7,9),anchorH=stage.boss?10:int(6,8);
@@ -137,6 +137,35 @@ export function createMap(stageIndex=0,seed=31,themeStage=null){
     sources:sourcePositions.map((p,id)=>({...p,id,label:String.fromCharCode(65+id)+' / '+stage.source,active:true})),pickups:pickups.map((p,id)=>({...p,id,active:true,cooldown:0}))};
 }
 
+// Ordered adjacent sectors alternate combat and supply without a pillar maze.
+export function createMap(stageIndex=0,seed=31,themeStage=null){
+ const stage=themeStage||STAGES[stageIndex]||STAGES[0],random=seededRandom(normalizeSeed(seed)^Math.imul(stageIndex+1,0x9e3779b9)),int=(a,b)=>a+Math.floor(random()*(b-a+1));
+ const vertical=random()<.5,columns=stage.boss?3:int(2,3),rows=columns===2?4:3,cols=vertical?rows:columns,lines=vertical?columns:rows,stride=11;
+ const width=cols*stride+2,height=lines*stride+2,cells=new Uint8Array(width*height).fill(1),roomCells=new Int16Array(width*height).fill(-1),rooms=[],route=[];
+ const carve=(x,y,w,h,id)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)if(i>0&&j>0&&i<width-1&&j<height-1){cells[j*width+i]=0;roomCells[j*width+i]=id;}};
+ const names=['RECEPTION','CULTURE HALL','OBSERVATION','SUPPLY BAY','ISOLATION','PROCESSING','RECOVERY','CONTAINMENT','EXTRACTION'];
+ for(let row=0;row<rows;row++)for(let n=0;n<columns;n++){
+  const col=row%2?columns-1-n:n,gx=vertical?row:col,gy=vertical?col:row,id=rooms.length,w=id===0?7:stage.boss&&id===columns*rows-1?9:int(6,9),h=id===0?7:stage.boss&&id===columns*rows-1?9:int(5,8),x=id===0?1:gx*stride+int(1,stride-w),y=id===0?1:gy*stride+int(1,stride-h);
+  const rest=id>0&&id%3===0&&id<columns*rows-1,bounds={x,y,w,h};carve(x,y,w,h,id);
+  if(id>0&&random()<.7){cells[y*width+x]=2;cells[(y+h-1)*width+x+w-1]=2;if(w>=8){cells[y*width+x+1]=3;cells[(y+h-1)*width+x+w-2]=3;}}
+  rooms.push({id,x:Math.floor(x+w/2)+.5,y:Math.floor(y+h/2)+.5,label:String(id).padStart(2,'0'),name:id===columns*rows-1?'EXTRACTION':names[id],neighbors:[],bounds,encounter:id>0&&!rest,rest,order:id});
+ }
+ const line=(a,b,id)=>{let x=Math.floor(a.x),y=Math.floor(a.y),bx=Math.floor(b.x),by=Math.floor(b.y);while(x!==bx||y!==by){carve(x,y,2,2,id);if(x!==bx)x+=Math.sign(bx-x);else y+=Math.sign(by-y);}carve(x,y,2,2,id);};
+ for(let i=1;i<rooms.length;i++){
+  const a=rooms[i-1],b=rooms[i];a.neighbors.push(i);b.neighbors.push(i-1);
+  if(i===1){const door={x:6,y:8},bend={x:vertical?6:b.x,y:vertical?b.y:9};line({x:6,y:6},door,0);line(door,bend,0);line(bend,b,b.id);route.push(door,bend);}
+  else{const bend=Math.floor(a.bounds.x/stride)===Math.floor(b.bounds.x/stride)?{x:a.x,y:b.y}:{x:b.x,y:a.y};line(a,bend,a.id);line(bend,b,b.id);route.push(bend);}
+  route.push({x:b.x,y:b.y});
+ }
+ for(const r of rooms)for(let y=r.bounds.y;y<r.bounds.y+r.bounds.h;y++)for(let x=r.bounds.x;x<r.bounds.x+r.bounds.w;x++)if(!cells[y*width+x])roomCells[y*width+x]=r.id;
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(roomCells[y*width+x]<0){let nearest=0,best=Infinity;for(const r of rooms){const d=(x-r.x)**2+(y-r.y)**2;if(d<best){best=d;nearest=r.id;}}roomCells[y*width+x]=nearest;cells[y*width+x]=1+((nearest+stageIndex+normalizeSeed(seed)%3)%6);}
+ const point=(r,dx=0,dy=0)=>{const spots=[];for(let y=r.bounds.y;y<r.bounds.y+r.bounds.h;y++)for(let x=r.bounds.x;x<r.bounds.x+r.bounds.w;x++)if(!cells[y*width+x])spots.push({x:x+.5,y:y+.5});return spots.sort((a,b)=>Math.hypot(a.x-r.x-dx,a.y-r.y-dy)-Math.hypot(b.x-r.x-dx,b.y-r.y-dy))[0];};
+ const combats=rooms.filter(r=>r.encounter),last=rooms.at(-1),exit=point(last,last.bounds.w/2-1,last.bounds.h/2-1);
+ const sourceRooms=[combats[Math.floor(combats.length/2)],last,...(stage.boss?[combats[0]]:[])];
+ const pickups=[{x:5.5,y:2.5,kind:'supply'},...rooms.filter(r=>r.rest).flatMap(r=>[{...point(r,-1,0),kind:'health'},{...point(r,1,-1),kind:'supply'}]),{...point(rooms[2],-1,1),kind:'companion'},{...point(combats[1],1,1),kind:'culture'}];
+ return {id:stage.id+'-'+normalizeSeed(seed),theme:stage.theme??(normalizeSeed(seed)+stageIndex)%4,biome:themeStage?.id||'facility',name:stage.name,layout:(vertical?'TRANSIT':'LONGITUDINAL')+' / '+rooms.length+' SECTORS',site:stage.site,scenarios:stage.scenarios||[],color:stage.color,width,height,cells,roomCells,rooms,route,spawn:{x:3.5,y:3.5,angle:0},exit,boss:stage.boss?point(last,0,1):null,portals:rooms.map(r=>point(r)),sources:sourceRooms.map((r,id)=>({...point(r,-1,0),id,label:String.fromCharCode(65+id)+' / '+stage.source,active:true})),pickups:pickups.map((p,id)=>({...p,id,active:true,cooldown:0}))};
+}
+
 // Optional CC0 audio; only the selected track is fetched after MUSIC is enabled.
 export const MUSIC_TRACKS=Object.freeze([
  {id:'hallow',file:'hallow-quest-8bit.ogg',name:'Hallow Quest',mood:'긴장 / 8-bit',author:'Zane Little Music',source:'https://opengameart.org/content/spooky-action-loop-hallow-quest'},
@@ -164,7 +193,7 @@ export const AUGMENTS=Object.freeze([
 // Survival is a mixed-case arena: regimen targets retain explicitly authored contexts.
 export const SURVIVAL_CASES=Object.freeze({legionella:{site:'lung',scenarios:[]},anaerobe:{site:'abdomen',scenarios:[]},cmv:{site:'bloodstream',scenarios:['cmv-retinitis']},strongyloides:{site:'bloodstream',scenarios:['strongyloidiasis']}});
 export function createSurvivalMap(seed){
- const map=createMap(4,seed),random=seededRandom(normalizeSeed(seed)^0x51a7f0),w=map.width,h=map.height;
+ const map=createArenaBaseMap(4,seed),random=seededRandom(normalizeSeed(seed)^0x51a7f0),w=map.width,h=map.height;
  // A broad outer loop and cross lanes let a horde circulate; retain cover and a safe spawn.
  for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++)if(x>=9&&(y<5||y>=h-5||x>=w-5||Math.abs(y-h/2)<1.5||Math.abs(x-w/2)<1.5))map.cells[y*w+x]=0;
  map.id='survival-'+normalizeSeed(seed);map.name='ENDLESS / MIXED CASES';map.layout='CIRCUIT / '+map.rooms.length+' SECTORS';map.site='bloodstream';map.scenarios=[];map.sources=[];map.boss=null;
