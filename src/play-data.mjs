@@ -73,34 +73,47 @@ export function createPlayCatalog(database){
   const enemies=ENEMIES.map(spec=>{const record=database.records.find(r=>r.id===spec.recordId);if(!record)throw Error('Missing Play isolate: '+spec.recordId);return {...spec,name:record.organism,phenotype:record.phenotype,record,ast:record.susceptibility};});
   return {weapons,enemies,weaponById:Object.fromEntries(weapons.map(w=>[w.id,w])),enemyById:Object.fromEntries(enemies.map(e=>[e.id,e]))};
 }
-// Hand-authored floor plans: room bounds and connections are independent per sector.
-// Integer cell ownership keeps aggro and exploration independent of visual map geometry.
-const LAYOUTS=[
-  {size:[26,22],name:'NEIGHBORHOOD LOOPS',rooms:[[1,1,7,7],[9,1,8,7],[18,1,7,7],[1,9,7,5],[9,9,8,5],[18,9,7,5],[1,15,7,6],[9,15,8,6],[18,15,7,6]],links:[[0,1],[0,3],[1,2],[1,4],[2,5],[3,6],[4,5],[4,7],[5,8],[6,7],[7,8]],cover:[[4,5,2,1],[12,4,2,2],[21,11,2,1],[11,18,3,1],[4,18,2,1]]},
-  {size:[30,26],name:'BRANCH / BYPASS',rooms:[[1,1,7,7],[10,2,5,6],[21,1,7,7],[3,11,7,5],[13,10,5,7],[22,12,6,5],[2,20,8,5],[13,20,6,5],[23,20,6,5]],links:[[0,1],[1,2],[1,4],[4,3],[4,5],[3,6],[4,7],[5,8],[6,7],[7,8]],cover:[[5,13,2,1],[15,12,1,2],[24,4,2,1],[25,21,1,2]]},
-  {size:[30,26],name:'ATRIUM / FLANKS',rooms:[[1,1,7,7],[11,2,7,5],[22,2,7,6],[2,11,5,8],[10,10,10,9],[23,12,6,7],[2,22,6,3],[11,22,8,3],[23,22,6,3]],links:[[0,1],[0,3],[1,2],[1,4],[2,5],[3,4],[4,5],[3,6],[4,7],[5,8],[6,7],[7,8]],cover:[[12,12,2,2],[17,16,2,2],[25,14,2,1],[4,14,1,2]]},
-  {size:[31,27],name:'ABSCESS POCKETS',rooms:[[1,1,7,7],[11,2,5,5],[21,1,8,6],[3,11,6,7],[13,10,8,5],[24,10,6,9],[1,21,8,5],[12,20,6,6],[21,22,9,4]],links:[[0,1],[0,3],[1,2],[1,4],[2,5],[3,6],[3,4],[4,7],[5,8],[6,7],[7,8]],cover:[[14,11,1,2],[25,13,2,2],[4,14,2,1],[22,23,2,1]]},
-  {size:[32,25],name:'WARD SPINE',rooms:[[1,1,7,7],[11,2,7,5],[23,1,8,6],[2,11,7,4],[11,10,20,5],[2,19,7,5],[12,19,7,5],[24,19,7,5]],links:[[0,1],[0,3],[1,2],[1,4],[2,4],[3,4],[3,5],[4,6],[4,7],[5,6],[6,7]],cover:[[14,11,2,1],[21,13,2,1],[27,11,2,1],[25,3,2,1]]},
-  {size:[30,28],name:'ISOLATION CLUSTERS',rooms:[[1,1,7,7],[11,1,7,7],[22,2,7,6],[2,12,6,6],[11,11,7,7],[22,12,7,6],[1,22,7,5],[11,22,7,5],[22,22,7,5]],links:[[0,1],[0,3],[1,2],[1,4],[2,5],[3,4],[3,6],[4,5],[4,7],[5,8],[6,7],[7,8]],cover:[[13,3,1,2],[13,13,1,2],[24,14,1,2],[4,23,2,1],[24,23,2,1]]},
-  {size:[32,28],name:'CONTAINMENT RING',rooms:[[1,1,7,7],[11,1,9,6],[24,2,7,6],[2,12,7,7],[13,11,7,8],[24,12,7,7],[2,23,7,4],[12,23,8,4],[24,23,7,4]],links:[[0,1],[0,3],[1,2],[2,5],[3,6],[5,8],[6,7],[7,8],[3,4],[4,5],[4,7]],cover:[[15,13,2,2],[26,14,2,2],[13,3,2,1],[4,14,1,2]]},
-  {size:[32,28],name:'SEPTIC CORE ARENA',rooms:[[1,1,7,7],[11,1,8,6],[23,1,8,7],[2,12,7,7],[12,11,19,16],[2,23,7,4]],links:[[0,1],[0,3],[1,2],[1,4],[2,4],[3,4],[3,5],[5,4]],cover:[[15,14,2,2],[25,14,2,2],[15,22,2,2],[25,22,2,2]],boss:[22.5,20.5]}
-];
+// Seeded room placement, a spanning tree, then extra links for flanking routes.
+// Inspired by Bob Nystrom's Rooms and Mazes article; original implementation, no runtime dependency.
+export function normalizeSeed(value=Date.now()){
+  if(typeof value==='number')return value>>>0;
+  const text=String(value).trim();if(!text)return Date.now()>>>0;if(/^\d+$/.test(text))return Number(text)>>>0;
+  let hash=2166136261;for(const c of text)hash=Math.imul(hash^c.codePointAt(0),16777619);return hash>>>0;
+}
+export function seededRandom(seed){let s=normalizeSeed(seed);return ()=>{s+=0x6D2B79F5;let t=Math.imul(s^s>>>15,1|s);t^=t+Math.imul(t^t>>>7,61|t);return ((t^t>>>14)>>>0)/4294967296;};}
 export function roomAt(map,x,y){const ix=Math.max(0,Math.min(map.width-1,Math.floor(x))),iy=Math.max(0,Math.min(map.height-1,Math.floor(y)));return map.roomCells[iy*map.width+ix];}
-export function createMap(stageIndex=0){
-  const stage=STAGES[stageIndex]||STAGES[0],layout=LAYOUTS[stageIndex]||LAYOUTS[0],[width,height]=layout.size,cells=new Uint8Array(width*height).fill(1),roomCells=new Int16Array(width*height).fill(-1);
-  const carve=(x,y,w,h,id)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++){if(i<1||j<1||i>=width-1||j>=height-1)continue;cells[j*width+i]=0;if(roomCells[j*width+i]<0)roomCells[j*width+i]=id;}};
-  const rooms=layout.rooms.map(([x,y,w,h],id)=>{carve(x,y,w,h,id);return {id,x:Math.floor(x+w/2)+.5,y:Math.floor(y+h/2)+.5,label:id===0?'ENTRY':String.fromCharCode(65+id),neighbors:[],bounds:{x,y,w,h}};});
-  for(const [a,b] of layout.links){const ra=rooms[a],rb=rooms[b],ax=Math.floor(ra.x),ay=Math.floor(ra.y),bx=Math.floor(rb.x),by=Math.floor(rb.y);ra.neighbors.push(b);rb.neighbors.push(a);
-    for(let x=Math.min(ax,bx);x<=Math.max(ax,bx);x++)carve(x,ay,1,2,Math.abs(x-ax)<Math.abs(x-bx)?a:b);
-    for(let y=Math.min(ay,by);y<=Math.max(ay,by);y++)carve(bx,y,2,1,Math.abs(y-ay)<Math.abs(y-by)?a:b);
+const MAP_STYLES=[['COURTYARDS',30,26,8,3],['BRANCHES',32,28,9,2],['ATRIUM',34,28,8,4],['POCKETS',32,30,10,2],['WARD',36,26,9,3],['ISOLATION',34,30,10,2],['BYPASSES',36,30,10,5],['CORE',36,30,8,4]];
+export function createMap(stageIndex=0,seed=31){
+  const stage=STAGES[stageIndex]||STAGES[0],[name,baseW,baseH,count,loops]=MAP_STYLES[stageIndex]||MAP_STYLES[0],random=seededRandom(normalizeSeed(seed)^Math.imul(stageIndex+1,0x9e3779b9)),int=(a,b)=>a+Math.floor(random()*(b-a+1));
+  const width=baseW+int(0,2),height=baseH+int(0,2),cells=new Uint8Array(width*height).fill(1),roomCells=new Int16Array(width*height).fill(-1);
+  const bounds=[{x:1,y:1,w:7,h:7}],anchorW=stage.boss?11:stageIndex===2?10:int(7,9),anchorH=stage.boss?10:int(6,8);
+  bounds.push({x:width-anchorW-2,y:height-anchorH-2,w:anchorW,h:anchorH});
+  for(let attempt=0;attempt<700&&bounds.length<count;attempt++){
+    const w=int(4,stageIndex===4?11:8),h=int(4,stageIndex===4?6:8),r={x:int(1,width-w-2),y:int(1,height-h-2),w,h};
+    if(bounds.every(b=>r.x+r.w+1<=b.x||b.x+b.w+1<=r.x||r.y+r.h+1<=b.y||b.y+b.h+1<=r.y))bounds.push(r);
   }
-  for(const [x,y,w,h] of layout.cover)for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)cells[j*width+i]=2;
-  // Give walls an owner for the minimap; this does not change any walkable cells.
+  const carve=(x,y,w,h,id)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++){if(i<1||j<1||i>=width-1||j>=height-1)continue;cells[j*width+i]=0;if(roomCells[j*width+i]<0)roomCells[j*width+i]=id;}};
+  const rooms=bounds.map((b,id)=>{carve(b.x,b.y,b.w,b.h,id);return {id,x:Math.floor(b.x+b.w/2)+.5,y:Math.floor(b.y+b.h/2)+.5,label:id===0?'ENTRY':String.fromCharCode(64+id),neighbors:[],bounds:b};});
+  const edges=[],connected=new Set([1]);
+  while(connected.size<rooms.length-1){let best=null,score=Infinity;for(const a of connected)for(let b=1;b<rooms.length;b++){if(connected.has(b))continue;const ra=rooms[a],rb=rooms[b],cost=Math.hypot(ra.x-rb.x,ra.y-rb.y)*(1+random()*.45);if(cost<score){score=cost;best=[a,b];}}edges.push(best);connected.add(best[1]);}
+  const extra=[];for(let a=1;a<rooms.length;a++)for(let b=a+1;b<rooms.length;b++)if(!edges.some(e=>e.includes(a)&&e.includes(b)))extra.push({a,b,score:Math.hypot(rooms[a].x-rooms[b].x,rooms[a].y-rooms[b].y)*(1+random())});
+  extra.sort((a,b)=>a.score-b.score);for(const e of extra.slice(0,loops))edges.push([e.a,e.b]);
+  const entryNeighbor=rooms.slice(1).sort((a,b)=>Math.hypot(a.x-6,a.y-8)-Math.hypot(b.x-6,b.y-8))[0];edges.push([0,entryNeighbor.id]);
+  for(const [a,b] of edges){const ra=rooms[a],rb=rooms[b];ra.neighbors.push(b);rb.neighbors.push(a);let ax=Math.floor(ra.x),ay=Math.floor(ra.y),bx=Math.floor(rb.x),by=Math.floor(rb.y);
+    if(a===0){ax=6;ay=8;carve(6,6,2,4,0);}
+    const horizontal=(x0,x1,y)=>{for(let x=Math.min(x0,x1);x<=Math.max(x0,x1);x++)carve(x,y,1,2,Math.abs(x-ax)<Math.abs(x-bx)?a:b);};
+    const vertical=(y0,y1,x)=>{for(let y=Math.min(y0,y1);y<=Math.max(y0,y1);y++)carve(x,y,2,1,Math.abs(y-ay)<Math.abs(y-by)?a:b);};
+    if(a===0||random()<.5){horizontal(ax,bx,ay);vertical(ay,by,bx);}else{vertical(ay,by,ax);horizontal(ax,bx,by);}
+  }
+  // Free-standing cover cannot seal a room or its doorway. Keep the entry sightline empty.
+  for(const r of rooms.slice(1)){const b=r.bounds;if(b.w>=6&&b.h>=6&&random()<.8){const x=b.x+1+int(0,1)*(b.w-4),y=b.y+1+int(0,1)*(b.h-4);cells[y*width+x]=2;if(b.w>=8)cells[y*width+x+1]=2;}}
   for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(roomCells[y*width+x]<0){let nearest=0,best=Infinity;for(const r of rooms){const d=(x-r.x)**2+(y-r.y)**2;if(d<best){best=d;nearest=r.id;}}roomCells[y*width+x]=nearest;cells[y*width+x]=1+(nearest%3);}
-  const point=(roomId,dx=0,dy=0)=>{const r=rooms[roomId],points=[];for(let y=r.bounds.y;y<r.bounds.y+r.bounds.h;y++)for(let x=r.bounds.x;x<r.bounds.x+r.bounds.w;x++)if(!cells[y*width+x])points.push({x:x+.5,y:y+.5});points.sort((a,b)=>Math.hypot(a.x-r.x-dx,a.y-r.y-dy)-Math.hypot(b.x-r.x-dx,b.y-r.y-dy));return points[0];};
-  const sourcePositions=stageIndex===0?[{x:22.5,y:4.5},{x:21.5,y:18.5}]:[point(2,1,-1),point(rooms.length-1,1,1),...(stage.boss?[point(3,-1,1)]:[])];
-  const pickups=[{x:5.5,y:2.5,kind:'supply'},...[[1,'health'],[2,'supply'],[3,'health'],[4,'culture'],[rooms.length-1,'supply']].map(([id,kind])=>({...point(id,-1,-1),kind}))];
-  return {id:stage.id,name:stage.name,layout:layout.name,site:stage.site,scenarios:stage.scenarios||[],color:stage.color,width,height,cells,roomCells,rooms,
-    spawn:{x:3.5,y:3.5,angle:0},exit:{x:3.5,y:3.5},boss:layout.boss?{x:layout.boss[0],y:layout.boss[1]}:null,portals:rooms.map(r=>point(r.id)),
+  const spawn={x:3.5,y:3.5,angle:0},dist=new Int16Array(cells.length).fill(-1),queue=[3*width+3];dist[queue[0]]=0;
+  for(let head=0;head<queue.length;head++){const i=queue[head];for(const n of [i-1,i+1,i-width,i+width])if(n>=0&&n<cells.length&&!cells[n]&&dist[n]<0){dist[n]=dist[i]+1;queue.push(n);}}
+  const point=(id,dx=0,dy=0)=>{const r=rooms[id],b=r.bounds,list=[];for(let y=b.y;y<b.y+b.h;y++)for(let x=b.x;x<b.x+b.w;x++)if(!cells[y*width+x]&&dist[y*width+x]>=0)list.push({x:x+.5,y:y+.5});list.sort((a,b)=>Math.hypot(a.x-r.x-dx,a.y-r.y-dy)-Math.hypot(b.x-r.x-dx,b.y-r.y-dy));return list[0];};
+  const ranked=rooms.slice(1).map(r=>({r,p:point(r.id)})).sort((a,b)=>dist[Math.floor(b.p.y)*width+Math.floor(b.p.x)]-dist[Math.floor(a.p.y)*width+Math.floor(a.p.x)]);
+  const exitRoom=ranked[0].r,exit=point(exitRoom.id,exitRoom.bounds.w/2-1,exitRoom.bounds.h/2-1),sourceRooms=[ranked[Math.floor(ranked.length/2)].r,exitRoom,...(stage.boss?[ranked.at(-1).r]:[])];
+  const sourcePositions=sourceRooms.map(r=>point(r.id,-1,0)),pickups=[{x:5.5,y:2.5,kind:'supply'},...ranked.slice(0,5).map(({r},i)=>({...point(r.id,1,-1),kind:['supply','health','culture','health','supply'][i]}))];
+  return {id:stage.id+'-'+normalizeSeed(seed),name:stage.name,layout:name+' / '+rooms.length+' ROOMS',site:stage.site,scenarios:stage.scenarios||[],color:stage.color,width,height,cells,roomCells,rooms,spawn,exit,boss:stage.boss?point(exitRoom.id,0,1):null,portals:rooms.map(r=>point(r.id)),
     sources:sourcePositions.map((p,id)=>({...p,id,label:String.fromCharCode(65+id)+' / '+stage.source,active:true})),pickups:pickups.map((p,id)=>({...p,id,active:true,cooldown:0}))};
 }

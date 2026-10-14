@@ -1,0 +1,8 @@
+Hallow Quest (8-bit version)
+Music by Zane Little Music
+Source: https://opengameart.org/content/spooky-action-loop-hallow-quest
+Original download: https://opengameart.org/sites/default/files/8_bit.zip
+License: CC0 1.0 Universal — https://creativecommons.org/publicdomain/zero/1.0/
+Retrieved: 2026-10-14
+The original Hallow Quest.ogg is included unchanged as hallow-quest-8bit.ogg.
+Loaded only when the player enables music.
