@@ -4,7 +4,7 @@ import {STAGES} from '../../src/play-data.mjs';
 // QA controls only movement, aiming, weapons, scanning and available rewards. No teleport or invulnerability.
 export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mission='campaign',limit=1200}={}){
  const r=newRun(catalog,{seed,hard,host,stage,mission});r.status='running';r.upgrades.immune=1;
- let waypoint=null,lastGoal='',navTime=0,steps=0,lastMap=r.map.id;const reports=[];
+ let waypoint=null,navigationGoal=null,lastGoal='',navTime=0,steps=0,lastMap=r.map.id;const reports=[];
  const navigate=goal=>{
   const m=r.map,start=Math.floor(r.player.y)*m.width+Math.floor(r.player.x),end=Math.floor(goal.y)*m.width+Math.floor(goal.x),queue=[end],dist=new Int16Array(m.cells.length).fill(-1);dist[end]=0;
   for(let i=0;i<queue.length;i++)for(const n of [queue[i]-1,queue[i]+1,queue[i]-m.width,queue[i]+m.width])if(n>=0&&n<dist.length&&!m.cells[n]&&dist[n]===-1){dist[n]=dist[queue[i]]+1;queue.push(n);}
@@ -18,14 +18,15 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
    const priority=r.player.hp<65?['support','source','penetration','rate','renal','infusion','efficiency']:r.pressure>45?['stewardship','penetration','rate','infusion','efficiency']:['penetration','rate','infusion','efficiency','source','reserve','support'];
    const reward=priority.map(id=>r.rewards.find(e=>e.id===id)).find(Boolean)||r.rewards[0];chooseReward(r,reward.id);r.status='running';continue;
   }
-  if(lastMap!==r.map.id){lastMap=r.map.id;waypoint=null;navTime=0;lastGoal='';}
+  if(lastMap!==r.map.id){lastMap=r.map.id;waypoint=null;navigationGoal=null;navTime=0;lastGoal='';}
   const distance=e=>Math.hypot(e.x-r.player.x,e.y-r.player.y),live=r.enemies.filter(e=>e.active&&e.state!=='Dead');
   const enemy=live.filter(e=>lineOfSight(r.map,r.player,e)).sort((a,b)=>distance(a)-distance(b))[0];
-  const source=r.map.sources.filter(s=>s.active).sort((a,b)=>distance(a)-distance(b))[0];
+  const source=r.map.sources.includes(navigationGoal)&&navigationGoal.active?navigationGoal:r.map.sources.filter(s=>s.active).sort((a,b)=>distance(a)-distance(b))[0];
   const unvisited=r.map.rooms.find(room=>!r.visited.has(room.id));
-  let goal=source||live.sort((a,b)=>distance(a)-distance(b))[0]||r.map.exit;
+  // Keep a destination until cleared; nearest unseen targets can otherwise alternate across a wall.
+  let goal=source||(live.includes(navigationGoal)?navigationGoal:live.sort((a,b)=>distance(a)-distance(b))[0])||r.map.exit;
   if(!source&&!live.length&&r.spawned<STAGES[r.wave].count)goal=unvisited||r.pending[0]||r.map.exit;
-  const goalKey=r.map.id+':'+Math.floor(goal.x)+','+Math.floor(goal.y);
+  navigationGoal=goal;const goalKey=r.map.id+':'+Math.floor(goal.x)+','+Math.floor(goal.y);
   navTime-=1/30;if(!waypoint||Math.hypot(waypoint.x-r.player.x,waypoint.y-r.player.y)<.15||goalKey!==lastGoal||navTime<=0){waypoint=navigate(goal);lastGoal=goalKey;navTime=1;}
   let dx=waypoint.x-r.player.x,dy=waypoint.y-r.player.y,fire=false,scope=false;
   if(enemy){

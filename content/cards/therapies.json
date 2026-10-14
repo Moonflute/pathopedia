@@ -417,7 +417,11 @@
         "cdc-sti-herpes"
       ],
       "note": "권고 경구 항바이러스 선택지 중 수록된 acyclovir이다. Valacyclovir·famciclovir도 권고 선택지이나 이 목록 밖이다.",
-      "combination": false
+      "combination": false,
+      "scenarios": [
+        "first-genital-herpes"
+      ],
+      "learningDefault": true
     },
     {
       "id": "uncomplicated-falciparum",
@@ -800,6 +804,26 @@
         "cmv-retinitis"
       ],
       "learningDefault": true
+    },
+    {
+      "id": "giardiasis",
+      "recordIds": [
+        "GLA-706"
+      ],
+      "context": "증상성 giardiasis",
+      "drugIds": [
+        "metronidazole"
+      ],
+      "sourceIds": [
+        "cdc-giardia"
+      ],
+      "note": "Metronidazole은 CDC가 열거한 효과적인 치료 선택지다. Tinidazole·nitazoxanide 등도 선택지이며 이 게임의 무기 목록과는 다르다. 지속 증상은 활동 감염·재감염·복약 상태를 재평가한다.",
+      "combination": false,
+      "scenarios": [
+        "giardiasis"
+      ],
+      "learningDefault": true,
+      "preferenceLabel": "권고 치료 선택지"
     }
   ]
 }

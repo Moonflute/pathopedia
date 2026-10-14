@@ -51,3 +51,187 @@ main.play-main{max-width:1760px;margin:0 auto;padding:10px 16px 20px}
 .fp-weapon-row{display:grid;grid-template-columns:48px minmax(0,1fr);gap:9px;align-items:center}.fp-offhand{position:relative;height:50px;border:1px solid #7da99e;background:linear-gradient(145deg,#30594fdd,#16332dee);box-shadow:inset 2px 2px 0 #91c2ae44;color:#acdcca;pointer-events:auto;touch-action:none;user-select:none;padding:0}.fp-offhand[aria-pressed=true]{border:2px solid #e5f4ca;box-shadow:0 0 10px #9adab573;transform:translateY(-2px)}.fp-offhand kbd{position:absolute;top:3px;left:4px;font:10px/1 var(--mono,monospace);color:#d9edca}.fp-offhand svg{position:absolute;top:13px;left:9px;width:30px;height:23px}.fp-offhand strong{position:absolute;bottom:3px;left:0;right:0;font:10px/1 var(--mono,monospace);text-align:center}.fp-grenade{pointer-events:auto;border:1px solid #8fae9a88;background:#183f34df;color:#c7edce;border-radius:3px;font:12px var(--mono,monospace)!important;padding:3px 6px;white-space:nowrap}.fp-selected{gap:8px}.fp-xp{position:relative;height:15px;background:#193c3fdd;margin-top:3px;border:1px solid #83bdb25e;overflow:hidden}.fp-xp[hidden]{display:none}.fp-xp i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#327e80,#70bab1)}.fp-xp span{position:relative;display:block;text-align:center;color:#e8f4db;font:10px/13px var(--mono,monospace);text-shadow:0 1px 2px #102e29}.fp-music-select{display:flex;flex-direction:column;gap:7px;color:#cadbb9;font-size:13px;margin-top:16px}.fp-music-select select{min-width:0;width:100%;border:1px solid #86a67a88;background:#203d32;color:#e2efd1;border-radius:3px;padding:9px;font:13px var(--sans,system-ui)}.fp-music-credit{font-size:11px;color:#a6bc9f;line-height:1.5;margin:6px 0}.fp-music-credit a,.fp-review-guidance a{color:#c8e6a7;text-decoration:underline;text-underline-offset:3px}.fp-mode-description{background:#9eccab0d;border:1px solid #9db97b55;padding:14px;color:#cfdfba;font-size:14px;line-height:1.8}.fp-result{max-width:960px}.fp-reward-menu{max-width:1080px}.fp-reward-menu h3{font-size:20px;color:#e0ecd0;margin-top:24px}.fp-debrief{margin:22px 0 18px;text-align:left;border:1px solid #8eaa7466;padding:16px;background:#132b24bd}.fp-review-summary{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#e4edcf}.fp-review-summary b{font-size:20px}.fp-review-summary span{font:12px var(--mono,monospace);color:#c9dcb7}.fp-review-list{max-height:330px;overflow:auto;overscroll-behavior:contain;margin-top:13px;padding-right:8px;scrollbar-color:#69826a #20382d}.fp-review-row{padding:14px 0;border-top:1px solid #a6bb8360}.fp-review-row>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.fp-review-row button{border:0;background:none;color:#edf3df;display:flex;align-items:center;gap:7px;padding:0;font:600 15px var(--sans,system-ui);text-align:left}.fp-review-row button i{width:8px;height:8px;border-radius:50%}.fp-review-row>div:first-child>span{font:11px var(--mono,monospace);color:#b4c9a6}.fp-review-metrics{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin-top:9px;color:#bccab0}.fp-review-metrics b{color:#abd7a8;font-weight:500}.fp-review-blocked{color:#f1b095}.fp-review-drugs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.fp-review-drugs span{padding:3px 5px;background:#9bb77c13;font:11px var(--mono,monospace);color:#ceddb9}.fp-review-case{font-size:12px;line-height:1.6;color:#b3c5a6;margin:9px 0 3px}.fp-review-guidance{font-size:14px;line-height:1.75;color:#e0e9d0;margin:0}.fp-review-guidance b{color:#e6ce89;font-weight:600;margin-right:4px}.fp-review-guidance a{font-size:11px;white-space:nowrap}.fp-shell select:focus-visible{outline:3px solid #d1e69b;outline-offset:2px}
 @media(max-width:700px) and (orientation:portrait){.fp-weapon-row{grid-template-columns:36px minmax(0,1fr);gap:5px}.fp-offhand{height:48px}.fp-offhand svg{left:4px;width:27px}.fp-offhand kbd{font-size:9px;left:3px}.fp-offhand strong{font-size:9px}.fp-debrief{padding:12px}.fp-review-list{max-height:330px}.fp-review-guidance{font-size:13px}.fp-grenade{font-size:11px!important;padding:2px 4px}.fp-selected{column-gap:6px;row-gap:3px}.fp-tools button{font-size:11px;padding:4px 5px}.fp-mission-line{flex-wrap:wrap}}
 @media(max-height:600px) and (orientation:landscape){.fp-weapon-row{grid-template-columns:36px minmax(0,1fr);gap:5px}.fp-offhand{height:44px}.fp-offhand svg{left:4px;width:26px;height:19px}.fp-offhand kbd,.fp-offhand strong{font-size:9px}.fp-arsenal strong{font-size:10px}.fp-review-list{max-height:220px}}
+
+/* Fill the available browser viewport without raising the render-resolution cap. */
+main.play-main{max-width:none;width:100%;margin:0;padding:6px 8px 8px}
+.fp-shell{width:100%;max-width:none;box-shadow:0 5px 18px #17332920}
+.fp-viewport{height:var(--fp-height,calc(100dvh - 80px));min-height:0;aspect-ratio:auto}
+.fp-shell:fullscreen .fp-viewport,.fp-shell.fp-theater .fp-viewport{width:100%;height:100dvh;aspect-ratio:auto}
+.fp-overlay{padding:56px clamp(18px,3vw,56px) 20px;align-items:center}
+.fp-menu.fp-briefing{max-width:1440px;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr);gap:clamp(24px,4vw,72px);align-items:center;margin:auto}
+.fp-brief-panel{min-width:0;padding:18px 22px}
+.fp-panel-title{font-size:13px;padding-bottom:10px}
+.fp-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin:14px 0 0}
+.fp-tabs button{height:42px;padding:4px;border:1px solid #70897560;background:#142f2a;color:#bbd0ba;font:600 14px var(--sans,system-ui);white-space:nowrap}
+.fp-tabs button[aria-selected=true]{background:#bcd6a3;color:#18372b;border-color:#d9e8bf}
+.fp-tab-panel{min-height:380px;padding-top:4px}
+.fp-tab-panel h3{font-size:18px;color:#dfebce;margin:16px 0 10px}
+.fp-config{margin-top:17px}
+.fp-config>span,.fp-config small,.fp-seed{font-size:14px}
+.fp-config>div{gap:8px}
+.fp-config button{font-size:14px;padding:8px 12px;min-height:38px}
+.fp-config .fp-difficulty{display:grid;grid-template-columns:88px 88px minmax(100px,1fr);align-items:center;gap:8px;min-height:44px}
+.fp-difficulty>button{width:88px;height:42px;padding:0;flex:none;box-sizing:border-box}
+.fp-hint-space{height:42px;display:flex;align-items:center;padding-left:4px}
+.fp-difficulty .fp-hint-setting{margin:0;font-size:15px;white-space:nowrap}
+.fp-difficulty-note{min-height:24px}
+.fp-config .fp-host-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.fp-host-options button{height:44px}
+.fp-config .fp-mission-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.fp-mission-options button{font-size:13px;padding:6px 3px;min-height:40px;white-space:nowrap}
+.fp-stage-select{gap:7px;margin:14px 0}
+.fp-stage-select button{font-size:14px;min-height:40px}
+.fp-stage-select b{font-size:12px}
+.fp-seed input{font-size:14px;min-height:42px}
+.fp-mission h1{font-size:clamp(38px,4.8vw,66px);margin-bottom:17px}
+.fp-lead{font-size:16px;line-height:1.65;margin-bottom:16px}
+.fp-mission-line{margin-bottom:17px;font-size:12px}
+.fp-objective{font-size:14px;line-height:1.7;margin-top:14px}
+.fp-keyguide{margin-top:17px;max-width:none}
+.fp-keyguide p{grid-template-columns:82px 1fr 82px 1fr;font-size:13px;gap:7px;margin:7px 0}
+.fp-keyguide kbd{font-size:12px;padding:4px}
+.fp-note{font-size:13px!important;line-height:1.65!important;margin-top:12px!important}
+.fp-music-select{font-size:15px;margin-top:20px}
+.fp-music-select select{font-size:14px;padding:10px;min-height:44px}
+.fp-music-credit{font-size:13px}
+.fp-pause-stats{display:flex;gap:22px;padding:14px 0;color:#b6cbb5;font-size:13px}
+.fp-pause-stats b{font:700 22px var(--mono,monospace);color:#e5edce}
+.fp-pause-actions{margin:20px 0 12px}
+.fp-pause-actions .fp-primary{max-width:240px}
+.fp-pause-layout h2{font-size:34px}
+.fp-perks span{font-size:13px}
+.fp-loadout{border:0;padding:0;margin:0}
+.fp-loadout p{font-size:14px;margin:9px 0}
+.fp-loadout-slots,.fp-loadout-weapons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.fp-loadout-slots button{height:36px;font-size:14px}
+.fp-loadout-weapons button{min-height:48px;font-size:14px;text-align:left;min-width:0}
+.fp-loadout-weapons small{display:block;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fp-theme-select{display:grid;gap:12px;margin-top:16px}
+.fp-theme-select button{display:flex;gap:18px;align-items:center;min-height:85px;padding:14px;border:1px solid #89a27e7a;background:#15342c;color:#d8e9c7;text-align:left}
+.fp-theme-select button[aria-pressed=true]{border-color:#d8e7aa;background:#4c644349;box-shadow:inset 3px 0 #d3dfab}
+.fp-theme-select strong{display:block;font-size:20px}
+.fp-theme-select small{display:block;font-size:13px;margin-top:7px;color:#b4cbb2}
+.fp-theme-icon{display:grid;place-items:center;width:56px;height:56px;flex-shrink:0;border:1px solid #91acc555;color:#bba6ed;background:#232b4b88;font-style:normal;font-size:42px}
+.fp-theme-icon.parasitology{color:#d8d3a0;background:#31462f88}
+.fp-companion-heading{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-top:16px;font-size:16px}
+.fp-companion-heading span{color:#aec7a6;font-size:12px}
+.fp-companion-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.fp-companion-grid button{position:relative;min-width:0;display:grid;grid-template-columns:34px 1fr;align-content:start;gap:4px 8px;text-align:left;border:1px solid #7c997866;background:#19372f;color:#dce8cb;padding:11px}
+.fp-companion-grid button[aria-pressed=true]{border-color:#d7e7ab;box-shadow:inset 0 0 0 1px #d7e7ab}
+.fp-companion-grid strong{font-size:16px;align-self:center}
+.fp-companion-grid b,.fp-companion-grid span,.fp-companion-grid small{grid-column:1/-1}
+.fp-companion-grid b{font-weight:500;font-size:13px;color:var(--ally);margin-top:3px}
+.fp-companion-grid span{font-size:12px;line-height:1.6;color:#b7ccb0;min-height:57px}
+.fp-companion-grid small{font:11px var(--mono,monospace);color:#e6da9d}
+.fp-cell-icon{position:relative;display:block;width:30px;height:30px;border-radius:45% 55% 42% 58%;background:var(--ally);border:2px solid #f0f4d777}
+.fp-cell-icon:after{content:"";position:absolute;inset:6px;border-radius:50%;background:#574278}
+.fp-cell-icon.neutrophil:after{inset:5px 10px 12px 4px;box-shadow:9px 5px #574278,2px 11px #574278}
+.fp-cell-icon.macrophage:after{border-radius:60% 15% 50% 30%;inset:5px 7px 7px 4px}
+.fp-cell-icon.eosinophil:after{inset:7px 13px 7px 3px;box-shadow:11px 0 #574278}
+.fp-ally-hud{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--ally);margin-top:10px;text-shadow:0 1px 2px #000;pointer-events:none}
+.fp-ally-hud[hidden]{display:none}
+.fp-ally-hud i{width:8px;height:8px;border-radius:50%;background:var(--ally)}
+.fp-ally-hud small{font:10px var(--mono,monospace);opacity:.75}
+.fp-ally-hud.firing i{box-shadow:0 0 10px 3px var(--ally)}
+.fp-codex-page{display:grid;gap:8px}
+.fp-codex-page button{display:flex;align-items:center;gap:10px;padding:12px;color:#e3edcf;background:#19372f;border:1px solid #88a27666;text-align:left;font-size:13px;min-height:58px}
+.fp-codex-page i{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.fp-codex-page b{margin-left:auto}
+.fp-pagination{display:flex;align-items:center;justify-content:space-between;margin-top:16px;font:13px var(--mono,monospace)}
+.fp-pagination button{height:32px;width:48px;background:#274336;border:1px solid #92ac7b;color:#e3edcc}
+.fp-tab-panel .fp-drug-links{grid-template-columns:repeat(6,minmax(0,1fr));margin:16px 0}
+.fp-tab-panel .fp-drug-links button{font-size:14px;padding:7px 5px}
+@media(min-width:901px) and (max-height:820px){
+ .fp-overlay{padding-top:52px;padding-bottom:14px}
+ .fp-mission h1{font-size:44px;margin-bottom:10px}
+ .fp-kicker{margin-bottom:10px}
+ .fp-lead{font-size:14px;margin-bottom:12px}
+ .fp-mission-line{padding:8px 0;margin-bottom:12px}
+ .fp-keyguide{margin-top:12px;padding-top:4px}
+ .fp-keyguide p{font-size:12px;margin:5px 0}
+ .fp-note{font-size:12px!important;margin-top:9px!important}
+ .fp-objective{font-size:13px}
+}
+@media(max-width:900px){
+ main.play-main{padding:4px}
+ .fp-overlay{padding:51px 16px 12px}
+ .fp-menu.fp-briefing{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:18px}
+ .fp-brief-panel{padding:12px}
+ .fp-keyguide p{grid-template-columns:76px 1fr;font-size:12px}
+ .fp-mission h1{font-size:38px}
+ .fp-tabs button{font-size:12px}
+ .fp-stage-select button{font-size:12px;padding:7px}
+ .fp-companion-grid button{padding:8px}
+ .fp-companion-grid span{font-size:11px}
+ .fp-config .fp-difficulty{grid-template-columns:76px 76px 1fr}
+ .fp-difficulty>button{width:76px}
+}
+@media(max-width:700px) and (orientation:portrait){
+ .fp-viewport{height:var(--fp-height,calc(100dvh - 90px));min-height:0}
+ .fp-menu.fp-briefing{grid-template-columns:1fr;gap:13px;width:100%;max-width:520px;align-self:start}
+ .fp-overlay{padding:49px 12px 12px;align-items:flex-start}
+ .fp-mission{position:relative}
+ .fp-mission .fp-kicker,.fp-mission .fp-lead,.fp-mission-line,.fp-controls-block{display:none}
+ .fp-mission h1{font-size:22px;letter-spacing:-.03em;margin:0 0 10px}
+ .fp-mission h1 br{display:none}
+ .fp-mission h1 em:before{content:" "}
+ .fp-mission .fp-primary{width:100%;max-width:none;min-height:40px;padding:8px 13px!important;font-size:15px!important}
+ .fp-mission .fp-objective{display:none}
+ .fp-pause-layout h2{font-size:22px;margin:0}
+ .fp-pause-actions{margin:10px 0 6px;gap:9px}
+ .fp-pause-actions>button:not(.fp-primary){padding:9px 13px;white-space:nowrap}
+ .fp-pause-stats{padding:5px 0;gap:20px}
+ .fp-pause-stats b{font-size:17px}
+ .fp-pause-layout .fp-perks{display:none}
+ .fp-brief-panel{padding:10px 12px}
+ .fp-panel-title{font-size:11px;padding-bottom:7px}
+ .fp-tabs{margin-top:9px}
+ .fp-tabs button{height:36px;font-size:12px}
+ .fp-tab-panel{min-height:358px}
+ .fp-config{margin-top:12px}
+ .fp-config button{font-size:12px;padding:7px}
+ .fp-stage-select{gap:5px;margin:10px 0}
+ .fp-stage-select button{min-height:36px;font-size:12px}
+ .fp-seed{margin-top:10px;font-size:13px;gap:9px}
+ .fp-seed input{min-height:36px;font-size:13px;padding:6px 8px}
+ .fp-companion-heading{margin-top:12px;font-size:14px}
+ .fp-companion-heading span{font-size:11px}
+ .fp-companion-grid{gap:6px;margin-top:9px}
+ .fp-companion-grid button{padding:8px;gap:3px 6px}
+ .fp-companion-grid strong{font-size:14px}
+ .fp-companion-grid b{font-size:11px}
+ .fp-companion-grid span{font-size:11px;min-height:70px;line-height:1.5}
+ .fp-companion-grid small{font-size:10px}
+ .fp-tab-panel .fp-note{font-size:11px!important}
+ .fp-tab-panel .fp-keyguide p{grid-template-columns:74px 1fr 74px 1fr;font-size:11px}
+ .fp-theme-select button{min-height:78px;padding:10px}
+ .fp-theme-select strong{font-size:18px}
+ .fp-theme-select small{font-size:11px}
+ .fp-loadout-weapons small{font-size:10px}
+ .fp-loadout-weapons button{min-height:42px;font-size:12px}
+ .fp-loadout-slots button{height:32px;font-size:12px}
+}
+@media(max-height:600px) and (orientation:landscape){
+ .fp-overlay{padding-top:48px;padding-bottom:10px}
+ .fp-controls-block,.fp-lead,.fp-mission-line{display:none}
+ .fp-mission h1{font-size:32px}
+ .fp-menu.fp-briefing{align-items:start}
+ .fp-tab-panel{min-height:0}
+ .fp-config{margin-top:9px}
+ .fp-stage-select{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:9px 0}
+ .fp-stage-select button{display:block;font-size:11px;min-height:40px;padding:4px}
+ .fp-stage-select b{margin-right:4px}
+ .fp-seed{margin-top:8px}
+ .fp-companion-grid span{display:none}
+ .fp-companion-grid button{min-height:72px}
+ .fp-companion-grid b{font-size:11px}
+ .fp-companion-grid{margin-top:8px}
+ .fp-tab-panel .fp-note{font-size:11px!important}
+ .fp-music-select{margin-top:10px}
+ .fp-tabs{margin-top:8px}
+ .fp-tabs button{height:34px}
+}
+
+@media(max-width:700px) and (max-height:760px) and (orientation:portrait){.fp-tab-panel{min-height:0}.fp-companion-grid span{display:none}.fp-companion-grid button{min-height:84px}.fp-companion-grid{gap:7px}.fp-brief-panel{padding:8px 10px}.fp-menu.fp-briefing{gap:10px}.fp-tab-panel .fp-note{line-height:1.5!important}.fp-music-select{margin-top:13px}}
+
+@media(max-width:700px) and (max-height:760px) and (orientation:portrait){.fp-theme-select{gap:8px;margin-top:10px}.fp-theme-select button{min-height:70px;padding:8px}.fp-theme-icon{width:44px;height:44px;font-size:34px}}

@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {createPlayCatalog,createMap,WAVES,STAGES,HOSTS,REWARDS,roomAt} from '../src/play-data.mjs';
-import {newRun,tick,coverage,applyHit,spawnEnemy,fire,scan,visibleLabel,controlSource,switchWeapon,protectedBySource,canStand,moveBody,lineOfSight,chooseReward,resistanceChance,MAX_ENEMIES,canDetect,maxAmmo,ammoCount,isWeaponReady,combatCoverage,rewardOptions,cycleWeapon,reload,reserveCount,magazineCapacity,scanHints,equipWeapon,selectScanner,revealMap,canExtract,targetEnemy,throwGrenade,stageReport,chooseAugment,augmentOptions,MAX_SURVIVAL_ENEMIES} from '../src/play-engine.mjs';
+import {createPlayCatalog,createMap,WAVES,STAGES,HOSTS,REWARDS,roomAt,THEME_STAGES,COMPANIONS} from '../src/play-data.mjs';
+import {newRun,tick,coverage,applyHit,spawnEnemy,fire,scan,visibleLabel,controlSource,switchWeapon,protectedBySource,canStand,moveBody,lineOfSight,chooseReward,resistanceChance,MAX_ENEMIES,canDetect,maxAmmo,ammoCount,isWeaponReady,combatCoverage,rewardOptions,cycleWeapon,reload,reserveCount,magazineCapacity,scanHints,equipWeapon,selectScanner,revealMap,canExtract,targetEnemy,throwGrenade,stageReport,chooseAugment,augmentOptions,MAX_SURVIVAL_ENEMIES,equipCompanion,companionAccepts,recruitCompanion} from '../src/play-engine.mjs';
 const data=JSON.parse(readFileSync(new URL('../data/organisms.json',import.meta.url),'utf8'));
 const library=JSON.parse(readFileSync(new URL('../data/library.json',import.meta.url),'utf8'));
 const catalog=createPlayCatalog(data,library);
 const setup=(options={})=>{const r=newRun(catalog,{seed:31,...options});r.status='running';r.spawnTimer=9999;return r;};
 
-test('Play uses the existing eleven drug cards and fifteen fixed isolates without reauthoring AST',()=>{
- assert.equal(catalog.weapons.length,11);assert.equal(catalog.enemies.length,15);
+test('Play uses the existing twelve drug cards and seventeen fixed isolates without reauthoring AST',()=>{
+ assert.equal(catalog.weapons.length,12);assert.equal(catalog.enemies.length,17);
  for(const e of catalog.enemies){const record=data.records.find(r=>r.id===e.recordId);assert.equal(e.ast,record.susceptibility);assert.equal(e.name,record.organism);for(const w of catalog.weapons)assert.equal(e.ast[w.id],record.susceptibility[w.id]);}
  for(const w of catalog.weapons)assert.equal(w.name,data.drugs.find(d=>d.id===w.id).name);
 });
@@ -251,4 +251,46 @@ test('automatic CRO respects resistance, grants no manual accuracy and orb colle
  const r=setup({mission:'survival'});r.upgrades.cephaPulse=4;r.pulseTime=0;r.player.angle=Math.PI;
  const resistant=spawnEnemy(r,'mrsa',{x:5.5,y:3.5}),susceptible=spawnEnemy(r,'ecoli',{x:6,y:3.5});tick(r,{},.05);assert.equal(resistant.hp,resistant.maxHp);assert.equal(susceptible.state,'Dead');assert.equal(r.effective,0);assert.equal(stageReport(r).rows.find(row=>row.kind==='ecoli').automaticKills,1);assert.ok(r.orbs.some(o=>o.active));
  const orb=r.orbs.find(o=>o.active);Object.assign(orb,{x:r.player.x,y:r.player.y,value:r.xpNeeded});tick(r,{},.05);assert.equal(r.status,'augment');assert.equal(r.level,2);
+});
+
+test('themed operations start with their counters, preserve cases and finish independently',()=>{
+ for(const theme of THEME_STAGES)for(const host of HOSTS){
+  const r=setup({mission:'theme',themeId:theme.id,host:host.id,companion:'auto'});
+  assert.equal(r.companion,theme.companion);assert.equal(r.wave,0);
+  for(const kind of theme.pool)assert.ok(catalog.weapons.some((w,i)=>isWeaponReady(r,i)&&combatCoverage(r,w,kind).factor>0),theme.id+'/'+host.id+'/'+kind);
+  r.pressure=100;r.spawnTimer=0;tick(r);assert.equal(r.spawned,theme.count);
+  assert.ok(r.enemies.filter(e=>e.active&&(catalog.enemyById[e.kind].viral||catalog.enemyById[e.kind].parasite)).length>=10);
+  assert.ok(r.enemies.filter(e=>e.active).every(e=>e.state==='Idle'));assert.equal(r.player.hp,100);
+  for(const e of r.enemies.filter(e=>e.active)){const w=catalog.weapons.find((w,i)=>isWeaponReady(r,i)&&combatCoverage(r,w,e.kind).factor);applyHit(r,e,w,99999);}
+  Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.status,'won');assert.equal(r.completedStages,1);
+ }
+ const r=setup({mission:'theme',themeId:'virology'});
+ assert.equal(combatCoverage(r,catalog.weaponById.acyclovir,'hsv').factor,1);
+ assert.equal(combatCoverage(r,catalog.weaponById.acyclovir,'cmv').factor,0);
+ assert.equal(combatCoverage(r,catalog.weaponById.ganciclovir,'hsv').factor,0);
+ assert.equal(coverage(catalog,'acyclovir','hsv').factor,0);
+ assert.equal(catalog.enemyById.giardia.therapies[0],library.therapyContexts.giardiasis);
+});
+test('immune companions acquire and equip one slot, specialize and keep drug AST immutable',()=>{
+ for(const c of COMPANIONS){
+  const r=setup({companion:c.id}),kind=c.id==='nk'?'cmv':c.id==='eosinophil'?'strongyloides':'mrsa';
+  const e=spawnEnemy(r,kind,{x:6,y:3.5});e.state='Chase';e.revealed=true;e.hp=1;r.pet.cooldown=0;r.map.sources=[];
+  const ast=catalog.enemyById[kind].ast;tick(r,{},.01);
+  assert.equal(e.state,'Dead',c.id);assert.equal(r.pet.shots,1);assert.equal(r.shots,0);assert.equal(stageReport(r).rows[0].supportKills,1);assert.equal(catalog.enemyById[kind].ast,ast);
+  assert.equal(equipCompanion(r,'none'),false);r.status='paused';assert.ok(equipCompanion(r,'none'));
+  recruitCompanion(r,'nk');recruitCompanion(r,'nk');assert.equal(r.companions.filter(id=>id==='nk').length,1);
+ }
+ assert.equal(companionAccepts('eosinophil',catalog.enemyById.giardia),false);
+ assert.equal(companionAccepts('nk',catalog.enemyById.mssa),false);
+ assert.equal(companionAccepts('neutrophil',catalog.enemyById.cmv),false);
+ assert.equal(coverage(catalog,'ampicillin','mrsa').factor,0);
+});
+test('companions cannot pull idle enemies or fire through walls and neutropenia slows only neutrophils',()=>{
+ const r=setup({companion:'neutrophil'}),e=spawnEnemy(r,'mssa',{x:6,y:3.5});r.player.angle=Math.PI;r.pet.cooldown=0;
+ tick(r,{},.01);assert.equal(e.hp,e.maxHp);assert.equal(e.state,'Idle');
+ r.player.angle=0;e.state='Chase';e.revealed=true;r.pet.cooldown=0;
+ const idx=3*r.map.width+5;r.map.cells[idx]=1;tick(r,{},.01);assert.equal(r.pet.shots,0);
+ const intervals=[];
+ for(const host of ['normal','neutropenia']){const n=setup({companion:'neutrophil',host}),target=spawnEnemy(n,'mssa',{x:6,y:3.5});target.state='Chase';target.revealed=true;n.pet.cooldown=0;tick(n,{},.01);intervals.push(n.pet.cooldown);}
+ assert.ok(intervals[1]>intervals[0]*2);
 });
