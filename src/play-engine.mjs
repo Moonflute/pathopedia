@@ -105,7 +105,13 @@ export function selectScanner(run){
 export function releaseScanner(run){if(!run.scannerActive)return;run.scannerActive=false;run.scoped=false;run.scanFocus=0;run.scanTarget=null;run.switchTime=.06;}
 export function switchWeapon(run,index){if(!isWeaponReady(run,index)||(!run.scannerActive&&run.weapon===index))return false;cancelVolley(run);run.chargeTime=0;run.scannerActive=false;run.scoped=false;run.scanFocus=0;run.scanTarget=null;run.reloadTime=0;run.reloadWeapon=null;if(run.weapon!==index)run.previousWeapon=run.weapon;run.weapon=index;run.cooldown=run.cooldowns[index];run.switchTime=.1;run.events.push('switch');return true;}
 export function cycleWeapon(run,direction=1){if(run.scannerActive)return switchWeapon(run,run.weapon);const slot=run.slots.indexOf(run.weapon);for(let n=1;n<=run.slots.length;n++){const i=run.slots[(slot+direction*n+run.slots.length*2)%run.slots.length];if(isWeaponReady(run,i))return switchWeapon(run,i);}return false;}
-export function visibleLabel(run,e){const p=run.catalog.enemyById[e.kind],level=run.intel[e.kind];if(level===0)return '???';if(level===1)return p.gram;return p.short+(level>=3?' · '+p.phenotype:'');}
+export function visibleLabel(run,e,{compact=false}={}){
+  const p=run.catalog.enemyById[e.kind],level=run.intel[e.kind];if(level===0)return '???';if(level===1)return p.gram;
+  // Catalog entries share learned intel; live targets need their own completed scan.
+  if(level<3||e.scanComplete===false)return p.short;
+  if(p.resistant)return p.trait+' · '+p.short;
+  return p.short+(compact?'':' · '+p.phenotype);
+}
 export function inVerticalAim(run,e,cone=.025){
  const d=Math.hypot(e.x-run.player.x,e.y-run.player.y),camera=eyeAt(run.map,run.player),ground=floorAt(run.map,e.x,e.y),body=enemyHeight(e),pitch=run.player.pitch||0;
  return pitch>=Math.atan2(ground+.04-camera,d)-cone&&pitch<=Math.atan2(ground+body-camera,d)+cone;
@@ -121,7 +127,7 @@ export function targetEnemy(run,cone=.1,range=24){
 }
 export function scan(run){
   if(run.status!=='running'||run.scannerCooldown>0)return false;const e=targetEnemy(run,.18,18);if(!e){announce(run,'우클릭 유지 · 보조 스캐너로 표적 검사');return false;}
-  run.intel[e.kind]=Math.min(3,run.intel[e.kind]+(run.upgrades.scanner?2:1));run.seen.add(e.kind);run.scannerCooldown=.55;run.scanPulse=.8;run.hintTarget=e.id;run.hintTime=8;e.scanned=true;
+  run.intel[e.kind]=Math.min(3,run.intel[e.kind]+(run.upgrades.scanner?2:1));run.seen.add(e.kind);run.scannerCooldown=.55;run.scanPulse=.8;run.hintTarget=e.id;run.hintTime=8;e.scanned=true;e.scanComplete=run.intel[e.kind]>=3;
   const p=run.catalog.enemyById[e.kind];announce(run,['???','SCANNER · '+p.gram,(p.viral||p.parasite?'IDENTIFY · ':'CULTURE · ')+p.short,(p.viral||p.parasite?'REGIMEN · ':'AST · ')+p.phenotype+' / '+p.trait][run.intel[e.kind]]);run.events.push('scan');return true;
 }
 function burst(run,x,y,color,count=8){for(let i=0;i<count;i++){const p=run.particles.find(p=>p.life<=0);if(!p)break;const a=run.random()*Math.PI*2;Object.assign(p,{x,y,z:floorAt(run.map,x,y)+.15+run.random()*.4,vx:Math.cos(a)*.8,vy:Math.sin(a)*.8,vz:1,color,ricochet:false,life:.3+run.random()*.35});}}
@@ -146,7 +152,7 @@ export function controlSource(run){
 export function spawnEnemy(run,kind,position,elite=false,{boss=false,slot=null}={}){
   const e=slot||run.enemies.find(e=>!e.active),p=run.catalog.enemyById[kind];if(!e||!p||!canStand(run.map,position.x,position.y,.18))return null;
   const miniboss=Boolean(position.miniboss),hp=boss?(kind==='kpc'?460:Math.max(220,p.hp*2.8)):p.hp*(miniboss?1.9:elite?1.35:1);if(boss)run.bossDefeated=false;
-  Object.assign(e,{...position,active:true,kind,elite,boss,miniboss,hp,maxHp:hp,shield:p.shield+(p.shield&&(boss||miniboss)?25:0),state:p.spore?'Dormant':'Idle',biofilm:Boolean(p.biofilm),timer:0,attackCooldown:.8,flash:0,age:0,dot:0,dotWeapon:null,death:0,knock:0,memory:0,lastSeen:null,navTime:0,waypoint:null,revealed:false,cell:p.intracellular?45:0,slow:0,telegraph:0,replicationSuppressed:0,replication:6,scanned:false,introduced:false,phase:1,attackPoint:null,encounteredAt:null,firstAttempt:null,firstEffective:null,lastWrongAt:null,lastContact:-1,pressureSpawn:false,baseline:Boolean(position.baseline)});reportFor(run,kind).spawned++;return e;
+  Object.assign(e,{...position,active:true,kind,elite,boss,miniboss,hp,maxHp:hp,shield:p.shield+(p.shield&&(boss||miniboss)?25:0),state:p.spore?'Dormant':'Idle',biofilm:Boolean(p.biofilm),timer:0,attackCooldown:.8,flash:0,age:0,dot:0,dotWeapon:null,death:0,knock:0,memory:0,lastSeen:null,navTime:0,waypoint:null,revealed:false,cell:p.intracellular?45:0,slow:0,telegraph:0,replicationSuppressed:0,replication:6,scanned:false,scanComplete:false,introduced:false,phase:1,attackPoint:null,encounteredAt:null,firstAttempt:null,firstEffective:null,lastWrongAt:null,lastContact:-1,pressureSpawn:false,baseline:Boolean(position.baseline)});reportFor(run,kind).spawned++;return e;
 }
 function leaveToxin(run,e){const h=run.hazards.find(h=>!h.active);if(h)Object.assign(h,{active:true,x:e.x,y:e.y,life:7,radius:1.25,hitCooldown:.4});}
 function reportFor(run,kind){return run.kindReports[kind] ||= {kind,spawned:0,kills:0,shots:0,effective:0,blocked:0,automaticKills:0,environmentKills:0,supportKills:0,firstAttempts:0,firstCorrect:0,responseTotal:0,responseCount:0,switchTotal:0,switchCount:0,broad:0,alternatives:{},weapons:{}};}
@@ -345,7 +351,7 @@ function updateScanner(run,input,dt){
   const e=run.scoped?targetEnemy(run,.06,18):null;
   if(!e||e.id!==run.scanTarget){run.scanTarget=e?.id??null;run.scanFocus=0;}
   if(!e)return;run.scanFocus=Math.min(1,run.scanFocus+dt/.35);
-  if(run.scanFocus>=1&&run.scannerCooldown<=0&&(run.intel[e.kind]<3||!e.scanned))scan(run);
+  if(run.scanFocus>=1&&run.scannerCooldown<=0&&(run.intel[e.kind]<3||!e.scanComplete))scan(run);
 }
 export function tick(run,input={},dt=1/60){
   if(run.status!=='running')return;dt=clamp(dt,0,.05);run.time+=dt;run.touchInput=Boolean(input.touchAim);
@@ -380,7 +386,7 @@ export function tick(run,input={},dt=1/60){
     if(p.kind==='companion'){const remaining=COMPANIONS.filter(c=>!run.companions.includes(c.id));if(remaining.length){const c=remaining[Math.floor(run.random()*remaining.length)];recruitCompanion(run,c.id);announce(run,c.name+' 합류 · 자동 보조 시작 / 메뉴에서 교체',4);}else{run.upgrades.immuneBoost=Math.min(3,(run.upgrades.immuneBoost||0)+1);announce(run,'면역 동료 활성화 · 사거리 / 공격 빈도 증가');}}
     else if(p.kind==='health'){run.player.hp=Math.min(100,run.player.hp+32);announce(run,'HOST SUPPORT · 체력 +32');}
     else if(p.kind==='supply'){refill(run);run.grenades=Math.min(5,run.grenades+1);announce(run,'SUPPLY · 약제 보급 / 소독탄 +1');}
-    else{const target=targetEnemy(run,.6,16);if(target){run.intel[target.kind]=3;target.scanned=true;run.seen.add(target.kind);announce(run,'AST KIT · '+run.catalog.enemyById[target.kind].phenotype);}else{run.upgrades.scanner=1;announce(run,'CULTURE KIT · 검사 속도 향상');}}run.events.push('pickup');
+    else{const target=targetEnemy(run,.6,16);if(target){run.intel[target.kind]=3;target.scanned=true;target.scanComplete=true;run.seen.add(target.kind);announce(run,'AST KIT · '+run.catalog.enemyById[target.kind].phenotype);}else{run.upgrades.scanner=1;announce(run,'CULTURE KIT · 검사 속도 향상');}}run.events.push('pickup');
   }
   if(run.upgrades.immune){run.immuneTime-=dt;if(run.immuneTime<=0){run.immuneTime=(run.host==='neutropenia'?24:10)*(stage.immuneDelay||1);const e=run.enemies.find(e=>e.active&&!['Dead','Dormant','Idle'].includes(e.state)&&!e.elite&&!e.boss&&!run.catalog.enemyById[e.kind].resistant&&!run.catalog.enemyById[e.kind].viral&&!run.catalog.enemyById[e.kind].parasite&&e.hp<=35&&e.shield<=0&&!protectedBySource(run,e)&&Math.hypot(e.x-run.player.x,e.y-run.player.y)<5&&lineOfSight(run.map,e,run.player));if(e){kill(run,e,'immune');announce(run,'IMMUNE CLEARANCE · 약한 병원체 제거');}}}
   updateRoomPacing(run);updateHuntGuide(run,dt);for(const t of run.tracers)t.life-=dt;while(run.tracers.length&&run.tracers[0].life<=0)run.tracers.shift();run.aim=targetEnemy(run,.1,22)?.id??null;if(run.status!=='running')return;

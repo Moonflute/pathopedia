@@ -37,8 +37,18 @@ test('capsule absorbs susceptible hits first; a biofilm source protects nearby e
 test('Hard scanner unlocks shape, culture and AST without stopping movement or exposing phenotype early',()=>{
  const r=setup({hard:true}),e=spawnEnemy(r,'mrsa',{x:6.5,y:3.5});assert.equal(visibleLabel(r,e),'???');
  assert.ok(scan(r));assert.equal(visibleLabel(r,e),'Gram-positive cocci');assert.equal(r.status,'running');r.scannerCooldown=0;
- assert.ok(scan(r));assert.equal(visibleLabel(r,e),'S. aureus');r.scannerCooldown=0;assert.ok(scan(r));assert.match(visibleLabel(r,e),/MRSA/);
+ assert.ok(scan(r));assert.equal(visibleLabel(r,e),'S. aureus');assert.equal(e.scanComplete,false);r.scannerCooldown=0;assert.ok(scan(r));assert.equal(visibleLabel(r,e),'MRSA · S. aureus');assert.equal(e.scanComplete,true);
  const x=r.player.x;tick(r,{forward:1},.05);assert.ok(r.player.x>x);
+});
+
+test('completed scans rename only the inspected target and survive switching but not pool reuse',()=>{
+ for(const information of ['guided','open','identify'])for(const kind of ['mrsa','esbl','kpc','mdr','vre']){
+  const r=setup({information}),p=catalog.enemyById[kind],e=spawnEnemy(r,kind,{x:6.5,y:3.5}),other=spawnEnemy(r,kind,{x:7.5,y:5.5});
+  assert.equal(visibleLabel(r,e,{compact:true}),p.short);assert.ok(scan(r));
+  assert.equal(visibleLabel(r,e,{compact:true}),p.trait+' · '+p.short);assert.equal(visibleLabel(r,other,{compact:true}),p.short);
+  selectScanner(r);switchWeapon(r,1);assert.equal(visibleLabel(r,e,{compact:true}),p.trait+' · '+p.short);
+  e.active=false;e.death=0;const recycled=spawnEnemy(r,kind,{x:6.5,y:3.5});assert.equal(recycled.id,e.id);assert.equal(visibleLabel(r,recycled,{compact:true}),p.short);
+ }
 });
 
 test('walls block hits and scanning, diagonal motion is normalized, and dashes cannot tunnel through walls',()=>{
