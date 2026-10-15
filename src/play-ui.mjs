@@ -10,12 +10,12 @@ const clock=s=>Math.floor(s/60).toString().padStart(2,'0')+':'+Math.floor(s%60).
 let loop;
 export function createPlayGame(database,library){
   const catalog=createPlayCatalog(database,library),foley=createReloadFoley(),combatAudio=createCombatAudio();
-  let rewardStep='report',reviewPage=0;
+  let rewardStep='report',reviewPage=0,scanView='compact';
   let themeId='virology',companion='none',information='guided',aimAssist=matchMedia('(pointer:coarse)').matches,sensitivity=1,swipeSuppressUntil=0,setupTab='mission',pauseTab='comfort',codexPage=0;
   let run=newRun(catalog),root,canvas,renderer,abort,resizeObserver,audio,master,audioOn=true,musicOn=false,music=null,musicChoice='auto',musicTrack='',reloadNoise=null,mapMode='explore',seedText='',quality=matchMedia('(pointer:coarse)').matches?'low':'retro',hard=false,hints=false,equipSlot=0,arsenalKey='',host='normal',selectedStage=0,mission='campaign',overlayKey='',uiTime=0,best=0;
   const keys=new Set(),touch={forward:0,strafe:0,fire:false},pointers=new Map();let jumpQueued=false,mouseFire=false,mouseScope=false,touchScope=false,dragLook=false,lastX=0,lastY=0,disposed=true,lookFallback=false;
   const reducedMotion=matchMedia('(prefers-reduced-motion:reduce)').matches;
-  try{best=Math.max(0,Number(localStorage.getItem('pathopedia.play.best'))||0);audioOn=localStorage.getItem('pathopedia.play.sound')!=='off';musicOn=localStorage.getItem('pathopedia.play.music')==='on';musicChoice=localStorage.getItem('pathopedia.play.track')||'auto';if(!MUSIC_TRACKS.some(t=>t.id===musicChoice))musicChoice='auto';mapMode=localStorage.getItem('pathopedia.play.map')==='full'?'full':'explore';}catch{}
+  try{best=Math.max(0,Number(localStorage.getItem('pathopedia.play.best'))||0);audioOn=localStorage.getItem('pathopedia.play.sound')!=='off';musicOn=localStorage.getItem('pathopedia.play.music')==='on';musicChoice=localStorage.getItem('pathopedia.play.track')||'auto';if(!MUSIC_TRACKS.some(t=>t.id===musicChoice))musicChoice='auto';mapMode=localStorage.getItem('pathopedia.play.map')==='full'?'full':'explore';scanView=localStorage.getItem('pathopedia.play.scanView')==='detailed'?'detailed':'compact';}catch{}
   const weapon=()=>catalog.weapons[run.weapon];
   const target=()=>run.enemies.find(e=>e.active&&e.state!=='Dead'&&e.id===run.aim);
   const q=selector=>root?.querySelector(selector);
@@ -59,8 +59,27 @@ function musicSettings(){return `<label class="fp-music-select">배경음악<sel
 
 function tabsMarkup(items,selected){return '<div class="fp-tabs" role="tablist" aria-label="Play 설정">'+items.map(([id,label])=>'<button type="button" role="tab" id="fp-tab-'+id+'" aria-controls="fp-settings-panel" data-play-tab="'+id+'" aria-selected="'+(id===selected)+'">'+label+'</button>').join('')+'</div>';}
 function controlsMarkup(){return '<div class="fp-keyguide"><p><kbd>W A S D</kbd><span>이동</span><kbd>MOUSE</kbd><span>상하좌우 조준</span></p><p><kbd>1 — 9</kbd><span>약제 슬롯</span><kbd>Q / 휠</kbd><span>빠른 전환</span></p><p><kbd>RMB 유지</kbd><span>보조 스캔</span><kbd>SHIFT</kbd><span>대시</span></p><p><kbd>SPACE</kbd><span>점프</span><kbd>R / G</kbd><span>장전 / 투척</span></p><p><kbd>F</kbd><span>biofilm·오염 제거</span><kbd>M / ESC</kbd><span>지도 / 메뉴</span></p></div><p class="fp-note">터치: 좌측 이동 · 화면 드래그 조준 · 슬롯 좌우 스와이프. 광범위 약제는 선택압을 높입니다. 도감의 고정 분리주 AST를 공유하며, 조작 수치·면역 동료·환경 소독탄은 게임 표현입니다. <a href="./src/vendor/freedoom/COPYING.adoc" target="_blank" rel="noopener noreferrer">Freedoom 아트 라이선스 ↗</a></p>';}
+function scanSettings(){
+ return '<div class="fp-config fp-scan-config"><span>스캔 결과</span><div role="group" aria-label="스캔 결과 표시">'+[['compact','간략히'],['detailed','자세히']].map(([value,label])=>'<button type="button" data-play-scan-view="'+value+'" aria-pressed="'+(scanView===value)+'">'+label+'</button>').join('')+'</div></div>';
+}
+function scanReadout(enemy){
+ const detailed=scanView==='detailed',level=run.intel[enemy.kind],profile=catalog.enemyById[enemy.kind];
+ const label=(enemy.boss?'BOSS / ':enemy.miniboss?'MID / ':'')+visibleLabel(run,enemy,{compact:!detailed});
+ let ast;
+ if(level<3)ast=detailed?['??? · 표적 검사 중','GRAM · 배양 확인 중','CULTURE · AST 확인 중'][level]:['검사 중','동정 중','약제 확인 중'][level];
+ else if(!detailed&&enemy.state==='Dormant')ast='휴면 포자 · F 제거';
+ else{
+  const entries=run.slots.filter(i=>isWeaponReady(run,i)).map(i=>({weapon:catalog.weapons[i],result:combatCoverage(run,catalog.weapons[i],enemy.kind)}));
+  ast=(detailed?entries:entries.filter(({result})=>result.factor>0)).map(({weapon,result})=>{
+   if(detailed)return weapon.short+' '+result.category+(result.category==='I'&&result.factor?'↑':'');
+   return weapon.short+({S:'',I:' I↑',ACTIVE:' 활성',REGIMEN:' 요법'}[result.category]||'');
+  }).join(' · ')||'장착 약제 중 유효 약제 없음';
+ }
+ const trait=detailed?(enemy.state==='Dormant'?'DORMANT · 발아 전 항생제 피해 없음 / F 제거':level>=3?profile.trait+(enemy.biofilm?' · F 보호 해체':''):''):'';
+ return {label,ast,trait};
+}
 function comfortMarkup(){
- return '<div class="fp-comfort-grid"><div>'+musicSettings()+'<div class="fp-config"><div><button type="button" data-play-action="quality">'+(quality==='low'?'LOW':'RETRO')+'</button><button type="button" data-play-action="sound">SFX '+(audioOn?'ON':'OFF')+'</button><button type="button" data-play-action="music">MUSIC '+(musicOn?'ON':'OFF')+'</button><button type="button" data-play-action="reload-preview">장전음</button></div></div></div><div>'+controlsMarkup()+'</div></div>';
+ return '<div class="fp-comfort-grid"><div>'+musicSettings()+'<div class="fp-config"><div><button type="button" data-play-action="quality">'+(quality==='low'?'LOW':'RETRO')+'</button><button type="button" data-play-action="sound">SFX '+(audioOn?'ON':'OFF')+'</button><button type="button" data-play-action="music">MUSIC '+(musicOn?'ON':'OFF')+'</button><button type="button" data-play-action="reload-preview">장전음</button></div></div>'+scanSettings()+'</div><div>'+controlsMarkup()+'</div></div>';
 }
 function companionMarkup(){
  return '<label class="fp-compact-select">면역 동료<select data-play-ally aria-label="획득한 면역 동료"><option value="none" '+(run.companion==='none'?'selected':'')+'>동행 해제</option>'+COMPANIONS.filter(c=>run.companions.includes(c.id)).map(c=>'<option value="'+c.id+'" '+(run.companion===c.id?'selected':'')+'>'+c.name+' · '+c.role+'</option>').join('')+'</select></label><p class="fp-note">'+(run.companions.length?'지원 상자·보상에서 동료를 추가 획득합니다.':'면역 지원 상자·구역 보상에서 동료를 획득하세요.')+'</p>';
@@ -158,14 +177,16 @@ function render(){return `<section class="fp-shell" aria-label="Pathopedia Play 
     q('.fp-offhand').setAttribute('aria-pressed',String(run.scannerActive));root.classList.toggle('fp-scoped',run.scoped);
     const musicButton=q('.fp-tools [data-play-action="music"]');musicButton.textContent='MUSIC '+(musicOn?'ON':'OFF');musicButton.setAttribute('aria-pressed',String(musicOn));musicButton.title=selectedTrack().name+' · '+selectedTrack().mood;if(musicOn&&run.status==='running'&&musicTrack!==selectedTrack().id)syncMusic();
     const enemy=target(),targetBox=q('.fp-target');targetBox.hidden=!enemy||run.status!=='running'||!run.scoped;
-    if(enemy){put('target',(enemy.boss?'BOSS / ':enemy.miniboss?'MID / ':'')+visibleLabel(run,enemy));put('target-ast',run.intel[enemy.kind]>=3?run.slots.filter(i=>isWeaponReady(run,i)).map(i=>{const w=catalog.weapons[i],result=combatCoverage(run,w,enemy.kind);return w.short+' '+result.category+(result.category==='I'&&result.factor?'↑':'');}).join(' · '):['??? · 표적 검사 중','GRAM · 배양 확인 중','CULTURE · AST 확인 중'][run.intel[enemy.kind]]);put('target-trait',enemy.state==='Dormant'?'DORMANT · 발아 전 항생제 피해 없음 / F 제거':run.intel[enemy.kind]>=3?catalog.enemyById[enemy.kind].trait+(enemy.biofilm?' · F 보호 해체':''):'');}
+    targetBox.classList.toggle('fp-target-compact',scanView==='compact');
+    if(enemy){const result=scanReadout(enemy);put('target',result.label);put('target-ast',result.ast);put('target-trait',result.trait);}
     put('companion',COMPANIONS.find(c=>c.id===run.companion)?.name||'동료 없음');
     const ally=q('.fp-ally-hud');ally.style.setProperty('--ally',COMPANIONS.find(c=>c.id===run.companion)?.color||'#91a59c');ally.hidden=run.companion==='none'||run.pet.flash<=0;ally.classList.toggle('firing',run.pet.flash>0);
-    const key=run.status+rewardStep+reviewPage+information+hard+hints+host+selectedStage+mission+themeId+companion+setupTab+pauseTab+run.wave+mapMode+musicChoice;
+    const key=run.status+rewardStep+reviewPage+information+hard+hints+host+selectedStage+mission+themeId+companion+setupTab+pauseTab+run.wave+mapMode+musicChoice+scanView;
     if(force||key!==overlayKey){overlayKey=key;q('.fp-overlay').innerHTML=overlay();for(const portrait of root.querySelectorAll('[data-play-portrait]'))renderer?.paintPortrait(portrait,portrait.dataset.playPortrait);q('.fp-overlay').hidden=run.status==='running';root.classList.toggle('fp-running',run.status==='running');root.dataset.status=run.status;if(run.status!=='running')q('.fp-overlay button')?.focus({preventScroll:true});}
   }
 
   function handleClick(button){
+    if(button.dataset.playScanView){scanView=button.dataset.playScanView==='detailed'?'detailed':'compact';try{localStorage.setItem('pathopedia.play.scanView',scanView);}catch{}updateUI(true);q('[data-play-scan-view="'+scanView+'"]')?.focus({preventScroll:true});return true;}
     if(button.dataset.playReviewPage!==undefined){reviewPage=Number(button.dataset.playReviewPage);updateUI(true);return true;}
     if(button.dataset.playTab){if(run.status==='ready')setupTab=button.dataset.playTab;else pauseTab=button.dataset.playTab;updateUI(true);q('[data-play-tab="'+button.dataset.playTab+'"]')?.focus({preventScroll:true});return true;}
     if(button.dataset.playTheme){themeId=button.dataset.playTheme;run=newRun(catalog,{hard,hints,information,aimAssist,host,stage:selectedStage,mission,mapMode,themeId,companion,seed:seedText||undefined});renderer?.render(run);updateUI(true);return true;}
