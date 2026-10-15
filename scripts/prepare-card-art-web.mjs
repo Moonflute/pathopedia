@@ -10,7 +10,8 @@ const moduleIndex = args.indexOf('--module-dir');
 const moduleDir = moduleIndex >= 0 ? path.resolve(args[moduleIndex + 1]) : null;
 const require = createRequire(moduleDir ? path.join(moduleDir, 'package.json') : import.meta.url);
 const sharp = require('sharp');
-const planFile = path.join(root, 'assets/cards/production-v1/jobs.json');
+const planDirectory = args.includes('--drugs') ? 'assets/cards/drug-production-v1' : 'assets/cards/production-v1';
+const planFile = path.join(root, planDirectory, 'jobs.json');
 const plan = JSON.parse(await fs.readFile(planFile, 'utf8'));
 if (plan.jobs.some(job => job.status !== 'ready' || job.needsRepair)) {
   throw new Error('Finish the planned illustrations before publishing the full web catalog.');
@@ -68,7 +69,7 @@ async function worker() {
 }
 await Promise.all(Array.from({ length: 4 }, () => worker()));
 await fs.writeFile(planFile, JSON.stringify(plan, null, 2) + '\n');
-await fs.writeFile(path.join(root, 'assets/cards/production-v1/asset-integrity.json'), JSON.stringify({
+await fs.writeFile(path.join(root, planDirectory, 'asset-integrity.json'), JSON.stringify({
   checkedAt: new Date().toISOString(), total: findings.length, originalBytes, webBytes,
   originalFilesPreserved: true, format: 'lossless WebP', findings
 }, null, 2) + '\n');

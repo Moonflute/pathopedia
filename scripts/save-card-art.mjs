@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const planFile=path.join(root,'assets/cards/production-v1/jobs.json');
+const drugPlanFile=path.join(root,'assets/cards/drug-production-v1/jobs.json');
 async function retryFileOperation(operation) {
  for(let attempt=0;;attempt++) {
   try{return await operation();}catch(error){
@@ -21,16 +22,20 @@ async function writeText(file,text) {
 }
 export async function publishArtCatalog() {
  const plan=JSON.parse(await fs.readFile(planFile,'utf8'));
- const catalog={schemaVersion:1,styleVersion:'transparent-storybook-v1',mode:'built-in image_gen.imagegen',pathogens:{},diseases:{}};
- for(const job of plan.jobs.filter(job=>job.status==='ready')){
-  catalog[job.kind==='pathogen'?'pathogens':'diseases'][job.id]={src:job.webFile || job.file,alt:job.alt};
+ let drugJobs=[];
+ try{drugJobs=JSON.parse(await fs.readFile(drugPlanFile,'utf8')).jobs;}catch(error){if(error.code!=='ENOENT')throw error;}
+ const jobs=[...plan.jobs,...drugJobs];
+ const catalog={schemaVersion:1,styleVersion:'transparent-storybook-v1',mode:'built-in image_gen.imagegen',pathogens:{},diseases:{},drugs:{}};
+ for(const job of jobs.filter(job=>job.status==='ready')){
+  catalog[job.kind==='pathogen'?'pathogens':job.kind==='disease'?'diseases':'drugs'][job.id]={src:job.webFile || job.file,alt:job.alt};
  }
  await writeText(path.join(root,'data/card-art.json'),JSON.stringify(catalog,null,2)+'\n');
- await writeText(path.join(root,'src/card-art-data.mjs'),'// Generated from assets/cards/production-v1/jobs.json.\nexport const CARD_ART = '+JSON.stringify(catalog,null,2)+';\n');
- return {ready:plan.jobs.filter(job=>job.status==='ready').length,total:plan.jobs.length};
+ await writeText(path.join(root,'src/card-art-data.mjs'),'// Generated from the pathogen/disease and drug production plans.\nexport const CARD_ART = '+JSON.stringify(catalog,null,2)+';\n');
+ return {ready:jobs.filter(job=>job.status==='ready').length,total:jobs.length};
 }
 export async function saveCardArt(kind,id,source,repair=false) {
- const plan=JSON.parse(await fs.readFile(planFile,'utf8'));
+ const selectedPlanFile=kind==='drug'?drugPlanFile:planFile;
+ const plan=JSON.parse(await fs.readFile(selectedPlanFile,'utf8'));
  const job=plan.jobs.find(job=>job.kind===kind&&job.id===id);
  if(!job)throw Error('Unplanned card artwork: '+kind+'/'+id);
  if(job.status==='ready'&&!repair)return {id,kind,status:'already saved'};
@@ -49,7 +54,7 @@ export async function saveCardArt(kind,id,source,repair=false) {
   }
  }
  job.status='ready';job.generatedAt=new Date().toISOString();job.originalGeneratedFile=source;
- await writeText(planFile,JSON.stringify(plan,null,2)+'\n');
+ await writeText(selectedPlanFile,JSON.stringify(plan,null,2)+'\n');
  return {kind,id,file:job.file,...await publishArtCatalog()};
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){

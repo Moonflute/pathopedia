@@ -22,35 +22,53 @@
 
 이름·설명·기능 아이콘·카드 프레임·내성 테이프는 웹앱 UI에서 붙인다. 내성형은 기존 병원체의 중앙 그림을 공유한다.
 
-## 약제 무기 상징: 확정된 색과 잠정 형태
+## 약제 무기 상징: 확정 기준 (2026-10-16)
 
-사용자 결정(2026-10-11). 약제 중앙 그림은 무기 상징을 중심으로 구성한다. 병원체 표적 기호를 패치나 판에 붙이는 기존 예시와 이전의 많은 무기 종류 대응안은 채택하지 않는다.
+카드 그림은 계열과 작용 대상이 연상되는 컨셉아트다. 같은 계열은 비슷한 실루엣·재질을 공유하고, 개별 약제는 날·가드·손잡이·색면을 달리한다. 모든 무기·도구의 작용 끝과 주사기 바늘은 왼쪽 위, 손잡이·주사기 밀대는 오른쪽 아래를 향한다. 배경은 실제 알파 투명이며 주변 장식 효과는 넣지 않는다.
 
-스펙트럼 색은 다음 기준으로 고정한다. 기존 제안의 그람음성 벽돌색, 녹농균 청록색, 혐기성 먹색, 비정형 단색 또는 다른 색 대응보다 이 기준을 우선한다.
-
-| 스펙트럼 | 확정 색 |
+| 스펙트럼 | 고정 표현 |
 |---|---|
-| 그람음성균 | 핑크 |
 | 그람양성균 | 보라 |
-| 녹농균 | 초록 |
+| 그람음성균 | 핑크 |
+| 녹농균 | 무기에 짧은 고리로 달린 작은 초록 장식품 |
 | 혐기성균 | 회색 |
 | 비정형균 | 흰색이 섞인 빨강 |
 
-흰색이 섞인 빨강은 무기 자체의 색면·재질 배색으로 표현하며, 빛이나 발광 효과로 표현하지 않는다. 구체적인 색상 코드는 아직 정하지 않는다.
+색은 빛이 아니라 무기의 색면·재질로 표현한다. 녹농균 표식은 무기 전체를 초록으로 칠하지 않고 작은 키링으로 붙인다. 실제 임상 적응증과 감수성 조건은 카드 데이터의 설명을 따른다.
 
-무기 종류는 적은 수로 묶는 방향이다. Penicillin 계열=단검, Cephalosporin 계열=장검은 사용자 제안에 따른 잠정안이다. 세부 형태, 나머지 계열의 무기 대응, 스펙트럼을 무기의 어느 부위에 넣을지는 후속 사용자 결정 전까지 확정하지 않는다. 이전 제안의 Penicillin=한손검, Cephalosporin=창 및 계열별 세분화 대응표를 확정 기준으로 사용하지 않는다.
+| 계열·약제 | 확정 형태 |
+|---|---|
+| Penicillin | 단검 |
+| Cephalosporin | 장검, 날 뿌리에 크고 대비가 높은 세대 로마 숫자 I·II·III·IV·V |
+| Carbapenem | 미사일 |
+| Monobactam | 단도 |
+| Vancomycin·Teicoplanin·Linezolid·Daptomycin | 대검 |
+| Aminoglycoside | 폭탄 |
+| Macrolide | 창 |
+| Tetracycline·Glycylcycline·Lincosamide | 해머 |
+| Quinolone | 도끼 |
+| 항결핵제 4종 | 하나의 무기를 네 부분으로 나누어 각 카드에 한 조각씩 |
+| Metronidazole | 칼과 파리채 함께 |
+| TMP–SMX·Fidaxomicin | 유리병 |
+| 항기생충제 | 파리채 |
+| 항진균제 | 스프레이 |
+| 항바이러스제 | 주사기, 표적 바이러스 군이 비슷한 약제끼리 같은 형태 계열 |
+
+Paromomycin은 항기생충 파리채 형태에 aminoglycoside 폭탄형 손잡이를 결합한다. 항결핵 4종은 같은 상아색·청회색 검의 끝/중간 날/가드/손잡이 조각을 공유한다. 항진균·항기생충·항바이러스제의 다른 배색은 사용자가 위임한 미술적 변주이며 별도의 범용 임상 색 코드로 사용하지 않는다.
+
+승인한 8장 시안은 그대로 재사용한다. 전체 80종의 개별 형태·색·생성 상태와 최종 프롬프트는 [제작 목록](drug-production-v1/jobs.json), [프롬프트](drug-production-v1/prompts.md)에 보관한다. 약제 이름, 설명, 표적 아이콘은 기존 카드 UI에서 제공하며 중앙 그림에 새 설명문을 추가하지 않는다.
 
 ## 재사용할 공통 생성 프롬프트
 
-CURRENT CARD ART RULES v6 — ABSOLUTE OVERRIDE OF EARLIER ORNAMENT DIRECTIONS:
+CURRENT CARD ART RULES v7 — ABSOLUTE OVERRIDE OF EARLIER ORNAMENT DIRECTIONS:
 Hand-drawn 2D Korean indie-fantasy webtoon / vintage storybook linework only. Thin natural dark-brown contours; matte flat colors; 1–2 discrete shadow tones. Clear clean edges, no beauty filter, haze, bloom, blur, gloss or strong gradients. Choose palette and brightness per subject; do not restrict every card to bright cream/pastel colors.
 The central card illustration contains ONLY its main subject and the medical objects necessary to convey that subject, on a genuinely transparent RGBA background; web code supplies the card surface beneath it.
 ABSOLUTELY NO decorative effects or filler around the main object: no sparkles, twinkles, four-point stars, diamonds, glowing flecks, light particles, scattered dots, stars, flowers, rosettes, petals, leaves, twigs, decorative floating symbols, luminous trails, magic ribbons, beams, auras, halos, rays, lens flare, bokeh, glitter, atmospheric motes or confetti. Do not replace forbidden decorations with another kind of decoration.
 Do not add magical glow to medical action. Represent medical features through the actual subject morphology, a necessary object or a sober cutaway, not a sparkle effect.
 References inform linework and flat coloring ONLY; decorative effects appearing in a webtoon reference are NEVER allowed in the card artwork.
 Leave negative space empty. No background swashes, floral trim, ornamental framing or empty-space filler. All surrounding negative space must have alpha=0. Do not paint a blue/gray/white/checkerboard background, a floor or a cast shadow. Keep paint inside the actual subject opaque, including pale cells and medical cutaways.
-No text, labels, numbers, formulas, logos, watermark, border, card frame or UI; web code supplies these separately. Resistance variants reuse the canonical base pathogen artwork.
-For antimicrobial WEAPON artwork, the user-approved spectrum colors are Gram-negative PINK, Gram-positive PURPLE, Pseudomonas GREEN, anaerobes GRAY, and atypicals RED mixed with WHITE. Apply these as matte material/color areas, never as glowing effects. Exact color codes and spectrum placement remain undecided. Keep the weapon taxonomy small; penicillin DAGGER and cephalosporin LONGSWORD are provisional proposals only. Remaining weapon mappings await the user's follow-up. Earlier many-weapon mappings and pathogen-symbol plaque examples are not approved.
+No text, labels, formulas, logos, watermark, border, card frame or UI; web code supplies these separately. The only allowed numerals in drug artwork are the large integral Roman generation marks on cephalosporin longswords. Resistance variants reuse the canonical base pathogen artwork.
+For antimicrobial WEAPON artwork, use Gram-negative PINK, Gram-positive PURPLE, anaerobes GRAY, and atypicals RED mixed with WHITE as matte material colors. Pseudomonas is a SMALL GREEN enamel keychain physically attached to the weapon, never a glow or green weapon body. Follow the approved family-to-form table above and the individual drug-production-v1/jobs.json prompt. Every active tip points upper-left and every grip/plunger lower-right. Cephalosporin generation numerals must be large and high-contrast. Similar antiviral target groups share syringe construction. No surrounding decorative effects.
 
 ## 과거 샘플 (화풍 기록)
 

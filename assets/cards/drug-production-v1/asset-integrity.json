@@ -1,0 +1,570 @@
+{
+  "checkedAt": "2026-10-15T20:46:01.884Z",
+  "total": 80,
+  "originalBytes": 67499324,
+  "webBytes": 41348974,
+  "originalFilesPreserved": true,
+  "format": "lossless WebP",
+  "findings": [
+    {
+      "kind": "drug",
+      "id": "vancomycin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "ceftriaxone",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "cefepime",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "oxacillin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "ceftazidime",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "meropenem",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "aztreonam",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "imipenem",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "ciprofloxacin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "ampicillin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "piptazo",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "levofloxacin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "linezolid",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "ceftazavi",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "cefazolin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "teicoplanin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "penicillin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "ceftaroline",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "daptomycin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "amoxclav",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "erythromycin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "clindamycin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "doxycycline",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "tmpsmx",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "metronidazole",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "amikacin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "gentamicin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "tigecycline",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "azithromycin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "clarithromycin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "rifampicin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "isoniazid",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "pyrazinamide",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "ethambutol",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "amoxicillin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "moxifloxacin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "voriconazole",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "posaconazole",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "isavuconazole",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "fluconazole",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "amphotericinb",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "flucytosine",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "micafungin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "terbinafine",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "albendazole",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "mebendazole",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "ivermectin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "praziquantel",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "nitazoxanide",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "paromomycin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "pyrimethamine",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "sulfadiazine",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "primaquine",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "artemetherlumefantrine",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "atovaquoneproguanil",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "miltefosine",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "triclabendazole",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "permethrin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "benznidazole",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "itraconazole",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "atovaquone",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "pentamidine",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "quinine",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "acyclovir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "foscarnet",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "ganciclovir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "cidofovir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "letermovir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "baloxavir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "oseltamivir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "remdesivir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "nirmatrelvir-ritonavir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "ribavirin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "entecavir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "tenofovir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "sofosbuvir-velpatasvir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "dolutegravir",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "lamivudine",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "peginterferon-alfa",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "drug",
+      "id": "fidaxomicin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    }
+  ]
+}

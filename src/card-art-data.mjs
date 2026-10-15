@@ -1,4 +1,4 @@
-// Generated from assets/cards/production-v1/jobs.json.
+// Generated from the pathogen/disease and drug production plans.
 export const CARD_ART = {
   "schemaVersion": 1,
   "styleVersion": "transparent-storybook-v1",
@@ -1769,6 +1769,328 @@ export const CARD_ART = {
     "balantidiasis": {
       "src": "assets/cards/illustrations-v1/diseases/balantidiasis.webp",
       "alt": "대장섬모충증 — 침범 부위와 핵심 임상 특징을 표현한 삽화"
+    }
+  },
+  "drugs": {
+    "oxacillin": {
+      "src": "assets/cards/illustrations-v1/drugs/oxacillin.webp",
+      "alt": "Oxacillin — 단검 상징 삽화"
+    },
+    "vancomycin": {
+      "src": "assets/cards/illustrations-v1/drugs/vancomycin.webp",
+      "alt": "Vancomycin — 대검 상징 삽화"
+    },
+    "ceftriaxone": {
+      "src": "assets/cards/illustrations-v1/drugs/ceftriaxone.webp",
+      "alt": "Ceftriaxone — 장검 상징 삽화"
+    },
+    "cefepime": {
+      "src": "assets/cards/illustrations-v1/drugs/cefepime.webp",
+      "alt": "Cefepime — 장검 상징 삽화"
+    },
+    "ceftazidime": {
+      "src": "assets/cards/illustrations-v1/drugs/ceftazidime.webp",
+      "alt": "Ceftazidime — 장검 상징 삽화"
+    },
+    "meropenem": {
+      "src": "assets/cards/illustrations-v1/drugs/meropenem.webp",
+      "alt": "Meropenem — 미사일 상징 삽화"
+    },
+    "imipenem": {
+      "src": "assets/cards/illustrations-v1/drugs/imipenem.webp",
+      "alt": "Imipenem — 미사일 상징 삽화"
+    },
+    "aztreonam": {
+      "src": "assets/cards/illustrations-v1/drugs/aztreonam.webp",
+      "alt": "Aztreonam — 단도 상징 삽화"
+    },
+    "ciprofloxacin": {
+      "src": "assets/cards/illustrations-v1/drugs/ciprofloxacin.webp",
+      "alt": "Ciprofloxacin — 도끼 상징 삽화"
+    },
+    "levofloxacin": {
+      "src": "assets/cards/illustrations-v1/drugs/levofloxacin.webp",
+      "alt": "Levofloxacin — 도끼 상징 삽화"
+    },
+    "ampicillin": {
+      "src": "assets/cards/illustrations-v1/drugs/ampicillin.webp",
+      "alt": "Ampicillin — 단검 상징 삽화"
+    },
+    "piptazo": {
+      "src": "assets/cards/illustrations-v1/drugs/piptazo.webp",
+      "alt": "Piperacillin–tazobactam — 단검 상징 삽화"
+    },
+    "linezolid": {
+      "src": "assets/cards/illustrations-v1/drugs/linezolid.webp",
+      "alt": "Linezolid — 대검 상징 삽화"
+    },
+    "ceftazavi": {
+      "src": "assets/cards/illustrations-v1/drugs/ceftazavi.webp",
+      "alt": "Ceftazidime–avibactam — 장검 상징 삽화"
+    },
+    "teicoplanin": {
+      "src": "assets/cards/illustrations-v1/drugs/teicoplanin.webp",
+      "alt": "Teicoplanin — 대검 상징 삽화"
+    },
+    "cefazolin": {
+      "src": "assets/cards/illustrations-v1/drugs/cefazolin.webp",
+      "alt": "Cefazolin — 장검 상징 삽화"
+    },
+    "penicillin": {
+      "src": "assets/cards/illustrations-v1/drugs/penicillin.webp",
+      "alt": "Penicillin G — 단검 상징 삽화"
+    },
+    "amoxclav": {
+      "src": "assets/cards/illustrations-v1/drugs/amoxclav.webp",
+      "alt": "Amoxicillin–clavulanate — 단검 상징 삽화"
+    },
+    "ceftaroline": {
+      "src": "assets/cards/illustrations-v1/drugs/ceftaroline.webp",
+      "alt": "Ceftaroline — 장검 상징 삽화"
+    },
+    "daptomycin": {
+      "src": "assets/cards/illustrations-v1/drugs/daptomycin.webp",
+      "alt": "Daptomycin — 대검 상징 삽화"
+    },
+    "clindamycin": {
+      "src": "assets/cards/illustrations-v1/drugs/clindamycin.webp",
+      "alt": "Clindamycin — 해머 상징 삽화"
+    },
+    "erythromycin": {
+      "src": "assets/cards/illustrations-v1/drugs/erythromycin.webp",
+      "alt": "Erythromycin — 창 상징 삽화"
+    },
+    "doxycycline": {
+      "src": "assets/cards/illustrations-v1/drugs/doxycycline.webp",
+      "alt": "Doxycycline — 해머 상징 삽화"
+    },
+    "tmpsmx": {
+      "src": "assets/cards/illustrations-v1/drugs/tmpsmx.webp",
+      "alt": "Trimethoprim–sulfamethoxazole — 유리병 상징 삽화"
+    },
+    "gentamicin": {
+      "src": "assets/cards/illustrations-v1/drugs/gentamicin.webp",
+      "alt": "Gentamicin — 폭탄 상징 삽화"
+    },
+    "amikacin": {
+      "src": "assets/cards/illustrations-v1/drugs/amikacin.webp",
+      "alt": "Amikacin — 폭탄 상징 삽화"
+    },
+    "metronidazole": {
+      "src": "assets/cards/illustrations-v1/drugs/metronidazole.webp",
+      "alt": "Metronidazole — 파리채 상징 삽화"
+    },
+    "tigecycline": {
+      "src": "assets/cards/illustrations-v1/drugs/tigecycline.webp",
+      "alt": "Tigecycline — 해머 상징 삽화"
+    },
+    "azithromycin": {
+      "src": "assets/cards/illustrations-v1/drugs/azithromycin.webp",
+      "alt": "Azithromycin — 창 상징 삽화"
+    },
+    "clarithromycin": {
+      "src": "assets/cards/illustrations-v1/drugs/clarithromycin.webp",
+      "alt": "Clarithromycin — 창 상징 삽화"
+    },
+    "rifampicin": {
+      "src": "assets/cards/illustrations-v1/drugs/rifampicin.webp",
+      "alt": "Rifampicin — 분할 무기 상징 삽화"
+    },
+    "isoniazid": {
+      "src": "assets/cards/illustrations-v1/drugs/isoniazid.webp",
+      "alt": "Isoniazid — 분할 무기 상징 삽화"
+    },
+    "ethambutol": {
+      "src": "assets/cards/illustrations-v1/drugs/ethambutol.webp",
+      "alt": "Ethambutol — 분할 무기 상징 삽화"
+    },
+    "pyrazinamide": {
+      "src": "assets/cards/illustrations-v1/drugs/pyrazinamide.webp",
+      "alt": "Pyrazinamide — 분할 무기 상징 삽화"
+    },
+    "amoxicillin": {
+      "src": "assets/cards/illustrations-v1/drugs/amoxicillin.webp",
+      "alt": "Amoxicillin — 단검 상징 삽화"
+    },
+    "moxifloxacin": {
+      "src": "assets/cards/illustrations-v1/drugs/moxifloxacin.webp",
+      "alt": "Moxifloxacin — 도끼 상징 삽화"
+    },
+    "fluconazole": {
+      "src": "assets/cards/illustrations-v1/drugs/fluconazole.webp",
+      "alt": "Fluconazole — 스프레이 상징 삽화"
+    },
+    "voriconazole": {
+      "src": "assets/cards/illustrations-v1/drugs/voriconazole.webp",
+      "alt": "Voriconazole — 스프레이 상징 삽화"
+    },
+    "posaconazole": {
+      "src": "assets/cards/illustrations-v1/drugs/posaconazole.webp",
+      "alt": "Posaconazole — 스프레이 상징 삽화"
+    },
+    "isavuconazole": {
+      "src": "assets/cards/illustrations-v1/drugs/isavuconazole.webp",
+      "alt": "Isavuconazole — 스프레이 상징 삽화"
+    },
+    "amphotericinb": {
+      "src": "assets/cards/illustrations-v1/drugs/amphotericinb.webp",
+      "alt": "Amphotericin B — 스프레이 상징 삽화"
+    },
+    "micafungin": {
+      "src": "assets/cards/illustrations-v1/drugs/micafungin.webp",
+      "alt": "Micafungin — 스프레이 상징 삽화"
+    },
+    "flucytosine": {
+      "src": "assets/cards/illustrations-v1/drugs/flucytosine.webp",
+      "alt": "Flucytosine — 스프레이 상징 삽화"
+    },
+    "terbinafine": {
+      "src": "assets/cards/illustrations-v1/drugs/terbinafine.webp",
+      "alt": "Terbinafine — 스프레이 상징 삽화"
+    },
+    "albendazole": {
+      "src": "assets/cards/illustrations-v1/drugs/albendazole-v3.webp",
+      "alt": "Albendazole — 파리채 상징 삽화"
+    },
+    "mebendazole": {
+      "src": "assets/cards/illustrations-v1/drugs/mebendazole.webp",
+      "alt": "Mebendazole — 파리채 상징 삽화"
+    },
+    "ivermectin": {
+      "src": "assets/cards/illustrations-v1/drugs/ivermectin.webp",
+      "alt": "Ivermectin — 파리채 상징 삽화"
+    },
+    "praziquantel": {
+      "src": "assets/cards/illustrations-v1/drugs/praziquantel.webp",
+      "alt": "Praziquantel — 파리채 상징 삽화"
+    },
+    "nitazoxanide": {
+      "src": "assets/cards/illustrations-v1/drugs/nitazoxanide.webp",
+      "alt": "Nitazoxanide — 파리채 상징 삽화"
+    },
+    "paromomycin": {
+      "src": "assets/cards/illustrations-v1/drugs/paromomycin.webp",
+      "alt": "Paromomycin — 파리채 상징 삽화"
+    },
+    "pyrimethamine": {
+      "src": "assets/cards/illustrations-v1/drugs/pyrimethamine.webp",
+      "alt": "Pyrimethamine — 파리채 상징 삽화"
+    },
+    "sulfadiazine": {
+      "src": "assets/cards/illustrations-v1/drugs/sulfadiazine.webp",
+      "alt": "Sulfadiazine — 파리채 상징 삽화"
+    },
+    "artemetherlumefantrine": {
+      "src": "assets/cards/illustrations-v1/drugs/artemetherlumefantrine.webp",
+      "alt": "Artemether–lumefantrine — 파리채 상징 삽화"
+    },
+    "atovaquoneproguanil": {
+      "src": "assets/cards/illustrations-v1/drugs/atovaquoneproguanil.webp",
+      "alt": "Atovaquone–proguanil — 파리채 상징 삽화"
+    },
+    "primaquine": {
+      "src": "assets/cards/illustrations-v1/drugs/primaquine.webp",
+      "alt": "Primaquine — 파리채 상징 삽화"
+    },
+    "miltefosine": {
+      "src": "assets/cards/illustrations-v1/drugs/miltefosine.webp",
+      "alt": "Miltefosine — 파리채 상징 삽화"
+    },
+    "triclabendazole": {
+      "src": "assets/cards/illustrations-v1/drugs/triclabendazole.webp",
+      "alt": "Triclabendazole — 파리채 상징 삽화"
+    },
+    "permethrin": {
+      "src": "assets/cards/illustrations-v1/drugs/permethrin.webp",
+      "alt": "Permethrin — 파리채 상징 삽화"
+    },
+    "benznidazole": {
+      "src": "assets/cards/illustrations-v1/drugs/benznidazole.webp",
+      "alt": "Benznidazole — 파리채 상징 삽화"
+    },
+    "itraconazole": {
+      "src": "assets/cards/illustrations-v1/drugs/itraconazole.webp",
+      "alt": "Itraconazole — 스프레이 상징 삽화"
+    },
+    "pentamidine": {
+      "src": "assets/cards/illustrations-v1/drugs/pentamidine.webp",
+      "alt": "Pentamidine — 파리채 상징 삽화"
+    },
+    "atovaquone": {
+      "src": "assets/cards/illustrations-v1/drugs/atovaquone.webp",
+      "alt": "Atovaquone — 파리채 상징 삽화"
+    },
+    "quinine": {
+      "src": "assets/cards/illustrations-v1/drugs/quinine.webp",
+      "alt": "Quinine — 파리채 상징 삽화"
+    },
+    "acyclovir": {
+      "src": "assets/cards/illustrations-v1/drugs/acyclovir.webp",
+      "alt": "Acyclovir — 주사기 상징 삽화"
+    },
+    "ganciclovir": {
+      "src": "assets/cards/illustrations-v1/drugs/ganciclovir.webp",
+      "alt": "Ganciclovir — 주사기 상징 삽화"
+    },
+    "foscarnet": {
+      "src": "assets/cards/illustrations-v1/drugs/foscarnet.webp",
+      "alt": "Foscarnet — 주사기 상징 삽화"
+    },
+    "cidofovir": {
+      "src": "assets/cards/illustrations-v1/drugs/cidofovir.webp",
+      "alt": "Cidofovir — 주사기 상징 삽화"
+    },
+    "letermovir": {
+      "src": "assets/cards/illustrations-v1/drugs/letermovir.webp",
+      "alt": "Letermovir — 주사기 상징 삽화"
+    },
+    "oseltamivir": {
+      "src": "assets/cards/illustrations-v1/drugs/oseltamivir.webp",
+      "alt": "Oseltamivir — 주사기 상징 삽화"
+    },
+    "baloxavir": {
+      "src": "assets/cards/illustrations-v1/drugs/baloxavir.webp",
+      "alt": "Baloxavir marboxil — 주사기 상징 삽화"
+    },
+    "remdesivir": {
+      "src": "assets/cards/illustrations-v1/drugs/remdesivir.webp",
+      "alt": "Remdesivir — 주사기 상징 삽화"
+    },
+    "nirmatrelvir-ritonavir": {
+      "src": "assets/cards/illustrations-v1/drugs/nirmatrelvir-ritonavir.webp",
+      "alt": "Nirmatrelvir–ritonavir — 주사기 상징 삽화"
+    },
+    "ribavirin": {
+      "src": "assets/cards/illustrations-v1/drugs/ribavirin.webp",
+      "alt": "Ribavirin — 주사기 상징 삽화"
+    },
+    "tenofovir": {
+      "src": "assets/cards/illustrations-v1/drugs/tenofovir.webp",
+      "alt": "Tenofovir (TDF/TAF) — 주사기 상징 삽화"
+    },
+    "entecavir": {
+      "src": "assets/cards/illustrations-v1/drugs/entecavir.webp",
+      "alt": "Entecavir — 주사기 상징 삽화"
+    },
+    "sofosbuvir-velpatasvir": {
+      "src": "assets/cards/illustrations-v1/drugs/sofosbuvir-velpatasvir.webp",
+      "alt": "Sofosbuvir–velpatasvir — 주사기 상징 삽화"
+    },
+    "dolutegravir": {
+      "src": "assets/cards/illustrations-v1/drugs/dolutegravir.webp",
+      "alt": "Dolutegravir — 주사기 상징 삽화"
+    },
+    "lamivudine": {
+      "src": "assets/cards/illustrations-v1/drugs/lamivudine.webp",
+      "alt": "Lamivudine — 주사기 상징 삽화"
+    },
+    "peginterferon-alfa": {
+      "src": "assets/cards/illustrations-v1/drugs/peginterferon-alfa.webp",
+      "alt": "Peginterferon alfa — 주사기 상징 삽화"
+    },
+    "fidaxomicin": {
+      "src": "assets/cards/illustrations-v1/drugs/fidaxomicin.webp",
+      "alt": "Fidaxomicin — 유리병 상징 삽화"
     }
   }
 };

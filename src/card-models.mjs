@@ -220,7 +220,7 @@ export function createCardModels(data, catalog) {
     const model={
       ...base,domain:'drugs',entityId:id,therapyContexts,therapyContext,lineage:drugLineage(item),route:drugRoute(item),
       subtitle:'약제 · '+item.family,
-      artwork:{placeholder:drugGlyph(item),label:'약제'},
+      artwork:cardArtwork('drug',id) || {placeholder:drugGlyph(item),label:'약제'},
       leftHeading:'유효',rightHeading:'무효',
       leftLabel:'유효 대상',
       leftProperties:properties(true),rightLabel:'무효 대상',

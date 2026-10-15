@@ -23,7 +23,7 @@ await cp('assets/fonts', 'dist/assets/fonts', {recursive:true});
 if (hasMorphology) await cp('assets/morphology', 'dist/assets/morphology', {recursive:true});
 if (existsSync('data/card-art.json')) {
  const art=JSON.parse(await readFile('data/card-art.json','utf8'));
- const files=[...new Set([...Object.values(art.pathogens),...Object.values(art.diseases)].map(asset=>asset.src))];
+ const files=[...new Set([...Object.values(art.pathogens),...Object.values(art.diseases),...Object.values(art.drugs || {})].map(asset=>asset.src))];
  for(const file of files){await mkdir('dist/'+file.slice(0,file.lastIndexOf('/')),{recursive:true});await cp(file,'dist/'+file);}
  console.log('Built card illustrations:',files.length);
 }
