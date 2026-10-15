@@ -22,6 +22,7 @@ export function createSceneRaster(ctx,width,height){
     const wx=p.x+rx*d,wy=p.y+ry*d,u=wx-Math.floor(wx),v=wy-Math.floor(wy);
     let c=ceiling?sample(1,u,v):sample(6,u,v),k=Math.max(.2,light/(1+d*.045))*(ceiling?.56:.8);
     if(ceiling){const grain=((c&255)+((c>>>8)&255)+((c>>>16)&255))*.025;c=(255<<24)|(((46+grain)|0)<<16)|(((41+grain)|0)<<8)|((32+grain)|0);k*=u<.025||v<.025?.64:1;if(Math.floor(wx)%5===0&&Math.floor(wy)%4===0&&u>.13&&u<.87&&v>.28&&v<.72){c=0xffd8e9ed;k=1;} }
+    else if(map.floorMaterials?.[cell]){const material=map.floorMaterials[cell],r=c&255,g=(c>>>8)&255,b=(c>>>16)&255;c=(255<<24)|((Math.min(255,b*(material===1?1.35:material===3?1.2:.84))|0)<<16)|((Math.min(255,g*(material===2?1.16:1.05))|0)<<8)|(Math.min(255,r*(material===1?.78:material===2?.85:.92))|0);if((material===1?Math.floor(wx)+Math.floor(wy):Math.floor(wx))%2===0)k*=.86;if(map.stairs?.[cell]&&v>.84){c=0xff709ab3;k*=1.2;}}
     else if(map.stairs?.[cell]&&v>.84){c=0xff709ab3;k*=1.2;}
     else if(u<.025||v<.025)k*=.55;
     put(x,y,d,tint(c,k));
@@ -43,7 +44,7 @@ export function createSceneRaster(ctx,width,height){
      face(x,1.4,Math.max(1.65,ch),near,doorArt+2,du,1.1);
      if(door.open<=0)break;
     }else if(tile){const along=side?mx:my,center=room?Math.floor(side?room.x:room.y):-99;
-     const id=tile===8?doorArt+1:room&&along===center?8+room.id:tile===6?5:(along%7===0?2:along%5===0?4:room?.type==='hall'||room?.rest?0:room?.type==='gallery'?1:tile%2?1:0);
+     const id=map.signs?.[hit]!==undefined?11+map.rooms.length+map.signs[hit]:tile===8?doorArt+1:room&&along===center?8+room.id:tile===6?5:(along%7===0?2:along%5===0?4:room?.type==='hall'||room?.rest?0:room?.type==='gallery'?1:tile%2?1:0);
      face(x,0,Math.max(ch,ceilingAt(map,mx,my)),near,id,u,light);break;
     }
     const nf=floorAt(map,mx,my),nc=ceilingAt(map,mx,my);

@@ -1,8 +1,10 @@
 // Seeded route graph + authored room modules. Geometry is generated once per stage.
 // Spelunky-style route-first composition; no generator or physics dependency at runtime.
+import {buildOperation} from './play-operation-map.mjs';
 const MODULES=['hall','elbow','split','gallery','dogleg','atrium'];
 const NAMES={reception:'RECEPTION',hall:'CULTURE HALL',elbow:'TRANSFER WING',split:'TWIN WARD',gallery:'OBSERVATION',dogleg:'SERVICE WING',atrium:'CONCOURSE',supply:'RECOVERY',vault:'CONTAINMENT'};
 export function buildFacility(stage,index,seed,random,{arena=false}={}){
+ if(!arena)return buildOperation(stage,index,seed,random);
  const cols=random()<.5?3:4,rows=cols===3?3:2,pitch=18,width=cols*pitch+4,height=rows*pitch+4,n=width*height;
  const cells=new Uint8Array(n).fill(1),roomCells=new Int16Array(n).fill(-1),floors=new Float32Array(n),ceilings=new Float32Array(n).fill(1.65),lights=new Float32Array(n).fill(.78),stairs=new Uint8Array(n),rooms=[],route=[],ramps=[];
  const shuffle=list=>{for(let i=list.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[list[i],list[j]]=[list[j],list[i]];}return list;};

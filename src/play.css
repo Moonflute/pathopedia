@@ -352,3 +352,9 @@ main.play-main{max-width:none;width:100%;margin:0;padding:6px 8px 8px}
 /* Scan verbosity is a display preference; compact results use the combat coverage gate. */
 .fp-scan-config{display:flex;align-items:center;gap:14px}.fp-scan-config>span{white-space:nowrap}.fp-scan-config>div{margin:0;gap:6px}.fp-scan-config button{min-width:76px}
 .fp-target.fp-target-compact{width:max-content;max-width:min(460px,calc(100% - 32px))}.fp-target-compact button{max-width:100%;padding:7px 12px}.fp-target-compact small{margin-top:4px;line-height:1.4}.fp-target small:empty{display:none}
+
+/* Regular campaign chapters share one compact selector. */
+.fp-config .fp-mission-options{grid-template-columns:repeat(3,minmax(0,1fr))}
+.fp-mechanic-result{margin:8px 0!important;color:#c9dbb5;font:13px var(--mono,monospace)}
+@media(min-width:1100px){.fp-stage-select{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:10px 0}.fp-stage-select button{min-height:37px}}
+@media(max-height:650px) and (orientation:landscape){.fp-stage-select{grid-template-columns:repeat(5,minmax(0,1fr))}.fp-stage-select button{min-height:45px;font-size:11px}}

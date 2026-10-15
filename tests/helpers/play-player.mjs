@@ -1,15 +1,16 @@
-import {newRun,tick,combatCoverage,switchWeapon,lineOfSight,canStand,chooseReward,controlSource,isWeaponReady,shotCost,selectScanner,throwGrenade,floorAt,enemyHeight,canTraverse} from '../../src/play-engine.mjs';
+import {newRun,tick,combatCoverage,switchWeapon,lineOfSight,canStand,chooseReward,controlSource,isWeaponReady,shotCost,selectScanner,throwGrenade,floorAt,enemyHeight,canTraverse,walkableNeighbors,levelAt} from '../../src/play-engine.mjs';
 import {STAGES} from '../../src/play-data.mjs';
 
 // QA controls only movement, aiming, weapons, scanning and available rewards. No teleport or invulnerability.
 export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mission='campaign',limit=1200}={}){
  const r=newRun(catalog,{seed,hard,host,stage,mission});r.status='running';r.upgrades.immune=1;
- let waypoint=null,navigationGoal=null,lastGoal='',navTime=0,steps=0,lastMap=r.map.id;const reports=[];
+ let waypoint=null,navigationGoal=null,lastGoal='',navTime=0,steps=0,lastMap=r.map.id,lastFloor=0;const reports=[];
  const navigate=goal=>{
   const m=r.map,start=Math.floor(r.player.y)*m.width+Math.floor(r.player.x),end=Math.floor(goal.y)*m.width+Math.floor(goal.x),queue=[end],dist=new Int16Array(m.cells.length).fill(-1);dist[end]=0;
-  for(let i=0;i<queue.length;i++)for(const n of [queue[i]-1,queue[i]+1,queue[i]-m.width,queue[i]+m.width])if(n>=0&&n<dist.length&&canTraverse(m,n,queue[i])&&dist[n]===-1){dist[n]=dist[queue[i]]+1;queue.push(n);}
+  for(let i=0;i<queue.length;i++)for(const n of walkableNeighbors(m,queue[i],{reverse:true}))if(dist[n]===-1){dist[n]=dist[queue[i]]+1;queue.push(n);}
   if(start===end)return goal;
-  let best=start;for(const n of [start-1,start+1,start-m.width,start+m.width])if(dist[n]>=0&&canTraverse(m,start,n)&&(dist[best]<0||dist[n]<dist[best]))best=n;
+  let best=start;for(const n of walkableNeighbors(m,start))if(dist[n]>=0&&(dist[best]<0||dist[n]<dist[best]))best=n;
+  if(Math.abs(best%m.width-start%m.width)>1||Math.abs(Math.floor(best/m.width)-Math.floor(start/m.width))>1)best=start;
   return {x:best%m.width+.5,y:Math.floor(best/m.width)+.5};
  };
  while(steps++<limit*30&&r.status!=='won'&&r.status!=='lost'){
@@ -19,13 +20,13 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
    const priority=r.player.hp<65?['support','source','penetration','rate','renal','infusion','efficiency']:r.pressure>45?['stewardship','penetration','rate','infusion','efficiency']:['penetration','rate','infusion','efficiency','source','reserve','support'];
    const reward=priority.map(id=>r.rewards.find(e=>e.id===id)).find(Boolean)||r.rewards[0];chooseReward(r,reward.id);r.status='running';continue;
   }
-  if(lastMap!==r.map.id){lastMap=r.map.id;waypoint=null;navigationGoal=null;navTime=0;lastGoal='';}
-  const distance=e=>Math.hypot(e.x-r.player.x,e.y-r.player.y),live=r.enemies.filter(e=>e.active&&e.state!=='Dead');
+  if(lastMap!==r.map.id||lastFloor!==r.activeFloor){lastMap=r.map.id;lastFloor=r.activeFloor;waypoint=null;navigationGoal=null;navTime=0;lastGoal='';}
+  const distance=e=>Math.hypot(e.x-r.player.x,e.y-r.player.y),live=r.enemies.filter(e=>e.active&&e.state!=='Dead'),local=live.filter(e=>levelAt(r.map,e.x,e.y)===r.activeFloor);
   // Scout the same visible upper-body point used for aiming across steps.
   const enemy=live.filter(e=>lineOfSight(r.map,r.player,{x:e.x,y:e.y,eyeZ:floorAt(r.map,e.x,e.y)+enemyHeight(e)*.8})).sort((a,b)=>distance(a)-distance(b))[0];
   const unvisited=r.map.rooms.find(room=>!r.visited.has(room.id));
   // Keep a destination until cleared; nearest unseen targets can otherwise alternate across a wall.
-  let goal=(live.includes(navigationGoal)?navigationGoal:live.sort((a,b)=>distance(a)-distance(b))[0])||r.map.exit;
+  const candidates=local.length?local:live;let goal=(candidates.includes(navigationGoal)?navigationGoal:candidates.sort((a,b)=>distance(a)-distance(b))[0])||r.map.exit;
   if(!live.length&&r.spawned<STAGES[r.wave].count)goal=unvisited||r.pending[0]||r.map.exit;
   navigationGoal=goal;const goalKey=r.map.id+':'+Math.floor(goal.x)+','+Math.floor(goal.y);
   navTime-=1/30;if(!waypoint||Math.hypot(waypoint.x-r.player.x,waypoint.y-r.player.y)<.15||goalKey!==lastGoal||navTime<=0){waypoint=navigate(goal);lastGoal=goalKey;navTime=1;}
@@ -37,7 +38,7 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
    if(hard&&r.intel[enemy.kind]<3){selectScanner(r);scope=true;}
    if((!hard||r.intel[enemy.kind]===3)&&enemy.state!=='Dormant'){
     const options=catalog.weapons.map((w,i)=>({w,i,c:combatCoverage(r,w,enemy.kind)})).filter(o=>isWeaponReady(r,o.i)&&o.c.factor&&o.w.range>d&&r.energy[o.i]+r.magazines[o.i]>=shotCost(r,o.w));
-    const favorite={pneumo:'ampicillin',ecoli:'ampicillin',mssa:'cefazolin',mrsa:'vancomycin',esbl:'meropenem',pseudo:'meropenem',mdr:'ceftazavi',kpc:'ceftazavi',vre:'linezolid',anaerobe:'metronidazole',legionella:'levofloxacin',clostridium:'metronidazole',klebs:'ceftriaxone',cmv:'ganciclovir',strongyloides:'ivermectin'}[enemy.kind];
+    const favorite={pneumo:'ampicillin',ecoli:'ampicillin',mssa:'cefazolin',mrsa:'vancomycin',esbl:'meropenem',pseudo:'meropenem',mdr:'ceftazavi',kpc:'ceftazavi',vre:'linezolid',anaerobe:'metronidazole',legionella:'levofloxacin',clostridium:'metronidazole',klebs:'ceftriaxone',cmv:'ganciclovir',strongyloides:'ivermectin',hsv:'acyclovir',giardia:'metronidazole'}[enemy.kind];
     options.sort((a,b)=>(a.w.id===favorite?-100:0)+a.w.pressure-(b.w.id===favorite?-100:0)-b.w.pressure);
     if(options.length){switchWeapon(r,options[0].i);fire=true;if(d>=2.4){dx=0;dy=0;}}
    }

@@ -49,8 +49,8 @@ export const HOSTS=Object.freeze([
   {id:'allergy',name:'Aminopenicillin allergy',note:'AMP 사용 불가 · 다른 β-lactam은 교차반응 평가를 마친 시나리오'}
 ]);
 // Each stage constructs its small grid on entry. No stage texture/model downloads.
-export const STAGES=Object.freeze([
-  {id:'community',bossKind:'mssa',name:'COMMUNITY',label:'지역사회 감염',site:'community',count:12,pool:['pneumo','mssa','ecoli'],color:'#a8d798',note:'관측 데크와 계단으로 접근하고, 중간보스 제압 후 지름길을 여세요. 마지막 MSSA 군체를 제압하면 철수합니다.',modifier:'면역 보존',elite:0},
+const CORE_STAGES=Object.freeze([
+  {id:'community',bossKind:'mssa',name:'COMMUNITY',label:'지역사회 감염',site:'community',count:12,pool:['pneumo','mssa','ecoli'],color:'#a8d798',note:'1층을 확보하고 계단으로 상층에 진입하세요. 보스 제압 후 복귀 계단이 열립니다.',modifier:'면역 보존',elite:0},
   {id:'uti',name:'URINARY TRACT',label:'카테터 연관 UTI',site:'urinary',count:14,pool:['ecoli','klebs','esbl'],color:'#91bfe6',note:'카테터 연관 UTI 상황입니다. CFZ 요로 한정 결과를 확인하고 ESBL 여부에 맞춰 약제를 전환하세요.',modifier:'요로 기원 판정 적용',elite:.04},
   {id:'pneumonia',name:'PNEUMONIA',label:'폐렴 구역',site:'lung',count:16,pool:['pneumo','mssa','legionella','klebs'],color:'#8ad1c0',note:'LEV 보급. Legionella는 세포내 표적이며 폐렴 요법 판정을 사용합니다.',modifier:'세포내 은신',elite:.05},
   {id:'abdomen',name:'ABDOMINAL',label:'복강 내 감염',site:'abdomen',count:18,pool:['anaerobe','ecoli','esbl','clostridium'],color:'#d8b587',note:'MTZ 보급. 혐기성균과 장내세균의 대응 약제를 전환하고 포자·오염 구역을 처리하세요.',modifier:'혐기성 · 잔류 독소',elite:.07},
@@ -59,13 +59,18 @@ export const STAGES=Object.freeze([
   {id:'outbreak',name:'RESISTANT OUTBREAK',label:'내성균 집단 발생',site:'bloodstream',count:22,pool:['kpc','mdr','vre','mrsa','strongyloides','ecoli','mssa','klebs'],scenarios:['strongyloidiasis'],color:'#e3a383',note:'CZA·IVM 보급. KPC·DTR AST와 후기 기생충 사례: Strongyloidiasis.',modifier:'CRE · DTR · VRE',elite:.14},
   {id:'sepsis',name:'SEPSIS / CORE',label:'패혈증 봉쇄 작전',site:'bloodstream',count:24,pool:['kpc','mdr','vre','mrsa','esbl','cmv','strongyloides','ecoli','mssa','klebs'],scenarios:['cmv-retinitis','strongyloidiasis'],color:'#de947f',note:'일반 감수성균도 섞여 있습니다. 모든 적과 KPC 군체 보스를 제압하고 EXIT로 탈출하세요.',modifier:'KPC 군체 보스',boss:true,elite:.16}
 ]);
-export const WAVES=STAGES;
-// Independent case collections, not difficulty tiers or new campaign end stages.
+
+// Each theme is a collection of separate clinical cases and a regular campaign chapter.
 export const THEME_STAGES=Object.freeze([
- {id:'virology',name:'VIRAL OBSERVATORY',label:'바이러스 연구동',site:'community',count:14,pool:['hsv','cmv','hsv','cmv','mssa','ecoli'],scenarios:['first-genital-herpes','cmv-retinitis'],color:'#a9b8ed',theme:3,mapStyle:2,note:'서로 다른 임상 사례를 모은 연구동. ACV·GCV로 감염세포의 복제를 억제하고 세균은 별도 약제로 대응하세요.',modifier:'바이러스 사례 · 자동 복제',elite:0,loadout:['acyclovir','ganciclovir','ampicillin','cefazolin','ceftriaxone','vancomycin','meropenem','levofloxacin','metronidazole'],companion:'nk'},
- {id:'parasitology',name:'PARASITE CONSERVATORY',label:'기생충 온실',site:'abdomen',count:14,pool:['giardia','strongyloides','giardia','strongyloides','ecoli','anaerobe'],scenarios:['giardiasis','strongyloidiasis'],color:'#c4d49d',theme:0,mapStyle:3,note:'별도 장내감염 사례를 모은 온실. Giardia 원충은 MTZ, Strongyloides 유충은 IVM으로 구분해 대응하세요.',modifier:'원충 · 연충의 다른 대응',elite:0,loadout:['metronidazole','ivermectin','ampicillin','cefazolin','ceftriaxone','vancomycin','meropenem','levofloxacin','linezolid'],companion:'eosinophil'}
+ {id:'virology',tier:2,bossKind:'cmv',minibossKind:'hsv',mechanic:'replication',name:'VIRAL OBSERVATORY',label:'바이러스 연구동',site:'community',count:14,pool:['hsv','cmv','hsv','cmv','mssa','ecoli'],scenarios:['first-genital-herpes','cmv-retinitis'],color:'#a9b8ed',theme:3,mapStyle:2,note:'복제 신호를 먼저 억제하고, 상층 감염세포 군체를 통제하세요.',modifier:'표적 우선순위 · 복제 억제',elite:0,loadout:['acyclovir','ganciclovir','ampicillin','cefazolin','ceftriaxone','vancomycin','meropenem','levofloxacin','metronidazole'],companion:'nk'},
+ {id:'parasitology',tier:3,bossKind:'strongyloides',minibossKind:'giardia',mechanic:'migration',name:'PARASITE CONSERVATORY',label:'기생충 온실',site:'abdomen',count:14,pool:['giardia','strongyloides','giardia','strongyloides','ecoli','anaerobe'],scenarios:['giardiasis','strongyloidiasis'],color:'#c4d49d',theme:0,mapStyle:3,note:'부착한 원충과 이동하는 유충을 구분하고, 이동 경로를 차단하세요.',modifier:'부착 · 이동 · 자가감염 차단',elite:0,loadout:['metronidazole','ivermectin','ampicillin','cefazolin','ceftriaxone','vancomycin','meropenem','levofloxacin','linezolid'],companion:'eosinophil'}
 ]);
-export const stageFor=run=>run.mission==='theme'?(THEME_STAGES.find(s=>s.id===run.themeId)||THEME_STAGES[0]):STAGES[run.wave];
+export const SURVIVAL_STAGES=CORE_STAGES;
+export const STAGES=Object.freeze([
+ CORE_STAGES[0],CORE_STAGES[1],CORE_STAGES[2],THEME_STAGES[0],CORE_STAGES[3],THEME_STAGES[1],...CORE_STAGES.slice(4)
+].map(s=>({...s,tier:s.tier??CORE_STAGES.indexOf(s),bossKind:s.bossKind||(s.boss?'kpc':s.pool[0])})));
+export const WAVES=STAGES;
+export const stageFor=run=>run.mission==='theme'?(THEME_STAGES.find(s=>s.id===run.themeId)||THEME_STAGES[0]):(run.mission==='survival'?SURVIVAL_STAGES:STAGES)[run.wave];
 export const REWARDS=Object.freeze([
  {id:'holster',title:'교대 장전',tag:'운용',group:'handling',text:'넣어둔 약제를 2.4초 뒤 자동 장전',max:1},
  {id:'fastReload',title:'신속 탄창 교체',tag:'운용',group:'handling',text:'장전 시간 −14%',max:2},
@@ -138,7 +143,7 @@ export const AUGMENTS=Object.freeze([
 // Survival is a mixed-case arena: regimen targets retain explicitly authored contexts.
 export const SURVIVAL_CASES=Object.freeze({legionella:{site:'lung',scenarios:[]},anaerobe:{site:'abdomen',scenarios:[]},cmv:{site:'bloodstream',scenarios:['cmv-retinitis']},strongyloides:{site:'bloodstream',scenarios:['strongyloidiasis']}});
 export function createSurvivalMap(seed){
- const value=normalizeSeed(seed),random=seededRandom(value^0x51a7f0),map=buildFacility(STAGES[4],4,value,random,{arena:true}),w=map.width,h=map.height;
+ const value=normalizeSeed(seed),random=seededRandom(value^0x51a7f0),map=buildFacility(CORE_STAGES[4],4,value,random,{arena:true}),w=map.width,h=map.height;
  map.id='survival-'+value;map.name='ENDLESS / MIXED CASES';map.site='bloodstream';map.scenarios=[];map.boss=null;map.miniboss=null;
  const spots=[];for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++)if(!map.cells[y*w+x]&&!map.stairs[y*w+x]&&Math.hypot(x+.5-map.spawn.x,y+.5-map.spawn.y)>=9)spots.push({x:x+.5,y:y+.5,room:map.roomCells[y*w+x]});
  for(let i=spots.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[spots[i],spots[j]]=[spots[j],spots[i]];}map.spawnSpots=spots;

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createPlayCatalog,createMap,WAVES,STAGES,HOSTS,REWARDS,roomAt,THEME_STAGES,COMPANIONS} from '../src/play-data.mjs';
-import {newRun,tick,coverage,applyHit,spawnEnemy,fire,scan,visibleLabel,controlSource,switchWeapon,protectedBySource,canStand,moveBody,lineOfSight,chooseReward,resistanceChance,MAX_ENEMIES,canDetect,maxAmmo,ammoCount,isWeaponReady,combatCoverage,rewardOptions,cycleWeapon,reload,reserveCount,magazineCapacity,scanHints,equipWeapon,selectScanner,revealMap,canExtract,targetEnemy,throwGrenade,stageReport,chooseAugment,augmentOptions,MAX_SURVIVAL_ENEMIES,equipCompanion,companionAccepts,recruitCompanion} from '../src/play-engine.mjs';
+import {newRun,tick,coverage,applyHit,spawnEnemy,fire,scan,visibleLabel,controlSource,switchWeapon,protectedBySource,canStand,moveBody,lineOfSight,chooseReward,resistanceChance,MAX_ENEMIES,canDetect,maxAmmo,ammoCount,isWeaponReady,combatCoverage,rewardOptions,cycleWeapon,reload,reserveCount,magazineCapacity,scanHints,equipWeapon,selectScanner,revealMap,canExtract,targetEnemy,throwGrenade,stageReport,chooseAugment,augmentOptions,MAX_SURVIVAL_ENEMIES,equipCompanion,companionAccepts,recruitCompanion,walkableNeighbors} from '../src/play-engine.mjs';
 const data=JSON.parse(readFileSync(new URL('../data/organisms.json',import.meta.url),'utf8'));
 const library=JSON.parse(readFileSync(new URL('../data/library.json',import.meta.url),'utf8'));
 const catalog=createPlayCatalog(data,library);
@@ -59,8 +59,8 @@ test('walls block hits and scanning, diagonal motion is normalized, and dashes c
 });
 
 test('all spawn points, pickups and exit are reachable from the start',()=>{
- const m=createMap(),visited=new Set(),queue=[[Math.floor(m.spawn.x),Math.floor(m.spawn.y)]];
- while(queue.length){const [x,y]=queue.shift(),i=y*m.width+x;if(visited.has(i)||m.cells[i]||x<0||y<0||x>=m.width||y>=m.height)continue;visited.add(i);queue.push([x-1,y],[x+1,y],[x,y-1],[x,y+1]);}
+ const m=createMap(),visited=new Set(),queue=[Math.floor(m.spawn.y)*m.width+Math.floor(m.spawn.x)];
+ while(queue.length){const i=queue.shift();if(visited.has(i))continue;visited.add(i);queue.push(...walkableNeighbors(m,i).filter(n=>!visited.has(n)));}
  for(const point of [...m.portals,...m.pickups,m.exitDoor.approach])assert.ok(visited.has(Math.floor(point.y)*m.width+Math.floor(point.x)),JSON.stringify(point));
 });
 
@@ -101,7 +101,7 @@ test('switching is immediate while each weapon retains its own fire-rate limit',
 });
 
 test('unseen enemies never acquire global aggro, including after a long wait or through an open doorway',()=>{
- const r=setup(),behind=spawnEnemy(r,'mssa',{x:2,y:3.5}),wall=spawnEnemy(r,'mssa',{x:6.5,y:3.5});r.map.cells[3*r.map.width+5]=1;
+ const r=setup(),behind=spawnEnemy(r,'mssa',{x:2.5,y:3.5}),wall=spawnEnemy(r,'mssa',{x:6.5,y:3.5});r.map.cells[3*r.map.width+5]=1;
  for(let i=0;i<600;i++)tick(r,{},.05);
  assert.equal(behind.state,'Idle');assert.equal(wall.state,'Idle');assert.equal(r.player.hp,100);
  r.map.cells[3*r.map.width+5]=0;for(let y=1;y<=7;y++)for(let x=5;x<=7;x++)r.map.roomCells[y*r.map.width+x]=1;r.player.x=4.5;assert.ok(lineOfSight(r.map,r.player,wall));assert.notEqual(roomAt(r.map,r.player.x,r.player.y),roomAt(r.map,wall.x,wall.y));assert.equal(canDetect(r,wall),false);
@@ -124,7 +124,7 @@ test('every stage layout and encounter position is reachable; map variants are d
  const layouts=new Set();
  for(let stage=0;stage<STAGES.length;stage++)for(const seed of [31,97,108]){
   const r=newRun(catalog,{stage,seed}),m=r.map,visited=new Set(),queue=[Math.floor(m.spawn.y)*m.width+Math.floor(m.spawn.x)];
-  while(queue.length){const i=queue.shift();if(i<0||i>=m.cells.length||visited.has(i)||m.cells[i])continue;visited.add(i);queue.push(i-1,i+1,i-m.width,i+m.width);}
+  while(queue.length){const i=queue.shift();if(i<0||i>=m.cells.length||visited.has(i)||m.cells[i])continue;visited.add(i);queue.push(...walkableNeighbors(m,i).filter(n=>!visited.has(n)));}
   for(const p of [...m.portals,...m.pickups,...r.pending,m.exitDoor.approach]){assert.ok(canStand(m,p.x,p.y,.18),stage+': '+JSON.stringify(p));assert.ok(visited.has(Math.floor(p.y)*m.width+Math.floor(p.x)),stage+': unreachable');}
   assert.equal(r.pending.length,STAGES[stage].count);layouts.add(Buffer.from(m.cells).toString('base64'));
  }
@@ -153,12 +153,12 @@ test('regimen and unknown results keep their meaning and enforce the authored in
 });
 
 test('dormant spores resist all antibiotic damage; source control removes spores and residual toxin',()=>{
- const r=setup({stage:3}),e=spawnEnemy(r,'clostridium',{x:5.5,y:3.5});assert.equal(e.state,'Dormant');applyHit(r,e,catalog.weaponById.metronidazole,99999);assert.equal(e.hp,e.maxHp);assert.equal(e.state,'Dormant');assert.ok(controlSource(r));assert.equal(e.state,'Dead');assert.equal(r.hazards.filter(h=>h.active).length,0);
+ const r=setup({stage:STAGES.findIndex(s=>s.id==='abdomen')}),e=spawnEnemy(r,'clostridium',{x:5.5,y:3.5});assert.equal(e.state,'Dormant');applyHit(r,e,catalog.weaponById.metronidazole,99999);assert.equal(e.hp,e.maxHp);assert.equal(e.state,'Dormant');assert.ok(controlSource(r));assert.equal(e.state,'Dead');assert.equal(r.hazards.filter(h=>h.active).length,0);
  const second=spawnEnemy(r,'clostridium',{x:6,y:3.5});for(let i=0;i<50;i++)tick(r,{},.05);assert.notEqual(second.state,'Dormant');applyHit(r,second,catalog.weaponById.metronidazole,99999);assert.equal(second.state,'Dead');assert.ok(r.hazards.some(h=>h.active));r.player.x=6;r.sourceCooldown=0;controlSource(r);assert.equal(r.hazards.filter(h=>h.active).length,0);
 });
 
 test('mobile biofilm protects neighbors until F disrupts it; intracellular exposure slows the host-cell target',()=>{
- const r=setup({stage:4}),carrier=spawnEnemy(r,'pseudo',{x:5.5,y:3.5}),neighbor=spawnEnemy(r,'mrsa',{x:6.5,y:3.5});assert.ok(protectedBySource(r,neighbor));assert.ok(controlSource(r));assert.equal(carrier.biofilm,false);assert.equal(protectedBySource(r,neighbor),false);
+ const r=setup({stage:STAGES.findIndex(s=>s.id==='hospital')}),carrier=spawnEnemy(r,'pseudo',{x:5.5,y:3.5}),neighbor=spawnEnemy(r,'mrsa',{x:6.5,y:3.5});assert.ok(protectedBySource(r,neighbor));assert.ok(controlSource(r));assert.equal(carrier.biofilm,false);assert.equal(protectedBySource(r,neighbor),false);
  const lung=setup({stage:2}),inside=spawnEnemy(lung,'legionella',{x:6.5,y:3.5});assert.ok(inside.cell>0);applyHit(lung,inside,catalog.weaponById.levofloxacin);assert.equal(inside.cell,0);assert.ok(inside.slow>0);assert.ok(inside.hp<inside.maxHp);
 });
 
@@ -172,11 +172,11 @@ test('extraction requires all enemies and records the sector before resetting',(
 });
 
 test('single-stage practice can extract, and the KPC boss keeps its resistant AST across phases',()=>{
- const r=setup({stage:7,mission:'single'}),boss=spawnEnemy(r,'kpc',{x:6.5,y:3.5},false,{boss:true}),hp=boss.hp,shield=boss.shield;applyHit(r,boss,catalog.weaponById.meropenem,99999);assert.equal(boss.hp,hp);assert.equal(boss.shield,shield);applyHit(r,boss,catalog.weaponById.ceftazavi,99999);assert.equal(boss.state,'Dead');r.spawned=STAGES[7].count;extract(r);assert.equal(r.status,'won');assert.equal(r.completedStages,1);
+ const r=setup({stage:STAGES.findIndex(s=>s.id==='sepsis'),mission:'single'}),boss=spawnEnemy(r,'kpc',{x:6.5,y:3.5},false,{boss:true}),hp=boss.hp,shield=boss.shield;applyHit(r,boss,catalog.weaponById.meropenem,99999);assert.equal(boss.hp,hp);assert.equal(boss.shield,shield);applyHit(r,boss,catalog.weaponById.ceftazavi,99999);assert.equal(boss.state,'Dead');r.spawned=STAGES.find(s=>s.id==='sepsis').count;extract(r);assert.equal(r.status,'won');assert.equal(r.completedStages,1);
 });
 
 test('reward choices exclude already supplied weapons and remain available after capped upgrades',()=>{
- const r=setup({stage:7,host:'renal'});for(const reward of REWARDS)if(reward.max)r.upgrades[reward.id]=reward.max;
+ const r=setup({stage:STAGES.findIndex(s=>s.id==='sepsis'),host:'renal'});for(const reward of REWARDS)if(reward.max)r.upgrades[reward.id]=reward.max;
  const options=rewardOptions(r);assert.equal(options.length,3);assert.ok(options.every(r=>!r.weapon));
 });
 
@@ -184,7 +184,7 @@ test('easy scan hints use current coverage, host and target, and never reveal hi
  const r=setup({hints:true}),e=spawnEnemy(r,'ecoli',{x:6.5,y:3.5});assert.deepEqual(scanHints(r),[]);assert.ok(scan(r));assert.deepEqual(scanHints(r),[0,2,4]);
  r.host='allergy';assert.deepEqual(scanHints(r),[2,4]);r.player.angle=Math.PI;assert.deepEqual(scanHints(r),[]);r.player.angle=0;r.hintTime=0;assert.deepEqual(scanHints(r),[2,4]);e.scanned=false;assert.deepEqual(scanHints(r),[]);
  const h=setup({hard:true,hints:true});spawnEnemy(h,'ecoli',{x:6.5,y:3.5});scan(h);assert.equal(h.hints,false);assert.deepEqual(scanHints(h),[]);
- const d=setup({stage:3,hints:true});spawnEnemy(d,'clostridium',{x:6.5,y:3.5});scan(d);assert.deepEqual(scanHints(d),[]);
+ const d=setup({stage:STAGES.findIndex(s=>s.id==='abdomen'),hints:true});spawnEnemy(d,'clostridium',{x:6.5,y:3.5});scan(d);assert.deepEqual(scanHints(d),[]);
 });
 
 test('reload transfers real reserves only on completion and weapon switching cancels it',()=>{
@@ -195,7 +195,7 @@ test('reload transfers real reserves only on completion and weapon switching can
 
 test('jump rises and lands without firing, repeated holding does not bunny-hop or bypass walls',()=>{
  const r=setup();tick(r,{jump:true},.05);assert.ok(r.player.z>0);assert.equal(r.shots,0);let max=r.player.z;for(let i=0;i<20;i++){tick(r,{jump:true},.05);max=Math.max(max,r.player.z);}assert.ok(max>.3&&max<.5);assert.equal(r.player.z,0);tick(r,{jump:false});tick(r,{jump:true});assert.ok(r.player.z>0);
- r.player.x=7.5;r.player.y=3.5;for(let i=0;i<20;i++)tick(r,{jump:true,forward:1},.05);assert.ok(r.player.x<r.map.rooms[0].bounds.x+r.map.rooms[0].bounds.w);assert.ok(canStand(r.map,r.player.x,r.player.y));
+ r.player.x=r.map.rooms[0].bounds.x+r.map.rooms[0].bounds.w-1.5;r.player.y=3.5;for(let i=0;i<20;i++)tick(r,{jump:true,forward:1},.05);assert.ok(r.player.x<r.map.rooms[0].bounds.x+r.map.rooms[0].bounds.w);assert.ok(canStand(r.map,r.player.x,r.player.y));
 });
 
 test('every starting room and sightline is empty, with all encounters pre-positioned before exploration',()=>{
@@ -203,10 +203,10 @@ test('every starting room and sightline is empty, with all encounters pre-positi
  r.status='running';tick(r);assert.equal(r.pending.length,0);assert.equal(r.spawned,STAGES[stage].count);assert.ok(r.enemies.filter(e=>e.active).every(e=>e.state==='Idle'||e.state==='Dormant'));assert.equal(r.player.hp,100);}
 });
 
-test('late viral and parasite cases require their authored scenario and fit nine editable slots',()=>{
+test('regular viral and parasite chapters require their authored scenario and fit nine editable slots',()=>{
  assert.equal(coverage(catalog,'ganciclovir','cmv',{site:'bloodstream'}).factor,0);assert.equal(coverage(catalog,'ganciclovir','cmv',{scenarios:['cmv-retinitis']}).factor,1);assert.equal(coverage(catalog,'ivermectin','strongyloides',{scenarios:['strongyloidiasis']}).factor,1);
- for(const stage of STAGES.slice(0,5))assert.ok(!stage.pool.includes('cmv')&&!stage.pool.includes('strongyloides'));
- const r=setup({stage:7});assert.equal(r.slots.length,9);assert.ok(r.slots.includes(9)&&r.slots.includes(10));assert.equal(equipWeapon(r,0,0),false);r.status='paused';assert.ok(equipWeapon(r,0,0));assert.equal(r.slots[0],0);assert.equal(new Set(r.slots).size,9);
+ assert.ok(STAGES.findIndex(s=>s.id==='virology')<STAGES.findIndex(s=>s.id==='hospital'));assert.ok(STAGES.findIndex(s=>s.id==='parasitology')<STAGES.findIndex(s=>s.id==='hospital'));
+ const r=setup({stage:STAGES.findIndex(s=>s.id==='sepsis')});assert.equal(r.slots.length,9);assert.ok(r.slots.includes(9)&&r.slots.includes(10));assert.equal(equipWeapon(r,0,0),false);r.status='paused';assert.ok(equipWeapon(r,0,0));assert.equal(r.slots[0],0);assert.equal(new Set(r.slots).size,9);
 });
 
 test('map and encounter seeds reproduce a run while other seeds change both geometry and placements',()=>{
@@ -226,7 +226,7 @@ test('exploration reveals only current sight rays, retains history and cannot se
  assert.ok(r.discovered.some(n=>!n));assert.equal(newRun(catalog,{mapMode:'full'}).mapMode,'full');assert.equal(newRun(catalog,{mapMode:'invalid'}).mapMode,'explore');
 });
 test('final exit stays locked while any opponent remains, including the resistant boss',()=>{
- const r=setup({stage:7,mission:'single'});r.spawnTimer=0;tick(r);Object.assign(r.player,r.map.exit);assert.equal(canExtract(r),false);
+ const r=setup({stage:STAGES.findIndex(s=>s.id==='sepsis'),mission:'single'});r.spawnTimer=0;tick(r);Object.assign(r.player,r.map.exit);assert.equal(canExtract(r),false);
  for(const e of r.enemies.filter(e=>e.active)){e.biofilm=false;const w=catalog.weapons.find(w=>combatCoverage(r,w,e.kind).factor);applyHit(r,e,w,99999);}assert.ok(canExtract(r));extract(r);assert.equal(r.status,'won');
 });
 
@@ -236,7 +236,7 @@ test('vertical looking cannot shoot or scan an enemy below the reticle and reset
 });
 
 test('late pressure escalation preserves a susceptible cohort and covers every scheduled type',()=>{
- for(const stage of [5,6,7]){const r=setup({stage});r.spawnTimer=0;r.pressure=95;tick(r);const ordinary=r.enemies.filter(e=>e.active&&!catalog.enemyById[e.kind].resistant&&!catalog.enemyById[e.kind].viral&&!catalog.enemyById[e.kind].parasite);assert.ok(ordinary.length>=Math.ceil(STAGES[stage].count*.3));}
+ for(const stage of ['icu','outbreak','sepsis'].map(id=>STAGES.findIndex(s=>s.id===id))){const r=setup({stage});r.spawnTimer=0;r.pressure=95;tick(r);const ordinary=r.enemies.filter(e=>e.active&&!catalog.enemyById[e.kind].resistant&&!catalog.enemyById[e.kind].viral&&!catalog.enemyById[e.kind].parasite);assert.ok(ordinary.length>=Math.ceil(STAGES[stage].count*.3));}
 });
 
 test('stage review separates targeted effective, blocked and missed shots, uses shared clinical contexts',()=>{
@@ -246,7 +246,7 @@ test('stage review separates targeted effective, blocked and missed shots, uses 
 });
 
 test('environmental throwable is pooled, finite, wall blocked and does not kill dormant spores or parasites',()=>{
- const r=setup({stage:6}),e=spawnEnemy(r,'mssa',{x:5.5,y:3.5}),spore=spawnEnemy(r,'clostridium',{x:5.5,y:4.5}),worm=spawnEnemy(r,'strongyloides',{x:5.5,y:5.5});r.player.angle=Math.PI;assert.ok(throwGrenade(r));assert.equal(r.grenades,2);assert.equal(throwGrenade(r),false);
+ const r=setup({stage:STAGES.findIndex(s=>s.id==='outbreak')}),e=spawnEnemy(r,'mssa',{x:5.5,y:3.5}),spore=spawnEnemy(r,'clostridium',{x:5.5,y:4.5}),worm=spawnEnemy(r,'strongyloides',{x:5.5,y:5.5});r.player.angle=Math.PI;assert.ok(throwGrenade(r));assert.equal(r.grenades,2);assert.equal(throwGrenade(r),false);
  const f=r.fields[0];Object.assign(f,{active:true,x:5.5,y:3.5,radius:3,life:4.5});const hp=e.hp;tick(r,{},.05);assert.ok(e.hp<hp);assert.equal(spore.hp,spore.maxHp);assert.equal(worm.hp,worm.maxHp);assert.equal(r.shots,0);
  r.map.cells[3*r.map.width+4]=1;f.x=3.5;e.state='Idle';const before=e.hp;tick(r,{},.05);assert.equal(e.hp,before);r.status='paused';const life=f.life;tick(r,{},.05);assert.equal(f.life,life);
 });
@@ -325,7 +325,7 @@ test('debrief separates a narrower available choice from resistance and unavaila
 });
 test('four information levels are distinct and progression reserves safe supply rooms',()=>{
  for(const [information,intel,hints] of [['guided',3,true],['open',3,false],['identify',2,false],['blind',0,false]]){const r=newRun(catalog,{information});assert.equal(r.intel.mrsa,intel);assert.equal(r.hints,hints);}
- const r=newRun(catalog,{seed:23});assert.ok(r.map.rooms.some(room=>room.rest));for(const plan of r.pending)assert.ok(r.map.rooms[plan.room].encounter);assert.equal(roomAt(r.map,r.map.exit.x,r.map.exit.y),r.map.rooms.at(-1).id);
+ const r=newRun(catalog,{seed:23});assert.ok(r.map.rooms.some(room=>room.rest));for(const plan of r.pending)assert.ok(r.map.rooms[plan.room].encounter);assert.equal(roomAt(r.map,r.map.exit.x,r.map.exit.y),r.map.rooms[0].id);
 });
 test('last-contact guide follows walkable cells and pressure reports count actual replacements',()=>{
  const r=setup();r.spawned=STAGES[0].count;const target=spawnEnemy(r,'mssa',r.map.portals.at(-1));tick(r,{},.05);assert.equal(r.guide.remaining,1);assert.ok(canStand(r.map,r.guide.x,r.guide.y));assert.ok(Math.hypot(r.guide.x-r.player.x,r.guide.y-r.player.y)<2);assert.equal(r.intel.mssa,3);
