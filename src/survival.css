@@ -92,3 +92,93 @@ main.survival-main{width:100%;max-width:none;height:calc(100dvh - 48px);min-heig
 @media(pointer:coarse){.sv-touch-hint{display:block}.sv-game:not([data-status="running"]) .sv-touch-hint{display:none}.sv-game .sv-icon-button{min-width:40px;min-height:44px}}
 @media(max-height:620px) and (min-width:621px){main.survival-main{min-height:350px;padding:6px}.sv-game{grid-template-rows:48px 3px minmax(0,1fr) 54px}.sv-overlay{padding:18px}.sv-intro h1{font-size:48px;margin:10px 0 15px}.sv-intro h1>span{font-size:14px}.sv-intro-copy>p{font-size:12px;margin-bottom:14px}.sv-mission{padding:16px}.sv-mission-time{font-size:42px;margin:8px 0}.sv-mission ol{display:none}.sv-mission>p{margin-bottom:8px}.sv-controls{margin-top:15px}.sv-game .sv-upgrade{min-height:230px}.sv-upgrade-icon{margin:12px 0}}
 @media(prefers-reduced-motion:reduce){.sv-game *{transition:none!important}.sv-game .sv-upgrade:hover{transform:none}}
+
+/* Combat feedback and complete loadout. */
+.sv-game{grid-template-rows:64px 3px minmax(0,1fr) 96px}
+.sv-footer{padding:9px 14px;gap:10px}
+.sv-equipment-strip{min-width:0;flex:1}.sv-loadout{max-width:none}
+.sv-game .sv-slot{background:transparent;text-align:left;border-radius:5px}
+.sv-passives{display:flex;gap:13px;margin-top:7px;justify-content:center}
+.sv-game .sv-passives button{display:flex;align-items:center;gap:4px;background:none;border:0;padding:0;font-size:13px;min-width:24px}
+.sv-passives b{font:9px monospace;color:#b5c9bc}
+.sv-game .sv-build-button{background:#223930;border:1px solid #567265;border-radius:5px;padding:8px;font-size:11px;min-height:44px}
+.sv-phase{position:absolute;left:18px;bottom:14px;padding:5px 8px;background:#11252be6;border:1px solid #5c7a6755;border-radius:4px;font-size:10px;color:#c8dfc2;pointer-events:none}
+.sv-game:not([data-status="running"]) .sv-phase{visibility:hidden}
+.sv-selection-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.sv-overlay--upgrade,.sv-overlay--confirm{background:#07131866;backdrop-filter:blur(1.5px)}
+.sv-upgrade-icon{margin:17px 0 12px}
+.sv-upgrade>p{margin:9px 0 15px;min-height:36px}
+.sv-upgrade-values{margin:0 0 15px;width:100%;display:grid;gap:7px}
+.sv-upgrade-values>div{display:flex;justify-content:space-between;gap:6px;align-items:baseline}
+.sv-upgrade-values dt{font-size:11px;color:#a5bab0}
+.sv-upgrade-values dd{display:flex;align-items:baseline;gap:7px;font:12px monospace;margin:0;white-space:nowrap}
+.sv-upgrade-values dd>span{color:#839f92}.sv-upgrade-values i{font-style:normal;color:#819687}.sv-upgrade-values b{font-weight:600;color:var(--weapon)}
+.sv-game .sv-upgrade:disabled{opacity:1;transform:none;cursor:default}
+.sv-game .sv-upgrade.sv-selected{border-color:var(--weapon);box-shadow:0 0 0 2px var(--weapon),0 0 30px #bbefce22;background:#2b4337}
+.sv-game .sv-upgrade.sv-not-selected{opacity:.35}
+.sv-panel{padding:24px;background:#14282af5;border:1px solid #56746777;border-radius:10px}
+.sv-panel h2{font-size:23px;font-weight:600;margin:0 0 18px;color:#e7f0df}
+.sv-panel-heading{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}
+.sv-panel-heading h2{margin:0}
+.sv-panel-heading .sv-primary{width:auto;max-width:none;min-height:40px;padding:9px 15px;font-size:12px}
+.sv-panel-tabs{display:flex;gap:8px;margin:0 0 20px}
+.sv-panel-tabs button{background:transparent;border:1px solid #526e60!important;border-radius:5px!important;padding:9px 18px;font-size:12px!important}
+.sv-panel-tabs button[aria-pressed="true"]{background:#bedfbc;color:#18382c}
+.sv-build-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.sv-build-grid article{border:1px solid #57756455;border-radius:6px;padding:14px;background:#1b302f}
+.sv-build-grid article>header{display:flex;gap:8px;align-items:center;font-size:13px}
+.sv-build-grid header>span{font-size:24px}.sv-build-grid header>b{margin-left:auto;font:10px monospace;color:#99b3a4}
+.sv-build-grid header>strong{font-weight:550}
+.sv-branch-name{font-size:11px;color:#e9d7a3;margin:6px 0 0}
+.sv-stat-lines{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 18px;margin:14px 0 0}
+.sv-stat-lines>div{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.sv-stat-lines dt{font-size:10px;color:#9eb6aa}.sv-stat-lines dd{margin:0;font:12px monospace;color:#d7ebce}
+.sv-passive-list{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.sv-passive-list>span{font-size:11px;color:#c7dbbf;padding:8px 10px;background:#2b4033;border-radius:5px}
+.sv-passive-list b{font:10px monospace;margin-left:5px}.sv-passive-list small{display:block;font-size:9px;color:#9fb7a6;margin-top:4px}
+.sv-record-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px;margin:18px 0}
+.sv-record-grid small{display:block;font-size:10px;color:#9fb5a4;margin-bottom:5px}
+.sv-record-grid strong{font:22px monospace;color:#d9edc9}
+.sv-history{display:grid;gap:9px}.sv-history details{background:#1d332f;border:1px solid #5c786155;border-radius:5px;padding:12px}
+.sv-history summary{cursor:pointer;font-size:12px;line-height:1.8}.sv-history summary span{margin-left:10px;color:#b6cdbb}.sv-history summary small{display:block;color:#809e88;font:9px monospace}
+.sv-choice-history{display:flex;flex-wrap:wrap;gap:6px;list-style-position:inside;padding:0;margin:16px 0 0}
+.sv-choice-history li{font-size:10px;padding:5px 7px;background:#102824;color:#b9cfb7;border-radius:3px}
+.sv-choice-history small{font:9px monospace;color:#789f86;margin-right:4px}
+.sv-footnote{font-size:10px;color:#92a999;margin-top:20px;line-height:1.7}
+.sv-observations{display:flex;flex-wrap:wrap;gap:12px}.sv-observations>span{display:grid;justify-items:center;gap:8px;border:1px solid #587365;padding:20px;font-size:12px;color:#c5ddba;border-radius:5px}
+.sv-observations b{font-size:35px;font-weight:400}
+.sv-catalog-link{display:inline-block;color:#c9ecd0;font-size:12px;margin-top:8px}
+.sv-empty{font-size:12px;color:#a1b6a6}
+.sv-result{max-width:850px}.sv-result>.sv-record-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin:25px 0 0}
+.sv-result-details{text-align:left;margin-top:22px;padding:14px;border:1px solid #69856a55;border-radius:6px}
+.sv-result-details summary{cursor:pointer;font-size:12px;color:#c3dbbd}.sv-result-details[open] summary{margin-bottom:15px}
+.sv-result-actions{display:flex;align-items:center;gap:16px;justify-content:center}
+.sv-result-actions .sv-primary,.sv-result-actions .sv-secondary{margin:0;max-width:240px}
+@media(max-width:759px){
+ .sv-game{grid-template-rows:56px 3px minmax(0,1fr) 92px}.sv-passives{gap:10px}
+ .sv-upgrade-values dd{font-size:11px;gap:4px}.sv-upgrade-values dt{font-size:10px}.sv-build-grid{gap:9px}
+}
+@media(max-width:620px){
+ .sv-game{grid-template-rows:52px 3px minmax(0,1fr) 82px}.sv-footer{padding:6px 8px;gap:6px}
+ .sv-loadout{gap:5px}.sv-passives{margin-top:6px;gap:12px}.sv-game .sv-passives button{font-size:12px}
+ .sv-game .sv-build-button{font-size:10px;padding:6px}
+ .sv-overlay{padding:16px 12px}.sv-game .sv-upgrade{padding:10px 12px 10px 51px;min-height:0}
+ .sv-upgrade-icon{left:14px;top:37px;font-size:25px}
+ .sv-upgrade-top kbd{left:11px;top:10px}.sv-upgrade>strong{font-size:13px;margin-top:4px}
+ .sv-upgrade>p{font-size:9px;min-height:0;margin:4px 0 8px;line-height:1.4}
+ .sv-upgrade-values{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px;margin-bottom:8px}
+ .sv-upgrade-values dt{font-size:9px}.sv-upgrade-values dd{font-size:10px;gap:3px}
+ .sv-upgrade-level{font-size:8px;padding-top:5px}
+ .sv-panel{padding:16px 12px}.sv-panel h2{font-size:19px}.sv-panel-heading{gap:8px;margin-bottom:16px}
+ .sv-panel-heading .sv-primary{font-size:11px;padding:8px 10px;min-height:38px}
+ .sv-panel-tabs{margin-bottom:14px}.sv-panel-tabs button{padding:8px 14px}
+ .sv-build-grid{grid-template-columns:1fr}.sv-build-grid article{padding:12px}
+ .sv-stat-lines{gap:8px 14px}.sv-stat-lines dd{font-size:11px}
+ .sv-record-grid{gap:13px;margin:12px 0}.sv-record-grid strong{font-size:20px}
+ .sv-mission{display:block;margin-top:20px;padding:12px 16px}.sv-mission .sv-record-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+ .sv-mission .sv-record-grid strong{font-size:16px}.sv-mission .sv-record-grid small{font-size:8px}
+ .sv-result>.sv-record-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .sv-result-actions{flex-direction:column;gap:4px}
+ .sv-result{padding:20px 14px}.sv-result-actions .sv-primary{max-width:none}
+ .sv-phase{left:12px;bottom:10px;font-size:9px}
+}

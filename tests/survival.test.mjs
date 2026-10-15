@@ -5,7 +5,7 @@ import { addSurvivalPickup, chooseSurvivalUpgrade, createSurvivalRun, damageSurv
 
 function setup() {
   const run = createSurvivalRun({ seed: 32 });
-  startSurvival(run); run.timers.spawn = 10000;
+  startSurvival(run); run.pickups = []; run.timers.spawn = 10000;
   return run;
 }
 function advance(run, seconds, input = {}) {
@@ -52,19 +52,26 @@ test('collecting XP pauses for three distinct choices, which cannot be forged or
   assert.equal(chooseSurvivalUpgrade(run, 'not-an-upgrade'), false); assert.deepEqual(run, snapshot);
   const choice = run.choices[0], before = run.upgrades[choice];
   assert.ok(chooseSurvivalUpgrade(run, choice)); assert.equal(run.upgrades[choice], before+1);
-  assert.equal(run.status, 'running'); assert.equal(chooseSurvivalUpgrade(run, choice), false);
+  assert.equal(run.status, 'confirm'); assert.equal(chooseSurvivalUpgrade(run, choice), false);
+  const time=run.time; advance(run,.48); assert.equal(run.time,time); advance(run,.03); assert.equal(run.status,'running'); assert.ok(run.player.invulnerable>1);
 });
 
-test('banked XP triggers successive choices and capped upgrades are never offered', () => {
-  const run = setup(); run.xp = 1000;
-  for (const id of Object.keys(run.upgrades)) if (!['speed','health','repair'].includes(id)) run.upgrades[id] = UPGRADE_BY_ID[id].max;
+test('banked XP gives a confirmation between each distinct set of three choices', () => {
+  const run=setup();run.xp=1000;
+  for(const id of Object.keys(run.upgrades))if(Number.isFinite(UPGRADE_BY_ID[id].max)&&!['speed','health'].includes(id))run.upgrades[id]=UPGRADE_BY_ID[id].max;
   tickSurvival(run);
-  assert.ok(run.choices.every(id => ['speed','health','repair'].includes(id)));
-  assert.ok(chooseSurvivalUpgrade(run, run.choices[0]));
-  assert.equal(run.status, 'upgrade'); assert.equal(run.level, 3);
-  while (run.status === 'upgrade') assert.ok(chooseSurvivalUpgrade(run, run.choices[0]));
-  assert.ok(run.level > 3); assert.ok(run.xp < run.nextXp);
-  assert.ok(run.upgrades.speed <= 4); assert.ok(run.upgrades.health <= 4);
+  let selected=0;
+  while(['upgrade','confirm'].includes(run.status)&&selected<100){
+    if(run.status==='upgrade'){
+      assert.equal(run.choices.length,3);assert.equal(new Set(run.choices).size,3);
+      assert.ok(run.choices.every(id=>['speed','health','repair','vacuum','shield'].includes(id)));
+      assert.ok(chooseSurvivalUpgrade(run,run.choices[0]));selected++;
+      assert.equal(run.status,'confirm');assert.equal(chooseSurvivalUpgrade(run,run.choices[0]),false);
+    }
+    advance(run,.5);
+  }
+  assert.ok(selected>2);assert.ok(run.level>3);assert.ok(run.xp<run.nextXp);
+  assert.ok(run.upgrades.speed<=4);assert.ok(run.upgrades.health<=4);
 });
 
 test('vitality increases actual maximum HP and healing cannot exceed it', () => {
@@ -85,12 +92,14 @@ test('orbit, nova and chained electricity each damage enemies using their geomet
   const nova = setup(); nova.upgrades.nova = 1; nova.timers.bolt = 10000;
   const near = enemyAt(nova,nova.player.x+90,nova.player.y,'spore');
   const far = enemyAt(nova,nova.player.x+220,nova.player.y,'spore');
-  tickSurvival(nova); assert.ok(near.hp<near.maxHp);assert.equal(far.hp,far.maxHp);
+  tickSurvival(nova); assert.equal(near.hp,near.maxHp); assert.ok(nova.waves[0].radius<90-near.radius);
+  advance(nova,.2);assert.ok(near.hp<near.maxHp);assert.equal(far.hp,far.maxHp);
   const chain = setup(); chain.upgrades.chain=1;chain.timers.bolt=10000;
   const a=enemyAt(chain,chain.player.x+250,chain.player.y,'spore');
   const b=enemyAt(chain,chain.player.x+410,chain.player.y,'spore');
   const c=enemyAt(chain,chain.player.x+700,chain.player.y,'spore');
-  tickSurvival(chain);assert.ok(a.hp<a.maxHp);assert.ok(b.hp<b.maxHp);assert.equal(c.hp,c.maxHp);
+  tickSurvival(chain);assert.ok(a.hp<a.maxHp);assert.equal(b.hp,b.maxHp);
+  advance(chain,.12);assert.ok(b.hp<b.maxHp);assert.equal(c.hp,c.maxHp);
 });
 
 test('contact damage has a grace period and death ends the run without posthumous healing', () => {
@@ -105,12 +114,14 @@ test('contact damage has a grace period and death ends the run without posthumou
 });
 
 test('boss attacks telegraph before damage and pause freezes the telegraph', () => {
-  const run=setup(),enemy=enemyAt(run,run.player.x+400,run.player.y,'boss');
+  const run=setup(),enemy=enemyAt(run,run.player.x+180,run.player.y,'boss');
+  enemy.speed=0;run.timers.bolt=10000;
   enemy.attackAt=0;tickSurvival(run);
   assert.equal(run.hazards.length,1);assert.equal(run.player.hp,100);
   const at=run.hazards[0].at;pauseSurvival(run);advance(run,3);
   assert.equal(run.hazards[0].at,at);assert.equal(run.player.hp,100);
-  resumeSurvival(run);advance(run,1.3);assert.ok(run.player.hp<100);
+  resumeSurvival(run);advance(run,.8);assert.equal(run.player.hp,100);
+  advance(run,1.2);assert.ok(run.player.hp<100);
 });
 
 test('a full horde cannot prevent the final boss and victory requires both objectives', () => {

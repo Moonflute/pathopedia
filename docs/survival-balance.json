@@ -1,0 +1,709 @@
+{
+  "date": "2026-10-16",
+  "ruleset": "survival-2",
+  "method": "Node simulation at 60 Hz; three seeds; desktop and portrait; real HP, no stat boosts. Separate 180-enemy stress workload uses invulnerability and high enemy HP. Rendering/audio/device FPS are not measured.",
+  "summary": [
+    {
+      "strategy": "flee",
+      "wins": 0,
+      "runs": 6,
+      "meanKills": 272,
+      "meanLevel": 13.833,
+      "medianFirstLevel": 22.483,
+      "p95TickMs": 0.159
+    },
+    {
+      "strategy": "gather",
+      "wins": 6,
+      "runs": 6,
+      "meanKills": 482,
+      "meanLevel": 21,
+      "medianFirstLevel": 1.883,
+      "p95TickMs": 0.069
+    },
+    {
+      "strategy": "pulse",
+      "wins": 6,
+      "runs": 6,
+      "meanKills": 487,
+      "meanLevel": 20.833,
+      "medianFirstLevel": 1.883,
+      "p95TickMs": 0.029
+    },
+    {
+      "strategy": "arsenal",
+      "wins": 6,
+      "runs": 6,
+      "meanKills": 492,
+      "meanLevel": 20.833,
+      "medianFirstLevel": 1.883,
+      "p95TickMs": 0.034
+    }
+  ],
+  "stress": {
+    "enemies": 180,
+    "p95TickMs": 0.829,
+    "maxTickMs": 2.153
+  },
+  "profile": [
+    {
+      "function": "separateEnemies",
+      "samples": 987,
+      "percent": 14.549
+    },
+    {
+      "function": "tickSurvival",
+      "samples": 681,
+      "percent": 10.038
+    },
+    {
+      "function": "nearEnemies",
+      "samples": 605,
+      "percent": 8.918
+    },
+    {
+      "function": "updateEnemies",
+      "samples": 596,
+      "percent": 8.785
+    },
+    {
+      "function": "distance",
+      "samples": 450,
+      "percent": 6.633
+    },
+    {
+      "function": "autoAttack",
+      "samples": 411,
+      "percent": 6.058
+    },
+    {
+      "function": "(anonymous)",
+      "samples": 313,
+      "percent": 4.614
+    },
+    {
+      "function": "updateWeapons",
+      "samples": 252,
+      "percent": 3.715
+    }
+  ],
+  "results": [
+    {
+      "viewport": "desktop",
+      "seed": 17,
+      "strategy": "flee",
+      "status": "timeout",
+      "time": 360,
+      "kills": 406,
+      "level": 18,
+      "firstPickup": 0.1,
+      "firstLevel": 22.433,
+      "branches": {},
+      "tickP95Ms": 0.141,
+      "peak": {
+        "enemies": 82,
+        "shots": 2,
+        "pickups": 63,
+        "effects": 10,
+        "hazards": 18,
+        "waves": 0,
+        "arcs": 1,
+        "pending": 13,
+        "sounds": 5
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 17,
+      "strategy": "gather",
+      "status": "won",
+      "time": 300,
+      "kills": 501,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {},
+      "tickP95Ms": 0.039,
+      "peak": {
+        "enemies": 35,
+        "shots": 6,
+        "pickups": 14,
+        "effects": 20,
+        "hazards": 12,
+        "waves": 2,
+        "arcs": 1,
+        "pending": 14,
+        "sounds": 6
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 17,
+      "strategy": "pulse",
+      "status": "won",
+      "time": 300,
+      "kills": 488,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "bolt": "bolt_fan"
+      },
+      "tickP95Ms": 0.026,
+      "peak": {
+        "enemies": 22,
+        "shots": 20,
+        "pickups": 15,
+        "effects": 12,
+        "hazards": 8,
+        "waves": 0,
+        "arcs": 0,
+        "pending": 13,
+        "sounds": 3
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 17,
+      "strategy": "arsenal",
+      "status": "won",
+      "time": 300,
+      "kills": 489,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "orbit": "orbit_reach",
+        "chain": "chain_web",
+        "nova": "nova_heavy"
+      },
+      "tickP95Ms": 0.034,
+      "peak": {
+        "enemies": 38,
+        "shots": 5,
+        "pickups": 32,
+        "effects": 24,
+        "hazards": 16,
+        "waves": 2,
+        "arcs": 1,
+        "pending": 12,
+        "sounds": 6
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 32,
+      "strategy": "flee",
+      "status": "timeout",
+      "time": 360,
+      "kills": 227,
+      "level": 13,
+      "firstPickup": 0.1,
+      "firstLevel": 19.15,
+      "branches": {},
+      "tickP95Ms": 0.123,
+      "peak": {
+        "enemies": 80,
+        "shots": 2,
+        "pickups": 34,
+        "effects": 4,
+        "hazards": 18,
+        "waves": 0,
+        "arcs": 0,
+        "pending": 10,
+        "sounds": 3
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 32,
+      "strategy": "gather",
+      "status": "won",
+      "time": 300,
+      "kills": 496,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {},
+      "tickP95Ms": 0.03,
+      "peak": {
+        "enemies": 30,
+        "shots": 3,
+        "pickups": 9,
+        "effects": 22,
+        "hazards": 16,
+        "waves": 2,
+        "arcs": 1,
+        "pending": 12,
+        "sounds": 5
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 32,
+      "strategy": "pulse",
+      "status": "won",
+      "time": 300,
+      "kills": 474,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "bolt": "bolt_fan"
+      },
+      "tickP95Ms": 0.027,
+      "peak": {
+        "enemies": 28,
+        "shots": 25,
+        "pickups": 24,
+        "effects": 13,
+        "hazards": 13,
+        "waves": 0,
+        "arcs": 0,
+        "pending": 14,
+        "sounds": 4
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 32,
+      "strategy": "arsenal",
+      "status": "won",
+      "time": 300,
+      "kills": 526,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "chain": "chain_web",
+        "orbit": "orbit_reach"
+      },
+      "tickP95Ms": 0.03,
+      "peak": {
+        "enemies": 32,
+        "shots": 6,
+        "pickups": 33,
+        "effects": 19,
+        "hazards": 11,
+        "waves": 1,
+        "arcs": 2,
+        "pending": 14,
+        "sounds": 6
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 98,
+      "strategy": "flee",
+      "status": "lost",
+      "time": 184.05,
+      "kills": 119,
+      "level": 7,
+      "firstPickup": 0.1,
+      "firstLevel": 22.417,
+      "branches": {},
+      "tickP95Ms": 0.052,
+      "peak": {
+        "enemies": 49,
+        "shots": 2,
+        "pickups": 63,
+        "effects": 3,
+        "hazards": 18,
+        "waves": 0,
+        "arcs": 0,
+        "pending": 8,
+        "sounds": 3
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 98,
+      "strategy": "gather",
+      "status": "won",
+      "time": 300,
+      "kills": 439,
+      "level": 20,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "orbit": "orbit_reach"
+      },
+      "tickP95Ms": 0.069,
+      "peak": {
+        "enemies": 63,
+        "shots": 3,
+        "pickups": 9,
+        "effects": 23,
+        "hazards": 18,
+        "waves": 2,
+        "arcs": 0,
+        "pending": 13,
+        "sounds": 4
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 98,
+      "strategy": "pulse",
+      "status": "won",
+      "time": 300,
+      "kills": 486,
+      "level": 20,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "bolt": "bolt_lance"
+      },
+      "tickP95Ms": 0.016,
+      "peak": {
+        "enemies": 29,
+        "shots": 6,
+        "pickups": 16,
+        "effects": 8,
+        "hazards": 7,
+        "waves": 0,
+        "arcs": 0,
+        "pending": 13,
+        "sounds": 4
+      }
+    },
+    {
+      "viewport": "desktop",
+      "seed": 98,
+      "strategy": "arsenal",
+      "status": "won",
+      "time": 300,
+      "kills": 472,
+      "level": 20,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "chain": "chain_web",
+        "bolt": "bolt_fan",
+        "orbit": "orbit_reach"
+      },
+      "tickP95Ms": 0.029,
+      "peak": {
+        "enemies": 29,
+        "shots": 12,
+        "pickups": 30,
+        "effects": 16,
+        "hazards": 9,
+        "waves": 1,
+        "arcs": 1,
+        "pending": 16,
+        "sounds": 5
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 17,
+      "strategy": "flee",
+      "status": "timeout",
+      "time": 360,
+      "kills": 459,
+      "level": 19,
+      "firstPickup": 0.1,
+      "firstLevel": 22.567,
+      "branches": {},
+      "tickP95Ms": 0.157,
+      "peak": {
+        "enemies": 89,
+        "shots": 2,
+        "pickups": 104,
+        "effects": 11,
+        "hazards": 18,
+        "waves": 0,
+        "arcs": 2,
+        "pending": 13,
+        "sounds": 5
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 17,
+      "strategy": "gather",
+      "status": "won",
+      "time": 300,
+      "kills": 486,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {},
+      "tickP95Ms": 0.035,
+      "peak": {
+        "enemies": 34,
+        "shots": 3,
+        "pickups": 8,
+        "effects": 18,
+        "hazards": 18,
+        "waves": 2,
+        "arcs": 1,
+        "pending": 11,
+        "sounds": 5
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 17,
+      "strategy": "pulse",
+      "status": "won",
+      "time": 300,
+      "kills": 501,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "bolt": "bolt_fan"
+      },
+      "tickP95Ms": 0.023,
+      "peak": {
+        "enemies": 26,
+        "shots": 20,
+        "pickups": 20,
+        "effects": 15,
+        "hazards": 9,
+        "waves": 0,
+        "arcs": 0,
+        "pending": 13,
+        "sounds": 3
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 17,
+      "strategy": "arsenal",
+      "status": "won",
+      "time": 300,
+      "kills": 486,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "orbit": "orbit_reach",
+        "chain": "chain_web",
+        "nova": "nova_heavy"
+      },
+      "tickP95Ms": 0.021,
+      "peak": {
+        "enemies": 23,
+        "shots": 6,
+        "pickups": 19,
+        "effects": 13,
+        "hazards": 9,
+        "waves": 2,
+        "arcs": 1,
+        "pending": 14,
+        "sounds": 5
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 32,
+      "strategy": "flee",
+      "status": "timeout",
+      "time": 360,
+      "kills": 214,
+      "level": 13,
+      "firstPickup": 0.1,
+      "firstLevel": 22.483,
+      "branches": {},
+      "tickP95Ms": 0.109,
+      "peak": {
+        "enemies": 90,
+        "shots": 2,
+        "pickups": 24,
+        "effects": 3,
+        "hazards": 18,
+        "waves": 0,
+        "arcs": 0,
+        "pending": 10,
+        "sounds": 3
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 32,
+      "strategy": "gather",
+      "status": "won",
+      "time": 300,
+      "kills": 508,
+      "level": 22,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "bolt": "bolt_fan"
+      },
+      "tickP95Ms": 0.03,
+      "peak": {
+        "enemies": 32,
+        "shots": 8,
+        "pickups": 14,
+        "effects": 18,
+        "hazards": 14,
+        "waves": 2,
+        "arcs": 1,
+        "pending": 15,
+        "sounds": 6
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 32,
+      "strategy": "pulse",
+      "status": "won",
+      "time": 300,
+      "kills": 514,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "bolt": "bolt_fan"
+      },
+      "tickP95Ms": 0.029,
+      "peak": {
+        "enemies": 33,
+        "shots": 25,
+        "pickups": 20,
+        "effects": 11,
+        "hazards": 8,
+        "waves": 0,
+        "arcs": 0,
+        "pending": 16,
+        "sounds": 4
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 32,
+      "strategy": "arsenal",
+      "status": "won",
+      "time": 300,
+      "kills": 493,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "orbit": "orbit_reach",
+        "chain": "chain_web"
+      },
+      "tickP95Ms": 0.029,
+      "peak": {
+        "enemies": 29,
+        "shots": 9,
+        "pickups": 32,
+        "effects": 20,
+        "hazards": 11,
+        "waves": 1,
+        "arcs": 1,
+        "pending": 14,
+        "sounds": 5
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 98,
+      "strategy": "flee",
+      "status": "timeout",
+      "time": 360,
+      "kills": 205,
+      "level": 13,
+      "firstPickup": 0.1,
+      "firstLevel": 24.75,
+      "branches": {},
+      "tickP95Ms": 0.159,
+      "peak": {
+        "enemies": 107,
+        "shots": 2,
+        "pickups": 51,
+        "effects": 5,
+        "hazards": 18,
+        "waves": 0,
+        "arcs": 0,
+        "pending": 10,
+        "sounds": 3
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 98,
+      "strategy": "gather",
+      "status": "won",
+      "time": 300,
+      "kills": 462,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "orbit": "orbit_guard"
+      },
+      "tickP95Ms": 0.037,
+      "peak": {
+        "enemies": 31,
+        "shots": 3,
+        "pickups": 6,
+        "effects": 16,
+        "hazards": 18,
+        "waves": 2,
+        "arcs": 1,
+        "pending": 14,
+        "sounds": 5
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 98,
+      "strategy": "pulse",
+      "status": "won",
+      "time": 300,
+      "kills": 460,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "bolt": "bolt_lance"
+      },
+      "tickP95Ms": 0.019,
+      "peak": {
+        "enemies": 34,
+        "shots": 7,
+        "pickups": 15,
+        "effects": 8,
+        "hazards": 14,
+        "waves": 0,
+        "arcs": 0,
+        "pending": 12,
+        "sounds": 4
+      }
+    },
+    {
+      "viewport": "portrait",
+      "seed": 98,
+      "strategy": "arsenal",
+      "status": "won",
+      "time": 300,
+      "kills": 483,
+      "level": 21,
+      "firstPickup": 0.1,
+      "firstLevel": 1.883,
+      "branches": {
+        "chain": "chain_web",
+        "bolt": "bolt_fan",
+        "orbit": "orbit_reach",
+        "nova": "nova_heavy"
+      },
+      "tickP95Ms": 0.029,
+      "peak": {
+        "enemies": 31,
+        "shots": 12,
+        "pickups": 26,
+        "effects": 17,
+        "hazards": 14,
+        "waves": 1,
+        "arcs": 1,
+        "pending": 11,
+        "sounds": 5
+      }
+    }
+  ]
+}
