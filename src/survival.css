@@ -48,8 +48,8 @@ main.survival-main{width:100%;max-width:none;height:calc(100dvh - 48px);min-heig
 .sv-controls{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 18px;font-size:10px;color:#9bada6;margin-top:28px;line-height:1.9}
 .sv-controls kbd{font:9px monospace;border:1px solid #65817766;padding:3px 5px;border-radius:3px;color:#d0dfcd;background:#20332c99}
 .sv-fiction{text-align:center;color:#82958d;font-size:9px;line-height:1.7;margin:13px 0 0}
-.sv-choice-heading{text-align:center;margin-bottom:25px}.sv-choice-heading h2,.sv-pause h2,.sv-result h2{font-size:32px;letter-spacing:-1.3px;line-height:1.25;color:#edf3e3;margin:11px 0 13px;font-weight:650}
-.sv-choice-heading>p{font:12px monospace;color:#c1edce;margin:0;line-height:1.8}.sv-choice-heading>p>span{display:block;font:12px/1.7 var(--sans,sans-serif);color:#a1b8ac;margin-top:8px}
+.sv-pause h2,.sv-result h2{font-size:32px;letter-spacing:-1.3px;line-height:1.25;color:#edf3e3;margin:11px 0 13px;font-weight:650}
+
 .sv-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .sv-game .sv-upgrade{display:flex;flex-direction:column;text-align:left;padding:20px;border:1px solid #61706b;border-radius:9px;background:#1b3030;min-height:274px;transition:transform .15s,border-color .15s}
 .sv-game .sv-upgrade:hover{transform:translateY(-4px);border-color:var(--weapon);background:#253e39}
@@ -80,7 +80,7 @@ main.survival-main{width:100%;max-width:none;height:calc(100dvh - 48px);min-heig
  .sv-mission{transform:none;padding:12px 14px;margin-top:20px;border-radius:6px;display:flex;gap:8px;align-items:center}.sv-mission-top,.sv-mission-time,.sv-mission ol{display:none}
  .sv-mission>p{font-size:10px;line-height:1.7;margin:0;flex:1}.sv-best{display:block;margin:0;padding:0;border:0;font-size:9px}.sv-best>span{display:block;margin-top:4px}.sv-best>b{font-size:10px;margin-left:4px}.sv-best span b{font-size:10px}
  .sv-controls{margin-top:17px;gap:5px 10px;font-size:9px}.sv-controls kbd{font-size:8px}.sv-fiction{font-size:8px;margin-top:9px}
- .sv-choice-heading{margin-bottom:15px}.sv-choice-heading h2,.sv-pause h2,.sv-result h2{font-size:26px}.sv-choice-heading>p>span{font-size:11px}
+ .sv-pause h2,.sv-result h2{font-size:26px}
  .sv-choices{grid-template-columns:1fr;gap:8px}.sv-game .sv-upgrade{min-height:100px;padding:13px 13px 13px 65px;position:relative}
  .sv-upgrade-top{font-size:9px}.sv-upgrade-top kbd{position:absolute;left:12px;top:10px;font-size:9px}
  .sv-upgrade-icon{position:absolute;left:20px;top:45px;margin:0;font-size:27px}
@@ -90,5 +90,5 @@ main.survival-main{width:100%;max-width:none;height:calc(100dvh - 48px);min-heig
  .appnav{overflow-x:auto;scrollbar-width:none}.appnav button{flex-shrink:0}
 }
 @media(pointer:coarse){.sv-touch-hint{display:block}.sv-game:not([data-status="running"]) .sv-touch-hint{display:none}.sv-game .sv-icon-button{min-width:40px;min-height:44px}}
-@media(max-height:620px) and (min-width:621px){main.survival-main{min-height:350px;padding:6px}.sv-game{grid-template-rows:48px 3px minmax(0,1fr) 54px}.sv-overlay{padding:18px}.sv-intro h1{font-size:48px;margin:10px 0 15px}.sv-intro h1>span{font-size:14px}.sv-intro-copy>p{font-size:12px;margin-bottom:14px}.sv-mission{padding:16px}.sv-mission-time{font-size:42px;margin:8px 0}.sv-mission ol{display:none}.sv-mission>p{margin-bottom:8px}.sv-controls{margin-top:15px}.sv-game .sv-upgrade{min-height:230px}.sv-upgrade-icon{margin:12px 0}.sv-choice-heading{margin-bottom:15px}}
+@media(max-height:620px) and (min-width:621px){main.survival-main{min-height:350px;padding:6px}.sv-game{grid-template-rows:48px 3px minmax(0,1fr) 54px}.sv-overlay{padding:18px}.sv-intro h1{font-size:48px;margin:10px 0 15px}.sv-intro h1>span{font-size:14px}.sv-intro-copy>p{font-size:12px;margin-bottom:14px}.sv-mission{padding:16px}.sv-mission-time{font-size:42px;margin:8px 0}.sv-mission ol{display:none}.sv-mission>p{margin-bottom:8px}.sv-controls{margin-top:15px}.sv-game .sv-upgrade{min-height:230px}.sv-upgrade-icon{margin:12px 0}}
 @media(prefers-reduced-motion:reduce){.sv-game *{transition:none!important}.sv-game .sv-upgrade:hover{transform:none}}

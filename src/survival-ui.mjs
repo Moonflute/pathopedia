@@ -53,7 +53,7 @@ export function createSurvivalGame() {
         '<div class="sv-mission"><div class="sv-mission-top"><span>YOUR MISSION</span><b>01—05</b></div><div class="sv-mission-time">05<span>:00</span></div><p>격리 완료까지 버티고<br><strong>군집의 심장</strong>을 제거하세요.</p><ol><li><b>01</b><span>이동하며 포위망 피하기</span></li><li><b>02</b><span>빛나는 검체로 레벨업</span></li><li><b>03</b><span>무기 4종 조합 완성</span></li></ol><div class="sv-best">최고 생존 <b>' + formatTime(record.bestTime) + '</b><span>최고 처치 <b>' + record.bestKills + '</b></span></div></div></div>' + instructions() +
         '<p class="sv-fiction">병원체를 모티브로 한 아케이드 게임 · 무기와 전투 수치는 가상 설정입니다.</p>';
     } else if (run.status === 'upgrade') {
-      body = '<div class="sv-choice-heading"><span class="sv-eyebrow">ADAPT & SURVIVE</span><h2 id="sv-dialog-title">한 단계 더 강하게.</h2><p>LEVEL ' + String(run.level).padStart(2, '0') + ' <span>강화를 하나 선택하세요. 전투는 잠시 멈춥니다.</span></p></div><div class="sv-choices">' +
+      body = '<div class="sv-choices">' +
         run.choices.map((id, index) => {
           const u = UPGRADE_BY_ID[id], level = run.upgrades[id];
           return '<button type="button" class="sv-upgrade" data-survival-upgrade="' + id + '" style="--weapon:' + u.color + '"><span class="sv-upgrade-top"><span>' + u.kind + '</span><kbd>' + (index + 1) + '</kbd></span><span class="sv-upgrade-icon">' + u.icon + '</span><strong>' + u.name + '</strong><p>' + u.description + '</p><span class="sv-upgrade-level">' + (id === 'repair' ? '즉시 회복' : level ? 'Lv.' + level + ' → Lv.' + (level + 1) : 'NEW EQUIPMENT') + '<span>↗</span></span></button>';
@@ -67,7 +67,7 @@ export function createSurvivalGame() {
         button('restart', '다시 도전 <span>↗</span>', 'sv-primary') + button('menu', '시작 화면', 'sv-secondary') +
         '<p class="sv-record-note">' + (storageAvailable ? '최고 생존 ' + formatTime(record.bestTime) + ' · 최고 처치 ' + record.bestKills + ' · 격리 성공 ' + record.wins + '회' : '브라우저 저장을 사용할 수 없어 기록은 이번 방문에만 유지됩니다.') + '</p></div>';
     }
-    return '<div class="sv-overlay sv-overlay--' + run.status + '"><section class="sv-dialog" role="dialog" aria-labelledby="sv-dialog-title">' + body + '</section></div>';
+    return '<div class="sv-overlay sv-overlay--' + run.status + '"><section class="sv-dialog" role="dialog" ' + (run.status === 'upgrade' ? 'aria-label="강화 선택"' : 'aria-labelledby="sv-dialog-title"') + '>' + body + '</section></div>';
   }
   function render() {
     return '<section class="sv-game" aria-label="survival 자동 공격 생존 게임"><header class="sv-hud"><div class="sv-brand"><span class="sv-brand-mark">✣</span><div><strong>survival</strong><small>ISOLATION FIELD / 01</small></div></div><div class="sv-timer"><strong data-sv-time>' + formatTime(run.time) + '</strong><small>/ 05:00</small></div><div class="sv-hud-right"><span class="sv-kills">처치 <b data-sv-kills>' + run.kills + '</b></span>' +
