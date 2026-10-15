@@ -31,7 +31,7 @@ function drawPickup(ctx,x,y,kind,f){
  ctx.restore();
 }
 function createSprites(catalog,art={}){
-  const atlas=surface(SIZE*4,SIZE*(catalog.enemies.length+12)),ctx=atlas.getContext('2d');ctx.imageSmoothingEnabled=false;
+  const atlas=surface(SIZE*4,SIZE*(catalog.enemies.length+10)),ctx=atlas.getContext('2d');ctx.imageSmoothingEnabled=false;
   catalog.enemies.forEach((p,row)=>{for(let f=0;f<4;f++){
     ctx.save();ctx.translate(f*SIZE,row*SIZE);const bob=f%2;
     ctx.fillStyle='#0005';ctx.fillRect(13,54,39,4);
@@ -62,18 +62,11 @@ function createSprites(catalog,art={}){
     for(let k=1;k<=3;k++)drawPickup(ctx,x,(base+k-1)*SIZE,['','health','supply','culture'][k],f);
     if(art.media0){const y=base*SIZE;ctx.clearRect(x,y,64,51);ctx.drawImage(art.media0,x+8,y+15,48,34);}
   }
-  for(let state=0;state<2;state++)for(let f=0;f<4;f++){
-    const x=f*SIZE,y=(base+3+state)*SIZE,color=state?'#a5efb8':'#e1ac78';
-    ctx.fillStyle='#102629';ctx.fillRect(x+7,y+4,50,60);ctx.fillStyle='#405e58';ctx.fillRect(x+10,y+7,44,57);ctx.fillStyle=state?'#143e35':'#302f30';ctx.fillRect(x+16,y+16,32,48);
-    ctx.fillStyle=color;ctx.fillRect(x+11,y+9,4,53);ctx.fillRect(x+49,y+9,4,53);ctx.fillRect(x+15,y+9,34,4);ctx.fillStyle='#ededd5';ctx.font='bold 10px monospace';ctx.textAlign='center';ctx.fillText('EXIT',x+32,y+24);ctx.textAlign='left';
-    if(state){ctx.fillStyle=color;ctx.fillRect(x+26,y+34,13,4);ctx.fillRect(x+34,y+30,4,12);ctx.fillRect(x+38,y+33,4,6);}else{ctx.fillStyle=color;for(let k=0;k<4;k++)ctx.fillRect(x+18+k*7,y+35+k*4,6,7);}
-  }
-
   for(let f=0;f<4;f++){
-    const x=f*SIZE,y=(base+5)*SIZE;
+    const x=f*SIZE,y=(base+3)*SIZE;
     drawPickup(ctx,x,y,'companion',f);
     COMPANIONS.forEach((c,i)=>{
-      const cy=(base+6+i)*SIZE+32+(f%2?1:0);
+      const cy=(base+4+i)*SIZE+32+(f%2?1:0);
       blob(ctx,x+32,cy,23,21,c.color);
       if(c.id==='neutrophil'){for(const [dx,dy] of [[-8,-5],[5,-5],[1,8]])blob(ctx,x+32+dx,cy+dy,7,6,'#71648e');}
       else if(c.id==='macrophage'){blob(ctx,x+29,cy,11,13,'#697c91');blob(ctx,x+36,cy-5,7,9,c.color);}
@@ -84,7 +77,7 @@ function createSprites(catalog,art={}){
     });
   }
   for(let f=0;f<4;f++)for(let k=0;k<2;k++){
-   const x=f*SIZE,y=(base+10+k)*SIZE;
+   const x=f*SIZE,y=(base+8+k)*SIZE;
    ctx.fillStyle='#08121788';ctx.beginPath();ctx.ellipse(x+32,y+58,25,4,0,0,Math.PI*2);ctx.fill();
    ctx.fillStyle='#1b292e';ctx.fillRect(x+10,y+13,42,44);ctx.fillStyle='#586d6a';ctx.fillRect(x+12,y+11,36,43);
    ctx.fillStyle='#9eafa1';ctx.fillRect(x+12,y+11,36,3);ctx.fillRect(x+12,y+14,2,37);ctx.fillStyle='#243a3b';ctx.fillRect(x+48,y+14,5,39);
@@ -99,7 +92,7 @@ function createSprites(catalog,art={}){
   return atlas;
 }
 function createWalls(accent='#a9c4a1',theme=0,biome='facility',rooms=[],art={}){
- const size=64,atlas=surface(size*(8+rooms.length),size),c=atlas.getContext('2d');c.imageSmoothingEnabled=false;
+ const size=64,atlas=surface(size*(11+rooms.length),size),c=atlas.getContext('2d');c.imageSmoothingEnabled=false;
  const images=['aqconc01','aqmetl01','aqmetl03','aqmetl07','aqlite01','aqmetl07','floor0_1'];
  for(let i=0;i<7;i++){
   const x=i*size;c.fillStyle=['#788c88','#3d484a','#59676b','#3b4542','#697b7b','#807b60','#677170'][i];c.fillRect(x,0,size,size);
@@ -121,17 +114,28 @@ function createWalls(accent='#a9c4a1',theme=0,biome='facility',rooms=[],art={}){
   c.textAlign='center';c.font='bold 17px monospace';c.fillStyle='#e1e4cf';c.fillText(String(r.id).padStart(2,'0'),x+32,29);
   c.font='6px monospace';c.fillStyle='#a4beb3';c.fillText((r.name||'LABORATORY').slice(0,12),x+32,38);
  }
+ // Three door materials share the wall atlas: lifting shutter, jamb, illuminated header.
+ const door=(8+rooms.length)*64,frame=door+64,header=door+128;
+ c.drawImage(atlas,64,0,64,64,door,0,64,64);
+ c.fillStyle='#14252a';c.fillRect(door+2,2,60,60);c.fillStyle='#667b7b';c.fillRect(door+5,4,54,56);
+ for(let y=8;y<58;y+=8){c.fillStyle='#b7c8bb';c.fillRect(door+6,y,52,1);c.fillStyle='#263d41';c.fillRect(door+6,y+2,52,3);}
+ c.fillStyle='#112c29';c.fillRect(door+18,14,28,14);c.fillStyle='#c7f1c6';c.font='bold 9px monospace';c.textAlign='center';c.fillText('EXIT',door+32,24);
+ c.fillStyle='#d4bf7e';for(let x=6;x<58;x+=8)c.fillRect(door+x,54,4,6);
+ c.fillStyle='#182a30';c.fillRect(frame,0,64,64);c.fillStyle='#81968e';c.fillRect(frame+3,0,58,64);c.fillStyle='#324c4b';c.fillRect(frame+12,0,40,64);c.fillStyle='#b6e7bc';c.fillRect(frame+25,5,14,54);c.fillStyle='#ebf5d9';c.fillRect(frame+29,7,6,50);
+ c.fillStyle='#142b29';c.fillRect(header,0,64,64);c.fillStyle='#a2d6ac';c.fillRect(header+3,3,58,58);c.fillStyle='#173d32';c.fillRect(header+6,7,52,50);c.fillStyle='#e2f6ce';c.font='bold 19px monospace';c.fillText('EXIT',header+32,39);
  return atlas;
 }
 function createWeapons(catalog){
-  const atlas=surface(240*(catalog.weapons.length+1),180),c=atlas.getContext('2d');
+  const atlas=surface(240*(catalog.weapons.length+1),360),c=atlas.getContext('2d');
   const poly=(color,points)=>{c.fillStyle=color;c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fill();};
   // Authored in three-quarter perspective: small forward muzzle, foreshortened receiver,
   // right trigger hand and left support hand. Positioning does not fake the perspective.
-  [...catalog.weapons,{color:'#9de2d4',short:'SCN'}].forEach((w,i)=>{c.save();c.translate(i*240,0);
+  [...catalog.weapons,{color:'#9de2d4',short:'SCN'}].forEach((w,i)=>{for(const empty of [false,true]){c.save();c.translate(i*240,empty?180:0);
+    if(!empty){
     poly('#2a4947',[[132,124],[147,141],[152,180],[105,180],[87,140]]);
     poly('#516f65',[[96,131],[116,120],[145,145],[137,164],[117,163]]);
     poly('#1a302e',[[117,151],[137,142],[142,152],[124,161]]);
+    }
     if(i===catalog.weapons.length){
       poly('#102827',[[65,51],[112,41],[177,87],[166,147],[105,134],[62,97]]);
       poly('#809c8b',[[68,51],[111,45],[168,86],[116,104],[67,86]]);
@@ -158,7 +162,8 @@ function createWeapons(catalog){
       poly('#b3c8aa',[[137,79],[148,77],[185,101],[174,103]]);
       if([2,5,7,9].includes(i)){poly('#203e3e',[[68,32],[91,26],[139,57],[129,73],[85,46]]);poly('#8bab9c',[[73,32],[90,29],[132,57],[119,60]]);poly(w.color,[[121,60],[135,56],[132,68],[122,71]]);}
       if([3,4,6,10].includes(i)){poly('#1e3b38',[[132,81],[145,77],[177,96],[172,109]]);poly(w.color,[[140,85],[146,82],[169,96],[166,102]]);}
-      poly('#182f2a',[[153,121],[172,128],[163,159],[144,145]]);
+      poly('#102420',[[145,119],[163,129],[158,138],[140,128]]);
+      if(!empty){poly('#233e36',[[145,123],[162,132],[153,161],[136,149]]);poly(w.color,[[143,131],[159,140],[157,146],[141,137]]);poly('#738c78',[[140,148],[154,155],[152,161],[136,153]]);}
       c.save();c.translate(135,111);c.rotate(.54);c.fillStyle='#dbebcc';c.font='bold 9px monospace';c.fillText(w.short,0,0);c.restore();
     }
     poly('#1c3733',[[165,124],[180,116],[204,132],[213,157],[195,177],[166,155]]);
@@ -168,7 +173,7 @@ function createWeapons(catalog){
     poly('#354f49',[[196,153],[213,146],[240,165],[240,180],[210,180]]);
     poly('#698377',[[205,157],[216,154],[240,172],[240,180],[226,180]]);
     c.restore();
-  });return atlas;
+  }});return atlas;
 }
 export function createPlayRenderer(canvas,catalog,{quality='retro',reducedMotion=false}={}){
   const context=canvas.getContext('2d',{alpha:false});if(!context)throw Error('Canvas 2D를 사용할 수 없습니다.');
@@ -185,10 +190,9 @@ export function createPlayRenderer(canvas,catalog,{quality='retro',reducedMotion
     const project=(obj,row,size=1,z=.5,kind='enemy')=>{const dx=obj.x-p.x,dy=obj.y-p.y,d=dx*cos+dy*sin,lateral=-dx*sin+dy*cos;if(d<(kind==='companion'?.85:.18)||d>27)return;const screen=width/2+lateral*projection/d,h=projection*size/d;const top=horizon+projection*(cameraZ-floorAt(run.map,obj.x,obj.y))/d-h;if(screen+h/2<0||screen-h/2>width||top>height||top+h<0)return;visible.push({obj,row,d,screen,h,z,kind});};
     visible.length=0;
     for(const e of run.enemies)if(e.active)project(e,catalog.enemies.findIndex(p=>p.id===e.kind),enemyHeight(e),.5);
-    for(const s of run.map.pickups)if(s.active)project(s,catalog.enemies.length+({health:0,supply:1,culture:2,companion:5}[s.kind]),.42,.3,'pickup');
-    if(run.companion!=='none')project(run.pet,catalog.enemies.length+6+COMPANIONS.findIndex(c=>c.id===run.companion),.26,.6,'companion');
-    project(run.map.exit,catalog.enemies.length+(run.exitOpen?4:3),1.2,.6,'exit');
-    for(const s of run.map.props||[])project(s,catalog.enemies.length+(s.kind==='terminal'?10:11),s.kind==='terminal'?.65:.8,.4,'prop');
+    for(const s of run.map.pickups)if(s.active)project(s,catalog.enemies.length+({health:0,supply:1,culture:2,companion:3}[s.kind]),.42,.3,'pickup');
+    if(run.companion!=='none')project(run.pet,catalog.enemies.length+4+COMPANIONS.findIndex(c=>c.id===run.companion),.26,.6,'companion');
+    for(const s of run.map.props||[])project(s,catalog.enemies.length+(s.kind==='terminal'?8:9),s.kind==='terminal'?.65:.8,.4,'prop');
     visible.sort((a,b)=>b.d-a.d);
     for(const v of visible){const {obj,d,screen,h,kind}=v,dead=kind==='enemy'&&obj.state==='Dead',squash=dead?Math.max(.08,obj.death/.45):1,top=horizon+projection*(cameraZ-floorAt(run.map,obj.x,obj.y))/d-h*squash-(kind==='companion'?projection*.17/d:0)-(reducedMotion?0:Math.sin(run.time*5+(obj.id||0))*2),left=screen-h/2,frameIndex=kind==='enemy'&&obj.state==='Attack'?3:Math.floor(run.time*6+(obj.id||0))%3;
       const x0=Math.max(0,Math.floor(left)),x1=Math.min(width,Math.ceil(left+h));
@@ -230,10 +234,24 @@ export function createPlayRenderer(canvas,catalog,{quality='retro',reducedMotion
     // Both hands, muzzle and receiver share the same perspective and recoil pivot.
     if(!run.scoped){
       const bob=reducedMotion?0:Math.sin(run.walk)*2,kick=run.lastShot>0?Math.floor(run.lastShot*38*(catalog.weapons[run.weapon].recoil||1)):0,weaponW=width*.42,weaponH=weaponW*.75;
-      const progress=run.reloadTime>0?1-run.reloadTime/run.reloadDuration:0,reloadStep=run.reloadTime>0?Math.floor(Math.sin(progress*Math.PI)*6)/6:0;
-      const left=width*.525+bob,bottom=height+14+kick+run.switchTime*160+run.throwTime*90+reloadStep*weaponH*.38;
-      ctx.save();ctx.translate(left+weaponW*.7,bottom);ctx.rotate(reloadStep*.38);ctx.drawImage(weapons,(run.scannerActive?catalog.weapons.length:run.weapon)*240,0,240,180,-weaponW*.7,-weaponH,weaponW,weaponH);
-      if(run.reloadTime>0&&progress>.22&&progress<.8){ctx.fillStyle='#436a5c';const y=-weaponH*.22+reloadStep*weaponH*.14;ctx.fillRect(-weaponW*.28,y,weaponW*.13,weaponH*.28);ctx.fillStyle=catalog.weapons[run.weapon].color;ctx.fillRect(-weaponW*.27,y+4,weaponW*.1,4);}
+      const reloading=run.reloadTime>0,progress=reloading?1-run.reloadTime/run.reloadDuration:0,reloadStep=reloading?Math.floor(Math.sin(progress*Math.PI)*8)/8:0;
+      const left=width*.525+bob-reloadStep*weaponW*.1,bottom=height+14+kick+run.switchTime*160+run.throwTime*90-reloadStep*weaponH*.19;
+      ctx.save();ctx.translate(left+weaponW*.7,bottom);ctx.rotate(reducedMotion?0:reloadStep*.18);ctx.drawImage(weapons,(run.scannerActive?catalog.weapons.length:run.weapon)*240,reloading?180:0,240,180,-weaponW*.7,-weaponH,weaponW,weaponH);
+      if(reloading){
+       // Empty receiver is a separate atlas row. The supporting hand removes, replaces and seats a real magazine.
+       const out=progress<.16?0:progress<.43?(progress-.16)/.27:progress<.52?1:progress<.76?1-(progress-.52)/.24:0;
+       const visible=progress<.43||progress>=.52;
+       ctx.save();ctx.translate(-weaponW*.7,-weaponH);ctx.scale(weaponW/240,weaponH/180);
+       const poly=(color,points)=>{ctx.fillStyle=color;ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fill();};
+       if(visible){ctx.save();ctx.translate(-out*27,out*83);ctx.rotate(-out*.1);
+        poly('#182c29',[[145,123],[162,132],[153,161],[136,149]]);poly('#47695b',[[145,125],[158,133],[149,153],[138,146]]);
+        poly(catalog.weapons[run.weapon].color,[[143,131],[159,140],[157,146],[141,137]]);poly('#a0ac8d',[[138,146],[154,155],[152,161],[136,153]]);
+        poly('#314d43',[[132,140],[147,146],[155,163],[139,179],[111,180],[115,159]]);poly('#8aa38c',[[133,143],[148,150],[149,158],[133,156],[123,164],[118,158]]);
+        for(let n=0;n<3;n++)poly('#506d5c',[[130,149+n*4],[144,155+n*4],[142,158+n*4],[128,152+n*4]]);ctx.restore();
+       }
+       if(progress>.79){const slide=Math.sin((progress-.79)/.21*Math.PI)*8;poly('#acc0a6',[[164-slide,102],[177-slide,99],[181-slide,103],[168-slide,107]]);}
+       ctx.restore();
+      }
       if(run.lastShot>.09&&!run.scannerActive&&run.reloadTime<=0){const x=-weaponW*.59,y=-weaponH*.87;ctx.fillStyle=catalog.weapons[run.weapon].color;ctx.fillRect(x-8,y-3,20,6);ctx.fillRect(x-2,y-10,6,19);ctx.fillStyle='#faffdb';ctx.fillRect(x-3,y-3,6,6);}ctx.restore();
     }else{
       const sw=Math.min(width*.65,height*1.35),sh=Math.min(height*.66,sw*.65),sx=(width-sw)/2,sy=reticleY-sh/2;

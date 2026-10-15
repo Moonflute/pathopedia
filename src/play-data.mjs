@@ -67,33 +67,35 @@ export const THEME_STAGES=Object.freeze([
 ]);
 export const stageFor=run=>run.mission==='theme'?(THEME_STAGES.find(s=>s.id===run.themeId)||THEME_STAGES[0]):STAGES[run.wave];
 export const REWARDS=Object.freeze([
-  {id:'infusion',title:'Extended infusion',tag:'PK / PD',text:'β-lactam 유효 명중 후 1.6초 지속 노출. 해당 약제 I 노출 조건 충족. R은 유지.',max:1},
-  {id:'exposure',title:'Exposure optimization',tag:'PK / PD',text:'증가 노출이 필요한 I 판정의 투여 조건 충족. 모든 계열의 원본 R 판정은 유지.',max:1},
-  {id:'immune',title:'건강한 면역계',tag:'HOST',text:'주변의 약한 기본형을 주기적으로 정리. 캡슐·biofilm·내성형·휴면 포자는 제외.',max:1},
-  {id:'scanner',title:'Rapid diagnostics',tag:'LAB',text:'한 번에 두 단계 검사. 형태 → 배양 → AST 검사 가속. 검사하는 동안에도 이동 가능.',max:1},
-  {id:'stewardship',title:'De-escalation',tag:'ECOLOGY',text:'선택압 −35. 좁은 범위 약제 처치의 선택압 감소 강화.'},
-  {id:'efficiency',title:'투여 효율 최적화',tag:'RESOURCE',text:'약제 소모 −20%. 감수성 범위는 유지. 최대 3회.',max:3},
-  {id:'reserve',title:'확장 보급 카트리지',tag:'AMMO',text:'모든 약제 최대 보유량 +60, 전량 보급. 최대 3회.',max:3},
-  {id:'rate',title:'투여 간격 최적화',tag:'HANDLING',text:'유효 사격 간격 −14%. 더 빠르게 대응하되 소모와 선택압도 발생. 최대 3회.',max:3},
-  {id:'penetration',title:'Biofilm penetration',tag:'EXPOSURE',text:'활성 약제의 biofilm 내 전달 효율 증가. F biofilm 해체와 함께 사용.',max:1},
-  {id:'support',title:'Host stabilization',tag:'SUPPORT',text:'구역 전환 시 체력 +50. 다음 구역을 위한 숙주 안정화 보급.'},
-  {id:'source',title:'Source control kit',tag:'PROCEDURE',text:'제거 범위 확대 · F 대기 단축 · 체력 +35. biofilm·휴면 포자·오염 구역을 직접 처리.'},
-  {id:'renal',title:'신기능 맞춤 투여',tag:'HOST / PK',text:'신기능 저하의 약제 회복 불이익 해소. 원래 coverage와 목표 노출 유지.',max:1,host:'renal'},
-  {id:'mobility',title:'신속 대응 프로토콜',tag:'MOVEMENT',text:'대시 재사용 2.2초 → 1.3초. 좁은 방에서 독소와 공격을 피하세요.',max:1},
-  {id:'unlock_levofloxacin',title:'Levofloxacin 보급',tag:'NEW WEAPON',text:'LEV 조기 해금. 세포내 표적에 도달하는 장거리 무기.',weapon:'levofloxacin',max:1},
-  {id:'unlock_metronidazole',title:'Metronidazole 보급',tag:'NEW WEAPON',text:'MTZ 조기 해금. 혐기성 표적에 집중된 burst 무기.',weapon:'metronidazole',max:1},
-  {id:'unlock_linezolid',title:'Linezolid 보급',tag:'NEW WEAPON',text:'LZD 조기 해금. VRE·MRSA에 대응하는 빠른 beam 무기.',weapon:'linezolid',max:1},
-  {id:'inhibitor',title:'Avibactam 조합',tag:'NEW WEAPON',text:'Ceftazidime–avibactam(CZA) 조기 해금. 조합 자체의 AST를 적용하며 다른 β-lactam을 강화하지 않음.',weapon:'ceftazavi',max:1},
-  {id:'immuneBoost',title:'면역 동료 활성화',tag:'COMPANION',text:'장착한 면역 동료의 사거리와 공격 빈도 증가. 약제 AST와 동료의 대상 종류는 유지.',max:3},
-  ...COMPANIONS.map(c=>({id:'ally_'+c.id,title:c.name+' 합류',tag:'COMPANION',text:c.role+' · 동료를 획득하고 즉시 장착합니다. 일시정지 메뉴에서 교체 가능.',companion:c.id,max:1}))
+ {id:'holster',title:'교대 장전',tag:'운용',group:'handling',text:'넣어둔 약제를 2.4초 뒤 자동 장전',max:1},
+ {id:'fastReload',title:'신속 탄창 교체',tag:'운용',group:'handling',text:'장전 시간 −14%',max:2},
+ {id:'rate',title:'투여 간격 최적화',tag:'운용',group:'handling',text:'사격 간격 −14%',max:3},
+ {id:'efficiency',title:'투여 효율 최적화',tag:'운용',group:'handling',text:'한 발의 약제 소모 −20%',max:3},
+ {id:'mobility',title:'신속 대응 프로토콜',tag:'전술',group:'tactics',text:'대시 재사용 2.2초 → 1.3초',max:1},
+ {id:'isolationTrail',title:'격리 잔상',tag:'전술',group:'tactics',text:'대시한 자리에 3초 감속 구역 생성',max:1},
+ {id:'scanner',title:'신속 검사',tag:'전술',group:'tactics',text:'스캔 초점 시간 절반 · 한 번에 두 단계 확인',max:1},
+ {id:'infusion',title:'Extended infusion',tag:'노출',group:'tactics',text:'유효 β-lactam 명중 후 1.6초 지속 노출',max:1},
+ {id:'exposure',title:'Exposure optimization',tag:'노출',group:'tactics',text:'I 판정의 증가 노출 조건 충족',max:1},
+ {id:'penetration',title:'Biofilm penetration',tag:'노출',group:'tactics',text:'Biofilm 속 유효 약제 전달 42% → 72%',max:1},
+ {id:'source',title:'Source control kit',tag:'전술',group:'tactics',text:'F 범위 2.3 → 3.6m · 대기 2.8 → 1초',max:1},
+ {id:'immune',title:'건강한 면역계',tag:'지원',group:'support',text:'근처 약해진 기본형을 주기적으로 자동 제거',max:1},
+ {id:'immuneBoost',title:'면역 동료 활성화',tag:'지원',group:'support',text:'장착한 동료의 사거리·공격 빈도 증가',requiresCompanion:true,max:3},
+ {id:'renal',title:'신기능 맞춤 투여',tag:'지원',group:'support',text:'신기능 저하의 예비 약제 회복 불이익 해소',max:1,host:'renal'},
+ {id:'stewardship',title:'선택압 완화',tag:'재정비',group:'support',text:'선택압 −35 · 좁은 약제 처치 시 선택압 −3'},
+ {id:'support',title:'응급 안정화',tag:'재정비',group:'support',text:'체력 +50 · 소독탄 +1'},
+ {id:'reserve',title:'확장 보급 카트리지',tag:'운용',group:'handling',text:'예비 약제 용량 +60 · 전량 보급'},
+ {id:'unlock_levofloxacin',title:'Levofloxacin 보급',tag:'새 무기',group:'tactics',text:'세포내 표적에 도달하는 장거리 관통탄',weapon:'levofloxacin',max:1},
+ {id:'unlock_metronidazole',title:'Metronidazole 보급',tag:'새 무기',group:'tactics',text:'혐기성 표적에 집중하는 확산 펄스',weapon:'metronidazole',max:1},
+ {id:'unlock_linezolid',title:'Linezolid 보급',tag:'새 무기',group:'tactics',text:'MRSA·VRE에 대응하는 지속 빔',weapon:'linezolid',max:1},
+ {id:'inhibitor',title:'Avibactam 조합',tag:'새 무기',group:'tactics',text:'KPC 표적 Ceftazidime–avibactam 보급',weapon:'ceftazavi',max:1},
+ ...COMPANIONS.map(c=>({id:'ally_'+c.id,title:c.name+' 합류',tag:'동료',group:'support',text:c.role,companion:c.id,max:1}))
 ]);
 export function createPlayCatalog(database,library={}){
   const weapons=WEAPONS.map(spec=>{const original=database.drugs.find(d=>d.id===spec.id);if(!original)throw Error('Missing Play drug: '+spec.id);return {...original,...spec,color:spec.color||DRUG_SPECS.find(d=>d.id===spec.id)?.color||'#9cbbbf'};});
   const enemies=ENEMIES.map(spec=>{const record=database.records.find(r=>r.id===spec.recordId);if(!record)throw Error('Missing Play isolate: '+spec.recordId);return {...spec,name:record.organism,phenotype:record.phenotype,record,ast:record.susceptibility,therapies:Object.values(library.therapyContexts||{}).filter(c=>c.recordIds.includes(record.id))};});
   return {weapons,enemies,sources:library.sources||{},weaponById:Object.fromEntries(weapons.map(w=>[w.id,w])),enemyById:Object.fromEntries(enemies.map(e=>[e.id,e]))};
 }
-// Seeded room placement, a spanning tree, then extra links for flanking routes.
-// Inspired by Bob Nystrom's Rooms and Mazes article; original implementation, no runtime dependency.
+// Stable seed hashing and a small deterministic PRNG.
 export function normalizeSeed(value=Date.now()){
   if(typeof value==='number')return value>>>0;
   const text=String(value).trim();if(!text)return Date.now()>>>0;if(/^\d+$/.test(text))return Number(text)>>>0;
@@ -101,8 +103,7 @@ export function normalizeSeed(value=Date.now()){
 }
 export function seededRandom(seed){let s=normalizeSeed(seed);return ()=>{s+=0x6D2B79F5;let t=Math.imul(s^s>>>15,1|s);t^=t+Math.imul(t^t>>>7,61|t);return ((t^t>>>14)>>>0)/4294967296;};}
 export function roomAt(map,x,y){const ix=Math.max(0,Math.min(map.width-1,Math.floor(x))),iy=Math.max(0,Math.min(map.height-1,Math.floor(y)));return map.roomCells[iy*map.width+ix];}
-// Facility sectors are authored in play-map.mjs; seeds alter approaches and dimensions.
-// Ordered adjacent sectors alternate combat and supply without a pillar maze.
+// Seeds vary the route graph, room modules, orientation, connectors and exit wing.
 export function createMap(stageIndex=0,seed=31,themeStage=null){
  const stage=themeStage||STAGES[stageIndex]||STAGES[0],value=normalizeSeed(seed);
  return buildFacility(stage,stageIndex,value,seededRandom(value^Math.imul(stageIndex+1,0x9e3779b9)));
@@ -137,15 +138,9 @@ export const AUGMENTS=Object.freeze([
 // Survival is a mixed-case arena: regimen targets retain explicitly authored contexts.
 export const SURVIVAL_CASES=Object.freeze({legionella:{site:'lung',scenarios:[]},anaerobe:{site:'abdomen',scenarios:[]},cmv:{site:'bloodstream',scenarios:['cmv-retinitis']},strongyloides:{site:'bloodstream',scenarios:['strongyloidiasis']}});
 export function createSurvivalMap(seed){
- const map=createMap(4,seed),random=seededRandom(normalizeSeed(seed)^0x51a7f0),w=map.width,h=map.height;
- // Connected wings and a broad central commons: three circulation routes, no pillar maze.
- const commons={id:map.rooms.length,name:'COMMONS',label:'06',x:27,y:19,bounds:{x:13,y:16,w:27,h:7},type:'hall',encounter:true,neighbors:[1,2,3,4]};
- map.rooms.push(commons);
- for(let y=16;y<23;y++)for(let x=13;x<41;x++){const i=y*w+x;map.cells[i]=0;map.roomCells[i]=commons.id;map.lights[i]=.85;map.ceilings[i]=1.8;}
- for(const gate of map.shortcuts){gate.open=true;for(const i of gate.cells)map.cells[i]=0;}
- for(let y=12;y<28;y++)for(let x=20;x<24;x++)map.cells[y*w+x]=0;
- map.id='survival-'+normalizeSeed(seed);map.name='ENDLESS / MIXED CASES';map.layout='COMMONS / 3 ROUTES';map.site='bloodstream';map.scenarios=[];map.boss=null;map.miniboss=null;
- const spots=[];for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++)if(!map.cells[y*w+x]&&x>=9)spots.push({x:x+.5,y:y+.5,room:map.roomCells[y*w+x]});
+ const value=normalizeSeed(seed),random=seededRandom(value^0x51a7f0),map=buildFacility(STAGES[4],4,value,random,{arena:true}),w=map.width,h=map.height;
+ map.id='survival-'+value;map.name='ENDLESS / MIXED CASES';map.site='bloodstream';map.scenarios=[];map.boss=null;map.miniboss=null;
+ const spots=[];for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++)if(!map.cells[y*w+x]&&!map.stairs[y*w+x]&&Math.hypot(x+.5-map.spawn.x,y+.5-map.spawn.y)>=9)spots.push({x:x+.5,y:y+.5,room:map.roomCells[y*w+x]});
  for(let i=spots.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[spots[i],spots[j]]=[spots[j],spots[i]];}map.spawnSpots=spots;
  map.pickups=[{x:5.5,y:2.5,kind:'supply'},{...spots[0],kind:'companion'},...spots.filter((_,i)=>i%Math.max(1,Math.floor(spots.length/8))===0).slice(0,8).map((p,i)=>({...p,kind:i%2?'health':'supply'}))].map((p,id)=>({...p,id,active:true,cooldown:0}));return map;
 }

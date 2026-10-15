@@ -13,6 +13,7 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
   return {x:best%m.width+.5,y:Math.floor(best/m.width)+.5};
  };
  while(steps++<limit*30&&r.status!=='won'&&r.status!=='lost'){
+  if(r.status==='clearing'){tick(r,{},1/30);continue;}
   if(r.status==='reward'){
    reports.push({stage:r.wave+1,time:Math.round(r.time),hp:Math.round(r.player.hp),kills:r.kills,pressure:Math.round(r.pressure)});
    const priority=r.player.hp<65?['support','source','penetration','rate','renal','infusion','efficiency']:r.pressure>45?['stewardship','penetration','rate','infusion','efficiency']:['penetration','rate','infusion','efficiency','source','reserve','support'];
@@ -39,7 +40,7 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
     options.sort((a,b)=>(a.w.id===favorite?-100:0)+a.w.pressure-(b.w.id===favorite?-100:0)-b.w.pressure);
     if(options.length){switchWeapon(r,options[0].i);fire=true;}
    }
-   if(d<2.4&&enemy.state!=='Dormant'){
+   if(d<2.4&&['Chase','Attack'].includes(enemy.state)){
     const candidates=[];for(let n=0;n<16;n++){const a=n*Math.PI/8,x=Math.cos(a),y=Math.sin(a);if(canStand(r.map,r.player.x+x*.6,r.player.y+y*.6))candidates.push({x,y,score:Math.min(...live.map(e=>Math.hypot(r.player.x+x-e.x,r.player.y+y-e.y)))-Math.hypot(r.player.x+x-goal.x,r.player.y+y-goal.y)*.03});}
     candidates.sort((a,b)=>b.score-a.score);if(candidates[0]){dx=candidates[0].x;dy=candidates[0].y;}
    }

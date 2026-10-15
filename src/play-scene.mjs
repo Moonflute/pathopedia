@@ -36,8 +36,14 @@ export function createSceneRaster(ctx,width,height){
     const side=tx>=ty;if(side){my+=stepY;ty+=ddy;}else{mx+=stepX;tx+=ddx;}near=far;
     const hit=my*map.width+mx,room=map.rooms[map.roomCells[hit]],out=mx<0||my<0||mx>=map.width||my>=map.height,tile=out?1:map.cells[hit],u=(side?p.x+rx*near:p.y+ry*near);
     const light=(map.lights?.[cell]||.82)*(side?.82:1);
-    if(tile){const along=side?mx:my,center=room?Math.floor(side?room.x:room.y):-99;
-     const id=room&&along===center?8+room.id:tile===6?5:(along%7===0?2:along%5===0?4:room?.type==='hall'||room?.rest?0:room?.type==='gallery'?1:tile%2?1:0);
+    const door=map.exitDoor,doorTile=door?.cells.includes(hit),doorArt=8+map.rooms.length;
+    if(doorTile){
+     const along=side?p.x+rx*near:p.y+ry*near,du=door.normal.y?1-(along-door.spanStart)/3:(along-door.spanStart)/3;
+     if(door.open<1)face(x,door.open*1.4,1.4,near,doorArt,du,1.05);
+     face(x,1.4,Math.max(1.65,ch),near,doorArt+2,du,1.1);
+     if(door.open<=0)break;
+    }else if(tile){const along=side?mx:my,center=room?Math.floor(side?room.x:room.y):-99;
+     const id=tile===8?doorArt+1:room&&along===center?8+room.id:tile===6?5:(along%7===0?2:along%5===0?4:room?.type==='hall'||room?.rest?0:room?.type==='gallery'?1:tile%2?1:0);
      face(x,0,Math.max(ch,ceilingAt(map,mx,my)),near,id,u,light);break;
     }
     const nf=floorAt(map,mx,my),nc=ceilingAt(map,mx,my);

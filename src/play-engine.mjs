@@ -68,7 +68,7 @@ export function newRun(catalog,{hard=false,hints=false,information=null,aimAssis
   const index=mission==='survival'||themeStage?0:clamp(Math.floor(Number(stage)||0),0,STAGES.length-1),map=mission==='survival'?createSurvivalMap(seed):createMap(themeStage?.mapStyle??index,seed,themeStage);
   const ally=COMPANIONS.find(c=>c.id===(companion==='auto'?(themeStage?.companion||'neutrophil'):companion));
   const run={catalog,map,information,aimAssist,chargeTime:0,volley:null,shotSerial:0,tracers:[],hitKind:'effective',huntPulse:0,huntTimer:0,guide:null,showMap:false,pressureAdded:0,pressureReplacements:0,pressureElites:0,pressureNotice:0,roomNotice:0,meleeGrace:0,bossKills:0,miniKills:0,stageBossKills:0,stageMiniKills:0,director:{phase:'build',restUntil:0,nextBoss:120,bossNumber:0},clearedRooms:new Set(),themeId:themeStage?.id||null,companion:ally?.id||'none',companions:ally?[ally.id]:[],pet:{...map.spawn,cooldown:.7,flash:0,target:null,shots:0},mapMode:mapMode==='full'?'full':'explore',discovered:new Uint8Array(map.cells.length),discoveryTime:0,scannerActive:false,scoped:false,scanFocus:0,scanTarget:null,exitOpen:false,bossDefeated:!STAGES[index].boss,random:seededRandom(seed),seed,hard,hints:hints&&!hard,host,status:'ready',mission,startStage:index,time:0,wave:index,spawned:0,spawnTimer:0,
-    player:{...map.spawn,hp:100,z:0,vz:0,pitch:0},weapon:host==='allergy'?1:0,previousWeapon:1,slots:Array.from({length:9},(_,i)=>index>=5&&i===0?9:index>=6&&i===1?10:i),magazines:catalog.weapons.map(w=>w.magazine*w.cost),reloadTime:0,reloadDuration:1,reloadWeapon:null,jumpHeld:false,land:0,energy:catalog.weapons.map(()=>BASE_AMMO),unlocked:catalog.weapons.map(w=>w.stage<=index),cooldown:0,cooldowns:catalog.weapons.map(()=>0),switchTime:0,pressure:0,
+    player:{...map.spawn,hp:100,z:0,vz:0,pitch:0},weapon:host==='allergy'?1:0,previousWeapon:1,slots:Array.from({length:9},(_,i)=>index>=5&&i===0?9:index>=6&&i===1?10:i),magazines:catalog.weapons.map(w=>w.magazine*w.cost),holsterTimers:catalog.weapons.map(()=>0),extractionTime:0,extractionNext:null,reloadTime:0,reloadDuration:1,reloadWeapon:null,jumpHeld:false,land:0,energy:catalog.weapons.map(()=>BASE_AMMO),unlocked:catalog.weapons.map(w=>w.stage<=index),cooldown:0,cooldowns:catalog.weapons.map(()=>0),switchTime:0,pressure:0,
     kills:0,stageKills:0,shots:0,effective:0,combo:0,comboTime:0,bestCombo:0,score:0,dash:0,dashCooldown:0,scannerCooldown:0,sourceCooldown:0,completedStages:0,
     intel:Object.fromEntries(catalog.enemies.map(e=>[e.id,information==='blind'?0:information==='identify'?2:3])),seen:new Set(),visited:new Set([0]),upgrades:{},rewards:[],immuneTime:host==='neutropenia'?24:10,
     enemies:Array.from({length:mission==='survival'?MAX_SURVIVAL_ENEMIES:MAX_ENEMIES},(_,id)=>({id,active:false})),particles:Array.from({length:MAX_PARTICLES},()=>({life:0})),projectiles:Array.from({length:MAX_PROJECTILES},()=>({active:false})),hazards:Array.from({length:MAX_HAZARDS},(_,id)=>({id,active:false})),
@@ -127,7 +127,7 @@ export function targetEnemy(run,cone=.1,range=24){
 }
 export function scan(run){
   if(run.status!=='running'||run.scannerCooldown>0)return false;const e=targetEnemy(run,.18,18);if(!e){announce(run,'우클릭 유지 · 보조 스캐너로 표적 검사');return false;}
-  run.intel[e.kind]=Math.min(3,run.intel[e.kind]+(run.upgrades.scanner?2:1));run.seen.add(e.kind);run.scannerCooldown=.55;run.scanPulse=.8;run.hintTarget=e.id;run.hintTime=8;e.scanned=true;e.scanComplete=run.intel[e.kind]>=3;
+  run.intel[e.kind]=Math.min(3,run.intel[e.kind]+(run.upgrades.scanner?2:1));run.seen.add(e.kind);run.scannerCooldown=run.upgrades.scanner?.25:.55;run.scanPulse=.8;run.hintTarget=e.id;run.hintTime=8;e.scanned=true;e.scanComplete=run.intel[e.kind]>=3;
   const p=run.catalog.enemyById[e.kind];announce(run,['???','SCANNER · '+p.gram,(p.viral||p.parasite?'IDENTIFY · ':'CULTURE · ')+p.short,(p.viral||p.parasite?'REGIMEN · ':'AST · ')+p.phenotype+' / '+p.trait][run.intel[e.kind]]);run.events.push('scan');return true;
 }
 function burst(run,x,y,color,count=8){for(let i=0;i<count;i++){const p=run.particles.find(p=>p.life<=0);if(!p)break;const a=run.random()*Math.PI*2;Object.assign(p,{x,y,z:floorAt(run.map,x,y)+.15+run.random()*.4,vx:Math.cos(a)*.8,vy:Math.sin(a)*.8,vz:1,color,ricochet:false,life:.3+run.random()*.35});}}
@@ -257,7 +257,7 @@ export function updateHuntGuide(run,dt){
  else run.guide=null;
 }
 function updateRoomPacing(run){
- if(run.mission==='survival'||Math.hypot(run.player.x-run.map.exit.x,run.player.y-run.map.exit.y)<1.5)return;const id=roomAt(run.map,run.player.x,run.player.y),room=run.map.rooms[id];
+ if(run.mission==='survival'||Math.hypot(run.player.x-(run.map.exitDoor?.center.x??run.map.exit.x),run.player.y-(run.map.exitDoor?.center.y??run.map.exit.y))<3)return;const id=roomAt(run.map,run.player.x,run.player.y),room=run.map.rooms[id];
  if(id!==run.activeRoom){run.activeRoom=id;run.roomNotice=3;if(id>0&&run.messageTime<=1)announce(run,room.label+' / '+room.name+(room.rest?' · 보급 구역':' · 접촉 시 교전'),2.5);}
  if(!room.encounter||run.clearedRooms.has(id)||run.spawned<stageFor(run).count)return;
  if(!run.enemies.some(e=>e.active&&e.state!=='Dead'&&e.room===id)){run.clearedRooms.add(id);run.roomNotice=4;announce(run,'SECTOR '+room.label+' 확보 · 다음 구역으로',3);run.events.push('clear');}
@@ -324,12 +324,27 @@ function updateEnemy(run,e,dt){
   if(p.viral&&e.replicationSuppressed===0&&['Chase','Attack'].includes(e.state)){e.replication-=dt;if(e.replication<=0){e.hp=Math.min(e.maxHp,e.hp+10);e.replication=6;burst(run,e.x,e.y,p.color,3);}}
   e.knock=Math.max(0,e.knock-dt);if(e.dot>0){e.dot-=dt;applyHit(run,e,run.catalog.weaponById[e.dotWeapon],12*dt,{dot:true});}
 }
-export function rewardOptions(run){return REWARDS.filter(r=>(!r.max||(run.upgrades[r.id]||0)<r.max)&&(!r.host||r.host===run.host)&&(!r.companion||!run.companions.includes(r.companion))&&(!r.weapon||!run.unlocked[run.catalog.weapons.findIndex(w=>w.id===r.weapon)])).map(r=>({r,roll:run.random()})).sort((a,b)=>a.roll-b.roll).slice(0,3).map(o=>o.r);}
+export function rewardOptions(run){
+ const next=STAGES[Math.min(run.wave+1,STAGES.length-1)],profiles=next.pool.map(id=>run.catalog.enemyById[id]);
+ const eligible=REWARDS.filter(r=>{
+  if(r.max&&(run.upgrades[r.id]||0)>=r.max||r.host&&r.host!==run.host||r.companion&&run.companions.includes(r.companion)||r.requiresCompanion&&run.companion==='none')return false;
+  if(r.companion&&!profiles.some(p=>companionAccepts(r.companion,p)))return false;
+  if(r.weapon){const i=run.catalog.weapons.findIndex(w=>w.id===r.weapon),w=run.catalog.weapons[i];if(run.unlocked[i]||w.stage<=run.wave+1||w.stage>run.wave+2)return false;return profiles.some(p=>coverage(run.catalog,w.id,p.id,{site:next.site,scenarios:next.scenarios,host:run.host,exposure:Boolean(w.exposure||run.upgrades.exposure||w.beta&&run.upgrades.infusion)}).factor);}
+  if(r.id==='penetration'&&!profiles.some(p=>p.biofilm))return false;
+  if(r.id==='source'&&!profiles.some(p=>p.biofilm||p.spore||p.toxin))return false;
+  if(r.id==='exposure'&&!profiles.some(p=>run.catalog.weapons.some((w,i)=>run.unlocked[i]&&p.ast[w.id]?.category==='I'&&!w.exposure&&!(w.beta&&run.upgrades.infusion))))return false;
+  return true;
+ });
+ const scored=eligible.map(r=>({r,score:run.random()+(r.id==='support'?(run.player.hp<55?2:-.8):r.id==='stewardship'?(run.pressure>35?2:-.8):r.id==='reserve'?-.35:r.id==='holster'?.5:0)})).sort((a,b)=>b.score-a.score);
+ const chosen=[];for(const group of ['handling','tactics','support']){const item=scored.find(o=>o.r.group===group);if(item)chosen.push(item.r);}
+ for(const {r}of scored)if(chosen.length<3&&!chosen.includes(r))chosen.push(r);
+ return chosen.slice(0,3);
+}
 export function chooseReward(run,id){
   if(run.status!=='reward')return false;const reward=run.rewards.find(r=>r.id===id);if(!reward)return false;
   run.upgrades[id]=(run.upgrades[id]||0)+1;if(reward.companion)recruitCompanion(run,reward.companion);if(reward.weapon)run.unlocked[run.catalog.weapons.findIndex(w=>w.id===reward.weapon)]=true;
-  if(id==='stewardship')run.pressure=Math.max(0,run.pressure-35);
-  run.player.hp=Math.min(100,run.player.hp+(id==='support'?50:id==='source'?35:28));run.wave++;run.map=createMap(run.wave,run.seed);run.discovered=new Uint8Array(run.map.cells.length);run.discoveryTime=0;run.exitOpen=false;run.bossDefeated=!stageFor(run).boss;run.scannerActive=false;run.scoped=false;run.scanFocus=0;run.scanTarget=null;Object.assign(run.player,run.map.spawn,{z:0,vz:0,pitch:0});run.reloadTime=0;run.hintTime=0;run.jumpHeld=false;run.queue=new Int16Array(run.map.cells.length);run.spawned=0;run.stageKills=0;run.spawnTimer=0;run.rewards=[];run.status='paused';run.visited=new Set([0]);run.navCache.clear();
+  if(id==='stewardship')run.pressure=Math.max(0,run.pressure-35);if(id==='support')run.grenades=Math.min(5,run.grenades+1);
+  run.player.hp=Math.min(100,run.player.hp+(id==='support'?50:id==='source'?35:28));run.wave++;run.map=createMap(run.wave,run.seed);run.discovered=new Uint8Array(run.map.cells.length);run.discoveryTime=0;run.exitOpen=false;run.extractionTime=0;run.extractionNext=null;run.holsterTimers.fill(0);run.bossDefeated=!stageFor(run).boss;run.scannerActive=false;run.scoped=false;run.scanFocus=0;run.scanTarget=null;Object.assign(run.player,run.map.spawn,{z:0,vz:0,pitch:0});run.reloadTime=0;run.hintTime=0;run.jumpHeld=false;run.queue=new Int16Array(run.map.cells.length);run.spawned=0;run.stageKills=0;run.spawnTimer=0;run.rewards=[];run.status='paused';run.visited=new Set([0]);run.navCache.clear();
   Object.assign(run.pet,run.map.spawn,{cooldown:.7,flash:0,target:null});cancelVolley(run);run.chargeTime=0;run.tracers.length=0;run.guide=null;run.huntTimer=0;run.clearedRooms.clear();run.pressureAdded=0;run.pressureReplacements=0;run.pressureElites=0;run.stageBossKills=0;run.stageMiniKills=0;run.stageStart=run.time;run.stageShots=0;run.stageMisses=0;run.kindReports={};run.lastReport=null;run.grenades=Math.min(5,run.grenades+2);run.thrown.forEach(p=>p.active=false);run.fields.forEach(p=>p.active=false);run.enemies.forEach(e=>e.active=false);run.projectiles.forEach(p=>p.active=false);run.particles.forEach(p=>p.life=0);run.hazards.forEach(h=>h.active=false);run.cooldowns.fill(0);run.cooldown=0;run.aim=null;run.sourceCooldown=0;
   const issued=[];run.catalog.weapons.forEach((w,i)=>{if(w.stage<=run.wave&&!run.unlocked[i]){run.unlocked[i]=true;issued.push(w.short);}});if(run.wave===5)run.slots[0]=9;if(run.wave===6)run.slots[1]=10;if(!isWeaponReady(run,run.weapon))run.weapon=run.slots.find(i=>isWeaponReady(run,i));run.magazines=run.catalog.weapons.map((w,i)=>magazineCapacity(run,i));refill(run);prepareEncounters(run);revealMap(run);
   announce(run,'STAGE '+(run.wave+1)+' · '+stageFor(run).label+(issued.length?' / '+issued.join(' + ')+' 보급':''),7);return true;
@@ -349,15 +364,20 @@ function updateScanner(run,input,dt){
   if(input.scope){if(!run.scannerActive)selectScanner(run);run.scoped=true;}else releaseScanner(run);
   const e=run.scoped?targetEnemy(run,.06,18):null;
   if(!e||e.id!==run.scanTarget){run.scanTarget=e?.id??null;run.scanFocus=0;}
-  if(!e)return;run.scanFocus=Math.min(1,run.scanFocus+dt/.35);
+  if(!e)return;run.scanFocus=Math.min(1,run.scanFocus+dt/(run.upgrades.scanner?.18:.35));
   if(run.scanFocus>=1&&run.scannerCooldown<=0&&(run.intel[e.kind]<3||!e.scanComplete))scan(run);
 }
 export function tick(run,input={},dt=1/60){
-  if(run.status!=='running')return;dt=clamp(dt,0,.05);run.time+=dt;run.touchInput=Boolean(input.touchAim);
+  dt=clamp(dt,0,.05);
+  if(run.status==='clearing'){run.extractionTime+=dt;if(run.extractionTime>=1.65)run.status=run.extractionNext;return;}
+  if(run.status!=='running')return;run.time+=dt;run.touchInput=Boolean(input.touchAim);
   for(const k of ['cooldown','switchTime','dashCooldown','scannerCooldown','sourceCooldown','lastShot','hurt','hit','scanPulse','comboTime','messageTime','hintTime','ricochet','land','grenadeCooldown','throwTime','isolationPulse','huntPulse','pressureNotice','roomNotice','meleeGrace'])run[k]=Math.max(0,run[k]-dt);
   for(let i=0;i<run.cooldowns.length;i++){
     run.cooldowns[i]=Math.max(0,run.cooldowns[i]-dt);const renal=(run.host==='renal'&&run.catalog.weapons[i].renal&&!run.upgrades.renal)? .75 : 1;
     run.energy[i]=Math.min(maxAmmo(run),run.energy[i]+dt*(i===run.weapon?8:26)*renal);
+    if(run.upgrades.holster&&i!==run.weapon&&run.unlocked[i]){
+     run.holsterTimers[i]+=dt;if(run.holsterTimers[i]>=2.4-1e-6){const amount=Math.min(magazineCapacity(run,i)-run.magazines[i],run.energy[i]);run.magazines[i]+=amount;run.energy[i]-=amount;run.holsterTimers[i]=0;}
+    }else run.holsterTimers[i]=0;
   }
   if(run.reloadTime>0){run.reloadTime=Math.max(0,run.reloadTime-dt);if(!run.reloadLatch&&run.reloadTime<run.reloadDuration*.35){run.reloadLatch=true;run.events.push('reload-in');}if(run.reloadTime===0){const i=run.reloadWeapon,amount=Math.min(magazineCapacity(run,i)-run.magazines[i],run.energy[i]);run.magazines[i]+=amount;run.energy[i]-=amount;run.reloadWeapon=null;run.events.push('loaded');}}
   run.cooldown=run.cooldowns[run.weapon];run.pressure=Math.max(0,run.pressure-dt*.12);
@@ -391,10 +411,13 @@ export function tick(run,input={},dt=1/60){
   updateRoomPacing(run);updateHuntGuide(run,dt);for(const t of run.tracers)t.life-=dt;while(run.tracers.length&&run.tracers[0].life<=0)run.tracers.shift();run.aim=targetEnemy(run,.1,22)?.id??null;if(run.status!=='running')return;
   const exitReady=canExtract(run);
   if(exitReady&&!run.exitOpen){run.exitOpen=true;announce(run,run.mission==='survival'?'EXIT OPEN · 계속 생존하거나 출구에서 철수하세요':'소탕 완료 · 출구로 탈출하세요',5);}
-  if(exitReady&&Math.hypot(run.player.x-run.map.exit.x,run.player.y-run.map.exit.y)<1.1&&lineOfSight(run.map,run.player,run.map.exit)){
+  const door=run.map.exitDoor;
+  if(run.exitOpen&&door&&door.open<1){door.open=Math.min(1,door.open+dt*1.8);if(door.open===1){for(const i of door.cells)run.map.cells[i]=0;run.navCache.clear();run.events.push('source');}}
+  if(exitReady&&(!door||door.open===1)&&Math.hypot(run.player.x-run.map.exit.x,run.player.y-run.map.exit.y)<.85&&lineOfSight(run.map,run.player,run.map.exit)){
     run.lastReport=stageReport(run);if(run.mission!=='survival')run.completedStages++;run.score+=250+Math.round(run.player.hp)*2;
-    if(run.mission==='survival'||run.mission==='single'||run.mission==='theme'||run.wave===STAGES.length-1){run.status='won';run.extracted=true;announce(run,'EXTRACTION COMPLETE',60);}else{run.status='reward';run.rewards=rewardOptions(run);}
-  }else if(!exitReady&&Math.hypot(run.player.x-run.map.exit.x,run.player.y-run.map.exit.y)<1.5&&run.messageTime<=0)announce(run,run.mission==='survival'?'철수 출구 준비 중 · '+Math.ceil(90-run.time)+'초':'적이 남아 있습니다 · '+remainingEnemies(run)+'마리',3);
+    const terminal=run.mission==='survival'||run.mission==='single'||run.mission==='theme'||run.wave===STAGES.length-1;
+    run.extractionNext=terminal?'won':'reward';run.rewards=terminal?[]:rewardOptions(run);run.status='clearing';run.extractionTime=0;run.extracted=true;run.scoped=false;run.scannerActive=false;run.reloadTime=0;run.reloadWeapon=null;cancelVolley(run);run.chargeTime=0;run.events.push('victory');announce(run,'탈출 성공',2);
+  }else if(!exitReady&&Math.hypot(run.player.x-(door?.center.x??run.map.exit.x),run.player.y-(door?.center.y??run.map.exit.y))<2.8&&run.messageTime<=0)announce(run,run.mission==='survival'?'철수 출구 준비 중 · '+Math.ceil(90-run.time)+'초':'적이 남아 있습니다 · '+remainingEnemies(run)+'마리',3);
 }
 
 
