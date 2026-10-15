@@ -1,0 +1,3097 @@
+{
+  "checkedAt": "2026-10-14T17:13:47.635Z",
+  "total": 441,
+  "originalBytes": 616644383,
+  "webBytes": 387112730,
+  "originalFilesPreserved": true,
+  "format": "lossless WebP",
+  "findings": [
+    {
+      "kind": "pathogen",
+      "id": "efa",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "efm",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sep",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sau",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "eco",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "kpn",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pae",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ecl",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sag",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "spn",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "spy",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "smi",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sor",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sgl",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "slu",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ssa",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ega",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "lmo",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "eca",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bce",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ban",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cdi",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cje",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cac",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cdf",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ais",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cpe",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pmi",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pvu",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "mmo",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sma",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pst",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cfr",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cko",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "kae",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "kox",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "aba",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sma2",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bcc",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ahy",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "vch",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "vvu",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "vpa",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sty",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sen",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ssh",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "yen",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "mca",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx501",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx502",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx503",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx504",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx505",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx506",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx507",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx508",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx509",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx510",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx511",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx512",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx513",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx514",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx516",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx515",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx517",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bgx518",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cte",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cbo",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cse",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "nme",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "streptococcus-anginosus-group",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sdy",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "aur",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pmu",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "eikenella-corrodens",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cca",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "kki",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "lep",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ots",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cbu",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bru",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bhe",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "rty",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bbu",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cal",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "aph",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cgl",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cpa",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cau",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ctr",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ckr",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cne",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "afu",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cga",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "afl",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ate",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "muc",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pji",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hca",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "coc",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sss",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bla",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "tma",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "der",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "mal",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pfa",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pvo",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pma",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pkn",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "tgo",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "gla",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ehi",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cry",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cyc",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cys",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "tva",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "lei",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "tcr",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "tbr",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sst",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "alu",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "eve",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ttr",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hoo",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sch",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "csi",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "pwe",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "fhe",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "tso",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "tsa",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ech",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "tox",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "tri",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ani",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "fus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sca",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "scedosporium-apiospermum",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "lpr",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bmi",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hsv1",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hsv2",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "vzv",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "cmv",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "ebv",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hhv6",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "adenovirus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hhv8",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "parvovirus-b19",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hpv",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hbv",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hcv",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hav",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hev",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hiv1",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "htlv1",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "influenza-b",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "influenza-a",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "rsv",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sars-cov-2",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "rhinovirus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "parainfluenza",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hmpv",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "measles",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "rubella",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "mumps",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "rotavirus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "norovirus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "non-polio-enterovirus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "poliovirus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "dengue",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "rabies",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "japanese-encephalitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hantaan-virus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "sfts-virus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "hdv",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "bk-polyomavirus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "mpox-virus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "jc-polyomavirus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "zika-virus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "chikungunya-virus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "pathogen",
+      "id": "west-nile-virus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "common-cold",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "bronchiolitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "acute-bronchitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "croup",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "community-pneumonia",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "hospital-pneumonia",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "ventilator-pneumonia",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "aspiration-pneumonia",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "lung-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "empyema",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "pneumococcal-pneumonia",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "mycoplasma-pneumonia",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "legionnaires",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "pulmonary-tuberculosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "latent-tuberculosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "miliary-tuberculosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "ntm-pulmonary",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "tuberculous-pleurisy",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "streptococcal-pharyngitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "diphtheria",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "scarlet-fever",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "pertussis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "epiglottitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "bacterial-sinusitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "chronic-suppurative-otitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "acute-otitis-media",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "otitis-externa",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "mastoiditis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "necrotizing-otitis-externa",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "peritonsillar-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "retropharyngeal-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "ludwig-angina",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "dental-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "sepsis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "septic-shock",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "bloodstream-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "endocarditis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "staphylococcal-bacteremia",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "prosthetic-valve-endocarditis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "catheter-bloodstream-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "neonatal-sepsis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cardiac-device-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "staphylococcal-toxic-shock",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "streptococcal-toxic-shock",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "septic-thrombophlebitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "viral-meningitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "herpes-encephalitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "bacterial-meningitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "brain-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "spinal-epidural-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "tuberculous-meningitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "meningococcal-disease",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "neurosurgical-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "infectious-gastroenteritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "rotavirus-gastroenteritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "norovirus-gastroenteritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "clostridioides-colitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "campylobacter-enteritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "salmonella-enteritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "shigellosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "typhoid-fever",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cholera",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "etec-diarrhea",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "stec-colitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "vibrio-enteritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "helicobacter-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "yersinia-enteritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "secondary-peritonitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "anorectal-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "infected-pancreatic-necrosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cmv-esophagitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "intestinal-tuberculosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "acute-cholangitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "spontaneous-peritonitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "tuberculous-peritonitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "pyogenic-liver-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "hepatitis-a",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "chronic-hepatitis-b",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "acute-hepatitis-b",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "acute-hepatitis-c",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "chronic-hepatitis-c",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "hepatitis-d",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "hepatitis-e",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "acute-cystitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "complicated-uti",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "acute-pyelonephritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "catheter-uti",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "emphysematous-pyelonephritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "renal-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "acute-prostatitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "pelvic-inflammatory-disease",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "postpartum-endometritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "intraamniotic-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "bacterial-mastitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "breast-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "folliculitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "impetigo",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "skin-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cellulitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "erysipelas",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "necrotizing-fasciitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "fournier-gangrene",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "gas-gangrene",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "pyomyositis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "diabetic-foot-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "bite-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "vibrio-wound-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "surgical-site-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "osteomyelitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "staphylococcal-scalded-skin",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "vertebral-osteomyelitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "septic-arthritis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "prosthetic-joint-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "bacterial-conjunctivitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "herpes-keratitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "adenoviral-conjunctivitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "bacterial-keratitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "fungal-keratitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "acanthamoeba-keratitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "orbital-cellulitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "endophthalmitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "trachoma",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "gonorrhea",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cmv-retinitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "chlamydia-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "mycoplasma-genitalium",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "neurosyphilis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "syphilis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "congenital-syphilis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "genital-herpes",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "trichomoniasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "lymphogranuloma-venereum",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "epididymitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "anogenital-warts",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "anthrax",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "listeriosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "tetanus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "leprosy",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "botulism",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "nocardiosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "actinomycosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "leptospirosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "scrub-typhus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "q-fever",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "brucellosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cat-scratch-disease",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "lyme-disease",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "murine-typhus",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "anaplasmosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "tularemia",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "plague",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "relapsing-fever",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "melioidosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "buruli-ulcer",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "yaws",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "spotted-fever-rickettsiosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "influenza",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "rsv-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "covid-19",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "adenovirus-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "mononucleosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cmv-organ-disease",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "congenital-cmv",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "hiv-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "measles",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "rubella",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "mumps",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "congenital-rubella",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "varicella",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "herpes-zoster",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "neonatal-herpes",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "oral-herpes",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "roseola",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "erythema-infectiosum",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "poliomyelitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "hand-foot-mouth",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "dengue",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "rabies",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "chikungunya",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "zika",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "hfrs",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "japanese-encephalitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "west-nile",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "hantavirus-pulmonary",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "mpox",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "bk-nephropathy",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "sfts",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "progressive-multifocal-leukoencephalopathy",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "molluscum",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "yellow-fever",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "mers",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "ebola",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "esophageal-candidiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "marburg",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "nipah",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "oral-candidiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "vulvovaginal-candidiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "candidemia",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "pulmonary-cryptococcosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "intraabdominal-candidiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "invasive-aspergillosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cryptococcal-meningitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "chronic-pulmonary-aspergillosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "mucormycosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "histoplasmosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "pneumocystis-pneumonia",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "blastomycosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "coccidioidomycosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "sporotrichosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "talaromycosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "onychomycosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "dermatophytosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "fusariosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "pityriasis-versicolor",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "mycetoma",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "scedosporiosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "chromoblastomycosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "falciparum-malaria",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "other-malaria",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "vivax-ovale-malaria",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "babesiosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "toxoplasmosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "toxoplasma-encephalitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "congenital-toxoplasmosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "giardiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "amebic-liver-abscess",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "amebic-colitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cyclosporiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cryptosporidiosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cutaneous-leishmaniasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cystoisosporiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "visceral-leishmaniasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "chagas-disease",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "african-trypanosomiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "strongyloides-hyperinfection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "ascariasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "strongyloidiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "enterobiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "trichuriasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "hookworm-infection",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "schistosomiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "clonorchiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "paragonimiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "taeniasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "fascioliasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "neurocysticercosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "echinococcosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "trichinellosis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "toxocariasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "anisakiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "scabies",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "lymphatic-filariasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "cutaneous-larva-migrans",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "onchocerciasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "dracunculiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "loiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "primary-amebic-meningoencephalitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "granulomatous-amebic-encephalitis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "kind": "disease",
+      "id": "balantidiasis",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "details": {
+    "cgl": "Small rounded/oval budding yeast in a compact group; show narrow-neck buds, NO hyphae or germ tube. Ivory base with muted lavender bounded shadows.",
+    "cau": "A compact cluster of oval budding yeast with narrow-neck daughter buds. No distinctive invented spikes, no hyphae obligatory. Muted cream and terracotta accents.",
+    "cpa": "One curved chain of elongated pseudohyphal cells with visible constrictions at cell junctions and several lateral budding daughter cells. Ivory matte paint.",
+    "ctr": "A coherent branched pseudohyphal structure with constricted cell junctions and clustered budding yeasts attached to sides, not a plant or floral ornament.",
+    "ckr": "Several elongated oval yeast cells and a short constricted pseudohyphal chain, elongated blastoconidia, no spherical grape-only cluster.",
+    "cne": "Two round narrow-based budding yeast cells each inside a thick opaque pale capsule boundary; capsule physically surrounds cell, not a luminous halo. No hyphae.",
+    "cga": "Round encapsulated narrow-based budding yeast cells with a thick solid cream capsule around muted brown/lavender cell body. No invented visual distinction from C. neoformans.",
+    "afu": "One erect conidiophore on a small septate hyphal base, flask-like terminal vesicle with phialides and parallel chains of attached greenish conidia forming a compact COLUMN on upper portion of vesicle. No loose floating spores or sparkle-cloud.",
+    "afl": "One erect rough-walled conidiophore from a small septate hyphal base, rounded vesicle covered by radiating phialides and attached ochre/olive conidial chains. These are true attached fungal structures, no flower-petals.",
+    "ate": "One coherent cinnamon-brown Aspergillus conidiophore with compact attached conidial chains and a few lateral accessory conidia physically connected to a small septate hyphal base. No free particles.",
+    "muc": "Broad ribbon-like hyphae with sparse septation and irregular near-right-angle branching, plus one opaque round terminal sporangium on a simple erect stalk. Gray/ivory matte organism, not translucent cotton-cloud.",
+    "pji": "A compact group of round-to-cup shaped cyst/asci with several clear internal bodies in a limited cutaway, not an ordinary budding yeast or hyphal mold. No clinical lungs in this pathogen artwork.",
+    "hca": "One opaque macrophage cutaway containing multiple small intracellular oval narrow-based budding yeasts. Organisms enclosed within macrophage, no free surrounding dots or imaginary capsule.",
+    "coc": "One large thick-walled tissue spherule cutaway containing numerous discrete round endospores fully within its cavity. Coccidioides tissue form is NOT budding yeast, no hyphae or flower ornament.",
+    "bla": "One round thick-walled yeast mother cell with a broad-based attached bud; broad connecting neck unmistakable, opaque ivory/ochre wall.",
+    "sss": "A slender mold conidiophore with attached small oval conidia in a rosette arrangement at the tip, supported by sparse septate hyphae. Rosette is actual attached conidia, not flower petals; no loose spores.",
+    "tma": "A small compact group of oval/elongated yeast-like cells dividing by a central transverse septum, not narrow-based budding. Matte muted terracotta/cream.",
+    "der": "One compact septate hyphal structure with a few attached conidia of a plausible dermatophyte morphology, no composite collage pretending all dermatophytes have one diagnostic conidial shape.",
+    "mal": "A compact touching group of round budding yeast cells and several short curved hyphal segments (spaghetti/meatball microscopy pattern), all medical structures, no decorative scatter.",
+    "fus": "One coherent slender septate hypha with phialide and a few attached curved multiseptate sickle/canoe-shaped macroconidia; muted ivory and mauve, no fungal mushroom cap.",
+    "scedosporium-apiospermum": "One compact septate hyphal/conidiophore structure with single oval annelloconidia attached at tips; neutral gray/tan matte fills, no basally ballooned Lomentospora-specific structure.",
+    "lpr": "One compact septate hyphal structure with a few flask-shaped annellides noticeably swollen at their bases and attached conidia at narrowed tips. Gray-olive matte palette.",
+    "pfa": "A single ordinary sized red blood cell with two delicate intracellular ring forms, plus one adjacent crescent/banana-shaped gametocyte. No decorative surrounding dots; pigment is attached intracellular material.",
+    "pvo": "One enlarged erythrocyte containing a single amoeboid trophozoite and fine Schuffner stippling INSIDE the red blood cell. The intracellular dots are clinical morphology, not outside ornament.",
+    "pma": "One red blood cell with a broad dark band-form trophozoite across its inside, sober crisp cutaway, no floating spores.",
+    "pkn": "One red blood cell with a malariae-like intracellular band trophozoite; no fake feature claiming microscopy reliably distinguishes P. knowlesi from P. malariae.",
+    "tgo": "One compact cluster of slender crescent-shaped tachyzoites, pointed anterior and rounded posterior with one subtle central nucleus each. Teal/ivory bounded shadows; no fantasy eyes.",
+    "ehi": "One amoeboid trophozoite with one plausible nucleus and two engulfed red blood cells within cytoplasm. Pseudopod is part of the amoeba, no arms/face.",
+    "cry": "One small round thick-walled oocyst cutaway showing four slender sporozoites, NO internal sporocysts. Opaque cream wall, muted teal inner structures.",
+    "cyc": "One round mature oocyst cutaway with TWO oval sporocysts, each containing TWO sporozoites, discrete correct organization not many arbitrary circles.",
+    "cys": "One elongated oval mature oocyst cutaway with TWO sporocysts, each containing FOUR slender sporozoites. Not a round cyst full of random nuclei.",
+    "tva": "One pear-shaped trophozoite with a single nucleus, four anterior flagella, one recurrent flagellum forming an undulating membrane along side, and projecting posterior axostyle. No cyst form, no human face.",
+    "lei": "A single macrophage cutaway holding several small intracellular amastigotes, each with a tiny nucleus and kinetoplast, no external flagella on amastigotes.",
+    "tcr": "One C/U-shaped blood trypomastigote with a prominent posterior kinetoplast, central nucleus, coherent undulating membrane and single free anterior flagellum. No RBC crowd behind.",
+    "tbr": "One long slender wavy blood trypomastigote with a central nucleus, posterior kinetoplast, attached undulating membrane and one free anterior flagellum. Organism only.",
+    "sst": "One slim curved rhabditiform larva with short buccal cavity and conspicuous genital primordium represented as two restrained internal structures. No life-cycle panel.",
+    "alu": "One oval fertilized egg with thick rough mammillated shell and one opaque central embryo. No full worm required; egg itself fills central frame with margin.",
+    "eve": "One asymmetrical oval egg with ONE distinctly flattened side and visible coiled larva inside. Not a symmetrical spherical cyst.",
+    "ttr": "One barrel/lemon-shaped egg with thick shell and clear bipolar plugs at BOTH ends. Tan/ochre matte fill, no attached limb-like filaments.",
+    "hoo": "One thin smooth-shelled oval hookworm egg with several blastomere cells enclosed inside, no external spines or decorative dots.",
+    "sch": "One ovoid Schistosoma mansoni-type egg with a clear prominent lateral spine and enclosed miracidium. This is one representative genus form, do not combine terminal and lateral spines.",
+    "csi": "One small ovoid operculated egg with evident opercular shoulders at one end and a small abopercular knob at the other. Ochre bounded shadow.",
+    "pwe": "One thick-shelled yellow-brown operculated oval egg with a distinct operculum, sober simplified shape and central embryo.",
+    "fhe": "One large oval thin-shelled operculated egg, tan/yellow-brown with granular embryo inside, no Clonorchis-like opercular shoulders invented.",
+    "tso": "One larval cysticercus: an opaque fluid-filled cyst cutaway with a SINGLE invaginated scolex showing four suckers and hooklets on the rostellum. No adult tapeworm.",
+    "tsa": "One short coherent ribbon-like adult tapeworm segment with an unarmed scolex having four suckers, NOT hooks, followed by a few connected rectangular proglottids.",
+    "ech": "One coherent hydatid cyst cutaway with a few daughter cysts entirely enclosed within the mother cyst; opaque wall, no loose floating bubbles outside.",
+    "tox": "One slender coiled tissue-migrating larva; correct nematode tube body without legs or face. Do NOT show adult worm or fecal egg as human diagnostic form.",
+    "tri": "One coiled thin larva enclosed within a single oval nurse-cell capsule embedded in a short skeletal muscle bundle, restrained correct muscle stripes.",
+    "ani": "One slender cream nematode larva coiled naturally with tapered ends, no legs, mouth-face or tentacles; isolated organism.",
+    "sca": "A dorsal view of one squat oval adult scabies mite with FOUR PAIRS of short legs (eight total), short posterior bristles and small anterior mouthparts. No insect wings, no six-legged insect anatomy.",
+    "bmi": "One red blood cell containing a coherent Maltese-cross tetrad of FOUR pear-shaped parasite bodies meeting centrally. No malaria pigment, no decorative cross outside cell."
+  },
+  "viralGroups": [
+    [
+      [
+        "hsv1",
+        "hsv2",
+        "vzv",
+        "cmv",
+        "ebv",
+        "hhv6",
+        "hhv8"
+      ],
+      "One enveloped herpesvirus particle with a solid matte outer lipid membrane, attached short glycoprotein spikes, tegument and a clearly icosahedral capsid shown in a limited cutaway. A plain coiled dsDNA strand sits within capsid. No spikes extending from the capsid as if it were coronavirus."
+    ],
+    [
+      [
+        "hpv",
+        "bk-polyomavirus",
+        "jc-polyomavirus",
+        "parvovirus-b19",
+        "rhinovirus",
+        "hav",
+        "non-polio-enterovirus",
+        "poliovirus"
+      ],
+      "One NONENVELOPED icosahedral virus capsid with a restrained tiled capsomere surface, no lipid outer membrane, no long spike crown or cell-like organelles. Small cutaway may show the recorded genome, without a textbook-style DNA double-helix if its genome is single-stranded RNA."
+    ],
+    [
+      [
+        "hcv",
+        "dengue",
+        "japanese-encephalitis",
+        "zika-virus",
+        "west-nile-virus"
+      ],
+      "One spherical enveloped virion with a low, close-fitting tiled envelope-protein surface; no giant coronavirus crown. A limited cutaway shows one RNA strand inside a simple capsid. Clean matte geometry, no external loose molecules."
+    ],
+    [
+      [
+        "rsv",
+        "hmpv",
+        "parainfluenza",
+        "measles",
+        "mumps"
+      ],
+      "One slightly pleomorphic enveloped respiratory virion with short attached glycoprotein projections and one helical ribonucleoprotein coil in limited cutaway. No multiple influenza-like discrete genome segments."
+    ],
+    [
+      [
+        "hantaan-virus",
+        "sfts-virus"
+      ],
+      "One enveloped round/pleomorphic virion with attached low glycoprotein projections and exactly THREE separate ribonucleoprotein genome coils shown inside a limited cutaway."
+    ],
+    [
+      [
+        "hiv1"
+      ],
+      "One enveloped round HIV virion with attached short glycoprotein trimers and a clearly CONICAL central capsid shown in limited cutaway, holding two RNA strands. No icosahedral central nucleus."
+    ],
+    [
+      [
+        "htlv1"
+      ],
+      "One enveloped round retrovirus virion with short attached glycoprotein projections and a central condensed capsid in limited cutaway holding two RNA strands. Do not use the characteristic HIV conical capsid as an obligatory HTLV structure."
+    ],
+    [
+      [
+        "adenovirus"
+      ],
+      "One NONENVELOPED icosahedral capsid with a few slender fibers attached exactly at capsid vertices, ending in small knobs. No spherical lipid envelope or uniform corona spike crown."
+    ],
+    [
+      [
+        "hbv"
+      ],
+      "One spherical enveloped HBV Dane particle with a smooth close-fitting surface and a small icosahedral core capsid shown within limited cutaway; restrained circular genome representation, no barcode or letters."
+    ],
+    [
+      [
+        "hev"
+      ],
+      "One representative NONENVELOPED fecal HEV particle: compact icosahedral capsid, no outer lipid envelope or decorative corona. Single RNA strand only if limited cutaway is used."
+    ],
+    [
+      [
+        "influenza-b"
+      ],
+      "One influenza enveloped virion in a limited cutaway with EXACTLY EIGHT distinct ribonucleoprotein genome segments inside, several short attached surface glycoproteins and matte blue/ochre palette; no floating segments outside."
+    ],
+    [
+      [
+        "sars-cov-2"
+      ],
+      "One spherical enveloped coronavirus particle with attached outward club-shaped spike trimers. Limited cutaway shows one long positive RNA nucleoprotein strand, no influenza eight-segment bundle."
+    ],
+    [
+      [
+        "rubella"
+      ],
+      "One round enveloped particle with attached short surface glycoprotein projections and a simple central capsid with one RNA strand in limited cutaway. Matte muted violet/terracotta."
+    ],
+    [
+      [
+        "rotavirus"
+      ],
+      "One NONENVELOPED wheel-like spherical capsid with THREE concentric capsid layers visibly organized in a small cutaway. Segmented genome is contained inside. No outer lipid envelope."
+    ],
+    [
+      [
+        "norovirus"
+      ],
+      "One NONENVELOPED rounded icosahedral capsid with characteristic shallow cup-like surface depressions, low clean texture, no outer lipid bilayer or spike crown."
+    ],
+    [
+      [
+        "rabies"
+      ],
+      "One unmistakably BULLET-shaped enveloped virion with a rounded tip and relatively flat base; show coherent helical ribonucleoprotein core in a limited longitudinal cutaway. Attached short spikes, no eyes or gun imagery."
+    ],
+    [
+      [
+        "hdv"
+      ],
+      "One small round particle coated by HBV-derived surface envelope and with a single circular RNA/delta-antigen ribonucleoprotein core shown in limited cutaway. No icosahedral HBV core incorrectly added."
+    ],
+    [
+      [
+        "mpox-virus"
+      ],
+      "One large rounded BRICK-shaped complex poxvirus particle, short surface ridges, with a limited cutaway showing a dumbbell-shaped core and lateral bodies. No spherical coronavirus shape."
+    ],
+    [
+      [
+        "chikungunya-virus"
+      ],
+      "One spherical enveloped alphavirus with an organized geometric glycoprotein surface and icosahedral internal capsid shown in limited cutaway, one RNA strand contained inside."
+    ]
+  ]
+}

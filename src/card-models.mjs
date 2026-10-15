@@ -1,3 +1,4 @@
+import { cardArtwork } from './card-art.mjs';
 import { createCardCatalog } from './card-catalog.mjs';
 
 export const CARD_DOMAINS = Object.freeze({
@@ -164,7 +165,7 @@ export function createCardModels(data, catalog) {
       ...content.pathogen(id),domain:record.domain,entityId:id,therapyContexts,therapyContext,
       subtitle:record.koreanName,
       lineage:pathogenLineage(record),route:pathogenRoute(record),
-      artwork:{placeholder:pathogenArt(record),label:CARD_DOMAINS[record.domain]},
+      artwork:cardArtwork('pathogen',catalog.variants[id].pathogenId) || {placeholder:pathogenArt(record),label:CARD_DOMAINS[record.domain]},
       leftHeading:'장기',rightHeading:'약제',
       leftLabel:'감염 부위별 질환',
       leftProperties:ORGANS.map(({icon,label})=>{
@@ -262,7 +263,7 @@ export function createCardModels(data, catalog) {
     const model={
       ...base,entityId:id,domain:'diseases',lineage:category.label+' · '+catalog.diseaseEntityTypes[base.entityType].label,
       route,selectedTreatment,
-      artwork:{placeholder:category.icon,label:category.label},
+      artwork:cardArtwork('disease',id) || {placeholder:category.icon,label:category.label},
       leftHeading:'원인',rightHeading:'치료',leftLabel:'원인 병원체',rightLabel:'치료·관리',
       leftProperties:GROUPS.map(group=>{
         const causes=causeGroups.get(group.id);

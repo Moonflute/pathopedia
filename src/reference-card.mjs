@@ -155,7 +155,7 @@ export function renderReferenceCard(model) {
     '<header class="card-nameplate"><h2>'+esc(model.name)+'</h2><p>'+esc(model.subtitle || '')+'</p></header>'+
     '<'+(preview?'span':'button type="button" data-card-property')+' class="card-route" '+(preview?'':tooltipAttributes({title:route.label,body:route.description || ''}))+'>'+cardIcon(route.icon)+'<span>'+esc(route.label)+'</span></'+(preview?'span':'button')+'>'+
     propertyRail(model.leftProperties,model.leftLabel,'left',model.leftHeading,preview)+
-    '<div class="card-artwork">'+artwork(model)+'</div>'+
+    '<div class="card-artwork'+(model.artwork?.transparent?' card-artwork--transparent':'')+'">'+artwork(model)+'</div>'+
     propertyRail(model.rightProperties,model.rightLabel,'right',model.rightHeading,preview)+
     '<div class="card-lineage"><span class="card-lineage-mark" aria-hidden="true">◆</span><span>'+esc(model.lineage)+'</span><span class="card-lineage-mark" aria-hidden="true">◆</span></div>'+
     '<div class="card-text"><p class="card-summary">'+esc(caption)+'</p><footer><span'+(model.supportiveCare?' class="card-care-label"':'')+'>'+esc(model.supportiveCare?'대증치료':model.id)+'</span>'+(preview?'<span>확대 ↗</span>':'<button type="button" class="card-turn" data-card-face="back" aria-label="'+esc(model.name)+' 뒷장 보기">뒷장 <span aria-hidden="true">↻</span></button>')+'</footer></div>'+

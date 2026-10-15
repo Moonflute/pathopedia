@@ -7,6 +7,7 @@ import { CARD_FILTERS as FILTERS } from './app-routing.mjs';
 
 const esc=value=>String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const PAGE_SIZE=24;
+const ARTWORK_STORAGE_KEY='pathopedia:card-artwork';
 const WIDTHS=[160,190,220];
 const DECKS=[
   {id:'pathogens',kind:'pathogen',label:'병원체',icon:'bacteria'},
@@ -34,6 +35,12 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
   ];
   let diseaseCategory='all';
   let domain='all',archiveOnly=false,query='',family='all',resistanceOnly=false,page=0,width=190;
+  let artworkVisible=true;
+  try{artworkVisible=globalThis.localStorage?.getItem(ARTWORK_STORAGE_KEY)!=='off';}catch{}
+  function applyArtworkVisibility(){
+    globalThis.document?.documentElement?.classList.toggle('card-art-hidden',!artworkVisible);
+  }
+  applyArtworkVisibility();
   const flipped=new Set();
 
   function rememberFaces() {
@@ -127,7 +134,8 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     return '<section id="card-gallery-results" class="card-gallery-results'+(isDeckOverview()?' is-deck-overview':'')+'" tabindex="-1" aria-label="카드 도감">'+resultMarkup()+'</section>'+
       '<form id="card-gallery-search-form" class="card-gallery-searchbar" role="search" aria-label="카드 검색">'+
       '<label class="card-gallery-search-field" for="card-gallery-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="card-gallery-search" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-label="카드 이름·표현형·계열 검색" placeholder="한글·영문 이름 검색" value="'+esc(query)+'"></label>'+
-      '<button type="button" class="card-gallery-options-open" data-card-options="open" aria-label="카드 보기 설정" aria-haspopup="dialog" aria-controls="card-gallery-options"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="currentColor"/><circle cx="15" cy="12" r="2" fill="currentColor"/><circle cx="9" cy="18" r="2" fill="currentColor"/></svg><span>'+filterLabel()+'</span></button><button type="button" class="card-gallery-info" data-card-guide="open" aria-label="예시 카드로 읽는 법 보기" aria-haspopup="dialog" aria-expanded="false" aria-controls="card-guide"><span aria-hidden="true">i</span></button></form>'+
+      '<button type="button" class="card-gallery-options-open" data-card-options="open" aria-label="카드 보기 설정" aria-haspopup="dialog" aria-controls="card-gallery-options"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="currentColor"/><circle cx="15" cy="12" r="2" fill="currentColor"/><circle cx="9" cy="18" r="2" fill="currentColor"/></svg><span>'+filterLabel()+'</span></button><button type="button" class="card-gallery-info" data-card-guide="open" aria-label="예시 카드로 읽는 법 보기" aria-haspopup="dialog" aria-expanded="false" aria-controls="card-guide"><span aria-hidden="true">i</span></button>'+
+      '<label class="card-gallery-art-toggle"><input id="card-gallery-artwork" type="checkbox" '+(artworkVisible?'checked':'')+'>그림 보기</label></form>'+
       guide.markup()+'<dialog id="card-gallery-options" class="card-gallery-options" aria-labelledby="card-gallery-options-title">'+optionsContent()+'</dialog>';
   }
 
@@ -226,6 +234,11 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
   }
 
   function handleChange(target) {
+    if(target.id==='card-gallery-artwork'){
+      artworkVisible=target.checked;applyArtworkVisibility();
+      try{globalThis.localStorage?.setItem(ARTWORK_STORAGE_KEY,artworkVisible?'on':'off');}catch{}
+      return true;
+    }
     if(target.id==='card-gallery-disease-category'){
       if(target.value==='all' || catalog.diseaseCategories[target.value]){rememberFaces();diseaseCategory=target.value;page=0;refreshResults();}
       return true;

@@ -100,6 +100,8 @@
   background: #1c2827;
   box-shadow: 0 0 0 .8cqw #11181555;
 }
+.card-artwork--transparent { background: transparent; }
+.card-artwork--transparent .card-artwork-image { object-fit: contain; }
 .card-artwork-image { display: block; width: 100%; height: 100%; object-fit: cover; }
 .card-artwork-placeholder {
   position: relative;
@@ -505,3 +507,7 @@ dialog.card-inspector { width:max-content; height:max-content; max-width:calc(10
 .card-treatment-select select { display:block; width:100%; max-width:100%; padding:8px; border:1px solid #7c9670; border-radius:5px; font:500 16px / 1.4 var(--sans); background:#f8f8ed; color:#33462f; text-overflow:ellipsis; }
 .card-disease-treatment .card-treatment-context { margin-top:.6em; }
 .card-disease-treatment .card-treatment-mode { margin-top:.4em; color:#576c4f; font-size:.85em; }
+
+/* Hiding illustrations preserves the card frame, text and interactive side rails. */
+:root.card-art-hidden .card-artwork-image,
+:root.card-art-hidden .card-artwork-placeholder { visibility:hidden; }
