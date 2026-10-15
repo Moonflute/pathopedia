@@ -69,7 +69,7 @@ export function newRun(catalog,{hard=false,hints=false,information=null,aimAssis
   const ally=COMPANIONS.find(c=>c.id===(companion==='auto'?(themeStage?.companion||'neutrophil'):companion));
   const run={catalog,map,information,aimAssist,chargeTime:0,volley:null,shotSerial:0,tracers:[],hitKind:'effective',huntPulse:0,huntTimer:0,guide:null,showMap:false,pressureAdded:0,pressureReplacements:0,pressureElites:0,pressureNotice:0,roomNotice:0,meleeGrace:0,bossKills:0,miniKills:0,stageBossKills:0,stageMiniKills:0,director:{phase:'build',restUntil:0,nextBoss:120,bossNumber:0},clearedRooms:new Set(),themeId:themeStage?.id||null,companion:ally?.id||'none',companions:ally?[ally.id]:[],pet:{...map.spawn,cooldown:.7,flash:0,target:null,shots:0},mapMode:mapMode==='full'?'full':'explore',discovered:new Uint8Array(map.cells.length),discoveryTime:0,scannerActive:false,scoped:false,scanFocus:0,scanTarget:null,exitOpen:false,bossDefeated:!STAGES[index].boss,random:seededRandom(seed),seed,hard,hints:hints&&!hard,host,status:'ready',mission,startStage:index,time:0,wave:index,spawned:0,spawnTimer:0,
     player:{...map.spawn,hp:100,z:0,vz:0,pitch:0},weapon:host==='allergy'?1:0,previousWeapon:1,slots:Array.from({length:9},(_,i)=>index>=5&&i===0?9:index>=6&&i===1?10:i),magazines:catalog.weapons.map(w=>w.magazine*w.cost),reloadTime:0,reloadDuration:1,reloadWeapon:null,jumpHeld:false,land:0,energy:catalog.weapons.map(()=>BASE_AMMO),unlocked:catalog.weapons.map(w=>w.stage<=index),cooldown:0,cooldowns:catalog.weapons.map(()=>0),switchTime:0,pressure:0,
-    kills:0,stageKills:0,shots:0,effective:0,combo:0,comboTime:0,bestCombo:0,score:0,dash:0,dashCooldown:0,scannerCooldown:0,sourceCooldown:0,totalSources:0,completedStages:0,
+    kills:0,stageKills:0,shots:0,effective:0,combo:0,comboTime:0,bestCombo:0,score:0,dash:0,dashCooldown:0,scannerCooldown:0,sourceCooldown:0,completedStages:0,
     intel:Object.fromEntries(catalog.enemies.map(e=>[e.id,information==='blind'?0:information==='identify'?2:3])),seen:new Set(),visited:new Set([0]),upgrades:{},rewards:[],immuneTime:host==='neutropenia'?24:10,
     enemies:Array.from({length:mission==='survival'?MAX_SURVIVAL_ENEMIES:MAX_ENEMIES},(_,id)=>({id,active:false})),particles:Array.from({length:MAX_PARTICLES},()=>({life:0})),projectiles:Array.from({length:MAX_PROJECTILES},()=>({active:false})),hazards:Array.from({length:MAX_HAZARDS},(_,id)=>({id,active:false})),
     flow:new Int16Array(map.cells.length).fill(-1),queue:new Int16Array(map.cells.length),navCache:new Map(),flowTime:0,
@@ -137,16 +137,15 @@ function ricochet(run,e,result){
 }
 function refill(run,amount=Infinity){for(let i=0;i<run.energy.length;i++)run.energy[i]=Math.min(maxAmmo(run),run.energy[i]+amount);}
 export function protectedBySource(run,e){
-  return run.map.sources.some(s=>s.active&&Math.hypot(e.x-s.x,e.y-s.y)<4&&lineOfSight(run.map,e,s))||run.enemies.some(b=>b.active&&b.state!=='Dead'&&b.biofilm&&Math.hypot(e.x-b.x,e.y-b.y)<2.7&&lineOfSight(run.map,e,b));
+  return run.enemies.some(b=>b.active&&b.state!=='Dead'&&b.biofilm&&Math.hypot(e.x-b.x,e.y-b.y)<2.7&&lineOfSight(run.map,e,b));
 }
 export function controlSource(run){
   if(run.status!=='running'||run.sourceCooldown>0)return false;
   const near=s=>Math.hypot(s.x-run.player.x,s.y-run.player.y)<(run.upgrades.source?3.6:2.3)&&lineOfSight(run.map,run.player,s);
-  const source=run.map.sources.find(s=>s.active&&near(s));let changed=false;
-  if(source){source.active=false;run.totalSources++;run.pressure=Math.max(0,run.pressure-8);run.score+=150;run.player.hp=Math.min(100,run.player.hp+8);refill(run,35);announce(run,source.label+' 제거 · biofilm 해제 / 보급 +35',3.5);burst(run,source.x,source.y,'#82e5d4',16);changed=true;}
+  let changed=false;
   for(const e of run.enemies){if(!e.active||e.state==='Dead'||!near(e))continue;if(e.state==='Dormant'){kill(run,e,'source');changed=true;announce(run,'SOURCE CONTROL · 휴면 포자 오염원 제거');}else if(e.biofilm){e.biofilm=false;changed=true;announce(run,'BIOFILM DISRUPTED · 주변 보호 해제');}}
   for(const h of run.hazards)if(h.active&&near(h)){h.active=false;changed=true;announce(run,'SOURCE CONTROL · 오염 구역 제거');}
-  if(!changed){announce(run,'감염원 / biofilm / 오염 구역 가까이에서 F',1.5);return false;}
+  if(!changed){announce(run,'biofilm / 휴면 포자 / 오염 구역 가까이에서 F',1.5);return false;}
   run.sourceCooldown=run.upgrades.source?1:2.8;run.events.push('source');return true;
 }
 export function spawnEnemy(run,kind,position,elite=false,{boss=false,slot=null}={}){
@@ -305,7 +304,7 @@ function updateEnemy(run,e,dt){
   if(e.state==='Dead'){e.death-=dt;if(e.death<=0)e.active=false;return;}
   e.isolated=Boolean(run.mission==='survival'&&run.upgrades.isolation&&Math.hypot(e.x-run.player.x,e.y-run.player.y)<2.5+run.upgrades.isolation*.45&&lineOfSight(run.map,run.player,e));
   const p=run.catalog.enemyById[e.kind],d=Math.hypot(e.x-run.player.x,e.y-run.player.y),contact=canDetect(run,e),los=d<11&&lineOfSight(run.map,e,run.player);
-  if(contact){run.seen.add(e.kind);e.revealed=true;if(e.encounteredAt===null)e.encounteredAt=run.time;if((e.boss||e.miniboss)&&!e.introduced){e.introduced=true;run.roomNotice=5;announce(run,(e.boss?'STAGE BOSS':'MID BOSS')+' · '+visibleLabel(run,e)+' / '+(p.shield?'캡슐 장벽':p.biofilm?'F 감염원 제어':'공격 예고를 보고 회피'),5);}}
+  if(contact){run.seen.add(e.kind);e.revealed=true;if(e.encounteredAt===null)e.encounteredAt=run.time;if((e.boss||e.miniboss)&&!e.introduced){e.introduced=true;run.roomNotice=5;announce(run,(e.boss?'STAGE BOSS':'MID BOSS')+' · '+visibleLabel(run,e)+' / '+(p.shield?'캡슐 장벽':p.biofilm?'F biofilm 해체':'공격 예고를 보고 회피'),5);}}
   if((e.boss||e.miniboss)&&e.hp<e.maxHp*.5&&e.phase===1){e.phase=2;e.attackCooldown=Math.max(1.5,e.attackCooldown);burst(run,e.x,e.y,p.color,10);}
   if(e.state==='Dormant'){if(contact)e.timer+=dt;if(e.timer>=2){e.state='Detect';e.timer=.3;announce(run,'포자 발아 · 이제 활성 약제로 대응 가능');}return;}
   if(e.state==='Idle'&&run.mission==='survival'){e.state='Chase';e.memory=5;e.lastSeen={x:run.player.x,y:run.player.y};}

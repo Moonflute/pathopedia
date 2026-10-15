@@ -15,7 +15,7 @@ test('Play uses the existing twelve drug cards and seventeen fixed isolates with
 });
 
 test('R never takes damage, even with source control, increased exposure and extreme attack power',()=>{
- for(const profile of catalog.enemies)for(const weapon of catalog.weapons){if(!['R','INACTIVE'].includes(profile.ast[weapon.id]?.category))continue;const r=setup();r.upgrades.infusion=9;r.map.sources.forEach(s=>s.active=false);const e=spawnEnemy(r,profile.id,{x:6.5,y:3.5});const hp=e.hp,shield=e.shield;const result=applyHit(r,e,weapon,999999);assert.equal(result.factor,0);assert.equal(e.hp,hp);assert.equal(e.shield,shield);assert.equal(e.dot,0);}
+ for(const profile of catalog.enemies)for(const weapon of catalog.weapons){if(!['R','INACTIVE'].includes(profile.ast[weapon.id]?.category))continue;const r=setup();r.upgrades.infusion=9;const e=spawnEnemy(r,profile.id,{x:6.5,y:3.5});const hp=e.hp,shield=e.shield;const result=applyHit(r,e,weapon,999999);assert.equal(result.factor,0);assert.equal(e.hp,hp);assert.equal(e.shield,shield);assert.equal(e.dot,0);}
 });
 
 test('I needs increased exposure, site-limited results do not leak into community infection, ACTIVE is distinct',()=>{
@@ -28,10 +28,10 @@ test('I needs increased exposure, site-limited results do not leak into communit
  assert.equal(coverage(catalog,'missing','pneumo').factor,0);
 });
 
-test('capsule absorbs susceptible hits first; a biofilm source protects nearby enemies until removed',()=>{
+test('capsule absorbs susceptible hits first; a biofilm carrier protects nearby enemies until disrupted',()=>{
  const r=setup(),w=catalog.weaponById.ampicillin,e=spawnEnemy(r,'pneumo',{x:6.5,y:3.5});applyHit(r,e,w,20);assert.equal(e.hp,e.maxHp);assert.equal(e.shield,10);
- const source=r.map.sources[0],bio=spawnEnemy(r,'mssa',source);assert.equal(protectedBySource(r,bio),true);const before=bio.hp;applyHit(r,bio,catalog.weaponById.cefazolin,20);assert.ok(before-bio.hp<20);
- Object.assign(r.player,source);assert.ok(controlSource(r));assert.equal(protectedBySource(r,bio),false);const after=bio.hp;applyHit(r,bio,catalog.weaponById.cefazolin,20);assert.equal(after-bio.hp,20);
+ const carrier=spawnEnemy(r,'pseudo',{x:5.5,y:5.5}),bio=spawnEnemy(r,'mssa',{x:6.5,y:5.5});assert.equal(protectedBySource(r,bio),true);const before=bio.hp;applyHit(r,bio,catalog.weaponById.cefazolin,20);assert.ok(before-bio.hp<20);
+ Object.assign(r.player,{x:carrier.x,y:carrier.y});assert.ok(controlSource(r));assert.equal(protectedBySource(r,bio),false);const after=bio.hp;applyHit(r,bio,catalog.weaponById.cefazolin,20);assert.equal(after-bio.hp,20);
 });
 
 test('Hard scanner unlocks shape, culture and AST without stopping movement or exposing phenotype early',()=>{
@@ -57,10 +57,10 @@ test('walls block hits and scanning, diagonal motion is normalized, and dashes c
  const body={x:3.5,y:3.5};moveBody(r.map,body,8,0);assert.ok(body.x<5);assert.ok(canStand(r.map,body.x,body.y));
 });
 
-test('all spawn points, pickups, source controls and exit are reachable from the start',()=>{
+test('all spawn points, pickups and exit are reachable from the start',()=>{
  const m=createMap(),visited=new Set(),queue=[[Math.floor(m.spawn.x),Math.floor(m.spawn.y)]];
  while(queue.length){const [x,y]=queue.shift(),i=y*m.width+x;if(visited.has(i)||m.cells[i]||x<0||y<0||x>=m.width||y>=m.height)continue;visited.add(i);queue.push([x-1,y],[x+1,y],[x,y-1],[x,y+1]);}
- for(const point of [...m.portals,...m.sources,...m.pickups,m.exit])assert.ok(visited.has(Math.floor(point.y)*m.width+Math.floor(point.x)),JSON.stringify(point));
+ for(const point of [...m.portals,...m.pickups,m.exit])assert.ok(visited.has(Math.floor(point.y)*m.width+Math.floor(point.x)),JSON.stringify(point));
 });
 
 test('all scheduled opponents have an available response and enemy pools have a hard cap',()=>{
@@ -81,8 +81,8 @@ test('AI detects, chases, attacks, dies, and recycles the enemy slot',()=>{
 });
 
 test('reward choice happens once; paused and terminal runs freeze; extraction still needs the exit',()=>{
- const r=setup();r.spawned=WAVES[0].count;r.map.sources.forEach(s=>s.active=false);Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.status,'reward');assert.equal(r.rewards.length,3);const id=r.rewards[0].id;assert.ok(chooseReward(r,id));assert.equal(chooseReward(r,id),false);assert.equal(r.wave,1);assert.equal(r.status,'paused');const time=r.time;tick(r,{forward:1});assert.equal(r.time,time);
- r.status='running';r.wave=WAVES.length-1;r.spawned=WAVES.at(-1).count;tick(r);assert.equal(r.status,'running');r.map.sources.forEach(s=>s.active=false);Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.status,'won');const finished=r.time;tick(r);assert.equal(r.time,finished);
+ const r=setup();r.spawned=WAVES[0].count;Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.status,'reward');assert.equal(r.rewards.length,3);const id=r.rewards[0].id;assert.ok(chooseReward(r,id));assert.equal(chooseReward(r,id),false);assert.equal(r.wave,1);assert.equal(r.status,'paused');const time=r.time;tick(r,{forward:1});assert.equal(r.time,time);
+ r.status='running';r.wave=WAVES.length-1;r.spawned=WAVES.at(-1).count;tick(r);assert.equal(r.status,'running');Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.status,'won');const finished=r.time;tick(r);assert.equal(r.time,finished);
 });
 
 test('infusion ticks respect coverage and the immune perk is weaker with neutropenia',()=>{
@@ -91,7 +91,7 @@ test('infusion ticks respect coverage and the immune perk is weaker with neutrop
 });
 
 test('all rewards remain three choices late in a run and efficiency stacks without changing coverage',()=>{
- const r=setup();r.upgrades={immune:1,scanner:1,infusion:1,efficiency:1,source:1,stewardship:1};r.spawned=WAVES[0].count;r.map.sources.forEach(s=>s.active=false);Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.rewards.length,3);
+ const r=setup();r.upgrades={immune:1,scanner:1,infusion:1,efficiency:1,source:1,stewardship:1};r.spawned=WAVES[0].count;Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.rewards.length,3);
  const a=setup(),b=setup();a.upgrades.efficiency=1;b.upgrades.efficiency=2;fire(a);fire(b);assert.ok(b.magazines[0]>a.magazines[0]);
 });
 
@@ -124,7 +124,7 @@ test('every stage layout and encounter position is reachable; map variants are d
  for(let stage=0;stage<STAGES.length;stage++)for(const seed of [31,97,108]){
   const r=newRun(catalog,{stage,seed}),m=r.map,visited=new Set(),queue=[Math.floor(m.spawn.y)*m.width+Math.floor(m.spawn.x)];
   while(queue.length){const i=queue.shift();if(i<0||i>=m.cells.length||visited.has(i)||m.cells[i])continue;visited.add(i);queue.push(i-1,i+1,i-m.width,i+m.width);}
-  for(const p of [...m.portals,...m.sources,...m.pickups,...r.pending,m.exit]){assert.ok(canStand(m,p.x,p.y,.18),stage+': '+JSON.stringify(p));assert.ok(visited.has(Math.floor(p.y)*m.width+Math.floor(p.x)),stage+': unreachable');}
+  for(const p of [...m.portals,...m.pickups,...r.pending,m.exit]){assert.ok(canStand(m,p.x,p.y,.18),stage+': '+JSON.stringify(p));assert.ok(visited.has(Math.floor(p.y)*m.width+Math.floor(p.x)),stage+': unreachable');}
   assert.equal(r.pending.length,STAGES[stage].count);layouts.add(Buffer.from(m.cells).toString('base64'));
  }
  assert.ok(layouts.size>=4);
@@ -165,13 +165,13 @@ test('inhibitor reward unlocks the named CZA combination without altering any or
  const r=setup();r.status='reward';r.rewards=[REWARDS.find(r=>r.id==='inhibitor')];assert.ok(chooseReward(r,'inhibitor'));assert.equal(r.unlocked[8],true);assert.equal(coverage(catalog,'meropenem','kpc').factor,0);assert.equal(coverage(catalog,'ceftazavi','kpc').factor,1);assert.equal(coverage(catalog,'ceftazavi','mrsa').factor,0);
 });
 
-test('extraction requires all enemies, leaves optional sources intact, and records the sector before resetting',()=>{
+test('extraction requires all enemies and records the sector before resetting',()=>{
  const r=setup();r.spawned=STAGES[0].count;const survivor=spawnEnemy(r,'mssa',{x:6.5,y:3.5});Object.assign(r.player,r.map.exit);r.messageTime=0;tick(r);assert.equal(r.status,'running');assert.equal(canExtract(r),false);assert.match(r.message,/적이 남아 있습니다/);
- applyHit(r,survivor,catalog.weaponById.cefazolin,9999);assert.ok(canExtract(r));tick(r);assert.equal(r.status,'reward');assert.ok(r.map.sources.every(s=>s.active));assert.equal(r.lastReport.rows[0].kills,1);const oldMap=r.map;chooseReward(r,r.rewards[0].id);assert.notEqual(r.map,oldMap);assert.equal(r.map.site,'urinary');assert.equal(r.pending.length,STAGES[1].count);assert.equal(r.status,'paused');assert.deepEqual(r.kindReports,{});
+ applyHit(r,survivor,catalog.weaponById.cefazolin,9999);assert.ok(canExtract(r));tick(r);assert.equal(r.status,'reward');assert.equal(r.lastReport.rows[0].kills,1);const oldMap=r.map;chooseReward(r,r.rewards[0].id);assert.notEqual(r.map,oldMap);assert.equal(r.map.site,'urinary');assert.equal(r.pending.length,STAGES[1].count);assert.equal(r.status,'paused');assert.deepEqual(r.kindReports,{});
 });
 
 test('single-stage practice can extract, and the KPC boss keeps its resistant AST across phases',()=>{
- const r=setup({stage:7,mission:'single'}),boss=spawnEnemy(r,'kpc',{x:6.5,y:3.5},false,{boss:true}),hp=boss.hp,shield=boss.shield;applyHit(r,boss,catalog.weaponById.meropenem,99999);assert.equal(boss.hp,hp);assert.equal(boss.shield,shield);applyHit(r,boss,catalog.weaponById.ceftazavi,99999);assert.equal(boss.state,'Dead');r.spawned=STAGES[7].count;r.map.sources.forEach(s=>s.active=false);Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.status,'won');assert.equal(r.completedStages,1);
+ const r=setup({stage:7,mission:'single'}),boss=spawnEnemy(r,'kpc',{x:6.5,y:3.5},false,{boss:true}),hp=boss.hp,shield=boss.shield;applyHit(r,boss,catalog.weaponById.meropenem,99999);assert.equal(boss.hp,hp);assert.equal(boss.shield,shield);applyHit(r,boss,catalog.weaponById.ceftazavi,99999);assert.equal(boss.state,'Dead');r.spawned=STAGES[7].count;Object.assign(r.player,r.map.exit);tick(r);assert.equal(r.status,'won');assert.equal(r.completedStages,1);
 });
 
 test('reward choices exclude already supplied weapons and remain available after capped upgrades',()=>{
@@ -226,7 +226,7 @@ test('exploration reveals only current sight rays, retains history and cannot se
 });
 test('final exit stays locked while any opponent remains, including the resistant boss',()=>{
  const r=setup({stage:7,mission:'single'});r.spawnTimer=0;tick(r);Object.assign(r.player,r.map.exit);assert.equal(canExtract(r),false);
- for(const e of r.enemies.filter(e=>e.active)){e.biofilm=false;const w=catalog.weapons.find(w=>combatCoverage(r,w,e.kind).factor);applyHit(r,e,w,99999);}assert.ok(canExtract(r));tick(r);assert.equal(r.status,'won');assert.ok(r.map.sources.every(s=>s.active));
+ for(const e of r.enemies.filter(e=>e.active)){e.biofilm=false;const w=catalog.weapons.find(w=>combatCoverage(r,w,e.kind).factor);applyHit(r,e,w,99999);}assert.ok(canExtract(r));tick(r);assert.equal(r.status,'won');
 });
 
 test('vertical looking cannot shoot or scan an enemy below the reticle and resets at the next stage',()=>{
@@ -284,7 +284,7 @@ test('themed operations start with their counters, preserve cases and finish ind
 test('immune companions acquire and equip one slot, specialize and keep drug AST immutable',()=>{
  for(const c of COMPANIONS){
   const r=setup({companion:c.id}),kind=c.id==='nk'?'cmv':c.id==='eosinophil'?'strongyloides':'mrsa';
-  const e=spawnEnemy(r,kind,{x:6,y:3.5});e.state='Chase';e.revealed=true;e.hp=1;r.pet.cooldown=0;r.map.sources=[];
+  const e=spawnEnemy(r,kind,{x:6,y:3.5});e.state='Chase';e.revealed=true;e.hp=1;r.pet.cooldown=0;
   const ast=catalog.enemyById[kind].ast;tick(r,{},.01);
   assert.equal(e.state,'Dead',c.id);assert.equal(r.pet.shots,1);assert.equal(r.shots,0);assert.equal(stageReport(r).rows[0].supportKills,1);assert.equal(catalog.enemyById[kind].ast,ast);
   assert.equal(equipCompanion(r,'none'),false);r.status='paused';assert.ok(equipCompanion(r,'none'));
@@ -307,9 +307,9 @@ test('companions cannot pull idle enemies or fire through walls and neutropenia 
 
 
 test('scatter and rail hit distinct targets while each target retains its clinical gate',()=>{
- const r=setup(),a=spawnEnemy(r,'mssa',{x:6.5,y:3.1}),b=spawnEnemy(r,'mrsa',{x:6.5,y:3.9});r.map.sources=[];r.weapon=1;fire(r);
+ const r=setup(),a=spawnEnemy(r,'mssa',{x:6.5,y:3.1}),b=spawnEnemy(r,'mrsa',{x:6.5,y:3.9});r.weapon=1;fire(r);
  assert.ok(a.hp<a.maxHp);assert.equal(b.hp,b.maxHp);assert.equal(stageReport(r).rows.find(row=>row.kind==='mrsa').blocked,1);
- const rail=setup({stage:2});rail.map.sources=[];const front=spawnEnemy(rail,'mssa',{x:5.5,y:3.5}),back=spawnEnemy(rail,'mssa',{x:6.5,y:3.5});rail.weapon=5;fire(rail);assert.equal(front.hp,front.maxHp);assert.equal(back.hp,back.maxHp);rail.upgrades.exposure=1;rail.cooldowns[5]=0;fire(rail);assert.ok(front.hp<front.maxHp&&back.hp<back.maxHp);
+ const rail=setup({stage:2});const front=spawnEnemy(rail,'mssa',{x:5.5,y:3.5}),back=spawnEnemy(rail,'mssa',{x:6.5,y:3.5});rail.weapon=5;fire(rail);assert.equal(front.hp,front.maxHp);assert.equal(back.hp,back.maxHp);rail.upgrades.exposure=1;rail.cooldowns[5]=0;fire(rail);assert.ok(front.hp<front.maxHp&&back.hp<back.maxHp);
 });
 test('charge cancels without consuming a round; burst packets are bounded and cancel on switching',()=>{
  const r=setup();r.weapon=2;const before=r.magazines[2];tick(r,{fire:true},.05);assert.ok(r.chargeTime>0);assert.equal(r.magazines[2],before);tick(r,{},.05);assert.equal(r.chargeTime,0);
@@ -317,8 +317,8 @@ test('charge cancels without consuming a round; burst packets are bounded and ca
  const burst=setup();burst.weapon=4;spawnEnemy(burst,'ecoli',{x:6.5,y:3.5});fire(burst);assert.equal(burst.volley.left,2);const report=stageReport(burst);tick(burst,{},.05);assert.equal(stageReport(burst).rows[0].shots,report.rows[0].shots);switchWeapon(burst,0);assert.equal(burst.volley,null);assert.ok(burst.tracers.length<=12);
 });
 test('debrief separates a narrower available choice from resistance and unavailable alternatives',()=>{
- const r=setup();r.map.sources=[];const e=spawnEnemy(r,'mssa',{x:6.5,y:3.5});r.weapon=4;fire(r);assert.equal(stageReport(r).rows[0].broad,1);
- const empty=setup();empty.map.sources=[];empty.magazines[1]=0;spawnEnemy(empty,'mssa',{x:6.5,y:3.5});empty.weapon=4;fire(empty);assert.equal(stageReport(empty).rows[0].broad,0);
+ const r=setup();const e=spawnEnemy(r,'mssa',{x:6.5,y:3.5});r.weapon=4;fire(r);assert.equal(stageReport(r).rows[0].broad,1);
+ const empty=setup();empty.magazines[1]=0;spawnEnemy(empty,'mssa',{x:6.5,y:3.5});empty.weapon=4;fire(empty);assert.equal(stageReport(empty).rows[0].broad,0);
  const unknown=setup({information:'blind'});spawnEnemy(unknown,'mssa',{x:6.5,y:3.5});unknown.weapon=4;fire(unknown);assert.equal(stageReport(unknown).rows[0].broad,0);
  const wrong=setup();spawnEnemy(wrong,'mrsa',{x:6.5,y:3.5});fire(wrong);wrong.time+=.8;switchWeapon(wrong,3);wrong.switchTime=0;fire(wrong);const row=stageReport(wrong).rows[0];assert.equal(row.firstCorrect,0);assert.equal(row.firstAttempts,1);assert.equal(row.switchCount,1);assert.equal(row.switchTotal,.8);
 });

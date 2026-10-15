@@ -10,7 +10,7 @@ Three- to four-tile routes provide room to observe, switch drugs and retreat. Th
 
 The design uses landmarks, repeated views of familiar spaces and contrasting light levels, informed by [John Romero's discussion of DOOM](https://www.stuff.tv/features/stuff-meets-doom-and-wolfenstein-3d-creator-john-romero/). Weapon selection remains based on pathogen/AST/site, never room shape.
 
-A number or text seed reproduces geometry and starting encounters. The campaign schedules 144 opponents, including one middle encounter per stage, MSSA and Pseudomonas stage bosses in Community/Hospital, and the final KPC boss. Two optional infection sources per stage weaken protection and grant supplies. Kill all opponents and reach EXIT; sources are not collection gates.
+A number or text seed reproduces geometry and starting encounters. The campaign schedules 144 opponents, including one middle encounter per stage, MSSA and Pseudomonas stage bosses in Community/Hospital, and the final KPC boss. Fixed infection-source devices are removed. Kill all opponents and reach EXIT.
 
 Every campaign enemy starts outside the entry room and sightline, at least six tiles away. The 24-slot pool fits the full stage. At least ceil(stage count × 0.30) scheduled opponents remain ordinary profiles protected from pressure substitutions. Pressure crossing 40/70 can replace only idle, undiscovered, hidden encounters; visible opponents never transform.
 
@@ -23,7 +23,7 @@ Seven small unmodified Freedoom PNGs provide five materials, a floor and a medic
 - WASD movement; mouse horizontal/vertical aim; left mouse fire; Space jump; Shift dash.
 - 1–9 / wheel select drugs; Q previous drug; R reload; G throw decontamination canister.
 - Hold right mouse to use the separate left offhand scanner; release to restore the same gun. It does not consume a numbered slot or ammunition.
-- F source control; Esc/Tab pause; B pause and open cards. Without pointer lock, drag to aim; arrow keys turn/look. Touch has joystick, drag look, hold scanner, throw, fire, reload, jump and dash.
+- F disrupt biofilm or clear dormant spores/toxin hazards; Esc/Tab pause; B pause and open cards. Without pointer lock, drag to aim; arrow keys turn/look. Touch has joystick, drag look, hold scanner, throw, fire, reload, jump and dash.
 
 Vertical view shifts the raycasting horizon while keeping the reticle fixed. Hits and scans check the billboard's vertical extent. Looking at the ceiling cannot hit an enemy below the reticle. Collision follows tile floor heights, permits stair steps, blocks taller ledges and ceilings, and uses gravity after a drop. Jumping cannot pass through walls. Projectiles interpolate height toward the target. This is 2.5D, without stacked floors or full 3D pitch geometry.
 
@@ -43,7 +43,7 @@ Twelve weapons join original records: AMP, CFZ, CRO, VAN, MEM, LEV, MTZ, LZD, CZ
 
 `createPlayCatalog(database, library)` joins the existing 17 fixed isolates/clinical profiles and 12 drugs. Names, families and AST objects remain shared with the encyclopedia. R and INACTIVE always cause zero antibiotic damage, before shield, HP or DOT multipliers. Unknown pairs remain inactive. OUTSIDE_REGIMEN is not relabeled R. I requires increased exposure; CFZ starts with it, infusion supplies beta-lactam exposure and the broader optimization upgrade supplies other classes. CFZ urinary-only results remain site-limited. ACTIVE and REGIMEN are not relabeled S.
 
-Capsule absorbs damage, biofilm/source protection reduces incoming damage and F disrupts it. Intracellular targets have a cell barrier; LEV reaches that target. Dormant spores resist antibiotic damage until germination, can be removed with F, and vegetative toxin producers leave floor hazards. CMV's authored case is advanced-HIV adult retinitis, with GCV suppressing replication; Strongyloides uses its named treatment scenario and IVM slows the larvae. In the campaign and endless mode these cases enter only in later tiers; independent themes issue their counters from the start. KPC boss phases do not change its original AST.
+Capsule absorbs damage, biofilm from nearby carrier enemies reduces incoming damage and F disrupts it. Intracellular targets have a cell barrier; LEV reaches that target. Dormant spores resist antibiotic damage until germination, can be removed with F, and vegetative toxin producers leave floor hazards. CMV's authored case is advanced-HIV adult retinitis, with GCV suppressing replication; Strongyloides uses its named treatment scenario and IVM slows the larvae. In the campaign and endless mode these cases enter only in later tiers; independent themes issue their counters from the start. KPC boss phases do not change its original AST.
 
 Normal, neutropenic, renal-impaired and confirmed aminopenicillin-allergic hosts change gameplay. Neutropenia lengthens immune/recovery intervals. Renal impairment lowers regeneration of selected renally handled drugs until adjusted. Allergy blocks AMP specifically; other beta-lactams are assessed in the authored scenario. These are resource abstractions, not clinical doses or interchangeable allergy rules.
 

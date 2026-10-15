@@ -21,11 +21,10 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
   if(lastMap!==r.map.id){lastMap=r.map.id;waypoint=null;navigationGoal=null;navTime=0;lastGoal='';}
   const distance=e=>Math.hypot(e.x-r.player.x,e.y-r.player.y),live=r.enemies.filter(e=>e.active&&e.state!=='Dead');
   const enemy=live.filter(e=>lineOfSight(r.map,r.player,e)).sort((a,b)=>distance(a)-distance(b))[0];
-  const source=r.map.sources.includes(navigationGoal)&&navigationGoal.active?navigationGoal:r.map.sources.filter(s=>s.active).sort((a,b)=>distance(a)-distance(b))[0];
   const unvisited=r.map.rooms.find(room=>!r.visited.has(room.id));
   // Keep a destination until cleared; nearest unseen targets can otherwise alternate across a wall.
-  let goal=source||(live.includes(navigationGoal)?navigationGoal:live.sort((a,b)=>distance(a)-distance(b))[0])||r.map.exit;
-  if(!source&&!live.length&&r.spawned<STAGES[r.wave].count)goal=unvisited||r.pending[0]||r.map.exit;
+  let goal=(live.includes(navigationGoal)?navigationGoal:live.sort((a,b)=>distance(a)-distance(b))[0])||r.map.exit;
+  if(!live.length&&r.spawned<STAGES[r.wave].count)goal=unvisited||r.pending[0]||r.map.exit;
   navigationGoal=goal;const goalKey=r.map.id+':'+Math.floor(goal.x)+','+Math.floor(goal.y);
   navTime-=1/30;if(!waypoint||Math.hypot(waypoint.x-r.player.x,waypoint.y-r.player.y)<.15||goalKey!==lastGoal||navTime<=0){waypoint=navigate(goal);lastGoal=goalKey;navTime=1;}
   let dx=waypoint.x-r.player.x,dy=waypoint.y-r.player.y,fire=false,scope=false;
@@ -50,5 +49,5 @@ export function playCampaign(catalog,{seed=1,hard=false,host='normal',stage=0,mi
   const norm=Math.max(.01,Math.hypot(dx,dy));dx/=norm;dy/=norm;const c=Math.cos(r.player.angle),s=Math.sin(r.player.angle);
   controlSource(r);tick(r,{forward:dx*c+dy*s,strafe:-dx*s+dy*c,fire,scope,dash:Boolean(enemy&&distance(enemy)<1.7),jump:Boolean(enemy&&distance(enemy)<1.5&&steps%24===0)},1/30);r.events.length=0;
  }
- return {status:r.status,time:Math.round(r.time),hp:Math.round(r.player.hp),stage:r.wave+1,kills:r.kills,pressure:Math.round(r.pressure),sources:r.totalSources,completed:r.completedStages,position:r.player,pending:r.pending.length,remaining:r.enemies.filter(e=>e.active&&e.state!=='Dead').map(e=>({kind:e.kind,state:e.state,x:e.x,y:e.y,hp:e.hp})),reports};
+ return {status:r.status,time:Math.round(r.time),hp:Math.round(r.player.hp),stage:r.wave+1,kills:r.kills,pressure:Math.round(r.pressure),completed:r.completedStages,position:r.player,pending:r.pending.length,remaining:r.enemies.filter(e=>e.active&&e.state!=='Dead').map(e=>({kind:e.kind,state:e.state,x:e.x,y:e.y,hp:e.hp})),reports};
 }

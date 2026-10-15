@@ -50,20 +50,20 @@ export const HOSTS=Object.freeze([
 ]);
 // Each stage constructs its small grid on entry. No stage texture/model downloads.
 export const STAGES=Object.freeze([
-  {id:'community',bossKind:'mssa',name:'COMMUNITY',label:'지역사회 감염',site:'community',count:12,pool:['pneumo','mssa','ecoli'],color:'#a8d798',note:'관측 데크와 계단으로 접근하고, 중간보스 제압 후 지름길을 여세요. 마지막 MSSA 군체를 제압하면 철수합니다.',source:'LOCAL FOCUS',modifier:'면역 보존',elite:0},
-  {id:'uti',name:'URINARY TRACT',label:'카테터 연관 UTI',site:'urinary',count:14,pool:['ecoli','klebs','esbl'],color:'#91bfe6',note:'카테터의 biofilm 보호를 제거하세요. CFZ 요로 한정 결과가 적용됩니다.',source:'CATHETER',modifier:'요로 기원 판정 적용',elite:.04},
-  {id:'pneumonia',name:'PNEUMONIA',label:'폐렴 구역',site:'lung',count:16,pool:['pneumo','mssa','legionella','klebs'],color:'#8ad1c0',note:'LEV 보급. Legionella는 세포내 표적이며 폐렴 요법 판정을 사용합니다.',source:'DRAINABLE FOCUS',modifier:'세포내 은신',elite:.05},
-  {id:'abdomen',name:'ABDOMINAL',label:'복강 내 감염',site:'abdomen',count:18,pool:['anaerobe','ecoli','esbl','clostridium'],color:'#d8b587',note:'MTZ 보급. 혐기성균과 장내세균의 대응 약제를 전환하고 농양을 배액하세요.',source:'ABSCESS',modifier:'혐기성 · 잔류 독소',elite:.07},
-  {id:'hospital',bossKind:'pseudo',name:'HOSPITAL',label:'병원 획득 감염',site:'lung',count:18,pool:['mrsa','pseudo','esbl','klebs','mssa'],color:'#9eb5ce',note:'녹농균은 주변 적을 보호합니다. 가까이서 F로 biofilm을 해체하세요.',source:'DEVICE BIOFILM',modifier:'이동성 biofilm 보호',elite:.08},
-  {id:'icu',name:'ICU',label:'중환자실',site:'bloodstream',count:20,pool:['vre','mrsa','pseudo','esbl','cmv','ecoli','klebs'],scenarios:['cmv-retinitis'],color:'#bba2d7',note:'LZD·GCV 보급. VRE와 후기 바이러스 사례: 진행 HIV 성인의 CMV 망막염.',source:'INFECTED LINE',modifier:'면역 제거 주기 연장',immuneDelay:1.5,elite:.1},
-  {id:'outbreak',name:'RESISTANT OUTBREAK',label:'내성균 집단 발생',site:'bloodstream',count:22,pool:['kpc','mdr','vre','mrsa','strongyloides','ecoli','mssa','klebs'],scenarios:['strongyloidiasis'],color:'#e3a383',note:'CZA·IVM 보급. KPC·DTR AST와 후기 기생충 사례: Strongyloidiasis.',source:'OUTBREAK FOCUS',modifier:'CRE · DTR · VRE',elite:.14},
-  {id:'sepsis',name:'SEPSIS / CORE',label:'패혈증 봉쇄 작전',site:'bloodstream',count:24,pool:['kpc','mdr','vre','mrsa','esbl','cmv','strongyloides','ecoli','mssa','klebs'],scenarios:['cmv-retinitis','strongyloidiasis'],color:'#de947f',note:'일반 감수성균도 섞여 있습니다. 모든 적과 KPC 군체 보스를 제압하고 EXIT로 탈출하세요.',source:'SEPTIC FOCUS',modifier:'감염원 연동 보스',boss:true,elite:.16}
+  {id:'community',bossKind:'mssa',name:'COMMUNITY',label:'지역사회 감염',site:'community',count:12,pool:['pneumo','mssa','ecoli'],color:'#a8d798',note:'관측 데크와 계단으로 접근하고, 중간보스 제압 후 지름길을 여세요. 마지막 MSSA 군체를 제압하면 철수합니다.',modifier:'면역 보존',elite:0},
+  {id:'uti',name:'URINARY TRACT',label:'카테터 연관 UTI',site:'urinary',count:14,pool:['ecoli','klebs','esbl'],color:'#91bfe6',note:'카테터 연관 UTI 상황입니다. CFZ 요로 한정 결과를 확인하고 ESBL 여부에 맞춰 약제를 전환하세요.',modifier:'요로 기원 판정 적용',elite:.04},
+  {id:'pneumonia',name:'PNEUMONIA',label:'폐렴 구역',site:'lung',count:16,pool:['pneumo','mssa','legionella','klebs'],color:'#8ad1c0',note:'LEV 보급. Legionella는 세포내 표적이며 폐렴 요법 판정을 사용합니다.',modifier:'세포내 은신',elite:.05},
+  {id:'abdomen',name:'ABDOMINAL',label:'복강 내 감염',site:'abdomen',count:18,pool:['anaerobe','ecoli','esbl','clostridium'],color:'#d8b587',note:'MTZ 보급. 혐기성균과 장내세균의 대응 약제를 전환하고 포자·오염 구역을 처리하세요.',modifier:'혐기성 · 잔류 독소',elite:.07},
+  {id:'hospital',bossKind:'pseudo',name:'HOSPITAL',label:'병원 획득 감염',site:'lung',count:18,pool:['mrsa','pseudo','esbl','klebs','mssa'],color:'#9eb5ce',note:'녹농균은 주변 적을 보호합니다. 가까이서 F로 biofilm을 해체하세요.',modifier:'이동성 biofilm 보호',elite:.08},
+  {id:'icu',name:'ICU',label:'중환자실',site:'bloodstream',count:20,pool:['vre','mrsa','pseudo','esbl','cmv','ecoli','klebs'],scenarios:['cmv-retinitis'],color:'#bba2d7',note:'LZD·GCV 보급. VRE와 후기 바이러스 사례: 진행 HIV 성인의 CMV 망막염.',modifier:'면역 제거 주기 연장',immuneDelay:1.5,elite:.1},
+  {id:'outbreak',name:'RESISTANT OUTBREAK',label:'내성균 집단 발생',site:'bloodstream',count:22,pool:['kpc','mdr','vre','mrsa','strongyloides','ecoli','mssa','klebs'],scenarios:['strongyloidiasis'],color:'#e3a383',note:'CZA·IVM 보급. KPC·DTR AST와 후기 기생충 사례: Strongyloidiasis.',modifier:'CRE · DTR · VRE',elite:.14},
+  {id:'sepsis',name:'SEPSIS / CORE',label:'패혈증 봉쇄 작전',site:'bloodstream',count:24,pool:['kpc','mdr','vre','mrsa','esbl','cmv','strongyloides','ecoli','mssa','klebs'],scenarios:['cmv-retinitis','strongyloidiasis'],color:'#de947f',note:'일반 감수성균도 섞여 있습니다. 모든 적과 KPC 군체 보스를 제압하고 EXIT로 탈출하세요.',modifier:'KPC 군체 보스',boss:true,elite:.16}
 ]);
 export const WAVES=STAGES;
 // Independent case collections, not difficulty tiers or new campaign end stages.
 export const THEME_STAGES=Object.freeze([
- {id:'virology',name:'VIRAL OBSERVATORY',label:'바이러스 연구동',site:'community',count:14,pool:['hsv','cmv','hsv','cmv','mssa','ecoli'],scenarios:['first-genital-herpes','cmv-retinitis'],color:'#a9b8ed',theme:3,mapStyle:2,note:'서로 다른 임상 사례를 모은 연구동. ACV·GCV로 감염세포의 복제를 억제하고 세균은 별도 약제로 대응하세요.',source:'REPLICATION FOCUS',modifier:'바이러스 사례 · 자동 복제',elite:0,loadout:['acyclovir','ganciclovir','ampicillin','cefazolin','ceftriaxone','vancomycin','meropenem','levofloxacin','metronidazole'],companion:'nk'},
- {id:'parasitology',name:'PARASITE CONSERVATORY',label:'기생충 온실',site:'abdomen',count:14,pool:['giardia','strongyloides','giardia','strongyloides','ecoli','anaerobe'],scenarios:['giardiasis','strongyloidiasis'],color:'#c4d49d',theme:0,mapStyle:3,note:'별도 장내감염 사례를 모은 온실. Giardia 원충은 MTZ, Strongyloides 유충은 IVM으로 구분해 대응하세요.',source:'TRANSMISSION FOCUS',modifier:'원충 · 연충의 다른 대응',elite:0,loadout:['metronidazole','ivermectin','ampicillin','cefazolin','ceftriaxone','vancomycin','meropenem','levofloxacin','linezolid'],companion:'eosinophil'}
+ {id:'virology',name:'VIRAL OBSERVATORY',label:'바이러스 연구동',site:'community',count:14,pool:['hsv','cmv','hsv','cmv','mssa','ecoli'],scenarios:['first-genital-herpes','cmv-retinitis'],color:'#a9b8ed',theme:3,mapStyle:2,note:'서로 다른 임상 사례를 모은 연구동. ACV·GCV로 감염세포의 복제를 억제하고 세균은 별도 약제로 대응하세요.',modifier:'바이러스 사례 · 자동 복제',elite:0,loadout:['acyclovir','ganciclovir','ampicillin','cefazolin','ceftriaxone','vancomycin','meropenem','levofloxacin','metronidazole'],companion:'nk'},
+ {id:'parasitology',name:'PARASITE CONSERVATORY',label:'기생충 온실',site:'abdomen',count:14,pool:['giardia','strongyloides','giardia','strongyloides','ecoli','anaerobe'],scenarios:['giardiasis','strongyloidiasis'],color:'#c4d49d',theme:0,mapStyle:3,note:'별도 장내감염 사례를 모은 온실. Giardia 원충은 MTZ, Strongyloides 유충은 IVM으로 구분해 대응하세요.',modifier:'원충 · 연충의 다른 대응',elite:0,loadout:['metronidazole','ivermectin','ampicillin','cefazolin','ceftriaxone','vancomycin','meropenem','levofloxacin','linezolid'],companion:'eosinophil'}
 ]);
 export const stageFor=run=>run.mission==='theme'?(THEME_STAGES.find(s=>s.id===run.themeId)||THEME_STAGES[0]):STAGES[run.wave];
 export const REWARDS=Object.freeze([
@@ -75,9 +75,9 @@ export const REWARDS=Object.freeze([
   {id:'efficiency',title:'투여 효율 최적화',tag:'RESOURCE',text:'약제 소모 −20%. 감수성 범위는 유지. 최대 3회.',max:3},
   {id:'reserve',title:'확장 보급 카트리지',tag:'AMMO',text:'모든 약제 최대 보유량 +60, 전량 보급. 최대 3회.',max:3},
   {id:'rate',title:'투여 간격 최적화',tag:'HANDLING',text:'유효 사격 간격 −14%. 더 빠르게 대응하되 소모와 선택압도 발생. 최대 3회.',max:3},
-  {id:'penetration',title:'Biofilm penetration',tag:'EXPOSURE',text:'활성 약제의 biofilm 내 전달 효율 증가. F 감염원 제거와 함께 사용.',max:1},
+  {id:'penetration',title:'Biofilm penetration',tag:'EXPOSURE',text:'활성 약제의 biofilm 내 전달 효율 증가. F biofilm 해체와 함께 사용.',max:1},
   {id:'support',title:'Host stabilization',tag:'SUPPORT',text:'구역 전환 시 체력 +50. 다음 구역을 위한 숙주 안정화 보급.'},
-  {id:'source',title:'Source control kit',tag:'PROCEDURE',text:'제거 범위 확대 · F 대기 단축 · 체력 +35. 보호막과 오염원을 직접 처리.'},
+  {id:'source',title:'Source control kit',tag:'PROCEDURE',text:'제거 범위 확대 · F 대기 단축 · 체력 +35. biofilm·휴면 포자·오염 구역을 직접 처리.'},
   {id:'renal',title:'신기능 맞춤 투여',tag:'HOST / PK',text:'신기능 저하의 약제 회복 불이익 해소. 원래 coverage와 목표 노출 유지.',max:1,host:'renal'},
   {id:'mobility',title:'신속 대응 프로토콜',tag:'MOVEMENT',text:'대시 재사용 2.2초 → 1.3초. 좁은 방에서 독소와 공격을 피하세요.',max:1},
   {id:'unlock_levofloxacin',title:'Levofloxacin 보급',tag:'NEW WEAPON',text:'LEV 조기 해금. 세포내 표적에 도달하는 장거리 무기.',weapon:'levofloxacin',max:1},
@@ -144,7 +144,7 @@ export function createSurvivalMap(seed){
  for(let y=16;y<23;y++)for(let x=13;x<41;x++){const i=y*w+x;map.cells[i]=0;map.roomCells[i]=commons.id;map.lights[i]=.85;map.ceilings[i]=1.8;}
  for(const gate of map.shortcuts){gate.open=true;for(const i of gate.cells)map.cells[i]=0;}
  for(let y=12;y<28;y++)for(let x=20;x<24;x++)map.cells[y*w+x]=0;
- map.id='survival-'+normalizeSeed(seed);map.name='ENDLESS / MIXED CASES';map.layout='COMMONS / 3 ROUTES';map.site='bloodstream';map.scenarios=[];map.sources=[];map.boss=null;map.miniboss=null;
+ map.id='survival-'+normalizeSeed(seed);map.name='ENDLESS / MIXED CASES';map.layout='COMMONS / 3 ROUTES';map.site='bloodstream';map.scenarios=[];map.boss=null;map.miniboss=null;
  const spots=[];for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++)if(!map.cells[y*w+x]&&x>=9)spots.push({x:x+.5,y:y+.5,room:map.roomCells[y*w+x]});
  for(let i=spots.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[spots[i],spots[j]]=[spots[j],spots[i]];}map.spawnSpots=spots;
  map.pickups=[{x:5.5,y:2.5,kind:'supply'},{...spots[0],kind:'companion'},...spots.filter((_,i)=>i%Math.max(1,Math.floor(spots.length/8))===0).slice(0,8).map((p,i)=>({...p,kind:i%2?'health':'supply'}))].map((p,id)=>({...p,id,active:true,cooldown:0}));return map;
