@@ -179,3 +179,6 @@ main.home-main{display:grid;place-items:center;max-width:none;width:100%;min-hei
  .appbar--home .brand{flex-basis:auto}
 }
 @media(prefers-reduced-motion:reduce){.tab-choice{transition:none}.tab-choice:hover,.tab-choice:active{transform:none}}
+
+/* Six destinations remain reachable on narrow navigation bars. */
+.appnav{min-width:0;overflow-x:auto;scrollbar-width:none}.appnav button{flex-shrink:0}

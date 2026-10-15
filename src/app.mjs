@@ -7,13 +7,14 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.27.1';
+const VERSION = '0.28.1';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
  {id:'lab',label:'동정실',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
  {id:'treatment',label:'항생제 선택',icon:'<rect x="4" y="7" width="16" height="10" rx="5" transform="rotate(-45 12 12)"/><path d="m9 9 6 6"/>'},
  {id:'defense',label:'디펜스',icon:'<path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Z"/><path d="M12 8v8M8 12h8"/>'},
  {id:'play',label:'Play',icon:'<path d="M9 4h6v4h4v8h-4v4H9v-4H5V8h4V4Z"/><path d="M9 12h6m-3-3v6"/>'},
+ {id:'survival',label:'survival',icon:'<circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/>'},
  {id:'cards',label:'카드 도감',icon:'<rect x="6" y="5" width="13" height="16" rx="2"/><path d="M4 18V4a2 2 0 0 1 2-2h10M10 10h5M10 14h5M10 18h3"/>'}
 ];
 
@@ -33,11 +34,12 @@ const shortResult = category => ({ACT:'조건부 활성',ACTIVE:'활성 있음',
 const matchingDrugs = () => panelDrugs().filter(d=>(d.name+' '+d.family).toLowerCase().includes(filter.trim().toLowerCase()));
 let data, cardDatabase, sources, treatmentGame, defenseGame, cardGallery, cardInspector, morphologyVisuals, morphologyAssets = new Map(), morphologyTaxa = new Map(), round, archive = {}, view = resolveAppRoute(location.hash)?.view || 'home', tab = 'hints', mode = 'standard', selectedTaxon = '', selectedAnswer = '', filter = '', notice = '', storageWarning = '', confirmNext = false;
 let playGame, playLoading, playLoadError='';
+let survivalGame, survivalLoading, survivalLoadError='';
 const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.27.1" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.28.1" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -79,12 +81,29 @@ function home() {
  return `<section class="tab-selection" aria-label="탭 선택"><nav class="tab-choices" aria-label="학습 화면 선택">${APP_TABS.map(({id,label,icon})=>`<button type="button" class="tab-choice" data-view="${id}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></button>`).join('')}</nav></section>`;
 }
 function shell() {
- const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',defense:'defense-main',play:'play-main',cards:'card-gallery-main'}[view];
- const content=view==='home'?home():view==='lab'?lab():view==='treatment'?treatmentGame.render():view==='defense'?defenseGame.render():view==='play'?playView():cardGallery.render();
+ const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',defense:'defense-main',play:'play-main',survival:'survival-main',cards:'card-gallery-main'}[view];
+ const content=view==='home'?home():view==='lab'?lab():view==='treatment'?treatmentGame.render():view==='defense'?defenseGame.render():view==='play'?playView():view==='survival'?survivalView():cardGallery.render();
  return `<header class="appbar${view==='home'?' appbar--home':''}"><a class="brand" href="#home" aria-label="Pathopedia 탭 선택">${symbol}<span>PATHOPEDIA</span></a>${view==='home'?'':`<nav class="appnav" aria-label="주 메뉴">${APP_TABS.map(({id,label})=>`<button type="button" data-view="${id}" class="${view===id?'active':''}" ${view===id?'aria-current="page"':''}>${label}</button>`).join('')}</nav>`}<span class="version">v ${VERSION}</span></header>
   ${storageWarning ? `<div class="storage-warning" role="alert">${esc(storageWarning)}</div>` : ''}
   <main id="main" class="${mainClass}" tabindex="-1">${content}</main>
   <dialog id="detail-dialog" aria-labelledby="detail-title"></dialog>${cardInspector?.markup() || ''}`;
+}
+function survivalView(){
+ if(survivalGame)return survivalGame.render();
+ return '<section class="boot"><span class="eyebrow">PATHOPEDIA / SURVIVAL</span><h1>'+(survivalLoadError?'게임을 불러오지 못했습니다.':'생존 전장을 준비하는 중')+'</h1><p>'+(survivalLoadError?'연결을 확인하고 다시 시도해 주세요.':'자동 공격 생존 게임을 불러오고 있습니다.')+'</p>'+(survivalLoadError?'<button type="button" data-survival-retry>다시 불러오기</button>':'')+'</section>';
+}
+async function loadSurvival(){
+ if(survivalGame||survivalLoading)return;
+ survivalLoadError='';
+ const styleReady=new Promise((resolve,reject)=>{
+  if(document.querySelector('link[data-survival-style]'))return resolve();
+  const link=document.createElement('link');link.rel='stylesheet';link.href=new URL('./survival.css',import.meta.url).href;link.dataset.survivalStyle='';link.onload=resolve;link.onerror=()=>{link.remove();reject(Error('Survival stylesheet unavailable'));};document.head.append(link);
+ });
+ survivalLoading=Promise.all([import('./survival-ui.mjs'),styleReady]);
+ try{const [{createSurvivalGame}]=await survivalLoading;survivalGame=createSurvivalGame();
+  if('serviceWorker' in navigator)void navigator.serviceWorker.ready.then(reg=>reg.active?.postMessage('CACHE_SURVIVAL')).catch(()=>{});
+ }catch(error){survivalLoadError=error.message;console.error('Survival load failed',error);}
+ finally{survivalLoading=null;if(view==='survival')render();}
 }
 function playView(){
  if(playGame)return playGame.render();
@@ -166,6 +185,8 @@ function render(focusSelector) {
  root.innerHTML=shell();
  defenseGame?.mount(root,view==='defense');
  playGame?.mount(root,view==='play');
+ survivalGame?.mount(root,view==='survival');
+ if(view==='survival'&&!survivalGame&&!survivalLoadError)void loadSurvival();
  if(view==='play'&&!playGame&&!playLoadError)void loadPlay();
  if (focusSelector) $(focusSelector)?.focus({preventScroll:true});
 }
@@ -190,6 +211,8 @@ root.addEventListener('click',e=>{
  if(e.target.closest('.brand')){e.preventDefault();navigateTo('#home');return;}
  const b=e.target.closest('button'); if (!b||b.disabled) return;
  if(b.hasAttribute('data-play-retry')){location.reload();return;}
+ if(b.hasAttribute('data-survival-retry')){void loadSurvival();render();return;}
+ if(survivalGame?.handleClick(b))return;
  if(playGame?.handleClick(b))return;
  if(cardInspector?.handleClick(b))return;
  if(handleReferenceCardClick(b))return;
