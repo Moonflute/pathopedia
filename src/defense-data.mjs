@@ -1,4 +1,5 @@
-export const WAVE_COUNT = 12;
+export const DECK_SLOTS = 4;
+export const DECK_BUDGET = 10;
 export const MAPS = Object.freeze([
  {id:'lung',name:'폐',subtitle:'호흡기 방어선',color:'#8ad1c0',note:'폐렴 시나리오 · 그람양성균과 음성균을 함께 대비하세요.',sourceAction:'농흉 배액',sourceNote:'배액 가능한 농흉이 동반된 감염원을 제거합니다.'},
  {id:'urinary',name:'요로',subtitle:'방광 방어선',color:'#91bfe6',note:'하부 요로 감염 · Cefazolin의 E. coli 판정은 요로 유래에 한정됩니다.',sourceAction:'카테터 제거·교체',sourceNote:'증상이 있는 카테터 연관 감염의 biofilm 감염원을 제거합니다.'},
@@ -38,13 +39,33 @@ export const PROFILE_SPECS=Object.freeze([
  {id:'visa',recordId:'SAU-403',name:'S. aureus',short:'VI',color:'#bc81ae',hp:85,group:'그람양성'},
  {id:'lzdr',recordId:'SAU-404',name:'S. aureus',short:'LR',color:'#d48099',hp:85,group:'그람양성'}
 ]);
-export const SCHEDULES=Object.freeze({
- lung:[['pneumo'],['pneumo','mssa'],['mssa'],['klebs','pneumo'],['mrsa','mssa'],['esblk','pneumo'],['pseudo'],['mrsa','pseudo'],['esblk','mrsa'],['kpc','esblk'],['pseudo','mrsa'],['kpc','mrsa','pseudo']],
- urinary:[['ecoli'],['ecoli','klebs'],['klebs'],['ecoli','klebs'],['esbl','ecoli'],['esbl'],['pseudo'],['esbl','pseudo'],['esbl','klebs'],['kpc','esbl'],['pseudo','esbl'],['kpc','pseudo','esbl']],
- abdomen:[['ecoli'],['ecoli','anaerobe'],['klebs','anaerobe'],['ecoli','anaerobe'],['esbl','anaerobe'],['esblk','anaerobe'],['esbl','esblk'],['esbl','anaerobe'],['esblk','anaerobe'],['kpc','anaerobe'],['esbl','anaerobe'],['kpc','esblk','anaerobe']]
+// Stage rosters are fully disclosed before deck selection. Numbers below are game balance.
+export const STAGES=Object.freeze([
+ {id:'first-line',name:'첫 방어선',mapId:'lung',hostId:'normal',enemies:['pneumo'],tag:'기초',waves:[4,5,6],hp:1,interval:2.1,budget:10},
+ {id:'two-fronts',name:'엇갈린 감수성',mapId:'lung',hostId:'allergy',enemies:['pneumo','mssa'],tag:'복합 감염',waves:[5,6,7],hp:1.04,interval:1.65},
+ {id:'urinary',name:'요로의 침입자',mapId:'urinary',hostId:'renal',enemies:['ecoli','klebs'],tag:'신기능 조정',waves:[5,7,8],hp:1.08,interval:1.5},
+ {id:'abscess',name:'농양 깊숙이',mapId:'abdomen',hostId:'normal',enemies:['ecoli','anaerobe'],tag:'Source control',source:true,waves:[6,7,8],hp:1.1,interval:1.5},
+ {id:'mrsa',name:'분홍빛 경보',mapId:'lung',hostId:'immune',enemies:['pneumo','mrsa'],tag:'MRSA',waves:[6,8,9],hp:1.14,interval:1.4},
+ {id:'esbl',name:'새로운 기전',mapId:'urinary',hostId:'renal',enemies:['esbl','esblk'],tag:'ESBL',waves:[6,8,9],hp:1.17,interval:1.3},
+ {id:'pseudomonas',name:'푸른 공세',mapId:'lung',hostId:'normal',enemies:['pseudo','mrsa'],tag:'Pseudomonas',waves:[7,8,10],hp:1.2,interval:1.25},
+ {id:'deep-focus',name:'끝나지 않는 감염원',mapId:'abdomen',hostId:'immune',enemies:['esbl','anaerobe'],tag:'ESBL · 농양',source:true,waves:[7,9,10],hp:1.23,interval:1.2},
+ {id:'kpc',name:'마지막 β-lactamase',mapId:'urinary',hostId:'renal',enemies:['kpc','pseudo'],tag:'KPC',waves:[7,9,10],hp:1.25,interval:1.2},
+ {id:'visa',name:'다시 읽는 AST',mapId:'lung',hostId:'immune',enemies:['visa','pseudo'],tag:'VISA',waves:[8,9,11],hp:1.25,interval:1.15},
+ {id:'switch',name:'반대편 빈틈',mapId:'lung',hostId:'allergy',enemies:['lzdr','esblk'],tag:'LZD 내성',waves:[8,10,11],hp:1.28,interval:1.1},
+ {id:'last-front',name:'최후의 방어선',mapId:'abdomen',hostId:'normal',enemies:['kpc','mrsa','anaerobe'],tag:'복합 내성 · 농양',source:true,waves:[9,11,12],hp:1.3,interval:1.05}
+].map((s,i)=>Object.freeze({number:i+1,ecoTarget:[12,18,14,18,18,24,24,24,28,24,26,30][i],budget:DECK_BUDGET,...s,enemies:Object.freeze(s.enemies),waves:Object.freeze(s.waves)})));
+export const UNIT_RULES=Object.freeze({
+ ampicillin:{points:1,cooldown:2.8,speed:63,range:132,lifetime:33},
+ amoxclav:{points:2,cooldown:3.6,speed:60,range:140,lifetime:35},
+ cefazolin:{points:1,cooldown:3.2,speed:65,range:130,lifetime:34},
+ ceftriaxone:{points:2,cooldown:4.2,speed:58,range:190,lifetime:36},
+ metronidazole:{points:1,cooldown:3.1,speed:62,range:150,lifetime:34},
+ cefepime:{points:3,cooldown:4.8,speed:61,range:175,lifetime:36},
+ vancomycin:{points:3,cooldown:5.4,speed:57,range:160,lifetime:38},
+ linezolid:{points:3,cooldown:4.9,speed:64,range:185,lifetime:36},
+ meropenem:{points:4,cooldown:6.2,speed:59,range:170,lifetime:38},
+ ceftazavi:{points:5,cooldown:6.6,speed:58,range:180,lifetime:39}
 });
-export const PATH=Object.freeze([[-30,100],[185,100],[185,235],[455,235],[455,100],[730,100],[730,360],[305,360],[305,465],[930,465]]);
-export const PADS=Object.freeze([{id:0,x:102,y:182},{id:1,x:270,y:137},{id:2,x:364,y:155},{id:3,x:542,y:174},{id:4,x:651,y:214},{id:5,x:816,y:279},{id:6,x:419,y:301},{id:7,x:218,y:362},{id:8,x:566,y:422}]);
 export const EXTRA_SOURCES=Object.freeze([
  {title:'EUCAST · S / I / R 정의',url:'https://www.eucast.org/bacteria/clinical-breakpoints-and-interpretation/definition-of-s-i-and-r/'},
  {title:'IDSA 2026 · ESBL / CRE / Pseudomonas',url:'https://www.idsociety.org/practice-guideline/amr-guidance/'},
@@ -56,7 +77,7 @@ export function createDefenseCatalog(database,sources={}) {
  const drugs=DRUG_SPECS.map(spec=>{
   const original=database.drugs.find(drug=>drug.id===spec.id);
   if(!original)throw new Error('Missing defense drug: '+spec.id);
-  return Object.freeze({...original,...spec});
+  return Object.freeze({...original,...spec,...UNIT_RULES[spec.id]});
  });
  const pathogens=PROFILE_SPECS.map(spec=>{
   const record=database.records.find(record=>record.id===spec.recordId);

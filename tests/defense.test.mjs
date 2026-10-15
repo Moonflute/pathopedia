@@ -1,228 +1,49 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {createDefenseCatalog,MAPS,HOSTS,PROFILE_SPECS} from '../src/defense-data.mjs';
-import {newDefenseRun,wavePlan,waveIntel,defenseReadiness,retryWave,getCoverage,towerCoverage,upkeep,unlockDrug,deployDrug,upgradeTower,sellTower,improveLab,controlSource,beginWave,pauseRun,resumeRun,tickDefense,PATH_LENGTH,pathPosition,placementCheck,moveTower,mergeTowers,mergeCandidate,setTarget,chooseSupply,rerollSupply,supplyChoices} from '../src/defense-engine.mjs';
-const database=JSON.parse(readFileSync(new URL('../data/organisms.json',import.meta.url),'utf8'));
-const catalog=createDefenseCatalog(database);
-const richRun=options=>({...newDefenseRun(catalog,{seed:42,...options}),credits:10000});
-const advance=(run,seconds)=>{for(let i=0;i<seconds*20;i++)tickDefense(run,catalog,0.05);};
-
-test('defense imports actual Pathopedia isolate categories, notes, sources and applicability without reauthoring AST',()=>{
- for(const profile of catalog.pathogens){
-  const original=database.records.find(r=>r.id===profile.recordId);
-  for(const drug of catalog.drugs){assert.deepEqual(profile.ast[drug.id],original.susceptibility[drug.id]||null);}
- }
- assert.equal(catalog.pathogens.length,PROFILE_SPECS.length);
- assert.throws(()=>createDefenseCatalog({drugs:[],records:[]}),/Missing defense drug/);
+import {createDefenseCatalog,STAGES,MAPS} from '../src/defense-data.mjs';
+import {getCoverage,stageCoverage,deckReadiness,normalizeDeck,newDefenseRun,startDefense,deployDrug,tickDefense,controlSource,pauseRun} from '../src/defense-engine.mjs';
+const database=JSON.parse(readFileSync(new URL('../data/organisms.json',import.meta.url),'utf8')),catalog=createDefenseCatalog(database);
+const slot=(drugId,exposure=0)=>({drugId,exposure});
+test('the deck game retains original AST, source notes and site applicability',()=>{
+ for(const p of catalog.pathogens)for(const d of catalog.drugs)assert.deepEqual(p.ast[d.id],database.records.find(r=>r.id===p.recordId).susceptibility[d.id]||null);
+ for(const map of MAPS)for(const p of catalog.pathogens)for(const d of catalog.drugs)if(['R','INACTIVE'].includes(p.ast[d.id]?.category))assert.equal(getCoverage(catalog,d.id,p.id,{mapId:map.id,exposure:1}).factor,0);
 });
-
-test('every existing R and INACTIVE interaction remains ineffective at maximum potency and exposure',()=>{
- for(const map of MAPS){
-  const run=richRun({mapId:map.id});
-  for(const drug of catalog.drugs){
-   unlockDrug(run,catalog,drug.id);deployDrug(run,catalog,drug.id,0);
-   const tower=run.towers.at(-1);for(let i=0;i<3;i++)upgradeTower(run,catalog,tower.id,'potency');upgradeTower(run,catalog,tower.id,'exposure');
-   for(const profile of catalog.pathogens)if(['R','INACTIVE'].includes(profile.ast[drug.id]?.category))assert.equal(towerCoverage(run,catalog,tower,profile.id).factor,0,drug.id+' / '+profile.id);
-   sellTower(run,tower.id);
-  }
- }
-});
-
-test('I needs its separate exposure upgrade and then has the same coverage factor as S',()=>{
- const run=richRun();unlockDrug(run,catalog,'cefepime');deployDrug(run,catalog,'cefepime',0);const tower=run.towers[0];
- assert.equal(towerCoverage(run,catalog,tower,'pseudo').category,'I');assert.equal(towerCoverage(run,catalog,tower,'pseudo').factor,0);
- upgradeTower(run,catalog,tower.id,'potency');upgradeTower(run,catalog,tower.id,'potency');assert.equal(towerCoverage(run,catalog,tower,'pseudo').factor,0);
- upgradeTower(run,catalog,tower.id,'exposure');assert.equal(towerCoverage(run,catalog,tower,'pseudo').factor,1);
- assert.equal(towerCoverage(run,catalog,tower,'mrsa').factor,0);
-});
-
-test('inhibitor combinations use their own original results rather than rescuing every beta-lactam failure',()=>{
- assert.equal(getCoverage(catalog,'ampicillin','klebs').factor,0);
- assert.equal(getCoverage(catalog,'amoxclav','klebs').factor,1);
- for(const id of ['mrsa','esbl','pseudo','kpc'])assert.equal(getCoverage(catalog,'amoxclav',id,{exposure:1}).factor,0);
- assert.equal(getCoverage(catalog,'meropenem','kpc',{exposure:1}).factor,0);
- assert.equal(getCoverage(catalog,'ceftazavi','kpc').factor,1);
- assert.equal(getCoverage(catalog,'ceftazavi','mrsa').factor,0);
-});
-
-test('site restrictions preserve the original AST category while preventing use in an unsupported site',()=>{
- for(const mapId of ['lung','abdomen']){const result=getCoverage(catalog,'cefazolin','ecoli',{mapId,exposure:1});assert.equal(result.category,'I');assert.equal(result.factor,0);assert.match(result.reason,/요로/);}
- assert.equal(getCoverage(catalog,'cefazolin','ecoli',{mapId:'urinary',exposure:1}).factor,1);
+test('increased exposure addresses I only; combos do not bypass other mechanisms',()=>{
+ assert.equal(getCoverage(catalog,'cefepime','pseudo').factor,0);assert.equal(getCoverage(catalog,'cefepime','pseudo',{exposure:1}).factor,1);
+ assert.equal(getCoverage(catalog,'cefazolin','ecoli',{mapId:'lung',exposure:1}).factor,0);assert.equal(getCoverage(catalog,'cefazolin','ecoli',{mapId:'urinary',exposure:1}).factor,1);
+ assert.equal(getCoverage(catalog,'amoxclav','klebs').factor,1);for(const id of ['mrsa','esbl','pseudo','kpc'])assert.equal(getCoverage(catalog,'amoxclav',id,{exposure:1}).factor,0);
+ assert.equal(getCoverage(catalog,'ceftazavi','kpc').factor,1);assert.equal(getCoverage(catalog,'meropenem','kpc',{exposure:1}).factor,0);
+ const anaerobe=getCoverage(catalog,'metronidazole','anaerobe',{mapId:'abdomen'});assert.equal(anaerobe.category,'REGIMEN');assert.equal(anaerobe.factor,1);
+ assert.equal(getCoverage(catalog,'amoxclav','anaerobe',{mapId:'abdomen',source:true}).factor,0);
  assert.equal(getCoverage(catalog,'cefepime','pneumo').category,'ACTIVE');assert.equal(getCoverage(catalog,'cefepime','pneumo').factor,0);
 });
-
-test('regimen clues and missing records are never converted to susceptibility or resistance',()=>{
- const context={mapId:'abdomen',wave:2};
- assert.equal(getCoverage(catalog,'metronidazole','anaerobe',context).category,'REGIMEN');assert.equal(getCoverage(catalog,'metronidazole','anaerobe',context).factor,1);
- assert.equal(getCoverage(catalog,'ceftriaxone','anaerobe',context).category,'OUTSIDE_REGIMEN');assert.equal(getCoverage(catalog,'ceftriaxone','anaerobe',context).factor,0);
- assert.equal(getCoverage(catalog,'amoxclav','anaerobe',{mapId:'abdomen',wave:8,source:true}).factor,0);
- assert.equal(getCoverage(catalog,'does-not-exist','ecoli').category,'—');
+test('deck validation includes budget, site, host and exposure; no universal four-drug solution',()=>{
+ assert.equal(deckReadiness(catalog,STAGES[0],[]).ok,false);
+ assert.equal(deckReadiness(catalog,STAGES[2],[slot('cefazolin',1)]).ok,false);
+ assert.equal(deckReadiness(catalog,STAGES[2],[slot('cefazolin',1)],{renalAdjusted:true}).ok,true);
+ assert.equal(stageCoverage(catalog,STAGES[1],slot('ampicillin'),'pneumo').factor,0);
+ const universal=[slot('ceftazavi'),slot('vancomycin'),slot('linezolid'),slot('metronidazole')];
+ assert.equal(deckReadiness(catalog,STAGES[11],universal).points,12);assert.equal(deckReadiness(catalog,STAGES[11],universal).ok,false);
+ assert.equal(deckReadiness(catalog,STAGES[11],universal.filter(s=>s.drugId!=='linezolid')).ok,true);
+ assert.deepEqual(normalizeDeck(catalog,[null,slot('fake'),slot('ampicillin'),slot('ampicillin',1)]),[slot('ampicillin')]);
 });
-
-test('renal adjustment maintains coverage and an aminopenicillin allergy does not ban all beta-lactams',()=>{
- const renal=richRun({hostId:'renal'});deployDrug(renal,catalog,'ampicillin',0);const tower=renal.towers[0];
- assert.equal(towerCoverage(renal,catalog,tower,'pneumo').factor,0);assert.equal(upgradeTower(renal,catalog,tower.id,'exposure'),false);
- upgradeTower(renal,catalog,tower.id,'renal');assert.equal(towerCoverage(renal,catalog,tower,'pneumo').factor,1);
- const allergic=richRun({hostId:'allergy'});assert.equal(deployDrug(allergic,catalog,'ampicillin',0),false);assert.equal(unlockDrug(allergic,catalog,'amoxclav'),false);assert.equal(deployDrug(allergic,catalog,'ceftriaxone',0),true);
+test('the selected deck is copied and frozen; unselected drugs, cooldown spam and pause cannot produce units',()=>{
+ const deck=[slot('ampicillin')],run=newDefenseRun(catalog,{deck});assert.equal(startDefense(run,catalog),true);deck[0].drugId='meropenem';
+ assert.equal(run.deck[0].drugId,'ampicillin');assert.equal(Object.isFrozen(run.deck[0]),true);
+ assert.equal(deployDrug(run,catalog,'meropenem'),false);assert.equal(deployDrug(run,catalog,'ampicillin'),true);assert.equal(deployDrug(run,catalog,'ampicillin'),false);
+ pauseRun(run);const credits=run.credits;tickDefense(run,catalog,.1);assert.equal(run.credits,credits);assert.equal(deployDrug(run,catalog,'ampicillin'),false);
 });
-
-test('source control removes only source protection and cannot alter antimicrobial susceptibility',()=>{
- const run=richRun({mapId:'abdomen'});run.wave=3;beginWave(run,catalog);advance(run,1);
- const bound=run.enemies.find(e=>e.sourceBound);assert.ok(bound);bound.hp=bound.maxHp*0.22;
- advance(run,2);assert.equal(bound.hp,bound.maxHp*0.22);
- const astBefore=JSON.stringify(catalog.pathogens.map(p=>p.ast));assert.equal(controlSource(run),true);advance(run,1);assert.ok(bound.hp<bound.maxHp*0.22);assert.equal(JSON.stringify(catalog.pathogens.map(p=>p.ast)),astBefore);assert.equal(controlSource(run),false);
+test('inactive antibiotics neither damage nor physically block resistant pathogens',()=>{
+ const run=newDefenseRun(catalog,{stageId:'kpc',deck:[slot('ceftazavi')],renalAdjusted:true});startDefense(run,catalog);
+ run.enemies=[{id:999,pathogenId:'kpc',x:500,speed:25,hp:100,maxHp:100,flash:0,attackCooldown:0}];
+ run.units=[{id:998,drugId:'ampicillin',x:502,life:30,maxLife:30,cooldown:0,attack:0,exposure:1}];
+ tickDefense(run,catalog,.1);assert.equal(run.enemies[0].x,502.5);assert.ok(run.enemies[0].hp>99.9);assert.equal(run.projectiles.length,0);
 });
-
-test('information upgrades, upkeep, placement, refunds and pausing use the real game economy',()=>{
- const run=newDefenseRun(catalog,{seed:42});assert.equal(improveLab(run),true);assert.equal(run.lab,1);assert.equal(run.credits,355);
- assert.equal(deployDrug(run,catalog,'ampicillin',0),true);assert.equal(deployDrug(run,catalog,'ceftriaxone',0),false);
- const fee=upkeep(run,catalog),credits=run.credits;assert.equal(beginWave(run,catalog),true);assert.equal(run.credits,credits-fee);
- advance(run,1);pauseRun(run);const snapshot=JSON.stringify(run);advance(run,10);assert.equal(JSON.stringify(run),snapshot);resumeRun(run);advance(run,1);assert.ok(run.elapsed>1);
- const tower=run.towers[0],before=run.credits;sellTower(run,tower.id);assert.equal(run.credits,before+Math.floor(tower.spent*0.7));
-});
-
-test('selection pressure chooses more existing resistant isolates, never mutating an isolate AST',()=>{
- for(const map of MAPS){
-  const run=richRun({mapId:map.id});run.wave=9;const normal=wavePlan(run);run.pressure=70;const selected=wavePlan(run);
-  assert.equal(selected.units.length,normal.units.length+2);assert.equal(selected.selected,true);assert.equal(selected.units.at(-1).pathogenId,'kpc');
-  assert.deepEqual(wavePlan(run),selected);
- }
-});
-
-test('all map and host combinations have a viable modeled response to each scheduled profile',()=>{
- for(const map of MAPS)for(const host of HOSTS)for(let index=0;index<12;index++){
-  const run=richRun({mapId:map.id,hostId:host.id});run.wave=index;const plan=wavePlan(run);
-  for(const pathogenId of plan.pathogenIds){
-   const working=catalog.drugs.filter(d=>!(host.id==='allergy'&&['ampicillin','amoxclav'].includes(d.id))).some(d=>getCoverage(catalog,d.id,pathogenId,{mapId:map.id,wave:index+1,source:plan.source,exposure:1}).factor>0);
-   assert.ok(working,map.id+' / '+host.id+' / '+pathogenId);
-  }
- }
-});
-
-test('combat can reach win and loss terminal states and stops updating afterward',()=>{
- const defended=richRun();deployDrug(defended,catalog,'ampicillin',0);defended.wave=11;beginWave(defended,catalog);defended.plan.units=[{pathogenId:'pneumo',sourceBound:false}];defended.towers[0].potency=2;
- advance(defended,65);assert.equal(defended.status,'won');assert.equal(defended.bestWave,12);const snapshot=JSON.stringify(defended);advance(defended,10);assert.equal(JSON.stringify(defended),snapshot);
- const undefended=richRun({hostId:'immune'});undefended.health=7;beginWave(undefended,catalog);advance(undefended,65);assert.equal(undefended.status,'lost');assert.equal(undefended.health,0);
- assert.ok(PATH_LENGTH>1500);assert.deepEqual(pathPosition(PATH_LENGTH),{x:930,y:465});
-});
-
-test('free placement rejects roads, overlap, off-map and non-finite positions without spending',()=>{
- const run=richRun(),before=run.credits;
- for(const p of [{x:185,y:100},{x:-1,y:150},{x:NaN,y:200},{x:500,y:Infinity}])assert.equal(deployDrug(run,catalog,'ampicillin',p),false);
- assert.equal(run.credits,before);assert.equal(deployDrug(run,catalog,'ampicillin',{x:80,y:180}),true);
- assert.equal(deployDrug(run,catalog,'ceftriaxone',{x:91,y:180}),false);
- for(let y=40;y<490;y+=60)for(let x=30;x<876;x+=60)if(placementCheck(run,{x,y}).ok)deployDrug(run,catalog,'ampicillin',{x,y});
- assert.ok(run.towers.length>9,'Free placement is not limited to old pads');
- const t=run.towers[0],snapshot={x:t.x,y:t.y},money=run.credits;
- assert.equal(moveTower(run,t.id,{x:185,y:100}),false);assert.deepEqual({x:t.x,y:t.y},snapshot);assert.equal(run.credits,money);
-});
-
-test('equipment consolidation preserves the drug, source AST and exposure requirements',()=>{
- const run=richRun();unlockDrug(run,catalog,'cefepime');deployDrug(run,catalog,'cefepime',0);deployDrug(run,catalog,'cefepime',1);deployDrug(run,catalog,'ceftriaxone',2);
- const t=run.towers[0],ast=JSON.stringify(catalog.pathogens.map(p=>p.ast));
- assert.equal(mergeCandidate(run,t.id).drugId,'cefepime');assert.equal(mergeTowers(run,catalog,t.id),true);assert.equal(run.towers.length,2);assert.equal(t.potency,1);assert.equal(t.drugId,'cefepime');
- assert.equal(towerCoverage(run,catalog,t,'pseudo').factor,0);assert.equal(towerCoverage(run,catalog,t,'mrsa').factor,0);assert.equal(JSON.stringify(catalog.pathogens.map(p=>p.ast)),ast);
- assert.equal(mergeTowers(run,catalog,t.id),false);upgradeTower(run,catalog,t.id,'exposure');assert.equal(towerCoverage(run,catalog,t,'pseudo').factor,1);
-});
-
-test('supplies are reproducible, respect allergy, cost exactly once and grant only one reward',()=>{
- const run=richRun({hostId:'allergy'});run.wave=4;run.draft=supplyChoices(run,catalog);assert.deepEqual(supplyChoices(run,catalog),run.draft);
- assert.ok(!['ampicillin','amoxclav'].includes(run.draft[0].drugId));assert.equal(beginWave(run,catalog),false);
- const cash=run.credits;assert.equal(rerollSupply(run,catalog),true);assert.equal(run.credits,cash-15);assert.equal(rerollSupply(run,catalog),false);
- const drugId=run.draft[0].drugId;assert.equal(chooseSupply(run,catalog,'unit'),true);assert.equal(chooseSupply(run,catalog,'funds'),false);assert.equal(run.freeUnits[drugId],1);
- const before=run.credits;assert.equal(deployDrug(run,catalog,drugId,0),true);assert.equal(run.credits,before);assert.equal(run.freeUnits[drugId],0);assert.equal(beginWave(run,catalog),true);
-});
-
-test('target priority changes the projectile target and a resistant enemy cannot be hit',()=>{
- const run=richRun({hostId:'immune'});deployDrug(run,catalog,'ampicillin',{x:100,y:180});beginWave(run,catalog);run.spawned=run.plan.units.length;
- const t=run.towers[0];run.enemies=[{id:700,pathogenId:'pneumo',hp:50,maxHp:50,distance:140,x:110,y:100,speed:0,flash:0},{id:701,pathogenId:'pneumo',hp:180,maxHp:180,distance:100,x:70,y:100,speed:0,flash:0},{id:702,pathogenId:'mrsa',hp:300,maxHp:300,distance:170,x:140,y:100,speed:0,flash:0}];
- setTarget(run,t.id,'strong');tickDefense(run,catalog,.01);assert.equal(run.projectiles[0].targetId,701);
- run.projectiles=[];t.cooldown=0;setTarget(run,t.id,'first');tickDefense(run,catalog,.01);assert.equal(run.projectiles[0].targetId,700);
- const resistant=run.enemies.find(e=>e.id===702),hp=resistant.hp;advance(run,1);assert.ok(hp-resistant.hp<1,'Only background immune damage applies to the resistant enemy');
-});
-
-test('a real wave pays a reward, offers a draft, and does not advance until it is selected',()=>{
- const run=richRun();deployDrug(run,catalog,'ampicillin',0);upgradeTower(run,catalog,run.towers[0].id,'potency');beginWave(run,catalog);run.plan.units=[{pathogenId:'pneumo',sourceBound:false}];advance(run,50);
- assert.equal(run.status,'prep');assert.equal(run.bestWave,1);assert.equal(run.draft.length,3);assert.equal(run.lastReport.perfect,25);assert.equal(beginWave(run,catalog),false);
- chooseSupply(run,catalog,'kit');assert.equal(run.kits,1);const cash=run.credits;upgradeTower(run,catalog,run.towers[0].id,'exposure');assert.equal(run.kits,0);assert.equal(run.credits,cash);assert.equal(beginWave(run,catalog),true);
-});
-
-
-test('the final efficiency tier requires consolidation, and a supplied unit refunds only paid investment',()=>{
- const run=richRun();deployDrug(run,catalog,'ampicillin',0);deployDrug(run,catalog,'ampicillin',1);
- for(const t of run.towers){upgradeTower(run,catalog,t.id,'potency');upgradeTower(run,catalog,t.id,'potency');assert.equal(upgradeTower(run,catalog,t.id,'potency'),false);}
- const first=run.towers[0];assert.equal(mergeTowers(run,catalog,first.id),true);assert.equal(first.potency,3);assert.equal(towerCoverage(run,catalog,first,'mrsa').factor,0);assert.equal(towerCoverage(run,catalog,first,'kpc').factor,0);
- run.freeUnits.ceftriaxone=1;deployDrug(run,catalog,'ceftriaxone',1);const free=run.towers.at(-1),money=run.credits;sellTower(run,free.id);assert.equal(run.credits,money);
-});
-
-
-test('merging at every rank preserves or improves the sustained firepower of both input towers',()=>{
- for(const rank of [0,1,2]){
-  const run=richRun({hostId:'immune'});deployDrug(run,catalog,'ampicillin',{x:100,y:180});deployDrug(run,catalog,'ampicillin',{x:270,y:137});
-  for(const t of run.towers)t.potency=rank;
-  beginWave(run,catalog);run.spawned=run.plan.units.length;run.enemies=[{id:900,pathogenId:'pneumo',hp:100000,maxHp:100000,distance:215,x:185,y:100,speed:0,flash:0}];
-  const merged=structuredClone(run);mergeTowers(merged,catalog,merged.towers[0].id);
-  advance(run,30);advance(merged,30);
-  assert.ok(merged.towers[0].damage>=run.towers.reduce((n,t)=>n+t.damage,0),'rank '+rank+' loses firepower');
- }
-});
-
-test('turrets skip a source-protected health floor and avoid shots already sufficient to finish a target',()=>{
- const run=richRun({hostId:'immune'});deployDrug(run,catalog,'ampicillin',{x:100,y:180});deployDrug(run,catalog,'ampicillin',{x:270,y:137});
- beginWave(run,catalog);run.spawned=run.plan.units.length;
- run.enemies=[{id:800,pathogenId:'pneumo',hp:22,maxHp:100,sourceBound:true,distance:200,speed:0,flash:0},{id:801,pathogenId:'pneumo',hp:10,maxHp:100,distance:190,speed:0,flash:0},{id:802,pathogenId:'pneumo',hp:100,maxHp:100,distance:180,speed:0,flash:0}];
- tickDefense(run,catalog,.05);assert.deepEqual(run.projectiles.map(p=>p.targetId),[801,802]);
-});
-
-test('starter AST, later result timing and prep reports use the same information boundary',()=>{
- const run=newDefenseRun(catalog,{seed:42});
- for(run.wave=0;run.wave<3;run.wave++)assert.equal(waveIntel(run),2);
- assert.equal(waveIntel(run),0);assert.deepEqual(defenseReadiness(run,catalog).profiles,[]);
- beginWave(run,catalog);advance(run,4.1);assert.equal(waveIntel(run),1);assert.equal(defenseReadiness(run,catalog).profiles.length,0);
- advance(run,4);assert.equal(waveIntel(run),2);assert.ok(defenseReadiness(run,catalog).profiles.length>0);
- const prepaid=newDefenseRun(catalog);prepaid.wave=5;improveLab(prepaid);improveLab(prepaid);assert.equal(waveIntel(prepaid),2);
-});
-
-test('briefing identifies coverage gaps and the actual I/renal action instead of recommending potency for R',()=>{
- const run=richRun({hostId:'renal'});run.lab=2;run.wave=6;unlockDrug(run,catalog,'cefepime');deployDrug(run,catalog,'cefepime',0);
- let gap=defenseReadiness(run,catalog).profiles.find(p=>p.pathogenId==='pseudo');assert.equal(gap.covered,false);assert.equal(gap.suggestion.kind,'renal');
- upgradeTower(run,catalog,run.towers[0].id,'renal');gap=defenseReadiness(run,catalog).profiles.find(p=>p.pathogenId==='pseudo');assert.equal(gap.suggestion.kind,'exposure');
- upgradeTower(run,catalog,run.towers[0].id,'exposure');assert.equal(defenseReadiness(run,catalog).missing,0);
- run.wave=9;gap=defenseReadiness(run,catalog).profiles.find(p=>p.pathogenId==='kpc');assert.equal(gap.suggestion.drugId,'ceftazavi');assert.equal(gap.suggestion.kind,'deploy');
-});
-
-test('source control can be paid during preparation exactly once and lasts only that wave',()=>{
- const run=richRun({mapId:'abdomen'});run.wave=3;const before=run.credits;
- assert.equal(controlSource(run),true);assert.equal(run.credits,before-70);assert.equal(controlSource(run),false);
- beginWave(run,catalog);assert.equal(run.sourceControlled,true);run.plan.units=[{pathogenId:'ecoli',sourceBound:true}];advance(run,.5);run.enemies[0].hp=.01;advance(run,.1);
- assert.equal(run.status,'prep');assert.equal(run.sourceControlled,false);assert.equal(controlSource(run),false);
-});
-
-test('a failed wave can be retried from its paid preparation state without duplicating rewards or fees',()=>{
- const run=newDefenseRun(catalog,{mapId:'abdomen',hostId:'immune',seed:108});run.wave=3;run.health=4;improveLab(run);controlSource(run);
- const before={credits:run.credits,health:run.health,source:run.sourceControlled,lab:run.lab};
- assert.equal(beginWave(run,catalog),true);advance(run,65);assert.equal(run.status,'lost');
- assert.equal(retryWave(run),true);assert.equal(run.status,'prep');assert.equal(run.wave,3);assert.equal(run.credits,before.credits);assert.equal(run.health,before.health);assert.equal(run.sourceControlled,before.source);assert.equal(run.lab,before.lab);assert.equal(run.totalKills,0);assert.equal(run.totalLeaks,0);assert.equal(waveIntel(run),2);
- assert.equal(retryWave(run),false);assert.equal(beginWave(run,catalog),true);assert.equal(run.credits,before.credits-upkeep(run,catalog));
-});
-
-test('spending the last credit cannot soft-lock a prepared wave and operating costs are settled from earnings',()=>{
- const run=richRun();deployDrug(run,catalog,'ampicillin',0);run.credits=0;
- assert.equal(beginWave(run,catalog),true);assert.equal(run.credits,0);assert.equal(run.operatingDebt,2);
- run.plan.units=[{pathogenId:'pneumo',sourceBound:false}];advance(run,50);
- assert.equal(run.status,'prep');assert.equal(run.operatingDebt,0);assert.equal(run.credits,run.lastReport.reward+5-2);
-});
-
-test('the reinforcement offer always addresses an uncovered upcoming isolate when one exists',()=>{
- for(let seed=0;seed<24;seed++){
-  const run=richRun({seed});run.wave=4;deployDrug(run,catalog,'ampicillin',0);const card=supplyChoices(run,catalog)[0];
-  assert.ok(['vancomycin','linezolid'].includes(card.drugId));
- }
-});
-
-
-test('free upgrade kits cannot be converted to a paid-investment refund',()=>{
- const run=richRun();run.freeUnits.ampicillin=1;deployDrug(run,catalog,'ampicillin',0);run.kits=1;const before=run.credits;
- upgradeTower(run,catalog,run.towers[0].id,'potency');sellTower(run,run.towers[0].id);assert.equal(run.credits,before);
+test('source control is a timed separate action and never changes AST',()=>{
+ const run=newDefenseRun(catalog,{stageId:'abscess',deck:[slot('ceftriaxone'),slot('metronidazole')]});startDefense(run,catalog);
+ const before=getCoverage(catalog,'ceftriaxone','anaerobe',{mapId:'abdomen'});
+ assert.equal(controlSource(run),true);assert.equal(run.sourceControlled,false);assert.equal(controlSource(run),false);
+ for(let i=0;i<41;i++)tickDefense(run,catalog,.1);assert.equal(run.sourceControlled,true);
+ assert.deepEqual(getCoverage(catalog,'ceftriaxone','anaerobe',{mapId:'abdomen'}),before);
 });
