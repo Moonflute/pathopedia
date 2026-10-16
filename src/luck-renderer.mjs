@@ -32,7 +32,7 @@ export function createLuckRenderer(canvas){
    ctx.strokeStyle='#bb96ff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(pool.x,pool.y,pool.radius*.78,0,TAU);ctx.stroke();ctx.globalAlpha=1;
   }
   // Soft sockets beneath the HTML sprites keep the board legible at phone scale.
-  for(let i=0;i<15;i++){const p=cellCenter(i);ctx.fillStyle='#ffffff03';ctx.beginPath();ctx.roundRect(p.x-45,p.y-45,90,90,12);ctx.fill();}
+  for(let i=0;i<15;i++){const p=cellCenter(i);ctx.fillStyle='#ffffff03';ctx.beginPath();ctx.roundRect(p.x-35,p.y-35,70,70,10);ctx.fill();}
   for(const e of run.enemies){
    const r=e.radius;
    circle(e.x,e.y+3,r+1,'#00000060');

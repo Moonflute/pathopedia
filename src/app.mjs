@@ -7,7 +7,7 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.34.0';
+const VERSION = '0.35.0';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
  {id:'lab',label:'동정실',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
@@ -41,7 +41,7 @@ const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.34.0" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.35.0" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -92,7 +92,7 @@ function shell() {
 }
 function luckView(){
  if(luckGame)return luckGame.render();
- return '<section class="boot"><span class="eyebrow">RE-ROLL</span><h1>'+(luckLoadError?'전장을 불러오지 못했어.':'운을 굴리는 중…')+'</h1>'+(luckLoadError?'<button type="button" data-luck-retry>다시 불러오기</button>':'')+'</section>';
+ return '<section class="boot"><span class="eyebrow">RE-ROLL</span><h1>'+(luckLoadError?'불러오기 실패':'불러오는 중…')+'</h1>'+(luckLoadError?'<button type="button" data-luck-retry>다시 불러오기</button>':'')+'</section>';
 }
 async function loadLuck(){
  if(luckGame||luckLoading)return;
