@@ -31,47 +31,184 @@ const UNIT_TAGS={
  pseudo:['녹농균','negative'],asper:['아스페르길루스','fungus'],rabid:['광견병 바이러스','virus'],
  crypto:['크립토코쿠스','fungus','capsule'],hydra:['녹농균','negative'],bloom:['아스페르길루스','fungus']
 };
-const unit=(id,name,art,rarity,skill,damage,interval,description)=>({id,name,art,rarity,skill,damage,interval,description,family:UNIT_TAGS[id][0],traits:UNIT_TAGS[id].slice(1)});
+export const ATTACKS={
+ "rapid": {
+  "name": "삼연사",
+  "color": "#d8f6ef",
+  "range": 290
+ },
+ "splash": {
+  "name": "충격포",
+  "color": "#ffbf88",
+  "range": 255
+ },
+ "chain": {
+  "name": "전류 사슬",
+  "color": "#80dcff",
+  "range": 280
+ },
+ "poison": {
+  "name": "독침",
+  "color": "#b7ea75",
+  "range": 250
+ },
+ "stun": {
+  "name": "망치 강타",
+  "color": "#ffe09a",
+  "range": 215
+ },
+ "support": {
+  "name": "공명 박동",
+  "color": "#a8f1d9",
+  "range": 260
+ },
+ "slow": {
+  "name": "빙결 결정",
+  "color": "#9de7ff",
+  "range": 275
+ },
+ "pierce": {
+  "name": "관통탄",
+  "color": "#92caff",
+  "range": 340
+ },
+ "missile": {
+  "name": "유도 미사일",
+  "color": "#ffb773",
+  "range": 340
+ },
+ "beam": {
+  "name": "절단 광선",
+  "color": "#cbb7ff",
+  "range": 380
+ },
+ "storm": {
+  "name": "번개 폭풍",
+  "color": "#c7eaff",
+  "range": 320
+ },
+ "nova": {
+  "name": "충격파",
+  "color": "#ffd898",
+  "range": 255
+ },
+ "meteor": {
+  "name": "삼중 운석",
+  "color": "#ff9b64",
+  "range": 850
+ },
+ "blizzard": {
+  "name": "절대영도",
+  "color": "#a4edff",
+  "range": 850
+ },
+ "double": {
+  "name": "쌍둥이탄",
+  "color": "#dbb0ff",
+  "range": 285
+ },
+ "acid": {
+  "name": "점액 폭발",
+  "color": "#a0e992",
+  "range": 250
+ },
+ "infect": {
+  "name": "감염 파동",
+  "color": "#ff9ab6",
+  "range": 285
+ },
+ "spores": {
+  "name": "포자독",
+  "color": "#ce97ff",
+  "range": 260
+ },
+ "ram": {
+  "name": "협막 돌진",
+  "color": "#f9cc86",
+  "range": 220
+ },
+ "germinate": {
+  "name": "발아 박동",
+  "color": "#bde8a2",
+  "range": 260
+ },
+ "bind": {
+  "name": "휘감기",
+  "color": "#bd9cff",
+  "range": 285
+ },
+ "pool": {
+  "name": "독성 웅덩이",
+  "color": "#87deba",
+  "range": 315
+ },
+ "split": {
+  "name": "확산 포자",
+  "color": "#d5b0ff",
+  "range": 310
+ },
+ "frenzy": {
+  "name": "발톱 연타",
+  "color": "#ff9ea0",
+  "range": 235
+ },
+ "rupture": {
+  "name": "협막 파열",
+  "color": "#ead6ff",
+  "range": 280
+ },
+ "hydra": {
+  "name": "다섯 갈래 추적",
+  "color": "#b7a2ff",
+  "range": 850
+ },
+ "bloom": {
+  "name": "포자 개화",
+  "color": "#eea5e4",
+  "range": 850
+ }
+};
+const unit=(id,name,art,rarity,skill,damage,interval,description)=>({id,name,art,rarity,skill,damage,interval,description,attack:ATTACKS[skill],family:UNIT_TAGS[id][0],traits:UNIT_TAGS[id].slice(1)});
 export const MODES={
- remedy:{id:'remedy',name:'항생제',subtitle:'THE REMEDY',color:'#88e5d0',rival:'군집',burst:'궤도 폭격',
+ remedy:{id:'remedy',name:'항생제',subtitle:'THE REMEDY',color:'#88e5d0',rival:'군집',
  units:[
- unit('pen','페니','penicillin',0,'rapid',14,.62,'빠르게 쏟아지는 마력탄'),
- unit('cef','세프','ceftriaxone',0,'splash',24,1.18,'작게 터지는 범위 포격'),
- unit('gen','젠타','gentamicin',0,'chain',17,.95,'세 적을 잇는 전격'),
- unit('dox','독시','doxycycline',0,'poison',12,.85,'겹칠수록 아픈 독 흔적'),
- unit('van','반코','vancomycin',1,'stun',46,1.35,'묵직한 일격과 짧은 기절'),
- unit('azi','아지','azithromycin',1,'support',20,.8,'주변 유닛의 공격 속도 상승'),
- unit('acy','아시','acyclovir',1,'slow',29,.9,'군집을 붙드는 서리탄'),
- unit('cefi','세핌','cefepime',1,'missile',42,1.25,'관통 폭발탄'),
- unit('mero','메로','meropenem',2,'missile',86,1.55,'넓게 폭발하는 유도 미사일'),
- unit('line','리네','linezolid',2,'beam',55,.92,'일렬로 꿰뚫는 빛의 칼날'),
- unit('dap','댑토','daptomycin',3,'storm',68,.72,'여섯 적을 휘감는 번개 폭풍'),
- unit('imi','이미','imipenem',3,'nova',140,1.5,'주변을 지우는 충격파'),
- unit('atlas','아틀라스','meropenem',4,'meteor',260,1.7,'거대 운석 세 발 · 전장 전체 사거리'),
- unit('zero','제로 아워','remdesivir',4,'blizzard',165,1.05,'시간을 얼리는 광역 폭풍')
+ unit('pen','페니','penicillin',0,'rapid',14,.62,'세 발 연사'),
+ unit('cef','세프','ceftriaxone',0,'splash',24,1.18,'원거리 범위 포격'),
+ unit('gen','젠타','gentamicin',0,'chain',17,.95,'3갈래 연쇄 전격'),
+ unit('dox','독시','doxycycline',0,'poison',12,.85,'최대 3중첩 독'),
+ unit('van','반코','vancomycin',1,'stun',46,1.35,'범위 강타 · 기절'),
+ unit('azi','아지','azithromycin',1,'support',20,.8,'주변 공속 +22%'),
+ unit('acy','아시','acyclovir',1,'slow',29,.9,'범위 빙결 · 둔화'),
+ unit('cefi','세핌','cefepime',1,'pierce',42,1.25,'3기 관통탄'),
+ unit('mero','메로','meropenem',2,'missile',86,1.55,'2발 유도 폭발'),
+ unit('line','리네','linezolid',2,'beam',55,.92,'직선 관통 광선'),
+ unit('dap','댑토','daptomycin',3,'storm',68,.72,'6갈래 번개 폭풍'),
+ unit('imi','이미','imipenem',3,'nova',140,1.5,'원형 충격파'),
+ unit('atlas','아틀라스','meropenem',4,'meteor',260,1.7,'3연속 운석 · 광역 폭발'),
+ unit('zero','제로 아워','remdesivir',4,'blizzard',165,1.05,'전장 빙결 · 둔화')
  ],recipes:[{id:'atlas',needs:['mero','van','cef']},{id:'zero',needs:['line','acy','azi']}]},
- colony:{id:'colony',name:'병원체',subtitle:'THE COLONY',color:'#c0a0ff',rival:'방위대',burst:'군집 폭주',
+ colony:{id:'colony',name:'병원체',subtitle:'THE COLONY',color:'#c0a0ff',rival:'방위대',
  units:[
- unit('cocci','코코','sau',0,'rapid',14,.62,'쉴 새 없이 튀는 작은 군집'),
- unit('coli','콜리','eco',0,'splash',24,1.18,'뭉쳐서 날아가는 군집탄'),
- unit('flu','플루','influenza-a',0,'chain',17,.95,'적 사이를 뛰어다니는 파동'),
- unit('cand','캔디','cal',0,'poison',12,.85,'오래 남는 보랏빛 독 흔적'),
- unit('kleb','클렙','kpn',1,'stun',46,1.35,'단단한 껍질로 내려찍기'),
- unit('spore','스포리','bce',1,'support',20,.8,'주변 군집의 공격 속도 상승'),
- unit('herp','허피','hsv1',1,'slow',29,.9,'적을 끈끈하게 붙잡는 덩굴'),
- unit('pseudo','슈도','pae',2,'pool',72,1.3,'길목을 덮는 독성 웅덩이'),
- unit('asper','아스퍼','afu',2,'split',50,1,'세 방향으로 분열하는 포자'),
- unit('rabid','레이비','rabies',3,'frenzy',39,.32,'공격할수록 빨라지는 광란'),
- unit('crypto','크립토','cne',3,'nova',140,1.5,'껍질 밖으로 번지는 충격파'),
- unit('hydra','히드라','pae',4,'hydra',175,.85,'다섯 갈래로 증식하는 사냥꾼'),
- unit('bloom','블룸 퀸','afu',4,'bloom',210,1.4,'거대한 포자 장판과 연쇄 폭발')
+ unit('cocci','코코','sau',0,'double',14,.62,'쌍둥이탄 · 2기 공격'),
+ unit('coli','콜리','eco',0,'acid',24,1.18,'점액 폭발 · 독'),
+ unit('flu','플루','influenza-a',0,'infect',17,.95,'연쇄 감염 · 지속 피해'),
+ unit('cand','캔디','cal',0,'spores',12,.85,'2갈래 독성 포자'),
+ unit('kleb','클렙','kpn',1,'ram',46,1.35,'협막 돌진 · 밀쳐내기'),
+ unit('spore','스포리','bce',1,'germinate',20,.8,'주변 공속 +22% · 2갈래 포자'),
+ unit('herp','허피','hsv1',1,'bind',29,.9,'2기 속박 · 둔화'),
+ unit('pseudo','슈도','pae',2,'pool',72,1.3,'지속 피해 · 독성 장판'),
+ unit('asper','아스퍼','afu',2,'split',50,1,'3갈래 확산탄'),
+ unit('rabid','레이비','rabies',3,'frenzy',39,.32,'발톱 연타 · 점점 빨라짐'),
+ unit('crypto','크립토','cne',3,'rupture',140,1.5,'협막 파편 · 범위 기절'),
+ unit('hydra','히드라','pae',4,'hydra',175,.85,'5갈래 추적탄'),
+ unit('bloom','블룸 퀸','afu',4,'bloom',210,1.4,'포자 장판 · 개화 폭발')
  ],recipes:[{id:'hydra',needs:['asper','kleb','flu']},{id:'bloom',needs:['pseudo','herp','cand']}]}
 };
 export const AUGMENTS=[
  {id:'power',name:'과잉 반응',icon:'✦',text:'전체 피해 +25%'},{id:'haste',name:'오버클럭',icon:'»',text:'전체 공격 속도 +20%'},
  {id:'wealth',name:'연구비 입금',icon:'◆',text:'즉시 180G · 처치 보상 +1G'},{id:'luck',name:'행운의 편향',icon:'✧',text:'소환 희귀 이상 확률 +12%p'},
  {id:'merge',name:'완벽한 융합',icon:'⬡',text:'합성 때마다 25G · 즉시 행운석 +3'},{id:'range',name:'확장 실험',icon:'◎',text:'사거리 +35% · 피해 +10%'},
- {id:'burst',name:'비상 발전기',icon:'ϟ',text:'필살기 대기 −40% · 위력 +50%'},{id:'bounty',name:'보스 사냥꾼',icon:'♜',text:'보스에게 피해 +60%'}
+ {id:'bounty',name:'보스 사냥꾼',icon:'♜',text:'보스에게 피해 +60%'}
 ];
 export const unitById=(mode,id)=>MODES[mode]?.units.find(u=>u.id===id);
 export const cellCenter=index=>({x:BOARD.x+(index%BOARD.cols+.5)*BOARD.cell,y:BOARD.y+(Math.floor(index/BOARD.cols)+.5)*BOARD.cell});

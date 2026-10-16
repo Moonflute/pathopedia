@@ -1,14 +1,19 @@
-import {BOARD,TRACK,cellCenter,trackPoint,MODES} from './luck-data.mjs';
+import {BOARD,TRACK,cellCenter,trackPoint,MODES,RARITIES,unitById} from './luck-data.mjs';
+import {unitRange} from './luck-engine.mjs';
+import {drawLuckEffects} from './luck-effects.mjs';
 import {cardArtwork} from './card-art.mjs';
 const TAU=Math.PI*2;
-export function createLuckRenderer(canvas){
- const ctx=canvas.getContext('2d'),images=new Map(),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+export function createLuckRenderer(canvas,effectCanvas){
+ const baseContext=canvas.getContext('2d'),effectContext=effectCanvas.getContext('2d'),images=new Map(),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let ctx=baseContext;
+ const unitImage=(mode,id)=>{const key=mode+':'+id;if(!images.has(key)){const def=unitById(mode,id),art=cardArtwork(mode==='remedy'?'drug':'pathogen',def.art);if(art){const img=new Image();img.src=art.src;images.set(key,img);}}return images.get(key);};
  const artIds=['sau','eco','kpn','cal','pae','afu'];
  for(const id of artIds){const art=cardArtwork('pathogen',id);if(art){const img=new Image();img.src=art.src;images.set(id,img);}}
- function resize(){const box=canvas.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(box.width*ratio);canvas.height=Math.round(box.height*ratio);}
+ function resize(){const box=canvas.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(box.width*ratio);canvas.height=Math.round(box.height*ratio);effectCanvas.width=canvas.width;effectCanvas.height=canvas.height;}
  function line(x,y,tx,ty,color,width=2){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(tx,ty);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();}
  function circle(x,y,r,color){ctx.beginPath();ctx.arc(x,y,Math.max(0,r),0,TAU);ctx.fillStyle=color;ctx.fill();}
- function draw(run){
+ function draw(run,selected=-1,drag=null){
+  ctx=baseContext;
   const W=BOARD.width,H=BOARD.height;ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);ctx.clearRect(0,0,W,H);
   const color=MODES[run.mode].color;
   const bg=ctx.createRadialGradient(300,280,30,300,280,450);bg.addColorStop(0,run.mode==='colony'?'#211c39':'#172b32');bg.addColorStop(1,'#0b101c');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
@@ -28,8 +33,15 @@ export function createLuckRenderer(canvas){
   ctx.font='600 11px SUIT, sans-serif';ctx.fillStyle='#8b9bb5';ctx.textAlign='left';ctx.fillText('ENTRY',20,45);
   ctx.fillStyle=color;ctx.fillRect(32,58,8,18);ctx.fillStyle='#46526c';ctx.fillRect(19,61,3,12);ctx.fillRect(50,61,3,12);
   for(const pool of run.pools){
-   ctx.globalAlpha=Math.min(.28,pool.life*.2);circle(pool.x,pool.y,pool.radius,'#a276ff');ctx.globalAlpha=.6;
-   ctx.strokeStyle='#bb96ff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(pool.x,pool.y,pool.radius*.78,0,TAU);ctx.stroke();ctx.globalAlpha=1;
+   ctx.globalAlpha=Math.min(.28,pool.life*.2);circle(pool.x,pool.y,pool.radius,pool.color||'#a276ff');ctx.globalAlpha=.6;
+   ctx.strokeStyle=pool.color||'#bb96ff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(pool.x,pool.y,pool.radius*.78,0,TAU);ctx.stroke();ctx.globalAlpha=1;
+  }
+  const selectedUnit=run.board[selected];
+  if(selectedUnit){
+   const pos=cellCenter(selected),range=unitRange(run,selectedUnit),tint=RARITIES[unitById(run.mode,selectedUnit.id).rarity].color;
+   ctx.save();ctx.strokeStyle=tint;ctx.fillStyle=tint;ctx.lineWidth=2;ctx.setLineDash([7,5]);ctx.beginPath();
+   if(range>=700)ctx.rect(8,8,W-16,H-16);else ctx.arc(pos.x,pos.y,range,0,TAU);
+   ctx.globalAlpha=.09;ctx.fill();ctx.globalAlpha=.65;ctx.stroke();ctx.restore();
   }
   // Soft sockets beneath the HTML sprites keep the board legible at phone scale.
   for(let i=0;i<15;i++){const p=cellCenter(i);ctx.fillStyle='#ffffff03';ctx.beginPath();ctx.roundRect(p.x-35,p.y-35,70,70,10);ctx.fill();}
@@ -53,18 +65,9 @@ export function createLuckRenderer(canvas){
    if(e.stun>0){ctx.fillStyle='#ffdd85';ctx.font='bold 15px sans-serif';ctx.textAlign='center';ctx.fillText('✦',e.x,e.y-r-6);}
    if(e.hp<e.maxHp||e.boss){const bw=e.boss?46:22;ctx.fillStyle='#0a0e18';ctx.fillRect(e.x-bw/2,e.y-r-8,bw,4);ctx.fillStyle=e.boss?'#ff8aa5':'#8ae3cb';ctx.fillRect(e.x-bw/2,e.y-r-8,bw*Math.max(0,e.hp/e.maxHp),4);}
   }
-  for(const f of run.effects){
-   const p=f.age/f.life;ctx.globalAlpha=1-p;ctx.strokeStyle=f.color;ctx.fillStyle=f.color;
-   if(f.type==='bolt'){const t=Math.min(1,p*1.5);circle(f.x+(f.tx-f.x)*t,f.y+(f.ty-f.y)*t,f.radius||4,f.color);}
-   if(f.type==='beam'){line(f.x,f.y,f.tx,f.ty,f.color,7*(1-p));line(f.x,f.y,f.tx,f.ty,'#fff',2*(1-p));}
-   if(f.type==='chain'){
-    ctx.beginPath();ctx.moveTo(f.x,f.y);
-    for(let i=1;i<6;i++){const t=i/6;ctx.lineTo(f.x+(f.tx-f.x)*t+Math.sin(i*7)*7,f.y+(f.ty-f.y)*t+Math.cos(i*9)*7);}
-    ctx.lineTo(f.tx,f.ty);ctx.lineWidth=2.5;ctx.stroke();
-   }
-   if(f.type==='ring'||f.type==='burst'){ctx.lineWidth=f.type==='burst'?18*(1-p):3;ctx.beginPath();ctx.arc(f.x,f.y,(f.radius||60)*(.15+p*.85),0,TAU);ctx.stroke();}
-   if(f.type==='pop')for(let i=0;i<5;i++){const a=i*TAU/5;circle(f.x+Math.cos(a)*f.radius*p,f.y+Math.sin(a)*f.radius*p,3*(1-p),f.color);}
-  }
+  ctx=effectContext;ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);ctx.clearRect(0,0,W,H);
+  const effects=drawLuckEffects(ctx,run,unitImage,reduced);
+  if(drag?.moved&&drag.point){const unit=run.board.find(u=>u?.uid===drag.uid);if(unit)effects.sprite(unit.id,drag.point.x,drag.point.y,1.12,.9);}
   ctx.globalAlpha=1;
   const boss=run.enemies.find(e=>e.boss);
   if(boss){

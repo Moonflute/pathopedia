@@ -1,6 +1,6 @@
 import {GameLoop} from './vendor/kontra-10.0.2.mjs';
 import {MODES,RARITIES,TRAITS,AUGMENTS,MAX_CROWD,WAVE_SECONDS,unitById} from './luck-data.mjs';
-import {createLuckRun,summon,summonCost,moveOrMerge,sell,sellValue,upgrade,upgradeCost,recipeSlots,craft,chooseAugment,burst,pause,resume,tickLuck,synergies,drainEvents,unitPower} from './luck-engine.mjs';
+import {createLuckRun,summon,summonBatch,summonCost,batchCost,drawOdds,moveUnit,sell,sellValue,upgrade,upgradeCost,recipeSlots,craft,chooseAugment,pause,resume,tickLuck,synergies,drainEvents,unitPower,unitRange,unitInterval} from './luck-engine.mjs';
 import {createLuckRenderer} from './luck-renderer.mjs';
 import {createSurvivalAudio} from './survival-audio.mjs';
 import {cardArtwork} from './card-art.mjs';
@@ -12,7 +12,7 @@ const button=(action,label,cls='',extra='')=>'<button type="button" class="'+cls
 export function createLuckGame(){
  let saved={mode:'remedy',sound:true,records:{}},storageOK=true;
  try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(v){saved.mode=MODES[v.mode]?v.mode:'remedy';saved.sound=v.sound!==false;for(const m of Object.keys(MODES)){const r=v.records?.[m];if(r&&Number.isFinite(r.wave)&&Number.isFinite(r.wins)&&Number.isFinite(r.kills))saved.records[m]={wave:Math.min(20,Math.max(0,r.wave)),wins:Math.max(0,r.wins),kills:Math.max(0,r.kills)};}}}catch{storageOK=false;}
- let mode=saved.mode,run=null,game=null,loop=null,observer=null,bindings=null,renderer=null,selected=-1,speed=1,sheet='',panel='traits',active=false,
+ let mode=saved.mode,run=null,game=null,loop=null,observer=null,bindings=null,renderer=null,selected=-1,selectedUid=0,speed=1,sheet='',panel='traits',active=false,
   page=0,collectionResume=false,lastVersion=-1,hudTime=0,lastStatus='',resultSaved=false,toastTimer=0,suppressClick=false,drag=null;
  const audio=createSurvivalAudio();audio.setEnabled(saved.sound);
  function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved));}catch{storageOK=false;}}
@@ -36,9 +36,9 @@ export function createLuckGame(){
  function boardMarkup(){
   return run.board.map((u,i)=>{
    const d=u&&unitById(mode,u.id),r=d&&RARITIES[d.rarity],beat=u ? .85+(u.uid%5)*.11 : 1;
-   return '<button type="button" class="ll-cell '+(u?'has-unit':'is-empty')+(selected===i?' is-selected':'')+'" data-luck-cell="'+i+'" '+(u?'style="--rarity:'+r.color+';--beat:'+beat+'s;--phase:-'+((run.totalTime+u.uid*.21)%beat)+'s"':'')+
+   return '<button type="button" class="ll-cell '+(u?'has-unit'+((u.readyAt||0)>run.totalTime?' is-merging':''):'is-empty')+(selected===i?' is-selected':'')+'" data-luck-cell="'+i+'" '+(u?'data-tier="'+d.rarity+'" data-unit-uid="'+u.uid+'" style="--rarity:'+r.color+';--beat:'+beat+'s;--phase:-'+((run.totalTime+u.uid*.21)%beat)+'s"':'')+
     ' aria-label="'+(i+1)+'번 칸'+(u?' '+d.name+' '+u.star+'성 '+r.name:' 비어 있음')+'" aria-pressed="'+(selected===i)+'">'+
-    (u?'<span class="ll-unit-shadow"></span><span class="ll-unit-body">'+portrait(d)+'</span><span class="ll-cell-stars">'+stars(u.star)+'</span>':'<span class="ll-cell-plus">·</span>')+'</button>';
+    (u?'<span class="ll-tier-marker">'+r.mark+'</span><span class="ll-unit-shadow"></span><span class="ll-unit-body">'+portrait(d)+'</span><span class="ll-cell-stars">'+stars(u.star)+'</span>':'<span class="ll-cell-plus">·</span>')+'</button>';
   }).join('');
  }
  function traitsMarkup(){
@@ -50,9 +50,12 @@ export function createLuckGame(){
  }
  function selectedMarkup(){
   const u=run.board[selected];if(!u)return '';
-  const d=unitById(mode,u.id),r=RARITIES[d.rarity];
-  return '<div class="ll-selected-art">'+portrait(d)+'</div><div class="ll-selected-copy"><div><strong>'+d.name+'</strong><small style="color:'+r.color+'">'+stars(u.star)+'</small><small>공격 '+Math.round(unitPower(run,u))+'</small></div><span>'+d.traits.map(id=>'<i style="color:'+TRAITS[id].color+'">'+TRAITS[id].name+'</i>').join('')+'</span></div>'+
-   button('sell','판매 <b>'+sellValue(run,u)+'G</b>','ll-sell','aria-label="'+d.name+' 판매 '+sellValue(run,u)+'골드"');
+  const d=unitById(mode,u.id),r=RARITIES[d.rarity],range=unitRange(run,u);
+  return '<div class="ll-selected-art">'+portrait(d)+'</div><div class="ll-selected-copy"><div><strong>'+d.name+'</strong><b class="ll-tier-label" style="--rarity:'+r.color+'">'+r.name+'</b><small class="ll-info-stars">'+stars(u.star)+'</small></div>'+
+   '<span class="ll-unit-stats">피해 '+Math.round(unitPower(run,u))+' · '+unitInterval(run,u,selected).toFixed(2)+'초 · 사거리 '+(range>=700?'전체':Math.round(range))+'</span>'+
+   '<span class="ll-unit-skill" style="color:'+d.attack.color+'">'+d.attack.name+' · '+d.description+'</span>'+
+   '<span>'+d.traits.map(id=>'<i style="color:'+TRAITS[id].color+'">'+TRAITS[id].name+'</i>').join('')+'</span></div>'+
+   button('sell','판매 <b>'+sellValue(run,u)+'G</b>','ll-sell','aria-label="'+d.name+' 판매 '+sellValue(run,u)+'골드" '+((u.readyAt||0)>run.totalTime?'disabled':''));
  }
  function recipesMarkup(){
   return '<div class="ll-panel-heading"><strong>신화 조합</strong></div><div class="ll-recipes">'+MODES[mode].recipes.map(recipe=>{
@@ -68,16 +71,19 @@ export function createLuckGame(){
    (run.augments.length?'<div class="ll-panel-heading ll-augment-heading"><strong>증강</strong></div><div class="ll-augments">'+run.augments.map(id=>{const a=AUGMENTS.find(x=>x.id===id);return '<span title="'+a.text+'">'+a.icon+' '+a.name+'</span>';}).join('')+'</div>':'');
  }
  function panelMarkup(id){return id==='traits'?traitsMarkup():id==='recipes'?recipesMarkup():upgradesMarkup();}
+ function oddsLabel(){
+  return drawOdds(run||{luck:0,augments:[]},true).map((n,i)=>n?RARITIES[i].name+' '+Number((n*100).toFixed(1))+'%':'').filter(Boolean).join(' · ');
+ }
  function controls(){
   return '<div class="ll-controls"><div class="ll-wallet"><span>◆ <b data-ll-gold>'+run.gold+'</b><small>G</small></span><span class="ll-gems">✧ <b data-ll-gems>'+run.gems+'</b></span><small class="ll-pity" data-ll-pity>희귀 보장 '+(12-run.pity)+'</small></div><div class="ll-actions">'+
    button('summon','<span>소환</span><b data-ll-summon-cost>'+summonCost(run)+'G</b>','ll-summon','aria-label="랜덤 소환"')+
-   button('lucky','<span>행운 뽑기</span><b>✧ 3</b>','ll-lucky','aria-label="행운 뽑기 행운석 3개" title="희귀 52% · 영웅 40% · 전설 8%"')+
-   button('burst','<span>필살기</span><b data-ll-burst>READY</b>','ll-burst','aria-label="'+MODES[mode].burst+'"')+'</div></div>';
+   button('multi','<span>10회 소환</span><b data-ll-multi-cost>'+batchCost(run)+'G</b>','ll-multi','aria-label="10회 한 번에 소환"')+
+   button('lucky','<span>행운 뽑기</span><b>✧ 3</b>','ll-lucky','aria-label="행운 뽑기 행운석 3개" title="'+oddsLabel()+'"')+'</div></div>';
  }
  function battle(){
   return '<div class="ll-battle"><div class="ll-left"><div class="ll-scorebar"><div><small>WAVE</small><strong data-ll-wave>'+String(run.wave).padStart(2,'0')+'</strong><span>/ 20</span></div><div class="ll-crowd"><span>적 <b data-ll-crowd>'+run.enemies.length+'</b> / 60</span><i><b data-ll-crowd-bar></b></i></div>'+
    button('speed','×'+speed,'ll-speed','aria-label="전투 속도 전환"')+'</div><div class="ll-wave-track"><i data-ll-wave-bar></i></div>'+
-   '<div class="ll-field-wrap"><div class="ll-arena"><canvas class="ll-canvas" aria-label="자동 전투 전장"></canvas><div class="ll-board" role="group" aria-label="15칸 소환 보드">'+boardMarkup()+'</div>'+
+   '<div class="ll-field-wrap"><div class="ll-arena"><canvas class="ll-canvas" aria-label="자동 전투 전장"></canvas><div class="ll-board" role="group" aria-label="15칸 소환 보드">'+boardMarkup()+'</div><canvas class="ll-canvas ll-effects" aria-hidden="true"></canvas>'+
    '<div class="ll-arena-caption"><span>자동 합성</span><span data-ll-kills>'+run.kills+' KILLS</span></div><div class="ll-toast" role="status" aria-live="polite" hidden></div></div></div>'+
    '<div class="ll-selection">'+selectedMarkup()+'</div>'+controls()+'</div><aside class="ll-sidebar"><nav class="ll-panel-tabs" aria-label="전투 관리">'+
    Object.entries(PANELS).map(([id,label])=>button('panel',label,'','data-luck-id="'+id+'" aria-pressed="'+(panel===id)+'"')).join('')+'</nav><div class="ll-panel-body">'+panelMarkup(panel)+'</div></aside></div>';
@@ -86,7 +92,7 @@ export function createLuckGame(){
  function collection(){
   const units=MODES[mode].units,size=collectionPageSize(),pages=Math.ceil(units.length/size);page=Math.min(page,pages-1);
   return '<div class="ll-modal-head"><h2 id="ll-dialog-title">'+MODES[mode].name+' 도감</h2>'+button('close',icon('x'),'ll-icon','aria-label="도감 닫기"')+'</div><div class="ll-collection">'+
-   units.slice(page*size,(page+1)*size).map(d=>'<article style="--rarity:'+RARITIES[d.rarity].color+'"><div class="ll-collection-identity">'+portrait(d)+'<div><small>'+RARITIES[d.rarity].name+'</small><strong>'+d.name+'</strong></div></div><span class="ll-family">'+d.family+'</span><div class="ll-tags">'+d.traits.map(id=>'<span style="--trait:'+TRAITS[id].color+'">'+TRAITS[id].name+'</span>').join('')+'</div><p>'+d.description+'</p></article>').join('')+'</div><nav class="ll-pagination" aria-label="도감 페이지">'+
+   units.slice(page*size,(page+1)*size).map(d=>'<article style="--rarity:'+RARITIES[d.rarity].color+'"><div class="ll-collection-identity">'+portrait(d)+'<div><small>'+RARITIES[d.rarity].name+'</small><strong>'+d.name+'</strong></div></div><span class="ll-family">'+d.family+'</span><div class="ll-tags">'+d.traits.map(id=>'<span style="--trait:'+TRAITS[id].color+'">'+TRAITS[id].name+'</span>').join('')+'</div><p>'+d.description+'</p></article>').join('')+'</div><p class="ll-draw-odds">행운 · '+oddsLabel()+'</p><nav class="ll-pagination" aria-label="도감 페이지">'+
    button('page-prev',icon('chevron-left'),'ll-icon','aria-label="이전 페이지" '+(page===0?'disabled':''))+'<span>'+(page+1)+' / '+pages+'</span>'+
    button('page-next',icon('chevron-right'),'ll-icon','aria-label="다음 페이지" '+(page===pages-1?'disabled':''))+'</nav>';
  }
@@ -119,7 +125,9 @@ export function createLuckGame(){
   for(const b of game.querySelectorAll('[data-luck-action="panel"]'))b.setAttribute('aria-pressed',b.dataset.luckId===panel);
  }
  function updateBoard(){
-  if(!game||!run)return;if(!run.board[selected])selected=-1;
+  if(!game||!run)return;
+  for(const f of run.fusions)if(f.fromUid===selectedUid)selectedUid=f.toUid;
+  selected=run.board.findIndex(x=>x?.uid===selectedUid);if(selected<0)selectedUid=0;
   game.querySelector('.ll-board').innerHTML=boardMarkup();
   game.querySelector('.ll-selection').innerHTML=selectedMarkup();updatePanels();lastVersion=run.version;
  }
@@ -129,7 +137,8 @@ export function createLuckGame(){
   const set=(s,v)=>{for(const el of game.querySelectorAll(s))if(el.textContent!==String(v))el.textContent=v;};
   set('[data-ll-gold]',Math.floor(run.gold));set('[data-ll-gems]',run.gems);set('[data-ll-wave]',String(run.wave).padStart(2,'0'));
   set('[data-ll-crowd]',run.enemies.length);set('[data-ll-kills]',run.kills+' KILLS');set('[data-ll-summon-cost]',summonCost(run)+'G');
-  set('[data-ll-pity]','희귀 보장 '+(12-run.pity));set('[data-ll-burst]',run.burstCooldown>0?Math.ceil(run.burstCooldown)+'s':'READY');
+  set('[data-ll-pity]','희귀 보장 '+(12-run.pity));set('[data-ll-multi-cost]',batchCost(run)+'G');
+  game.querySelector('[data-luck-action="lucky"]').title=oddsLabel();
   for(const kind of ['power','luck']){
    const max=run[kind]>=(kind==='power'?8:4);set('[data-ll-'+kind+'-level]','Lv.'+run[kind]);set('[data-ll-'+kind+'-cost]',max?'MAX':upgradeCost(run,kind)+'G');
    for(const b of game.querySelectorAll('[data-luck-action="'+kind+'"]'))b.disabled=run.status!=='running'||max||run.gold<upgradeCost(run,kind);
@@ -138,14 +147,15 @@ export function createLuckGame(){
   const full=run.board.every(Boolean);
   game.querySelector('[data-luck-action="summon"]').disabled=run.status!=='running'||full||run.gold<summonCost(run);
   game.querySelector('[data-luck-action="lucky"]').disabled=run.status!=='running'||full||run.gems<3;
-  game.querySelector('[data-luck-action="burst"]').disabled=run.status!=='running'||run.burstCooldown>0;
+  game.querySelector('[data-luck-action="multi"]').disabled=run.status!=='running'||full||run.gold<batchCost(run);
+  const selectedUnit=run.board[selected],sellButton=game.querySelector('[data-luck-action="sell"]');if(sellButton)sellButton.disabled=run.status!=='running'||(selectedUnit?.readyAt||0)>run.totalTime;
   game.querySelector('[data-ll-crowd-bar]').style.width=Math.min(100,run.enemies.length/MAX_CROWD*100)+'%';
   game.querySelector('.ll-crowd').classList.toggle('is-danger',run.enemies.length>=40);
   game.querySelector('[data-ll-wave-bar]').style.width=Math.min(100,run.waveTime/WAVE_SECONDS*100)+'%';
   game.dataset.status=run.status;
  }
  function processEvents(){
-  const sounds={hit:'boltHit',heavyhit:'novaHit',summon:'pickup',merge:'upgrade',jackpot:'won',mythic:'won',wave:'start',boss:'warning',bosskill:'won',burst:'nova',income:'pickup',upgrade:'upgrade',lost:'hurt',won:'won',choice:'upgrade'};
+  const sounds={hit:'boltHit',heavyhit:'novaHit',summon:'pickup',merge:'upgrade',jackpot:'won',mythic:'won',wave:'start',boss:'warning',bosskill:'won',income:'pickup',upgrade:'upgrade',lost:'hurt',won:'won',choice:'upgrade'};
   for(const e of drainEvents(run)){
    if(sounds[e.kind])audio.play([sounds[e.kind]]);
    if(e.text){const el=game?.querySelector('.ll-toast');if(el){clearTimeout(toastTimer);el.textContent=e.text;el.dataset.kind=e.kind;el.hidden=false;toastTimer=setTimeout(()=>{if(el.isConnected)el.hidden=true;},e.kind==='mythic'?2200:1400);}}
@@ -165,13 +175,20 @@ export function createLuckGame(){
   lastStatus=run?.status||'';
  }
  function rebuild(){if(!game)return;game.dataset.mode=mode;game.innerHTML=content();attach();}
- function start(seed){mode=saved.mode;run=createLuckRun(mode,seed);selected=-1;sheet='';collectionResume=false;resultSaved=false;lastVersion=-1;rebuild();processEvents();}
+ function start(seed){mode=saved.mode;run=createLuckRun(mode,seed);selected=-1;selectedUid=0;sheet='';collectionResume=false;resultSaved=false;lastVersion=-1;rebuild();processEvents();}
  function cell(index){
   if(!run||run.status!=='running'||sheet)return;
-  if(selected<0){if(run.board[index])selected=index;}
-  else if(selected===index)selected=-1;
-  else {moveOrMerge(run,selected,index);selected=run.board[index]?index:-1;processEvents();}
+  selectedUid=run.board[index]?.uid||0;selected=selectedUid?index:-1;
   updateBoard();refreshHud();
+ }
+ function visualState(){
+  const board=game?.querySelector('.ll-board');if(!board||!run)return;
+  for(const b of board.children){
+   const u=run.board[Number(b.dataset.luckCell)];
+   b.classList.toggle('is-merging',!!u&&(u.readyAt||0)>run.totalTime);
+   b.classList.toggle('is-firing',!!u&&run.totalTime-(u.lastAttackAt??-1)<.13);
+   b.classList.toggle('is-drag-source',!!drag?.moved&&drag.uid===u?.uid);
+  }
  }
  function handleClick(b){
   const ds=b.dataset;
@@ -187,7 +204,7 @@ export function createLuckGame(){
   }
   if(action==='start'||action==='restart'){start();return true;}
   if(action==='retry-seed'){start(run.seed);return true;}
-  if(action==='menu'){run=null;sheet='';selected=-1;collectionResume=false;rebuild();return true;}
+  if(action==='menu'){run=null;sheet='';selected=-1;selectedUid=0;collectionResume=false;rebuild();return true;}
   if(action==='collection'){collectionResume=run?pause(run):false;sheet='collection';page=0;syncOverlay();refreshHud();return true;}
   if(action==='close'){
    const wasCollection=sheet==='collection';sheet='';
@@ -206,10 +223,10 @@ export function createLuckGame(){
   if(action==='speed'){speed=speed===1?2:1;b.textContent='×'+speed;return true;}
   if(action==='summon')summon(run);
   if(action==='lucky')summon(run,true);
-  if(action==='burst')burst(run);
+  if(action==='multi')summonBatch(run);
   if(action==='power'||action==='luck')upgrade(run,action);
-  if(action==='sell'){sell(run,selected);selected=-1;}
-  if(action==='craft'){craft(run,ds.luckId);selected=-1;}
+  if(action==='sell'){if(sell(run,selected)){selected=-1;selectedUid=0;}}
+  if(action==='craft'){craft(run,ds.luckId);selected=-1;selectedUid=0;}
   if(action==='augment'){chooseAugment(run,ds.luckId);rebuild();}
   processEvents();refreshHud();return true;
  }
@@ -230,35 +247,35 @@ export function createLuckGame(){
    }
    if(e.code==='Escape'&&sheet){e.preventDefault();handleClick({dataset:{luckAction:'close'}});return;}
    if(modal&&(sheet||run?.status!=='paused'))return;
-   const action={KeyQ:'summon',KeyE:'lucky',KeyR:'burst',Space:'pause',Escape:'pause'}[e.code];
+   const action={KeyQ:'summon',KeyE:'lucky',KeyW:'multi',Space:'pause',Escape:'pause'}[e.code];
    if(e.code==='Space'&&e.target.closest('button'))return;
    if(action&&run){e.preventDefault();handleClick({dataset:{luckAction:action}});}
   },opts);
   const canvas=game.querySelector('canvas');
   if(!canvas){syncOverlay(false);return;}
-  renderer=createLuckRenderer(canvas);
+  renderer=createLuckRenderer(canvas,game.querySelector('.ll-effects'));
   const field=game.querySelector('.ll-field-wrap'),arena=game.querySelector('.ll-arena');
   const fit=()=>{
    const {width,height}=field.getBoundingClientRect();
    arena.style.width=Math.max(0,Math.min(width,height*600/560,600))+'px';
-   renderer.resize();renderer.draw(run);
+   renderer.resize();renderer.draw(run,selected,drag);
   };
   observer=new ResizeObserver(fit);observer.observe(field);fit();
   const board=game.querySelector('.ll-board');
   board.addEventListener('pointerdown',e=>{
    const el=e.target.closest('[data-luck-cell]');if(!el||run.status!=='running'||e.button!==0)return;
-   const index=Number(el.dataset.luckCell);if(!run.board[index])return;
-   drag={id:e.pointerId,index,x:e.clientX,y:e.clientY,moved:false};
+   const index=Number(el.dataset.luckCell);if(!run.board[index]||(run.board[index].readyAt||0)>run.totalTime)return;
+   drag={id:e.pointerId,index,uid:run.board[index].uid,x:e.clientX,y:e.clientY,moved:false};
   },opts);
   board.addEventListener('pointermove',e=>{
    if(!drag||drag.id!==e.pointerId)return;
-   if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>10){drag.moved=true;if(!board.hasPointerCapture(e.pointerId))board.setPointerCapture(e.pointerId);board.classList.add('is-dragging');const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-luck-cell]');for(const b of board.children)b.classList.toggle('is-drop-target',b===target);}
+   if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>8){drag.moved=true;if(!board.hasPointerCapture(e.pointerId))board.setPointerCapture(e.pointerId);board.classList.add('is-dragging');const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-luck-cell]');for(const b of board.children)b.classList.toggle('is-drop-target',b===target);const rect=arena.getBoundingClientRect();drag.point={x:(e.clientX-rect.left)/rect.width*600,y:(e.clientY-rect.top)/rect.height*560};}
   },opts);
   board.addEventListener('pointerup',e=>{
    if(!drag||drag.id!==e.pointerId)return;
    if(drag.moved){
     const el=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-luck-cell]');
-    if(el){moveOrMerge(run,drag.index,Number(el.dataset.luckCell));selected=Number(el.dataset.luckCell);processEvents();}
+    if(el){const from=run.board.findIndex(x=>x?.uid===drag.uid);if(moveUnit(run,from,Number(el.dataset.luckCell)))selectedUid=drag.uid;processEvents();}
     suppressClick=true;setTimeout(()=>suppressClick=false,100);updateBoard();refreshHud();
    }
    board.classList.remove('is-dragging');for(const b of board.children)b.classList.remove('is-drop-target');
@@ -270,8 +287,8 @@ export function createLuckGame(){
    if(run.status==='running'){for(let i=0;i<speed;i++)tickLuck(run,dt);processEvents();}
    hudTime+=dt;if(hudTime>.1){hudTime=0;refreshHud();}
    if(lastStatus!==run.status){syncOverlay();refreshHud();}
-  },render(){if(run&&active)renderer.draw(run);}});
-  lastVersion=-1;refreshHud();lastStatus=run.status;renderer.draw(run);loop.start();syncOverlay();
+  },render(){if(run&&active){visualState();renderer.draw(run,selected,drag);}}});
+  lastVersion=-1;refreshHud();lastStatus=run.status;renderer.draw(run,selected,drag);loop.start();syncOverlay();
  }
  function mount(root,isActive){
   detach();active=isActive;document.body.classList.toggle('reroll-active',active);
