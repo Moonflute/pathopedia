@@ -99,193 +99,6 @@
       ]
     },
     {
-      "id": "acute-cholangitis",
-      "kind": "disease",
-      "name": "급성 담관염",
-      "englishName": "Acute cholangitis",
-      "category": "hepatobiliary",
-      "entityType": "syndrome",
-      "summary": "담도 폐쇄에 발열·우상복부 통증·황달이 동반. 세 증상이 모두 없어도 패혈증·담도 감염을 의심할 수 있다.",
-      "searchAliases": [
-        "쓸개관염",
-        "담도 감염",
-        "ascending cholangitis"
-      ],
-      "anatomicSites": [
-        "liver",
-        "blood"
-      ],
-      "transmission": [
-        "endogenous"
-      ],
-      "clinical": {
-        "presentation": "담석·협착·스텐트가 단서. 항균제와 함께 담도 배액이 중요한 감염원 조절이다.",
-        "diagnostics": "혈액배양·간담도 검사·초음파/CT 등으로 폐쇄와 중증도 평가.",
-        "management": "적절한 항균요법과 중증도에 따른 신속한 담도 배액. 혐기성균 범위는 담장문합 등 맥락에 맞춘다.",
-        "redFlags": "저혈압·의식 변화·장기부전·배액 지연."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "eco",
-          "context": ""
-        },
-        {
-          "pathogenId": "kpn",
-          "context": ""
-        },
-        {
-          "pathogenId": "efa",
-          "context": ""
-        },
-        {
-          "pathogenId": "bgx515",
-          "context": "담장문합 등"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "acute-cholangitis-tx-1",
-          "rank": "preferred",
-          "context": "지역사회·비중증·MDR 위험 낮음",
-          "components": [
-            {
-              "drugId": "ceftriaxone"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "acute-cholangitis-tx-2",
-          "rank": "conditional",
-          "context": "중증·원내·Pseudomonas 위험에 맞춘 선택",
-          "components": [
-            {
-              "drugId": "piptazo"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "acute-cholangitis-tx-3",
-          "rank": "conditional",
-          "context": "혐기성균 위험이 있고 별도 범위가 필요하면 병용",
-          "components": [
-            {
-              "drugId": "metronidazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "component"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "pyogenic-liver-abscess"
-      ],
-      "sourceIds": [
-        "disease-tokyo-cholangitis-2018",
-        "disease-kdca-antibiotic-practice-2026"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "쓸개관염 (Cholangitis)",
-          "path": "source_notes/02 Diseases/03 소화기/간담췌/쓸개관염 (Cholangitis).md"
-        }
-      ]
-    },
-    {
-      "id": "pyogenic-liver-abscess",
-      "kind": "disease",
-      "name": "화농성 간농양",
-      "englishName": "Pyogenic liver abscess",
-      "category": "hepatobiliary",
-      "entityType": "syndrome",
-      "summary": "발열·우상복부 통증과 간의 농양. 담도·장관 감염원을 찾고 Klebsiella 침습성 증후군에서는 눈·중추신경 증상을 확인한다.",
-      "searchAliases": [
-        "세균성 간농양",
-        "간 농양",
-        "liver abscess"
-      ],
-      "anatomicSites": [
-        "liver",
-        "blood"
-      ],
-      "transmission": [
-        "endogenous"
-      ],
-      "clinical": {
-        "presentation": "단일 또는 다발 병변, 당뇨·담도 질환·균혈증 맥락을 확인한다.",
-        "diagnostics": "복부 초음파/CT, 혈액·농양 배양과 기저 감염원 평가.",
-        "management": "배액 필요성 평가와 그람음성균·혐기성균 등을 고려한 요법; 배양 후 표적치료.",
-        "redFlags": "패혈증·안내염·전이 농양·배액 실패."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "kpn",
-          "context": ""
-        },
-        {
-          "pathogenId": "eco",
-          "context": ""
-        },
-        {
-          "pathogenId": "streptococcus-anginosus-group",
-          "context": ""
-        },
-        {
-          "pathogenId": "bgx515",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "pyogenic-liver-abscess-tx-1",
-          "rank": "conditional",
-          "context": "배양 전 지역사회 혼합감염의 병용 구성",
-          "components": [
-            {
-              "drugId": "ceftriaxone"
-            },
-            {
-              "drugId": "metronidazole"
-            }
-          ],
-          "mode": "combination",
-          "coverage": "regimen"
-        },
-        {
-          "id": "pyogenic-liver-abscess-tx-2",
-          "rank": "preferred",
-          "context": "감수성 Klebsiella 단일 원인 확인 후 표적치료",
-          "components": [
-            {
-              "drugId": "ceftriaxone"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "amebic-liver-abscess",
-        "endophthalmitis"
-      ],
-      "sourceIds": [
-        "disease-idsa-intra-abdominal"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "간 농양 (Liver Abscess)",
-          "path": "source_notes/02 Diseases/03 소화기/간담췌/간 농양 (Liver Abscess).md"
-        }
-      ]
-    },
-    {
       "id": "hepatitis-a",
       "kind": "disease",
       "name": "A형 간염",
@@ -475,6 +288,66 @@
       "localReferenceNotes": []
     },
     {
+      "id": "hepatitis-d",
+      "kind": "disease",
+      "name": "D형 간염",
+      "englishName": "Hepatitis D",
+      "category": "hepatobiliary",
+      "entityType": "specific",
+      "summary": "HBV가 있어야 감염을 유지하는 바이러스. HBV와 동시 감염 또는 기존 HBV의 중복 감염이 간질환을 더 악화시킬 수 있다.",
+      "searchAliases": [
+        "HDV",
+        "델타 간염",
+        "hepatitis delta"
+      ],
+      "anatomicSites": [
+        "liver"
+      ],
+      "transmission": [
+        "blood",
+        "sexual"
+      ],
+      "clinical": {
+        "presentation": "HBsAg 양성 환자에서 위험·간염 양상에 따라 검사한다.",
+        "diagnostics": "anti-HDV와 HDV RNA, HBV 표지 및 간 섬유화 평가.",
+        "management": "전문 평가로 HDV 치료·HBV 관리·간경변 감시를 계획. HBV 억제만으로 HDV가 해결되는 것은 아니다.",
+        "redFlags": "빠른 간경변 진행·간부전."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hdv",
+          "context": ""
+        },
+        {
+          "pathogenId": "hbv",
+          "context": "HDV 증식에 필요"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "hepatitis-d-tx-1",
+          "rank": "conditional",
+          "context": "선별된 환자에서 금기·반응을 고려한 HDV 치료",
+          "components": [
+            {
+              "drugId": "peginterferon-alfa"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "chronic-hepatitis-b"
+      ],
+      "sourceIds": [
+        "who-hdv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
       "id": "acute-hepatitis-c",
       "kind": "disease",
       "name": "급성 C형 간염",
@@ -588,66 +461,6 @@
       "localReferenceNotes": []
     },
     {
-      "id": "hepatitis-d",
-      "kind": "disease",
-      "name": "D형 간염",
-      "englishName": "Hepatitis D",
-      "category": "hepatobiliary",
-      "entityType": "specific",
-      "summary": "HBV가 있어야 감염을 유지하는 바이러스. HBV와 동시 감염 또는 기존 HBV의 중복 감염이 간질환을 더 악화시킬 수 있다.",
-      "searchAliases": [
-        "HDV",
-        "델타 간염",
-        "hepatitis delta"
-      ],
-      "anatomicSites": [
-        "liver"
-      ],
-      "transmission": [
-        "blood",
-        "sexual"
-      ],
-      "clinical": {
-        "presentation": "HBsAg 양성 환자에서 위험·간염 양상에 따라 검사한다.",
-        "diagnostics": "anti-HDV와 HDV RNA, HBV 표지 및 간 섬유화 평가.",
-        "management": "전문 평가로 HDV 치료·HBV 관리·간경변 감시를 계획. HBV 억제만으로 HDV가 해결되는 것은 아니다.",
-        "redFlags": "빠른 간경변 진행·간부전."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "hdv",
-          "context": ""
-        },
-        {
-          "pathogenId": "hbv",
-          "context": "HDV 증식에 필요"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "hepatitis-d-tx-1",
-          "rank": "conditional",
-          "context": "선별된 환자에서 금기·반응을 고려한 HDV 치료",
-          "components": [
-            {
-              "drugId": "peginterferon-alfa"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "chronic-hepatitis-b"
-      ],
-      "sourceIds": [
-        "who-hdv"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
       "id": "hepatitis-e",
       "kind": "disease",
       "name": "E형 간염",
@@ -698,6 +511,276 @@
       "reviewStatus": "educational-source-reviewed",
       "authoredAt": "2026-10-11",
       "localReferenceNotes": []
+    },
+    {
+      "id": "pyogenic-liver-abscess",
+      "kind": "disease",
+      "name": "화농성 간농양",
+      "englishName": "Pyogenic liver abscess",
+      "category": "hepatobiliary",
+      "entityType": "syndrome",
+      "summary": "발열·우상복부 통증과 간의 농양. 담도·장관 감염원을 찾고 Klebsiella 침습성 증후군에서는 눈·중추신경 증상을 확인한다.",
+      "searchAliases": [
+        "세균성 간농양",
+        "간 농양",
+        "liver abscess"
+      ],
+      "anatomicSites": [
+        "liver",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "단일 또는 다발 병변, 당뇨·담도 질환·균혈증 맥락을 확인한다.",
+        "diagnostics": "복부 초음파/CT, 혈액·농양 배양과 기저 감염원 평가.",
+        "management": "배액 필요성 평가와 그람음성균·혐기성균 등을 고려한 요법; 배양 후 표적치료.",
+        "redFlags": "패혈증·안내염·전이 농양·배액 실패."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "streptococcus-anginosus-group",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "pyogenic-liver-abscess-tx-1",
+          "rank": "conditional",
+          "context": "배양 전 지역사회 혼합감염의 병용 구성",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            },
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "pyogenic-liver-abscess-tx-2",
+          "rank": "preferred",
+          "context": "감수성 Klebsiella 단일 원인 확인 후 표적치료",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "amebic-liver-abscess",
+        "endophthalmitis"
+      ],
+      "sourceIds": [
+        "disease-idsa-intra-abdominal"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "간 농양 (Liver Abscess)",
+          "path": "source_notes/02 Diseases/03 소화기/간담췌/간 농양 (Liver Abscess).md"
+        }
+      ]
+    },
+    {
+      "id": "acute-cholangitis",
+      "kind": "disease",
+      "name": "급성 담관염",
+      "englishName": "Acute cholangitis",
+      "category": "hepatobiliary",
+      "entityType": "syndrome",
+      "summary": "담도 폐쇄에 발열·우상복부 통증·황달이 동반. 세 증상이 모두 없어도 패혈증·담도 감염을 의심할 수 있다.",
+      "searchAliases": [
+        "쓸개관염",
+        "담도 감염",
+        "ascending cholangitis"
+      ],
+      "anatomicSites": [
+        "liver",
+        "blood"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "담석·협착·스텐트가 단서. 항균제와 함께 담도 배액이 중요한 감염원 조절이다.",
+        "diagnostics": "혈액배양·간담도 검사·초음파/CT 등으로 폐쇄와 중증도 평가.",
+        "management": "적절한 항균요법과 중증도에 따른 신속한 담도 배액. 혐기성균 범위는 담장문합 등 맥락에 맞춘다.",
+        "redFlags": "저혈압·의식 변화·장기부전·배액 지연."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "efa",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": "담장문합 등"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "acute-cholangitis-tx-1",
+          "rank": "preferred",
+          "context": "지역사회·비중증·MDR 위험 낮음",
+          "components": [
+            {
+              "drugId": "ceftriaxone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-cholangitis-tx-2",
+          "rank": "conditional",
+          "context": "중증·원내·Pseudomonas 위험에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "acute-cholangitis-tx-3",
+          "rank": "conditional",
+          "context": "혐기성균 위험이 있고 별도 범위가 필요하면 병용",
+          "components": [
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "pyogenic-liver-abscess"
+      ],
+      "sourceIds": [
+        "disease-tokyo-cholangitis-2018",
+        "disease-kdca-antibiotic-practice-2026"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "쓸개관염 (Cholangitis)",
+          "path": "source_notes/02 Diseases/03 소화기/간담췌/쓸개관염 (Cholangitis).md"
+        }
+      ]
+    },
+    {
+      "id": "infected-pancreatic-necrosis",
+      "kind": "disease",
+      "name": "감염성 췌장괴사",
+      "englishName": "Infected pancreatic necrosis",
+      "category": "hepatobiliary",
+      "entityType": "syndrome",
+      "summary": "췌장염의 괴사 병소에 감염이 더해져 발열·패혈증·임상 악화가 나타난 상태. 무균성 괴사와 구분한다.",
+      "searchAliases": [
+        "감염된 췌장 괴사",
+        "infected necrosis"
+      ],
+      "anatomicSites": [
+        "abdomen"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "괴사 병소의 가스·배양과 임상 경과가 단서. 모든 췌장괴사에 예방적 항균제를 주지 않는다.",
+        "diagnostics": "조영 CT와 임상·배양 평가; 침습적 검사는 필요성에 맞춰 선택.",
+        "management": "감염 병소에 적절한 항균제와 단계적 배액·괴사 제거 전략. 안정성에 따라 처치 시점을 조정한다.",
+        "redFlags": "쇼크·다장기부전·지속 감염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "efa",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx515",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "infected-pancreatic-necrosis-tx-1",
+          "rank": "conditional",
+          "context": "중증·내성 위험과 감수성에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "meropenem"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "infected-pancreatic-necrosis-tx-2",
+          "rank": "alternative",
+          "context": "환자·기관 내성 자료에 맞는 대안",
+          "components": [
+            {
+              "drugId": "piptazo"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "secondary-peritonitis"
+      ],
+      "sourceIds": [
+        "disease-aga-pancreatic-necrosis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "감염성 췌장 괴사 (Infected Pancreatic Necrosis)",
+          "path": "source_notes/02 Diseases/03 소화기/간담췌/감염성 췌장 괴사 (Infected Pancreatic Necrosis).md"
+        }
+      ]
     }
   ]
 }

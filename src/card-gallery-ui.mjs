@@ -3,6 +3,8 @@ import { createCardSearch } from './card-search.mjs';
 import { createCardGuide } from './card-guide.mjs';
 import { renderCardThumbnail, renderCardLegend, cardIcon } from './reference-card.mjs';
 import { CARD_DOMAINS, createCardModels } from './card-models.mjs';
+import { sortPathogenRecords } from './card-pathogen-order.mjs';
+import { DRUG_ORDER, drugClassification, sortDrugRecords } from './card-drug-order.mjs';
 import { CARD_FILTERS as FILTERS } from './app-routing.mjs';
 
 const esc=value=>String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -11,7 +13,7 @@ const ARTWORK_STORAGE_KEY='pathopedia:card-artwork';
 const WIDTHS=[160,190,220];
 const DECKS=[
   {id:'pathogens',kind:'pathogen',label:'병원체',icon:'bacteria'},
-  {id:'drugs',kind:'drug',label:'항생제',icon:'capsule'},
+  {id:'drugs',kind:'drug',label:'약제',icon:'capsule'},
   {id:'diseases',kind:'disease',label:'질병',icon:'clinical'}
 ];
 
@@ -20,21 +22,23 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
   const guide=createCardGuide(models);
   const search=createCardSearch(data,catalog);
   const stacks=cardStacks || createCardStacks(catalog);
-  const families=[...new Set(data.drugs.map(drug=>drug.family))].sort((a,b)=>a.localeCompare(b));
+  const drugFilters=new Set(DRUG_ORDER.flatMap(group=>['group:'+group.id,...group.classes.map(drugClass=>'class:'+drugClass.id)]));
+  const diseaseCategories=Object.values(catalog.diseaseCategories);
   const entries=[
-    ...data.records.map(record=>({
+    ...sortPathogenRecords(data.records,catalog).map(record=>({
       key:'pathogen:'+record.id,id:record.id,kind:'pathogen',domain:record.domain,
       name:record.organism,subtitle:record.koreanName,variant:record.phenotype,
       resistance:catalog.variants[record.id]?.resistance
     })),
-    ...data.drugs.map(drug=>({
+    ...sortDrugRecords(data.drugs).map(drug=>({
       key:'drug:'+drug.id,id:drug.id,kind:'drug',domain:'drugs',name:drug.name,
-      subtitle:drug.family,family:drug.family,variant:''
+      subtitle:drug.family,drugGroup:drugClassification(drug.id)?.group,
+      drugClass:drugClassification(drug.id)?.drugClass,variant:''
     })),
     ...Object.values(catalog.diseases || {}).map(disease=>({key:'disease:'+disease.id,id:disease.id,kind:'disease',domain:'diseases',name:disease.name,subtitle:disease.englishName,category:disease.category,variant:''}))
   ];
   let diseaseCategory='all';
-  let domain='all',archiveOnly=false,query='',family='all',resistanceOnly=false,page=0,width=190;
+  let domain='all',archiveOnly=false,query='',drugFilter='all',resistanceOnly=false,page=0,width=190;
   let artworkVisible=true;
   try{artworkVisible=globalThis.localStorage?.getItem(ARTWORK_STORAGE_KEY)!=='off';}catch{}
   function applyArtworkVisibility(){
@@ -55,7 +59,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     return entries.filter(entry=>(domain==='all' || entry.domain===domain || domain==='pathogens' && entry.kind==='pathogen')
       && (!archiveOnly || entry.kind==='pathogen' && Object.hasOwn(archive,entry.id))
       && (!resistanceOnly || entry.resistance)
-      && (domain!=='drugs' || family==='all' || entry.family===family)
+      && (domain!=='drugs' || drugFilter==='all' || drugFilter==='group:'+entry.drugGroup || drugFilter==='class:'+entry.drugClass)
       && (domain!=='diseases' || diseaseCategory==='all' || entry.category===diseaseCategory)
       && search.matches(entry.kind,entry.id,query));
   }
@@ -70,7 +74,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     if(!FILTERS.some(filter=>filter.id===nextDomain) || nextArchiveOnly && ['drugs','diseases'].includes(nextDomain))return false;
     rememberFaces();domain=nextDomain;archiveOnly=nextArchiveOnly;page=0;
     if(domain==='all' && !archiveOnly && resetOverview){
-      query='';family='all';diseaseCategory='all';resistanceOnly=false;
+      query='';drugFilter='all';diseaseCategory='all';resistanceOnly=false;
     }
     if(['drugs','diseases'].includes(domain))resistanceOnly=false;
     return true;
@@ -118,13 +122,28 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
       (pages>1?'<nav class="card-gallery-pagination" aria-label="카드 목록 페이지"><button type="button" data-card-page="prev" '+(page===0?'disabled':'')+'>← 이전</button><span>'+(page+1)+' / '+pages+'</span><button type="button" data-card-page="next" '+(page===pages-1?'disabled':'')+'>다음 →</button></nav>':'');
   }
 
+  function drugOptions() {
+    return DRUG_ORDER.map(group=>'<optgroup label="'+esc(group.label)+'">'+
+      '<option value="group:'+group.id+'" '+(drugFilter==='group:'+group.id?'selected':'')+'>'+esc(group.label)+' 전체</option>'+
+      group.classes.map(drugClass=>'<option value="class:'+drugClass.id+'" '+(drugFilter==='class:'+drugClass.id?'selected':'')+'>'+esc(drugClass.label)+'</option>').join('')+
+      '</optgroup>').join('');
+  }
+
+  function diseaseOptions() {
+    return diseaseCategories.map(category=>{
+      const before=category.id==='gastrointestinal'?'<optgroup label="소화기">':category.id==='obstetric'?'<optgroup label="산과·생식기">':'';
+      const after=category.id==='hepatobiliary' || category.id==='sti'?'</optgroup>':'';
+      return before+'<option value="'+esc(category.id)+'" '+(category.id===diseaseCategory?'selected':'')+'>'+esc(category.label)+'</option>'+after;
+    }).join('');
+  }
+
   function optionsContent() {
     return '<header class="card-gallery-options-heading"><h2 id="card-gallery-options-title">보기 설정</h2><button type="button" data-card-options="close" aria-label="설정 닫기">✕</button></header>'+
       '<div class="card-gallery-domains" role="group" aria-label="수록 범위"><button type="button" data-card-collection="all" aria-pressed="'+!archiveOnly+'">전체 수록</button><button type="button" data-card-collection="archive" aria-pressed="'+archiveOnly+'">발견 기록</button></div>'+
       '<div class="card-gallery-domains" role="group" aria-label="카드 분류">'+FILTERS.filter(filter=>!archiveOnly || !['drugs','diseases'].includes(filter.id)).map(filter=>'<button type="button" data-card-domain="'+filter.id+'" aria-pressed="'+(filter.id===domain)+'">'+filter.label+'</button>').join('')+'</div>'+
       '<div class="card-gallery-controls">'+
-      (domain==='drugs'?'<label class="card-gallery-family">약제 계열<select id="card-gallery-family"><option value="all">모든 계열</option>'+families.map(value=>'<option value="'+esc(value)+'" '+(value===family?'selected':'')+'>'+esc(value)+'</option>').join('')+'</select></label>':'')+
-      (domain==='diseases'?'<label class="card-gallery-family">질환 분류<select id="card-gallery-disease-category"><option value="all">모든 감염질환</option>'+Object.values(catalog.diseaseCategories).map(category=>'<option value="'+esc(category.id)+'" '+(category.id===diseaseCategory?'selected':'')+'>'+esc(category.label)+'</option>').join('')+'</select></label>':'')+
+      (domain==='drugs'?'<label class="card-gallery-family">약제 분류<select id="card-gallery-drug-class"><option value="all">모든 약제</option>'+drugOptions()+'</select></label>':'')+
+      (domain==='diseases'?'<label class="card-gallery-family">질환 분류<select id="card-gallery-disease-category"><option value="all">모든 감염질환</option>'+diseaseOptions()+'</select></label>':'')+
       '<label class="card-gallery-size">목록 밀도<select id="card-gallery-size">'+WIDTHS.map(value=>'<option value="'+value+'" '+(value===width?'selected':'')+'>'+({160:'촘촘하게',190:'기본',220:'넓게'})[value]+'</option>').join('')+'</select></label>'+
       (!['drugs','diseases'].includes(domain)?'<label class="card-gallery-resistance"><input id="card-gallery-resistance" type="checkbox" '+(resistanceOnly?'checked':'')+'>내성 표시 카드만</label><label class="card-gallery-resistance"><input id="card-gallery-stacks" type="checkbox" '+(stacks.enabled()?'checked':'')+'>내성형 겹쳐 보기</label>':'')+
       '</div><button type="button" class="card-gallery-options-reset" data-card-reset>필터 초기화</button>'+renderCardLegend();
@@ -176,7 +195,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     if(guide.handleClick(button,domain))return true;
     if(button.dataset.cardDeck){
       if(!DECKS.some(deck=>deck.id===button.dataset.cardDeck))return true;
-      query='';family='all';diseaseCategory='all';resistanceOnly=false;
+      query='';drugFilter='all';diseaseCategory='all';resistanceOnly=false;
       setRoute(button.dataset.cardDeck,false);onFilterChange(domain,archiveOnly);
       refreshResults();refreshOptions();
       document.querySelector('#card-gallery-results')?.focus({preventScroll:true});
@@ -223,7 +242,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
       return true;
     }
     if (Object.hasOwn(button.dataset,'cardReset')) {
-      rememberFaces();domain='all';archiveOnly=false;query='';family='all';diseaseCategory='all';resistanceOnly=false;page=0;onFilterChange(domain,archiveOnly);
+      rememberFaces();domain='all';archiveOnly=false;query='';drugFilter='all';diseaseCategory='all';resistanceOnly=false;page=0;onFilterChange(domain,archiveOnly);
       const input=document.querySelector('#card-gallery-search');
       if(input)input.value='';
       refreshResults();refreshOptions('[data-card-reset]');
@@ -251,8 +270,8 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
       if (WIDTHS.includes(next)) {rememberFaces();width=next;refreshResults();}
       return true;
     }
-    if (target.id==='card-gallery-family') {
-      if (target.value==='all' || families.includes(target.value)) {rememberFaces();family=target.value;page=0;refreshResults();}
+    if (target.id==='card-gallery-drug-class') {
+      if (target.value==='all' || drugFilters.has(target.value)) {rememberFaces();drugFilter=target.value;page=0;refreshResults();}
       return true;
     }
     if (target.id==='card-gallery-resistance') {

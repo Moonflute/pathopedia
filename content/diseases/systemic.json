@@ -107,6 +107,99 @@
       ]
     },
     {
+      "id": "neonatal-sepsis",
+      "kind": "disease",
+      "name": "신생아 패혈증",
+      "englishName": "Neonatal sepsis",
+      "category": "systemic",
+      "entityType": "syndrome",
+      "summary": "신생아의 수유 저하·체온 불안정·무호흡·처짐은 감염 신호일 수 있다. 조기·후기 발생과 분만·NICU 환경을 구분한다.",
+      "searchAliases": [
+        "신생아 감염",
+        "neonatal infection",
+        "EOS",
+        "LOS"
+      ],
+      "anatomicSites": [
+        "blood",
+        "brain",
+        "lungs"
+      ],
+      "transmission": [
+        "vertical",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "조기 발병은 GBS·E. coli 등이 중요하고 후기에는 도관·병원균 위험이 달라진다.",
+        "diagnostics": "혈액배양과 임상 상태에 따른 CSF·소변 등 검사. 배양 전에 가능한 검체를 확보하되 치료를 지연하지 않는다.",
+        "management": "조기 발생의 경험요법은 Ampicillin과 Gentamicin 등이 기본; 수막염·후기·원내 상황은 별도 요법.",
+        "redFlags": "무호흡·쇼크·경련·심한 처짐."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sag",
+          "context": ""
+        },
+        {
+          "pathogenId": "eco",
+          "context": ""
+        },
+        {
+          "pathogenId": "lmo",
+          "context": "상황에 따라"
+        },
+        {
+          "pathogenId": "sep",
+          "context": "후기·도관 관련"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "neonatal-sepsis-tx-1",
+          "rank": "preferred",
+          "context": "조기 발생 신생아 패혈증의 경험적 병용 구성",
+          "components": [
+            {
+              "drugId": "ampicillin"
+            },
+            {
+              "drugId": "gentamicin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        },
+        {
+          "id": "neonatal-sepsis-tx-2",
+          "rank": "conditional",
+          "context": "후기·도관 관련 MRSA·CoNS 위험에 따라",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "bacterial-meningitis",
+        "sepsis"
+      ],
+      "sourceIds": [
+        "cdc-gbs",
+        "cdc-listeria"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "신생아 패혈증 (Neonatal Sepsis)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 총론/신생아 패혈증 (Neonatal Sepsis).md"
+        }
+      ]
+    },
+    {
       "id": "septic-shock",
       "kind": "disease",
       "name": "패혈성 쇼크",
@@ -207,6 +300,147 @@
           "path": "source_notes/02 Diseases/11 외과/패혈성 쇼크 (Septic Shock).md"
         }
       ]
+    },
+    {
+      "id": "staphylococcal-toxic-shock",
+      "kind": "disease",
+      "name": "포도알균 독성쇼크증후군",
+      "englishName": "Staphylococcal toxic shock syndrome",
+      "category": "systemic",
+      "entityType": "specific",
+      "summary": "고열·저혈압·미만성 발진과 다장기 이상. 월경 관련 또는 수술·창상 감염에서 독소성 쇼크를 의심한다.",
+      "searchAliases": [
+        "TSS",
+        "독성 쇼크",
+        "독소쇼크"
+      ],
+      "anatomicSites": [
+        "blood",
+        "skin"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "균혈증이 없어도 발생할 수 있다. 창상·탐폰 등 독소 발생 부위를 찾아 제거한다.",
+        "diagnostics": "임상 기준·장기 기능 평가와 감염 부위 배양.",
+        "management": "소생·감염원 제거와 S. aureus 활성 요법, 독소 억제 성분을 상황에 맞춰 병용.",
+        "redFlags": "쇼크·신손상·다장기부전."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "staphylococcal-toxic-shock-tx-1",
+          "rank": "conditional",
+          "context": "MRSA 위험을 반영한 초기 활성 성분",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "staphylococcal-toxic-shock-tx-2",
+          "rank": "conditional",
+          "context": "감수성·내성을 고려한 독소 억제 병용 성분",
+          "components": [
+            {
+              "drugId": "clindamycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "staphylococcal-toxic-shock-tx-3",
+          "rank": "preferred",
+          "context": "MSSA 확인 후 활성 요법",
+          "components": [
+            {
+              "drugId": "oxacillin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "streptococcal-toxic-shock"
+      ],
+      "sourceIds": [
+        "disease-idsa-ssti-2014"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "streptococcal-toxic-shock",
+      "kind": "disease",
+      "name": "사슬알균 독성쇼크증후군",
+      "englishName": "Streptococcal toxic shock syndrome",
+      "category": "systemic",
+      "entityType": "specific",
+      "summary": "침습성 GAS 감염에 저혈압·다장기부전이 동반. 심한 국소 통증과 괴사성 연조직 감염이 있는지 즉시 평가한다.",
+      "searchAliases": [
+        "STSS",
+        "연쇄상구균 독성쇼크"
+      ],
+      "anatomicSites": [
+        "blood",
+        "skin"
+      ],
+      "transmission": [
+        "inoculation",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "피부 손상이 크지 않아도 심부 감염이 진행할 수 있다. 조기 감염원 제거가 중요하다.",
+        "diagnostics": "혈액·감염 부위 배양과 장기 기능 평가; 수술 판단을 영상 때문에 늦추지 않는다.",
+        "management": "소생·감염원 조절, 확인된 GAS에는 Penicillin과 Clindamycin 병용.",
+        "redFlags": "쇼크·빠른 조직 괴사·다장기부전."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "spy",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "streptococcal-toxic-shock-tx-1",
+          "rank": "preferred",
+          "context": "확인된 침습성 GAS 독성쇼크의 병용 요법",
+          "components": [
+            {
+              "drugId": "penicillin"
+            },
+            {
+              "drugId": "clindamycin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "necrotizing-fasciitis",
+        "staphylococcal-toxic-shock"
+      ],
+      "sourceIds": [
+        "disease-cdc-sssss"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
     },
     {
       "id": "bloodstream-infection",
@@ -387,6 +621,190 @@
       "sourceIds": [
         "disease-idsa-sab-2026",
         "card-therapy-mrsa"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "catheter-bloodstream-infection",
+      "kind": "disease",
+      "name": "도관 관련 혈류감염",
+      "englishName": "Catheter-related bloodstream infection",
+      "category": "systemic",
+      "entityType": "syndrome",
+      "summary": "혈관 도관 환자의 발열·오한·균혈증. 다른 감염원을 구분하고 도관에서 시작된 혈류감염인지 평가한다.",
+      "searchAliases": [
+        "CRBSI",
+        "CLABSI",
+        "중심정맥관 감염",
+        "카테터 혈류감염"
+      ],
+      "anatomicSites": [
+        "blood"
+      ],
+      "transmission": [
+        "inoculation",
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "피부균·그람음성균·Candida가 원인이 될 수 있다. 모든 CLABSI 감시 정의가 임상적 CRBSI 확진과 같지는 않다.",
+        "diagnostics": "말초·도관 혈액배양을 비교하고 양성 시간차 등 임상·미생물 기준을 확인한다.",
+        "management": "균종·중증도·도관 종류에 따라 제거·보존 여부 결정. S. aureus·진균·합병증은 적극적인 감염원 조절이 중요하다.",
+        "redFlags": "지속 양성 배양·패혈성 혈전·심내막염·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sep",
+          "context": ""
+        },
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "pae",
+          "context": ""
+        },
+        {
+          "pathogenId": "kpn",
+          "context": ""
+        },
+        {
+          "pathogenId": "cal",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "catheter-bloodstream-infection-tx-1",
+          "rank": "conditional",
+          "context": "기관 MRSA·감염 위험을 반영한 경험적 성분",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "catheter-bloodstream-infection-tx-2",
+          "rank": "conditional",
+          "context": "중증·그람음성 위험에서 필요한 추가 성분",
+          "components": [
+            {
+              "drugId": "cefepime"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        },
+        {
+          "id": "catheter-bloodstream-infection-tx-3",
+          "rank": "preferred",
+          "context": "MSSA 확인 후 표적치료",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "bloodstream-infection",
+        "candidemia"
+      ],
+      "sourceIds": [
+        "disease-idsa-crbsi-2009"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "septic-thrombophlebitis",
+      "kind": "disease",
+      "name": "패혈성 혈전정맥염",
+      "englishName": "Septic thrombophlebitis",
+      "category": "systemic",
+      "entityType": "syndrome",
+      "summary": "지속 균혈증과 정맥 혈전이 함께 있는 감염. 도관·주사 부위와 심경부 감염, 패혈성 폐색전을 확인한다.",
+      "searchAliases": [
+        "화농성 혈전정맥염",
+        "Lemierre syndrome",
+        "레미에르 증후군"
+      ],
+      "anatomicSites": [
+        "blood",
+        "lungs"
+      ],
+      "transmission": [
+        "endogenous",
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "감염된 혈전이 지속 감염원이 될 수 있다. 항응고 여부는 위치·출혈 위험에 따라 따로 판단한다.",
+        "diagnostics": "혈액배양과 정맥 초음파·CT, 색전·농양 평가.",
+        "management": "감염원 제거·배액과 균종별 항균치료. 혈전·항응고 및 치료 기간은 전문팀이 개별화한다.",
+        "redFlags": "지속 균혈증·폐색전·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sau",
+          "context": ""
+        },
+        {
+          "pathogenId": "bgx516",
+          "context": "Lemierre 증후군"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "septic-thrombophlebitis-tx-1",
+          "rank": "conditional",
+          "context": "MSSA 확인 후 표적치료",
+          "components": [
+            {
+              "drugId": "cefazolin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "septic-thrombophlebitis-tx-2",
+          "rank": "conditional",
+          "context": "MRSA에서 감수성에 맞춘 선택",
+          "components": [
+            {
+              "drugId": "vancomycin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "septic-thrombophlebitis-tx-3",
+          "rank": "conditional",
+          "context": "Fusobacterium 관련 혼합감염의 혐기성 성분",
+          "components": [
+            {
+              "drugId": "metronidazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "catheter-bloodstream-infection"
+      ],
+      "sourceIds": [
+        "disease-idsa-crbsi-2009",
+        "disease-idsa-sab-2026"
       ],
       "reviewStatus": "educational-source-reviewed",
       "authoredAt": "2026-10-11",
@@ -660,424 +1078,6 @@
       ],
       "sourceIds": [
         "tail-esc-endocarditis"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "catheter-bloodstream-infection",
-      "kind": "disease",
-      "name": "도관 관련 혈류감염",
-      "englishName": "Catheter-related bloodstream infection",
-      "category": "systemic",
-      "entityType": "syndrome",
-      "summary": "혈관 도관 환자의 발열·오한·균혈증. 다른 감염원을 구분하고 도관에서 시작된 혈류감염인지 평가한다.",
-      "searchAliases": [
-        "CRBSI",
-        "CLABSI",
-        "중심정맥관 감염",
-        "카테터 혈류감염"
-      ],
-      "anatomicSites": [
-        "blood"
-      ],
-      "transmission": [
-        "inoculation",
-        "endogenous"
-      ],
-      "clinical": {
-        "presentation": "피부균·그람음성균·Candida가 원인이 될 수 있다. 모든 CLABSI 감시 정의가 임상적 CRBSI 확진과 같지는 않다.",
-        "diagnostics": "말초·도관 혈액배양을 비교하고 양성 시간차 등 임상·미생물 기준을 확인한다.",
-        "management": "균종·중증도·도관 종류에 따라 제거·보존 여부 결정. S. aureus·진균·합병증은 적극적인 감염원 조절이 중요하다.",
-        "redFlags": "지속 양성 배양·패혈성 혈전·심내막염·쇼크."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "sep",
-          "context": ""
-        },
-        {
-          "pathogenId": "sau",
-          "context": ""
-        },
-        {
-          "pathogenId": "pae",
-          "context": ""
-        },
-        {
-          "pathogenId": "kpn",
-          "context": ""
-        },
-        {
-          "pathogenId": "cal",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "catheter-bloodstream-infection-tx-1",
-          "rank": "conditional",
-          "context": "기관 MRSA·감염 위험을 반영한 경험적 성분",
-          "components": [
-            {
-              "drugId": "vancomycin"
-            }
-          ],
-          "mode": "single",
-          "coverage": "component"
-        },
-        {
-          "id": "catheter-bloodstream-infection-tx-2",
-          "rank": "conditional",
-          "context": "중증·그람음성 위험에서 필요한 추가 성분",
-          "components": [
-            {
-              "drugId": "cefepime"
-            }
-          ],
-          "mode": "single",
-          "coverage": "component"
-        },
-        {
-          "id": "catheter-bloodstream-infection-tx-3",
-          "rank": "preferred",
-          "context": "MSSA 확인 후 표적치료",
-          "components": [
-            {
-              "drugId": "cefazolin"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "bloodstream-infection",
-        "candidemia"
-      ],
-      "sourceIds": [
-        "disease-idsa-crbsi-2009"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "neonatal-sepsis",
-      "kind": "disease",
-      "name": "신생아 패혈증",
-      "englishName": "Neonatal sepsis",
-      "category": "systemic",
-      "entityType": "syndrome",
-      "summary": "신생아의 수유 저하·체온 불안정·무호흡·처짐은 감염 신호일 수 있다. 조기·후기 발생과 분만·NICU 환경을 구분한다.",
-      "searchAliases": [
-        "신생아 감염",
-        "neonatal infection",
-        "EOS",
-        "LOS"
-      ],
-      "anatomicSites": [
-        "blood",
-        "brain",
-        "lungs"
-      ],
-      "transmission": [
-        "vertical",
-        "endogenous"
-      ],
-      "clinical": {
-        "presentation": "조기 발병은 GBS·E. coli 등이 중요하고 후기에는 도관·병원균 위험이 달라진다.",
-        "diagnostics": "혈액배양과 임상 상태에 따른 CSF·소변 등 검사. 배양 전에 가능한 검체를 확보하되 치료를 지연하지 않는다.",
-        "management": "조기 발생의 경험요법은 Ampicillin과 Gentamicin 등이 기본; 수막염·후기·원내 상황은 별도 요법.",
-        "redFlags": "무호흡·쇼크·경련·심한 처짐."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "sag",
-          "context": ""
-        },
-        {
-          "pathogenId": "eco",
-          "context": ""
-        },
-        {
-          "pathogenId": "lmo",
-          "context": "상황에 따라"
-        },
-        {
-          "pathogenId": "sep",
-          "context": "후기·도관 관련"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "neonatal-sepsis-tx-1",
-          "rank": "preferred",
-          "context": "조기 발생 신생아 패혈증의 경험적 병용 구성",
-          "components": [
-            {
-              "drugId": "ampicillin"
-            },
-            {
-              "drugId": "gentamicin"
-            }
-          ],
-          "mode": "combination",
-          "coverage": "regimen"
-        },
-        {
-          "id": "neonatal-sepsis-tx-2",
-          "rank": "conditional",
-          "context": "후기·도관 관련 MRSA·CoNS 위험에 따라",
-          "components": [
-            {
-              "drugId": "vancomycin"
-            }
-          ],
-          "mode": "single",
-          "coverage": "component"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "bacterial-meningitis",
-        "sepsis"
-      ],
-      "sourceIds": [
-        "cdc-gbs",
-        "cdc-listeria"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "신생아 패혈증 (Neonatal Sepsis)",
-          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 총론/신생아 패혈증 (Neonatal Sepsis).md"
-        }
-      ]
-    },
-    {
-      "id": "staphylococcal-toxic-shock",
-      "kind": "disease",
-      "name": "포도알균 독성쇼크증후군",
-      "englishName": "Staphylococcal toxic shock syndrome",
-      "category": "systemic",
-      "entityType": "specific",
-      "summary": "고열·저혈압·미만성 발진과 다장기 이상. 월경 관련 또는 수술·창상 감염에서 독소성 쇼크를 의심한다.",
-      "searchAliases": [
-        "TSS",
-        "독성 쇼크",
-        "독소쇼크"
-      ],
-      "anatomicSites": [
-        "blood",
-        "skin"
-      ],
-      "transmission": [
-        "endogenous",
-        "inoculation"
-      ],
-      "clinical": {
-        "presentation": "균혈증이 없어도 발생할 수 있다. 창상·탐폰 등 독소 발생 부위를 찾아 제거한다.",
-        "diagnostics": "임상 기준·장기 기능 평가와 감염 부위 배양.",
-        "management": "소생·감염원 제거와 S. aureus 활성 요법, 독소 억제 성분을 상황에 맞춰 병용.",
-        "redFlags": "쇼크·신손상·다장기부전."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "sau",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "staphylococcal-toxic-shock-tx-1",
-          "rank": "conditional",
-          "context": "MRSA 위험을 반영한 초기 활성 성분",
-          "components": [
-            {
-              "drugId": "vancomycin"
-            }
-          ],
-          "mode": "single",
-          "coverage": "component"
-        },
-        {
-          "id": "staphylococcal-toxic-shock-tx-2",
-          "rank": "conditional",
-          "context": "감수성·내성을 고려한 독소 억제 병용 성분",
-          "components": [
-            {
-              "drugId": "clindamycin"
-            }
-          ],
-          "mode": "single",
-          "coverage": "component"
-        },
-        {
-          "id": "staphylococcal-toxic-shock-tx-3",
-          "rank": "preferred",
-          "context": "MSSA 확인 후 활성 요법",
-          "components": [
-            {
-              "drugId": "oxacillin"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "streptococcal-toxic-shock"
-      ],
-      "sourceIds": [
-        "disease-idsa-ssti-2014"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "streptococcal-toxic-shock",
-      "kind": "disease",
-      "name": "사슬알균 독성쇼크증후군",
-      "englishName": "Streptococcal toxic shock syndrome",
-      "category": "systemic",
-      "entityType": "specific",
-      "summary": "침습성 GAS 감염에 저혈압·다장기부전이 동반. 심한 국소 통증과 괴사성 연조직 감염이 있는지 즉시 평가한다.",
-      "searchAliases": [
-        "STSS",
-        "연쇄상구균 독성쇼크"
-      ],
-      "anatomicSites": [
-        "blood",
-        "skin"
-      ],
-      "transmission": [
-        "inoculation",
-        "endogenous"
-      ],
-      "clinical": {
-        "presentation": "피부 손상이 크지 않아도 심부 감염이 진행할 수 있다. 조기 감염원 제거가 중요하다.",
-        "diagnostics": "혈액·감염 부위 배양과 장기 기능 평가; 수술 판단을 영상 때문에 늦추지 않는다.",
-        "management": "소생·감염원 조절, 확인된 GAS에는 Penicillin과 Clindamycin 병용.",
-        "redFlags": "쇼크·빠른 조직 괴사·다장기부전."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "spy",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "streptococcal-toxic-shock-tx-1",
-          "rank": "preferred",
-          "context": "확인된 침습성 GAS 독성쇼크의 병용 요법",
-          "components": [
-            {
-              "drugId": "penicillin"
-            },
-            {
-              "drugId": "clindamycin"
-            }
-          ],
-          "mode": "combination",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "necrotizing-fasciitis",
-        "staphylococcal-toxic-shock"
-      ],
-      "sourceIds": [
-        "disease-cdc-sssss"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "septic-thrombophlebitis",
-      "kind": "disease",
-      "name": "패혈성 혈전정맥염",
-      "englishName": "Septic thrombophlebitis",
-      "category": "systemic",
-      "entityType": "syndrome",
-      "summary": "지속 균혈증과 정맥 혈전이 함께 있는 감염. 도관·주사 부위와 심경부 감염, 패혈성 폐색전을 확인한다.",
-      "searchAliases": [
-        "화농성 혈전정맥염",
-        "Lemierre syndrome",
-        "레미에르 증후군"
-      ],
-      "anatomicSites": [
-        "blood",
-        "lungs"
-      ],
-      "transmission": [
-        "endogenous",
-        "inoculation"
-      ],
-      "clinical": {
-        "presentation": "감염된 혈전이 지속 감염원이 될 수 있다. 항응고 여부는 위치·출혈 위험에 따라 따로 판단한다.",
-        "diagnostics": "혈액배양과 정맥 초음파·CT, 색전·농양 평가.",
-        "management": "감염원 제거·배액과 균종별 항균치료. 혈전·항응고 및 치료 기간은 전문팀이 개별화한다.",
-        "redFlags": "지속 균혈증·폐색전·쇼크."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "sau",
-          "context": ""
-        },
-        {
-          "pathogenId": "bgx516",
-          "context": "Lemierre 증후군"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "septic-thrombophlebitis-tx-1",
-          "rank": "conditional",
-          "context": "MSSA 확인 후 표적치료",
-          "components": [
-            {
-              "drugId": "cefazolin"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "septic-thrombophlebitis-tx-2",
-          "rank": "conditional",
-          "context": "MRSA에서 감수성에 맞춘 선택",
-          "components": [
-            {
-              "drugId": "vancomycin"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "septic-thrombophlebitis-tx-3",
-          "rank": "conditional",
-          "context": "Fusobacterium 관련 혼합감염의 혐기성 성분",
-          "components": [
-            {
-              "drugId": "metronidazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "component"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "catheter-bloodstream-infection"
-      ],
-      "sourceIds": [
-        "disease-idsa-crbsi-2009",
-        "disease-idsa-sab-2026"
       ],
       "reviewStatus": "educational-source-reviewed",
       "authoredAt": "2026-10-11",

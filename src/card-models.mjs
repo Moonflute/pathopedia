@@ -2,7 +2,7 @@ import { cardArtwork } from './card-art.mjs';
 import { createCardCatalog } from './card-catalog.mjs';
 
 export const CARD_DOMAINS = Object.freeze({
-  bacteria:'세균', fungi:'진균', viruses:'바이러스', parasites:'기생충', drugs:'약제', diseases:'감염질환'
+  bacteria:'세균', viruses:'바이러스', fungi:'진균', parasites:'기생충', drugs:'약제', diseases:'감염질환'
 });
 const POSITIVE = new Set(['S','I','ACT','ACTIVE','REGIMEN']);
 const NEGATIVE = new Set(['R','INACTIVE']);

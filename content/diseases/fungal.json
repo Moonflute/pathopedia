@@ -3,6 +3,744 @@
   "category": "fungal",
   "entities": [
     {
+      "id": "dermatophytosis",
+      "kind": "disease",
+      "name": "피부사상균증",
+      "englishName": "Dermatophytosis",
+      "category": "fungal",
+      "entityType": "specific",
+      "summary": "몸·발·사타구니의 경계 뚜렷한 인설성 병변이 흔하다. 두피 감염은 국소 약만으로 치료하기 어렵고 스테로이드는 진단을 흐릴 수 있다.",
+      "searchAliases": [
+        "백선",
+        "무좀",
+        "체부백선",
+        "족부백선",
+        "두부백선",
+        "완선",
+        "tinea"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "고리 모양 홍반·인설·가려움이 나타나며 두피에서는 탈모·염증성 종괴가 생길 수 있다.",
+        "diagnostics": "KOH 직접 검사·배양 등을 고려한다. 치료 실패에서는 내성 피부사상균과 다른 피부질환을 평가한다.",
+        "management": "국소 피부형은 국소 항진균제, 두피·광범위형은 전신 치료를 선택한다. 수건·신발·반려동물 등 재감염 원인을 관리한다.",
+        "redFlags": "염증성 두피 병변·면역저하·반복 치료 실패는 종 동정·전신 치료 평가가 필요하다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "der",
+          "context": "Trichophyton·Microsporum·Epidermophyton"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "dermatophytosis-tx-1",
+          "rank": "preferred",
+          "context": "국소 피부형",
+          "components": [
+            {
+              "name": "Topical terbinafine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "dermatophytosis-tx-2",
+          "rank": "conditional",
+          "context": "전신 치료가 필요한 형태·종별 선택",
+          "components": [
+            {
+              "drugId": "terbinafine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "dermatophytosis-tx-3",
+          "rank": "alternative",
+          "context": "종·내성·상호작용에 따른 전신 대안",
+          "components": [
+            {
+              "drugId": "itraconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "onychomycosis"
+      ],
+      "sourceIds": [
+        "cdc-ringworm"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "백선 (Tinea)",
+          "path": "source_notes/02 Diseases/19 피부과/백선 (Tinea).md"
+        }
+      ]
+    },
+    {
+      "id": "onychomycosis",
+      "kind": "disease",
+      "name": "조갑진균증",
+      "englishName": "Onychomycosis",
+      "category": "fungal",
+      "entityType": "specific",
+      "summary": "손발톱이 두꺼워지고 부서지며 색이 변한다. 건선·외상도 비슷하므로 긴 경구 치료 전에 진균을 확인한다.",
+      "searchAliases": [
+        "손발톱무좀",
+        "발톱무좀",
+        "조갑백선"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "원위부 변색·두꺼워짐·손발톱밑 각질·조갑 박리가 흔하다.",
+        "diagnostics": "손발톱 검체 KOH·배양·조직 검사 등을 이용해 확인한다.",
+        "management": "범위·침범 정도·원인에 따라 국소 또는 전신 치료를 선택한다. 경구 Terbinafine 등은 간질환·상호작용을 확인한다.",
+        "redFlags": "빠른 단일 손발톱 흑색 변화·출혈은 진균 외 원인을 평가한다. 당뇨·말초혈관질환은 피부 손상도 확인한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "der",
+          "context": "피부사상균이 흔함"
+        },
+        {
+          "pathogenId": "cal",
+          "context": "일부 효모성 감염"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "onychomycosis-tx-1",
+          "rank": "preferred",
+          "context": "확인된 피부사상균 조갑 감염의 경구 선택",
+          "components": [
+            {
+              "drugId": "terbinafine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "onychomycosis-tx-2",
+          "rank": "alternative",
+          "context": "원인·금기·상호작용에 따른 대안",
+          "components": [
+            {
+              "drugId": "itraconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "onychomycosis-tx-3",
+          "rank": "conditional",
+          "context": "범위가 제한된 국소 치료",
+          "components": [
+            {
+              "name": "Topical antifungal"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "dermatophytosis"
+      ],
+      "sourceIds": [
+        "disease-aad-nail-fungus",
+        "cdc-ringworm"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "pityriasis-versicolor",
+      "kind": "disease",
+      "name": "어루러기",
+      "englishName": "Pityriasis versicolor",
+      "category": "fungal",
+      "entityType": "specific",
+      "summary": "몸통의 옅거나 짙은 반점에 미세한 인설이 동반된다. 색 변화는 균이 없어져도 한동안 남을 수 있다.",
+      "searchAliases": [
+        "전풍",
+        "어루러기균",
+        "tinea versicolor"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "endogenous"
+      ],
+      "clinical": {
+        "presentation": "가려움이 적고 더운·습한 환경에서 반복되기 쉽다.",
+        "diagnostics": "인설의 KOH 검사 등으로 확인하며 백반증 등과 감별한다.",
+        "management": "국소 Azole·Selenium sulfide 등을 사용한다. 넓고 반복되는 경우 전신 치료를 고려하며 경구 Terbinafine을 선택하지 않는다.",
+        "redFlags": "치료 후 색만 남았는지 활성 인설이 남았는지 구별한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "mal",
+          "context": "Malassezia species"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "pityriasis-versicolor-tx-1",
+          "rank": "preferred",
+          "context": "국소 치료의 예",
+          "components": [
+            {
+              "name": "Topical azole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "pityriasis-versicolor-tx-2",
+          "rank": "conditional",
+          "context": "광범위·재발형의 전신 선택",
+          "components": [
+            {
+              "drugId": "fluconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-aad-versicolor"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "어루러기 (Tinea Versicolor)",
+          "path": "source_notes/02 Diseases/19 피부과/어루러기 (Tinea Versicolor).md"
+        }
+      ]
+    },
+    {
+      "id": "sporotrichosis",
+      "kind": "disease",
+      "name": "스포로트리쿰증",
+      "englishName": "Sporotrichosis",
+      "category": "fungal",
+      "entityType": "specific",
+      "summary": "가시·토양·감염 고양이 노출 뒤 결절이 림프관을 따라 줄지어 번진다. 피부형과 뼈·폐·파종형의 치료가 다르다.",
+      "searchAliases": [
+        "스포로트리코시스",
+        "장미정원사병"
+      ],
+      "anatomicSites": [
+        "skin",
+        "bone",
+        "lungs"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "처음에는 작은 구진·결절이 생기고 궤양·림프관성 병변으로 진행할 수 있다.",
+        "diagnostics": "병변 배양으로 확인한다. 비슷한 양상의 NTM·Nocardia·Leishmania 등을 감별한다.",
+        "management": "피부·림프관형은 경구 Itraconazole을 주로 사용한다. 중증·파종형은 초기 Amphotericin B 후 단계 전환을 고려한다.",
+        "redFlags": "호흡기·관절·CNS 증상과 면역저하는 피부 밖 침범을 평가하는 단서다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sss",
+          "context": "Sporothrix schenckii complex"
+        },
+        {
+          "name": "Sporothrix brasiliensis",
+          "domain": "fungi",
+          "context": "감염 고양이 노출"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "sporotrichosis-tx-1",
+          "rank": "preferred",
+          "context": "피부·림프관형",
+          "components": [
+            {
+              "drugId": "itraconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "sporotrichosis-tx-2",
+          "rank": "preferred",
+          "context": "중증 또는 파종형 유도",
+          "components": [
+            {
+              "drugId": "amphotericinb"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-sporothrix"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "mycetoma",
+      "kind": "disease",
+      "name": "균종",
+      "englishName": "Mycetoma",
+      "category": "fungal",
+      "entityType": "syndrome",
+      "summary": "통증이 적은 만성 종창·누공·배출되는 과립이 특징이다. 진균성인지 세균성인지 먼저 가려야 약과 수술 전략이 달라진다.",
+      "searchAliases": [
+        "마이세토마",
+        "진균성균종",
+        "방선균성균종",
+        "eumycetoma",
+        "actinomycetoma"
+      ],
+      "anatomicSites": [
+        "skin",
+        "bone"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "발 등 노출 부위에서 시작해 피부·연부조직·뼈로 서서히 퍼질 수 있다.",
+        "diagnostics": "과립·조직의 현미경·배양·동정과 영상으로 원인 및 뼈 침범을 확인한다.",
+        "management": "진균성은 장기 항진균제와 수술을, 방선균성은 원인에 맞는 병합 항생제를 고려한다. 모든 균종을 같은 약으로 치료하지 않는다.",
+        "redFlags": "뼈 파괴·기능 상실·이차 세균 감염은 진행성 질환의 신호다."
+      },
+      "etiologies": [
+        {
+          "name": "Madurella mycetomatis",
+          "domain": "fungi",
+          "context": "진균성 eumycetoma"
+        },
+        {
+          "pathogenId": "bgx508",
+          "context": "일부 방선균성 원인"
+        },
+        {
+          "name": "Actinomadura species",
+          "domain": "bacteria",
+          "context": "방선균성 원인"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "mycetoma-tx-1",
+          "rank": "conditional",
+          "context": "확인된 진균성·종 및 감수성에 따른 선택",
+          "components": [
+            {
+              "drugId": "itraconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "mycetoma-tx-2",
+          "rank": "conditional",
+          "context": "방선균성 일부 원인의 병합 전략 구성 약",
+          "components": [
+            {
+              "drugId": "tmpsmx"
+            },
+            {
+              "drugId": "amikacin"
+            }
+          ],
+          "mode": "combination",
+          "coverage": "component"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-who-mycetoma"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "chromoblastomycosis",
+      "kind": "disease",
+      "name": "색소분아균증",
+      "englishName": "Chromoblastomycosis",
+      "category": "fungal",
+      "entityType": "specific",
+      "summary": "가시·토양 접촉 뒤 사마귀 같은 피부 병변이 수개월~수년에 걸쳐 커진다. 일찍 진단할수록 치료가 수월하다.",
+      "searchAliases": [
+        "색소진균증",
+        "크로모블라스토마이코시스"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "inoculation"
+      ],
+      "clinical": {
+        "presentation": "하지 등 노출 부위의 결절·판·검은 점과 만성 림프부종이 나타날 수 있다.",
+        "diagnostics": "피부 인설·조직에서 특징적인 색소성 경화체를 확인하고 배양·동정을 시행한다.",
+        "management": "Itraconazole 또는 Terbinafine 등 장기 치료와 병변 크기에 따른 국소 처치를 고려한다.",
+        "redFlags": "넓은 병변·림프부종·반복 세균 감염·궤양 변화는 진행과 이차 합병증을 평가한다."
+      },
+      "etiologies": [
+        {
+          "name": "Fonsecaea species",
+          "domain": "fungi",
+          "context": "대표 원인"
+        },
+        {
+          "name": "Cladophialophora carrionii",
+          "domain": "fungi",
+          "context": "대표 원인"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "chromoblastomycosis-tx-1",
+          "rank": "preferred",
+          "context": "전신 항진균제 선택지",
+          "components": [
+            {
+              "drugId": "itraconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "chromoblastomycosis-tx-2",
+          "rank": "alternative",
+          "context": "전신 항진균제 대안",
+          "components": [
+            {
+              "drugId": "terbinafine"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-who-chromoblastomycosis"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "histoplasmosis",
+      "kind": "disease",
+      "name": "히스토플라스마증",
+      "englishName": "Histoplasmosis",
+      "category": "fungal",
+      "entityType": "specific",
+      "summary": "새·박쥐 배설물이 섞인 토양 노출 후 폐렴처럼 나타난다. 면역저하에서는 발열·체중 감소·간비장비대가 있는 파종형을 생각한다.",
+      "searchAliases": [
+        "히스토플라즈마증",
+        "히스토플라스마감염"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "blood",
+        "liver"
+      ],
+      "transmission": [
+        "air"
+      ],
+      "clinical": {
+        "presentation": "급성 폐렴·만성 공동성 폐질환·파종성 감염 등으로 나타난다.",
+        "diagnostics": "소변·혈청 항원, 항체·배양·조직 검사를 임상형에 맞춰 선택한다. 다른 지역성 진균과의 교차 반응에 주의한다.",
+        "management": "가벼운 급성 폐 감염은 치료 없이 관찰할 수 있다. 진행성·치료 필요 폐 감염과 중증 파종형은 치료 강도가 다르다.",
+        "redFlags": "저산소증·혈구감소·쇼크·CNS 증상은 중증·파종 감염을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hca",
+          "context": "Histoplasma"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "histoplasmosis-tx-1",
+          "rank": "conditional",
+          "context": "증상 지속·진행 등 치료가 필요한 폐 감염",
+          "components": [
+            {
+              "drugId": "itraconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "histoplasmosis-tx-2",
+          "rank": "preferred",
+          "context": "중증 파종형 초기 치료·Liposomal 제형",
+          "components": [
+            {
+              "drugId": "amphotericinb"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-idsa-histoplasmosis-2025",
+        "idsa-histo",
+        "disease-cdc-histoplasma"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "blastomycosis",
+      "kind": "disease",
+      "name": "블라스토마이세스증",
+      "englishName": "Blastomycosis",
+      "category": "fungal",
+      "entityType": "specific",
+      "summary": "북미 토양 노출 후 폐렴으로 시작해 피부·뼈로 번질 수 있다. 피부 병변을 동반한 지속 폐렴은 파종 감염의 단서다.",
+      "searchAliases": [
+        "블라스토미세스증",
+        "블라스토마이코시스"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "skin",
+        "bone"
+      ],
+      "transmission": [
+        "air"
+      ],
+      "clinical": {
+        "presentation": "폐렴·체중 감소·사마귀 모양 피부 병변·골 병변이 나타난다.",
+        "diagnostics": "조직·배양으로 확인하며 항원 검사는 Histoplasma 등과 교차 반응할 수 있다.",
+        "management": "경증·중등도는 경구 Itraconazole, 중증·CNS 침범·임신 등은 Amphotericin B 계열을 우선 고려한다.",
+        "redFlags": "급성 호흡부전·신경학적 증상은 중증 또는 CNS 감염을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "bla",
+          "context": "Blastomyces species"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "blastomycosis-tx-1",
+          "rank": "preferred",
+          "context": "경증·중등도 감염",
+          "components": [
+            {
+              "drugId": "itraconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "blastomycosis-tx-2",
+          "rank": "preferred",
+          "context": "중증·CNS 감염 초기 치료·적절한 제형 선택",
+          "components": [
+            {
+              "drugId": "amphotericinb"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-blastomyces",
+        "disease-idsa-blastomyces"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "coccidioidomycosis",
+      "kind": "disease",
+      "name": "콕시디오이데스증",
+      "englishName": "Coccidioidomycosis",
+      "category": "fungal",
+      "entityType": "specific",
+      "summary": "미국 남서부 등 건조 지역 노출 후 폐렴·발진·관절통으로 나타난다. 대부분의 경증 폐 감염과 파종·수막염의 치료를 구분한다.",
+      "searchAliases": [
+        "콕시디오이데스진균증",
+        "콕시디오이데스감염",
+        "계곡열",
+        "Valley fever"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "skin",
+        "bone",
+        "brain"
+      ],
+      "transmission": [
+        "air"
+      ],
+      "clinical": {
+        "presentation": "폐렴 뒤 피로가 오래 지속할 수 있으며 피부·뼈·CNS로 파종될 수 있다.",
+        "diagnostics": "혈청 검사·배양·조직 검사로 확인한다. 초기 혈청 음성은 배제 근거가 아니며 배양 검체의 실험실 안전에 유의한다.",
+        "management": "경증은 관찰 가능하다. 치료 적응증이 있는 폐 감염은 Azole, 중증 파종은 Amphotericin B를 고려하며 수막염은 장기 Azole 치료가 필요하다.",
+        "redFlags": "두통·지속 구토·국소 뼈 통증·호흡부전은 파종이나 수막염을 평가한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "coc",
+          "context": "Coccidioides species"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "coccidioidomycosis-tx-1",
+          "rank": "conditional",
+          "context": "치료가 필요한 폐 감염 또는 수막염의 Azole 선택",
+          "components": [
+            {
+              "drugId": "fluconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "coccidioidomycosis-tx-2",
+          "rank": "preferred",
+          "context": "중증 파종형의 초기 치료",
+          "components": [
+            {
+              "drugId": "amphotericinb"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "idsa-cocci"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "talaromycosis",
+      "kind": "disease",
+      "name": "탈라로마이세스증",
+      "englishName": "Talaromycosis",
+      "category": "fungal",
+      "entityType": "specific",
+      "summary": "동남아시아 노출과 진행성 HIV에서 발열·체중 감소·중앙이 함몰된 피부 구진이 단서다. 파종형은 초기 정맥 치료가 중요하다.",
+      "searchAliases": [
+        "페니실리움마르네페이",
+        "페니실리움증",
+        "탈라로미코시스"
+      ],
+      "anatomicSites": [
+        "skin",
+        "blood",
+        "liver",
+        "lungs"
+      ],
+      "transmission": [
+        "air"
+      ],
+      "clinical": {
+        "presentation": "빈혈·간비장비대·림프절 비대와 피부 병변이 흔하지만 피부 소견이 없을 수도 있다.",
+        "diagnostics": "혈액·골수·피부 검체 배양과 조직 검사로 확인한다. HIV·면역 상태를 평가한다.",
+        "management": "파종형은 Amphotericin B 유도 후 Itraconazole 공고·유지를 사용한다. 면역 회복과 약물 상호작용을 함께 관리한다.",
+        "redFlags": "쇼크·심한 빈혈·장기 침범은 중증 파종 감염을 시사한다."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "tma",
+          "context": "Talaromyces marneffei"
+        }
+      ],
+      "treatments": [
+        {
+          "id": "talaromycosis-tx-1",
+          "rank": "preferred",
+          "context": "파종형 유도 치료",
+          "components": [
+            {
+              "drugId": "amphotericinb"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "talaromycosis-tx-2",
+          "rank": "preferred",
+          "context": "유도 후 공고·유지 단계",
+          "components": [
+            {
+              "drugId": "itraconazole"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "hiv-infection"
+      ],
+      "sourceIds": [
+        "nih-talaro"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
       "id": "oral-candidiasis",
       "kind": "disease",
       "name": "구강 칸디다증",
@@ -792,682 +1530,6 @@
       ]
     },
     {
-      "id": "pneumocystis-pneumonia",
-      "kind": "disease",
-      "name": "폐포자충 폐렴",
-      "englishName": "Pneumocystis pneumonia",
-      "category": "fungal",
-      "entityType": "specific",
-      "summary": "면역저하 환자의 마른기침·점진적 호흡곤란·저산소증이 핵심이다. 흉부 영상이 경미해도 운동 시 산소포화도가 떨어질 수 있다.",
-      "searchAliases": [
-        "주폐포자충폐렴",
-        "뉴모시스티스폐렴",
-        "PCP",
-        "PJP"
-      ],
-      "anatomicSites": [
-        "lungs"
-      ],
-      "transmission": [
-        "air"
-      ],
-      "clinical": {
-        "presentation": "HIV 감염·장기 스테로이드·이식에서 발생하며 양측 간유리음영이 흔하다.",
-        "diagnostics": "유도 객담·BAL 검사와 PCR을 임상·영상과 함께 해석한다. β-D-glucan은 보조 검사이며 산소화로 중증도를 판단한다.",
-        "management": "TMP-SMX가 대표 치료다. HIV 관련 중등도·중증 저산소증은 보조 스테로이드를 조기에 고려하며 대체 요법은 중증도·G6PD 등을 확인한다.",
-        "redFlags": "심한 저산소증·기흉·급속 호흡부전은 긴급 치료가 필요하다. PCR 양성만으로 활동성 감염을 확정하지 않는다."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "pji",
-          "context": "Pneumocystis jirovecii"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "pneumocystis-pneumonia-tx-1",
-          "rank": "preferred",
-          "context": "활동성 PCP의 대표 요법",
-          "components": [
-            {
-              "drugId": "tmpsmx"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "pneumocystis-pneumonia-tx-2",
-          "rank": "alternative",
-          "context": "경증·중등도에서 선택하는 대안",
-          "components": [
-            {
-              "drugId": "atovaquone"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "pneumocystis-pneumonia-tx-3",
-          "rank": "alternative",
-          "context": "중등도·중증의 대안 중 하나",
-          "components": [
-            {
-              "drugId": "pentamidine"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "hiv-infection"
-      ],
-      "sourceIds": [
-        "nih-pcp"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "폐포자충 폐렴 (Pneumocystis Pneumonia)",
-          "path": "source_notes/02 Diseases/02 호흡기/폐포자충 폐렴 (Pneumocystis Pneumonia).md"
-        },
-        {
-          "title": "폐포자충 폐렴 (Pneumocystis Pneumonia)",
-          "path": "source_notes/02 Diseases/08 감염/폐포자충 폐렴 (Pneumocystis Pneumonia).md"
-        }
-      ]
-    },
-    {
-      "id": "histoplasmosis",
-      "kind": "disease",
-      "name": "히스토플라스마증",
-      "englishName": "Histoplasmosis",
-      "category": "fungal",
-      "entityType": "specific",
-      "summary": "새·박쥐 배설물이 섞인 토양 노출 후 폐렴처럼 나타난다. 면역저하에서는 발열·체중 감소·간비장비대가 있는 파종형을 생각한다.",
-      "searchAliases": [
-        "히스토플라즈마증",
-        "히스토플라스마감염"
-      ],
-      "anatomicSites": [
-        "lungs",
-        "blood",
-        "liver"
-      ],
-      "transmission": [
-        "air"
-      ],
-      "clinical": {
-        "presentation": "급성 폐렴·만성 공동성 폐질환·파종성 감염 등으로 나타난다.",
-        "diagnostics": "소변·혈청 항원, 항체·배양·조직 검사를 임상형에 맞춰 선택한다. 다른 지역성 진균과의 교차 반응에 주의한다.",
-        "management": "가벼운 급성 폐 감염은 치료 없이 관찰할 수 있다. 진행성·치료 필요 폐 감염과 중증 파종형은 치료 강도가 다르다.",
-        "redFlags": "저산소증·혈구감소·쇼크·CNS 증상은 중증·파종 감염을 평가한다."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "hca",
-          "context": "Histoplasma"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "histoplasmosis-tx-1",
-          "rank": "conditional",
-          "context": "증상 지속·진행 등 치료가 필요한 폐 감염",
-          "components": [
-            {
-              "drugId": "itraconazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "histoplasmosis-tx-2",
-          "rank": "preferred",
-          "context": "중증 파종형 초기 치료·Liposomal 제형",
-          "components": [
-            {
-              "drugId": "amphotericinb"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "disease-idsa-histoplasmosis-2025",
-        "idsa-histo",
-        "disease-cdc-histoplasma"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "coccidioidomycosis",
-      "kind": "disease",
-      "name": "콕시디오이데스증",
-      "englishName": "Coccidioidomycosis",
-      "category": "fungal",
-      "entityType": "specific",
-      "summary": "미국 남서부 등 건조 지역 노출 후 폐렴·발진·관절통으로 나타난다. 대부분의 경증 폐 감염과 파종·수막염의 치료를 구분한다.",
-      "searchAliases": [
-        "콕시디오이데스진균증",
-        "콕시디오이데스감염",
-        "계곡열",
-        "Valley fever"
-      ],
-      "anatomicSites": [
-        "lungs",
-        "skin",
-        "bone",
-        "brain"
-      ],
-      "transmission": [
-        "air"
-      ],
-      "clinical": {
-        "presentation": "폐렴 뒤 피로가 오래 지속할 수 있으며 피부·뼈·CNS로 파종될 수 있다.",
-        "diagnostics": "혈청 검사·배양·조직 검사로 확인한다. 초기 혈청 음성은 배제 근거가 아니며 배양 검체의 실험실 안전에 유의한다.",
-        "management": "경증은 관찰 가능하다. 치료 적응증이 있는 폐 감염은 Azole, 중증 파종은 Amphotericin B를 고려하며 수막염은 장기 Azole 치료가 필요하다.",
-        "redFlags": "두통·지속 구토·국소 뼈 통증·호흡부전은 파종이나 수막염을 평가한다."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "coc",
-          "context": "Coccidioides species"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "coccidioidomycosis-tx-1",
-          "rank": "conditional",
-          "context": "치료가 필요한 폐 감염 또는 수막염의 Azole 선택",
-          "components": [
-            {
-              "drugId": "fluconazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "coccidioidomycosis-tx-2",
-          "rank": "preferred",
-          "context": "중증 파종형의 초기 치료",
-          "components": [
-            {
-              "drugId": "amphotericinb"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "idsa-cocci"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "blastomycosis",
-      "kind": "disease",
-      "name": "블라스토마이세스증",
-      "englishName": "Blastomycosis",
-      "category": "fungal",
-      "entityType": "specific",
-      "summary": "북미 토양 노출 후 폐렴으로 시작해 피부·뼈로 번질 수 있다. 피부 병변을 동반한 지속 폐렴은 파종 감염의 단서다.",
-      "searchAliases": [
-        "블라스토미세스증",
-        "블라스토마이코시스"
-      ],
-      "anatomicSites": [
-        "lungs",
-        "skin",
-        "bone"
-      ],
-      "transmission": [
-        "air"
-      ],
-      "clinical": {
-        "presentation": "폐렴·체중 감소·사마귀 모양 피부 병변·골 병변이 나타난다.",
-        "diagnostics": "조직·배양으로 확인하며 항원 검사는 Histoplasma 등과 교차 반응할 수 있다.",
-        "management": "경증·중등도는 경구 Itraconazole, 중증·CNS 침범·임신 등은 Amphotericin B 계열을 우선 고려한다.",
-        "redFlags": "급성 호흡부전·신경학적 증상은 중증 또는 CNS 감염을 평가한다."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "bla",
-          "context": "Blastomyces species"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "blastomycosis-tx-1",
-          "rank": "preferred",
-          "context": "경증·중등도 감염",
-          "components": [
-            {
-              "drugId": "itraconazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "blastomycosis-tx-2",
-          "rank": "preferred",
-          "context": "중증·CNS 감염 초기 치료·적절한 제형 선택",
-          "components": [
-            {
-              "drugId": "amphotericinb"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "disease-cdc-blastomyces",
-        "disease-idsa-blastomyces"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "talaromycosis",
-      "kind": "disease",
-      "name": "탈라로마이세스증",
-      "englishName": "Talaromycosis",
-      "category": "fungal",
-      "entityType": "specific",
-      "summary": "동남아시아 노출과 진행성 HIV에서 발열·체중 감소·중앙이 함몰된 피부 구진이 단서다. 파종형은 초기 정맥 치료가 중요하다.",
-      "searchAliases": [
-        "페니실리움마르네페이",
-        "페니실리움증",
-        "탈라로미코시스"
-      ],
-      "anatomicSites": [
-        "skin",
-        "blood",
-        "liver",
-        "lungs"
-      ],
-      "transmission": [
-        "air"
-      ],
-      "clinical": {
-        "presentation": "빈혈·간비장비대·림프절 비대와 피부 병변이 흔하지만 피부 소견이 없을 수도 있다.",
-        "diagnostics": "혈액·골수·피부 검체 배양과 조직 검사로 확인한다. HIV·면역 상태를 평가한다.",
-        "management": "파종형은 Amphotericin B 유도 후 Itraconazole 공고·유지를 사용한다. 면역 회복과 약물 상호작용을 함께 관리한다.",
-        "redFlags": "쇼크·심한 빈혈·장기 침범은 중증 파종 감염을 시사한다."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "tma",
-          "context": "Talaromyces marneffei"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "talaromycosis-tx-1",
-          "rank": "preferred",
-          "context": "파종형 유도 치료",
-          "components": [
-            {
-              "drugId": "amphotericinb"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "talaromycosis-tx-2",
-          "rank": "preferred",
-          "context": "유도 후 공고·유지 단계",
-          "components": [
-            {
-              "drugId": "itraconazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "hiv-infection"
-      ],
-      "sourceIds": [
-        "nih-talaro"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "sporotrichosis",
-      "kind": "disease",
-      "name": "스포로트리쿰증",
-      "englishName": "Sporotrichosis",
-      "category": "fungal",
-      "entityType": "specific",
-      "summary": "가시·토양·감염 고양이 노출 뒤 결절이 림프관을 따라 줄지어 번진다. 피부형과 뼈·폐·파종형의 치료가 다르다.",
-      "searchAliases": [
-        "스포로트리코시스",
-        "장미정원사병"
-      ],
-      "anatomicSites": [
-        "skin",
-        "bone",
-        "lungs"
-      ],
-      "transmission": [
-        "inoculation"
-      ],
-      "clinical": {
-        "presentation": "처음에는 작은 구진·결절이 생기고 궤양·림프관성 병변으로 진행할 수 있다.",
-        "diagnostics": "병변 배양으로 확인한다. 비슷한 양상의 NTM·Nocardia·Leishmania 등을 감별한다.",
-        "management": "피부·림프관형은 경구 Itraconazole을 주로 사용한다. 중증·파종형은 초기 Amphotericin B 후 단계 전환을 고려한다.",
-        "redFlags": "호흡기·관절·CNS 증상과 면역저하는 피부 밖 침범을 평가하는 단서다."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "sss",
-          "context": "Sporothrix schenckii complex"
-        },
-        {
-          "name": "Sporothrix brasiliensis",
-          "domain": "fungi",
-          "context": "감염 고양이 노출"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "sporotrichosis-tx-1",
-          "rank": "preferred",
-          "context": "피부·림프관형",
-          "components": [
-            {
-              "drugId": "itraconazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "sporotrichosis-tx-2",
-          "rank": "preferred",
-          "context": "중증 또는 파종형 유도",
-          "components": [
-            {
-              "drugId": "amphotericinb"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "disease-cdc-sporothrix"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "dermatophytosis",
-      "kind": "disease",
-      "name": "피부사상균증",
-      "englishName": "Dermatophytosis",
-      "category": "fungal",
-      "entityType": "specific",
-      "summary": "몸·발·사타구니의 경계 뚜렷한 인설성 병변이 흔하다. 두피 감염은 국소 약만으로 치료하기 어렵고 스테로이드는 진단을 흐릴 수 있다.",
-      "searchAliases": [
-        "백선",
-        "무좀",
-        "체부백선",
-        "족부백선",
-        "두부백선",
-        "완선",
-        "tinea"
-      ],
-      "anatomicSites": [
-        "skin"
-      ],
-      "transmission": [
-        "contact"
-      ],
-      "clinical": {
-        "presentation": "고리 모양 홍반·인설·가려움이 나타나며 두피에서는 탈모·염증성 종괴가 생길 수 있다.",
-        "diagnostics": "KOH 직접 검사·배양 등을 고려한다. 치료 실패에서는 내성 피부사상균과 다른 피부질환을 평가한다.",
-        "management": "국소 피부형은 국소 항진균제, 두피·광범위형은 전신 치료를 선택한다. 수건·신발·반려동물 등 재감염 원인을 관리한다.",
-        "redFlags": "염증성 두피 병변·면역저하·반복 치료 실패는 종 동정·전신 치료 평가가 필요하다."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "der",
-          "context": "Trichophyton·Microsporum·Epidermophyton"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "dermatophytosis-tx-1",
-          "rank": "preferred",
-          "context": "국소 피부형",
-          "components": [
-            {
-              "name": "Topical terbinafine"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "dermatophytosis-tx-2",
-          "rank": "conditional",
-          "context": "전신 치료가 필요한 형태·종별 선택",
-          "components": [
-            {
-              "drugId": "terbinafine"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "dermatophytosis-tx-3",
-          "rank": "alternative",
-          "context": "종·내성·상호작용에 따른 전신 대안",
-          "components": [
-            {
-              "drugId": "itraconazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "onychomycosis"
-      ],
-      "sourceIds": [
-        "cdc-ringworm"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "백선 (Tinea)",
-          "path": "source_notes/02 Diseases/19 피부과/백선 (Tinea).md"
-        }
-      ]
-    },
-    {
-      "id": "onychomycosis",
-      "kind": "disease",
-      "name": "조갑진균증",
-      "englishName": "Onychomycosis",
-      "category": "fungal",
-      "entityType": "specific",
-      "summary": "손발톱이 두꺼워지고 부서지며 색이 변한다. 건선·외상도 비슷하므로 긴 경구 치료 전에 진균을 확인한다.",
-      "searchAliases": [
-        "손발톱무좀",
-        "발톱무좀",
-        "조갑백선"
-      ],
-      "anatomicSites": [
-        "skin"
-      ],
-      "transmission": [
-        "contact"
-      ],
-      "clinical": {
-        "presentation": "원위부 변색·두꺼워짐·손발톱밑 각질·조갑 박리가 흔하다.",
-        "diagnostics": "손발톱 검체 KOH·배양·조직 검사 등을 이용해 확인한다.",
-        "management": "범위·침범 정도·원인에 따라 국소 또는 전신 치료를 선택한다. 경구 Terbinafine 등은 간질환·상호작용을 확인한다.",
-        "redFlags": "빠른 단일 손발톱 흑색 변화·출혈은 진균 외 원인을 평가한다. 당뇨·말초혈관질환은 피부 손상도 확인한다."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "der",
-          "context": "피부사상균이 흔함"
-        },
-        {
-          "pathogenId": "cal",
-          "context": "일부 효모성 감염"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "onychomycosis-tx-1",
-          "rank": "preferred",
-          "context": "확인된 피부사상균 조갑 감염의 경구 선택",
-          "components": [
-            {
-              "drugId": "terbinafine"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "onychomycosis-tx-2",
-          "rank": "alternative",
-          "context": "원인·금기·상호작용에 따른 대안",
-          "components": [
-            {
-              "drugId": "itraconazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "onychomycosis-tx-3",
-          "rank": "conditional",
-          "context": "범위가 제한된 국소 치료",
-          "components": [
-            {
-              "name": "Topical antifungal"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "dermatophytosis"
-      ],
-      "sourceIds": [
-        "disease-aad-nail-fungus",
-        "cdc-ringworm"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "pityriasis-versicolor",
-      "kind": "disease",
-      "name": "어루러기",
-      "englishName": "Pityriasis versicolor",
-      "category": "fungal",
-      "entityType": "specific",
-      "summary": "몸통의 옅거나 짙은 반점에 미세한 인설이 동반된다. 색 변화는 균이 없어져도 한동안 남을 수 있다.",
-      "searchAliases": [
-        "전풍",
-        "어루러기균",
-        "tinea versicolor"
-      ],
-      "anatomicSites": [
-        "skin"
-      ],
-      "transmission": [
-        "endogenous"
-      ],
-      "clinical": {
-        "presentation": "가려움이 적고 더운·습한 환경에서 반복되기 쉽다.",
-        "diagnostics": "인설의 KOH 검사 등으로 확인하며 백반증 등과 감별한다.",
-        "management": "국소 Azole·Selenium sulfide 등을 사용한다. 넓고 반복되는 경우 전신 치료를 고려하며 경구 Terbinafine을 선택하지 않는다.",
-        "redFlags": "치료 후 색만 남았는지 활성 인설이 남았는지 구별한다."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "mal",
-          "context": "Malassezia species"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "pityriasis-versicolor-tx-1",
-          "rank": "preferred",
-          "context": "국소 치료의 예",
-          "components": [
-            {
-              "name": "Topical azole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "pityriasis-versicolor-tx-2",
-          "rank": "conditional",
-          "context": "광범위·재발형의 전신 선택",
-          "components": [
-            {
-              "drugId": "fluconazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "disease-aad-versicolor"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "어루러기 (Tinea Versicolor)",
-          "path": "source_notes/02 Diseases/19 피부과/어루러기 (Tinea Versicolor).md"
-        }
-      ]
-    },
-    {
       "id": "fusariosis",
       "kind": "disease",
       "name": "푸사리움증",
@@ -1617,155 +1679,93 @@
       "localReferenceNotes": []
     },
     {
-      "id": "mycetoma",
+      "id": "pneumocystis-pneumonia",
       "kind": "disease",
-      "name": "균종",
-      "englishName": "Mycetoma",
+      "name": "폐포자충 폐렴",
+      "englishName": "Pneumocystis pneumonia",
       "category": "fungal",
-      "entityType": "syndrome",
-      "summary": "통증이 적은 만성 종창·누공·배출되는 과립이 특징이다. 진균성인지 세균성인지 먼저 가려야 약과 수술 전략이 달라진다.",
+      "entityType": "specific",
+      "summary": "면역저하 환자의 마른기침·점진적 호흡곤란·저산소증이 핵심이다. 흉부 영상이 경미해도 운동 시 산소포화도가 떨어질 수 있다.",
       "searchAliases": [
-        "마이세토마",
-        "진균성균종",
-        "방선균성균종",
-        "eumycetoma",
-        "actinomycetoma"
+        "주폐포자충폐렴",
+        "뉴모시스티스폐렴",
+        "PCP",
+        "PJP"
       ],
       "anatomicSites": [
-        "skin",
-        "bone"
+        "lungs"
       ],
       "transmission": [
-        "inoculation"
+        "air"
       ],
       "clinical": {
-        "presentation": "발 등 노출 부위에서 시작해 피부·연부조직·뼈로 서서히 퍼질 수 있다.",
-        "diagnostics": "과립·조직의 현미경·배양·동정과 영상으로 원인 및 뼈 침범을 확인한다.",
-        "management": "진균성은 장기 항진균제와 수술을, 방선균성은 원인에 맞는 병합 항생제를 고려한다. 모든 균종을 같은 약으로 치료하지 않는다.",
-        "redFlags": "뼈 파괴·기능 상실·이차 세균 감염은 진행성 질환의 신호다."
+        "presentation": "HIV 감염·장기 스테로이드·이식에서 발생하며 양측 간유리음영이 흔하다.",
+        "diagnostics": "유도 객담·BAL 검사와 PCR을 임상·영상과 함께 해석한다. β-D-glucan은 보조 검사이며 산소화로 중증도를 판단한다.",
+        "management": "TMP-SMX가 대표 치료다. HIV 관련 중등도·중증 저산소증은 보조 스테로이드를 조기에 고려하며 대체 요법은 중증도·G6PD 등을 확인한다.",
+        "redFlags": "심한 저산소증·기흉·급속 호흡부전은 긴급 치료가 필요하다. PCR 양성만으로 활동성 감염을 확정하지 않는다."
       },
       "etiologies": [
         {
-          "name": "Madurella mycetomatis",
-          "domain": "fungi",
-          "context": "진균성 eumycetoma"
-        },
-        {
-          "pathogenId": "bgx508",
-          "context": "일부 방선균성 원인"
-        },
-        {
-          "name": "Actinomadura species",
-          "domain": "bacteria",
-          "context": "방선균성 원인"
+          "pathogenId": "pji",
+          "context": "Pneumocystis jirovecii"
         }
       ],
       "treatments": [
         {
-          "id": "mycetoma-tx-1",
-          "rank": "conditional",
-          "context": "확인된 진균성·종 및 감수성에 따른 선택",
-          "components": [
-            {
-              "drugId": "itraconazole"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "mycetoma-tx-2",
-          "rank": "conditional",
-          "context": "방선균성 일부 원인의 병합 전략 구성 약",
+          "id": "pneumocystis-pneumonia-tx-1",
+          "rank": "preferred",
+          "context": "활동성 PCP의 대표 요법",
           "components": [
             {
               "drugId": "tmpsmx"
-            },
-            {
-              "drugId": "amikacin"
-            }
-          ],
-          "mode": "combination",
-          "coverage": "component"
-        }
-      ],
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "disease-who-mycetoma"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "chromoblastomycosis",
-      "kind": "disease",
-      "name": "색소분아균증",
-      "englishName": "Chromoblastomycosis",
-      "category": "fungal",
-      "entityType": "specific",
-      "summary": "가시·토양 접촉 뒤 사마귀 같은 피부 병변이 수개월~수년에 걸쳐 커진다. 일찍 진단할수록 치료가 수월하다.",
-      "searchAliases": [
-        "색소진균증",
-        "크로모블라스토마이코시스"
-      ],
-      "anatomicSites": [
-        "skin"
-      ],
-      "transmission": [
-        "inoculation"
-      ],
-      "clinical": {
-        "presentation": "하지 등 노출 부위의 결절·판·검은 점과 만성 림프부종이 나타날 수 있다.",
-        "diagnostics": "피부 인설·조직에서 특징적인 색소성 경화체를 확인하고 배양·동정을 시행한다.",
-        "management": "Itraconazole 또는 Terbinafine 등 장기 치료와 병변 크기에 따른 국소 처치를 고려한다.",
-        "redFlags": "넓은 병변·림프부종·반복 세균 감염·궤양 변화는 진행과 이차 합병증을 평가한다."
-      },
-      "etiologies": [
-        {
-          "name": "Fonsecaea species",
-          "domain": "fungi",
-          "context": "대표 원인"
-        },
-        {
-          "name": "Cladophialophora carrionii",
-          "domain": "fungi",
-          "context": "대표 원인"
-        }
-      ],
-      "treatments": [
-        {
-          "id": "chromoblastomycosis-tx-1",
-          "rank": "preferred",
-          "context": "전신 항진균제 선택지",
-          "components": [
-            {
-              "drugId": "itraconazole"
             }
           ],
           "mode": "single",
           "coverage": "regimen"
         },
         {
-          "id": "chromoblastomycosis-tx-2",
+          "id": "pneumocystis-pneumonia-tx-2",
           "rank": "alternative",
-          "context": "전신 항진균제 대안",
+          "context": "경증·중등도에서 선택하는 대안",
           "components": [
             {
-              "drugId": "terbinafine"
+              "drugId": "atovaquone"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "pneumocystis-pneumonia-tx-3",
+          "rank": "alternative",
+          "context": "중등도·중증의 대안 중 하나",
+          "components": [
+            {
+              "drugId": "pentamidine"
             }
           ],
           "mode": "single",
           "coverage": "regimen"
         }
       ],
-      "relatedDiseaseIds": [],
+      "relatedDiseaseIds": [
+        "hiv-infection"
+      ],
       "sourceIds": [
-        "disease-who-chromoblastomycosis"
+        "nih-pcp"
       ],
       "reviewStatus": "educational-source-reviewed",
       "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
+      "localReferenceNotes": [
+        {
+          "title": "폐포자충 폐렴 (Pneumocystis Pneumonia)",
+          "path": "source_notes/02 Diseases/02 호흡기/폐포자충 폐렴 (Pneumocystis Pneumonia).md"
+        },
+        {
+          "title": "폐포자충 폐렴 (Pneumocystis Pneumonia)",
+          "path": "source_notes/02 Diseases/08 감염/폐포자충 폐렴 (Pneumocystis Pneumonia).md"
+        }
+      ]
     }
   ]
 }

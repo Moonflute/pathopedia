@@ -3,209 +3,80 @@
   "category": "viral",
   "entities": [
     {
-      "id": "influenza",
+      "id": "bk-nephropathy",
       "kind": "disease",
-      "name": "인플루엔자",
-      "englishName": "Influenza",
+      "name": "BK 바이러스 신병증",
+      "englishName": "BK polyomavirus nephropathy",
       "category": "viral",
       "entityType": "specific",
-      "summary": "갑작스러운 발열·근육통·두통·기침. 고위험·입원·진행성 감염은 검사 결과나 48시간 경과만을 이유로 치료를 늦추지 않는다.",
+      "summary": "신장이식 환자의 BK 바이러스혈증과 이식신 기능 저하. 거부반응과 바이러스 손상을 구분해 면역억제 조정을 계획한다.",
       "searchAliases": [
-        "독감",
-        "flu",
-        "인플루엔자 A",
-        "B"
+        "BKV",
+        "BK 신병증",
+        "polyomavirus nephropathy"
       ],
       "anatomicSites": [
-        "lungs"
+        "urinary"
       ],
       "transmission": [
-        "droplet",
-        "contact"
+        "endogenous"
       ],
       "clinical": {
-        "presentation": "폐렴·기저질환 악화와 호전 뒤 세균성 폐렴 재악화를 확인한다.",
-        "diagnostics": "호흡기 분자검사와 산소화·중증도 평가.",
-        "management": "적응증에 맞춘 항바이러스와 지지요법. 입원·중증에서는 Oseltamivir 등이 중심이며 약제별 적용 조건을 구분한다.",
-        "redFlags": "저산소증·새 흉통·호전 뒤 재발열."
+        "presentation": "잠복 바이러스 재활성화가 핵심이며 소변 검출만으로 신병증을 확진하지 않는다.",
+        "diagnostics": "혈장 정량 PCR 추적, 필요한 이식신 생검·기능 평가.",
+        "management": "면역억제 조정이 중심. 근거 없는 항바이러스를 일률적으로 사용하지 않는다.",
+        "redFlags": "이식신 기능 악화·거부반응과의 구별."
       },
       "etiologies": [
         {
-          "pathogenId": "influenza-a",
-          "context": ""
-        },
-        {
-          "pathogenId": "influenza-b",
+          "pathogenId": "bk-polyomavirus",
           "context": ""
         }
       ],
-      "treatments": [
-        {
-          "id": "influenza-tx-1",
-          "rank": "preferred",
-          "context": "입원·중증·고위험 또는 적절한 초기 치료 적응증",
-          "components": [
-            {
-              "drugId": "oseltamivir"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "influenza-tx-2",
-          "rank": "alternative",
-          "context": "적합한 비복잡성 외래 감염의 초기 선택·임신 등 제외 조건 확인",
-          "components": [
-            {
-              "drugId": "baloxavir"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "community-pneumonia"
-      ],
-      "sourceIds": [
-        "cdc-influenza-treatment"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "인플루엔자 (Influenza)",
-          "path": "source_notes/02 Diseases/08 감염/인플루엔자 (Influenza).md"
-        },
-        {
-          "title": "인플루엔자 (Influenza)",
-          "path": "source_notes/02 Diseases/11 외과/인플루엔자 (Influenza).md"
-        }
-      ]
-    },
-    {
-      "id": "covid-19",
-      "kind": "disease",
-      "name": "코로나19",
-      "englishName": "COVID-19",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "발열·인후통·기침부터 폐렴·저산소증까지 다양. 고위험 외래 환자는 초기 항바이러스의 투여 시기·상호작용·신기능을 확인한다.",
-      "searchAliases": [
-        "COVID",
-        "SARS-CoV-2",
-        "코로나바이러스감염증-19"
-      ],
-      "anatomicSites": [
-        "lungs",
-        "blood"
-      ],
-      "transmission": [
-        "air",
-        "droplet"
-      ],
-      "clinical": {
-        "presentation": "숙주·접종·면역 상태에 따라 중증 위험이 다르다. 저산소증 없는 경증에 중증 치료를 일률 적용하지 않는다.",
-        "diagnostics": "항원 또는 분자검사, 산소포화도·중증도와 약물 검토.",
-        "management": "경증은 지지요법, 고위험은 적절한 초기 항바이러스. 입원·산소 필요 시 해당 중증 치료 경로.",
-        "redFlags": "저산소증·호흡곤란·탈수·의식 변화."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "sars-cov-2",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "covid-19-tx-1",
-          "rank": "preferred",
-          "context": "고위험 외래의 증상 초기·상호작용과 신기능 조건 충족",
-          "components": [
-            {
-              "drugId": "nirmatrelvir-ritonavir"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        },
-        {
-          "id": "covid-19-tx-2",
-          "rank": "alternative",
-          "context": "초기 고위험 외래 등 적응증에 맞는 정주 대안",
-          "components": [
-            {
-              "drugId": "remdesivir"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
+      "treatments": [],
       "relatedDiseaseIds": [],
       "sourceIds": [
-        "cdc-covid-treatment"
+        "bk-consensus-2024"
       ],
       "reviewStatus": "educational-source-reviewed",
       "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "코로나바이러스감염증-19 (COVID-19)",
-          "path": "source_notes/02 Diseases/08 감염/코로나바이러스감염증-19 (COVID-19).md"
-        }
-      ]
+      "localReferenceNotes": []
     },
     {
-      "id": "rsv-infection",
+      "id": "progressive-multifocal-leukoencephalopathy",
       "kind": "disease",
-      "name": "RSV 감염",
-      "englishName": "Respiratory syncytial virus infection",
+      "name": "진행성 다초점 백질뇌병증",
+      "englishName": "Progressive multifocal leukoencephalopathy",
       "category": "viral",
       "entityType": "specific",
-      "summary": "영아의 세기관지염·무호흡과 고령·심폐질환자의 하기도 감염. 나이에 따라 수유·호흡·기저질환 악화가 핵심이다.",
+      "summary": "면역저하자의 서서히 진행하는 국소 신경 결손·인지 변화와 백질 병변. JC 바이러스 재활성화에 의한 탈수초 감염이다.",
       "searchAliases": [
-        "호흡기세포융합바이러스",
-        "RSV"
+        "PML",
+        "JC virus",
+        "JCV"
       ],
       "anatomicSites": [
-        "lungs"
+        "brain"
       ],
       "transmission": [
-        "droplet",
-        "contact"
+        "endogenous"
       ],
       "clinical": {
-        "presentation": "건강한 성인은 감기처럼 경과할 수 있으나 취약 숙주에서는 폐렴·입원이 필요할 수 있다.",
-        "diagnostics": "임상·산소화 평가와 필요 시 호흡기 분자검사.",
-        "management": "대부분 지지요법. 예방접종·영아 예방 항체와 실제 감염 치료를 구분한다.",
-        "redFlags": "무호흡·저산소증·심폐질환 악화."
+        "presentation": "HIV·면역억제 약제 등 숙주 맥락이 중요. 염증성 면역재구성 악화도 평가한다.",
+        "diagnostics": "MRI·CSF JCV PCR, 불명확하면 추가 전문 평가·조직 등.",
+        "management": "가능한 면역 회복·원인 면역억제 조정이 핵심; 확립된 일반 특이 항바이러스 치료는 없다.",
+        "redFlags": "진행 마비·인지/언어 저하·IRIS."
       },
       "etiologies": [
         {
-          "pathogenId": "rsv",
+          "pathogenId": "jc-polyomavirus",
           "context": ""
         }
       ],
-      "treatments": [
-        {
-          "id": "rsv-infection-tx-1",
-          "rank": "conditional",
-          "context": "중증 면역저하 등 제한된 전문 적응증에서 고려",
-          "components": [
-            {
-              "drugId": "ribavirin"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "bronchiolitis"
-      ],
+      "treatments": [],
+      "relatedDiseaseIds": [],
       "sourceIds": [
-        "cdc-rsv-care"
+        "nih-pml-jcv"
       ],
       "reviewStatus": "educational-source-reviewed",
       "authoredAt": "2026-10-11",
@@ -276,55 +147,251 @@
       ]
     },
     {
-      "id": "mononucleosis",
+      "id": "oral-herpes",
       "kind": "disease",
-      "name": "전염성 단핵구증",
-      "englishName": "Infectious mononucleosis",
+      "name": "구강 단순포진",
+      "englishName": "Oral herpes",
       "category": "viral",
       "entityType": "specific",
-      "summary": "발열·인후염·후경부 림프절종창과 비장비대. EBV가 대표 원인이고 Ampicillin 계열 뒤 발진이 나타날 수 있다.",
+      "summary": "입술의 재발성 군집 수포 또는 초감염의 통증성 치은구내염. 수분 섭취가 어려운 소아·면역저하에서는 치료 필요성을 평가한다.",
       "searchAliases": [
-        "EBV",
-        "infectious mono",
-        "키스병",
-        "단핵구증"
+        "구순포진",
+        "헤르페스 구내염",
+        "herpes labialis"
       ],
       "anatomicSites": [
-        "blood",
-        "liver",
+        "skin",
         "lungs"
       ],
       "transmission": [
         "contact"
       ],
       "clinical": {
-        "presentation": "피로가 오래 지속할 수 있다. CMV·급성 HIV·다른 원인도 감별한다.",
-        "diagnostics": "혈구·간기능과 시기·연령에 맞는 이종항체/EBV 혈청 검사.",
-        "management": "대개 지지요법. 비장 상태를 고려해 접촉 스포츠·격한 활동 복귀를 조정하고 항바이러스는 일률 사용하지 않는다.",
-        "redFlags": "비장 파열·기도 폐쇄·중증 혈구 이상."
+        "presentation": "HSV-1이 대표이며 눈·뇌·전신 감염 징후가 있으면 단순 국소 병변으로 보지 않는다.",
+        "diagnostics": "보통 임상 진단; 비전형·중증은 병변 PCR.",
+        "management": "초기·중증·재발 적응증에 맞춘 항바이러스와 수분·통증 관리.",
+        "redFlags": "수분 섭취 불가·눈 침범·파종 감염."
       },
       "etiologies": [
         {
-          "pathogenId": "ebv",
+          "pathogenId": "hsv1",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "oral-herpes-tx-1",
+          "rank": "conditional",
+          "context": "중증·초기·재발 등 치료 적응증이 있는 경우",
+          "components": [
+            {
+              "drugId": "acyclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "herpes-keratitis"
+      ],
+      "sourceIds": [
+        "cdc-sti-herpes"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "neonatal-herpes",
+      "kind": "disease",
+      "name": "신생아 단순포진",
+      "englishName": "Neonatal herpes",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "신생아의 수포·패혈증 유사 소견·경련·간염. 피부 병변이 없어도 CNS·파종 HSV 감염을 배제할 수 없다.",
+      "searchAliases": [
+        "neonatal HSV",
+        "신생아 헤르페스"
+      ],
+      "anatomicSites": [
+        "skin",
+        "eye",
+        "brain",
+        "blood"
+      ],
+      "transmission": [
+        "vertical",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "분만 전후 노출이 중요하며 산모 병력만으로 위험을 배제하지 않는다.",
+        "diagnostics": "병변·혈액·CSF PCR와 장기 평가; 의심이 크면 검사를 기다려 치료를 지연하지 않는다.",
+        "management": "신속한 정주 Acyclovir, 장기·신기능·추적 계획과 신생아 전문 관리.",
+        "redFlags": "경련·간부전·쇼크·신경 후유증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "hsv2",
           "context": ""
         },
         {
-          "pathogenId": "cmv",
-          "context": "유사 단핵구증 감별"
+          "pathogenId": "hsv1",
+          "context": ""
         }
       ],
-      "treatments": [],
-      "supportiveCare": true,
-      "relatedDiseaseIds": [],
+      "treatments": [
+        {
+          "id": "neonatal-herpes-tx-1",
+          "rank": "preferred",
+          "context": "의심·확진 신생아 HSV의 정주 치료",
+          "components": [
+            {
+              "drugId": "acyclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "genital-herpes",
+        "herpes-encephalitis"
+      ],
       "sourceIds": [
-        "cdc-ebv"
+        "cdc-sti-herpes"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "varicella",
+      "kind": "disease",
+      "name": "수두",
+      "englishName": "Varicella",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "여러 단계의 가려운 수포·딱지가 동시에 나타나는 발진. 임신·신생아·면역저하·성인은 중증 위험을 따로 본다.",
+      "searchAliases": [
+        "chickenpox",
+        "Varicella",
+        "수두 바이러스"
+      ],
+      "anatomicSites": [
+        "skin",
+        "lungs",
+        "brain"
+      ],
+      "transmission": [
+        "air",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "1차 VZV 감염이며 이후 잠복·대상포진으로 이어질 수 있다.",
+        "diagnostics": "전형적 임상 또는 병변 PCR; 고위험 노출·장기 침범 평가.",
+        "management": "적응증·발병 시기·숙주에 맞춰 Acyclovir 등 선택; 중증·파종은 정주 치료. 노출 후 예방과 격리도 관리한다.",
+        "redFlags": "폐렴·뇌염·세균성 피부 합병증·임신."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "vzv",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "varicella-tx-1",
+          "rank": "conditional",
+          "context": "항바이러스 적응증·시기에 맞춘 경구 또는 중증 정주 요법",
+          "components": [
+            {
+              "drugId": "acyclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "herpes-zoster"
+      ],
+      "sourceIds": [
+        "nih-oi-vzv"
       ],
       "reviewStatus": "educational-source-reviewed",
       "authoredAt": "2026-10-11",
       "localReferenceNotes": [
         {
-          "title": "전염성 단핵구증 (Infectious Mononucleosis)",
-          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/전염성 단핵구증 (Infectious Mononucleosis).md"
+          "title": "수두 (Varicella)",
+          "path": "source_notes/02 Diseases/12 산과/수두 (Varicella).md"
+        },
+        {
+          "title": "수두 (Varicella)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/수두 (Varicella).md"
+        }
+      ]
+    },
+    {
+      "id": "herpes-zoster",
+      "kind": "disease",
+      "name": "대상포진",
+      "englishName": "Herpes zoster",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "한쪽 피부절을 따라 통증과 군집 수포가 생기는 VZV 재활성화. 눈·귀·파종·면역저하 여부를 먼저 확인한다.",
+      "searchAliases": [
+        "shingles",
+        "zoster",
+        "대상 포진"
+      ],
+      "anatomicSites": [
+        "skin",
+        "brain",
+        "eye"
+      ],
+      "transmission": [
+        "endogenous",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "포진 후 신경통은 급성 감염 뒤의 합병증으로 함께 관리한다.",
+        "diagnostics": "전형적 임상, 비전형 병변은 PCR; 안·이·신경 침범 평가.",
+        "management": "적절한 시기 항바이러스와 통증 관리. 파종·장기 침범·중증 면역저하 등은 정주 치료를 평가한다.",
+        "redFlags": "눈 침범·안면마비·파종·뇌염."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "vzv",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "herpes-zoster-tx-1",
+          "rank": "preferred",
+          "context": "시기·숙주·중증도에 맞춘 치료",
+          "components": [
+            {
+              "drugId": "acyclovir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "varicella"
+      ],
+      "sourceIds": [
+        "nih-oi-vzv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "대상 포진 (Herpes Zoster)",
+          "path": "source_notes/02 Diseases/19 피부과/대상 포진 (Herpes Zoster).md"
         }
       ]
     },
@@ -480,537 +547,6 @@
       "localReferenceNotes": []
     },
     {
-      "id": "hiv-infection",
-      "kind": "disease",
-      "name": "HIV 감염·AIDS",
-      "englishName": "HIV infection and AIDS",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "급성기 발열·발진·인후통 또는 장기간 무증상. HIV를 확인하면 ART와 면역 상태·기회감염 평가를 함께 시작한다.",
-      "searchAliases": [
-        "에이즈",
-        "AIDS",
-        "HIV",
-        "후천성 면역결핍 증후군"
-      ],
-      "anatomicSites": [
-        "blood"
-      ],
-      "transmission": [
-        "sexual",
-        "blood",
-        "vertical"
-      ],
-      "clinical": {
-        "presentation": "AIDS는 진행성 면역결핍 단계. 기회감염마다 ART 시작 시점과 별도 치료 조건을 고려한다.",
-        "diagnostics": "항원/항체·RNA 확인, 바이러스량·CD4·내성·HBV/HCV 등 평가.",
-        "management": "권고 다제 ART와 치료 지속·상호작용 관리; HBV 동반, 특정 기회감염 등에서는 조합·시점을 조정한다.",
-        "redFlags": "급성 기회감염·진행 면역저하·치료 중단."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "hiv1",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "hiv-infection-tx-1",
-          "rank": "preferred",
-          "context": "개별 내성·HBV·신기능 등을 평가한 3제 ART 구성 예시",
-          "components": [
-            {
-              "drugId": "dolutegravir"
-            },
-            {
-              "drugId": "tenofovir"
-            },
-            {
-              "drugId": "lamivudine"
-            }
-          ],
-          "mode": "combination",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "pneumocystis-pneumonia",
-        "cryptococcal-meningitis",
-        "toxoplasma-encephalitis"
-      ],
-      "sourceIds": [
-        "nih-hiv-start"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "후천성 면역결핍 증후군 (AIDS) (Acquired Immunodeficiency Syndrome (AIDS))",
-          "path": "source_notes/02 Diseases/08 감염/후천성 면역결핍 증후군 (AIDS) (Acquired Immunodeficiency Syndrome (AIDS)).md"
-        }
-      ]
-    },
-    {
-      "id": "measles",
-      "kind": "disease",
-      "name": "홍역",
-      "englishName": "Measles",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "고열·기침·콧물·결막염 뒤 얼굴에서 몸통으로 퍼지는 발진. 의심 시 공기주의와 노출 대응을 먼저 시행한다.",
-      "searchAliases": [
-        "measles",
-        "rubeola",
-        "코플릭 반점"
-      ],
-      "anatomicSites": [
-        "lungs",
-        "skin",
-        "brain"
-      ],
-      "transmission": [
-        "air"
-      ],
-      "clinical": {
-        "presentation": "Koplik 반점이 단서며 폐렴·뇌염 등 합병증을 경계한다.",
-        "diagnostics": "PCR·혈청과 접종/노출력, 공중보건 협조.",
-        "management": "지지요법과 해당 연령·중증도에 맞는 Vitamin A 등 합병증 관리; 노출 후 예방을 따로 평가한다.",
-        "redFlags": "폐렴·뇌염·탈수·중증 면역저하."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "measles",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "measles-tx-1",
-          "rank": "conditional",
-          "context": "연령·임상 적응증에 맞춘 보조치료",
-          "components": [
-            {
-              "name": "Vitamin A",
-              "role": "adjunct"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "cdc-measles"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "홍역 (Measles)",
-          "path": "source_notes/02 Diseases/12 산과/홍역 (Measles).md"
-        },
-        {
-          "title": "홍역 (Measles)",
-          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/홍역 (Measles).md"
-        }
-      ]
-    },
-    {
-      "id": "rubella",
-      "kind": "disease",
-      "name": "풍진",
-      "englishName": "Rubella",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "가벼운 발열·발진·귀뒤/후두 림프절종창. 임신 중 노출·감염은 태아 위험 평가가 중요하다.",
-      "searchAliases": [
-        "rubella",
-        "독일홍역"
-      ],
-      "anatomicSites": [
-        "skin",
-        "blood"
-      ],
-      "transmission": [
-        "droplet",
-        "vertical"
-      ],
-      "clinical": {
-        "presentation": "발진만으로 다른 바이러스 발진과 구별하기 어렵다.",
-        "diagnostics": "PCR·혈청과 노출·접종력; 임신에서는 검사 시기·위양성을 전문적으로 해석.",
-        "management": "지지요법·전파 예방과 공중보건 관리. 임신 노출은 산과·감염 전문 평가.",
-        "redFlags": "임신 중 감염·태아 감염 위험."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "rubella",
-          "context": ""
-        }
-      ],
-      "treatments": [],
-      "supportiveCare": true,
-      "relatedDiseaseIds": [
-        "congenital-rubella"
-      ],
-      "sourceIds": [
-        "cdc-rubella"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "풍진 (Rubella)",
-          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/풍진 (Rubella).md"
-        }
-      ]
-    },
-    {
-      "id": "congenital-rubella",
-      "kind": "disease",
-      "name": "선천풍진증후군",
-      "englishName": "Congenital rubella syndrome",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "임신 중 풍진 감염이 난청·백내장·심장기형 등 태아·신생아 손상을 일으킨다. 산모 노출력과 영아 장기 평가가 중요하다.",
-      "searchAliases": [
-        "CRS",
-        "선천성 풍진"
-      ],
-      "anatomicSites": [
-        "heart",
-        "eye",
-        "brain",
-        "blood"
-      ],
-      "transmission": [
-        "vertical"
-      ],
-      "clinical": {
-        "presentation": "감염된 영아는 바이러스를 배출할 수 있어 감염 관리가 필요하다.",
-        "diagnostics": "영아 혈청·PCR와 청력·눈·심장 등 평가, 산모 감염 시점 확인.",
-        "management": "장기 합병증·발달 지원과 전파 예방. 가임기 접종이 핵심 예방이며 임신 중 생백신 사용과 구분한다.",
-        "redFlags": "난청·시력 문제·선천성 심장질환."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "rubella",
-          "context": ""
-        }
-      ],
-      "treatments": [],
-      "supportiveCare": true,
-      "relatedDiseaseIds": [
-        "rubella"
-      ],
-      "sourceIds": [
-        "cdc-rubella"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "선천성 풍진 증후군 (Congenital Rubella Syndrome)",
-          "path": "source_notes/02 Diseases/12 산과/선천성 풍진 증후군 (Congenital Rubella Syndrome).md"
-        }
-      ]
-    },
-    {
-      "id": "mumps",
-      "kind": "disease",
-      "name": "유행성이하선염",
-      "englishName": "Mumps",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "이하선 통증·종창과 발열. 고환염·수막염·난청 등의 합병증이 있고 접종자도 감염될 수 있다.",
-      "searchAliases": [
-        "볼거리",
-        "mumps"
-      ],
-      "anatomicSites": [
-        "lungs",
-        "urinary",
-        "brain"
-      ],
-      "transmission": [
-        "droplet"
-      ],
-      "clinical": {
-        "presentation": "양측성 이하선염이 단서지만 다른 원인과 구분한다.",
-        "diagnostics": "볼점막 PCR 등 시기별 검사, 접종·노출력 확인.",
-        "management": "지지요법과 비말·접촉 예방, 합병증 평가.",
-        "redFlags": "고환 통증·신경 증상·난청."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "mumps",
-          "context": ""
-        }
-      ],
-      "treatments": [],
-      "supportiveCare": true,
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "cdc-mumps"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "볼거리 (Mumps)",
-          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/볼거리 (Mumps).md"
-        }
-      ]
-    },
-    {
-      "id": "varicella",
-      "kind": "disease",
-      "name": "수두",
-      "englishName": "Varicella",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "여러 단계의 가려운 수포·딱지가 동시에 나타나는 발진. 임신·신생아·면역저하·성인은 중증 위험을 따로 본다.",
-      "searchAliases": [
-        "chickenpox",
-        "Varicella",
-        "수두 바이러스"
-      ],
-      "anatomicSites": [
-        "skin",
-        "lungs",
-        "brain"
-      ],
-      "transmission": [
-        "air",
-        "contact"
-      ],
-      "clinical": {
-        "presentation": "1차 VZV 감염이며 이후 잠복·대상포진으로 이어질 수 있다.",
-        "diagnostics": "전형적 임상 또는 병변 PCR; 고위험 노출·장기 침범 평가.",
-        "management": "적응증·발병 시기·숙주에 맞춰 Acyclovir 등 선택; 중증·파종은 정주 치료. 노출 후 예방과 격리도 관리한다.",
-        "redFlags": "폐렴·뇌염·세균성 피부 합병증·임신."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "vzv",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "varicella-tx-1",
-          "rank": "conditional",
-          "context": "항바이러스 적응증·시기에 맞춘 경구 또는 중증 정주 요법",
-          "components": [
-            {
-              "drugId": "acyclovir"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "herpes-zoster"
-      ],
-      "sourceIds": [
-        "nih-oi-vzv"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "수두 (Varicella)",
-          "path": "source_notes/02 Diseases/12 산과/수두 (Varicella).md"
-        },
-        {
-          "title": "수두 (Varicella)",
-          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/수두 (Varicella).md"
-        }
-      ]
-    },
-    {
-      "id": "herpes-zoster",
-      "kind": "disease",
-      "name": "대상포진",
-      "englishName": "Herpes zoster",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "한쪽 피부절을 따라 통증과 군집 수포가 생기는 VZV 재활성화. 눈·귀·파종·면역저하 여부를 먼저 확인한다.",
-      "searchAliases": [
-        "shingles",
-        "zoster",
-        "대상 포진"
-      ],
-      "anatomicSites": [
-        "skin",
-        "brain",
-        "eye"
-      ],
-      "transmission": [
-        "endogenous",
-        "contact"
-      ],
-      "clinical": {
-        "presentation": "포진 후 신경통은 급성 감염 뒤의 합병증으로 함께 관리한다.",
-        "diagnostics": "전형적 임상, 비전형 병변은 PCR; 안·이·신경 침범 평가.",
-        "management": "적절한 시기 항바이러스와 통증 관리. 파종·장기 침범·중증 면역저하 등은 정주 치료를 평가한다.",
-        "redFlags": "눈 침범·안면마비·파종·뇌염."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "vzv",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "herpes-zoster-tx-1",
-          "rank": "preferred",
-          "context": "시기·숙주·중증도에 맞춘 치료",
-          "components": [
-            {
-              "drugId": "acyclovir"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "varicella"
-      ],
-      "sourceIds": [
-        "nih-oi-vzv"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "대상 포진 (Herpes Zoster)",
-          "path": "source_notes/02 Diseases/19 피부과/대상 포진 (Herpes Zoster).md"
-        }
-      ]
-    },
-    {
-      "id": "oral-herpes",
-      "kind": "disease",
-      "name": "구강 단순포진",
-      "englishName": "Oral herpes",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "입술의 재발성 군집 수포 또는 초감염의 통증성 치은구내염. 수분 섭취가 어려운 소아·면역저하에서는 치료 필요성을 평가한다.",
-      "searchAliases": [
-        "구순포진",
-        "헤르페스 구내염",
-        "herpes labialis"
-      ],
-      "anatomicSites": [
-        "skin",
-        "lungs"
-      ],
-      "transmission": [
-        "contact"
-      ],
-      "clinical": {
-        "presentation": "HSV-1이 대표이며 눈·뇌·전신 감염 징후가 있으면 단순 국소 병변으로 보지 않는다.",
-        "diagnostics": "보통 임상 진단; 비전형·중증은 병변 PCR.",
-        "management": "초기·중증·재발 적응증에 맞춘 항바이러스와 수분·통증 관리.",
-        "redFlags": "수분 섭취 불가·눈 침범·파종 감염."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "hsv1",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "oral-herpes-tx-1",
-          "rank": "conditional",
-          "context": "중증·초기·재발 등 치료 적응증이 있는 경우",
-          "components": [
-            {
-              "drugId": "acyclovir"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "herpes-keratitis"
-      ],
-      "sourceIds": [
-        "cdc-sti-herpes"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "neonatal-herpes",
-      "kind": "disease",
-      "name": "신생아 단순포진",
-      "englishName": "Neonatal herpes",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "신생아의 수포·패혈증 유사 소견·경련·간염. 피부 병변이 없어도 CNS·파종 HSV 감염을 배제할 수 없다.",
-      "searchAliases": [
-        "neonatal HSV",
-        "신생아 헤르페스"
-      ],
-      "anatomicSites": [
-        "skin",
-        "eye",
-        "brain",
-        "blood"
-      ],
-      "transmission": [
-        "vertical",
-        "contact"
-      ],
-      "clinical": {
-        "presentation": "분만 전후 노출이 중요하며 산모 병력만으로 위험을 배제하지 않는다.",
-        "diagnostics": "병변·혈액·CSF PCR와 장기 평가; 의심이 크면 검사를 기다려 치료를 지연하지 않는다.",
-        "management": "신속한 정주 Acyclovir, 장기·신기능·추적 계획과 신생아 전문 관리.",
-        "redFlags": "경련·간부전·쇼크·신경 후유증."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "hsv2",
-          "context": ""
-        },
-        {
-          "pathogenId": "hsv1",
-          "context": ""
-        }
-      ],
-      "treatments": [
-        {
-          "id": "neonatal-herpes-tx-1",
-          "rank": "preferred",
-          "context": "의심·확진 신생아 HSV의 정주 치료",
-          "components": [
-            {
-              "drugId": "acyclovir"
-            }
-          ],
-          "mode": "single",
-          "coverage": "regimen"
-        }
-      ],
-      "relatedDiseaseIds": [
-        "genital-herpes",
-        "herpes-encephalitis"
-      ],
-      "sourceIds": [
-        "cdc-sti-herpes"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
       "id": "roseola",
       "kind": "disease",
       "name": "돌발진",
@@ -1060,6 +596,162 @@
         {
           "title": "돌발진 (Exanthem Subitum)",
           "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/돌발진 (Exanthem Subitum).md"
+        }
+      ]
+    },
+    {
+      "id": "mononucleosis",
+      "kind": "disease",
+      "name": "전염성 단핵구증",
+      "englishName": "Infectious mononucleosis",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "발열·인후염·후경부 림프절종창과 비장비대. EBV가 대표 원인이고 Ampicillin 계열 뒤 발진이 나타날 수 있다.",
+      "searchAliases": [
+        "EBV",
+        "infectious mono",
+        "키스병",
+        "단핵구증"
+      ],
+      "anatomicSites": [
+        "blood",
+        "liver",
+        "lungs"
+      ],
+      "transmission": [
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "피로가 오래 지속할 수 있다. CMV·급성 HIV·다른 원인도 감별한다.",
+        "diagnostics": "혈구·간기능과 시기·연령에 맞는 이종항체/EBV 혈청 검사.",
+        "management": "대개 지지요법. 비장 상태를 고려해 접촉 스포츠·격한 활동 복귀를 조정하고 항바이러스는 일률 사용하지 않는다.",
+        "redFlags": "비장 파열·기도 폐쇄·중증 혈구 이상."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "ebv",
+          "context": ""
+        },
+        {
+          "pathogenId": "cmv",
+          "context": "유사 단핵구증 감별"
+        }
+      ],
+      "treatments": [],
+      "supportiveCare": true,
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-ebv"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "전염성 단핵구증 (Infectious Mononucleosis)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/전염성 단핵구증 (Infectious Mononucleosis).md"
+        }
+      ]
+    },
+    {
+      "id": "mpox",
+      "kind": "disease",
+      "name": "엠폭스",
+      "englishName": "Mpox",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "깊고 통증성인 피부·점막 병변과 림프절종창. 생식기·항문 국소 병변이나 직장통으로 나타날 수도 있다.",
+      "searchAliases": [
+        "원숭이두창",
+        "monkeypox",
+        "엠팍스"
+      ],
+      "anatomicSites": [
+        "skin",
+        "urinary",
+        "lungs"
+      ],
+      "transmission": [
+        "contact",
+        "sexual",
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "병변·밀접 접촉 전파를 관리하고 면역저하·안·기도 침범 등 중증 위험을 확인한다.",
+        "diagnostics": "병변 검체 PCR, 임상·노출 평가와 동반 STI 검사.",
+        "management": "통증·수분·병변 관리와 격리. 항바이러스는 중증·특수 위험과 이용 가능한 전문 경로에서 판단한다.",
+        "redFlags": "심한 면역저하·눈/기도 침범·중증 통증."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "mpox-virus",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "mpox-tx-1",
+          "rank": "conditional",
+          "context": "중증·특수 고위험 등 전문 프로토콜 적응증 충족",
+          "components": [
+            {
+              "name": "Tecovirimat"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-mpox-2026"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "molluscum",
+      "kind": "disease",
+      "name": "물사마귀",
+      "englishName": "Molluscum contagiosum",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "중앙이 움푹 들어간 작은 구진의 접촉성 바이러스 감염. 면역정상은 자연 호전 가능하며 성인·광범위 병변의 맥락을 확인한다.",
+      "searchAliases": [
+        "molluscum",
+        "전염성 연속종"
+      ],
+      "anatomicSites": [
+        "skin"
+      ],
+      "transmission": [
+        "contact",
+        "sexual"
+      ],
+      "clinical": {
+        "presentation": "피부 직접 접촉·물건·성접촉으로 전파될 수 있다.",
+        "diagnostics": "임상 진단; 비전형·면역저하 병변은 다른 질환 감별.",
+        "management": "관찰 또는 병변별 처치·전파 관리. 면역저하자는 면역 상태와 기저 원인을 평가한다.",
+        "redFlags": "면역저하의 광범위·거대 병변."
+      },
+      "etiologies": [
+        {
+          "name": "Molluscum contagiosum virus",
+          "domain": "viruses",
+          "context": "접촉성 피부 감염"
+        }
+      ],
+      "treatments": [],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-molluscum"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "물사마귀 (Molluscum Contagiosum)",
+          "path": "source_notes/02 Diseases/19 피부과/물사마귀 (Molluscum Contagiosum).md"
         }
       ]
     },
@@ -1216,6 +908,419 @@
       "localReferenceNotes": []
     },
     {
+      "id": "covid-19",
+      "kind": "disease",
+      "name": "코로나19",
+      "englishName": "COVID-19",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "발열·인후통·기침부터 폐렴·저산소증까지 다양. 고위험 외래 환자는 초기 항바이러스의 투여 시기·상호작용·신기능을 확인한다.",
+      "searchAliases": [
+        "COVID",
+        "SARS-CoV-2",
+        "코로나바이러스감염증-19"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "blood"
+      ],
+      "transmission": [
+        "air",
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "숙주·접종·면역 상태에 따라 중증 위험이 다르다. 저산소증 없는 경증에 중증 치료를 일률 적용하지 않는다.",
+        "diagnostics": "항원 또는 분자검사, 산소포화도·중증도와 약물 검토.",
+        "management": "경증은 지지요법, 고위험은 적절한 초기 항바이러스. 입원·산소 필요 시 해당 중증 치료 경로.",
+        "redFlags": "저산소증·호흡곤란·탈수·의식 변화."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "sars-cov-2",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "covid-19-tx-1",
+          "rank": "preferred",
+          "context": "고위험 외래의 증상 초기·상호작용과 신기능 조건 충족",
+          "components": [
+            {
+              "drugId": "nirmatrelvir-ritonavir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "covid-19-tx-2",
+          "rank": "alternative",
+          "context": "초기 고위험 외래 등 적응증에 맞는 정주 대안",
+          "components": [
+            {
+              "drugId": "remdesivir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-covid-treatment"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "코로나바이러스감염증-19 (COVID-19)",
+          "path": "source_notes/02 Diseases/08 감염/코로나바이러스감염증-19 (COVID-19).md"
+        }
+      ]
+    },
+    {
+      "id": "mers",
+      "kind": "disease",
+      "name": "중동호흡기증후군",
+      "englishName": "Middle East respiratory syndrome",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "중동·낙타·의료기관 관련 노출 뒤 발열·기침·호흡곤란. 의심 시 격리·공중보건 협조와 중증 호흡기 평가가 중요하다.",
+      "searchAliases": [
+        "MERS",
+        "메르스",
+        "중동 호흡기 증후군"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "MERS-CoV 감염으로 신손상·쇼크가 동반될 수 있다.",
+        "diagnostics": "노출·호흡기 PCR와 장기 평가, 적절한 검체·감염 관리.",
+        "management": "지지·중환자 치료와 전파 차단; 표준 특이 항바이러스는 확립되지 않았다.",
+        "redFlags": "호흡부전·신손상·쇼크."
+      },
+      "etiologies": [
+        {
+          "name": "MERS coronavirus",
+          "domain": "viruses",
+          "context": "MERS-CoV"
+        }
+      ],
+      "treatments": [],
+      "supportiveCare": true,
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-cdc-mers"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "중동 호흡기 증후군 (MERS) (Middle East Respiratory Syndrome (MERS))",
+          "path": "source_notes/02 Diseases/08 감염/중동 호흡기 증후군 (MERS) (Middle East Respiratory Syndrome (MERS)).md"
+        }
+      ]
+    },
+    {
+      "id": "measles",
+      "kind": "disease",
+      "name": "홍역",
+      "englishName": "Measles",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "고열·기침·콧물·결막염 뒤 얼굴에서 몸통으로 퍼지는 발진. 의심 시 공기주의와 노출 대응을 먼저 시행한다.",
+      "searchAliases": [
+        "measles",
+        "rubeola",
+        "코플릭 반점"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "skin",
+        "brain"
+      ],
+      "transmission": [
+        "air"
+      ],
+      "clinical": {
+        "presentation": "Koplik 반점이 단서며 폐렴·뇌염 등 합병증을 경계한다.",
+        "diagnostics": "PCR·혈청과 접종/노출력, 공중보건 협조.",
+        "management": "지지요법과 해당 연령·중증도에 맞는 Vitamin A 등 합병증 관리; 노출 후 예방을 따로 평가한다.",
+        "redFlags": "폐렴·뇌염·탈수·중증 면역저하."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "measles",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "measles-tx-1",
+          "rank": "conditional",
+          "context": "연령·임상 적응증에 맞춘 보조치료",
+          "components": [
+            {
+              "name": "Vitamin A",
+              "role": "adjunct"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-measles"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "홍역 (Measles)",
+          "path": "source_notes/02 Diseases/12 산과/홍역 (Measles).md"
+        },
+        {
+          "title": "홍역 (Measles)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/홍역 (Measles).md"
+        }
+      ]
+    },
+    {
+      "id": "mumps",
+      "kind": "disease",
+      "name": "유행성이하선염",
+      "englishName": "Mumps",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "이하선 통증·종창과 발열. 고환염·수막염·난청 등의 합병증이 있고 접종자도 감염될 수 있다.",
+      "searchAliases": [
+        "볼거리",
+        "mumps"
+      ],
+      "anatomicSites": [
+        "lungs",
+        "urinary",
+        "brain"
+      ],
+      "transmission": [
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "양측성 이하선염이 단서지만 다른 원인과 구분한다.",
+        "diagnostics": "볼점막 PCR 등 시기별 검사, 접종·노출력 확인.",
+        "management": "지지요법과 비말·접촉 예방, 합병증 평가.",
+        "redFlags": "고환 통증·신경 증상·난청."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "mumps",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "supportiveCare": true,
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-mumps"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "볼거리 (Mumps)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/볼거리 (Mumps).md"
+        }
+      ]
+    },
+    {
+      "id": "rsv-infection",
+      "kind": "disease",
+      "name": "RSV 감염",
+      "englishName": "Respiratory syncytial virus infection",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "영아의 세기관지염·무호흡과 고령·심폐질환자의 하기도 감염. 나이에 따라 수유·호흡·기저질환 악화가 핵심이다.",
+      "searchAliases": [
+        "호흡기세포융합바이러스",
+        "RSV"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "건강한 성인은 감기처럼 경과할 수 있으나 취약 숙주에서는 폐렴·입원이 필요할 수 있다.",
+        "diagnostics": "임상·산소화 평가와 필요 시 호흡기 분자검사.",
+        "management": "대부분 지지요법. 예방접종·영아 예방 항체와 실제 감염 치료를 구분한다.",
+        "redFlags": "무호흡·저산소증·심폐질환 악화."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "rsv",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "rsv-infection-tx-1",
+          "rank": "conditional",
+          "context": "중증 면역저하 등 제한된 전문 적응증에서 고려",
+          "components": [
+            {
+              "drugId": "ribavirin"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "bronchiolitis"
+      ],
+      "sourceIds": [
+        "cdc-rsv-care"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "nipah",
+      "kind": "disease",
+      "name": "니파바이러스 감염",
+      "englishName": "Nipah virus infection",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "유행 지역의 박쥐·돼지·오염 식품 노출 뒤 뇌염·호흡기 증상. 일부에서는 사람 간 전파와 빠른 중증화가 가능하다.",
+      "searchAliases": [
+        "Nipah",
+        "니파"
+      ],
+      "anatomicSites": [
+        "brain",
+        "lungs"
+      ],
+      "transmission": [
+        "food",
+        "contact",
+        "droplet"
+      ],
+      "clinical": {
+        "presentation": "노출 유형·지역 유행과 밀접 접촉을 확인한다.",
+        "diagnostics": "전문 RT-PCR·혈청과 신경·호흡 평가, 감염 관리·공중보건 협조.",
+        "management": "집중 지지치료와 전파 차단; 표준 승인 특이 치료는 확립되지 않았다.",
+        "redFlags": "뇌염·호흡부전·혼수."
+      },
+      "etiologies": [
+        {
+          "name": "Nipah virus",
+          "domain": "viruses",
+          "context": "유행·노출 상황별 감염"
+        }
+      ],
+      "treatments": [],
+      "supportiveCare": true,
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-who-nipah"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "influenza",
+      "kind": "disease",
+      "name": "인플루엔자",
+      "englishName": "Influenza",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "갑작스러운 발열·근육통·두통·기침. 고위험·입원·진행성 감염은 검사 결과나 48시간 경과만을 이유로 치료를 늦추지 않는다.",
+      "searchAliases": [
+        "독감",
+        "flu",
+        "인플루엔자 A",
+        "B"
+      ],
+      "anatomicSites": [
+        "lungs"
+      ],
+      "transmission": [
+        "droplet",
+        "contact"
+      ],
+      "clinical": {
+        "presentation": "폐렴·기저질환 악화와 호전 뒤 세균성 폐렴 재악화를 확인한다.",
+        "diagnostics": "호흡기 분자검사와 산소화·중증도 평가.",
+        "management": "적응증에 맞춘 항바이러스와 지지요법. 입원·중증에서는 Oseltamivir 등이 중심이며 약제별 적용 조건을 구분한다.",
+        "redFlags": "저산소증·새 흉통·호전 뒤 재발열."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "influenza-a",
+          "context": ""
+        },
+        {
+          "pathogenId": "influenza-b",
+          "context": ""
+        }
+      ],
+      "treatments": [
+        {
+          "id": "influenza-tx-1",
+          "rank": "preferred",
+          "context": "입원·중증·고위험 또는 적절한 초기 치료 적응증",
+          "components": [
+            {
+              "drugId": "oseltamivir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        },
+        {
+          "id": "influenza-tx-2",
+          "rank": "alternative",
+          "context": "적합한 비복잡성 외래 감염의 초기 선택·임신 등 제외 조건 확인",
+          "components": [
+            {
+              "drugId": "baloxavir"
+            }
+          ],
+          "mode": "single",
+          "coverage": "regimen"
+        }
+      ],
+      "relatedDiseaseIds": [
+        "community-pneumonia"
+      ],
+      "sourceIds": [
+        "cdc-influenza-treatment"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "인플루엔자 (Influenza)",
+          "path": "source_notes/02 Diseases/08 감염/인플루엔자 (Influenza).md"
+        },
+        {
+          "title": "인플루엔자 (Influenza)",
+          "path": "source_notes/02 Diseases/11 외과/인플루엔자 (Influenza).md"
+        }
+      ]
+    },
+    {
       "id": "rabies",
       "kind": "disease",
       "name": "공수병",
@@ -1264,53 +1369,6 @@
       ]
     },
     {
-      "id": "dengue",
-      "kind": "disease",
-      "name": "뎅기열",
-      "englishName": "Dengue",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "모기 노출 뒤 발열·심한 근육통·두통. 해열되는 시점에 복통·지속 구토·출혈·관류 저하가 나타나면 중증 전환을 경계한다.",
-      "searchAliases": [
-        "dengue fever",
-        "중증 뎅기"
-      ],
-      "anatomicSites": [
-        "blood",
-        "skin",
-        "liver"
-      ],
-      "transmission": [
-        "vector"
-      ],
-      "clinical": {
-        "presentation": "혈관 누출과 출혈이 핵심 중증 기전. 감염 시점별 검사와 신중한 수액 관리가 중요하다.",
-        "diagnostics": "시기별 NAAT/NS1·혈청과 혈소판·Hematocrit·관류 추적.",
-        "management": "적절한 수액·감시와 장기 지원. 출혈 위험 때문에 Aspirin·NSAID 등을 피하며 특이 항바이러스는 확립되지 않았다.",
-        "redFlags": "복통·지속 구토·점막 출혈·쇼크."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "dengue",
-          "context": ""
-        }
-      ],
-      "treatments": [],
-      "supportiveCare": true,
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "cdc-dengue"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "뎅기열 (Dengue Fever)",
-          "path": "source_notes/02 Diseases/08 감염/뎅기열 (Dengue Fever).md"
-        }
-      ]
-    },
-    {
       "id": "chikungunya",
       "kind": "disease",
       "name": "치쿤구니아열",
@@ -1354,6 +1412,53 @@
         {
           "title": "치쿤구니아열 (Chikungunya Fever)",
           "path": "source_notes/02 Diseases/08 감염/치쿤구니아열 (Chikungunya Fever).md"
+        }
+      ]
+    },
+    {
+      "id": "dengue",
+      "kind": "disease",
+      "name": "뎅기열",
+      "englishName": "Dengue",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "모기 노출 뒤 발열·심한 근육통·두통. 해열되는 시점에 복통·지속 구토·출혈·관류 저하가 나타나면 중증 전환을 경계한다.",
+      "searchAliases": [
+        "dengue fever",
+        "중증 뎅기"
+      ],
+      "anatomicSites": [
+        "blood",
+        "skin",
+        "liver"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "혈관 누출과 출혈이 핵심 중증 기전. 감염 시점별 검사와 신중한 수액 관리가 중요하다.",
+        "diagnostics": "시기별 NAAT/NS1·혈청과 혈소판·Hematocrit·관류 추적.",
+        "management": "적절한 수액·감시와 장기 지원. 출혈 위험 때문에 Aspirin·NSAID 등을 피하며 특이 항바이러스는 확립되지 않았다.",
+        "redFlags": "복통·지속 구토·점막 출혈·쇼크."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "dengue",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "supportiveCare": true,
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "cdc-dengue"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "뎅기열 (Dengue Fever)",
+          "path": "source_notes/02 Diseases/08 감염/뎅기열 (Dengue Fever).md"
         }
       ]
     },
@@ -1485,6 +1590,147 @@
       "reviewStatus": "educational-source-reviewed",
       "authoredAt": "2026-10-11",
       "localReferenceNotes": []
+    },
+    {
+      "id": "yellow-fever",
+      "kind": "disease",
+      "name": "황열",
+      "englishName": "Yellow fever",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "모기 노출 뒤 발열·근육통, 일부에서 황달·출혈·쇼크로 진행. 여행 지역과 예방접종력이 중요하다.",
+      "searchAliases": [
+        "yellow fever",
+        "황열병"
+      ],
+      "anatomicSites": [
+        "blood",
+        "liver"
+      ],
+      "transmission": [
+        "vector"
+      ],
+      "clinical": {
+        "presentation": "초기 호전 뒤 독성기로 진행할 수 있다.",
+        "diagnostics": "시기별 분자·혈청검사와 다른 발열/황달 감염 감별.",
+        "management": "지지·장기 지원, 출혈 위험 관리와 공중보건 대응. 예방접종·모기 예방이 핵심.",
+        "redFlags": "황달·출혈·신부전·쇼크."
+      },
+      "etiologies": [
+        {
+          "name": "Yellow fever virus",
+          "domain": "viruses",
+          "context": "유행 지역 모기 매개"
+        }
+      ],
+      "treatments": [],
+      "supportiveCare": true,
+      "relatedDiseaseIds": [],
+      "sourceIds": [
+        "disease-who-yellow-fever"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": []
+    },
+    {
+      "id": "rubella",
+      "kind": "disease",
+      "name": "풍진",
+      "englishName": "Rubella",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "가벼운 발열·발진·귀뒤/후두 림프절종창. 임신 중 노출·감염은 태아 위험 평가가 중요하다.",
+      "searchAliases": [
+        "rubella",
+        "독일홍역"
+      ],
+      "anatomicSites": [
+        "skin",
+        "blood"
+      ],
+      "transmission": [
+        "droplet",
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "발진만으로 다른 바이러스 발진과 구별하기 어렵다.",
+        "diagnostics": "PCR·혈청과 노출·접종력; 임신에서는 검사 시기·위양성을 전문적으로 해석.",
+        "management": "지지요법·전파 예방과 공중보건 관리. 임신 노출은 산과·감염 전문 평가.",
+        "redFlags": "임신 중 감염·태아 감염 위험."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "rubella",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "supportiveCare": true,
+      "relatedDiseaseIds": [
+        "congenital-rubella"
+      ],
+      "sourceIds": [
+        "cdc-rubella"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "풍진 (Rubella)",
+          "path": "source_notes/02 Diseases/14 소아청소년과/소아과 각론/풍진 (Rubella).md"
+        }
+      ]
+    },
+    {
+      "id": "congenital-rubella",
+      "kind": "disease",
+      "name": "선천풍진증후군",
+      "englishName": "Congenital rubella syndrome",
+      "category": "viral",
+      "entityType": "specific",
+      "summary": "임신 중 풍진 감염이 난청·백내장·심장기형 등 태아·신생아 손상을 일으킨다. 산모 노출력과 영아 장기 평가가 중요하다.",
+      "searchAliases": [
+        "CRS",
+        "선천성 풍진"
+      ],
+      "anatomicSites": [
+        "heart",
+        "eye",
+        "brain",
+        "blood"
+      ],
+      "transmission": [
+        "vertical"
+      ],
+      "clinical": {
+        "presentation": "감염된 영아는 바이러스를 배출할 수 있어 감염 관리가 필요하다.",
+        "diagnostics": "영아 혈청·PCR와 청력·눈·심장 등 평가, 산모 감염 시점 확인.",
+        "management": "장기 합병증·발달 지원과 전파 예방. 가임기 접종이 핵심 예방이며 임신 중 생백신 사용과 구분한다.",
+        "redFlags": "난청·시력 문제·선천성 심장질환."
+      },
+      "etiologies": [
+        {
+          "pathogenId": "rubella",
+          "context": ""
+        }
+      ],
+      "treatments": [],
+      "supportiveCare": true,
+      "relatedDiseaseIds": [
+        "rubella"
+      ],
+      "sourceIds": [
+        "cdc-rubella"
+      ],
+      "reviewStatus": "educational-source-reviewed",
+      "authoredAt": "2026-10-11",
+      "localReferenceNotes": [
+        {
+          "title": "선천성 풍진 증후군 (Congenital Rubella Syndrome)",
+          "path": "source_notes/02 Diseases/12 산과/선천성 풍진 증후군 (Congenital Rubella Syndrome).md"
+        }
+      ]
     },
     {
       "id": "hfrs",
@@ -1629,277 +1875,75 @@
       ]
     },
     {
-      "id": "mpox",
+      "id": "hiv-infection",
       "kind": "disease",
-      "name": "엠폭스",
-      "englishName": "Mpox",
+      "name": "HIV 감염·AIDS",
+      "englishName": "HIV infection and AIDS",
       "category": "viral",
       "entityType": "specific",
-      "summary": "깊고 통증성인 피부·점막 병변과 림프절종창. 생식기·항문 국소 병변이나 직장통으로 나타날 수도 있다.",
+      "summary": "급성기 발열·발진·인후통 또는 장기간 무증상. HIV를 확인하면 ART와 면역 상태·기회감염 평가를 함께 시작한다.",
       "searchAliases": [
-        "원숭이두창",
-        "monkeypox",
-        "엠팍스"
+        "에이즈",
+        "AIDS",
+        "HIV",
+        "후천성 면역결핍 증후군"
       ],
       "anatomicSites": [
-        "skin",
-        "urinary",
-        "lungs"
+        "blood"
       ],
       "transmission": [
-        "contact",
         "sexual",
-        "droplet"
+        "blood",
+        "vertical"
       ],
       "clinical": {
-        "presentation": "병변·밀접 접촉 전파를 관리하고 면역저하·안·기도 침범 등 중증 위험을 확인한다.",
-        "diagnostics": "병변 검체 PCR, 임상·노출 평가와 동반 STI 검사.",
-        "management": "통증·수분·병변 관리와 격리. 항바이러스는 중증·특수 위험과 이용 가능한 전문 경로에서 판단한다.",
-        "redFlags": "심한 면역저하·눈/기도 침범·중증 통증."
+        "presentation": "AIDS는 진행성 면역결핍 단계. 기회감염마다 ART 시작 시점과 별도 치료 조건을 고려한다.",
+        "diagnostics": "항원/항체·RNA 확인, 바이러스량·CD4·내성·HBV/HCV 등 평가.",
+        "management": "권고 다제 ART와 치료 지속·상호작용 관리; HBV 동반, 특정 기회감염 등에서는 조합·시점을 조정한다.",
+        "redFlags": "급성 기회감염·진행 면역저하·치료 중단."
       },
       "etiologies": [
         {
-          "pathogenId": "mpox-virus",
+          "pathogenId": "hiv1",
           "context": ""
         }
       ],
       "treatments": [
         {
-          "id": "mpox-tx-1",
-          "rank": "conditional",
-          "context": "중증·특수 고위험 등 전문 프로토콜 적응증 충족",
+          "id": "hiv-infection-tx-1",
+          "rank": "preferred",
+          "context": "개별 내성·HBV·신기능 등을 평가한 3제 ART 구성 예시",
           "components": [
             {
-              "name": "Tecovirimat"
+              "drugId": "dolutegravir"
+            },
+            {
+              "drugId": "tenofovir"
+            },
+            {
+              "drugId": "lamivudine"
             }
           ],
-          "mode": "single",
+          "mode": "combination",
           "coverage": "regimen"
         }
       ],
-      "relatedDiseaseIds": [],
+      "relatedDiseaseIds": [
+        "pneumocystis-pneumonia",
+        "cryptococcal-meningitis",
+        "toxoplasma-encephalitis"
+      ],
       "sourceIds": [
-        "disease-cdc-mpox-2026"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "bk-nephropathy",
-      "kind": "disease",
-      "name": "BK 바이러스 신병증",
-      "englishName": "BK polyomavirus nephropathy",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "신장이식 환자의 BK 바이러스혈증과 이식신 기능 저하. 거부반응과 바이러스 손상을 구분해 면역억제 조정을 계획한다.",
-      "searchAliases": [
-        "BKV",
-        "BK 신병증",
-        "polyomavirus nephropathy"
-      ],
-      "anatomicSites": [
-        "urinary"
-      ],
-      "transmission": [
-        "endogenous"
-      ],
-      "clinical": {
-        "presentation": "잠복 바이러스 재활성화가 핵심이며 소변 검출만으로 신병증을 확진하지 않는다.",
-        "diagnostics": "혈장 정량 PCR 추적, 필요한 이식신 생검·기능 평가.",
-        "management": "면역억제 조정이 중심. 근거 없는 항바이러스를 일률적으로 사용하지 않는다.",
-        "redFlags": "이식신 기능 악화·거부반응과의 구별."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "bk-polyomavirus",
-          "context": ""
-        }
-      ],
-      "treatments": [],
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "bk-consensus-2024"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "progressive-multifocal-leukoencephalopathy",
-      "kind": "disease",
-      "name": "진행성 다초점 백질뇌병증",
-      "englishName": "Progressive multifocal leukoencephalopathy",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "면역저하자의 서서히 진행하는 국소 신경 결손·인지 변화와 백질 병변. JC 바이러스 재활성화에 의한 탈수초 감염이다.",
-      "searchAliases": [
-        "PML",
-        "JC virus",
-        "JCV"
-      ],
-      "anatomicSites": [
-        "brain"
-      ],
-      "transmission": [
-        "endogenous"
-      ],
-      "clinical": {
-        "presentation": "HIV·면역억제 약제 등 숙주 맥락이 중요. 염증성 면역재구성 악화도 평가한다.",
-        "diagnostics": "MRI·CSF JCV PCR, 불명확하면 추가 전문 평가·조직 등.",
-        "management": "가능한 면역 회복·원인 면역억제 조정이 핵심; 확립된 일반 특이 항바이러스 치료는 없다.",
-        "redFlags": "진행 마비·인지/언어 저하·IRIS."
-      },
-      "etiologies": [
-        {
-          "pathogenId": "jc-polyomavirus",
-          "context": ""
-        }
-      ],
-      "treatments": [],
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "nih-pml-jcv"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "molluscum",
-      "kind": "disease",
-      "name": "물사마귀",
-      "englishName": "Molluscum contagiosum",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "중앙이 움푹 들어간 작은 구진의 접촉성 바이러스 감염. 면역정상은 자연 호전 가능하며 성인·광범위 병변의 맥락을 확인한다.",
-      "searchAliases": [
-        "molluscum",
-        "전염성 연속종"
-      ],
-      "anatomicSites": [
-        "skin"
-      ],
-      "transmission": [
-        "contact",
-        "sexual"
-      ],
-      "clinical": {
-        "presentation": "피부 직접 접촉·물건·성접촉으로 전파될 수 있다.",
-        "diagnostics": "임상 진단; 비전형·면역저하 병변은 다른 질환 감별.",
-        "management": "관찰 또는 병변별 처치·전파 관리. 면역저하자는 면역 상태와 기저 원인을 평가한다.",
-        "redFlags": "면역저하의 광범위·거대 병변."
-      },
-      "etiologies": [
-        {
-          "name": "Molluscum contagiosum virus",
-          "domain": "viruses",
-          "context": "접촉성 피부 감염"
-        }
-      ],
-      "treatments": [],
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "disease-cdc-molluscum"
+        "nih-hiv-start"
       ],
       "reviewStatus": "educational-source-reviewed",
       "authoredAt": "2026-10-11",
       "localReferenceNotes": [
         {
-          "title": "물사마귀 (Molluscum Contagiosum)",
-          "path": "source_notes/02 Diseases/19 피부과/물사마귀 (Molluscum Contagiosum).md"
+          "title": "후천성 면역결핍 증후군 (AIDS) (Acquired Immunodeficiency Syndrome (AIDS))",
+          "path": "source_notes/02 Diseases/08 감염/후천성 면역결핍 증후군 (AIDS) (Acquired Immunodeficiency Syndrome (AIDS)).md"
         }
       ]
-    },
-    {
-      "id": "mers",
-      "kind": "disease",
-      "name": "중동호흡기증후군",
-      "englishName": "Middle East respiratory syndrome",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "중동·낙타·의료기관 관련 노출 뒤 발열·기침·호흡곤란. 의심 시 격리·공중보건 협조와 중증 호흡기 평가가 중요하다.",
-      "searchAliases": [
-        "MERS",
-        "메르스",
-        "중동 호흡기 증후군"
-      ],
-      "anatomicSites": [
-        "lungs"
-      ],
-      "transmission": [
-        "droplet",
-        "contact"
-      ],
-      "clinical": {
-        "presentation": "MERS-CoV 감염으로 신손상·쇼크가 동반될 수 있다.",
-        "diagnostics": "노출·호흡기 PCR와 장기 평가, 적절한 검체·감염 관리.",
-        "management": "지지·중환자 치료와 전파 차단; 표준 특이 항바이러스는 확립되지 않았다.",
-        "redFlags": "호흡부전·신손상·쇼크."
-      },
-      "etiologies": [
-        {
-          "name": "MERS coronavirus",
-          "domain": "viruses",
-          "context": "MERS-CoV"
-        }
-      ],
-      "treatments": [],
-      "supportiveCare": true,
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "disease-cdc-mers"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": [
-        {
-          "title": "중동 호흡기 증후군 (MERS) (Middle East Respiratory Syndrome (MERS))",
-          "path": "source_notes/02 Diseases/08 감염/중동 호흡기 증후군 (MERS) (Middle East Respiratory Syndrome (MERS)).md"
-        }
-      ]
-    },
-    {
-      "id": "yellow-fever",
-      "kind": "disease",
-      "name": "황열",
-      "englishName": "Yellow fever",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "모기 노출 뒤 발열·근육통, 일부에서 황달·출혈·쇼크로 진행. 여행 지역과 예방접종력이 중요하다.",
-      "searchAliases": [
-        "yellow fever",
-        "황열병"
-      ],
-      "anatomicSites": [
-        "blood",
-        "liver"
-      ],
-      "transmission": [
-        "vector"
-      ],
-      "clinical": {
-        "presentation": "초기 호전 뒤 독성기로 진행할 수 있다.",
-        "diagnostics": "시기별 분자·혈청검사와 다른 발열/황달 감염 감별.",
-        "management": "지지·장기 지원, 출혈 위험 관리와 공중보건 대응. 예방접종·모기 예방이 핵심.",
-        "redFlags": "황달·출혈·신부전·쇼크."
-      },
-      "etiologies": [
-        {
-          "name": "Yellow fever virus",
-          "domain": "viruses",
-          "context": "유행 지역 모기 매개"
-        }
-      ],
-      "treatments": [],
-      "supportiveCare": true,
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "disease-who-yellow-fever"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
     },
     {
       "id": "ebola",
@@ -1996,50 +2040,6 @@
       "relatedDiseaseIds": [],
       "sourceIds": [
         "disease-who-marburg"
-      ],
-      "reviewStatus": "educational-source-reviewed",
-      "authoredAt": "2026-10-11",
-      "localReferenceNotes": []
-    },
-    {
-      "id": "nipah",
-      "kind": "disease",
-      "name": "니파바이러스 감염",
-      "englishName": "Nipah virus infection",
-      "category": "viral",
-      "entityType": "specific",
-      "summary": "유행 지역의 박쥐·돼지·오염 식품 노출 뒤 뇌염·호흡기 증상. 일부에서는 사람 간 전파와 빠른 중증화가 가능하다.",
-      "searchAliases": [
-        "Nipah",
-        "니파"
-      ],
-      "anatomicSites": [
-        "brain",
-        "lungs"
-      ],
-      "transmission": [
-        "food",
-        "contact",
-        "droplet"
-      ],
-      "clinical": {
-        "presentation": "노출 유형·지역 유행과 밀접 접촉을 확인한다.",
-        "diagnostics": "전문 RT-PCR·혈청과 신경·호흡 평가, 감염 관리·공중보건 협조.",
-        "management": "집중 지지치료와 전파 차단; 표준 승인 특이 치료는 확립되지 않았다.",
-        "redFlags": "뇌염·호흡부전·혼수."
-      },
-      "etiologies": [
-        {
-          "name": "Nipah virus",
-          "domain": "viruses",
-          "context": "유행·노출 상황별 감염"
-        }
-      ],
-      "treatments": [],
-      "supportiveCare": true,
-      "relatedDiseaseIds": [],
-      "sourceIds": [
-        "disease-who-nipah"
       ],
       "reviewStatus": "educational-source-reviewed",
       "authoredAt": "2026-10-11",

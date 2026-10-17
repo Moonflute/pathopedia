@@ -19,38 +19,28 @@
   },
   "categories": [
     {
+      "id": "systemic",
+      "label": "순환기·혈류",
+      "icon": "heart"
+    },
+    {
       "id": "respiratory",
       "label": "호흡기",
       "icon": "lungs"
     },
     {
-      "id": "ent",
-      "label": "귀·코·목",
-      "icon": "lungs"
-    },
-    {
-      "id": "systemic",
-      "label": "혈류·심장",
-      "icon": "heart"
-    },
-    {
-      "id": "neurologic",
-      "label": "중추신경",
-      "icon": "brain"
-    },
-    {
       "id": "gastrointestinal",
-      "label": "장·복강",
+      "label": "위장관·복강",
       "icon": "abdomen"
     },
     {
       "id": "hepatobiliary",
-      "label": "간·담도",
+      "label": "간·담도·췌장",
       "icon": "liver"
     },
     {
       "id": "urinary",
-      "label": "요로",
+      "label": "신장·요로",
       "icon": "urinary"
     },
     {
@@ -59,14 +49,19 @@
       "icon": "vertical"
     },
     {
+      "id": "sti",
+      "label": "성매개 감염",
+      "icon": "urinary"
+    },
+    {
+      "id": "neurologic",
+      "label": "신경",
+      "icon": "brain"
+    },
+    {
       "id": "skin",
       "label": "피부·연조직",
       "icon": "skin"
-    },
-    {
-      "id": "bone",
-      "label": "뼈·관절",
-      "icon": "bone"
     },
     {
       "id": "eye",
@@ -74,13 +69,18 @@
       "icon": "eye"
     },
     {
-      "id": "sti",
-      "label": "성매개",
-      "icon": "urinary"
+      "id": "ent",
+      "label": "이비인후",
+      "icon": "lungs"
+    },
+    {
+      "id": "bone",
+      "label": "뼈·관절",
+      "icon": "bone"
     },
     {
       "id": "bacterial",
-      "label": "전신 세균감염",
+      "label": "기타 세균감염",
       "icon": "bacteria"
     },
     {
@@ -877,18 +877,18 @@
     }
   },
   "files": [
-    "respiratory.json",
-    "ent.json",
     "systemic.json",
-    "neurologic.json",
+    "respiratory.json",
     "gastrointestinal.json",
     "hepatobiliary.json",
     "urinary.json",
     "obstetric.json",
-    "skin.json",
-    "bone.json",
-    "eye.json",
     "sti.json",
+    "neurologic.json",
+    "skin.json",
+    "eye.json",
+    "ent.json",
+    "bone.json",
     "bacterial.json",
     "viral.json",
     "fungal.json",
