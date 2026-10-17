@@ -1876,8 +1876,8 @@
       "alt": "Amikacin — 폭탄 상징 삽화"
     },
     "metronidazole": {
-      "src": "assets/cards/illustrations-v1/drugs/metronidazole.webp",
-      "alt": "Metronidazole — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/metronidazole-parasite-v2.webp",
+      "alt": "Metronidazole — 회색 네모 파리채와 칼 삽화"
     },
     "tigecycline": {
       "src": "assets/cards/illustrations-v1/drugs/tigecycline.webp",
@@ -1948,80 +1948,80 @@
       "alt": "Terbinafine — 스프레이 상징 삽화"
     },
     "albendazole": {
-      "src": "assets/cards/illustrations-v1/drugs/albendazole-v3.webp",
-      "alt": "Albendazole — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/albendazole-parasite-v2.webp",
+      "alt": "Albendazole — 넓은 잠자리채 · 끈과 마디 띠 · 개 문양 삽화"
     },
     "mebendazole": {
-      "src": "assets/cards/illustrations-v1/drugs/mebendazole.webp",
-      "alt": "Mebendazole — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/mebendazole-parasite-v2.webp",
+      "alt": "Mebendazole — 얕고 둥근 잠자리채 · 선충 끈 장식 삽화"
     },
     "ivermectin": {
-      "src": "assets/cards/illustrations-v1/drugs/ivermectin.webp",
-      "alt": "Ivermectin — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/ivermectin-parasite-v2.webp",
+      "alt": "Ivermectin — 길쭉한 잠자리채와 작은 집게 · 선충 끈 장식 삽화"
     },
     "praziquantel": {
-      "src": "assets/cards/illustrations-v1/drugs/praziquantel.webp",
-      "alt": "Praziquantel — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/praziquantel-parasite-v2.webp",
+      "alt": "Praziquantel — 파란 잠자리채 · 마디 띠와 잎 · 물고기 문양 삽화"
     },
     "nitazoxanide": {
-      "src": "assets/cards/illustrations-v1/drugs/nitazoxanide.webp",
-      "alt": "Nitazoxanide — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/nitazoxanide-parasite-v2.webp",
+      "alt": "Nitazoxanide — 넓은 산호색 네모 파리채 · 송아지 문양 삽화"
     },
     "paromomycin": {
-      "src": "assets/cards/illustrations-v1/drugs/paromomycin.webp",
-      "alt": "Paromomycin — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/paromomycin-parasite-v2.webp",
+      "alt": "Paromomycin — 각진 황동 파리채 · 둥근 손잡이 끝 삽화"
     },
     "pyrimethamine": {
-      "src": "assets/cards/illustrations-v1/drugs/pyrimethamine.webp",
-      "alt": "Pyrimethamine — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/pyrimethamine-parasite-v2.webp",
+      "alt": "Pyrimethamine — 길고 가는 파란 네모 파리채 · 고양이 문양 삽화"
     },
     "sulfadiazine": {
-      "src": "assets/cards/illustrations-v1/drugs/sulfadiazine.webp",
-      "alt": "Sulfadiazine — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/sulfadiazine-parasite-v2.webp",
+      "alt": "Sulfadiazine — 넓은 파란 네모 파리채 · 고양이 문양 삽화"
     },
     "artemetherlumefantrine": {
-      "src": "assets/cards/illustrations-v1/drugs/artemetherlumefantrine.webp",
-      "alt": "Artemether–lumefantrine — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/artemetherlumefantrine-parasite-v3.webp",
+      "alt": "Artemether–lumefantrine — 벽돌색·황토색 이중 테두리 파리채 · 모기 문양 삽화"
     },
     "atovaquoneproguanil": {
-      "src": "assets/cards/illustrations-v1/drugs/atovaquoneproguanil.webp",
-      "alt": "Atovaquone–proguanil — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/atovaquoneproguanil-parasite-v2.webp",
+      "alt": "Atovaquone–proguanil — 황토색 네모 파리채와 두 색 손잡이 · 모기 문양 삽화"
     },
     "primaquine": {
-      "src": "assets/cards/illustrations-v1/drugs/primaquine.webp",
-      "alt": "Primaquine — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/primaquine-parasite-v2.webp",
+      "alt": "Primaquine — 가늘고 긴 붉은 네모 파리채 · 모기 문양 삽화"
     },
     "miltefosine": {
-      "src": "assets/cards/illustrations-v1/drugs/miltefosine.webp",
-      "alt": "Miltefosine — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/miltefosine-parasite-v2.webp",
+      "alt": "Miltefosine — 버건디 네모 파리채 · 모래파리 문양 삽화"
     },
     "triclabendazole": {
-      "src": "assets/cards/illustrations-v1/drugs/triclabendazole.webp",
-      "alt": "Triclabendazole — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/triclabendazole-parasite-v2.webp",
+      "alt": "Triclabendazole — 겨자색 타원 잠자리채 · 흡충 잎 · 양 문양 삽화"
     },
     "permethrin": {
-      "src": "assets/cards/illustrations-v1/drugs/permethrin.webp",
-      "alt": "Permethrin — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/permethrin-parasite-v2.webp",
+      "alt": "Permethrin — 테라코타 집게 · 피부를 뜻하는 손 문양 삽화"
     },
     "benznidazole": {
-      "src": "assets/cards/illustrations-v1/drugs/benznidazole.webp",
-      "alt": "Benznidazole — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/benznidazole-parasite-v2.webp",
+      "alt": "Benznidazole — 버건디 네모 파리채 · 아르마딜로 문양 삽화"
     },
     "itraconazole": {
       "src": "assets/cards/illustrations-v1/drugs/itraconazole.webp",
       "alt": "Itraconazole — 스프레이 상징 삽화"
     },
     "pentamidine": {
-      "src": "assets/cards/illustrations-v1/drugs/pentamidine.webp",
-      "alt": "Pentamidine — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/pentamidine-parasite-v2.webp",
+      "alt": "Pentamidine — 청회색 네모 파리채와 분무기 삽화"
     },
     "atovaquone": {
-      "src": "assets/cards/illustrations-v1/drugs/atovaquone.webp",
-      "alt": "Atovaquone — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/atovaquone-parasite-v2.webp",
+      "alt": "Atovaquone — 황토색 네모 파리채와 분무기 · 진드기 문양 삽화"
     },
     "quinine": {
-      "src": "assets/cards/illustrations-v1/drugs/quinine.webp",
-      "alt": "Quinine — 파리채 상징 삽화"
+      "src": "assets/cards/illustrations-v1/drugs/quinine-parasite-v2.webp",
+      "alt": "Quinine — 벽돌색 넓은 네모 파리채 · 모기와 진드기 문양 삽화"
     },
     "acyclovir": {
       "src": "assets/cards/illustrations-v1/drugs/acyclovir.webp",

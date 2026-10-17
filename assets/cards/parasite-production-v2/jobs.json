@@ -1,0 +1,882 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-17",
+  "mode": "built-in image_gen.imagegen",
+  "status": "complete",
+  "transparent": true,
+  "jobs": [
+    {
+      "kind": "drug",
+      "id": "albendazole",
+      "form": "net",
+      "concept": "A broad oval butterfly net with a medium-deep soft ivory pouch, mustard enamel rim and sturdy dark-brown grip. Wind a THIN CORD around the upper shaft for nematodes and fit a short SEGMENTED brass BAND below it for cestodes. A small flat DOG HEAD emblem is engraved into the brass collar, referring to Echinococcus. Distinctive but restrained.",
+      "alt": "Albendazole — 넓은 잠자리채 · 끈과 마디 띠 · 개 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "dog",
+          "role": "definitive host",
+          "parasite": "Echinococcus spp."
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/echinococcosis/",
+        "https://www.cdc.gov/echinococcosis/hcp/clinical-care/index.html"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/albendazole-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/albendazole-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA broad oval butterfly net with a medium-deep soft ivory pouch, mustard enamel rim and sturdy dark-brown grip. Wind a THIN CORD around the upper shaft for nematodes and fit a short SEGMENTED brass BAND below it for cestodes. A small flat DOG HEAD emblem is engraved into the brass collar, referring to Echinococcus. Distinctive but restrained.",
+      "name": "Albendazole",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/albendazole-v3.png",
+        "assets/cards/illustrations-v1/drugs/albendazole-v3.webp",
+        "assets/cards/illustrations-v1/drugs/albendazole.png",
+        "assets/cards/illustrations-v1/drugs/albendazole-v2.png"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-20c8b3b2-d348-45a1-8a89-4591ce1993c5.png",
+      "generatedAt": "2026-10-17T05:46:40.460Z",
+      "spectrumPalette": "Ivory mesh, warm mustard enamel rim, brown wood handle and brass socket.",
+      "family": "Benzimidazole",
+      "sourceIds": [
+        "cdc-intestinal"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [
+        "nematode-cord",
+        "cestode-segmented-band"
+      ],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/albendazole-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "mebendazole",
+      "form": "net",
+      "concept": "A compact ROUND hoop butterfly net with a SHALLOW ivory pouch, mustard rim, slim pale-wood shaft and a dark walnut flattened grip. A simple thin cord wraps the collar for nematodes; no segmented band and no leaf emblem. An everyday light intestinal-worm net, visibly smaller and lighter in construction than Albendazole. No animal emblem.",
+      "alt": "Mebendazole — 얕고 둥근 잠자리채 · 선충 끈 장식 삽화",
+      "hostSymbols": [],
+      "sources": [
+        "https://www.cdc.gov/sth/hcp/clinical-care/index.html"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/mebendazole-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/mebendazole-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA compact ROUND hoop butterfly net with a SHALLOW ivory pouch, mustard rim, slim pale-wood shaft and a dark walnut flattened grip. A simple thin cord wraps the collar for nematodes; no segmented band and no leaf emblem. An everyday light intestinal-worm net, visibly smaller and lighter in construction than Albendazole. No animal emblem.",
+      "name": "Mebendazole",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/mebendazole.png",
+        "assets/cards/illustrations-v1/drugs/mebendazole.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-3d413402-768a-409b-8e09-5c49550f96bf.png",
+      "generatedAt": "2026-10-17T05:46:43.382Z",
+      "spectrumPalette": "Ivory mesh, muted mustard rim, brown wood and brass.",
+      "family": "Benzimidazole",
+      "sourceIds": [
+        "cdc-intestinal"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [
+        "nematode-cord"
+      ],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/mebendazole-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "ivermectin",
+      "form": "net+forceps",
+      "concept": "A slender elongated OVAL butterfly net with a deep narrow ivory pouch, muted terracotta hoop and a cord-wrapped walnut shaft. Attach a clearly recognizable SMALL TWO-ARM TWEEZER tool along the handle using two brass retaining loops. Both net head and tweezer tips point UPPER LEFT. Net is the main object; forceps are a compact secondary implement at 45 percent of its length. Two coherent tools physically clipped together, not extra arms growing from the net. Cord motif for nematodes, forceps for ectoparasites; no leaf motif, no animal emblem.",
+      "alt": "Ivermectin — 길쭉한 잠자리채와 작은 집게 · 선충 끈 장식 삽화",
+      "hostSymbols": [],
+      "sources": [
+        "https://www.cdc.gov/strongyloides/hcp/clinical-care/",
+        "https://www.cdc.gov/std/treatment-guidelines/ectoparasitic.htm"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/ivermectin-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/ivermectin-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA slender elongated OVAL butterfly net with a deep narrow ivory pouch, muted terracotta hoop and a cord-wrapped walnut shaft. Attach a clearly recognizable SMALL TWO-ARM TWEEZER tool along the handle using two brass retaining loops. Both net head and tweezer tips point UPPER LEFT. Net is the main object; forceps are a compact secondary implement at 45 percent of its length. Two coherent tools physically clipped together, not extra arms growing from the net. Cord motif for nematodes, forceps for ectoparasites; no leaf motif, no animal emblem.",
+      "name": "Ivermectin",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/ivermectin.png",
+        "assets/cards/illustrations-v1/drugs/ivermectin.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-e1b7fa58-5d1f-4a6a-851c-7bcda7150586.png",
+      "generatedAt": "2026-10-17T05:46:46.173Z",
+      "spectrumPalette": "Ivory mesh, muted terracotta rim, brown leather grip and antique brass fittings.",
+      "family": "Macrocyclic lactone",
+      "sourceIds": [
+        "cdc-intestinal"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [
+        "nematode-cord",
+        "ectoparasite-forceps"
+      ],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/ivermectin-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "praziquantel",
+      "form": "net",
+      "concept": "A broad ROUND butterfly net with a full rounded ivory pouch, DUSTY BLUE enamel hoop and gently flared blue-and-brown grip. Below the hoop put a short SEGMENTED BAND and one small flat LEAF-shaped brass inlay, representing cestodes and flukes. Engrave a simple FISH profile into the collar for the Clonorchis intermediate host. It is a tool with modest flat decoration, not an animal or plant-shaped net.",
+      "alt": "Praziquantel — 파란 잠자리채 · 마디 띠와 잎 · 물고기 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "fish",
+          "role": "intermediate host",
+          "parasite": "Clonorchis sinensis"
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/clonorchiasis/",
+        "https://www.cdc.gov/liver-flukes/hcp/clinical-overview-clonorchis/"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/praziquantel-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/praziquantel-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA broad ROUND butterfly net with a full rounded ivory pouch, DUSTY BLUE enamel hoop and gently flared blue-and-brown grip. Below the hoop put a short SEGMENTED BAND and one small flat LEAF-shaped brass inlay, representing cestodes and flukes. Engrave a simple FISH profile into the collar for the Clonorchis intermediate host. It is a tool with modest flat decoration, not an animal or plant-shaped net.",
+      "name": "Praziquantel",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/praziquantel.png",
+        "assets/cards/illustrations-v1/drugs/praziquantel.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-6f40f176-3a5c-45dc-ba6f-7c21ac9bcde4.png",
+      "generatedAt": "2026-10-17T05:46:49.694Z",
+      "spectrumPalette": "Ivory mesh, dusty blue rim, old-brass collar and warm brown handle.",
+      "family": "Pyrazinoisoquinoline",
+      "sourceIds": [
+        "cdc-intestinal"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [
+        "cestode-segmented-band",
+        "trematode-leaf"
+      ],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/praziquantel-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "triclabendazole",
+      "form": "net",
+      "concept": "An elegant slender OVAL butterfly net with a long gently tapered ivory pouch, dark mustard rim, walnut handle and short antique-brass joint. Put ONE simple LEAF-shaped brass inlay at the collar for flukes, and a small engraved SHEEP HEAD silhouette in the grip end for Fasciola. No cord wrapping and no segmented band. Related warm mustard family materials to Albendazole, but distinctly narrow hoop and leaf detail.",
+      "alt": "Triclabendazole — 겨자색 타원 잠자리채 · 흡충 잎 · 양 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "sheep",
+          "role": "definitive host",
+          "parasite": "Fasciola spp."
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/fascioliasis/",
+        "https://www.cdc.gov/liver-flukes/hcp/clinical-overview-fasciola/index.html"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/triclabendazole-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/triclabendazole-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nAn elegant slender OVAL butterfly net with a long gently tapered ivory pouch, dark mustard rim, walnut handle and short antique-brass joint. Put ONE simple LEAF-shaped brass inlay at the collar for flukes, and a small engraved SHEEP HEAD silhouette in the grip end for Fasciola. No cord wrapping and no segmented band. Related warm mustard family materials to Albendazole, but distinctly narrow hoop and leaf detail.",
+      "name": "Triclabendazole",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/triclabendazole.png",
+        "assets/cards/illustrations-v1/drugs/triclabendazole.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-e502c03a-0b2e-4aed-8f21-6044b22ae734.png",
+      "generatedAt": "2026-10-17T05:46:52.231Z",
+      "spectrumPalette": "Ivory mesh, mustard rim, brown wooden grip and brass socket.",
+      "family": "Benzimidazole flukicide",
+      "sourceIds": [
+        "cdc-fasciola"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [
+        "trematode-leaf"
+      ],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/triclabendazole-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "permethrin",
+      "form": "forceps",
+      "concept": "One pair of TWO-ARM small picking forceps, joined lower right and opening upper left, with short slightly bent blunt tips. Matte brass arms, ivory edge planes, broad muted TERRACOTTA grip insets and shallow straight incised grip marks. Replace the reference's decorative leaves with a small simple HUMAN HAND silhouette engraved into the lower grip: human skin/host memory cue. Do not depict actual skin or bodies. Familiar tidy tweezer structure; no finger rings, teeth, holes, extra arms or creatures.",
+      "alt": "Permethrin — 테라코타 집게 · 피부를 뜻하는 손 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "human hand",
+          "role": "host/site",
+          "parasite": "Sarcoptes scabiei"
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/std/treatment-guidelines/ectoparasitic.htm"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/permethrin-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/permethrin-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nOne pair of TWO-ARM small picking forceps, joined lower right and opening upper left, with short slightly bent blunt tips. Matte brass arms, ivory edge planes, broad muted TERRACOTTA grip insets and shallow straight incised grip marks. Replace the reference's decorative leaves with a small simple HUMAN HAND silhouette engraved into the lower grip: human skin/host memory cue. Do not depict actual skin or bodies. Familiar tidy tweezer structure; no finger rings, teeth, holes, extra arms or creatures.",
+      "name": "Permethrin",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/permethrin.png",
+        "assets/cards/illustrations-v1/drugs/permethrin.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-119385d8-f821-4d59-8064-b10273f4c5cc.png",
+      "generatedAt": "2026-10-17T05:46:55.183Z",
+      "spectrumPalette": "Ivory fine mesh, muted terracotta rim and dark brown grip, warm brass.",
+      "family": "Topical pyrethroid",
+      "sourceIds": [
+        "cdc-scabies"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/permethrin-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "metronidazole",
+      "form": "knife+swatter",
+      "concept": "A matched pair: a conventional RECTANGULAR flyswatter with a narrow GRAY rim and ivory fine-grid face plus a simple short GRAY steel KNIFE with a brown grip, joined as a tidy compact kit with a small leather retaining strap near the two handles. BOTH blade point and swatter head UPPER LEFT; both grips LOWER RIGHT. Swatter primary, knife about 65 percent its length, beside it without obscuring the head. Gray signifies anaerobes; swatter protozoa. No creature emblem or green charm.",
+      "alt": "Metronidazole — 회색 네모 파리채와 칼 삽화",
+      "hostSymbols": [],
+      "sources": [
+        "https://www.cdc.gov/dpdx/amebiasis/",
+        "https://www.cdc.gov/dpdx/giardiasis/"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/metronidazole-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/metronidazole-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA matched pair: a conventional RECTANGULAR flyswatter with a narrow GRAY rim and ivory fine-grid face plus a simple short GRAY steel KNIFE with a brown grip, joined as a tidy compact kit with a small leather retaining strap near the two handles. BOTH blade point and swatter head UPPER LEFT; both grips LOWER RIGHT. Swatter primary, knife about 65 percent its length, beside it without obscuring the head. Gray signifies anaerobes; swatter protozoa. No creature emblem or green charm.",
+      "name": "Metronidazole",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/metronidazole.png",
+        "assets/cards/illustrations-v1/drugs/metronidazole.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-749d0f41-efee-451b-be6d-e84ec9a52f4b.png",
+      "generatedAt": "2026-10-17T05:50:46.474Z",
+      "spectrumPalette": "Gray knife blade and gray swatter mesh; ivory edges, muted brass fittings, brown grips with one terracotta binding.",
+      "family": "Nitroimidazole",
+      "sourceIds": [
+        "eucast-2026",
+        "eucast-expected",
+        "cdc-amebiasis"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/metronidazole-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "nitazoxanide",
+      "form": "swatter",
+      "concept": "A short broad RECTANGULAR flyswatter, a slightly wider-than-tall four-sided head, narrow CORAL-TERRACOTTA rim, opaque ivory fine-grid face, pale wood shaft and rounded terracotta grip end. Small engraved CALF HEAD profile on the brass connector, referencing the cattle reservoir of Cryptosporidium parvum. This small engraving is the only animal detail. No leaf shape or round head.",
+      "alt": "Nitazoxanide — 넓은 산호색 네모 파리채 · 송아지 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "calf",
+          "role": "reservoir",
+          "parasite": "Cryptosporidium parvum",
+          "scope": "Not a universal reservoir for every Cryptosporidium species."
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/cryptosporidiosis/",
+        "https://www.cdc.gov/cryptosporidium/hcp/clinical-care/index.html"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/nitazoxanide-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/nitazoxanide-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA short broad RECTANGULAR flyswatter, a slightly wider-than-tall four-sided head, narrow CORAL-TERRACOTTA rim, opaque ivory fine-grid face, pale wood shaft and rounded terracotta grip end. Small engraved CALF HEAD profile on the brass connector, referencing the cattle reservoir of Cryptosporidium parvum. This small engraving is the only animal detail. No leaf shape or round head.",
+      "name": "Nitazoxanide",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/nitazoxanide.png",
+        "assets/cards/illustrations-v1/drugs/nitazoxanide.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-796acef9-9ba5-4bf6-a834-fcba8b90ddfc.png",
+      "generatedAt": "2026-10-17T05:50:49.122Z",
+      "spectrumPalette": "Ivory fine mesh, muted coral-terra-cotta outer rim, brass joint and brown handle.",
+      "family": "Thiazolide",
+      "sourceIds": [
+        "cdc-intestinal"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/nitazoxanide-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "paromomycin",
+      "form": "swatter",
+      "concept": "A practical nearly SQUARE flat flyswatter head, ochre-brass rim with a single muted PINK narrow inset strip, ivory fine-grid face and short dark-wood shaft. A compact round brass pommel at the lower right evokes the rounded bomb shape of the aminoglycoside family, but has NO fuse, smoke or fire. Keep the actual head a clear four-sided rectangle with gently rounded corners. No animal emblem. Modest sturdy design.",
+      "alt": "Paromomycin — 각진 황동 파리채 · 둥근 손잡이 끝 삽화",
+      "hostSymbols": [],
+      "sources": [
+        "https://www.cdc.gov/dpdx/amebiasis/"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/paromomycin-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/paromomycin-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA practical nearly SQUARE flat flyswatter head, ochre-brass rim with a single muted PINK narrow inset strip, ivory fine-grid face and short dark-wood shaft. A compact round brass pommel at the lower right evokes the rounded bomb shape of the aminoglycoside family, but has NO fuse, smoke or fire. Keep the actual head a clear four-sided rectangle with gently rounded corners. No animal emblem. Modest sturdy design.",
+      "name": "Paromomycin",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/paromomycin.png",
+        "assets/cards/illustrations-v1/drugs/paromomycin.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-008cc70e-8a31-435a-a6b2-ce8beef803ee.png",
+      "generatedAt": "2026-10-17T05:50:53.746Z",
+      "spectrumPalette": "Ivory mesh, warm brass rim and a subdued ochre-brown grip with pink enamel.",
+      "family": "Aminoglycoside",
+      "sourceIds": [
+        "cdc-intestinal",
+        "cdc-amebiasis"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/paromomycin-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "pyrimethamine",
+      "form": "swatter",
+      "concept": "A TALL NARROW RECTANGULAR flyswatter, dusty blue thin rim, opaque ivory fine-grid face, walnut handle with ONE antique-brass collar. One small CAT HEAD profile engraved into the collar for Toxoplasma definitive host. This belongs to a matched blue pair with Sulfadiazine: shared cat and blue palette but slender vertical head, single collar and long plain wood grip. No blade or leaf-shaped head.",
+      "alt": "Pyrimethamine — 길고 가는 파란 네모 파리채 · 고양이 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "cat",
+          "role": "definitive host",
+          "parasite": "Toxoplasma gondii"
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/toxoplasmosis/",
+        "https://www.cdc.gov/toxoplasmosis/hcp/clinical-care/index.html"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/pyrimethamine-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/pyrimethamine-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA TALL NARROW RECTANGULAR flyswatter, dusty blue thin rim, opaque ivory fine-grid face, walnut handle with ONE antique-brass collar. One small CAT HEAD profile engraved into the collar for Toxoplasma definitive host. This belongs to a matched blue pair with Sulfadiazine: shared cat and blue palette but slender vertical head, single collar and long plain wood grip. No blade or leaf-shaped head.",
+      "name": "Pyrimethamine",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/pyrimethamine.png",
+        "assets/cards/illustrations-v1/drugs/pyrimethamine.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-64914cda-6d50-40d3-937a-ff2a9d905b26.png",
+      "generatedAt": "2026-10-17T05:50:57.207Z",
+      "spectrumPalette": "Ivory mesh, dusty blue head rim, warm brass and brown handle.",
+      "family": "Antifolate",
+      "sourceIds": [
+        "cdc-intestinal",
+        "card-nih-oi-therapy"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/pyrimethamine-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "sulfadiazine",
+      "form": "swatter",
+      "concept": "A WIDE RECTANGULAR flyswatter, dusty blue enamel rim, ivory fine-grid face, dark wooden handle with TWO thin brass collars and a blue grip inset. Small CAT HEAD profile engraved into the upper collar for Toxoplasma. Matched blue partner to Pyrimethamine, but clearly wider squarer head, double collar and blue inset grip. One tool, not a pair. No blade or leaf-shaped head.",
+      "alt": "Sulfadiazine — 넓은 파란 네모 파리채 · 고양이 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "cat",
+          "role": "definitive host",
+          "parasite": "Toxoplasma gondii"
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/toxoplasmosis/",
+        "https://www.cdc.gov/toxoplasmosis/hcp/clinical-care/index.html"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/sulfadiazine-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/sulfadiazine-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA WIDE RECTANGULAR flyswatter, dusty blue enamel rim, ivory fine-grid face, dark wooden handle with TWO thin brass collars and a blue grip inset. Small CAT HEAD profile engraved into the upper collar for Toxoplasma. Matched blue partner to Pyrimethamine, but clearly wider squarer head, double collar and blue inset grip. One tool, not a pair. No blade or leaf-shaped head.",
+      "name": "Sulfadiazine",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/sulfadiazine.png",
+        "assets/cards/illustrations-v1/drugs/sulfadiazine.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-98ee753f-89d3-472f-85d7-b01f030050bf.png",
+      "generatedAt": "2026-10-17T05:51:00.348Z",
+      "spectrumPalette": "Ivory mesh, dusty blue rim, warm brass and chestnut leather handle.",
+      "family": "Sulfonamide",
+      "sourceIds": [
+        "cdc-intestinal",
+        "card-nih-oi-therapy"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/sulfadiazine-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "artemetherlumefantrine",
+      "form": "swatter",
+      "concept": "One conventional medium RECTANGULAR flyswatter with brick-red outer frame and an inner MUSTARD-OCHRE narrow frame, ivory fine grid. The two nested frame colors suggest a two-drug combination without extra heads. Dark reddish walnut handle, two close brass grip rings. Small simple MOSQUITO silhouette engraved on the neck plate, a malaria vector cue. Tiny heraldic flat engraving only, no actual insect. Straight rectangular head.",
+      "alt": "Artemether–lumefantrine — 벽돌색·황토색 이중 테두리 파리채 · 모기 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "mosquito",
+          "role": "vector",
+          "parasite": "Plasmodium spp."
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/malaria/"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/artemetherlumefantrine-parasite-v3.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/artemetherlumefantrine-parasite-v3.png"
+      ],
+      "prompt": "Use case: background-extraction / precise-object-edit. Edit the supplied rectangular red-and-ochre flyswatter illustration. Preserve the exact four-sided fine-grid swatter, mosquito engraving, wood handle, two brass grip rings, thin brown contours, flat matte storybook color planes, and upper-left head / lower-right grip direction. CORRECT ONLY THE EXTERIOR: remove the entire soft brown/gray/red fringe, shadow and hazy semi-transparent halo around the silhouette. All negative space outside the crisp contour must be genuinely completely transparent alpha=0, not a low-opacity tint. Keep painted object surfaces opaque. No floor, no checkerboard, no colored background, no shadow, no haze, glow, blur, particles or sparkles. Keep full object inside safe margins, same square canvas. No added text or new ornament. Return a clean transparent PNG cutout.",
+      "name": "Artemether–lumefantrine",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/artemetherlumefantrine.png",
+        "assets/cards/illustrations-v1/drugs/artemetherlumefantrine.webp",
+        "assets/cards/illustrations-v1/drugs/artemetherlumefantrine-parasite-v2.png"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-71ce53bf-286e-481c-ac64-71c1063792b7.png",
+      "generatedAt": "2026-10-17T05:56:25.611Z",
+      "promptHistory": [
+        "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nOne conventional medium RECTANGULAR flyswatter with brick-red outer frame and an inner MUSTARD-OCHRE narrow frame, ivory fine grid. The two nested frame colors suggest a two-drug combination without extra heads. Dark reddish walnut handle, two close brass grip rings. Small simple MOSQUITO silhouette engraved on the neck plate, a malaria vector cue. Tiny heraldic flat engraving only, no actual insect. Straight rectangular head."
+      ],
+      "spectrumPalette": "Ivory lattice, muted brick-red and ochre joined rim panels, bronze joint and brown grip.",
+      "family": "Artemisinin combination",
+      "sourceIds": [
+        "cdc-intestinal"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/artemetherlumefantrine-parasite-v3.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "atovaquoneproguanil",
+      "form": "swatter",
+      "concept": "One compact slightly SQUAT RECTANGULAR flyswatter, mustard-ochre rim with a BRICK-RED connector. Ivory fine-grid face. A broad handle has two clean parallel ochre and brick-red inlaid grip strips, denoting a combination drug. Small MOSQUITO engraving on the neck plate for malaria vector. Distinct from the nested-frame Artemether combination: use one plain ochre frame and a two-tone grip. No sprayer here, no tick motif.",
+      "alt": "Atovaquone–proguanil — 황토색 네모 파리채와 두 색 손잡이 · 모기 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "mosquito",
+          "role": "vector",
+          "parasite": "Plasmodium spp."
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/malaria/"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/atovaquoneproguanil-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/atovaquoneproguanil-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nOne compact slightly SQUAT RECTANGULAR flyswatter, mustard-ochre rim with a BRICK-RED connector. Ivory fine-grid face. A broad handle has two clean parallel ochre and brick-red inlaid grip strips, denoting a combination drug. Small MOSQUITO engraving on the neck plate for malaria vector. Distinct from the nested-frame Artemether combination: use one plain ochre frame and a two-tone grip. No sprayer here, no tick motif.",
+      "name": "Atovaquone–proguanil",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/atovaquoneproguanil.png",
+        "assets/cards/illustrations-v1/drugs/atovaquoneproguanil.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-184ee2cc-3140-4658-9e3b-536f8d466a61.png",
+      "generatedAt": "2026-10-17T05:55:59.779Z",
+      "spectrumPalette": "Ivory lattice, muted ochre and brick-red rim panels, bronze and dark brown grip.",
+      "family": "Antimalarial combination",
+      "sourceIds": [
+        "cdc-intestinal"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/atovaquoneproguanil-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "primaquine",
+      "form": "swatter",
+      "concept": "A particularly slender LONG RECTANGULAR flyswatter with a narrow brick-red rim, ivory fine-grid face and a pale wood handle with one mustard band near the end. Small MOSQUITO silhouette engraved into a simple brass neck plate. A compact dark-red rounded grip cap gives an understated silhouette. Keep head truly rectangular with straight sides, not tapered like a leaf. Single tool and single border.",
+      "alt": "Primaquine — 가늘고 긴 붉은 네모 파리채 · 모기 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "mosquito",
+          "role": "vector",
+          "parasite": "Plasmodium vivax / P. ovale"
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/malaria/"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/primaquine-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/primaquine-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA particularly slender LONG RECTANGULAR flyswatter with a narrow brick-red rim, ivory fine-grid face and a pale wood handle with one mustard band near the end. Small MOSQUITO silhouette engraved into a simple brass neck plate. A compact dark-red rounded grip cap gives an understated silhouette. Keep head truly rectangular with straight sides, not tapered like a leaf. Single tool and single border.",
+      "name": "Primaquine",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/primaquine.png",
+        "assets/cards/illustrations-v1/drugs/primaquine.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-99c8df4b-e66f-4684-9b4d-baabf9b2c5ab.png",
+      "generatedAt": "2026-10-17T05:56:02.735Z",
+      "spectrumPalette": "Ivory fine mesh, muted brick-red rim, old-bronze collar and ochre-brown grip.",
+      "family": "8-aminoquinoline",
+      "sourceIds": [
+        "cdc-intestinal"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/primaquine-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "miltefosine",
+      "form": "swatter",
+      "concept": "One conventional medium RECTANGULAR flyswatter with a muted BURGUNDY rim, ivory fine-grid face, dusty-blue slim handle sleeve and antique-brass connector. Engrave one small SAND FLY silhouette with two raised V-shaped wings into the connector: flat restrained heraldic line art as Leishmania vector cue, not an actual insect or a floating symbol. Straight four-sided head, gently rounded corners, minimal decoration.",
+      "alt": "Miltefosine — 버건디 네모 파리채 · 모래파리 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "sand fly",
+          "role": "vector",
+          "parasite": "Leishmania spp."
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/leishmaniasis/"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/miltefosine-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/miltefosine-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nOne conventional medium RECTANGULAR flyswatter with a muted BURGUNDY rim, ivory fine-grid face, dusty-blue slim handle sleeve and antique-brass connector. Engrave one small SAND FLY silhouette with two raised V-shaped wings into the connector: flat restrained heraldic line art as Leishmania vector cue, not an actual insect or a floating symbol. Straight four-sided head, gently rounded corners, minimal decoration.",
+      "name": "Miltefosine",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/miltefosine.png",
+        "assets/cards/illustrations-v1/drugs/miltefosine.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-94269b68-605a-4929-a9e5-2890b493463a.png",
+      "generatedAt": "2026-10-17T05:56:05.901Z",
+      "spectrumPalette": "Ivory mesh, muted burgundy rim, dusty blue inset and warm brass-brown handle.",
+      "family": "Alkylphosphocholine",
+      "sourceIds": [
+        "cdc-intestinal"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/miltefosine-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "benznidazole",
+      "form": "swatter",
+      "concept": "One sturdy conventional RECTANGULAR flyswatter with a dark burgundy rim, ivory fine-grid face, rust-red wood grip and one short brass ferrule. Engrave a small stylized ARMADILLO profile into the ferrule as a reservoir memory cue for Trypanosoma cruzi. The animal is only a flat small engraved emblem, not an attached creature or animal-shaped tool. Clearly rectangular head; restrained segmented incisions only inside the tiny armadillo shell emblem.",
+      "alt": "Benznidazole — 버건디 네모 파리채 · 아르마딜로 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "armadillo",
+          "role": "reservoir",
+          "parasite": "Trypanosoma cruzi"
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/trypanosomiasisamerican/"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/benznidazole-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/benznidazole-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nOne sturdy conventional RECTANGULAR flyswatter with a dark burgundy rim, ivory fine-grid face, rust-red wood grip and one short brass ferrule. Engrave a small stylized ARMADILLO profile into the ferrule as a reservoir memory cue for Trypanosoma cruzi. The animal is only a flat small engraved emblem, not an attached creature or animal-shaped tool. Clearly rectangular head; restrained segmented incisions only inside the tiny armadillo shell emblem.",
+      "name": "Benznidazole",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/benznidazole.png",
+        "assets/cards/illustrations-v1/drugs/benznidazole.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-12a5776a-7493-410e-9c3b-869d7f88af73.png",
+      "generatedAt": "2026-10-17T05:56:09.178Z",
+      "spectrumPalette": "Ivory mesh, muted burgundy and rust rim panels, brass socket and brown handle.",
+      "family": "Nitroimidazole antitrypanosomal",
+      "sourceIds": [
+        "cdc-chagas"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/benznidazole-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "pentamidine",
+      "form": "swatter+spray",
+      "concept": "A coherent pair of two small tools side by side in a narrow leather retaining strap: one medium conventional RECTANGULAR slate-blue flyswatter with ivory fine-grid face, and one compact matte BLUE-GRAY cylindrical HAND-PUMP SPRAYER with a short brass nozzle. Both working ends point upper left, bases lower right. The sprayer is approximately 65 percent the swatter length, fully recognizable and visible. No aerosol emitted, no droplets. Swatter signifies antiprotozoal uses; sprayer signifies Pneumocystis fungal indication. No animal/vector emblem. Do not merge tools into impossible anatomy.",
+      "alt": "Pentamidine — 청회색 네모 파리채와 분무기 삽화",
+      "hostSymbols": [],
+      "sources": [
+        "https://www.cdc.gov/sleeping-sickness/hcp/clinical-care/index.html",
+        "https://www.cdc.gov/pneumocystis-pneumonia/about/index.html"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/pentamidine-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/pentamidine-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA coherent pair of two small tools side by side in a narrow leather retaining strap: one medium conventional RECTANGULAR slate-blue flyswatter with ivory fine-grid face, and one compact matte BLUE-GRAY cylindrical HAND-PUMP SPRAYER with a short brass nozzle. Both working ends point upper left, bases lower right. The sprayer is approximately 65 percent the swatter length, fully recognizable and visible. No aerosol emitted, no droplets. Swatter signifies antiprotozoal uses; sprayer signifies Pneumocystis fungal indication. No animal/vector emblem. Do not merge tools into impossible anatomy.",
+      "name": "Pentamidine",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/pentamidine.png",
+        "assets/cards/illustrations-v1/drugs/pentamidine.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-dc357fad-d727-4465-a95c-79ecc9eda63d.png",
+      "generatedAt": "2026-10-17T05:56:12.902Z",
+      "spectrumPalette": "Ivory mesh, slate-blue rim, old bronze and muted blue-gray grip.",
+      "family": "Aromatic diamidine",
+      "sourceIds": [
+        "nih-pcp",
+        "card-nih-oi-therapy"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/pentamidine-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "atovaquone",
+      "form": "swatter+spray",
+      "concept": "A matched pair held side by side by a small brass retaining bracket: a medium conventional RECTANGULAR ochre flyswatter with ivory fine-grid face and a compact mustard-and-brick-red HAND-PUMP SPRAYER with a simple brass nozzle. Both active ends point upper left and grips lower right. Sprayer is about 60 percent the swatter length, clearly visible. One tiny flat TICK silhouette engraved on the swatter neck recalls Babesia transmission; it is a VECTOR emblem, not a tweezer or indication of tick killing. Sprayer represents Pneumocystis fungal indication. No emitted spray, mist, droplets or floating bugs.",
+      "alt": "Atovaquone — 황토색 네모 파리채와 분무기 · 진드기 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "tick",
+          "role": "vector",
+          "parasite": "Babesia spp."
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/babesiosis/",
+        "https://www.cdc.gov/pneumocystis-pneumonia/about/index.html",
+        "https://www.cdc.gov/babesiosis/hcp/clinical-care/index.html"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/atovaquone-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/atovaquone-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nA matched pair held side by side by a small brass retaining bracket: a medium conventional RECTANGULAR ochre flyswatter with ivory fine-grid face and a compact mustard-and-brick-red HAND-PUMP SPRAYER with a simple brass nozzle. Both active ends point upper left and grips lower right. Sprayer is about 60 percent the swatter length, clearly visible. One tiny flat TICK silhouette engraved on the swatter neck recalls Babesia transmission; it is a VECTOR emblem, not a tweezer or indication of tick killing. Sprayer represents Pneumocystis fungal indication. No emitted spray, mist, droplets or floating bugs.",
+      "name": "Atovaquone",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/atovaquone.png",
+        "assets/cards/illustrations-v1/drugs/atovaquone.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-f39c1a7e-5f06-4baf-b55a-078bcdfdae0d.png",
+      "generatedAt": "2026-10-17T05:56:17.091Z",
+      "spectrumPalette": "Ivory mesh, muted ochre rim, brick-red narrow binding, bronze and brown grip.",
+      "family": "Hydroxynaphthoquinone",
+      "sourceIds": [
+        "idsa-babesia",
+        "nih-pcp",
+        "card-nih-oi-therapy"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/atovaquone-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    },
+    {
+      "kind": "drug",
+      "id": "quinine",
+      "form": "swatter",
+      "concept": "One broad conventional RECTANGULAR flyswatter with a brick-red rim, ivory fine-grid face and a warm ochre-brown long wooden grip with a flared flat end. Two TINY etched emblems on the brass collar, a MOSQUITO and a TICK, recall malaria and babesiosis vectors. Keep the emblems simple, flat and physically engraved, no living insects. One simple straight four-sided paddle, visually older and plainer than the antimalarial combination swatters.",
+      "alt": "Quinine — 벽돌색 넓은 네모 파리채 · 모기와 진드기 문양 삽화",
+      "hostSymbols": [
+        {
+          "symbol": "mosquito",
+          "role": "vector",
+          "parasite": "Plasmodium spp."
+        },
+        {
+          "symbol": "tick",
+          "role": "vector",
+          "parasite": "Babesia spp."
+        }
+      ],
+      "sources": [
+        "https://www.cdc.gov/dpdx/malaria/",
+        "https://www.cdc.gov/dpdx/babesiosis/",
+        "https://www.cdc.gov/babesiosis/hcp/clinical-care/index.html"
+      ],
+      "status": "ready",
+      "file": "assets/cards/illustrations-v1/drugs/quinine-parasite-v2.png",
+      "referenceFiles": [
+        "assets/cards/illustrations-v1/drugs/quinine-parasite-v2.png"
+      ],
+      "prompt": "Use case: stylized-concept. Create one drug-specific variation of the supplied approved tool reference(s) for an existing fantasy medical study card. References define coherent tool construction, illustration style and diagonal orientation; modify the proportions, materials and physical ornament exactly as requested below.\nKorean indie-fantasy webtoon plus vintage European storybook, thin natural dark-brown hand-drawn contour, matte flat color with only one or two cel-shadow planes, restrained fine grain INSIDE object surfaces. Clean gently simplified forms matching the supplied art. Do not add realistic gloss, 3D rendering, heavy gradients, soft focus, haze or bloom.\nSquare canvas, FULL OBJECT INSIDE 7 percent margins. Head, tip or nozzle at UPPER LEFT, grip or base LOWER RIGHT. Large legible silhouette. Genuine alpha-transparent background, NO background color, checkerboard, floor, cast shadow, frame, text, numerals, labels or UI.\nAbsolutely NO surrounding sparkles, stars, floating dots, glow, rays, particles, aura, mist, smoke, spray, droplets or loose symbols. Every ornament must be engraved in or physically attached to the tool. No green charm. No actual insects, worms or captured creatures.\nSWATTER geometry, when present: a thin FLAT FOUR-SIDED RECTANGLE with gently rounded corners. Opaque ivory face with delicate low-contrast thin tan straight grid lines, roughly 20 tiny cells across. The fine grid recedes at thumbnail size. NO large holes, round perforations, seedpod, honeycomb, sponge, irregular apertures, leaf/oval/racket head.\nNET geometry, when present: a round or oval hoop with a soft pouch HANGING BELOW, made of opaque pale-ivory fabric with fine faint crosshatched weave and a few natural folds. No broad open lattice or large holes. Clear difference between pouch net and flat swatter.\nSmall host/vector emblems are visual memory aids, modest flat engravings, maximum 8 percent of object length; main tool always dominates. Do not put them in the surrounding space.\n\nINDIVIDUAL DESIGN:\nOne broad conventional RECTANGULAR flyswatter with a brick-red rim, ivory fine-grid face and a warm ochre-brown long wooden grip with a flared flat end. Two TINY etched emblems on the brass collar, a MOSQUITO and a TICK, recall malaria and babesiosis vectors. Keep the emblems simple, flat and physically engraved, no living insects. One simple straight four-sided paddle, visually older and plainer than the antimalarial combination swatters.",
+      "name": "Quinine",
+      "replacedFiles": [
+        "assets/cards/illustrations-v1/drugs/quinine.png",
+        "assets/cards/illustrations-v1/drugs/quinine.webp"
+      ],
+      "originalGeneratedFile": "C:\\Users\\kek28\\.codex\\generated_images\\01a12169-e5a9-79b1-88c3-9d5ce73845a5\\exec-847af1f3-62ac-4343-aca6-aa16d524f800.png",
+      "generatedAt": "2026-10-17T05:56:21.665Z",
+      "spectrumPalette": "Ivory mesh, muted brick-red rim, old-bronze fittings and ochre-brown wood.",
+      "family": "Quinoline antiprotozoal",
+      "sourceIds": [
+        "idsa-babesia"
+      ],
+      "artDirection": "parasite-tools-v2",
+      "targetMotifs": [],
+      "referenceNote": "Current artwork is the reusable reference. Approved rectangular swatter, pouch net and forceps trial bases were used for the initial generation and retired after replacement.",
+      "webFile": "assets/cards/illustrations-v1/drugs/quinine-parasite-v2.webp",
+      "webEncoding": {
+        "format": "webp",
+        "lossless": true,
+        "width": 1254,
+        "height": 1254
+      }
+    }
+  ],
+  "completedAt": "2026-10-17T05:57:07.321Z",
+  "releaseVersion": "0.37.0"
+}

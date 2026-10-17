@@ -1,0 +1,201 @@
+{
+  "authorization": "User explicitly requested cleanup of previous images after completing replacements.",
+  "scope": "Replaced antiparasitic images and the three-tool antiparasitic trial only.",
+  "files": [
+    {
+      "path": "assets/cards/illustrations-v1/drugs/albendazole-v3.png",
+      "bytes": 715886
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/albendazole-v3.webp",
+      "bytes": 459858
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/albendazole.png",
+      "bytes": 847210
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/albendazole-v2.png",
+      "bytes": 822882
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/mebendazole.png",
+      "bytes": 767983
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/mebendazole.webp",
+      "bytes": 492306
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/ivermectin.png",
+      "bytes": 951855
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/ivermectin.webp",
+      "bytes": 610088
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/praziquantel.png",
+      "bytes": 908317
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/praziquantel.webp",
+      "bytes": 576348
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/triclabendazole.png",
+      "bytes": 726016
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/triclabendazole.webp",
+      "bytes": 449746
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/permethrin.png",
+      "bytes": 827716
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/permethrin.webp",
+      "bytes": 530118
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/metronidazole.png",
+      "bytes": 1014045
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/metronidazole.webp",
+      "bytes": 628440
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/nitazoxanide.png",
+      "bytes": 753437
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/nitazoxanide.webp",
+      "bytes": 481516
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/paromomycin.png",
+      "bytes": 733677
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/paromomycin.webp",
+      "bytes": 464914
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/pyrimethamine.png",
+      "bytes": 675398
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/pyrimethamine.webp",
+      "bytes": 432890
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/sulfadiazine.png",
+      "bytes": 752312
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/sulfadiazine.webp",
+      "bytes": 464536
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/artemetherlumefantrine.png",
+      "bytes": 938998
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/artemetherlumefantrine.webp",
+      "bytes": 601262
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/artemetherlumefantrine-parasite-v2.png",
+      "bytes": 1005284
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/atovaquoneproguanil.png",
+      "bytes": 870735
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/atovaquoneproguanil.webp",
+      "bytes": 548542
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/primaquine.png",
+      "bytes": 662088
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/primaquine.webp",
+      "bytes": 409166
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/miltefosine.png",
+      "bytes": 816446
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/miltefosine.webp",
+      "bytes": 532266
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/benznidazole.png",
+      "bytes": 637164
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/benznidazole.webp",
+      "bytes": 384866
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/pentamidine.png",
+      "bytes": 938215
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/pentamidine.webp",
+      "bytes": 573020
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/atovaquone.png",
+      "bytes": 759051
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/atovaquone.webp",
+      "bytes": 494898
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/quinine.png",
+      "bytes": 835656
+    },
+    {
+      "path": "assets/cards/illustrations-v1/drugs/quinine.webp",
+      "bytes": 537330
+    }
+  ],
+  "trialDirectory": "assets/cards/parasite-tool-trials-2026-10-17-v1",
+  "trialFiles": [
+    {
+      "path": "assets/cards/parasite-tool-trials-2026-10-17-v1/ectoparasites-forceps.png",
+      "bytes": 666600
+    },
+    {
+      "path": "assets/cards/parasite-tool-trials-2026-10-17-v1/helminths-net.png",
+      "bytes": 750657
+    },
+    {
+      "path": "assets/cards/parasite-tool-trials-2026-10-17-v1/index.html",
+      "bytes": 1449
+    },
+    {
+      "path": "assets/cards/parasite-tool-trials-2026-10-17-v1/manifest.json",
+      "bytes": 9373
+    },
+    {
+      "path": "assets/cards/parasite-tool-trials-2026-10-17-v1/prompts.md",
+      "bytes": 8073
+    },
+    {
+      "path": "assets/cards/parasite-tool-trials-2026-10-17-v1/protozoa-swatter.png",
+      "bytes": 677032
+    }
+  ],
+  "status": "complete",
+  "deletedAt": "2026-10-17T05:59:16.4645544Z",
+  "deletedFiles": 47,
+  "deletedImages": 44
+}

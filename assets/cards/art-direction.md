@@ -50,7 +50,9 @@
 | 항결핵제 4종 | 하나의 무기를 네 부분으로 나누어 각 카드에 한 조각씩 |
 | Metronidazole | 칼과 파리채 함께 |
 | TMP–SMX·Fidaxomicin | 유리병 |
-| 항기생충제 | 파리채 |
+| 원충 대상 | 네모 파리채: 직선 네 변, 둥근 모서리, 촘촘한 망 |
+| 연충 대상 | 잠자리채: 원형·타원 테두리 아래로 처지는 망주머니 |
+| 외부기생충 대상 | 두 팔이 분명한 집게 |
 | 항진균제 | 스프레이 |
 | 항바이러스제 | 주사기, 표적 바이러스 군이 비슷한 약제끼리 같은 형태 계열 |
 
@@ -58,9 +60,19 @@ Paromomycin은 항기생충 파리채 형태에 aminoglycoside 폭탄형 손잡�
 
 승인한 8장 시안은 그대로 재사용한다. 전체 80종의 개별 형태·색·생성 상태와 최종 프롬프트는 [제작 목록](drug-production-v1/jobs.json), [프롬프트](drug-production-v1/prompts.md)에 보관한다. 약제 이름, 설명, 표적 아이콘은 기존 카드 UI에서 제공하며 중앙 그림에 새 설명문을 추가하지 않는다.
 
+## 항기생충제 도구와 문양 (2026-10-17)
+
+원충은 네모 파리채, 연충은 잠자리채, 외부기생충은 집게를 사용한다. 파리채는 직선 네 변과 촘촘한 망을 유지한다. 망은 상아색 바탕에 가는 격자로 표현하며 큰 구멍·원형 타공·벌집·스펀지 모양을 금지한다. 잠자리채는 테두리 아래로 처지는 부드러운 망주머니가 핵심이다.
+
+같은 분류 안에서는 머리 비율·테두리·주머니 깊이·연결부·손잡이 재질과 색을 달리한다. 선충은 가는 끈, 조충은 마디 띠, 흡충은 잎 장식을 사용하며 실제 대상에 맞춰 조합한다. 숙주·중간숙주·보유숙주·매개체는 작은 각인으로 표현하고, 각각의 역할과 대표 기생충을 제작 DB의 hostSymbols에 구별해 저장한다. 이 문양은 전체 적응증을 뜻하지 않으며 매개체 자체를 죽인다는 뜻도 아니다.
+
+Ivermectin은 잠자리채와 집게, Metronidazole은 회색 칼과 네모 파리채를 조합한다. Atovaquone·Pentamidine의 Pneumocystis 관련 쓰임은 진균 계열의 분무기를 함께 배치해 표현한다. 숙주 문양이 필요 없는 약에는 억지로 동물을 붙이지 않는다.
+
+최종 19종의 파일·문양·참고 자료·프롬프트는 [항기생충제 개정 기록](parasite-production-v2/README.md)에 보관한다. 도구 방향·투명 배경·주변 효과 금지는 기존 카드 공통 기준을 따른다.
+
 ## 재사용할 공통 생성 프롬프트
 
-CURRENT CARD ART RULES v7 — ABSOLUTE OVERRIDE OF EARLIER ORNAMENT DIRECTIONS:
+CURRENT CARD ART RULES v8 — ABSOLUTE OVERRIDE OF EARLIER ORNAMENT DIRECTIONS:
 Hand-drawn 2D Korean indie-fantasy webtoon / vintage storybook linework only. Thin natural dark-brown contours; matte flat colors; 1–2 discrete shadow tones. Clear clean edges, no beauty filter, haze, bloom, blur, gloss or strong gradients. Choose palette and brightness per subject; do not restrict every card to bright cream/pastel colors.
 The central card illustration contains ONLY its main subject and the medical objects necessary to convey that subject, on a genuinely transparent RGBA background; web code supplies the card surface beneath it.
 ABSOLUTELY NO decorative effects or filler around the main object: no sparkles, twinkles, four-point stars, diamonds, glowing flecks, light particles, scattered dots, stars, flowers, rosettes, petals, leaves, twigs, decorative floating symbols, luminous trails, magic ribbons, beams, auras, halos, rays, lens flare, bokeh, glitter, atmospheric motes or confetti. Do not replace forbidden decorations with another kind of decoration.
