@@ -7,7 +7,7 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.38.0';
+const VERSION = '0.38.1';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
  {id:'lab',label:'병원체 추측',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
@@ -41,7 +41,7 @@ const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.38.0" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.38.1" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -202,6 +202,7 @@ function render(focusSelector) {
  }
  cardInspector?.close();document.body.classList.remove('card-inspector-open');
  root.innerHTML=shell();
+ cardGallery?.mount();
  defenseGame?.mount(root,view==='defense');
  playGame?.mount(root,view==='play');
  survivalGame?.mount(root,view==='survival');
