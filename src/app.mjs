@@ -7,13 +7,13 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.36.0';
+const VERSION = '0.36.1';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
- {id:'lab',label:'동정실',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
+ {id:'lab',label:'병원체 추측',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
  {id:'treatment',label:'항생제 선택',icon:'<rect x="4" y="7" width="16" height="10" rx="5" transform="rotate(-45 12 12)"/><path d="m9 9 6 6"/>'},
- {id:'defense',label:'디펜스',icon:'<path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Z"/><path d="M12 8v8M8 12h8"/>'},
- {id:'play',label:'Play',icon:'<path d="M9 4h6v4h4v8h-4v4H9v-4H5V8h4V4Z"/><path d="M9 12h6m-3-3v6"/>'},
+ {id:'defense',label:'defense',icon:'<path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Z"/><path d="M12 8v8M8 12h8"/>'},
+ {id:'play',label:'shoot',icon:'<path d="M9 4h6v4h4v8h-4v4H9v-4H5V8h4V4Z"/><path d="M9 12h6m-3-3v6"/>'},
  {id:'survival',label:'survival',icon:'<circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/>'},
  {id:'reroll',label:'re-roll',icon:'<rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><path d="m9 15 6-6"/>'},
  {id:'cards',label:'카드 도감',icon:'<rect x="6" y="5" width="13" height="16" rx="2"/><path d="M4 18V4a2 2 0 0 1 2-2h10M10 10h5M10 14h5M10 18h3"/>'}
@@ -41,7 +41,7 @@ const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
 root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.36.0" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.36.1" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -80,7 +80,7 @@ function resultLabel(result) {
   return { S:'S · Susceptible', I:'I · Increased exposure', R:'R · Resistant', ACT:'조건부 활성 · 조건 확인 필요',ACTIVE:'활성 있음 · 문헌 기반',INACTIVE:'활성 없음 · 문헌 기반',REGIMEN:'표준·대안요법에 포함',OUTSIDE_REGIMEN:'선택 지침의 요법에 없음' }[result];
 }
 function home() {
- return `<section class="tab-selection" aria-label="탭 선택"><nav class="tab-choices" aria-label="학습 화면 선택">${APP_TABS.map(({id,label,icon})=>`<button type="button" class="tab-choice" data-view="${id}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></button>`).join('')}</nav></section>`;
+ return `<section class="tab-selection" aria-label="탭 선택" style="--home-rows-wide:${Math.ceil(APP_TABS.length/4)};--home-rows-tall:${Math.ceil(APP_TABS.length/3)};--home-rows-narrow:${Math.ceil(APP_TABS.length/2)}"><nav class="tab-choices" aria-label="학습 화면 선택">${APP_TABS.map(({id,label,icon})=>`<button type="button" class="tab-choice" data-view="${id}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></button>`).join('')}</nav></section>`;
 }
 function shell() {
  const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',defense:'defense-main',play:'play-main',survival:'survival-main',reroll:'luck-main',cards:'card-gallery-main'}[view];
@@ -126,7 +126,7 @@ async function loadSurvival(){
 }
 function playView(){
  if(playGame)return playGame.render();
- return '<section class="boot"><span class="eyebrow">PATHOPEDIA / PLAY</span><h1>'+(playLoadError?'게임을 불러오지 못했습니다.':'격리 구역을 준비하는 중')+'</h1><p>'+(playLoadError?'연결을 확인하고 다시 시도해 주세요.':'가벼운 2.5D 전투 모듈을 불러오고 있습니다.')+'</p>'+(playLoadError?'<button type="button" data-play-retry>다시 불러오기</button>':'')+'</section>';
+ return '<section class="boot"><span class="eyebrow">PATHOPEDIA / SHOOT</span><h1>'+(playLoadError?'게임을 불러오지 못했습니다.':'격리 구역을 준비하는 중')+'</h1><p>'+(playLoadError?'연결을 확인하고 다시 시도해 주세요.':'가벼운 2.5D 전투 모듈을 불러오고 있습니다.')+'</p>'+(playLoadError?'<button type="button" data-play-retry>다시 불러오기</button>':'')+'</section>';
 }
 async function loadPlay(){
  if(playGame||playLoading)return;
@@ -145,10 +145,10 @@ async function loadPlay(){
 }
 function lab() {
  const stats=score(round), done=answerVisible(), viewed=round.status==='revealed';
- return `<div class="playboard" data-mobile-section="${mobileSection}"><div class="board-toolbar"><div class="case-heading"><h1>${viewed?'정답 공개':done?'동정 완료':'미생물 동정'}</h1><label class="panel-picker"><span class="sr-only">출제 분야</span><select id="question-panel">${data.panels.map(p=>`<option value="${p.id}" ${p.id===round.panelId?'selected':''}>${esc(p.name)} · ${data.records.filter(r=>r.panelId===p.id).length}</option>`).join('')}</select></label></div><div class="session-stats" aria-label="라운드 점수"><span>점수 <b>${viewed?'—':stats.score.toLocaleString()}</b></span><span>비용 <b>${stats.cost}</b></span><span>오답 <b>−${stats.penalty}</b></span><span>공개 <b>${round.actions.length}/${data.categories.length+panelDrugs().length}</b></span></div><button class="log-trigger" data-action="log">검사 기록 ↗</button></div>
+ return `<div class="playboard" data-mobile-section="${mobileSection}"><div class="board-toolbar"><div class="case-heading"><h1>${viewed?'정답 공개':done?'동정 완료':'병원체 추측'}</h1><label class="panel-picker"><span class="sr-only">출제 분야</span><select id="question-panel">${data.panels.map(p=>`<option value="${p.id}" ${p.id===round.panelId?'selected':''}>${esc(p.name)} · ${data.records.filter(r=>r.panelId===p.id).length}</option>`).join('')}</select></label></div><div class="session-stats" aria-label="라운드 점수"><span>점수 <b>${viewed?'—':stats.score.toLocaleString()}</b></span><span>비용 <b>${stats.cost}</b></span><span>오답 <b>−${stats.penalty}</b></span><span>공개 <b>${round.actions.length}/${data.categories.length+panelDrugs().length}</b></span></div><button class="log-trigger" data-action="log">검사 기록 ↗</button></div>
  <div class="board-upper"><aside class="identity-panel"><div class="identity-heading"><div class="sample-mark ${done?'identified':''}" aria-hidden="true">${viewed?'=':done?'✓':'?'}</div><div><span class="sample-status">${done?record().id:'UNIDENTIFIED'}</span><h2>${done?esc(record().organism):'UNKNOWN<br>PATHOGEN'}</h2>${done?`<p>${esc(record().phenotype)}</p>`:''}</div></div>${done?`<div class="solved-summary"><span class="solved-label">${viewed?'ANSWER REVEALED':'IDENTIFICATION CONFIRMED'}</span><h3>${viewed?'Archive에 저장되지 않습니다.':'Archive에 기록했습니다.'}</h3><p>${viewed?'정답을 확인한 라운드입니다.':`최종 점수 <strong>${stats.score}</strong>`}<br>사용한 정보 ${round.actions.length}개 · 오답 ${round.wrongIds.length}회</p><button class="submit-button" data-action="record">전체 organism record ↗</button></div>`:answerPanel()}<div class="specimen-actions">${!done?'<button class="show-answer" type="button" data-action="show-answer" title="정답과 전체 정보를 공개합니다. Archive에는 저장되지 않습니다.">답 보기</button>':''}<button class="replace-specimen" data-action="next">${done?'다음 검체':'새 검체로 교체'} <span>→</span></button></div></aside>
  <section class="clue-board" aria-label="병원체 정보">${hintPanel()}</section></div>
- ${drugPanel()}<nav class="mobile-sections" aria-label="동정실 화면 선택">${[['hints','정보'],['drugs','약제'],['answer',viewed?'공개된 정답':done?'동정 결과':'정답']].map(([id,label])=>`<button data-mobile-section="${id}" aria-pressed="${mobileSection===id}">${label}</button>`).join('')}</nav></div>`;
+ ${drugPanel()}<nav class="mobile-sections" aria-label="병원체 추측 화면 선택">${[['hints','정보'],['drugs','약제'],['answer',viewed?'공개된 정답':done?'동정 결과':'정답']].map(([id,label])=>`<button data-mobile-section="${id}" aria-pressed="${mobileSection===id}">${label}</button>`).join('')}</nav></div>`;
 }
 function hintPanel() {
  const done=answerVisible();

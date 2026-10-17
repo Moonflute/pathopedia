@@ -150,7 +150,7 @@ main.game-main{max-width:1760px;padding:8px 12px}
  .morphology-visual--detail{margin-bottom:14px}
 }
 
-/* Keep the three study tabs visible on narrow screens. */
+/* Keep all study tabs reachable on narrow screens. */
 @media(max-width:620px) {
  .appbar { height:auto; min-height:76px; flex-wrap:wrap; gap:5px; padding-top:9px; }
  .appbar .brand { flex-basis:100%; }
@@ -159,26 +159,28 @@ main.game-main{max-width:1760px;padding:8px 12px}
  main.game-main { min-height:calc(100dvh - 80px); }
 }
 
-/* Choose one of the three study screens before entering the app. */
-.appbar--home .version{margin-left:auto}
-main.home-main{display:grid;place-items:center;max-width:none;width:100%;min-height:calc(100dvh - 48px);padding:48px 24px calc(48px + env(safe-area-inset-bottom))}
-.tab-selection{width:min(100%,760px);text-align:center}
-.tab-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,4vw,36px);max-width:700px;margin:0 auto}
-.tab-choice{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%;aspect-ratio:1;border-radius:50%;border:1px solid #a1b392;background:#f8f8f2;color:#29442f;padding:16px;box-shadow:0 5px 0 #23312e0a;font-size:clamp(1rem,2.5vw,1.25rem);font-weight:650;transition:transform .18s,background .18s,border-color .18s}
+/* Fit every destination inside the available viewport and center each row. */
+body:has(.home-main){overflow:hidden}
+#app:has(> .home-main){display:flex;flex-direction:column;height:100vh;height:100dvh}
+.appbar--home{flex:none;height:48px;min-height:48px;padding-block:0;flex-wrap:nowrap}
+.appbar--home .brand{flex-basis:auto;flex-shrink:0}.appbar--home .version{margin-left:auto}
+#app:has(> .home-main)>.storage-warning{flex-shrink:0}
+main.home-main{flex:1;min-height:0;max-width:none;width:100%;margin:0;display:grid;place-items:center;container-type:size;padding:clamp(12px,3dvh,28px) max(16px,env(safe-area-inset-right)) max(clamp(12px,3dvh,28px),env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.tab-selection{
+ --menu-columns:4;--menu-rows:var(--home-rows-wide);--menu-gap:clamp(8px,2cqh,24px);
+ --menu-size:min(176px,calc((100cqw - (var(--menu-columns) - 1) * var(--menu-gap) - 2px) / var(--menu-columns)),calc((100cqh - (var(--menu-rows) - 1) * var(--menu-gap)) / var(--menu-rows)));
+ width:calc(var(--menu-columns) * var(--menu-size) + (var(--menu-columns) - 1) * var(--menu-gap) + 2px);max-width:100%;text-align:center
+}
+.tab-choices{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--menu-gap);margin:0}
+.tab-choice{display:flex;flex:0 0 var(--menu-size);flex-direction:column;align-items:center;justify-content:center;gap:clamp(3px,calc(var(--menu-size) * .06),12px);width:var(--menu-size);height:var(--menu-size);min-width:0;min-height:0;border-radius:50%;border:1px solid #a1b392;background:#f8f8f2;color:#29442f;padding:clamp(3px,calc(var(--menu-size) * .055),12px);box-shadow:0 5px 0 #23312e0a;font-size:clamp(.75rem,calc(var(--menu-size) / 8),1.125rem);line-height:1.2;font-weight:650;transition:transform .18s,background .18s,border-color .18s}
 .tab-choice:nth-child(2){background:#e4ebd9}.tab-choice:nth-child(3){background:#e6e9df}
-.tab-choice svg{width:40px;height:40px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.tab-choice span{white-space:nowrap}.tab-choice:focus-visible{border-color:#688847}.tab-choice:active{transform:translateY(1px)}
+.tab-choice svg{flex-shrink:0;width:clamp(16px,calc(var(--menu-size) * .22),38px);height:clamp(16px,calc(var(--menu-size) * .22),38px);fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tab-choice span{max-width:100%;white-space:normal;word-break:keep-all}.tab-choice:focus-visible{border-color:#688847}.tab-choice:active{transform:translateY(1px)}
 @media(hover:hover){.tab-choice:hover{background:#dce6ce;border-color:#688847;transform:translateY(-4px)}}
-@media(max-width:759px){
- main.home-main{min-height:calc(100dvh - 50px);padding-inline:16px}
- .tab-choices{gap:10px}.tab-choice{padding:10px;gap:12px;font-size:clamp(.8125rem,2.8vw,1.125rem)}
- .tab-choice svg{width:clamp(24px,6vw,36px);height:clamp(24px,6vw,36px)}
-}
-@media(max-width:620px){
- .appbar--home{height:50px;min-height:50px;padding-block:0;flex-wrap:nowrap}
- .appbar--home .brand{flex-basis:auto}
-}
+@media(max-width:759px){.appbar--home{height:50px;min-height:50px}}
+@media(max-width:759px) and (orientation:portrait){.tab-selection{--menu-columns:3;--menu-rows:var(--home-rows-tall)}}
+@media(max-width:319px) and (orientation:portrait){.tab-selection{--menu-columns:2;--menu-rows:var(--home-rows-narrow)}}
 @media(prefers-reduced-motion:reduce){.tab-choice{transition:none}.tab-choice:hover,.tab-choice:active{transform:none}}
 
-/* Six destinations remain reachable on narrow navigation bars. */
+/* Destinations remain reachable on narrow navigation bars. */
 .appnav{min-width:0;overflow-x:auto;scrollbar-width:none}.appnav button{flex-shrink:0}
