@@ -2091,5 +2091,395 @@
       "src": "assets/cards/illustrations-v1/drugs/fidaxomicin.webp",
       "alt": "Fidaxomicin — 유리병 상징 삽화"
     }
+  },
+  "immuneElements": {
+    "IMM-001": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-001-v2.webp",
+      "alt": "피부 면역계 삽화"
+    },
+    "IMM-002": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-002-v2.webp",
+      "alt": "점막 상피 면역계 삽화"
+    },
+    "IMM-003": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-003-v2.webp",
+      "alt": "기도 섬모상피 면역계 삽화"
+    },
+    "IMM-004": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-004-v2.webp",
+      "alt": "골수 면역계 삽화"
+    },
+    "IMM-005": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-005-v2.webp",
+      "alt": "흉선 면역계 삽화"
+    },
+    "IMM-006": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-006-v2.webp",
+      "alt": "림프절 면역계 삽화"
+    },
+    "IMM-007": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-007-v2.webp",
+      "alt": "비장 면역계 삽화"
+    },
+    "IMM-008": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-008-v2.webp",
+      "alt": "점막연관 림프조직(MALT) 면역계 삽화"
+    },
+    "IMM-009": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-009.webp",
+      "alt": "조혈모세포 면역계 삽화"
+    },
+    "IMM-010": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-010.webp",
+      "alt": "호중구 면역계 삽화"
+    },
+    "IMM-011": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-011.webp",
+      "alt": "단핵구 면역계 삽화"
+    },
+    "IMM-012": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-012.webp",
+      "alt": "대식세포 면역계 삽화"
+    },
+    "IMM-013": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-013.webp",
+      "alt": "고전적 수지상세포(cDC) 면역계 삽화"
+    },
+    "IMM-014": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-014.webp",
+      "alt": "형질세포양 수지상세포(pDC) 면역계 삽화"
+    },
+    "IMM-015": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-015.webp",
+      "alt": "NK세포 면역계 삽화"
+    },
+    "IMM-016": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-016.webp",
+      "alt": "호산구 면역계 삽화"
+    },
+    "IMM-017": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-017.webp",
+      "alt": "호염기구 면역계 삽화"
+    },
+    "IMM-018": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-018.webp",
+      "alt": "비만세포 면역계 삽화"
+    },
+    "IMM-019": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-019.webp",
+      "alt": "ILC1 면역계 삽화"
+    },
+    "IMM-020": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-020.webp",
+      "alt": "ILC2 면역계 삽화"
+    },
+    "IMM-021": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-021.webp",
+      "alt": "ILC3 면역계 삽화"
+    },
+    "IMM-022": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-022.webp",
+      "alt": "미경험 T세포 면역계 삽화"
+    },
+    "IMM-023": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-023.webp",
+      "alt": "CD4 보조 T세포 면역계 삽화"
+    },
+    "IMM-024": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-024.webp",
+      "alt": "Th1세포 면역계 삽화"
+    },
+    "IMM-025": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-025.webp",
+      "alt": "Th2세포 면역계 삽화"
+    },
+    "IMM-026": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-026.webp",
+      "alt": "Th17세포 면역계 삽화"
+    },
+    "IMM-027": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-027.webp",
+      "alt": "Tfh세포 면역계 삽화"
+    },
+    "IMM-028": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-028.webp",
+      "alt": "조절 T세포(Treg) 면역계 삽화"
+    },
+    "IMM-029": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-029.webp",
+      "alt": "CD8 세포독성 T세포 면역계 삽화"
+    },
+    "IMM-030": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-030.webp",
+      "alt": "γδ T세포 면역계 삽화"
+    },
+    "IMM-031": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-031.webp",
+      "alt": "MAIT세포 면역계 삽화"
+    },
+    "IMM-032": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-032.webp",
+      "alt": "불변 NKT세포 면역계 삽화"
+    },
+    "IMM-033": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-033.webp",
+      "alt": "기억 T세포 면역계 삽화"
+    },
+    "IMM-034": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-034.webp",
+      "alt": "B세포 면역계 삽화"
+    },
+    "IMM-035": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-035.webp",
+      "alt": "형질세포 면역계 삽화"
+    },
+    "IMM-036": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-036.webp",
+      "alt": "기억 B세포 면역계 삽화"
+    },
+    "IMM-037": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-037.webp",
+      "alt": "Toll 유사 수용체(TLR) 면역계 삽화"
+    },
+    "IMM-038": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-038.webp",
+      "alt": "Dectin-1 면역계 삽화"
+    },
+    "IMM-039": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-039.webp",
+      "alt": "CARD9 면역계 삽화"
+    },
+    "IMM-040": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-040.webp",
+      "alt": "NLRP3 인플라마좀 면역계 삽화"
+    },
+    "IMM-041": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-041.webp",
+      "alt": "RIG-I 면역계 삽화"
+    },
+    "IMM-042": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-042.webp",
+      "alt": "cGAS 면역계 삽화"
+    },
+    "IMM-043": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-043.webp",
+      "alt": "STING 면역계 삽화"
+    },
+    "IMM-044": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-044.webp",
+      "alt": "MHC I 면역계 삽화"
+    },
+    "IMM-045": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-045.webp",
+      "alt": "MHC II 면역계 삽화"
+    },
+    "IMM-046": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-046.webp",
+      "alt": "MR1 면역계 삽화"
+    },
+    "IMM-047": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-047.webp",
+      "alt": "CD1d 면역계 삽화"
+    },
+    "IMM-048": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-048.webp",
+      "alt": "T세포 수용체(TCR) 면역계 삽화"
+    },
+    "IMM-049": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-049.webp",
+      "alt": "B세포 수용체(BCR) 면역계 삽화"
+    },
+    "IMM-050": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-050.webp",
+      "alt": "CD28 면역계 삽화"
+    },
+    "IMM-051": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-051.webp",
+      "alt": "CD80 면역계 삽화"
+    },
+    "IMM-052": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-052.webp",
+      "alt": "CD86 면역계 삽화"
+    },
+    "IMM-053": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-053.webp",
+      "alt": "CD40 면역계 삽화"
+    },
+    "IMM-054": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-054.webp",
+      "alt": "CD40L 면역계 삽화"
+    },
+    "IMM-055": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-055.webp",
+      "alt": "Fcγ 수용체 면역계 삽화"
+    },
+    "IMM-056": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-056.webp",
+      "alt": "FcεRI 면역계 삽화"
+    },
+    "IMM-057": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-057.webp",
+      "alt": "C1q 면역계 삽화"
+    },
+    "IMM-058": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-058.webp",
+      "alt": "만노스결합렉틴(MBL) 면역계 삽화"
+    },
+    "IMM-059": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-059.webp",
+      "alt": "C3 면역계 삽화"
+    },
+    "IMM-060": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-060.webp",
+      "alt": "C3b 면역계 삽화"
+    },
+    "IMM-061": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-061.webp",
+      "alt": "보체 인자 B 면역계 삽화"
+    },
+    "IMM-062": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-062.webp",
+      "alt": "프로퍼딘 면역계 삽화"
+    },
+    "IMM-063": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-063.webp",
+      "alt": "C5a 면역계 삽화"
+    },
+    "IMM-064": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-064.webp",
+      "alt": "막공격복합체(C5b-9) 면역계 삽화"
+    },
+    "IMM-065": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-065.webp",
+      "alt": "보체 인자 H 면역계 삽화"
+    },
+    "IMM-066": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-066.webp",
+      "alt": "C1 억제인자 면역계 삽화"
+    },
+    "IMM-067": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-067.webp",
+      "alt": "CD55 면역계 삽화"
+    },
+    "IMM-068": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-068.webp",
+      "alt": "CD59 면역계 삽화"
+    },
+    "IMM-069": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-069-v2.webp",
+      "alt": "CRP 면역계 삽화"
+    },
+    "IMM-070": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-070.webp",
+      "alt": "디펜신 면역계 삽화"
+    },
+    "IMM-071": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-071.webp",
+      "alt": "카텔리시딘(LL-37) 면역계 삽화"
+    },
+    "IMM-072": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-072.webp",
+      "alt": "퍼포린 면역계 삽화"
+    },
+    "IMM-073": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-073.webp",
+      "alt": "그랜자임 B 면역계 삽화"
+    },
+    "IMM-074": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-074.webp",
+      "alt": "IgM 면역계 삽화"
+    },
+    "IMM-075": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-075.webp",
+      "alt": "IgD 면역계 삽화"
+    },
+    "IMM-076": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-076.webp",
+      "alt": "IgG 면역계 삽화"
+    },
+    "IMM-077": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-077.webp",
+      "alt": "IgA 면역계 삽화"
+    },
+    "IMM-078": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-078.webp",
+      "alt": "IgE 면역계 삽화"
+    },
+    "IMM-079": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-079.webp",
+      "alt": "TNF-α 면역계 삽화"
+    },
+    "IMM-080": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-080.webp",
+      "alt": "IL-1β 면역계 삽화"
+    },
+    "IMM-081": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-081.webp",
+      "alt": "IL-2 면역계 삽화"
+    },
+    "IMM-082": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-082.webp",
+      "alt": "IL-4 면역계 삽화"
+    },
+    "IMM-083": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-083.webp",
+      "alt": "IL-5 면역계 삽화"
+    },
+    "IMM-084": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-084.webp",
+      "alt": "IL-6 면역계 삽화"
+    },
+    "IMM-085": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-085.webp",
+      "alt": "IL-10 면역계 삽화"
+    },
+    "IMM-086": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-086.webp",
+      "alt": "IL-12 면역계 삽화"
+    },
+    "IMM-087": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-087.webp",
+      "alt": "IL-15 면역계 삽화"
+    },
+    "IMM-088": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-088.webp",
+      "alt": "IL-17A 면역계 삽화"
+    },
+    "IMM-089": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-089.webp",
+      "alt": "IL-18 면역계 삽화"
+    },
+    "IMM-090": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-090.webp",
+      "alt": "IL-21 면역계 삽화"
+    },
+    "IMM-091": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-091.webp",
+      "alt": "IL-22 면역계 삽화"
+    },
+    "IMM-092": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-092.webp",
+      "alt": "IL-23 면역계 삽화"
+    },
+    "IMM-093": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-093.webp",
+      "alt": "IFN-α/β 면역계 삽화"
+    },
+    "IMM-094": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-094.webp",
+      "alt": "IFN-γ 면역계 삽화"
+    },
+    "IMM-095": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-095.webp",
+      "alt": "IFN-λ 면역계 삽화"
+    },
+    "IMM-096": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-096.webp",
+      "alt": "CXCL8(IL-8) 면역계 삽화"
+    },
+    "IMM-097": {
+      "src": "assets/cards/illustrations-v1/immunity/imm-097.webp",
+      "alt": "TGF-β 면역계 삽화"
+    }
   }
 }

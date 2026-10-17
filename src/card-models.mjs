@@ -306,7 +306,7 @@ export function createCardModels(data, catalog) {
     const model={
       ...base,entityId:id,domain:'immunity',lineage:category.label,
       route:{icon:'immunity',label:'면역',description:category.label},
-      artwork:{placeholder:IMMUNE_CATEGORY_ICONS[base.category],label:category.label}
+      artwork:cardArtwork('immune-element',id) || {placeholder:IMMUNE_CATEGORY_ICONS[base.category],label:category.label}
     };
     models.set(key,model);return model;
   }

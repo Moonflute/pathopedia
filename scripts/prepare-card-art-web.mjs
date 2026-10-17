@@ -10,7 +10,7 @@ const moduleIndex = args.indexOf('--module-dir');
 const moduleDir = moduleIndex >= 0 ? path.resolve(args[moduleIndex + 1]) : null;
 const require = createRequire(moduleDir ? path.join(moduleDir, 'package.json') : import.meta.url);
 const sharp = require('sharp');
-const planDirectory = args.includes('--drugs') ? 'assets/cards/drug-production-v1' : 'assets/cards/production-v1';
+const planDirectory = args.includes('--immune') ? 'assets/cards/immune-production-v1' : args.includes('--drugs') ? 'assets/cards/drug-production-v1' : 'assets/cards/production-v1';
 const planFile = path.join(root, planDirectory, 'jobs.json');
 const plan = JSON.parse(await fs.readFile(planFile, 'utf8'));
 if (plan.jobs.some(job => job.status !== 'ready' || job.needsRepair)) {

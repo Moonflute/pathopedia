@@ -70,16 +70,26 @@ Ivermectin은 잠자리채와 집게, Metronidazole은 회색 칼과 네모 파�
 
 최종 19종의 파일·문양·참고 자료·프롬프트는 [항기생충제 개정 기록](parasite-production-v2/README.md)에 보관한다. 도구 방향·투명 배경·주변 효과 금지는 기존 카드 공통 기준을 따른다.
 
+## 면역계 삽화 (2026-10-18)
+
+세포·조직·단백질의 익숙한 교과서 형태를 같은 갈색 선화와 절제된 색면으로 표현한다. 세포 아형은 기본 형태를 공유하고 중앙의 T·B·Th1·Th2·Th17 등의 표기로 구별한다. 단백질은 대표적인 큰 구조를 간략화한 개념도이며 원자 단위의 정확한 구조를 주장하지 않는다.
+
+피부·점막·골수·흉선·림프절·비장·MALT는 큰 층과 구획만 남긴다. 촘촘한 작은 세포·구멍·섬유·잔주름·현실적인 살점 질감은 줄이고 매끈한 색면을 쓴다. 세포 내부의 핵 모양·과립처럼 식별에 필요한 특징은 유지한다.
+
+항체는 반듯하면서 분절된 막대형 중쇄·경쇄와 절제된 음영을 유지한다. G·A·M·D·E를 표기하며, IgA의 A는 이량체 전체의 중심에 둔다. 승인한 IgA의 분절과 음영을 살리고 단순한 연속 선 아이콘으로 바꾸지 않는다. 면역계의 문자·숫자 표시는 사용자 요청에 따른 공통 무문자 규칙의 예외다.
+
+전체 97종과 승인 시안 8종의 재사용 이력은 [면역계 제작 목록](immune-production-v1/jobs.json), [프롬프트](immune-production-v1/prompts.md)에 남긴다. 조직·기관 수정 전 원본과 시안은 보존한다.
+
 ## 재사용할 공통 생성 프롬프트
 
-CURRENT CARD ART RULES v8 — ABSOLUTE OVERRIDE OF EARLIER ORNAMENT DIRECTIONS:
+CURRENT CARD ART RULES v9 — ABSOLUTE OVERRIDE OF EARLIER ORNAMENT DIRECTIONS:
 Hand-drawn 2D Korean indie-fantasy webtoon / vintage storybook linework only. Thin natural dark-brown contours; matte flat colors; 1–2 discrete shadow tones. Clear clean edges, no beauty filter, haze, bloom, blur, gloss or strong gradients. Choose palette and brightness per subject; do not restrict every card to bright cream/pastel colors.
 The central card illustration contains ONLY its main subject and the medical objects necessary to convey that subject, on a genuinely transparent RGBA background; web code supplies the card surface beneath it.
 ABSOLUTELY NO decorative effects or filler around the main object: no sparkles, twinkles, four-point stars, diamonds, glowing flecks, light particles, scattered dots, stars, flowers, rosettes, petals, leaves, twigs, decorative floating symbols, luminous trails, magic ribbons, beams, auras, halos, rays, lens flare, bokeh, glitter, atmospheric motes or confetti. Do not replace forbidden decorations with another kind of decoration.
 Do not add magical glow to medical action. Represent medical features through the actual subject morphology, a necessary object or a sober cutaway, not a sparkle effect.
 References inform linework and flat coloring ONLY; decorative effects appearing in a webtoon reference are NEVER allowed in the card artwork.
 Leave negative space empty. No background swashes, floral trim, ornamental framing or empty-space filler. All surrounding negative space must have alpha=0. Do not paint a blue/gray/white/checkerboard background, a floor or a cast shadow. Keep paint inside the actual subject opaque, including pale cells and medical cutaways.
-No text, labels, formulas, logos, watermark, border, card frame or UI; web code supplies these separately. The only allowed numerals in drug artwork are the large integral Roman generation marks on cephalosporin longswords. Resistance variants reuse the canonical base pathogen artwork.
+No text, labels, formulas, logos, watermark, border, card frame or UI; web code supplies these separately. The only allowed numerals in drug artwork are the large integral Roman generation marks on cephalosporin longswords. Immune-card artwork additionally permits the approved concise identity marks directly on the subject (T/B, subtype identifiers, antibody class letters and protein names); no separate title or label plaque. Resistance variants reuse the canonical base pathogen artwork.
 For antimicrobial WEAPON artwork, use Gram-negative PINK, Gram-positive PURPLE, anaerobes GRAY, and atypicals RED mixed with WHITE as matte material colors. Pseudomonas is a SMALL GREEN enamel keychain physically attached to the weapon, never a glow or green weapon body. Follow the approved family-to-form table above and the individual drug-production-v1/jobs.json prompt. Every active tip points upper-left and every grip/plunger lower-right. Cephalosporin generation numerals must be large and high-contrast. Similar antiviral target groups share syringe construction. No surrounding decorative effects.
 
 ## 과거 샘플 (화풍 기록)

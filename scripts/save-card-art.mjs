@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const planFile=path.join(root,'assets/cards/production-v1/jobs.json');
 const drugPlanFile=path.join(root,'assets/cards/drug-production-v1/jobs.json');
+const immunePlanFile=path.join(root,'assets/cards/immune-production-v1/jobs.json');
 async function retryFileOperation(operation) {
  for(let attempt=0;;attempt++) {
   try{return await operation();}catch(error){
@@ -24,17 +25,19 @@ export async function publishArtCatalog() {
  const plan=JSON.parse(await fs.readFile(planFile,'utf8'));
  let drugJobs=[];
  try{drugJobs=JSON.parse(await fs.readFile(drugPlanFile,'utf8')).jobs;}catch(error){if(error.code!=='ENOENT')throw error;}
- const jobs=[...plan.jobs,...drugJobs];
- const catalog={schemaVersion:1,styleVersion:'transparent-storybook-v1',mode:'built-in image_gen.imagegen',pathogens:{},diseases:{},drugs:{}};
+ let immuneJobs=[];
+ try{immuneJobs=JSON.parse(await fs.readFile(immunePlanFile,'utf8')).jobs;}catch(error){if(error.code!=='ENOENT')throw error;}
+ const jobs=[...plan.jobs,...drugJobs,...immuneJobs];
+ const catalog={schemaVersion:1,styleVersion:'transparent-storybook-v1',mode:'built-in image_gen.imagegen',pathogens:{},diseases:{},drugs:{},immuneElements:{}};
  for(const job of jobs.filter(job=>job.status==='ready')){
-  catalog[job.kind==='pathogen'?'pathogens':job.kind==='disease'?'diseases':'drugs'][job.id]={src:job.webFile || job.file,alt:job.alt};
+  catalog[{pathogen:'pathogens',disease:'diseases',drug:'drugs','immune-element':'immuneElements'}[job.kind]][job.id]={src:job.webFile || job.file,alt:job.alt};
  }
  await writeText(path.join(root,'data/card-art.json'),JSON.stringify(catalog,null,2)+'\n');
- await writeText(path.join(root,'src/card-art-data.mjs'),'// Generated from the pathogen/disease and drug production plans.\nexport const CARD_ART = '+JSON.stringify(catalog,null,2)+';\n');
+ await writeText(path.join(root,'src/card-art-data.mjs'),'// Generated from the pathogen/disease, drug and immune production plans.\nexport const CARD_ART = '+JSON.stringify(catalog,null,2)+';\n');
  return {ready:jobs.filter(job=>job.status==='ready').length,total:jobs.length};
 }
 export async function saveCardArt(kind,id,source,repair=false) {
- const selectedPlanFile=kind==='drug'?drugPlanFile:planFile;
+ const selectedPlanFile=kind==='immune-element'?immunePlanFile:kind==='drug'?drugPlanFile:planFile;
  const plan=JSON.parse(await fs.readFile(selectedPlanFile,'utf8'));
  const job=plan.jobs.find(job=>job.kind===kind&&job.id===id);
  if(!job)throw Error('Unplanned card artwork: '+kind+'/'+id);
