@@ -9,7 +9,7 @@ test('the first entry and home address open the tab selection screen',()=>{
 });
 
 test('each selected screen retains its own direct address',()=>{
- for(const view of ['lab','treatment','defense','play','survival','reroll']){
+ for(const view of ['lab','treatment','defense','play','survival','reroll','city']){
   assert.deepEqual(resolveAppRoute('#'+view),{view,hash:'#'+view});
  }
  assert.deepEqual(resolveAppRoute('#cards'),{view:'cards',domain:'all',archiveOnly:false,hash:'#cards'});
