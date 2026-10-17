@@ -2,7 +2,7 @@ import { createCardStacks } from './card-stacks.mjs';
 import { createCardSearch } from './card-search.mjs';
 import { createCardGuide } from './card-guide.mjs';
 import { renderCardThumbnail, renderCardLegend, cardIcon } from './reference-card.mjs';
-import { CARD_DOMAINS, createCardModels } from './card-models.mjs';
+import { CARD_DOMAINS, IMMUNE_CATEGORY_ICONS, createCardModels } from './card-models.mjs';
 import { sortPathogenRecords } from './card-pathogen-order.mjs';
 import { DRUG_ORDER, drugClassification, sortDrugRecords } from './card-drug-order.mjs';
 import { CARD_FILTERS as FILTERS } from './app-routing.mjs';
@@ -17,7 +17,8 @@ const WIDTHS=[160,190,220];
 const DECKS=[
   {id:'pathogens',kind:'pathogen',label:'병원체',icon:'bacteria'},
   {id:'drugs',kind:'drug',label:'약제',icon:'capsule'},
-  {id:'diseases',kind:'disease',label:'질병',icon:'clinical'}
+  {id:'diseases',kind:'disease',label:'질병',icon:'clinical'},
+  {id:'immunity',kind:'immune-element',label:'면역계',icon:'immunity'}
 ];
 
 export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),onFilterChange=()=>{}}) {
@@ -27,6 +28,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
   const stacks=cardStacks || createCardStacks(catalog);
   const drugFilters=new Set(DRUG_ORDER.flatMap(group=>['group:'+group.id,...group.classes.map(drugClass=>'class:'+drugClass.id)]));
   const diseaseCategories=Object.values(catalog.diseaseCategories);
+  const immuneCategories=Object.values(catalog.immuneCategories || {});
   const entries=[
     ...sortPathogenRecords(data.records,catalog).map(record=>({
       key:'pathogen:'+record.id,id:record.id,kind:'pathogen',domain:record.domain,
@@ -38,9 +40,13 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
       subtitle:drug.family,drugGroup:drugClassification(drug.id)?.group,
       drugClass:drugClassification(drug.id)?.drugClass,variant:''
     })),
-    ...Object.values(catalog.diseases || {}).map(disease=>({key:'disease:'+disease.id,id:disease.id,kind:'disease',domain:'diseases',name:disease.name,subtitle:disease.englishName,category:disease.category,variant:''}))
+    ...Object.values(catalog.diseases || {}).map(disease=>({key:'disease:'+disease.id,id:disease.id,kind:'disease',domain:'diseases',name:disease.name,subtitle:disease.englishName,category:disease.category,variant:''})),
+    ...Object.values(catalog.immuneElements || {}).sort((a,b)=>a.sortOrder-b.sortOrder).map(element=>({
+      key:'immune-element:'+element.id,id:element.id,kind:'immune-element',domain:'immunity',
+      name:element.name,subtitle:element.englishName,category:element.category,variant:''
+    }))
   ];
-  let diseaseCategory='all';
+  let diseaseCategory='all',immuneCategory='all';
   let domain='all',archiveOnly=false,query='',drugFilter='all',resistanceOnly=false,visibleCount=BATCH_SIZE,width=190;
   let moreObserver=null,selectedFanKey='',tappedFanKey='',lastFanPointerType='';
   let artworkVisible=true,layout='grid';
@@ -69,6 +75,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
       && (!resistanceOnly || entry.resistance)
       && (domain!=='drugs' || drugFilter==='all' || drugFilter==='group:'+entry.drugGroup || drugFilter==='class:'+entry.drugClass)
       && (domain!=='diseases' || diseaseCategory==='all' || entry.category===diseaseCategory)
+      && (domain!=='immunity' || immuneCategory==='all' || entry.category===immuneCategory)
       && search.matches(entry.kind,entry.id,query));
   }
 
@@ -79,12 +86,12 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
   }
 
   function setRoute(nextDomain='all',nextArchiveOnly=false,{resetOverview=true}={}) {
-    if(!FILTERS.some(filter=>filter.id===nextDomain) || nextArchiveOnly && ['drugs','diseases'].includes(nextDomain))return false;
+    if(!FILTERS.some(filter=>filter.id===nextDomain) || nextArchiveOnly && ['drugs','diseases','immunity'].includes(nextDomain))return false;
     rememberFaces();domain=nextDomain;archiveOnly=nextArchiveOnly;visibleCount=BATCH_SIZE;selectedFanKey='';tappedFanKey='';
     if(domain==='all' && !archiveOnly && resetOverview){
-      query='';drugFilter='all';diseaseCategory='all';resistanceOnly=false;
+      query='';drugFilter='all';diseaseCategory='all';immuneCategory='all';resistanceOnly=false;
     }
-    if(['drugs','diseases'].includes(domain))resistanceOnly=false;
+    if(['drugs','diseases','immunity'].includes(domain))resistanceOnly=false;
     return true;
   }
 
@@ -104,7 +111,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
 
   function deckNavigationMarkup() {
     const label=archiveOnly?'발견 기록':domain==='all'?(query.trim()?'검색 결과':'내성형'):DECKS.find(deck=>deck.id===domain)?.label || FILTERS.find(filter=>filter.id===domain)?.label;
-    return '<div class="card-gallery-deck-nav"><button type="button" data-card-decks aria-label="세 덱 선택으로 돌아가기">← 덱</button><span>'+esc(label)+'</span></div>';
+    return '<div class="card-gallery-deck-nav"><button type="button" data-card-decks aria-label="덱 선택으로 돌아가기">← 덱</button><span>'+esc(label)+'</span></div>';
   }
 
   function groupMarkup(group) {
@@ -123,7 +130,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
   function fanTileMarkup(entry,index,total) {
     const offset=total===1?0:index/(total-1)*2-1;
     const art=cardArtwork(entry.kind,entry.kind==='pathogen'?catalog.variants[entry.id]?.pathogenId:entry.id);
-    const icon=entry.kind==='drug'?'capsule':entry.kind==='disease'?'clinical':entry.domain==='viruses'?'virus':entry.domain==='fungi'?'fungi':entry.domain==='parasites'?'parasite':'bacteria';
+    const icon=entry.kind==='drug'?'capsule':entry.kind==='disease'?'clinical':entry.kind==='immune-element'?IMMUNE_CATEGORY_ICONS[entry.category]:entry.domain==='viruses'?'virus':entry.domain==='fungi'?'fungi':entry.domain==='parasites'?'parasite':'bacteria';
     const active=selectedFanKey===entry.key;
     const picture=art?.src?'<img src="'+esc(art.src)+'" alt="" loading="'+(active?'eager':'lazy')+'" decoding="async">':cardIcon(icon);
     return '<li class="card-fan-item'+(active?' is-active':'')+'" data-card-key="'+esc(entry.key)+'" data-fan-domain="'+esc(entry.domain)+'" style="--fan-x:'+(30+index*FAN_STEP)+'px;--fan-y:'+Math.round(46*offset*offset)+'px;--fan-angle:'+(offset*11).toFixed(2)+'deg;--fan-order:'+index+'">'+
@@ -235,7 +242,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     const progress=archiveOnly?'<div class="card-gallery-discoveries"><span>발견 '+found+' / '+data.records.length+'</span><progress value="'+found+'" max="'+data.records.length+'" aria-label="병원체 발견 진행률"></progress></div>':'';
     const empty=archiveOnly && !found
       ? '<div class="card-gallery-empty"><h2>첫 번째 기록을 기다립니다.</h2><p>동정실에서 맞힌 병원체의 최고점과 동정 횟수를 여기에서 확인할 수 있습니다.</p><button type="button" data-view="lab">동정실로 이동 →</button></div>'
-      : '<div class="card-gallery-empty"><h2>검색 조건을 바꿔보세요.</h2><p>이름, 표현형, 계열 또는 요약 속 단어로 검색할 수 있습니다.</p><button type="button" data-card-reset>필터 초기화</button></div>';
+      : '<div class="card-gallery-empty"><h2>검색 조건을 바꿔보세요.</h2><p>이름, 분류 또는 요약 속 단어로 검색할 수 있습니다.</p><button type="button" data-card-reset>필터 초기화</button></div>';
     return deckNavigationMarkup()+progress+'<p class="card-gallery-status" role="status" aria-live="polite">'+statusMarkup(matching,groups)+'</p>'+layoutSwitchMarkup()+
       (matching.length?(layout==='fan'?fanMarkup(matching):'<ul class="card-gallery-grid card-collection" style="--thumbnail-min:'+width+'px">'+items.map(groupMarkup).join('')+'</ul>'):empty)+
       (layout==='grid' && visibleCount<groups.length?'<div class="card-gallery-more"><button type="button" data-card-more>카드 더 보기</button></div>':'');
@@ -282,23 +289,28 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     }).join('');
   }
 
+  function immuneOptions() {
+    return immuneCategories.map(category=>'<option value="'+esc(category.id)+'" '+(category.id===immuneCategory?'selected':'')+'>'+esc(category.label)+'</option>').join('');
+  }
+
   function optionsContent() {
     return '<header class="card-gallery-options-heading"><h2 id="card-gallery-options-title">보기 설정</h2><button type="button" data-card-options="close" aria-label="설정 닫기">✕</button></header>'+
       '<div class="card-gallery-domains" role="group" aria-label="수록 범위"><button type="button" data-card-collection="all" aria-pressed="'+!archiveOnly+'">전체 수록</button><button type="button" data-card-collection="archive" aria-pressed="'+archiveOnly+'">발견 기록</button></div>'+
-      '<div class="card-gallery-domains" role="group" aria-label="카드 분류">'+FILTERS.filter(filter=>!archiveOnly || !['drugs','diseases'].includes(filter.id)).map(filter=>'<button type="button" data-card-domain="'+filter.id+'" aria-pressed="'+(filter.id===domain)+'">'+filter.label+'</button>').join('')+'</div>'+
+      '<div class="card-gallery-domains" role="group" aria-label="카드 분류">'+FILTERS.filter(filter=>!archiveOnly || !['drugs','diseases','immunity'].includes(filter.id)).map(filter=>'<button type="button" data-card-domain="'+filter.id+'" aria-pressed="'+(filter.id===domain)+'">'+filter.label+'</button>').join('')+'</div>'+
       '<div class="card-gallery-controls">'+
       (domain==='drugs'?'<label class="card-gallery-family">약제 분류<select id="card-gallery-drug-class"><option value="all">모든 약제</option>'+drugOptions()+'</select></label>':'')+
       (domain==='diseases'?'<label class="card-gallery-family">질환 분류<select id="card-gallery-disease-category"><option value="all">모든 감염질환</option>'+diseaseOptions()+'</select></label>':'')+
+      (domain==='immunity'?'<label class="card-gallery-family">면역계 분류<select id="card-gallery-immune-category"><option value="all">모든 면역계 요소</option>'+immuneOptions()+'</select></label>':'')+
       (layout==='grid'?'<label class="card-gallery-size">목록 밀도<select id="card-gallery-size">'+WIDTHS.map(value=>'<option value="'+value+'" '+(value===width?'selected':'')+'>'+({160:'촘촘하게',190:'기본',220:'넓게'})[value]+'</option>').join('')+'</select></label>':'')+
-      (!['drugs','diseases'].includes(domain)?'<label class="card-gallery-resistance"><input id="card-gallery-resistance" type="checkbox" '+(resistanceOnly?'checked':'')+'>내성 표시 카드만</label>'+(layout==='grid'?'<label class="card-gallery-resistance"><input id="card-gallery-stacks" type="checkbox" '+(stacks.enabled()?'checked':'')+'>내성형 겹쳐 보기</label>':''):'')+
+      (!['drugs','diseases','immunity'].includes(domain)?'<label class="card-gallery-resistance"><input id="card-gallery-resistance" type="checkbox" '+(resistanceOnly?'checked':'')+'>내성 표시 카드만</label>'+(layout==='grid'?'<label class="card-gallery-resistance"><input id="card-gallery-stacks" type="checkbox" '+(stacks.enabled()?'checked':'')+'>내성형 겹쳐 보기</label>':''):'')+
       (layout==='fan'?'<label class="card-gallery-resistance"><input id="card-gallery-artwork-option" type="checkbox" '+(artworkVisible?'checked':'')+'>그림 보기</label>':'')+
-      '</div><button type="button" class="card-gallery-options-reset" data-card-reset>필터 초기화</button>'+renderCardLegend();
+      '</div><button type="button" class="card-gallery-options-reset" data-card-reset>필터 초기화</button>'+(domain==='immunity'?'':renderCardLegend());
   }
 
   function renderGallery() {
     return '<section id="card-gallery-results" class="card-gallery-results'+(isDeckOverview()?' is-deck-overview':'')+'" tabindex="-1" aria-label="카드 도감">'+resultMarkup()+'</section>'+
       '<form id="card-gallery-search-form" class="card-gallery-searchbar" role="search" aria-label="카드 검색">'+
-      '<label class="card-gallery-search-field" for="card-gallery-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="card-gallery-search" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-label="카드 이름·표현형·계열 검색" placeholder="한글·영문 이름 검색" value="'+esc(query)+'"></label>'+
+      '<label class="card-gallery-search-field" for="card-gallery-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="card-gallery-search" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-label="카드 이름·분류 검색" placeholder="한글·영문 이름 검색" value="'+esc(query)+'"></label>'+
       '<button type="button" class="card-gallery-options-open" data-card-options="open" aria-label="카드 보기 설정" aria-haspopup="dialog" aria-controls="card-gallery-options"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="currentColor"/><circle cx="15" cy="12" r="2" fill="currentColor"/><circle cx="9" cy="18" r="2" fill="currentColor"/></svg><span>'+filterLabel()+'</span></button><button type="button" class="card-gallery-info" data-card-guide="open" aria-label="예시 카드로 읽는 법 보기" aria-haspopup="dialog" aria-expanded="false" aria-controls="card-guide"><span aria-hidden="true">i</span></button>'+
       '<label class="card-gallery-art-toggle"><input id="card-gallery-artwork" type="checkbox" '+(artworkVisible?'checked':'')+'>그림 보기</label></form>'+
       guide.markup()+'<dialog id="card-gallery-options" class="card-gallery-options" aria-labelledby="card-gallery-options-title">'+optionsContent()+'</dialog>';
@@ -362,7 +374,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     }
     if(button.dataset.cardDeck){
       if(!DECKS.some(deck=>deck.id===button.dataset.cardDeck))return true;
-      query='';drugFilter='all';diseaseCategory='all';resistanceOnly=false;
+      query='';drugFilter='all';diseaseCategory='all';immuneCategory='all';resistanceOnly=false;
       setRoute(button.dataset.cardDeck,false);onFilterChange(domain,archiveOnly);
       refreshResults();refreshOptions();
       document.querySelector('#card-gallery-results')?.focus({preventScroll:true});
@@ -377,7 +389,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     }
     if(button.dataset.cardCollection){
       const next=button.dataset.cardCollection==='archive';
-      setRoute(next && ['drugs','diseases'].includes(domain)?'all':domain,next);onFilterChange(domain,archiveOnly);
+      setRoute(next && ['drugs','diseases','immunity'].includes(domain)?'all':domain,next);onFilterChange(domain,archiveOnly);
       refreshResults();refreshOptions('[data-card-collection="'+button.dataset.cardCollection+'"]');
       return true;
     }
@@ -394,14 +406,14 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     if (button.dataset.cardDomain) {
       const next=button.dataset.cardDomain;
       if (FILTERS.some(filter=>filter.id===next)) {
-        setRoute(next,['drugs','diseases'].includes(next)?false:archiveOnly,{resetOverview:false});onFilterChange(domain,archiveOnly);
+        setRoute(next,['drugs','diseases','immunity'].includes(next)?false:archiveOnly,{resetOverview:false});onFilterChange(domain,archiveOnly);
         refreshResults();refreshOptions('[data-card-domain="'+next+'"]');
       }
       return true;
     }
     if (Object.hasOwn(button.dataset,'cardMore')) {loadMore();return true;}
     if (Object.hasOwn(button.dataset,'cardReset')) {
-      rememberFaces();domain='all';archiveOnly=false;query='';drugFilter='all';diseaseCategory='all';resistanceOnly=false;visibleCount=BATCH_SIZE;onFilterChange(domain,archiveOnly);
+      rememberFaces();domain='all';archiveOnly=false;query='';drugFilter='all';diseaseCategory='all';immuneCategory='all';resistanceOnly=false;visibleCount=BATCH_SIZE;onFilterChange(domain,archiveOnly);
       const input=document.querySelector('#card-gallery-search');
       if(input)input.value='';
       refreshResults();refreshOptions('[data-card-reset]');
@@ -421,6 +433,10 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     }
     if(target.id==='card-gallery-disease-category'){
       if(target.value==='all' || catalog.diseaseCategories[target.value]){rememberFaces();diseaseCategory=target.value;visibleCount=BATCH_SIZE;refreshResults();}
+      return true;
+    }
+    if(target.id==='card-gallery-immune-category'){
+      if(target.value==='all' || catalog.immuneCategories?.[target.value]){rememberFaces();immuneCategory=target.value;visibleCount=BATCH_SIZE;refreshResults();}
       return true;
     }
     if(target.id==='card-gallery-stacks'){

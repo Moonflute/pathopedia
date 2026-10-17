@@ -26,6 +26,14 @@ export function createCardSearch(data,catalog) {
     ]);
   }
 
+  for(const element of Object.values(catalog.immuneElements || {})){
+    add('immune-element',element.id,[
+      element.id,element.name,element.englishName,element.summary,
+      catalog.immuneCategories[element.category].label,
+      ...element.back.sections.map(section=>section.text)
+    ]);
+  }
+
   let lastQuery=null,words=[];
   return {
     matches(kind,id,query=''){

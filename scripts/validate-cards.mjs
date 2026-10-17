@@ -24,7 +24,7 @@ export function validateCardCatalog(db,data) {
   };
   if(db.schemaVersion!==1)fail('unsupported schema version');
   if(db.sourceDatasetVersion!==data.datasetVersion)fail('source dataset version mismatch');
-  for(const name of ['pathogens','variants','drugs','responses','responseProfiles','therapyContexts','sources','panels','categories','counts']){
+  for(const name of ['pathogens','variants','drugs','immuneElements','immuneCategories','immuneContent','responses','responseProfiles','therapyContexts','sources','panels','categories','counts']){
     if(!db[name] || typeof db[name]!=='object' || Array.isArray(db[name]))fail('missing '+name);
   }
   for(const [id,source]of Object.entries(db.sources)){
@@ -73,7 +73,21 @@ export function validateCardCatalog(db,data) {
     }
   }
 
-  const cards=createCardCatalog(db),usedProfiles=new Set();
+  text(db.immuneContent.version,'immune content version');
+  if(db.immuneContent.locale!=='ko-KR')fail('immune content locale mismatch');
+  const immuneCategories=Object.entries(db.immuneCategories);
+  if(!immuneCategories.length || immuneCategories.some(([id,category],index)=>category.id!==id || !category.label?.trim() || category.sortOrder!==index+1))fail('invalid immune categories');
+  const immuneElements=Object.entries(db.immuneElements),cards=createCardCatalog(db);
+  if(!immuneElements.length)fail('missing immune elements');
+  for(const [index,[id,item]]of immuneElements.entries()){
+    entity(item,id,'immune element');
+    if(!/^IMM-[0-9]{3}$/.test(id) || item.kind!=='immune-element' || !db.immuneCategories[item.category] || item.sortOrder!==index+1)fail(id+' has invalid identity or order');
+    text(item.name,item.id+' name');text(item.englishName,item.id+' English name');
+    const card=cards.immuneElement(id);
+    if(card?.summary!==item.summary || card.back.sections[0]?.text!==item.back.sections[0]?.text || !item.sourceIds.every(id=>card.back.references.some(ref=>ref.id===id)))fail(item.id+' has invalid card projection');
+  }
+
+  const usedProfiles=new Set();
   for(const record of data.records){
     const variant=db.variants[record.id];entity(variant,record.id,'variant');
     if(variant.pathogenId!==record.taxonId || !db.pathogens[variant.pathogenId])fail(record.id+' has an invalid pathogen reference');
@@ -166,6 +180,7 @@ export function validateCardCatalog(db,data) {
 
   const counts={
     ...(db.diseases?{diseases:Object.keys(db.diseases).length}:{}),
+    immuneElements:Object.keys(db.immuneElements).length,
     pathogens:Object.keys(db.pathogens).length,variants:Object.keys(db.variants).length,drugs:Object.keys(db.drugs).length,
     responses:Object.values(db.responses).reduce((sum,items)=>sum+Object.keys(items).length,0),responseProfiles:Object.keys(db.responseProfiles).length
   };

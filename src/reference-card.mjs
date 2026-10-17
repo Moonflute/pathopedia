@@ -46,6 +46,11 @@ export const CARD_ICONS = Object.freeze({
   antiviral: "<path d=\"m12 2 8 4v7c0 5-8 9-8 9s-8-4-8-9V6l8-4ZM8 12l3 3 5-6\"/>",
   antiparasitic: "<path d=\"M4 4c8-4 2 7 9 7s-1 10 7 9M3 21 21 3M15 3h6v6\"/>",
   clinical: '<path d="M8 3h8v5h5v8h-5v5H8v-5H3V8h5V3Z"/>',
+  immunity: '<path d="M12 2 20 5v6c0 5-3.5 8.6-8 11-4.5-2.4-8-6-8-11V5l8-3Z"/><path d="m8 9 4 4 4-4M12 13v5"/>',
+  lymphocyte: '<circle cx="12" cy="12" r="9"/><circle cx="13" cy="12" r="5"/><path d="M5 8h2M5 16h2"/>',
+  receptor: '<path d="M3 19h18M12 19v-8m0 0L7 5m5 6 5-6"/><circle cx="7" cy="4" r="2"/><circle cx="17" cy="4" r="2"/>',
+  antibody: '<path d="M12 21V11m0 0L5 4m7 7 7-7M3 2l4 4m14-4-4 4"/><circle cx="12" cy="21" r="1"/>',
+  signal: '<circle cx="4" cy="12" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="20" cy="12" r="2"/><circle cx="12" cy="19" r="2"/><path d="m6 10 4-4m4 0 4 4m0 4-4 4m-4 0-4-4"/>',
   artwork: '<rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8" cy="8" r="2"/><path d="m3 17 6-6 4 4 3-3 5 5"/>'
 });
 
@@ -71,7 +76,7 @@ function propertyRail(properties, label, side, heading, preview) {
 // The artwork can be exchanged without replacing any card text or glyphs.
 function artwork(model) {
   if (model.artwork?.src) return `<img class="card-artwork-image" src="${esc(model.artwork.src)}" alt="${esc(model.artwork.alt || model.name)}" loading="lazy" decoding="async">`;
-  return `<div class="card-artwork-placeholder" aria-label="${esc(model.name)} 그림 자리"><span class="card-artwork-ring" aria-hidden="true"></span>${cardIcon(model.artwork?.placeholder || (model.kind === 'drug' ? 'vial' : 'cocci'), 'card-artwork-mark')}<span class="card-artwork-label">${esc(model.artwork?.label || 'ARTWORK')}</span><span class="card-artwork-corner top-left" aria-hidden="true"></span><span class="card-artwork-corner bottom-right" aria-hidden="true"></span></div>`;
+  return `<div class="card-artwork-placeholder" aria-label="${esc(model.kind==='immune-element'?model.artwork?.label || model.name:model.name+' 그림 자리')}"><span class="card-artwork-ring" aria-hidden="true"></span>${cardIcon(model.artwork?.placeholder || (model.kind === 'drug' ? 'vial' : 'cocci'), 'card-artwork-mark')}<span class="card-artwork-label">${esc(model.artwork?.label || 'ARTWORK')}</span><span class="card-artwork-corner top-left" aria-hidden="true"></span><span class="card-artwork-corner bottom-right" aria-hidden="true"></span></div>`;
 }
 
 
@@ -118,6 +123,14 @@ function renderBackPanels(model) {
   if(model.guide){
     return '<div class="card-back-tabs card-guide-back-label">기호 읽는 법</div><div class="card-back-content"><div class="card-back-pane card-back-prose" tabindex="0" aria-label="예시 카드 설명">'+model.guide.notes.map((note,index)=>'<section class="card-back-section card-guide-description" data-card-guide-description="'+esc(note.id)+'" tabindex="-1"><h3><span>'+(index+1)+'</span>'+esc(note.title)+'</h3><p>'+esc(note.text)+'</p></section>').join('')+'</div></div>';
   }
+  if(model.kind==='immune-element'){
+    const back=model.back || {};
+    return '<div class="card-back-tabs card-immune-back-label">'+esc(back.label || '면역계 요소')+'</div><div class="card-back-content"><div class="card-back-pane card-back-prose" tabindex="0" aria-label="면역계 요소 설명">'+
+      '<p class="card-back-summary">'+esc(back.summary || model.summary)+'</p>'+
+      (back.sections || []).map(section=>'<section class="card-back-section"><h3>'+esc(section.title)+'</h3><p>'+esc(section.text)+'</p></section>').join('')+
+      (back.references?.length?'<section class="card-back-section card-back-references"><h3>출처</h3><ul>'+back.references.map(reference=>'<li><a href="'+esc(reference.url)+'" target="_blank" rel="noopener noreferrer">'+esc(reference.title)+'</a></li>').join('')+'</ul></section>':'')+
+      '</div></div>';
+  }
   const back=model.back || {},sections=back.sections || [];
   const disease=model.kind==='disease';
   const coreIds=new Set(disease?['presentation','diagnostics','management','redFlags']:model.kind==='drug'?['spectrum','limitations']:['clinicalContext','diseases','pearl','diagnostics']);
@@ -143,10 +156,10 @@ function guideMarkers(model) {
 
 /** Shared 2:3 geometry; both faces stay mounted for the physical flip. */
 export function renderReferenceCard(model) {
-  const kind=['pathogen','drug','disease'].includes(model.kind)?model.kind:'pathogen',preview=Boolean(model.preview);
+  const kind=['pathogen','drug','disease','immune-element'].includes(model.kind)?model.kind:'pathogen',preview=Boolean(model.preview);
   const route=model.route || {icon:'artwork',label:'—',description:'경로 미지정'};
   const resistance=model.resistance,face=model.face==='back'&&!preview?'back':'front';
-  const domainClass=['bacteria','fungi','viruses','parasites','drugs','diseases'].includes(model.domain)?' reference-card-domain--'+model.domain:'';
+  const domainClass=['bacteria','fungi','viruses','parasites','drugs','diseases','immunity'].includes(model.domain)?' reference-card-domain--'+model.domain:'';
   const nameClass=model.name.length>38?' has-long-name':'';
   const caption=model.summary || (model.features || []).join(' · ');
   const units=[...caption].reduce((total,char)=>total+(/[가-힣一-龯]/.test(char)?1:.55),0);
@@ -154,9 +167,9 @@ export function renderReferenceCard(model) {
   return '<div class="reference-card-slot '+(face==='back'?'is-flipped':'')+'" data-card-state="'+face+'" '+(preview?'data-card-preview':'')+'><div class="reference-card-tilt"><div class="reference-card-rotor"><article class="reference-card reference-card--front '+classes+(units>100?' has-long-summary':'')+(resistance?' has-resistance':'')+'" aria-label="'+esc(model.name+(resistance?' · '+resistance.code:''))+'" aria-hidden="'+(face==='back')+'" '+(face==='back'?'inert':'')+'>'+
     '<header class="card-nameplate"><h2>'+esc(model.name)+'</h2><p>'+esc(model.subtitle || '')+'</p></header>'+
     '<'+(preview?'span':'button type="button" data-card-property')+' class="card-route" '+(preview?'':tooltipAttributes({title:route.label,body:route.description || ''}))+'>'+cardIcon(route.icon)+'<span>'+esc(route.label)+'</span></'+(preview?'span':'button')+'>'+
-    propertyRail(model.leftProperties,model.leftLabel,'left',model.leftHeading,preview)+
+    (kind==='immune-element'?'':propertyRail(model.leftProperties,model.leftLabel,'left',model.leftHeading,preview))+
     '<div class="card-artwork'+(model.artwork?.transparent?' card-artwork--transparent':'')+'">'+artwork(model)+'</div>'+
-    propertyRail(model.rightProperties,model.rightLabel,'right',model.rightHeading,preview)+
+    (kind==='immune-element'?'':propertyRail(model.rightProperties,model.rightLabel,'right',model.rightHeading,preview))+
     '<div class="card-lineage"><span class="card-lineage-mark" aria-hidden="true">◆</span><span>'+esc(model.lineage)+'</span><span class="card-lineage-mark" aria-hidden="true">◆</span></div>'+
     '<div class="card-text"><p class="card-summary">'+esc(caption)+'</p><footer><span'+(model.supportiveCare?' class="card-care-label"':'')+'>'+esc(model.supportiveCare?'대증치료':model.id)+'</span>'+(preview?'<span>확대 ↗</span>':'<button type="button" class="card-turn" data-card-face="back" aria-label="'+esc(model.name)+' 뒷장 보기">뒷장 <span aria-hidden="true">↻</span></button>')+'</footer></div>'+
     (resistance?'<div class="card-ribbon-clip"><div class="card-resistance-ribbon"><strong>'+esc(resistance.code)+'</strong><span>'+esc(resistance.label)+'</span></div></div>':'')+

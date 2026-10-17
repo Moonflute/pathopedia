@@ -2,7 +2,12 @@ import { cardArtwork } from './card-art.mjs';
 import { createCardCatalog } from './card-catalog.mjs';
 
 export const CARD_DOMAINS = Object.freeze({
-  bacteria:'세균', viruses:'바이러스', fungi:'진균', parasites:'기생충', drugs:'약제', diseases:'감염질환'
+  bacteria:'세균', viruses:'바이러스', fungi:'진균', parasites:'기생충', drugs:'약제', diseases:'감염질환', immunity:'면역계'
+});
+export const IMMUNE_CATEGORY_ICONS = Object.freeze({
+  'barrier-organ':'skin', 'innate-cell':'blood', 'adaptive-cell':'lymphocyte',
+  'recognition-signaling':'receptor', 'complement-effector':'antiviral',
+  antibody:'antibody', 'cytokine-chemokine':'signal'
 });
 const POSITIVE = new Set(['S','I','ACT','ACTIVE','REGIMEN']);
 const NEGATIVE = new Set(['R','INACTIVE']);
@@ -293,9 +298,22 @@ export function createCardModels(data, catalog) {
     models.set(key,model);return model;
   }
 
-  function get(kind,id,contextId=null) {
-    return kind==='disease'?disease(id,contextId):kind==='drug'?drug(id,contextId):kind==='pathogen'?pathogen(id,contextId):null;
+  function immuneElement(id) {
+    const key='immune-element:'+id;
+    if(models.has(key))return models.get(key);
+    const base=content.immuneElement(id);if(!base)return null;
+    const category=catalog.immuneCategories[base.category];
+    const model={
+      ...base,entityId:id,domain:'immunity',lineage:category.label,
+      route:{icon:'immunity',label:'면역',description:category.label},
+      artwork:{placeholder:IMMUNE_CATEGORY_ICONS[base.category],label:category.label}
+    };
+    models.set(key,model);return model;
   }
 
-  return {pathogen,drug,disease,get};
+  function get(kind,id,contextId=null) {
+    return kind==='disease'?disease(id,contextId):kind==='drug'?drug(id,contextId):kind==='pathogen'?pathogen(id,contextId):kind==='immune-element'?immuneElement(id):null;
+  }
+
+  return {pathogen,drug,disease,immuneElement,get};
 }

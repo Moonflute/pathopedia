@@ -20,6 +20,6 @@ export function resolveAppRoute(hash) {
   const archiveOnly=parts[0]==='archive';
   if(archiveOnly)parts.shift();
   const domain=parts.shift() || 'all';
-  if(parts.length || !CARD_FILTERS.some(filter=>filter.id===domain) || archiveOnly && ['drugs','diseases'].includes(domain))return null;
+  if(parts.length || !CARD_FILTERS.some(filter=>filter.id===domain) || archiveOnly && ['drugs','diseases','immunity'].includes(domain))return null;
   return {view:'cards',domain,archiveOnly,hash:cardRouteHash(domain,archiveOnly)};
 }

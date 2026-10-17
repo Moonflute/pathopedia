@@ -11,6 +11,9 @@
     "pathogens",
     "variants",
     "drugs",
+    "immuneElements",
+    "immuneCategories",
+    "immuneContent",
     "responses",
     "responseProfiles",
     "sources",
@@ -87,6 +90,32 @@
       "type": "object",
       "additionalProperties": {
         "$ref": "#/$defs/drug"
+      }
+    },
+    "immuneElements": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/immuneElement"
+      }
+    },
+    "immuneCategories": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["id", "label", "sortOrder"],
+        "properties": {
+          "id": {"type":"string","minLength":1},
+          "label": {"type":"string","minLength":1},
+          "sortOrder": {"type":"integer","minimum":1}
+        }
+      }
+    },
+    "immuneContent": {
+      "type": "object",
+      "required": ["version", "locale"],
+      "properties": {
+        "version": {"type":"string","minLength":1},
+        "locale": {"const":"ko-KR"}
       }
     },
     "responses": {
@@ -234,11 +263,16 @@
         "pathogens",
         "variants",
         "drugs",
+        "immuneElements",
         "responses",
         "responseProfiles"
       ],
       "properties": {
         "diseases": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "immuneElements": {
           "type": "integer",
           "minimum": 0
         },
@@ -504,6 +538,21 @@
           },
           "uniqueItems": true
         }
+      }
+    },
+    "immuneElement": {
+      "type": "object",
+      "required": ["id", "kind", "name", "englishName", "category", "sortOrder", "summary", "back", "sourceIds"],
+      "properties": {
+        "id": {"type":"string","pattern":"^IMM-[0-9]{3}$"},
+        "kind": {"const":"immune-element"},
+        "name": {"type":"string","minLength":1},
+        "englishName": {"type":"string","minLength":1},
+        "category": {"type":"string","minLength":1},
+        "sortOrder": {"type":"integer","minimum":1},
+        "summary": {"$ref":"#/$defs/summary"},
+        "back": {"$ref":"#/$defs/back"},
+        "sourceIds": {"$ref":"#/$defs/sourceIds"}
       }
     },
     "response": {

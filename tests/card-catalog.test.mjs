@@ -6,6 +6,10 @@ import { compileLibraryCatalog } from '../scripts/seed-cards.mjs';
 import { createCardCatalog } from '../src/card-catalog.mjs';
 import { createCardGallery } from '../src/card-gallery-ui.mjs';
 import { createCardStacks } from '../src/card-stacks.mjs';
+import { createCardModels } from '../src/card-models.mjs';
+import { createCardSearch } from '../src/card-search.mjs';
+import { renderReferenceCard } from '../src/reference-card.mjs';
+import { resolveAppRoute } from '../src/app-routing.mjs';
 
 const read=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url),'utf8'));
 const data=read('data/organisms.json'),db=read('data/library.json');
@@ -15,7 +19,8 @@ const authored={
   drugs:Object.fromEntries(Object.entries(db.drugs).map(([id,item])=>[id,item.summary])),
   variants:Object.fromEntries(Object.entries(db.variants).map(([id,item])=>[id,{summary:item.summary,...(item.resistance?{resistance:item.resistance}:{})}])),
   therapyContexts:Object.values(db.therapyContexts),
-  diseaseContent:{index:diseaseIndex,entities:diseaseIndex.files.flatMap(file=>read('content/diseases/'+file).entities)}
+  diseaseContent:{index:diseaseIndex,entities:diseaseIndex.files.flatMap(file=>read('content/diseases/'+file).entities)},
+  immuneContent:read('content/cards/immune-elements.json')
 };
 
 test('card DB retains every game record, response and clinical relationship',()=>{
@@ -24,6 +29,53 @@ test('card DB retains every game record, response and clinical relationship',()=
   assert.equal(counts.drugs,data.drugs.length);
   assert.equal(counts.responses,data.records.reduce((sum,record)=>sum+Object.keys(record.susceptibility).length,0));
   assert.equal(counts.therapyContexts,Object.keys(db.therapyContexts).length);
+});
+
+test('immune element cards keep 97 fixed IDs, source links and proposed order',()=>{
+  assert.equal(db.counts.immuneElements,97);
+  assert.equal(Object.keys(db.immuneElements).length,97);
+  assert.equal(db.immuneElements['IMM-069'].name,'CRP');
+  assert.equal(db.immuneElements['IMM-097'].name,'TGF-β');
+  const card=createCardCatalog(db).immuneElement('IMM-069');
+  assert.equal(card.kind,'immune-element');
+  assert.equal(card.sortOrder,69);
+  assert.equal(card.back.label,'보체·방어 단백질');
+  assert(card.back.references.some(reference=>reference.url.startsWith('https://')));
+});
+
+test('immune element deck uses the shared card frame, search and direct route',()=>{
+  const model=createCardModels(data,db).immuneElement('IMM-069');
+  const markup=renderReferenceCard(model);
+  assert.match(markup,/reference-card--immune-element/);
+  assert.match(markup,/IMM-069/);
+  assert.match(markup,/CRP/);
+  assert.match(markup,/핵심 특징/);
+  assert.match(markup,/card-back-references/);
+  assert.equal(createCardSearch(data,db).matches('immune-element','IMM-069','C-reactive protein'),true);
+  assert.deepEqual(resolveAppRoute('#cards/immunity'),{view:'cards',domain:'immunity',archiveOnly:false,hash:'#cards/immunity'});
+  assert.equal(resolveAppRoute('#cards/archive/immunity'),null);
+  const previousDocument=globalThis.document;
+  globalThis.document={querySelectorAll:()=>[],querySelector:()=>null};
+  try{
+    const gallery=createCardGallery(data,{catalog:db});
+    assert.match(gallery.render(),/data-card-deck="immunity"/);
+    assert.equal(gallery.setRoute('immunity'),true);
+    const grid=gallery.render();
+    assert.match(grid,/97<\/strong>장/);
+    assert.match(grid,/data-card-open="immune-element:IMM-001"/);
+    assert.match(grid,/id="card-gallery-immune-category"/);
+    gallery.handleChange({id:'card-gallery-immune-category',value:'antibody'});
+    assert.match(gallery.render(),new RegExp('<strong>'+Object.values(db.immuneElements).filter(element=>element.category==='antibody').length+'</strong>장'));
+    gallery.handleChange({id:'card-gallery-immune-category',value:'all'});
+    gallery.handleClick({dataset:{cardLayout:'fan'},closest:()=>null});
+    const fan=gallery.render();
+    const keys=[...fan.matchAll(/data-card-fan-key="([^"]+)"/g)].map(match=>match[1]);
+    assert.equal(keys.length,97);
+    assert.equal(keys[0],'immune-element:IMM-001');
+    assert.equal(keys.at(-1),'immune-element:IMM-097');
+  }finally{
+    if(previousDocument===undefined)delete globalThis.document;else globalThis.document=previousDocument;
+  }
 });
 
 test('card validation blocks dangling IDs, missing sources, altered responses and inconsistent totals',()=>{

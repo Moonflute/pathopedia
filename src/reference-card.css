@@ -491,6 +491,12 @@ dialog.card-inspector { width:max-content; height:max-content; max-width:calc(10
 
 /* Disease cards reuse the same 2:3 faces and small side glyphs. */
 .reference-card-domain--diseases { --card-tone:#91bbae; --card-deep:#233d37; --card-line:#759b8c; --card-light:#c1ded1; background:linear-gradient(145deg,#45665b,var(--card-deep) 38%,#182927); }
+.reference-card-domain--immunity { --card-tone:#a4c2dc; --card-deep:#25364d; --card-line:#859fb9; --card-light:#d5e7f8; background:linear-gradient(145deg,#4b637e,var(--card-deep) 38%,#1b2634); }
+.reference-card--immune-element .card-artwork { grid-column:1 / 4; margin-inline:3cqw; }
+.reference-card--immune-element .card-artwork-placeholder { color:var(--card-light); background:radial-gradient(circle at 50% 44%,#8eb9d535,transparent 58%),repeating-linear-gradient(0deg,transparent,transparent 7.8cqw,#ffffff06 7.8cqw,#ffffff06 8cqw),repeating-linear-gradient(90deg,transparent,transparent 7.8cqw,#ffffff06 7.8cqw,#ffffff06 8cqw); }
+.reference-card--immune-element .card-artwork-mark { width:36cqw; height:36cqw; stroke-width:.85; opacity:.84; }
+.reference-card--immune-element .card-artwork-label { max-width:86%; text-align:center; line-height:1.3; letter-spacing:.08em; color:#d7e6f3; }
+.card-immune-back-label { display:block; padding:1cqw 2cqw; color:#d7e6f3; font:600 3.4cqw/1.4 var(--sans); }
 .reference-card--disease .card-text footer > span { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .reference-card--disease .card-text footer .card-care-label { font:650 3cqw/1 var(--sans); letter-spacing:0; color:#50664d; }
 .card-related-list { display:grid; gap:.55em; margin:.6em 0 0; }

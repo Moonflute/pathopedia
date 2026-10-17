@@ -9,7 +9,7 @@ export function createCardInspector(data,{catalog}) {
   const model=()=>{const {kind,id}=split(sequence[index]);return models.get(kind,id,treatmentSelections.get(id));};
   const canOpen=key=>{
     const {kind,id}=split(key);
-    return Boolean(kind==='disease'?catalog.diseases?.[id]:kind==='drug'?catalog.drugs[id]:kind==='pathogen'?catalog.variants[id]:false);
+    return Boolean(kind==='disease'?catalog.diseases?.[id]:kind==='drug'?catalog.drugs[id]:kind==='pathogen'?catalog.variants[id]:kind==='immune-element'?catalog.immuneElements?.[id]:false);
   };
   function relatedVariants() {
     const {kind,id}=split(sequence[index]);
