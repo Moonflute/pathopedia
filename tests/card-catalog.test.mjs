@@ -100,3 +100,31 @@ test('discovery collection keeps scores and only exposes discovered variants ins
     if(previousDocument===undefined)delete globalThis.document;else globalThis.document=previousDocument;
   }
 });
+
+
+test('arc view keeps every filtered card in one ordered row and remembers the chosen mode',()=>{
+  const previousDocument=globalThis.document,previousStorage=globalThis.localStorage;
+  const values=new Map();
+  globalThis.document={querySelectorAll:()=>[],querySelector:()=>null};
+  globalThis.localStorage={getItem:key=>values.get(key) || null,setItem:(key,value)=>values.set(key,value)};
+  try{
+    const gallery=createCardGallery(data,{catalog:db});
+    gallery.setRoute('pathogens');
+    assert.match(gallery.render(),/data-card-more/);
+    gallery.handleClick({dataset:{cardLayout:'fan'},closest:()=>null});
+    const pathogens=gallery.render();
+    const keys=[...pathogens.matchAll(/data-card-fan-key="([^"]+)"/g)].map(match=>match[1]);
+    assert.equal(keys.length,data.records.length);
+    assert.equal(new Set(keys).size,data.records.length);
+    assert.match(pathogens,/data-card-fan-collection/);
+    assert.doesNotMatch(pathogens,/data-card-more/);
+    assert.equal(values.get('pathopedia:card-layout'),'fan');
+    gallery.setRoute('drugs');
+    assert.equal([...gallery.render().matchAll(/data-card-fan-key="/g)].length,data.drugs.length);
+    gallery.handleClick({dataset:{cardLayout:'grid'},closest:()=>null});
+    assert.match(gallery.render(),/data-card-more/);
+  }finally{
+    if(previousDocument===undefined)delete globalThis.document;else globalThis.document=previousDocument;
+    if(previousStorage===undefined)delete globalThis.localStorage;else globalThis.localStorage=previousStorage;
+  }
+});

@@ -44,7 +44,8 @@ export function createCardInspector(data,{catalog}) {
     const key=button.dataset.cardOpen;if(!canOpen(key))return;
     const collection=button.closest('.card-collection') || button.parentElement;
     const stack=button.closest('[data-card-stack-keys]');
-    sequence=stack?stack.dataset.cardStackKeys.split('|'):[...collection.querySelectorAll('[data-card-open]')].map(item=>item.dataset.cardOpen);
+    const fan=button.closest('[data-card-fan-collection]');
+    sequence=stack?stack.dataset.cardStackKeys.split('|'):fan?[...fan.querySelectorAll('[data-card-fan-key]')].map(item=>item.dataset.cardFanKey):[...collection.querySelectorAll('[data-card-open]')].map(item=>item.dataset.cardOpen);
     if(!sequence.includes(key))sequence=[key];
     sequence=sequence.filter(canOpen);linkHistory=[];
     index=sequence.indexOf(key);opener=button;renderCurrent();

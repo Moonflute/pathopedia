@@ -7,7 +7,7 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.38.1';
+const VERSION = '0.39.0';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
  {id:'lab',label:'병원체 추측',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
@@ -40,8 +40,12 @@ let luckGame, luckLoading, luckLoadError='';
 const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
-root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;cardInspector?.handleKeydown(event);});
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.38.1" alt="" width="27" height="27">';
+root.addEventListener('keydown',event=>{if(handleCardTabKeydown(event))return;if(cardGallery?.handleKeydown(event))return;cardInspector?.handleKeydown(event);});
+root.addEventListener('pointermove',event=>cardGallery?.handlePointerMove(event));
+root.addEventListener('pointerdown',event=>cardGallery?.handlePointerDown(event));
+root.addEventListener('wheel',event=>cardGallery?.handleWheel(event),{passive:false});
+root.addEventListener('focusin',event=>cardGallery?.handleFocusIn(event));
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.39.0" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -242,7 +246,7 @@ root.addEventListener('click',e=>{
  if(handleReferenceCardClick(b))return;
  if(defenseGame?.handleClick(b))return;
  if(treatmentGame?.handleClick(b))return;
- if(cardGallery?.handleClick(b))return;
+ if(cardGallery?.handleClick(b,e))return;
  if(b.dataset.drugPage){drugPage+=b.dataset.drugPage==='next'?1:-1;render(`[data-drug-page="${b.dataset.drugPage}"]`);return;}
  if (b.dataset.mobileSection) {mobileSection=b.dataset.mobileSection;render(`[data-mobile-section="${mobileSection}"] button[aria-pressed="true"]`);window.scrollTo({top:0});return;}
  if (b.dataset.view) {navigateTo('#'+b.dataset.view);return;}

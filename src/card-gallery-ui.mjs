@@ -6,10 +6,13 @@ import { CARD_DOMAINS, createCardModels } from './card-models.mjs';
 import { sortPathogenRecords } from './card-pathogen-order.mjs';
 import { DRUG_ORDER, drugClassification, sortDrugRecords } from './card-drug-order.mjs';
 import { CARD_FILTERS as FILTERS } from './app-routing.mjs';
+import { cardArtwork } from './card-art.mjs';
 
 const esc=value=>String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const BATCH_SIZE=24;
 const ARTWORK_STORAGE_KEY='pathopedia:card-artwork';
+const LAYOUT_STORAGE_KEY='pathopedia:card-layout';
+const FAN_STEP=42;
 const WIDTHS=[160,190,220];
 const DECKS=[
   {id:'pathogens',kind:'pathogen',label:'병원체',icon:'bacteria'},
@@ -39,14 +42,18 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
   ];
   let diseaseCategory='all';
   let domain='all',archiveOnly=false,query='',drugFilter='all',resistanceOnly=false,visibleCount=BATCH_SIZE,width=190;
-  let moreObserver=null;
-  let artworkVisible=true;
-  try{artworkVisible=globalThis.localStorage?.getItem(ARTWORK_STORAGE_KEY)!=='off';}catch{}
+  let moreObserver=null,selectedFanKey='',tappedFanKey='',lastFanPointerType='';
+  let artworkVisible=true,layout='grid';
+  try{
+    artworkVisible=globalThis.localStorage?.getItem(ARTWORK_STORAGE_KEY)!=='off';
+    layout=globalThis.localStorage?.getItem(LAYOUT_STORAGE_KEY)==='fan'?'fan':'grid';
+  }catch{}
   function applyArtworkVisibility(){
     globalThis.document?.documentElement?.classList.toggle('card-art-hidden',!artworkVisible);
   }
   applyArtworkVisibility();
   const flipped=new Set();
+  const entryByKey=new Map(entries.map(entry=>[entry.key,entry]));
 
   function rememberFaces() {
     for (const item of document.querySelectorAll('[data-gallery-card]')) {
@@ -73,7 +80,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
 
   function setRoute(nextDomain='all',nextArchiveOnly=false,{resetOverview=true}={}) {
     if(!FILTERS.some(filter=>filter.id===nextDomain) || nextArchiveOnly && ['drugs','diseases'].includes(nextDomain))return false;
-    rememberFaces();domain=nextDomain;archiveOnly=nextArchiveOnly;visibleCount=BATCH_SIZE;
+    rememberFaces();domain=nextDomain;archiveOnly=nextArchiveOnly;visibleCount=BATCH_SIZE;selectedFanKey='';tappedFanKey='';
     if(domain==='all' && !archiveOnly && resetOverview){
       query='';drugFilter='all';diseaseCategory='all';resistanceOnly=false;
     }
@@ -106,23 +113,130 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     return '<li class="card-gallery-item" data-gallery-card="'+esc(entry.key)+'">'+entryCard(entry)+'</li>';
   }
 
+
+  function layoutSwitchMarkup() {
+    return '<div class="card-gallery-layout" role="group" aria-label="카드 보기 방식">'+
+      '<button type="button" data-card-layout="grid" aria-pressed="'+(layout==='grid')+'">개별 보기</button>'+
+      '<button type="button" data-card-layout="fan" aria-pressed="'+(layout==='fan')+'">호 보기</button></div>';
+  }
+
+  function fanTileMarkup(entry,index,total) {
+    const offset=total===1?0:index/(total-1)*2-1;
+    const art=cardArtwork(entry.kind,entry.kind==='pathogen'?catalog.variants[entry.id]?.pathogenId:entry.id);
+    const icon=entry.kind==='drug'?'capsule':entry.kind==='disease'?'clinical':entry.domain==='viruses'?'virus':entry.domain==='fungi'?'fungi':entry.domain==='parasites'?'parasite':'bacteria';
+    const picture=art?.src?'<img src="'+esc(art.src)+'" alt="" loading="lazy" decoding="async">':cardIcon(icon);
+    const active=selectedFanKey===entry.key;
+    return '<li class="card-fan-item'+(active?' is-active':'')+'" data-card-key="'+esc(entry.key)+'" data-fan-domain="'+esc(entry.domain)+'" style="--fan-x:'+(30+index*FAN_STEP)+'px;--fan-y:'+Math.round(46*offset*offset)+'px;--fan-angle:'+(offset*11).toFixed(2)+'deg;--fan-order:'+index+'">'+
+      '<button type="button" class="card-fan-card'+(active?' is-active':'')+'" data-card-fan-key="'+esc(entry.key)+'" data-card-fan-index="'+index+'" aria-pressed="'+active+'" aria-label="'+esc((index+1)+' / '+total+' · '+entry.name+(entry.variant?' · '+entry.variant:''))+'">'+
+      '<span class="card-fan-corner" aria-hidden="true">◆</span><span class="card-fan-art">'+picture+'</span>'+
+      '<span class="card-fan-name">'+esc(entry.name)+'</span><span class="card-fan-index">'+(index+1)+'</span></button></li>';
+  }
+
+  function fanFeatureMarkup(entry,index,total) {
+    return '<div class="card-fan-feature-card">'+entryCard(entry)+'</div>'+
+      '<div class="card-fan-feature-footer"><span>'+(index+1)+' / '+total+'</span>'+
+      '<button type="button" data-card-open="'+esc(entry.key)+'">카드 열기 ↗</button></div>';
+  }
+
+  function fanMarkup(matching) {
+    if(!matching.some(entry=>entry.key===selectedFanKey))selectedFanKey=matching[0].key;
+    const index=matching.findIndex(entry=>entry.key===selectedFanKey);
+    return '<div class="card-fan" data-card-fan-collection data-card-fan-count="'+matching.length+'">'+
+      '<div class="card-fan-feature" data-card-fan-feature>'+fanFeatureMarkup(matching[index],index,matching.length)+'</div>'+
+      '<div class="card-fan-controls"><button type="button" data-card-fan-move="-1" aria-label="이전 카드">←</button>'+
+      '<span>카드 '+matching.length+'장</span><button type="button" data-card-fan-move="1" aria-label="다음 카드">→</button></div>'+
+      '<div class="card-fan-track" tabindex="0" aria-label="카드 호 · 좌우로 스크롤 또는 방향키 이동">'+
+      '<ul class="card-fan-arc" style="width:'+(FAN_STEP*(matching.length-1)+184)+'px">'+
+      matching.map((entry,index)=>fanTileMarkup(entry,index,matching.length)).join('')+'</ul></div></div>';
+  }
+
+  function selectFan(button,{scroll=false}={}) {
+    const key=button?.dataset.cardFanKey,entry=entryByKey.get(key);
+    if(!entry)return false;
+    const item=button.closest('.card-fan-item'),old=globalThis.document?.querySelector('.card-fan-card.is-active');
+    if(old!==button){
+      old?.classList.remove('is-active');old?.setAttribute('aria-pressed','false');
+      old?.closest('.card-fan-item')?.classList.remove('is-active');
+      button.classList.add('is-active');button.setAttribute('aria-pressed','true');
+      item?.classList.add('is-active');selectedFanKey=key;
+      const feature=globalThis.document?.querySelector('[data-card-fan-feature]');
+      const total=Number(button.closest('[data-card-fan-collection]')?.dataset.cardFanCount);
+      if(feature)feature.innerHTML=fanFeatureMarkup(entry,Number(button.dataset.cardFanIndex),total);
+    }
+    if(scroll){
+      const track=button.closest('.card-fan-track');
+      if(track&&item)track.scrollTo?.({left:item.offsetLeft+item.offsetWidth/2-track.clientWidth/2,behavior:'smooth'});
+    }
+    return true;
+  }
+
+  function moveFan(direction) {
+    const buttons=[...(globalThis.document?.querySelectorAll('.card-fan-card') || [])];
+    const index=buttons.findIndex(button=>button.dataset.cardFanKey===selectedFanKey);
+    const next=buttons[Math.max(0,Math.min(buttons.length-1,index+direction))];
+    if(!next)return false;
+    tappedFanKey='';
+    selectFan(next,{scroll:true});next.focus({preventScroll:true});
+    return true;
+  }
+
+  function handlePointerMove(event) {
+    if(event.pointerType!=='mouse' && event.pointerType!=='pen')return false;
+    const track=event.target.closest?.('.card-fan-track');
+    if(!track || !event.target.closest('.card-fan-card'))return false;
+    const index=Math.max(0,Math.min(Number(track.closest('[data-card-fan-collection]')?.dataset.cardFanCount)-1,
+      Math.floor((event.clientX-track.getBoundingClientRect().left+track.scrollLeft-30)/FAN_STEP)));
+    const button=track.querySelector('[data-card-fan-index="'+index+'"]');
+    if(button?.dataset.cardFanKey===selectedFanKey)return true;
+    tappedFanKey='';return selectFan(button);
+  }
+
+  function handlePointerDown(event) {
+    if(event.target.closest?.('.card-fan-card'))lastFanPointerType=event.pointerType;
+  }
+
+  function handleWheel(event) {
+    const track=event.target.closest?.('.card-fan-track');
+    if(!track || Math.abs(event.deltaY)<=Math.abs(event.deltaX))return false;
+    const step=event.deltaMode===1?16:event.deltaMode===2?track.clientWidth:1;
+    const next=Math.max(0,Math.min(track.scrollWidth-track.clientWidth,track.scrollLeft+event.deltaY*step));
+    if(Math.abs(next-track.scrollLeft)<1)return false;
+    event.preventDefault();track.scrollLeft=next;
+    return true;
+  }
+
+  function handleFocusIn(event) {
+    const button=event.target.closest?.('.card-fan-card');
+    return button?selectFan(button):false;
+  }
+
+  function handleKeydown(event) {
+    if(!event.target.closest?.('.card-fan-track') || !['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return false;
+    event.preventDefault();
+    if(event.key==='Home' || event.key==='End'){
+      const buttons=[...document.querySelectorAll('.card-fan-card')],next=buttons[event.key==='Home'?0:buttons.length-1];
+      if(next){tappedFanKey='';selectFan(next,{scroll:true});next.focus({preventScroll:true});}
+    }else moveFan(event.key==='ArrowRight'?1:-1);
+    return true;
+  }
+
   function statusMarkup(matching,groups) {
     return matching.length
-      ? '<strong>'+matching.length+'</strong>장'+(groups.length!==matching.length?' · '+groups.length+'개 목록':'')+' · '+Math.min(visibleCount,groups.length)+'/'+groups.length+'개 표시'
+      ? layout==='fan'?'<strong>'+matching.length+'</strong>장 · 호 보기':'<strong>'+matching.length+'</strong>장'+(groups.length!==matching.length?' · '+groups.length+'개 목록':'')+' · '+Math.min(visibleCount,groups.length)+'/'+groups.length+'개 표시'
       : '일치하는 카드가 없습니다.';
   }
 
   function resultMarkup() {
     if(isDeckOverview())return deckOverviewMarkup();
-    const matching=filtered(),groups=stacks.groups(matching),items=groups.slice(0,visibleCount);
+    const matching=filtered(),groups=layout==='fan'?[]:stacks.groups(matching),items=groups.slice(0,visibleCount);
     const archive=getArchive(),found=data.records.filter(record=>Object.hasOwn(archive,record.id)).length;
     const progress=archiveOnly?'<div class="card-gallery-discoveries"><span>발견 '+found+' / '+data.records.length+'</span><progress value="'+found+'" max="'+data.records.length+'" aria-label="병원체 발견 진행률"></progress></div>':'';
     const empty=archiveOnly && !found
       ? '<div class="card-gallery-empty"><h2>첫 번째 기록을 기다립니다.</h2><p>동정실에서 맞힌 병원체의 최고점과 동정 횟수를 여기에서 확인할 수 있습니다.</p><button type="button" data-view="lab">동정실로 이동 →</button></div>'
       : '<div class="card-gallery-empty"><h2>검색 조건을 바꿔보세요.</h2><p>이름, 표현형, 계열 또는 요약 속 단어로 검색할 수 있습니다.</p><button type="button" data-card-reset>필터 초기화</button></div>';
-    return deckNavigationMarkup()+progress+'<p class="card-gallery-status" role="status" aria-live="polite">'+statusMarkup(matching,groups)+'</p>'+
-      (items.length?'<ul class="card-gallery-grid card-collection" style="--thumbnail-min:'+width+'px">'+items.map(groupMarkup).join('')+'</ul>':empty)+
-      (visibleCount<groups.length?'<div class="card-gallery-more"><button type="button" data-card-more>카드 더 보기</button></div>':'');
+    return deckNavigationMarkup()+progress+'<p class="card-gallery-status" role="status" aria-live="polite">'+statusMarkup(matching,groups)+'</p>'+layoutSwitchMarkup()+
+      (matching.length?(layout==='fan'?fanMarkup(matching):'<ul class="card-gallery-grid card-collection" style="--thumbnail-min:'+width+'px">'+items.map(groupMarkup).join('')+'</ul>'):empty)+
+      (layout==='grid' && visibleCount<groups.length?'<div class="card-gallery-more"><button type="button" data-card-more>카드 더 보기</button></div>':'');
   }
 
   function watchMore() {
@@ -173,8 +287,8 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
       '<div class="card-gallery-controls">'+
       (domain==='drugs'?'<label class="card-gallery-family">약제 분류<select id="card-gallery-drug-class"><option value="all">모든 약제</option>'+drugOptions()+'</select></label>':'')+
       (domain==='diseases'?'<label class="card-gallery-family">질환 분류<select id="card-gallery-disease-category"><option value="all">모든 감염질환</option>'+diseaseOptions()+'</select></label>':'')+
-      '<label class="card-gallery-size">목록 밀도<select id="card-gallery-size">'+WIDTHS.map(value=>'<option value="'+value+'" '+(value===width?'selected':'')+'>'+({160:'촘촘하게',190:'기본',220:'넓게'})[value]+'</option>').join('')+'</select></label>'+
-      (!['drugs','diseases'].includes(domain)?'<label class="card-gallery-resistance"><input id="card-gallery-resistance" type="checkbox" '+(resistanceOnly?'checked':'')+'>내성 표시 카드만</label><label class="card-gallery-resistance"><input id="card-gallery-stacks" type="checkbox" '+(stacks.enabled()?'checked':'')+'>내성형 겹쳐 보기</label>':'')+
+      (layout==='grid'?'<label class="card-gallery-size">목록 밀도<select id="card-gallery-size">'+WIDTHS.map(value=>'<option value="'+value+'" '+(value===width?'selected':'')+'>'+({160:'촘촘하게',190:'기본',220:'넓게'})[value]+'</option>').join('')+'</select></label>':'')+
+      (!['drugs','diseases'].includes(domain)?'<label class="card-gallery-resistance"><input id="card-gallery-resistance" type="checkbox" '+(resistanceOnly?'checked':'')+'>내성 표시 카드만</label>'+(layout==='grid'?'<label class="card-gallery-resistance"><input id="card-gallery-stacks" type="checkbox" '+(stacks.enabled()?'checked':'')+'>내성형 겹쳐 보기</label>':''):'')+
       '</div><button type="button" class="card-gallery-options-reset" data-card-reset>필터 초기화</button>'+renderCardLegend();
   }
 
@@ -221,8 +335,28 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     return archiveOnly?'발견 기록':domain==='all'?'필터':FILTERS.find(filter=>filter.id===domain).label;
   }
 
-  function handleClick(button) {
+  function handleClick(button,event) {
     if(guide.handleClick(button,domain))return true;
+    if(button.dataset.cardLayout){
+      if(!['grid','fan'].includes(button.dataset.cardLayout))return true;
+      layout=button.dataset.cardLayout;tappedFanKey='';
+      try{globalThis.localStorage?.setItem(LAYOUT_STORAGE_KEY,layout);}catch{}
+      refreshResults();refreshOptions();
+      document.querySelector('[data-card-layout="'+layout+'"]')?.focus({preventScroll:true});
+      return true;
+    }
+    if(button.dataset.cardFanMove){moveFan(Number(button.dataset.cardFanMove));return true;}
+    if(button.dataset.cardFanKey){
+      selectFan(button);
+      const touch=event?.pointerType==='touch' || (!event?.pointerType && lastFanPointerType==='touch');
+      lastFanPointerType='';
+      if(touch && tappedFanKey!==button.dataset.cardFanKey){
+        tappedFanKey=button.dataset.cardFanKey;return true;
+      }
+      tappedFanKey='';
+      document.querySelector('.card-fan-feature-footer [data-card-open]')?.click();
+      return true;
+    }
     if(button.dataset.cardDeck){
       if(!DECKS.some(deck=>deck.id===button.dataset.cardDeck))return true;
       query='';drugFilter='all';diseaseCategory='all';resistanceOnly=false;
@@ -316,5 +450,5 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     return true;
   }
 
-  return {render:renderGallery,mount:watchMore,handleClick,handleChange,handleInput,handleSubmit,rememberFaces,setRoute};
+  return {render:renderGallery,mount:watchMore,handleClick,handleChange,handleInput,handleSubmit,handlePointerMove,handlePointerDown,handleWheel,handleFocusIn,handleKeydown,rememberFaces,setRoute};
 }
