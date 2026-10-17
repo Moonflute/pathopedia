@@ -124,8 +124,8 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     const offset=total===1?0:index/(total-1)*2-1;
     const art=cardArtwork(entry.kind,entry.kind==='pathogen'?catalog.variants[entry.id]?.pathogenId:entry.id);
     const icon=entry.kind==='drug'?'capsule':entry.kind==='disease'?'clinical':entry.domain==='viruses'?'virus':entry.domain==='fungi'?'fungi':entry.domain==='parasites'?'parasite':'bacteria';
-    const picture=art?.src?'<img src="'+esc(art.src)+'" alt="" loading="lazy" decoding="async">':cardIcon(icon);
     const active=selectedFanKey===entry.key;
+    const picture=art?.src?'<img src="'+esc(art.src)+'" alt="" loading="'+(active?'eager':'lazy')+'" decoding="async">':cardIcon(icon);
     return '<li class="card-fan-item'+(active?' is-active':'')+'" data-card-key="'+esc(entry.key)+'" data-fan-domain="'+esc(entry.domain)+'" style="--fan-x:'+(30+index*FAN_STEP)+'px;--fan-y:'+Math.round(46*offset*offset)+'px;--fan-angle:'+(offset*11).toFixed(2)+'deg;--fan-order:'+index+'">'+
       '<button type="button" class="card-fan-card'+(active?' is-active':'')+'" data-card-fan-key="'+esc(entry.key)+'" data-card-fan-index="'+index+'" aria-pressed="'+active+'" aria-label="'+esc((index+1)+' / '+total+' · '+entry.name+(entry.variant?' · '+entry.variant:''))+'">'+
       '<span class="card-fan-corner" aria-hidden="true">◆</span><span class="card-fan-art">'+picture+'</span>'+
@@ -133,7 +133,9 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
   }
 
   function fanFeatureMarkup(entry,index,total) {
+    const model=models.get(entry.kind,entry.id);
     return '<div class="card-fan-feature-card">'+entryCard(entry)+'</div>'+
+      '<div class="card-fan-mobile-summary"><strong>'+esc(entry.name)+'</strong><small>'+esc(entry.variant || entry.subtitle || model.lineage)+'</small><p>'+esc(model.summary || '')+'</p></div>'+
       '<div class="card-fan-feature-footer"><span>'+(index+1)+' / '+total+'</span>'+
       '<button type="button" data-card-open="'+esc(entry.key)+'">카드 열기 ↗</button></div>';
   }
@@ -146,7 +148,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
       '<div class="card-fan-controls"><button type="button" data-card-fan-move="-1" aria-label="이전 카드">←</button>'+
       '<span>카드 '+matching.length+'장</span><button type="button" data-card-fan-move="1" aria-label="다음 카드">→</button></div>'+
       '<div class="card-fan-track" tabindex="0" aria-label="카드 호 · 좌우로 스크롤 또는 방향키 이동">'+
-      '<ul class="card-fan-arc" style="width:'+(FAN_STEP*(matching.length-1)+184)+'px">'+
+      '<ul class="card-fan-arc" style="--fan-core-width:'+(FAN_STEP*(matching.length-1)+184)+'px">'+
       matching.map((entry,index)=>fanTileMarkup(entry,index,matching.length)).join('')+'</ul></div></div>';
   }
 
@@ -185,7 +187,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     const track=event.target.closest?.('.card-fan-track');
     if(!track || !event.target.closest('.card-fan-card'))return false;
     const index=Math.max(0,Math.min(Number(track.closest('[data-card-fan-collection]')?.dataset.cardFanCount)-1,
-      Math.floor((event.clientX-track.getBoundingClientRect().left+track.scrollLeft-30)/FAN_STEP)));
+      Math.floor((event.clientX-track.getBoundingClientRect().left+track.scrollLeft-30-(globalThis.innerWidth<=599?globalThis.innerWidth/2-92:0))/FAN_STEP)));
     const button=track.querySelector('[data-card-fan-index="'+index+'"]');
     if(button?.dataset.cardFanKey===selectedFanKey)return true;
     tappedFanKey='';return selectFan(button);
@@ -289,6 +291,7 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
       (domain==='diseases'?'<label class="card-gallery-family">질환 분류<select id="card-gallery-disease-category"><option value="all">모든 감염질환</option>'+diseaseOptions()+'</select></label>':'')+
       (layout==='grid'?'<label class="card-gallery-size">목록 밀도<select id="card-gallery-size">'+WIDTHS.map(value=>'<option value="'+value+'" '+(value===width?'selected':'')+'>'+({160:'촘촘하게',190:'기본',220:'넓게'})[value]+'</option>').join('')+'</select></label>':'')+
       (!['drugs','diseases'].includes(domain)?'<label class="card-gallery-resistance"><input id="card-gallery-resistance" type="checkbox" '+(resistanceOnly?'checked':'')+'>내성 표시 카드만</label>'+(layout==='grid'?'<label class="card-gallery-resistance"><input id="card-gallery-stacks" type="checkbox" '+(stacks.enabled()?'checked':'')+'>내성형 겹쳐 보기</label>':''):'')+
+      (layout==='fan'?'<label class="card-gallery-resistance"><input id="card-gallery-artwork-option" type="checkbox" '+(artworkVisible?'checked':'')+'>그림 보기</label>':'')+
       '</div><button type="button" class="card-gallery-options-reset" data-card-reset>필터 초기화</button>'+renderCardLegend();
   }
 
@@ -347,9 +350,9 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
     }
     if(button.dataset.cardFanMove){moveFan(Number(button.dataset.cardFanMove));return true;}
     if(button.dataset.cardFanKey){
-      selectFan(button);
       const touch=event?.pointerType==='touch' || (!event?.pointerType && lastFanPointerType==='touch');
       lastFanPointerType='';
+      selectFan(button,{scroll:touch});
       if(touch && tappedFanKey!==button.dataset.cardFanKey){
         tappedFanKey=button.dataset.cardFanKey;return true;
       }
@@ -409,8 +412,10 @@ export function createCardGallery(data,{catalog,cardStacks,getArchive=()=>({}),o
   }
 
   function handleChange(target) {
-    if(target.id==='card-gallery-artwork'){
+    if(target.id==='card-gallery-artwork' || target.id==='card-gallery-artwork-option'){
       artworkVisible=target.checked;applyArtworkVisibility();
+      const other=document.querySelector('#'+(target.id==='card-gallery-artwork'?'card-gallery-artwork-option':'card-gallery-artwork'));
+      if(other)other.checked=artworkVisible;
       try{globalThis.localStorage?.setItem(ARTWORK_STORAGE_KEY,artworkVisible?'on':'off');}catch{}
       return true;
     }
