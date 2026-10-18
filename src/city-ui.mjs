@@ -1,7 +1,7 @@
 import {GameLoop} from './vendor/kontra-10.0.2.mjs';
 import {icon} from './luck-icons.mjs';
-import {DISTRICTS,JOBS,DRUGS,WAVES,POLICIES,SCENARIOS,districtDef} from './city-data.mjs';
-import {createCity,tickCity,command,cityHealth,cityOxygen,upgradeCost,counts,output,drugActivity,serializeCity,restoreCity,objectiveState} from './city-engine.mjs';
+import {DISTRICTS,CELL_JOBS as JOBS,cityJobs,cellCap,DRUGS,WAVES,POLICIES,SCENARIOS,districtDef} from './city-data.mjs';
+import {createCity,upgradeVillage,tickCity,command,cityHealth,cityOxygen,upgradeCost,counts,output,drugActivity,serializeCity,restoreCity,objectiveState} from './city-engine.mjs';
 import {createCityRenderer} from './city-renderer.mjs';
 
 const KEY='pathopedia:cell-city:v1';
@@ -11,22 +11,22 @@ const time=n=>`${Math.floor(n/60).toString().padStart(2,'0')}:${Math.floor(n%60)
 const card=(kind,id,label)=>id?`<button type="button" class="cc-card-link" data-card-open="${kind}:${id}" aria-label="${esc(label)} 도감 열기">↗</button>`:'';
 export function createCityGame(data,options={}){
   const is3d=options.mode==='3d',saveKey=options.saveKey||KEY;
-  const newCity=(host,scenario)=>createCity(host,scenario,{workCrews:is3d});
+  const newCity=(host,scenario)=>createCity(host,scenario,{workCrews:is3d,specialists:is3d});
   let run,storageFailed=false,restored=false;
   try{const raw=localStorage.getItem(saveKey);run=restoreCity(raw);restored=!!run;storageFailed=!!raw&&!run;}catch{storageFailed=true;}
-  run ||= newCity('normal','steady');if(is3d)run.workCrews=true;
-  let atStart=true,started=restored,choice=SCENARIOS[run.scenario]?run.scenario:'steady',selectedKind='';
+  run ||= newCity('normal','steady');if(is3d)upgradeVillage(run);
+  let atStart=true,started=restored,choice=SCENARIOS[run.scenario]?run.scenario:'steady',selectedKind='',workersPage=0;
   let speed=0,selected='lung',layer='city',panel='',cityPage='log',logPage=0,active=false,game=null,loop=null,renderer=null,abort=null,hud=0,saveClock=0,toast='',toastUntil=0,resetArmed=false;
   const markupCache=new WeakMap();
   const sheetLayout=matchMedia('(max-width:619px), (max-width:760px) and (min-height:621px)');
   const save=()=>{if(!started)return;try{localStorage.setItem(saveKey,serializeCity(run));storageFailed=false;}catch{storageFailed=true;}};
   function render(){
     return `<section class="cc-game${is3d?' cc-three':''}" aria-label="세포도시 경영 게임" data-panel="${panel}">
-      <header class="cc-header"><div class="cc-title"><span class="cc-mark" aria-hidden="true">✣</span><h1>CELL CITY <small>${is3d?'3D PILOT':'세포도시'}</small></h1><a class="cc-view-switch" href="#${is3d?'city':'city3d'}">${is3d?'2D ↗':'3D 시범 ↗'}</a></div>
+      <header class="cc-header"><div class="cc-title"><span class="cc-mark" aria-hidden="true">✣</span><h1>CELL CITY <small>${is3d?'3D VILLAGE':'세포도시'}</small></h1><a class="cc-view-switch" href="#${is3d?'city':'city3d'}">${is3d?'2D ↗':'3D 시범 ↗'}</a></div>
       <div class="cc-time-controls"><span data-city-time>${time(run.time)}</span>${button('menu','시나리오','class="cc-menu-button"')}${button('speed',icon('pause'),'data-city-id="0" aria-label="일시정지"')}${[1,2,3].map(n=>button('speed',n+'×',`data-city-id="${n}" aria-label="${n}배속"`)).join('')}</div></header>
       <div class="cc-stage"><div class="cc-map"><canvas id="city-canvas" tabindex="0" aria-label="세포도시 조감도. 드래그로 이동, 휠 또는 두 손가락으로 확대·축소. 구역을 누르면 관리합니다. 방향키로 이동, 더하기·빼기로 확대·축소, Home으로 전체 보기.${is3d?' 오른쪽 드래그 또는 Q·E로 회전.':''}"></canvas>
           <div class="cc-scenario"><div><strong data-city-objective></strong><span data-city-objective-detail></span><progress data-city-objective-progress max="1" value="0"></progress></div>${button('wave','감염 유입 →','class="cc-wave"')}</div>
-          <div class="cc-map-label"><span>${is3d?'WIND & PULSE / 3D VILLAGE':'THE LIVING CITY / AERIAL VIEW'}</span><strong data-city-weather>평온한 환경</strong></div>
+          <div class="cc-map-label"><span>${is3d?'THE LIVING CITY / 3D VILLAGE':'THE LIVING CITY / AERIAL VIEW'}</span><strong data-city-weather>평온한 환경</strong></div>
       <div class="cc-resources" aria-label="도시 자원">
         ${[['health','♥','건강'],['oxygen','O₂','산소'],['food','◈','영양분'],['materials','▥','건축 자재'],['waste','≋','노폐물']].map(([id,glyph,label])=>`<div class="cc-resource cc-resource--${id}"><span>${glyph}</span><div><small>${label}</small><strong data-city-value="${id}">—</strong></div><i data-city-meter="${id}"></i></div>`).join('')}
       </div>
@@ -42,12 +42,12 @@ export function createCityGame(data,options={}){
           <section class="cc-panel cc-armory" data-city-panel="armory" hidden><div class="cc-section-label">항생제 장비 <span data-city-rally></span></div><div class="cc-drugs">${DRUGS.map(d=>button('drug',`<span style="color:${d.color}">●</span> ${d.short}`,`data-city-id="${d.id}" title="${d.name} · 영양 ${d.cost} → 18 보급" aria-label="${d.name} 장비 선택" aria-pressed="${d.id===run.drug}"`)).join('')}</div><div data-city-ammo></div><div class="cc-ast" data-city-ast></div><div class="cc-antibody" data-city-antibody></div></section>
           <section class="cc-panel cc-journal" data-city-panel="city" hidden><div class="cc-policy cc-pages" aria-label="도시 운영 메뉴">${button('city-page','도시 기록','data-city-id="log"')}${button('city-page','환경·설정','data-city-id="settings"')}</div><div data-city-page="log"><ol data-city-log></ol><div class="cc-pagination">${button('log-page','←','data-city-id="-1" aria-label="이전 기록 페이지"')}<span data-city-log-page></span>${button('log-page','→','data-city-id="1" aria-label="다음 기록 페이지"')}</div></div><div class="cc-settings" data-city-page="settings" hidden><div>${button('lifecycle','게임 수명 OFF','aria-pressed="false"')}${button('weather','건조 환경 35초')}</div><div>${button('menu','시나리오 선택')}${button('reset','새 도시','class="cc-reset"')}</div><small>수명 ON · 종료된 세포는 골수에서 자동 보충</small><small>생리·전투 수치는 게임용. 장비 감수성은 고정 분리주 기록.</small><small>${is3d?'Three.js · MIT / Kenney · CC0':'Kontra.js · MIT / Lucide · ISC'}</small>${is3d?'<small data-city-performance></small>':''}</div></section>
         </aside></div>
-      <footer class="cc-command-bar"><div class="cc-status"><i></i><span data-city-save>자동 저장</span><small data-city-last-log></small></div><nav class="cc-dock" aria-label="도시 관리 메뉴">${[['district','▦','구역'],['workers','✦','세포'],['armory','⚑','장비'],['city','☷','운영']].map(([id,glyph,name])=>button('panel',`<span>${glyph}</span><strong>${name}</strong>`,`data-city-id="${id}" aria-label="${name} 관리" aria-controls="city-management" aria-expanded="${panel===id}"`)).join('')}</nav><span class="cc-view-label">${is3d?'WIND & PULSE <b>3D PILOT</b>':'BODY DISTRICT 01 <b>2.5D</b>'}</span></footer>${startScreen()}</section>`;
+      <footer class="cc-command-bar"><div class="cc-status"><i></i><span data-city-save>자동 저장</span><small data-city-last-log></small></div><nav class="cc-dock" aria-label="도시 관리 메뉴">${[['district','▦','구역'],['workers','✦','세포'],['armory','⚑','장비'],['city','☷','운영']].map(([id,glyph,name])=>button('panel',`<span>${glyph}</span><strong>${name}</strong>`,`data-city-id="${id}" aria-label="${name} 관리" aria-controls="city-management" aria-expanded="${panel===id}"`)).join('')}</nav><span class="cc-view-label">${is3d?'LIVING CITY <b>3D VILLAGE</b>':'BODY DISTRICT 01 <b>2.5D</b>'}</span></footer>${startScreen()}</section>`;
   }
   function startScreen(){return `<section class="cc-start" aria-label="시나리오 선택">
-    <div class="cc-start-heading"><span>CELL CITY / ${is3d?'3D PILOT':'PROTOTYPE'}</span><h2>${is3d?'숨결과 박동의 마을':'작은 세포, 하나의 도시'}</h2><p>${is3d?'폐의 바람 항구 · 심장의 펌프 광장':'오늘의 도시를 선택하세요'}</p></div>
+    <div class="cc-start-heading"><span>CELL CITY / ${is3d?'3D VILLAGE':'PROTOTYPE'}</span><h2>${is3d?'작은 세포들의 마을':'작은 세포, 하나의 도시'}</h2><p>${is3d?'여섯 구역 · 여덟 종류의 세포':'오늘의 도시를 선택하세요'}</p></div>
     <div class="cc-scenario-cards">${Object.entries(SCENARIOS).map(([id,p])=>button('scenario',`<span class="cc-scenario-art cc-scenario-art--${p.terrain}"><b>${p.symbol}</b><i></i></span><span class="cc-scenario-copy"><small>${p.tag}</small><strong>${p.name}</strong><span>${p.goal}</span><em>${p.detail}</em></span>`,`data-city-id="${id}" aria-pressed="${choice===id}"`)).join('')}</div>
-    ${is3d?'<span class="cc-three-tag">폐·심장 시범 구역 / 다른 장기는 연결 거점</span>':''}<div class="cc-start-actions">${button('resume','이어하기',`${started?'':'hidden'}`)}${button('start',is3d?'마을 들어가기':'선택한 도시 시작','class="cc-start-primary"')}</div>
+    <div class="cc-start-actions">${button('resume','이어하기',`${started?'':'hidden'}`)}${button('start',is3d?'마을 들어가기':'선택한 도시 시작','class="cc-start-primary"')}</div>
   </section>`;}
   function region(selector,html){
     const el=game?.querySelector(selector);if(!el||markupCache.get(el)===html)return;
@@ -57,7 +57,7 @@ export function createCityGame(data,options={}){
   }
   function detail(){
     const def=districtDef(selected),d=run.districts[selected],cost=upgradeCost(run,selected),b=d.building;
-    const status=b?(b.remaining==null?'자재 배송 중':run.workCrews&&!run.cells.some(c=>c.buildSite===selected&&c.task==='시설 건설')?'작업자 이동 중':`작업 중 · ${Math.ceil(b.remaining)}초`):d.oxygen<20?'산소 공급 부족':d.food<1?'영양 배송 대기':'정상 가동';
+    const status=b?(b.remaining==null?'자재 배송 중':run.workCrews&&!run.cells.some(c=>c.buildSite===selected&&c.task==='시설 건설')?'작업자 이동 중':`작업 중 · ${Math.ceil(b.remaining)}초`):d.oxygen<20?'산소 공급 부족':d.food<1?'영양 배송 대기':d.supportUntil>run.time?'방어 지원 활성':'정상 가동';
     return `<div class="cc-overview"><div class="cc-detail-head"><div class="cc-organ-icon" style="--organ:${def.color}">${def.symbol}</div><div><span>DISTRICT ${String(DISTRICTS.indexOf(def)+1).padStart(2,'0')} · Lv.${d.level}</span><h2>${def.name}</h2></div>${card('immune-element',def.card,def.short)}</div><p>${def.job}</p>
       <div class="cc-state"><strong>${status}</strong><span>Lv.${d.level} · 가동 ${Math.round(output(run,selected)*100)}%</span></div>
       <div class="cc-local-stats"><div><span>건강</span><b>${Math.round(d.hp)}%</b></div><div><span>산소</span><b>${Math.round(d.oxygen)}%</b></div><div><span>영양 재고</span><b>${Math.floor(d.food)}</b></div></div>
@@ -66,10 +66,10 @@ export function createCityGame(data,options={}){
       <div class="cc-upgrade-hint">${def.effect}</div><div class="cc-build-actions">${button('tower',`초소 ${d.tower}/2 <b>▥ ${30+d.tower*20}</b>`,`data-city-id="${selected}" ${b||d.tower>=2||run.resources.materials<30+d.tower*20?'disabled':''}`)}${button('repair','복구 <b>▥ 16</b>',`data-city-id="${selected}" ${b||run.resources.materials<16||d.hp>=99&&(selected!=='lung'||run.barrier>=99)?'disabled':''}`)}</div>
       ${button('rally',run.rally===selected?'⚑ 방어 집결 구역':'⚑ 이 구역에 집결',`data-city-id="${selected}" class="cc-rally" aria-pressed="${run.rally===selected}"`)}${selected==='marrow'?button('panel','세포 생산 · 대기 '+run.recruits.length+'/3','data-city-id="workers" class="cc-production"'):''}</div>`;
   }
-  function workers(){return Object.entries(JOBS).map(([id,job])=>{
+  function workers(){const jobs=Object.entries(cityJobs(run)),pages=is3d?Math.ceil(jobs.length/4):1;workersPage=Math.min(workersPage,pages-1);return (is3d?jobs.slice(workersPage*4,workersPage*4+4):jobs).map(([id,job])=>{
     const n=counts(run,id),queued=run.recruits.filter(r=>r.kind===id),status=queued.length?`충원 ${queued.length} · ${queued[0].remaining==null?'배송 중':Math.ceil(queued[0].remaining)+'초'}`:run.lifecycle?`게임 수명 ${job.life/60}분 · 교체 ${run.turnover[id]||0}`:job.task;
-    return `<div class="cc-worker">${button('inspect-kind',id==='rbc'?'●':id==='dendritic'?'✳':'✦',`class="cc-worker-icon" style="--cell:${job.color}" data-city-id="${id}" aria-label="${job.name} 위치 표시" aria-pressed="${selectedKind===id}"`)}<div><strong>${job.name} <b>${n}</b></strong><small>${status}</small></div>${card('immune-element',job.card,job.name)}${button('recruit','+ '+job.cost,`data-city-id="${id}" aria-label="${job.name} 충원 영양 ${job.cost}" ${run.resources.food<job.cost||run.recruits.length>=3||n+queued.length>=job.cap?'disabled':''}`)}</div>`;
-  }).join('');}
+    return `<div class="cc-worker">${button('inspect-kind',job.glyph||(id==='rbc'?'●':id==='dendritic'?'✳':'✦'),`class="cc-worker-icon" style="--cell:${job.color}" data-city-id="${id}" aria-label="${job.name} 위치 표시" aria-pressed="${selectedKind===id}"`)}<div><strong>${job.name} <b>${n}</b></strong><small>${status}</small></div>${card('immune-element',job.card,job.name)}${button('recruit','+ '+job.cost,`data-city-id="${id}" aria-label="${job.name} 충원 영양 ${job.cost}" ${run.resources.food<job.cost||run.recruits.length>=3||n+queued.length>=cellCap(run,id)||is3d&&run.cells.length+run.recruits.length>=96?'disabled':''}`)}</div>`;
+  }).join('')+(pages>1?`<div class="cc-worker-pages">${button('workers-page','←',`data-city-id="-1" aria-label="이전 세포 종류" ${workersPage===0?'disabled':''}`)}<span>${workersPage+1} / ${pages}</span>${button('workers-page','→',`data-city-id="1" aria-label="다음 세포 종류" ${workersPage===pages-1?'disabled':''}`)}</div>`:'');}
   function updateCamera(camera=renderer?.cameraInfo()){
     if(!game||!camera)return;
     const label=game.querySelector('[data-city-zoom]'),value=Math.round(camera.scale*100)+'%';
@@ -137,6 +137,7 @@ export function createCityGame(data,options={}){
     if(action!=='reset'&&resetArmed){resetArmed=false;game.querySelector('[data-city-action="reset"]').textContent='새 도시';}
     if(action==='select')select(id);
     else if(action==='inspect-kind')selectedKind=selectedKind===id?'':id;
+    else if(action==='workers-page')workersPage=Math.max(0,workersPage+Number(id));
     else if(action==='scenario'){if(SCENARIOS[id])choice=id;}
     else if(action==='menu'){atStart=true;speed=0;save();}
     else if(action==='resume'){if(started){atStart=false;speed=0;}}

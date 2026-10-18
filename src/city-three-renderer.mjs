@@ -4,7 +4,7 @@ import {GLTFLoader} from './vendor/three/GLTFLoader.js';
 import {createVillage} from './city-three-village.mjs';
 import {createActors} from './city-three-actors.mjs';
 import {SITES,qualityProfile} from './city-three-layout.mjs';
-import {JOBS} from './city-data.mjs';
+import {CELL_JOBS as JOBS} from './city-data.mjs';
 
 const assetRoot=new URL('../assets/city3d/',import.meta.url);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));

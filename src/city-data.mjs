@@ -26,6 +26,14 @@ export const JOBS = Object.freeze({
   fibroblast:{name:'섬유아세포',task:'자재 생산 · 복구',color:'#e3ba77',cost:20,cap:12,life:1200,card:null},
   dendritic:{name:'수지상세포',task:'항원 수집 · 전달',color:'#86bb8b',cost:26,cap:8,life:600,card:'IMM-013'}
 });
+// Additional jobs are enabled by the 3D village; the original city's roster stays intact.
+export const CELL_JOBS=Object.freeze({...JOBS,
+ helperT:{name:'도움 T세포',task:'항원 확인 · 방어 지원',color:'#6aaab8',cost:28,cap:6,life:900,card:null,glyph:'⚑'},
+ plasma:{name:'형질세포',task:'표적 항체 생산',color:'#a590ca',cost:32,cap:6,life:900,card:'IMM-035',glyph:'Y'},
+ platelet:{name:'혈소판',task:'손상 부위 응급 봉합',color:'#dfad75',cost:12,cap:8,life:420,card:null,glyph:'✚'}
+});
+export const cityJobs=s=>s.specialists?CELL_JOBS:JOBS;
+export const cellCap=(s,kind)=>s.specialists&&kind==='rbc'?32:CELL_JOBS[kind]?.cap;
 export const DRUGS = Object.freeze([
   {id:'ampicillin',name:'Ampicillin',short:'AMP',color:'#b6d38e',cost:10},
   {id:'oxacillin',name:'Oxacillin',short:'OXA',color:'#f0bb77',cost:14},

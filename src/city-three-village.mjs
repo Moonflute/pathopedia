@@ -2,10 +2,11 @@ import * as T from './vendor/three/three.module.min.js';
 import {mergeGeometries} from './vendor/three/BufferGeometryUtils.js';
 import {SITES,CITY_ROADS,INTAKE_ROAD,RIVER_PATH,COTTAGES,groundPoint} from './city-three-layout.mjs';
 import {ENTRANCE,districtDef} from './city-data.mjs';
+import {createFacilities} from './city-three-facilities.mjs';
 
 // All decorative meshes are baked once by material. Only working machinery moves.
 export function createVillage(assets){
- const root=new T.Group(),fixed=new T.Group(),animated=new T.Group(),supply=new T.Group(),rotors=[],pistons=[],districts={};root.add(fixed,animated,supply);supply.visible=false;
+ const root=new T.Group(),fixed=new T.Group(),animated=new T.Group(),supply=new T.Group(),districts={};root.add(fixed,animated,supply);supply.visible=false;
  const materials=new Map();
  const mat=color=>{if(!materials.has(color))materials.set(color,new T.MeshStandardMaterial({color,roughness:.95}));return materials.get(color);};
  const make=(geo,color,x,y,z,parent=fixed)=>{const m=new T.Mesh(geo,mat(color));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;};
@@ -55,40 +56,17 @@ export function createVillage(assets){
   for(let i=0;i<3;i++){const extra=cylinder(bx+1.6+i*.5,.35,bz-1,.18,.2,.7,site.color,districts[id].level);extra.visible=false;}
  }
  for(const [i,p] of COTTAGES.entries()){cottage(...p,i%3===0);if(i%3===0)model('lantern',p[0]+.85,0,p[1]+.7,.8);}
- // Wind harbour: twin bellows, two working CC0 wind rotors and oxygen tanks.
- for(const [x,z,s] of [[-9,-10,1],[-5.6,-12, .8]]){
-  cylinder(x,1.35*s,z,.57*s,.82*s,2.7*s,0xf1e6cd);const roof=make(new T.ConeGeometry(.88*s,1*s,8),0x79a9a6,x,3.1*s,z);
-  const rotor=new T.Group();rotor.position.set(x,2.35*s,z+.82*s);animated.add(rotor);model('windmill',0,0,0,.8*s,Math.PI/2,rotor);rotors.push(rotor);
-  box(x, .4,z+.7,.37,.8,.15,0x947656);model('banner-green',x+.75,1.3,z,.75);
- }
- cottage(-10.8,-10.5,1.4,.3,true);
- for(const x of [-8,-6.6]){cylinder(x,.65,-8.2,.42,.42,1.3,0xa0c9c5);cylinder(x,1.36,-8.2,.25,.35,.15,0xe9dfbe);const b=box(x,.55,-7.7,.65,.7,.35,0x967e64,animated);pistons.push({mesh:b,y:.55,lung:true});}
- model('stall-green',-4,.05,-9,1.1,.6);model('cart',-5,.05,-6.5,.85);
- // A soft red pump house beside the town square, with visible brass pipework.
- cottage(0,-1,2.5,.15,true);
- for(const x of [-.85,.85]){
-  cylinder(x,1,-.1,.42,.49,1.8,0xdba39a);orb(x,1.96,-.1,.46,0xe2a29a);
-  cylinder(x,1.1,.6,.14,.14,1.5,0xc5aa6e);
-  const piston=cylinder(x,1.4,.6,.25,.25,.25,0xe2ca8d,animated);pistons.push({mesh:piston,y:1.4});
- }
- const heartBadge=orb(0,2.75,.36,.38,0xd06e75);heartBadge.scale.set(1.1,.8,.45);orb(-.19,2.93,.36,.23,0xd06e75);orb(.19,2.93,.36,.23,0xd06e75);
- model('banner-red',1.7,.6,-.9,1.1);model('stall-red',2.5,.05,4.1,1.1,-.6);
- model('cart',1.8,.05,1,.85,1.4);
- // Real engine services remain represented by small expandable outposts.
- cottage(10,-4.8,1.8,-.2,true);model('stall-green',9.4,.05,-2.1,1.1);model('cart',7.8,.06,-1.9,.9);
- cottage(-6.8,12,1.85,.8,true);box(-6.1,2.1,12.55,.6,.16,.12,0xf1e4cb);box(-6.1,2.1,12.55,.16,.6,.12,0xf1e4cb);
- cottage(-13.7,.8,1.75,.8);model('banner-green',-13,1,1.8,.8);
- cottage(10.4,9,1.8,-.4);cylinder(10.3,.18,7.3,.8,.8,.36,0xb8b1c2);cylinder(10.3,.38,7.3,.65,.65,.04,0x84b8bc);
- model('watermill',11.5,.8,8.7,.85);
+ const facilities=createFacilities({fixed,animated,make,box,cylinder,orb,model,cottage,road});
  // Gate, palisade, small gardens and trees integrate the perimeter into the valley.
  for(let i=0;i<10;i++)model('fence',-15+i*1.65,.05,-13.8+Math.sin(i*.5)*.8,1.7);
  for(const x of [-9.4,-7.2]){cylinder(x,1,-14.3,.42,.55,2,0xe1d4b6);make(new T.ConeGeometry(.65,.7,6),0x779f9c,x,2.3,-14.3);}
  box(-8.3,1.8,-14.3,2.1,.2,.25,0xb59b73);
- let seed=9127;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+ let sceneryCount=0,seed=9127;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
  const allRoads=[...CITY_ROADS.map(r=>r.points),INTAKE_ROAD];
  for(let i=0;i<155;i++){
   const x=-22+rand()*45,z=-21+rand()*43;
   if(x>11&&x<17||Object.values(SITES).some(p=>Math.hypot(x-p.x,z-p.z)<4.1)||COTTAGES.some(p=>Math.hypot(x-p[0],z-p[1])<1.6)||allRoads.some(r=>r.some(p=>Math.hypot(x-p.x,z-p.z)<1.5)))continue;
+  if(sceneryCount>=50)break;sceneryCount++;
   if(i%4===0)model('rock-small',x,.02,z,.6+rand(),rand()*6);
   else model(i%3?'tree':'tree-high-round',x,0,z,.75+rand()*.55,rand()*6);
  }
@@ -104,8 +82,7 @@ export function createVillage(assets){
  return {root,districts,update(s,options){
   supply.visible=options.layer==='supply';
   const t=s.time;
-  for(const rotor of rotors)rotor.rotation.z=-t*(s.weather.id==='dry'?.45:.8);
-  for(const p of pistons)p.mesh.position.y=p.y+Math.sin(t*(p.lung?2:4))*.16;
+  facilities.update(s);
   for(const [id,d] of Object.entries(districts)){const state=s.districts[id];d.work.visible=!!state.building;d.tower.visible=state.tower>0;d.tower.scale.y=state.tower>1?1.25:1;d.work.userData.hammer.rotation.z=state.building?.remaining!=null&&s.cells.some(c=>c.buildSite===id&&c.task==='시설 건설')?Math.sin(t*9)*.7:0;d.level.children.forEach((m,i)=>m.visible=i<state.level-1);}
   ground.material.color.setHex(s.host==='neutropenia'?0xd7c8a7:0xc8ccb2);
  }};

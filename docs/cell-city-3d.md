@@ -1,10 +1,14 @@
-# Cell City 3D pilot · v0.46.0
+# Cell City 3D village · v0.47.0
 
 Entry: `#city3d`. The original `#city` remains available. The two games use separate local saves: `pathopedia:cell-city:3d:v1` and `pathopedia:cell-city:v1`. No save is imported, migrated, or deleted when switching views.
 
 ## Playable scope
 
-The wind harbour and pump square are the detailed lung and heart neighbourhoods. Four smaller outposts keep the gut, kidney, marrow and lymph services connected to the same simulation. The landscape is a continuous valley with a river, hills, winding streets, courtyards, cottages, markets and trees. It does not reuse the old rectangular canvas layout.
+Six districts now have distinct silhouettes: wind harbour/bellows, pump house/manifold, food workshop/silos/packing belt, riverside filtration basins/waterwheel, bone-framed marrow nursery, and a lymph rotunda with antibody benches. The valley contains 50 trees/rocks (previously 101) and 11 decorative cottages (previously 15). CC0 roofs, walls, mills, stalls and carts are reused without new model downloads.
+
+Normal scenarios begin with 54 cells: 18 RBCs, 10 neutrophils, 6 macrophages, 6 fibroblasts, 4 dendritic cells, 3 helper T cells, 3 plasma cells and 4 platelets. The fragile scenario retains 4 neutrophils. The original 2D roster and rules stay unchanged.
+
+Helper T cells collect known antigen information at the lymph district and carry a short-lived support signal to the defense rally (+15% base immune damage there). Plasma cells travel to work benches, consume local nutrition and produce target antibodies only after antigen information arrives. Platelets travel to damaged barriers/tissue and perform small emergency repairs. These are game abstractions. Recruitment, optional lifetimes, saving and replacement support all eight jobs. Existing 3D saves are upgraded once while retaining time, objectives, facilities and in-flight shipments; RBC numbers decrease by approximately 20% and missing starting specialists join the city.
 
 All visible cells correspond to simulation cells. Oxygen backpacks follow RBC cargo; immune cells patrol and respond to infections; dendritic cells carry antigen; fibroblasts repair and produce materials. Delivery couriers/carts represent actual engine shipments, not additional population. Cell selection shows the current engine task. Drug selection, recruitment, objectives, lifetimes, scenarios, towers and upgrades use the existing HTML UI and engine.
 
@@ -32,9 +36,9 @@ Orthographic camera, damped panning and rotation, interpolated cursor-centred wh
 
 ## Rendering budget
 
-The models/palette/license/provenance total about 528 KB; the Three.js runtime/addons/license total about 910 KB (uncompressed). Custom scene code is additional. The prototype has approximately 89–90k rendered triangles and 46–49 draw calls in the initial city; visible machinery, construction and supply overlays affect this count.
+The models/palette/license/provenance total about 528 KB; the Three.js runtime/addons/license total about 910 KB (uncompressed). Custom scene code is additional. A mobile-width browser observation in v0.47.0 showed approximately 73k rendered triangles and 53 draw calls during play, compared with 89–90k triangles in the initial v0.46.0 scene. Visible machinery, construction, combat and supply overlays affect these counts.
 
-Static scenery is merged by material. All cells and shipments use instanced bodies, faces, cargo and equipment. Simulation ticks at 30 Hz independently of rendering. No post-processing, physics engine, skeletal animation, per-cell DOM elements or per-frame route search.
+Static scenery is merged by material. Eight cell silhouettes and couriers share 16 instanced part/effect batches, with lower-detail face and limb geometry and active-range instance buffer uploads. Simulation ticks at 30 Hz independently of rendering. No post-processing, physics engine, skeletal animation, per-cell DOM elements or per-frame route search.
 
 | Budget | Narrow view | Desktop view |
 | --- | --- | --- |
@@ -50,6 +54,7 @@ The desktop in-app browser observed roughly 49 fps at 1280×800 and 30 fps at a 
 
 - `city-three-layout.mjs`: semantic district sites, transformed roads, courtyard/building separation, cottage placements and quality budgets. The continuous sector transform maps the existing simulation's routes and actors into a new world layout. Tests check anchor alignment and continuity at sector boundaries.
 - `city-three-village.mjs`: district construction, static scenery batching, working machinery, construction sites, upgrade additions and supply layer. Replace an outpost here to expand one organ without rebuilding simulation/UI.
+- `city-three-facilities.mjs`: the six organ facilities, reused CC0 modules, static machinery and a bounded set of animated parts driven by city state.
 - `city-three-actors.mjs`: pooled instanced cells, couriers, pathogens, combat effects and selection rings. Each visible role has a distinct colour, cap and equipment.
 - `city-three-renderer.mjs`: camera, picking, labels, asset lifecycle and the 3D frame loop.
 - `city-three-ui.mjs`: renderer/loop/save-key injection into the shared `createCityGame`.
@@ -57,3 +62,5 @@ The desktop in-app browser observed roughly 49 fps at 1280×800 and 30 fps at a 
 ## Verification
 
 Focused engine/layout/asset tests cover route isolation, continuous projection, real delivery/construction/combat, waiting for workers, save restoration and all external GLB texture dependencies. Browser checks cover original/3D switching, separate saved progress, construction delivery completing an upgrade, cell inspection, selection highlighting, camera drag/wheel/rotation/fit and overflow at desktop, portrait and landscape dimensions. Touch mappings use OrbitControls; physical multitouch hardware was not available for this check.
+
+The v0.47.0 specialist tests additionally cover one-time save upgrades, antigen-dependent production, the absence of production without plasma cells, delivered helper signals, platelet arrival/repair, new-job retirement/replacement, deterministic save continuation and a shared actor triangle budget below 40k for the starting roster. Mobile-width checking at 390×844 verified 30 fps, the two-page roster, location highlighting and recruitment, with no page or management-panel overflow. This is a desktop browser viewport check, not a physical-phone benchmark.
