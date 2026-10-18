@@ -1,7 +1,7 @@
-const VERSION = '0.45.0';
+const VERSION = '0.46.0';
 const PREFIX = `pathopedia:${new URL(self.registration.scope).pathname}:`;
-const CACHE = PREFIX + VERSION + ':cell-city-scenarios-4';
-const FILES = ['./','./index.html','./src/app.mjs','./src/app-routing.mjs','./src/engine.mjs','./src/treatment-engine.mjs','./src/treatment-ui.mjs','./src/defense-data.mjs','./src/defense-engine.mjs','./src/defense-ui.mjs','./src/defense-renderer.mjs','./src/defense.css','./src/vendor/kontra-10.0.2.mjs','./src/vendor/KONTRA-LICENSE.txt','./src/card-prototype-ui.mjs','./src/reference-card.mjs','./src/card-catalog.mjs','./src/card-models.mjs','./src/card-art.mjs','./src/card-art-data.mjs','./src/card-gallery-ui.mjs','./src/card-pathogen-order.mjs','./src/card-drug-order.mjs','./src/card-guide.mjs','./src/card-inspector.mjs','./src/card-stacks.mjs','./src/card-search.mjs','./src/style.css','./src/compact.css','./src/treatment.css','./src/reference-card.css','./src/card-gallery.css','./data/organisms.json','./data/library.json','./data/library-schema.json','./data/sources.json','./data/schema.json','./data/treatment-questions.json','./assets/fonts/SUIT-Variable.woff2','./favicon.svg','./manifest.webmanifest','./assets/pathopedia-icon-180.png?v=0.45.0','./assets/pathopedia-icon-192.png?v=0.45.0','./assets/pathopedia-icon-512.png?v=0.45.0'];
+const CACHE = PREFIX + VERSION + ':cell-city-three-1';
+const FILES = ['./','./index.html','./src/app.mjs','./src/app-routing.mjs','./src/engine.mjs','./src/treatment-engine.mjs','./src/treatment-ui.mjs','./src/defense-data.mjs','./src/defense-engine.mjs','./src/defense-ui.mjs','./src/defense-renderer.mjs','./src/defense.css','./src/vendor/kontra-10.0.2.mjs','./src/vendor/KONTRA-LICENSE.txt','./src/card-prototype-ui.mjs','./src/reference-card.mjs','./src/card-catalog.mjs','./src/card-models.mjs','./src/card-art.mjs','./src/card-art-data.mjs','./src/card-gallery-ui.mjs','./src/card-pathogen-order.mjs','./src/card-drug-order.mjs','./src/card-guide.mjs','./src/card-inspector.mjs','./src/card-stacks.mjs','./src/card-search.mjs','./src/style.css','./src/compact.css','./src/treatment.css','./src/reference-card.css','./src/card-gallery.css','./data/organisms.json','./data/library.json','./data/library-schema.json','./data/sources.json','./data/schema.json','./data/treatment-questions.json','./assets/fonts/SUIT-Variable.woff2','./favicon.svg','./manifest.webmanifest','./assets/pathopedia-icon-180.png?v=0.46.0','./assets/pathopedia-icon-192.png?v=0.46.0','./assets/pathopedia-icon-512.png?v=0.46.0'];
 const absolute = path => new URL(path,self.registration.scope).href;
 self.addEventListener('install', event => event.waitUntil((async()=>{
  const cache=await caches.open(CACHE);
@@ -43,6 +43,8 @@ self.addEventListener('message',event=>{
  })().catch(()=>{}));
 });
 self.addEventListener('fetch',event=>{
+ // Local development always reads saved files; deployed Pages keeps offline caching.
+ if(['localhost','127.0.0.1','[::1]'].includes(self.location.hostname))return;
  if(event.request.method!=='GET'||!event.request.url.startsWith(self.registration.scope))return;
  event.respondWith((async()=>{
   const cache=await caches.open(CACHE);
@@ -65,7 +67,7 @@ self.addEventListener('fetch',event=>{
   // Load card images on demand so a full encyclopedia does not block PWA installation.
   const pathname=new URL(event.request.url).pathname;
   // Play and survival stay out of the install precache and become available offline after first entry.
-  if(response.ok&&(pathname.includes('/assets/cards/illustrations-v1/')||/\/src\/(?:(?:play|survival|luck|city)(?:-[a-z]+)*\.(?:mjs|css)$|vendor\/freedoom\/)/.test(pathname))){
+  if(response.ok&&(pathname.includes('/assets/cards/illustrations-v1/')||pathname.includes('/assets/city3d/')||pathname.includes('/src/vendor/three/')||/\/src\/(?:(?:play|survival|luck|city)(?:-[a-z]+)*\.(?:mjs|css)$|vendor\/freedoom\/)/.test(pathname))){
    event.waitUntil(cache.put(event.request,response.clone()).catch(()=>{}));
   }
   return response;

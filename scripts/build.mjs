@@ -20,6 +20,7 @@ for (const path of ['index.html', 'favicon.svg', 'manifest.webmanifest', 'sw.js'
 await mkdir('dist/assets', {recursive:true});
 for(const size of [180,192,512]) await cp(`assets/pathopedia-icon-${size}.png`, `dist/assets/pathopedia-icon-${size}.png`);
 await cp('assets/fonts', 'dist/assets/fonts', {recursive:true});
+await cp('assets/city3d', 'dist/assets/city3d', {recursive:true});
 if (hasMorphology) await cp('assets/morphology', 'dist/assets/morphology', {recursive:true});
 if (existsSync('data/card-art.json')) {
  const art=JSON.parse(await readFile('data/card-art.json','utf8'));

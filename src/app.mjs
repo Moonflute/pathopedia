@@ -7,7 +7,7 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.45.0';
+const VERSION = '0.46.0';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
  {id:'lab',label:'병원체 추측',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
@@ -17,6 +17,7 @@ const APP_TABS = [
  {id:'survival',label:'survival',icon:'<circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/>'},
  {id:'reroll',label:'re-roll',icon:'<rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><path d="m9 15 6-6"/>'},
  {id:'city',label:'cell city',icon:'<path d="M3 21h18M5 21V10l4-3 4 3v11M13 21V4h6v17M8 13h2m-2 4h2m6-10h1m-1 4h1m-1 4h1"/>'},
+ {id:'city3d',label:'city 3D',icon:'<path d="m12 2 9 5v10l-9 5-9-5V7l9-5Z"/><path d="m3 7 9 5 9-5M12 12v10"/>'},
  {id:'cards',label:'카드 도감',icon:'<rect x="6" y="5" width="13" height="16" rx="2"/><path d="M4 18V4a2 2 0 0 1 2-2h10M10 10h5M10 14h5M10 18h3"/>'}
 ];
 
@@ -39,6 +40,7 @@ let playGame, playLoading, playLoadError='';
 let survivalGame, survivalLoading, survivalLoadError='';
 let luckGame, luckLoading, luckLoadError='';
 let cityGame, cityLoading, cityLoadError='';
+let cityThreeGame, cityThreeLoading, cityThreeLoadError='';
 const root = $('#app');
 bindCardMotion(root);
 bindCardTooltips(root);
@@ -47,7 +49,7 @@ root.addEventListener('pointermove',event=>cardGallery?.handlePointerMove(event)
 root.addEventListener('pointerdown',event=>cardGallery?.handlePointerDown(event));
 root.addEventListener('wheel',event=>cardGallery?.handleWheel(event),{passive:false});
 root.addEventListener('focusin',event=>cardGallery?.handleFocusIn(event));
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.45.0" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.46.0" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -89,12 +91,27 @@ function home() {
  return `<section class="tab-selection" aria-label="탭 선택" style="--home-rows-wide:${Math.ceil(APP_TABS.length/4)};--home-rows-tall:${Math.ceil(APP_TABS.length/3)};--home-rows-narrow:${Math.ceil(APP_TABS.length/2)}"><nav class="tab-choices" aria-label="학습 화면 선택">${APP_TABS.map(({id,label,icon})=>`<button type="button" class="tab-choice" data-view="${id}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></button>`).join('')}</nav></section>`;
 }
 function shell() {
- const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',defense:'defense-main',play:'play-main',survival:'survival-main',reroll:'luck-main',city:'city-main',cards:'card-gallery-main'}[view];
- const content=view==='home'?home():view==='lab'?lab():view==='treatment'?treatmentGame.render():view==='defense'?defenseGame.render():view==='play'?playView():view==='survival'?survivalView():view==='reroll'?luckView():view==='city'?cityView():cardGallery.render();
+ const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',defense:'defense-main',play:'play-main',survival:'survival-main',reroll:'luck-main',city:'city-main',city3d:'city-main',cards:'card-gallery-main'}[view];
+ const content=view==='home'?home():view==='lab'?lab():view==='treatment'?treatmentGame.render():view==='defense'?defenseGame.render():view==='play'?playView():view==='survival'?survivalView():view==='reroll'?luckView():view==='city'?cityView():view==='city3d'?cityThreeView():cardGallery.render();
  return `<header class="appbar${view==='home'?' appbar--home':''}"><a class="brand" href="#home" aria-label="Pathopedia 탭 선택">${symbol}<span>PATHOPEDIA</span></a>${view==='home'?'':`<nav class="appnav" aria-label="주 메뉴">${APP_TABS.map(({id,label})=>`<button type="button" data-view="${id}" class="${view===id?'active':''}" ${view===id?'aria-current="page"':''}>${label}</button>`).join('')}</nav>`}<span class="version">v ${VERSION}</span></header>
   ${storageWarning ? `<div class="storage-warning" role="alert">${esc(storageWarning)}</div>` : ''}
   <main id="main" class="${mainClass}" tabindex="-1">${content}</main>
   <dialog id="detail-dialog" aria-labelledby="detail-title"></dialog>${cardInspector?.markup() || ''}`;
+}
+function cityThreeView(){
+ if(cityThreeGame)return cityThreeGame.render();
+ return '<section class="boot"><span class="eyebrow">CELL CITY / 3D PILOT</span><h1>'+(cityThreeLoadError?'3D 마을을 불러오지 못했습니다.':'작은 마을 준비 중…')+'</h1>'+(cityThreeLoadError?'<button type="button" data-city3d-retry>다시 불러오기</button>':'')+'<a href="#city">기존 도시 ↗</a></section>';
+}
+async function loadCityThree(){
+ if(cityThreeGame||cityThreeLoading)return;cityThreeLoadError='';
+ const styles=['city','city-three'].map(name=>new Promise((resolve,reject)=>{
+  if(document.querySelector('link[data-city-sheet="'+name+'"]')||name==='city'&&document.querySelector('link[data-city-style]'))return resolve();
+  const link=document.createElement('link');link.rel='stylesheet';link.href=new URL('./'+name+'.css',import.meta.url).href;link.dataset.citySheet=name;if(name==='city')link.dataset.cityStyle='';link.onload=resolve;link.onerror=()=>{link.remove();reject(Error('City style unavailable'));};document.head.append(link);
+ }));
+ cityThreeLoading=Promise.all([import('./city-three-ui.mjs'),...styles]);
+ try{const [{createCityThreeGame}]=await cityThreeLoading;cityThreeGame=createCityThreeGame(data);}
+ catch(error){cityThreeLoadError=error.message;console.error('City 3D load failed',error);}
+ finally{cityThreeLoading=null;if(view==='city3d')render();}
 }
 function cityView(){
  if(cityGame)return cityGame.render();
@@ -231,6 +248,8 @@ function render(focusSelector) {
  survivalGame?.mount(root,view==='survival');
  luckGame?.mount(root,view==='reroll');
  cityGame?.mount(root,view==='city');
+ cityThreeGame?.mount(root,view==='city3d');
+ if(view==='city3d'&&!cityThreeGame&&!cityThreeLoadError)void loadCityThree();
  if(view==='city'&&!cityGame&&!cityLoadError)void loadCity();
  if(view==='reroll'&&!luckGame&&!luckLoadError)void loadLuck();
  if(view==='survival'&&!survivalGame&&!survivalLoadError)void loadSurvival();
@@ -261,6 +280,8 @@ root.addEventListener('click',e=>{
  if(b.hasAttribute('data-survival-retry')){void loadSurvival();render();return;}
  if(b.hasAttribute('data-luck-retry')){void loadLuck();render();return;}
  if(b.hasAttribute('data-city-retry')){void loadCity();render();return;}
+ if(b.hasAttribute('data-city3d-retry')){location.reload();return;}
+ if(cityThreeGame?.handleClick(b))return;
  if(cityGame?.handleClick(b))return;
  if(luckGame?.handleClick(b))return;
  if(survivalGame?.handleClick(b))return;

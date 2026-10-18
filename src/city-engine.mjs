@@ -27,10 +27,10 @@ function move(c,speed,dt){
   return true;
 }
 const vascular=vascularRoute;
-export function createCity(host='normal',scenario='legacy'){
+export function createCity(host='normal',scenario='legacy',options={}){
   const preset=SCENARIOS[scenario];if(preset)host=preset.host;
   const s={schema:SAVE_VERSION,time:0,serial:0,host:host==='neutropenia'?host:'normal',status:'running',endless:false,policy:'balanced',rally:'lung',drug:'ampicillin',resources:{food:110,materials:65},waste:12,inflammation:0,barrier:100,wave:0,nextWave:45,spawn:[],spawnClock:0,weather:{id:'clear',until:0},districts:{},cells:[],shipments:[],enemies:[],debris:[],effects:[],antigens:{},antibodies:{},recruits:[],log:[],stats:{defeated:0,deliveries:0,oxygen:0},supplyClock:0,drugClock:0};
-  Object.assign(s,{scenario:preset?scenario:'legacy',lifecycle:false,turnover:{},rawFood:24,intakeClock:0,breach:0,recovered:0,endReason:''});s.stats.born=0;s.stats.retired=0;
+  Object.assign(s,{scenario:preset?scenario:'legacy',workCrews:options.workCrews===true,lifecycle:false,turnover:{},rawFood:24,intakeClock:0,breach:0,recovered:0,endReason:''});s.stats.born=0;s.stats.retired=0;
   for(const d of DISTRICTS)s.districts[d.id]={level:1,hp:100,oxygen:85,food:12,ammo:{ampicillin:0,oxacillin:0,vancomycin:0},tower:0,building:null};
   s.districts.lung.ammo.ampicillin=18;
   for(let i=0;i<9;i++){const c=cell(s,'rbc',575+(i%3)*13,359+Math.floor(i/3)*9);c.target=DISTRICTS[i%6].id;route(c,[point('lung')]);}
@@ -137,6 +137,16 @@ function updateCell(s,c,dt,speed,data){
     }return;
   }
   if(c.kind==='fibroblast'){
+    // The 3D pilot assigns actual cells to construction. Existing cities retain
+    // their original timed construction unless this saved option is enabled.
+    if(s.workCrews){
+      if(c.buildSite&&!s.districts[c.buildSite]?.building){c.buildSite=null;c.path=[];}
+      if(!c.buildSite){
+        const site=DISTRICTS.filter(d=>s.districts[d.id].building&&!s.cells.some(other=>other!==c&&other.buildSite===d.id)).sort((a,b)=>dist(c,a)-dist(c,b))[0];
+        if(site){const from=DISTRICTS.reduce((a,b)=>dist(c,a)<dist(c,b)?a:b);c.buildSite=site.id;c.target=site.id;route(c,[point(from.id),...vascular(from.id,site.id),{x:site.x+25,y:site.y+38}]);}
+      }
+      if(c.buildSite){const arrived=move(c,60,dt);c.task=!arrived?'공사장 이동':s.districts[c.buildSite].building.remaining==null?'자재 도착 대기':'시설 건설';return;}
+    }
     if(c.path.length&& !move(c,46,dt))return;
     if(c.cooldown>0)return;
     const weakest=DISTRICTS.reduce((a,b)=>s.districts[a.id].hp<s.districts[b.id].hp?a:b);
@@ -190,7 +200,7 @@ export function tickCity(s,dt,data){
     d.food=Math.max(0,d.food-dt*.12);
     const stress=(d.oxygen<15?.7:0)+(d.food<=0?.25:0)+(s.waste>65?.35:0)+(s.inflammation>65?.3:0);
     d.hp=clamp(d.hp+dt*(stress?-stress:d.hp>0?.025:0));
-    if(d.building?.remaining!=null){d.building.remaining-=dt*output(s,def.id);if(d.building.remaining<=0){const type=d.building.type;if(type==='upgrade')d.level++;if(type==='tower')d.tower++;if(type==='repair'){d.hp=clamp(d.hp+45);if(def.id==='lung')s.barrier=clamp(s.barrier+55);}d.building=null;log(s,def.short+' '+({upgrade:'시설 확장',tower:'방어 초소 건설',repair:'복구'}[type])+' 완료');}}
+    if(d.building?.remaining!=null&&(!s.workCrews||s.cells.some(c=>c.buildSite===def.id&&c.task==='시설 건설'))){d.building.remaining-=dt*output(s,def.id);if(d.building.remaining<=0){const type=d.building.type;if(type==='upgrade')d.level++;if(type==='tower')d.tower++;if(type==='repair'){d.hp=clamp(d.hp+45);if(def.id==='lung')s.barrier=clamp(s.barrier+55);}d.building=null;log(s,def.short+' '+({upgrade:'시설 확장',tower:'방어 초소 건설',repair:'복구'}[type])+' 완료');}}
     if(d.tower&&s.enemies.length){d.shot=(d.shot||0)-dt;const enemy=s.enemies.find(e=>!e.dead&&dist(e,def)<175);if(enemy&&d.shot<=0){damage(s,enemy,4*d.tower*output(s,def.id),def,'#f1c67c');d.shot=1.2;}}
   }
   s.supplyClock-=dt;s.drugClock-=dt;
@@ -269,6 +279,7 @@ export function restoreCity(raw){
     if(!s.antigens||!s.antibodies||!s.stats||!s.weather||!['clear','dry','fever'].includes(s.weather.id)||!finite(s.weather.until)||!Number.isFinite(s.supplyClock)||!Number.isFinite(s.drugClock)||!Number.isFinite(s.spawnClock))return null;
     if(['defeated','deliveries','oxygen'].some(k=>!finite(s.stats[k]))||Object.values(s.antibodies).some(v=>!finite(v,100)))return null;
     s.scenario??='legacy';if(s.scenario!=='legacy'&&!SCENARIOS[s.scenario])return null;
+    s.workCrews??=false;if(typeof s.workCrews!=='boolean'||s.cells.some(c=>c.buildSite&&!districtDef(c.buildSite)))return null;
     s.lifecycle??=false;s.turnover??={};s.rawFood??=24;s.intakeClock??=0;s.breach??=0;s.recovered??=0;s.endReason??='';s.stats.born??=0;s.stats.retired??=0;
     if(typeof s.lifecycle!=='boolean'||!finite(s.rawFood,80)||!finite(s.breach,16)||!finite(s.recovered,16)||!Number.isFinite(s.intakeClock)||typeof s.endReason!=='string'||!finite(s.stats.born)||!finite(s.stats.retired)||!s.turnover||Array.isArray(s.turnover)||Object.entries(s.turnover).some(([k,v])=>!JOBS[k]||!Number.isInteger(v)||!finite(v,200)))return null;
     for(const c of s.cells){c.age??=0;c.life??=JOBS[c.kind].life;if(!finite(c.age,2000)||!finite(c.life,2000)||c.life<=0)return null;}
