@@ -1,4 +1,4 @@
-# Cell City 3D village · v0.48.0
+# Cell City 3D village · v0.48.1
 
 Entry: `#city3d`. The original `#city` remains available. The two games use separate local saves: `pathopedia:cell-city:3d:v1` and `pathopedia:cell-city:v1`. No save is imported, migrated, or deleted when switching views.
 
@@ -78,3 +78,5 @@ The v0.47.0 specialist tests additionally cover one-time save upgrades, antigen-
 The v0.48.0 activity checks cover real handoff timing, antigen/nutrition-gated completion, mid-cycle save continuation, construction waiting, separate firing/engulfing poses, transformed bench spacing and finite instance buffers during a 75-second work/combat simulation. The active actor geometry stays below 43k triangles in that scenario, using the same 16 batches. No new model, texture, dependency, light, skeleton, physics or particle system is downloaded. Short Y marks, impacts and shots use existing batches and capped view-dependent sizing.
 
 At 390×844 on the development computer, the final workshop view observed 30 fps, 43 draw calls and about 71k rendered triangles. Counts vary with the view, shadow refresh and active jobs; this is not a physical-phone benchmark. A real browser recovery scenario completed with 36 pathogens defeated and 84 deliveries at 4:55, and continued into free operation.
+
+The v0.48.1 finishing pass opens the construction frame, keeping the hammer, worker and growing material stack visible from the default camera.

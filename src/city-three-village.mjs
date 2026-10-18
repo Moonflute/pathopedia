@@ -52,8 +52,9 @@ export function createVillage(assets){
   const work=districts[id].work,siteWork=groundPoint(workStation(id,'build').target);work.position.set(siteWork.x,0,siteWork.z);
   const frame=[];
   const plank=(x,y,z,w,h,d)=>{const g=new T.BoxGeometry(w,h,d);g.translate(x,y,z);frame.push(g);};
-  for(const x of [-.48,.48])for(const z of [-.4,.4])plank(x,.65,z,.08,1.3,.08);
-  plank(0,1.3,0,1.18,.1,1);plank(0,.2,0,.65,.4,.65);
+  for(const x of [-.48,.48]){plank(x,.55,-.4,.08,1.1,.08);plank(x,.27,.4,.08,.54,.08);}
+  // An open frame keeps the worker and hammer visible from the game camera.
+  plank(0,1.1,-.4,1.1,.08,.08);plank(0,.2,0,.65,.4,.65);
   make(mergeGeometries(frame),0xa68355,0,0,0,work);for(const g of frame)g.dispose();
   work.userData.progress=box(0,.45,0,.64,.22,.65,0xd9b579,work);
   const tower=districts[id].tower;tower.position.set(site.x+2,0,site.z+1.5);cylinder(0,.8,0,.5,.7,1.6,0xd8caae,tower);cylinder(0,1.65,0,.7,.7,.16,0xb19a79,tower);const shield=orb(0,1.95,0,.32,site.color,tower);shield.scale.y=1.3;
