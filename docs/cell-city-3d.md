@@ -1,4 +1,4 @@
-# Cell City 3D village · v0.47.0
+# Cell City 3D village · v0.48.0
 
 Entry: `#city3d`. The original `#city` remains available. The two games use separate local saves: `pathopedia:cell-city:3d:v1` and `pathopedia:cell-city:v1`. No save is imported, migrated, or deleted when switching views.
 
@@ -13,6 +13,15 @@ Helper T cells collect known antigen information at the lymph district and carry
 All visible cells correspond to simulation cells. Oxygen backpacks follow RBC cargo; immune cells patrol and respond to infections; dendritic cells carry antigen; fibroblasts repair and produce materials. Delivery couriers/carts represent actual engine shipments, not additional population. Cell selection shows the current engine task. Drug selection, recruitment, objectives, lifetimes, scenarios, towers and upgrades use the existing HTML UI and engine.
 
 The 3D pilot enables `workCrews`: a fibroblast claims a construction site, follows the circulation network to it, waits for the shipment, then works. Both materials and a living worker must be present for the construction timer to advance. A retired worker can be replaced. The original 2D mode retains its previous construction behaviour.
+
+## Visible work cycles (v0.48.0)
+
+- Oxygen carriers dock at a filling port, lift or put down a tank over 0.75 seconds, and transfer actual oxygen at the end. Couriers load at the gut workshop, steer carts with their walking direction, unload at a district counter, then leave with an empty cart. Construction and recruitment supplies become available only after unloading.
+- Fibroblasts face their work site and swing a complete hammer around the gripping hand. Small chips accompany each strike; the scaffold fills as the real construction timer advances. No work animation runs while materials or a worker are missing. Routine repair crews distribute across damaged districts; material production happens at marrow benches.
+- Plasma cells occupy six distinct standing places around three benches. A 1.2-second stirring/filling cycle reserves local nutrition and produces a real antibody batch on completion. A small gold Y rises from the vial. Waiting for antigen or nutrition stops this motion. Active cycles and reserved nutrition survive save/resume without duplicated output.
+- Neutrophils face their target, brace, recoil and fire a short readable projectile. Macrophages reach and lunge to engulf instead. Platelets press down patches, helpers raise a signal flag, and debris collection has a short scooping motion.
+
+World-space work bays maintain 0.8–0.95 metre separation and 0.65–0.75 metre arm reach (1.15 metres for a cart counter). The inverse sector transform converts these anchors to simulation coordinates. Facilities and actors use the same anchors. Three redundant parked carts and three independently animated bench vials were removed. New fixed fittings are baked with existing scenery; construction frames were reduced to two meshes per active site.
 
 ## Controls
 
@@ -52,10 +61,11 @@ The desktop in-app browser observed roughly 49 fps at 1280×800 and 30 fps at a 
 
 ## Extension points
 
+- `city-activity.mjs`: shared work stations, bounded activity records and cycle progress for rendering and saveable simulation handoffs.
 - `city-three-layout.mjs`: semantic district sites, transformed roads, courtyard/building separation, cottage placements and quality budgets. The continuous sector transform maps the existing simulation's routes and actors into a new world layout. Tests check anchor alignment and continuity at sector boundaries.
 - `city-three-village.mjs`: district construction, static scenery batching, working machinery, construction sites, upgrade additions and supply layer. Replace an outpost here to expand one organ without rebuilding simulation/UI.
 - `city-three-facilities.mjs`: the six organ facilities, reused CC0 modules, static machinery and a bounded set of animated parts driven by city state.
-- `city-three-actors.mjs`: pooled instanced cells, couriers, pathogens, combat effects and selection rings. Each visible role has a distinct colour, cap and equipment.
+- `city-three-actors.mjs`: pooled instanced cells, couriers, pathogens, combat effects and selection rings. Each visible role has a distinct colour, cap and equipment. Working poses use a bounded per-actor activity record and existing instanced rods, boxes and rings.
 - `city-three-renderer.mjs`: camera, picking, labels, asset lifecycle and the 3D frame loop.
 - `city-three-ui.mjs`: renderer/loop/save-key injection into the shared `createCityGame`.
 
@@ -64,3 +74,7 @@ The desktop in-app browser observed roughly 49 fps at 1280×800 and 30 fps at a 
 Focused engine/layout/asset tests cover route isolation, continuous projection, real delivery/construction/combat, waiting for workers, save restoration and all external GLB texture dependencies. Browser checks cover original/3D switching, separate saved progress, construction delivery completing an upgrade, cell inspection, selection highlighting, camera drag/wheel/rotation/fit and overflow at desktop, portrait and landscape dimensions. Touch mappings use OrbitControls; physical multitouch hardware was not available for this check.
 
 The v0.47.0 specialist tests additionally cover one-time save upgrades, antigen-dependent production, the absence of production without plasma cells, delivered helper signals, platelet arrival/repair, new-job retirement/replacement, deterministic save continuation and a shared actor triangle budget below 40k for the starting roster. Mobile-width checking at 390×844 verified 30 fps, the two-page roster, location highlighting and recruitment, with no page or management-panel overflow. This is a desktop browser viewport check, not a physical-phone benchmark.
+
+The v0.48.0 activity checks cover real handoff timing, antigen/nutrition-gated completion, mid-cycle save continuation, construction waiting, separate firing/engulfing poses, transformed bench spacing and finite instance buffers during a 75-second work/combat simulation. The active actor geometry stays below 43k triangles in that scenario, using the same 16 batches. No new model, texture, dependency, light, skeleton, physics or particle system is downloaded. Short Y marks, impacts and shots use existing batches and capped view-dependent sizing.
+
+At 390×844 on the development computer, the final workshop view observed 30 fps, 43 draw calls and about 71k rendered triangles. Counts vary with the view, shadow refresh and active jobs; this is not a physical-phone benchmark. A real browser recovery scenario completed with 36 pathogens defeated and 84 deliveries at 4:55, and continued into free operation.

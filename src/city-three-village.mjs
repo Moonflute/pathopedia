@@ -1,8 +1,9 @@
 import * as T from './vendor/three/three.module.min.js';
 import {mergeGeometries} from './vendor/three/BufferGeometryUtils.js';
 import {SITES,CITY_ROADS,INTAKE_ROAD,RIVER_PATH,COTTAGES,groundPoint} from './city-three-layout.mjs';
-import {ENTRANCE,districtDef} from './city-data.mjs';
+import {ENTRANCE} from './city-data.mjs';
 import {createFacilities} from './city-three-facilities.mjs';
+import {workStation} from './city-activity.mjs';
 
 // All decorative meshes are baked once by material. Only working machinery moves.
 export function createVillage(assets){
@@ -48,10 +49,13 @@ export function createVillage(assets){
   disc(site.x,site.z,site.detail?2.35:1.65,0xb8b7a1,.041);disc(site.x,site.z,site.detail?2.13:1.5,0xeadfc5,.044);
   const [bx,bz]=site.building;road([{x:site.x,z:site.z},{x:bx,z:bz}],.9);
   districts[id]={...site,work:new T.Group(),tower:new T.Group(),level:new T.Group()};animated.add(districts[id].work,districts[id].tower,districts[id].level);
-  const work=districts[id].work,def=districtDef(id),siteWork=groundPoint({x:def.x+25,y:def.y+38});work.position.set(siteWork.x+.6,0,siteWork.z);
-  for(const x of [-.55,.55])for(const z of [-.55,.55])box(x,1,z,.09,2,.09,0xa68355,work);
-  box(0,1.65,0,1.35,.1,1.3,0xc0a06b,work);box(0,.2,0,.7,.4,.7,0xd9b579,work);
-  const hammer=box(.7,1.2,.2,.12,.7,.12,0xb28553,work);box(.7,1.6,.2,.45,.15,.2,0x819498,work);work.userData.hammer=hammer;
+  const work=districts[id].work,siteWork=groundPoint(workStation(id,'build').target);work.position.set(siteWork.x,0,siteWork.z);
+  const frame=[];
+  const plank=(x,y,z,w,h,d)=>{const g=new T.BoxGeometry(w,h,d);g.translate(x,y,z);frame.push(g);};
+  for(const x of [-.48,.48])for(const z of [-.4,.4])plank(x,.65,z,.08,1.3,.08);
+  plank(0,1.3,0,1.18,.1,1);plank(0,.2,0,.65,.4,.65);
+  make(mergeGeometries(frame),0xa68355,0,0,0,work);for(const g of frame)g.dispose();
+  work.userData.progress=box(0,.45,0,.64,.22,.65,0xd9b579,work);
   const tower=districts[id].tower;tower.position.set(site.x+2,0,site.z+1.5);cylinder(0,.8,0,.5,.7,1.6,0xd8caae,tower);cylinder(0,1.65,0,.7,.7,.16,0xb19a79,tower);const shield=orb(0,1.95,0,.32,site.color,tower);shield.scale.y=1.3;
   for(let i=0;i<3;i++){const extra=cylinder(bx+1.6+i*.5,.35,bz-1,.18,.2,.7,site.color,districts[id].level);extra.visible=false;}
  }
@@ -81,9 +85,8 @@ export function createVillage(assets){
  const sources=new Set();fixed.traverse(m=>{if(m.isMesh&&!m.userData.kenney)sources.add(m.geometry);});for(const g of sources)g.dispose();
  return {root,districts,update(s,options){
   supply.visible=options.layer==='supply';
-  const t=s.time;
   facilities.update(s);
-  for(const [id,d] of Object.entries(districts)){const state=s.districts[id];d.work.visible=!!state.building;d.tower.visible=state.tower>0;d.tower.scale.y=state.tower>1?1.25:1;d.work.userData.hammer.rotation.z=state.building?.remaining!=null&&s.cells.some(c=>c.buildSite===id&&c.task==='시설 건설')?Math.sin(t*9)*.7:0;d.level.children.forEach((m,i)=>m.visible=i<state.level-1);}
+  for(const [id,d] of Object.entries(districts)){const state=s.districts[id];d.work.visible=!!state.building;d.tower.visible=state.tower>0;d.tower.scale.y=state.tower>1?1.25:1;const progress=state.building?.remaining==null?0:1-state.building.remaining/state.building.duration;d.work.userData.progress.scale.y=.3+progress*2;d.work.userData.progress.position.y=.4+d.work.userData.progress.scale.y*.11;d.level.children.forEach((m,i)=>m.visible=i<state.level-1);}
   ground.material.color.setHex(s.host==='neutropenia'?0xd7c8a7:0xc8ccb2);
  }};
 }

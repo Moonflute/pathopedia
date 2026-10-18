@@ -28,6 +28,17 @@ export function groundPoint(p){
  }
  return {...target};
 }
+// Inverse of the continuous sector transform. Working bays are spaced in world
+// metres, then converted back to the shared engine's ground coordinates.
+export function groundCoordinate(p){
+ const x=p.x-target.x,z=p.z-target.z;
+ for(const s of sectors){
+  const ax=s.a.x-target.x,az=s.a.z-target.z,bx=s.b.x-target.x,bz=s.b.z-target.z,det=ax*bz-az*bx;
+  const u=(x*bz-z*bx)/det,v=(ax*z-az*x)/det;
+  if(u>=-1e-8&&v>=-1e-8)return {x:origin.x+u*s.ax+v*s.bx,y:origin.y+u*s.ay+v*s.by};
+ }
+ return {x:origin.x,y:origin.y};
+}
 export const CITY_ROADS=ROADS.map(r=>({...r,points:r.points.map(groundPoint)}));
 export const INTAKE_ROAD=FOOD_ROAD.map(groundPoint);
 export const RIVER_PATH=[[16,-27],[14,-19],[15,-10],[13,-1],[14,5],[12,11],[17,19],[20,29]];

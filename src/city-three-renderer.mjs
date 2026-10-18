@@ -5,6 +5,7 @@ import {createVillage} from './city-three-village.mjs';
 import {createActors} from './city-three-actors.mjs';
 import {SITES,qualityProfile} from './city-three-layout.mjs';
 import {CELL_JOBS as JOBS} from './city-data.mjs';
+import {activeActivity,activityProgress} from './city-activity.mjs';
 
 const assetRoot=new URL('../assets/city3d/',import.meta.url);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
@@ -69,7 +70,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
  function reset(){controls.target.set(-1,0,1);camera.position.set(19,32,33);zoomAnchor=null;zoomTarget=fit;controls.update();dirty=true;}
  function updateLabels(s,options){
   for(const {id,site,element} of labels){vec.set(site.building[0],site.detail?3.8:2.8,site.building[1]).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;const hidden=x<45||x>width-45||y<35||y>height-inset-75||!site.detail&&camera.zoom<.65;element.hidden=hidden;if(!hidden){element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;element.classList.toggle('is-selected',options.selected===id);const small=element.querySelector('small');small.textContent=options.layer==='supply'?`O₂ ${Math.round(s.districts[id].oxygen)}%`:site.detail?'':'연결 거점';}}
-  const c=s.cells.find(c=>c.id===selectedCell);inspect.hidden=!c;if(c){inspect.replaceChildren();const name=document.createElement('strong'),task=document.createElement('span');name.textContent=JOBS[c.kind].name;task.textContent=c.task+(c.cargo?' · O₂ '+Math.round(c.cargo):'');inspect.append(name,task);}else selectedCell=null;
+  const c=s.cells.find(c=>c.id===selectedCell);inspect.hidden=!c;if(c){inspect.replaceChildren();const name=document.createElement('strong'),task=document.createElement('span'),work=activeActivity(c,s.time);name.textContent=JOBS[c.kind].name;task.textContent=c.task+(work&&['load','unload','produce','build'].includes(work.kind)?' · '+Math.round(activityProgress(work,s.time)*100)+'%':c.cargo?' · O₂ '+Math.round(c.cargo):'');inspect.append(name,task);}else selectedCell=null;
  }
  function draw(s,options={}){
   if(disposed||document.hidden)return;inset=options.inset||0;
@@ -78,7 +79,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
   if(zoomTarget!==null){const ray=new T.Raycaster(),plane=new T.Plane(new T.Vector3(0,1,0),0);let before=null;if(zoomAnchor){ray.setFromCamera(zoomAnchor,camera);before=ray.ray.intersectPlane(plane,new T.Vector3());}camera.zoom+=(zoomTarget-camera.zoom)*.24;if(Math.abs(camera.zoom-zoomTarget)<.002){camera.zoom=zoomTarget;zoomTarget=null;}camera.updateProjectionMatrix();if(before){ray.setFromCamera(zoomAnchor,camera);const after=ray.ray.intersectPlane(plane,new T.Vector3());if(after){before.sub(after);controls.target.add(before);camera.position.add(before);}}dirty=true;}
   controls.update();const cx=clamp(controls.target.x,-18,18),cz=clamp(controls.target.z,-19,18);camera.position.x+=cx-controls.target.x;camera.position.z+=cz-controls.target.z;controls.target.x=cx;controls.target.z=cz;
   if(options.paused&&!dirty&&now-lastFrame<250)return;
-  lastFrame=now;actor.draw(s,{...options,selectedCell});village?.update(s,options);updateLabels(s,options);const site=SITES[options.selected];selection.visible=!!site;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
+  lastFrame=now;actor.draw(s,{...options,selectedCell,readability:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(s,options);updateLabels(s,options);const site=SITES[options.selected];selection.visible=!!site;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
   if(now-lastShadow>200){renderer.shadowMap.needsUpdate=true;lastShadow=now;}
   renderer.render(scene,camera);dirty=false;frames++;
   if(now-lastStats>1000){const label=game.querySelector('[data-city-performance]');if(label)label.textContent=`${options.paused?'일시정지':Math.round(frames*1000/(now-lastStats))+' fps'} · ${renderer.info.render.calls} draws · ${Math.round(renderer.info.render.triangles/1000)}k tris`;lastStats=now;frames=0;}
