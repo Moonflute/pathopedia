@@ -7,8 +7,8 @@ export function createCityCamera(onChange=()=>{}){
   let width=1,height=1,inset=0,scale=.72,x=865,y=445,initialized=false,overview=false;
   const pointers=new Map();let gesture=null;
   const area=()=>({x:width/2,y:46+Math.max(1,height-inset-66)/2});
-  const fitted=()=>Math.max(.05,Math.min((width-20)/1300,Math.max(40,height-inset-90)/680));
-  const limits=()=>({min:fitted()*.7,max:3.2});
+  const fitted=()=>Math.min(3.2,Math.max(.05,Math.min((width-20)/1440,Math.max(40,height-inset-130)/800)));
+  const limits=()=>({min:fitted(),max:3.2});
   function transform(){const center=area();return {scale,offsetX:center.x-x*scale,offsetY:center.y-y*scale};}
   function world(point){const t=transform();return {x:(point.x-t.offsetX)/scale,y:(point.y-t.offsetY)/scale};}
   function bound(){x=clamp(x,95,1350);y=clamp(y,100,810);}

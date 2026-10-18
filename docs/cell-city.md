@@ -1,25 +1,70 @@
-# Cell City prototype
+# Cell City prototype — 0.45.0
 
-Open the **cell city** tab or `#city`. One continuous body-city connects the lung, heart, kidney, gut, bone marrow and lymph node districts. Click a district (or open **구역** in the bottom command bar) to upgrade, repair, build a defensive outpost or move the defense rally point. Pause and 1×/2×/3× controls work during construction and combat. Drag, wheel, pinch or the zoom buttons explore the aerial map; with the map focused, use arrow keys, +/− and Home.
+Open the **cell city** tab or #city. One body-city contains lung, heart, kidney, gastrointestinal, marrow and lymph districts. A new start screen selects a scenario or resumes the existing save. Separate difficulty controls and finished artwork are deferred.
 
-Version 0.44.0 keeps a viewport-sized HUD: resources above the map, commands below it, and one management panel at a time. Narrow screens use a bottom sheet and reserve camera space above it. Short landscape screens use a compact side panel. Logs use pages rather than an expanding document. The Pathopedia logo returns to the tab chooser on narrow screens. The existing city save remains compatible.
+## Scenario goals
 
-The camera starts close enough to observe workers on mobile. Mouse-wheel zoom follows the cursor; two-finger pinch follows the midpoint and allows simultaneous movement. Releasing one finger continues panning without selecting a building. Magnification survives panel and viewport changes, ranges from a wide overview to 320%, and the **전체** control restores the full city. District buttons move the camera to that district without resetting zoom. The lightweight camera model is independent of the simulation.
+| Scenario | Opening | Success | Failure |
+| --- | --- | --- | --- |
+| 감염 도시 복구 | Lung health 45%, other districts 62%, waste 58%, damaged airway barrier, active infection | Within 8 game minutes: clear three infection events, every district at least 85%, waste at most 30%; hold recovery conditions for 15 seconds | Recovery deadline, heart failure, or average health below 22% |
+| 건강한 도시 유지 | Healthy valley town, 40 cells | 5 game minutes; average health at least 70%, waste at most 65% | A continuous 15-second breach, heart failure, or average health below 22% |
+| 면역저하 도시 유지 | Desert palette, 36 cells, four neutrophils and slower neutrophil recruitment | 6 game minutes; average health at least 75%, waste at most 65% | Same 15-second grace rule and critical failure conditions |
 
-The aerial view uses a rotated, compressed ground plane with upright buildings, roofs, side faces and a common depth order for buildings, workers and cargo. A pale stone and sage palette, irregular forecourts and small paths connect each building to its surroundings. Each district defines slots for four accessories such as storage, tanks, pumps, awnings, benches or planters; these code-drawn placeholders can later accept dedicated assets. Workers are 20% larger, and fibroblasts animate their tools while producing or repairing.
+A breach at the survival deadline must recover within the remaining grace period before success. The prototype models reduced immunity specifically as neutropenia; the desert is a visual metaphor. The old save retains its original three-wave objective. Winning allows free operation.
 
-It remains Canvas 2D: one 1440×900 cached terrain surface, device pixel ratio capped at 1.5 and drawing capped at 30 fps. Paused scenes repaint only after a camera, layout or selection change; offscreen actors are skipped. Simulation timing is independent of drawing. No new dependencies, 3D engine, textures or remote asset requests were added.
+## Village and transport
 
-UI references: [Frostpunk construction interface](https://interfaceingame.com/screenshots/frostpunk-construction/) and [Against the Storm's official Interface Update](https://eremitegames.com/interface-update/) informed the edge-mounted commands, compact resource HUD and contextual panels. Game artwork was not copied.
+The finite landscape adds mountains behind the town, a river crossing it and exiting beside the kidney plant, seven wall towers and distinct airway/food gates. The foreground floating shadow is removed. Valley and desert reuse one layout and swap the terrain palette and tree treatment.
 
-- Red cells deliver oxygen through the heart. Plasma cargo carries nutrients, externally supplied drugs and construction materials. Buildings and recruits wait for delivery.
-- Neutrophils patrol and combine innate attacks with fictional antibiotic equipment. Macrophages fight and clear debris. Fibroblasts produce materials and repair. Dendritic cells carry target-specific antigen information to the lymph node, enabling antibody support.
-- Three disclosed infections use SPN-105, SAU-001 and SAU-002 from `data/organisms.json`. The prototype enables drug equipment only for unqualified S records; R and unsupported activity remain inactive. Ordinary phagocytosis is independent of antibiotic susceptibility. Combat numbers and antibiotic weapons are fictional; no dose or treatment recommendation is modeled.
-- Heart output controls transport speed; lung output controls oxygen loads; kidney output clears waste. Local food, oxygen and tissue damage affect district output. Fever and dry-air events alter demand or supply. The neutropenia host starts with fewer neutrophils and slower neutrophil recruitment.
-- The city saves to the independent `pathopedia:cell-city:v1` key, including cargo and construction in progress. Returning to the tab or a saved city pauses time. After victory, continue running the city or introduce another infection.
+- Heart: existing pumping station and animated pulse.
+- Circulation: precomputed curved roads with two lanes. Heart-to-lung blood uses the blue pulmonary lane and oxygenated return uses red; systemic supply reverses that pairing. The renderer and red cells share the same route geometry. No per-frame pathfinding.
+- Skin: thick walls, crenellations and towers. The airway gate remains the active barrier mechanic; whole-wall damage is not yet simulated.
+- Kidney: settling/filter tanks on the river's downstream bank, rotating filter arms and an outflow pipe.
+- Lung: wind rotors, bellows and an airway entrance retained for respiratory infection.
+- Gut: external ingredient carts deliver raw food; the district processes the stock into nutrients for distribution. Higher levels increase both intake and processing capacity. Separate stomach/liver/pancreas districts remain deferred.
+- Marrow: manual recruitment, a three-slot production queue, birth at the marrow exit and a direct production control in the district panel.
+- Lymph: existing antigen delivery and target-specific antibody support, pending later concept work.
 
-Scope: fixed district placement and routes, five cell jobs, three antibiotics, two construction types plus repair, three waves, two host presets. Free placement, liver/brain districts, T-cell combat, detailed pharmacokinetics and multiplayer are not implemented.
+The scene has 6 organ facilities, 29 neighborhood buildings, 24 accessories, 36 trees and 7 wall towers (102 structures/decorations). Cached primitive sprites keep these replaceable without downloading artwork. Real work units are used instead of decorative moving crowds: 40 initially (36 in the neutropenia scenario), with a recruitment cap of 96 across five jobs.
 
-Rendering uses original code-drawn city art, the existing Kontra.js 10.0.2 game loop (MIT, `src/vendor/KONTRA-LICENSE.txt`) and existing Lucide controls (ISC, `src/vendor/LUCIDE-LICENSE.txt`). Kenney's CC0 [isometric buildings](https://kenney.nl/assets/isometric-tiles-buildings) and [landscape tiles](https://kenney.nl/assets/isometric-tiles-landscape) were reviewed as future asset candidates. This pass establishes scene composition; detailed artwork is deferred.
+## UI and camera
 
-Focused camera checks: `node --test tests/city-camera.test.mjs` (cursor anchoring, pinch with translation, release/cancellation, panel/viewport changes). Existing simulation checks remain in `tests/city.test.mjs`. GitHub Pages runs the repository's normal test and build workflow before deployment.
+Resources are compact at the lower left; materials are labeled **건축 자재** (the game resource for construction and repairs). Context panels and the command bar stay within the viewport. The command dock uses a fixed center column so drug names and log messages cannot shift it. The marrow production shortcut fits inside the same panel.
+
+District-tab selection changes selection only, without focusing the camera on that district. The **세포** panel's job icons toggle rings on matching cells and directional counts for offscreen units. Mouse wheel follows the cursor; pinch follows the midpoint, with drag movement. Zooming out stops at the landscape overview; maximum zoom remains 320%.
+
+## Optional game lifetimes
+
+**운영 → 환경·설정 → 게임 수명** is OFF by default. ON advances a scalar age per cell. Expired cells leave and join the marrow replacement backlog. Automatic replacements spend four local marrow nutrients, use the same three production slots, obey job caps, and are delayed if nutrients or queue capacity are unavailable. Neutrophil replacement takes longer in neutropenia. OFF freezes age and new automatic replacement requests; already queued production finishes.
+
+| Cell | Game lifetime |
+| --- | --- |
+| Red cell | 12 minutes |
+| Neutrophil | 4 minutes |
+| Macrophage | 15 minutes |
+| Fibroblast | 20 minutes |
+| Dendritic cell | 10 minutes |
+
+These are gameplay values, not biological lifespans. Initial ages are staggered; newly produced cells start at zero. Age, pending replacements, raw food and scenario progress persist. Existing schema-1 saves receive compatible defaults.
+
+## Rendering and resource budget
+
+Canvas 2D remains capped at 30 fps and device pixel ratio 1.5. The 1440×900 ground cache contains landscape, river, roads and walls. Repeated trees/houses/accessories are pre-rendered into small cached canvases, while animated organs and moving units retain depth ordering. Offscreen actors are culled. Paused scenes redraw only when dirty. The nearest-enemy scan uses a linear pass instead of allocating and sorting a target list per fighter each tick.
+
+CPU-only benchmark on this development PC, Node v24, 24 persistent enemies, game lifetimes ON, 200 warmup + 1,200 measured updates per case:
+
+| Cells | Mean update | 95th percentile |
+| --- | --- | --- |
+| 40 | 0.039 ms | 0.067 ms |
+| 96 (all job caps) | 0.044 ms | 0.065 ms |
+| 160 (exploratory only) | 0.058 ms | 0.082 ms |
+
+Reproduce with node scripts/benchmark-city.mjs. This is simulation CPU cost, not browser rendering, input latency or a guarantee for low-end phones. Production remains capped at 96. Raising the cap to 160 needs target-device drawing checks; 160 is not enabled in the game. Static scenery is cheaper to extend through the existing caches than to add new independent AI units.
+
+## Sources and validation
+
+Existing Kontra.js 10.0.2 (MIT) and Lucide (ISC) are reused. [Kenney isometric buildings](https://kenney.nl/assets/isometric-tiles-buildings) (CC0) were reviewed as future asset candidates. [MDN canvas optimization](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas) supports pre-rendering repeating primitives. Current visuals remain code-drawn placeholders with no new remote assets or dependencies.
+
+Focused checks cover camera input, real deliveries and construction, susceptibility gating, three scenario goals/failure conditions, optional cell turnover and save continuation. A simple managed simulation reached recovery at 262 seconds, normal maintenance at 300 seconds and neutropenia maintenance at 360 seconds. These are feasibility checks, not final difficulty tuning. Browser checks cover desktop/mobile start screens, compact HUD, production/selection controls and drug-switch dock stability. GitHub Pages runs the normal repository test/build workflow before deployment.
+
+Combat, physiology quantities and antibiotic weapons are fictional. Only unqualified S in fixed isolate records activates drug equipment; R and unsupported activity remain inactive. No dosing or treatment recommendation is modeled.
