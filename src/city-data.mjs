@@ -9,6 +9,16 @@ export const DISTRICTS = Object.freeze([
   {id:'lymph',name:'림프절 · 기억 서고',short:'림프절',job:'항원 정보 수신 · 표적 항체 지원',x:281,y:242,color:'#a9c47a',symbol:'Y',upgrade:'반응 연구소',effect:'항체 준비 속도 +40%',card:'IMM-006'}
 ]);
 export const districtDef = id => DISTRICTS.find(d=>d.id===id);
+// Visual slots only. Future sprites can replace each prop without changing city logistics.
+// Offsets are in the same ground coordinates as the district and its roads.
+export const DISTRICT_SITES = Object.freeze({
+  lung:{paving:'#d8dfd4',edge:'#aab9a2',props:[['tank',100,-50,'#a9c4bf'],['canopy',-98,-24,'#9bbcb5'],['crate',83,77,'#c8b48e'],['lamp',-81,77,'#c4bf9f']]},
+  heart:{paving:'#ded0ba',edge:'#c0b594',props:[['shed',-101,-46,'#cda58e'],['pump',101,-36,'#b0bdb1'],['bench',-78,89,'#b9a187'],['planter',91,82,'#b2c090']]},
+  kidney:{paving:'#d6d7d8',edge:'#b3b8b6',props:[['tank',106,-37,'#b8b2c7'],['pump',-101,-25,'#a7bebe'],['planter',-93,68,'#acbb9c'],['lamp',83,69,'#c4c0a7']]},
+  gut:{paving:'#e4d9bf',edge:'#c8bc9b',props:[['canopy',98,-50,'#ceaa78'],['crate',-103,-33,'#c5a47e'],['crate',-103,58,'#d3b68a'],['planter',85,83,'#b9c290']]},
+  marrow:{paving:'#dfd4c8',edge:'#c0b5a3',props:[['shed',-97,-51,'#c3a5a0'],['crate',101,-31,'#c4ad86'],['bench',-100,78,'#b6a18b'],['lamp',86,75,'#c9bf9e']]},
+  lymph:{paving:'#d9dfc6',edge:'#b4c09d',props:[['shed',-94,-52,'#b8bd9e'],['planter',102,-41,'#aaba96'],['bench',-97,75,'#b9aa8a'],['lamp',85,81,'#c9c3a4']]}
+});
 export const JOBS = Object.freeze({
   rbc:{name:'적혈구',task:'산소 운반',color:'#e47b77',cost:14,cap:18,card:null},
   neutrophil:{name:'호중구',task:'순찰 · 전투',color:'#faf0cb',cost:24,cap:16,card:'IMM-010'},
