@@ -1,6 +1,12 @@
 # Cell City prototype
 
-Open the **cell city** tab or `#city`. One continuous body-city connects the lung, heart, kidney, gut, bone marrow and lymph node districts. Click a district (or use the district buttons) to upgrade, repair, build a defensive outpost or move the defense rally point. Pause and 1×/2×/3× controls work during construction and combat. Zoom buttons and drag explore the map.
+Open the **cell city** tab or `#city`. One continuous body-city connects the lung, heart, kidney, gut, bone marrow and lymph node districts. Click a district (or open **구역** in the bottom command bar) to upgrade, repair, build a defensive outpost or move the defense rally point. Pause and 1×/2×/3× controls work during construction and combat. Drag, wheel, pinch or the zoom buttons explore the aerial map; with the map focused, use arrow keys, +/− and Home.
+
+Version 0.43.0 uses a viewport-sized HUD: resources above the map, commands below it, and one management panel at a time. Narrow screens use a bottom sheet and reserve camera space above it. Short landscape screens use a compact side panel. Logs use pages rather than an expanding document. The Pathopedia logo returns to the tab chooser on narrow screens. The existing city save remains compatible.
+
+The aerial view uses a rotated, compressed ground plane with upright buildings, roofs, side faces and a common depth order for buildings, workers and cargo. It remains Canvas 2D: one 1440×900 cached terrain surface, device pixel ratio capped at 1.5 and drawing capped at 30 fps. Paused scenes repaint only after a camera, layout or selection change. Simulation timing is independent of drawing. No new dependencies, 3D engine, textures or remote asset requests were added.
+
+UI references: [Frostpunk construction interface](https://interfaceingame.com/screenshots/frostpunk-construction/) and [Against the Storm's official Interface Update](https://eremitegames.com/interface-update/) informed the edge-mounted commands, compact resource HUD and contextual panels. Game artwork was not copied.
 
 - Red cells deliver oxygen through the heart. Plasma cargo carries nutrients, externally supplied drugs and construction materials. Buildings and recruits wait for delivery.
 - Neutrophils patrol and combine innate attacks with fictional antibiotic equipment. Macrophages fight and clear debris. Fibroblasts produce materials and repair. Dendritic cells carry target-specific antigen information to the lymph node, enabling antibody support.
