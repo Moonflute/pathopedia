@@ -19,7 +19,7 @@ export const CELL_STYLES=Object.freeze({
 export function createActors(profile){
  const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={},last=new Map(),positions=[];
  const capacity=profile.maxCells+profile.maxShipments,standard=new T.MeshStandardMaterial({color:0xffffff,roughness:.9}),flat=new T.MeshBasicMaterial({color:0xffffff});
- const body=new T.SphereGeometry(1,12,8),hat=new T.SphereGeometry(1,10,6),small=new T.SphereGeometry(1,6,4),box=new T.BoxGeometry(1,1,1),rod=new T.CylinderGeometry(1,1,1,6),rim=new T.TorusGeometry(1,.13,4,12);
+ const body=new T.SphereGeometry(1,profile.mobile?10:12,profile.mobile?7:8),hat=new T.SphereGeometry(1,profile.mobile?8:10,profile.mobile?5:6),small=new T.SphereGeometry(1,6,4),box=new T.BoxGeometry(1,1,1),rod=new T.CylinderGeometry(1,1,1,6),rim=new T.TorusGeometry(1,.13,4,12);
  function batch(id,geometry,limit=capacity,shadow=true,unlit=false){const m=new T.InstancedMesh(geometry,unlit?flat:standard,limit);m.name=id;m.instanceMatrix.setUsage(T.DynamicDrawUsage);m.count=0;m.frustumCulled=false;m.castShadow=shadow;m.receiveShadow=!unlit;root.add(m);batches[id]=m;}
  batch('body',body);batch('cap',hat);batch('eyes',small,capacity*2,false);batch('feet',small,capacity*2);batch('hands',small,capacity*2,false);
  batch('box',box,capacity*5);batch('pod',small,capacity*5,false);batch('rod',rod,capacity*5,false);batch('rim',rim,capacity*2,false);batch('badge',new T.IcosahedronGeometry(1,0),capacity*4,false);
@@ -48,7 +48,8 @@ export function createActors(profile){
   const beat=Math.sin(progress*Math.PI),strike=hammering?(progress<.48?progress/.48:progress<.68?1-(progress-.48)/.2:0):0;
   const recoil=firing?Math.pow(1-progress,3):0,reach=engulf?Math.sin(Math.PI*progress):doing==='collect'?beat*.65:0;
   const stride=t*(kind==='macrophage'?8:kind==='platelet'?14:11)+phase;
-  const bob=act?-beat*(hammering?.04:.018):moving?Math.abs(Math.sin(stride))*.055:Math.sin(t*2+phase)*.012;
+  const waiting=!!unit.waitReason&&!moving;
+  const bob=act?-beat*(hammering?.04:.018):moving?Math.abs(Math.sin(stride))*.055:Math.sin(t*(waiting?3:2)+phase)*(waiting?.025:.012);
   const base=CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf?reach*.23:firing?-recoil*.1:0;
   const part=(id,x,y,z,sx,sy,sz,c,rx=0,rz=0)=>put(id,p.x+x*cs+(z+shift)*sn,y+bob,p.z-x*sn+(z+shift)*cs,sx,sy,sz,c,rx,angle,rz);
   part('body',0,look.y,0,look.w*(1+reach*.12),look.h*(1-reach*.12),look.w*.88,base);
@@ -62,6 +63,7 @@ export function createActors(profile){
    else if(engulf||doing==='collect'){h.x=side*(.35-reach*.15);h.y=.36;h.z=.17+reach*.42;}
    else if(kind==='courier'){h.x=side*.24;h.z=.4;}
    else if(moving)h.z=Math.sin(stride+side)*.09;
+   else if(waiting){h.y+=Math.sin(t*2+phase)*.035;h.z=.06;}
    if(i&&hammering){h.y=.48+strike*.2;h.z=.12;}
    if(i&&firing){h.y=.43;h.z=.25-recoil*.13;}
    if(i&&producing){h.y=.45+Math.sin(progress*Math.PI)*.06;h.z=.47+Math.sin(progress*Math.PI*4)*.07;h.x=.08+Math.cos(progress*Math.PI*4)*.09;}
@@ -100,6 +102,9 @@ export function createActors(profile){
    part('box',0,.23,.25,.3,.09,.2,0xf3e7c8);part('box',0,.28,.25,.2,.018,.05,0xc88f68);
    if(doing==='patch')part('rod',hand.x,hand.y,hand.z,.035,.29,.035,0xe3c996,Math.PI/2,Math.sin(progress*10)*.4);
   }
+  if(unit.materialCargo)part('box',-.3,.4,.22,.3,.3,.3,0xcba875);
+  if(unit.debrisCargo)for(let i=0;i<unit.debrisCargo;i++)part('pod',-.2+i*.16,.53,-.35,.1,.11,.1,0xa6979f);
+  if(unit.bornAt!=null&&t-unit.bornAt<1.2)put('badge',p.x,1+(t-unit.bornAt)*.3,p.z,.08,.14,.08,0xe5d79c);
   if(kind==='rbc'){
    if(transfer){const q=doing==='load'?1-progress:progress,arc=Math.sin(q*Math.PI)*.35;
     put('pod',(p.x-sn*.3)*(1-q)+at.x*q,.39*(1-q)+.69*q+arc,(p.z-cs*.3)*(1-q)+at.z*q,.19,.26,.19,0xa5dfd4);

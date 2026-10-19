@@ -1,3 +1,4 @@
+import {WALLS,FRONTS} from './city-frontier-data.mjs';
 import {CELL_JOBS,districtDef,DISTRICTS,DRUGS} from './city-data.mjs';
 import {activeActivity,activityProgress} from './city-activity.mjs';
 
@@ -31,7 +32,11 @@ export function cellObservation(s,c){
   const progress=work.kind==='build'&&building?1-(building.remaining??building.duration)/building.duration:activityProgress(work,s.time);
   task+=' · '+Math.round(clamp(progress,0,1)*100)+'%';
  }
- return {name:job.name,id:c.id,task,destination,cargo};
+ if(c.logisticsJob!=null)destination='소화기 · 전선 보급 출고대';
+ if(c.frontJob!=null){destination=c.frontStage==='shop'?'피부 보수 공방':WALLS[c.frontJob].name+' · 보수 현장';if(c.materialCargo)cargo='복구 자재 '+c.materialCargo;const repair=s.frontier?.walls[c.frontJob].repair;if(c.frontStage==='repair'&&repair)task='피부장벽 보수 · '+Math.round((1-repair.remaining/7)*100)+'%';}
+ if(c.debrisCargo){cargo='잔해 '+c.debrisCargo;if(c.wasteTrip)destination='신장 · 잔해 집하장';}
+ const next=c.nextTask||(c.kind==='rbc'?(c.cargo?'산소 하역 → 폐 복귀':'산소 충전 → 배송'):c.kind==='dendritic'?(c.recordId?'항원 접수 → 감시':'항원 수집'):c.kind==='helperT'?(c.recordId?'지원 신호 발신':'항원 확인 → 방어 지원'):c.kind==='platelet'?'손상 탐색 → 봉합':'현장 작업 → 순찰');
+ return {name:job.name,id:c.id,task,destination,cargo,next,waiting:c.waitReason||'없음'};
 }
 
 function shipmentObservation(s,sh){
@@ -39,7 +44,8 @@ function shipmentObservation(s,sh){
  const label=sh.kind==='drug'?(DRUGS.find(d=>d.id===sh.drugId)?.short||'항생제'):{raw:'식재료',food:'영양분',materials:'건축 자재',recruit:'충원 영양분'}[sh.kind]||'물자';
  let task=finished?'배송 완료':pickup?'물자 수령대 이동':label+' 배송';
  if(work){task=(work.kind==='load'?'물자 적재':'물자 하역')+' · '+Math.round(activityProgress(work,s.time)*100)+'%';}
- return {name:'보급 운반원',id:sh.id,task,destination:district(pickup?'gut':sh.to)+(finished?' · 도착 광장':pickup?' · 물자 수령대':' · 물자 하역대'),cargo:pickup||finished?'없음':label+' '+Math.round(sh.amount)};
+ const front=sh.frontDelivery,destination=!pickup&&front?(front.type==='wall'?'피부 보수 공방':FRONTS[front.id].name+' · 전선 보급창고'):district(pickup?'gut':sh.to)+(finished?' · 도착 광장':pickup?' · 물자 수령대':' · 물자 하역대');
+ return {name:'보급 운반원',id:sh.id,task,destination,cargo:pickup||finished?'없음':label+' '+Math.round(sh.amount),next:sh.nextTask||(pickup?'물자 적재 → 배송':finished?'운반 종료':'현장 하역'),waiting:sh.waitReason||'없음'};
 }
 
 // Selection is a view state: it never enters the simulation or saved city.

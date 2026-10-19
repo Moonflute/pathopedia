@@ -1,3 +1,4 @@
+import {facilityState} from './city-workplaces.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {groundPoint} from './city-three-layout.mjs';
 import {DISTRICTS} from './city-data.mjs';
@@ -59,10 +60,7 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,cot
  box(-6.8,.66,10.99,.95,1.3,.08,wood);box(-6.8,.67,10.93,.65,1.1,.04,0x6b7f78);
  for(const x of [-8.5,-5.1]){cylinder(x,1.2,11,.19,.19,2.3,ivory);for(const y of [.25,2.25]){orb(x-.13,y,11,.22,ivory);orb(x+.13,y,11,.22,ivory);}}
  box(-6.8,2.3,10.98,.7,.16,.08,0xd06e75);box(-6.8,2.3,10.97,.16,.7,.08,0xd06e75);
- for(let i=0;i<3;i++){
-  const x=-8+i*.8;cylinder(x,.35,13.4,.3,.35,.65,stone);orb(x,.82,13.4,.35,0xa0c9c5);
-  const spark=orb(x,.85,13.4,.14,[0xdf837e,0xf1e6cd,0xd39bb4][i],animated);born.push({mesh:spark,phase:i});
- }
+ // Production bays are instanced and follow each actual recruitment order.
  model('cart',-4.5,.05,11.4,.75,.6);model('chimney',-7.9,2.15,12.2,.8);
  // Lymph: a green rotunda with a signal mast and antibody work benches.
  make(new T.CylinderGeometry(1.3,1.45,1.55,8),ivory,-13.6,.8,.5);
@@ -72,7 +70,7 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,cot
  model('banner-green',-12.2,1,.6,.8);
  // Bench and dock coordinates are also the workers' real interaction targets.
  // Fixed fittings join the static bake; moving cargo/vials use actor instances.
- for(const [id,role] of [['lymph','produce'],['marrow','fabricate']])for(let i=0;i<3;i++){
+ for(const [id,role] of [['lymph','produce'],['marrow','fabricate'],['gut','fabricate']])for(let i=0;i<3;i++){
   const p=groundPoint(workStation(id,role,i).target);
   box(p.x,.34,p.z,.62,.12,.43,wood);for(const x of [-.22,.22])box(p.x+x,.16,p.z,.055,.3,.32,wood);
   if(role==='produce'){cylinder(p.x,.45,p.z,.14,.16,.12,ivory);cylinder(p.x+.22,.52,p.z,.05,.05,.25,teal);}
@@ -91,10 +89,13 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,cot
   const first=ports[0],last=ports[2];pipe([[first.x,.14,first.z],[last.x,.14,last.z]],.065,teal,1);
   pipe([[first.x,.14,first.z],[first.x,.14,site.building[1]],[site.building[0],.14,site.building[1]]],.065,teal,6);
  }
+ let last=0,beltPhase=0;
  return {update(s){
-  for(const r of rotors)r.mesh.rotation[r.axis]=s.time*r.speed*output(s,r.id)*(r.id==='lung'&&s.weather.id==='dry'?.55:1);
-  for(const p of pistons)p.mesh.position.y=p.y+Math.sin(s.time*(p.id==='lung'?2:4))*.16*output(s,p.id);
-  for(const b of belts){b.mesh.visible=s.rawFood>0;b.mesh.position.x=9.5+((s.time*.16+b.phase)%1)*2.25;}
+  const dt=Math.max(0,Math.min(.3,s.time-last));last=s.time;
+  for(const r of rotors){const state=facilityState(s,r.id);r.mesh.rotation[r.axis]+=dt*r.speed*output(s,r.id)*state.speed*(state.id==='damage'&&Math.sin(s.time*5)<0?0:1)*(r.id==='lung'&&s.weather.id==='dry'?.55:1);}
+  for(const p of pistons)p.mesh.position.y=p.y+Math.sin(s.time*(p.id==='lung'?2:4))*.16*output(s,p.id)*facilityState(s,p.id).speed;
+  beltPhase+=dt*.16*facilityState(s,'gut').speed*(s.frontier?.gut.quarantine?.55:1);
+  for(const b of belts){b.mesh.visible=s.rawFood>(b.phase*18);b.mesh.position.x=9.5+((beltPhase+b.phase)%1)*2.25;}
   for(const b of born){const busy=s.recruits.length>0;b.mesh.position.y=.85+(busy?Math.sin(s.time*4+b.phase)*.1:0);b.mesh.scale.setScalar(busy?1+Math.sin(s.time*3+b.phase)*.12:1);}
  }};
 }
