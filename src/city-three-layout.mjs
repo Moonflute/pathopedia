@@ -49,4 +49,7 @@ export const COTTAGES=[
  [-11.7,-7.2,1.5,.5],[-11,-4.3,1.25,.7],[-1.4,-6.6,1.45,-1],
  [5.7,-7,1.35,-.3],[-9.5,6.6,1.25,.6],[-1,11.3,1.2,-1]
 ];
-export function qualityProfile(width,dpr=1){const mobile=width<761;return {mobile,dpr:Math.min(dpr,mobile?1.35:1.75),shadow:mobile?512:1024,fps:mobile?30:60,maxCells:96,maxShipments:48,maxEnemies:32};}
+export function qualityProfile(width,dpr=1,level=0){
+ const mobile=width<761,tier=Math.max(0,Math.min(4,Math.floor(level))),base=Math.min(dpr,mobile?1.35:1.75);
+ return {mobile,level:tier,dpr:Math.min(base,Math.max(.75,base*[1,.85,.72,.63,.63][tier])),shadow:tier>=3?0:(mobile?512:1024)/(tier>=2?2:1),shadowInterval:tier>=2?400:200,fps:tier===4?30:60,maxCells:96,maxShipments:48,maxEnemies:32};
+}

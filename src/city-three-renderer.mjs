@@ -5,11 +5,14 @@ import {OrbitControls} from './vendor/three/OrbitControls.js';
 import {GLTFLoader} from './vendor/three/GLTFLoader.js';
 import {createVillage} from './city-three-village.mjs';
 import {createActors} from './city-three-actors.mjs';
-import {SITES,qualityProfile,groundPoint} from './city-three-layout.mjs';
+import {SITES,qualityProfile} from './city-three-layout.mjs';
 import {WALLS,FRONTS} from './city-frontier-data.mjs';
 import {cityHealth} from './city-engine.mjs';
 import {STAGES} from './city-biology.mjs';
 import {cellObservation,createCellObserver,moveFollowCamera} from './city-cell-observer.mjs';
+import {createCityMotion} from './city-three-motion.mjs';
+import {createAdaptiveQuality,createFramePacer} from './city-three-performance.mjs';
+export {createThreeLoop} from './city-three-performance.mjs';
 
 const assetRoot=new URL('../assets/city3d/',import.meta.url);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
@@ -20,7 +23,8 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  let renderer;
  try{renderer=new T.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'low-power'});}
  catch{status.innerHTML='이 기기에서 3D 화면을 열 수 없습니다. <a href="#city">기존 도시 열기 →</a>';return {draw(){},zoom(){},reset(){},invalidate(){},dispose(){status.remove();},cameraInfo(){return {scale:1,min:1,max:1};}};}
- const profile=qualityProfile(map.clientWidth,devicePixelRatio),scene=new T.Scene();scene.background=new T.Color(0xe4e6d8);scene.fog=new T.Fog(0xe4e6d8,48,110);
+ const profile=qualityProfile(map.clientWidth,devicePixelRatio),adaptive=createAdaptiveQuality(map.clientWidth,devicePixelRatio),motion=createCityMotion(profile),shouldRender=createFramePacer();let quality=adaptive.profile,interpolation=1;
+ const scene=new T.Scene();scene.background=new T.Color(0xe4e6d8);scene.fog=new T.Fog(0xe4e6d8,48,110);
  renderer.setPixelRatio(profile.dpr);renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
  renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
  scene.add(new T.HemisphereLight(0xfff7e1,0x969f89,2.25));
@@ -69,7 +73,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   inspectHeight=inspect.offsetHeight;
  }
  function trackCell(cell,seconds){
-  const point=groundPoint(cell);viewOffset.subVectors(camera.position,controls.target);
+  const point=motion.point(cell,watching.id);viewOffset.subVectors(camera.position,controls.target);
   // Keep the cell above the observation card and any open mobile management sheet.
   const narrow=width<761,available=height-inset-(narrow?inspectHeight+106:80);
   const focusY=narrow?Math.max(65,(Math.min(90,available*.4)+available)/2):height*.46;
@@ -78,10 +82,20 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   followPoint.set(point.x+viewOffset.x/horizontal*shift,0,point.z+viewOffset.z/horizontal*shift);
   if(moveFollowCamera(camera.position,controls.target,followPoint,seconds))dirty=true;
  }
+ function applyQuality(){
+  quality=adaptive.profile;
+  if(renderer.getPixelRatio()!==quality.dpr)renderer.setPixelRatio(quality.dpr);
+  const shadows=quality.shadow>0;
+  if(renderer.shadowMap.enabled!==shadows){
+   renderer.shadowMap.enabled=shadows;sun.castShadow=shadows;
+   const materials=new Set();scene.traverse(o=>{for(const m of [o.material].flat().filter(Boolean))materials.add(m);});for(const m of materials)m.needsUpdate=true;
+  }
+  if(!shadows||sun.shadow.mapSize.x!==quality.shadow){sun.shadow.map?.dispose();sun.shadow.map=null;if(quality.shadow)sun.shadow.mapSize.setScalar(quality.shadow);}
+  renderer.shadowMap.needsUpdate=shadows;dirty=true;
+ }
  function resize(){
   const w=map.clientWidth,h=map.clientHeight;if(!w||!h||w===width&&h===height)return;
-  width=w;height=h;const p=qualityProfile(width,devicePixelRatio);renderer.setPixelRatio(p.dpr);renderer.setSize(w,h,false);
-  if(sun.shadow.mapSize.x!==p.shadow){sun.shadow.map?.dispose();sun.shadow.map=null;sun.shadow.mapSize.setScalar(p.shadow);renderer.shadowMap.needsUpdate=true;}
+  width=w;height=h;adaptive.resize(width,devicePixelRatio,performance.now());applyQuality();renderer.setSize(w,h,false);
   // A portrait viewport starts close to the two featured districts; zoom-out reveals all.
   const vertical=h<400?17:w<h?32:27,aspect=w/h;camera.left=-vertical*aspect/2;camera.right=vertical*aspect/2;camera.top=vertical/2;camera.bottom=-vertical/2;camera.updateProjectionMatrix();
   fit=Math.min(w/h<1?.42:.76,w/h<1?w/h*.66:1.06);controls.minZoom=fit;controls.maxZoom=3.3;camera.zoom=clamp(camera.zoom,fit,3.3);camera.updateProjectionMatrix();dirty=true;
@@ -159,8 +173,11 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   if(assetCache&&(layout!==villageLayout||editId!==villageEditId))rebuild(layout,editId);
   editOverlay.update(currentEditor);if(currentEditor)village?.movePreview(currentEditor.preview||currentEditor.draft.items[currentEditor.selected]);
   actor.root.visible=!currentEditor;labelLayer.hidden=!!currentEditor;
-  const now=performance.now(),interval=1000/qualityProfile(width,devicePixelRatio).fps;
-  if(now-lastFrame<interval*.9)return;
+  const now=performance.now();
+  if(options.frameTime!=null&&adaptive.sample(options.frameTime,ready&&!options.paused&&!currentEditor))applyQuality();
+  if(!shouldRender(now,quality.fps))return;
+  if(options.interpolation!=null)interpolation=options.interpolation;
+  motion.prepare(s,interpolation,options.paused);
   const cell=watching.resolve(s);
   if(followButton.getAttribute('aria-pressed')!==String(watching.following))syncFollowing();
   updateInspection(s,cell,now);
@@ -173,13 +190,13 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   if(watching.following&&cell)trackCell(cell,(now-lastFrame)/1000);
   controls.update();const cx=clamp(controls.target.x,-18,18),cz=clamp(controls.target.z,-19,18);camera.position.x+=cx-controls.target.x;camera.position.z+=cz-controls.target.z;controls.target.x=cx;controls.target.z=cz;camera.updateMatrixWorld();
   if(options.paused&&!dirty&&now-lastFrame<250)return;
-  lastFrame=now;actor.draw(s,{...options,selectedCell:watching.id,readability:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(currentEditor?{...s,layout:currentEditor.draft}:s,{...options,camera,target:controls.target});updateLabels(s,options);const site=siteAt(s.layout,options.selected);selection.visible=!!site&&!currentEditor;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
-  if(now-lastShadow>200){renderer.shadowMap.needsUpdate=true;lastShadow=now;}
+  lastFrame=now;actor.draw(s,{...options,motion,selectedCell:watching.id,readability:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(currentEditor?{...s,layout:currentEditor.draft}:s,{...options,camera,target:controls.target});updateLabels(s,options);const site=siteAt(s.layout,options.selected);selection.visible=!!site&&!currentEditor;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
+  if(quality.shadow&&now-lastShadow>quality.shadowInterval){renderer.shadowMap.needsUpdate=true;lastShadow=now;}
   const illness=clamp(Math.max((75-cityHealth(s))/65,(s.inflammation-30)/70),0,1);scene.background.copy(calmSky).lerp(illSky,illness*.8);scene.fog.color.copy(scene.background);sun.color.copy(warmSun).lerp(illSun,illness);
-  renderer.render(scene,camera);dirty=false;frames++;minCalls=Math.min(minCalls,renderer.info.render.calls);peakCalls=Math.max(peakCalls,renderer.info.render.calls);peakTriangles=Math.max(peakTriangles,renderer.info.render.triangles);
-  if(now-lastStats>1000){const label=game.querySelector('[data-city-performance]');if(label)label.textContent=`${options.paused?'일시정지':Math.round(frames*1000/(now-lastStats))+' fps'} · ${minCalls===peakCalls?peakCalls:minCalls+'–'+peakCalls} draws · ${Math.round(peakTriangles/1000)}k tris`;lastStats=now;frames=0;minCalls=Infinity;peakCalls=0;peakTriangles=0;}
+  renderer.render(scene,camera);if(ready&&!options.paused&&!currentEditor)adaptive.rendered(performance.now()-now);dirty=false;frames++;minCalls=Math.min(minCalls,renderer.info.render.calls);peakCalls=Math.max(peakCalls,renderer.info.render.calls);peakTriangles=Math.max(peakTriangles,renderer.info.render.triangles);
+  if(now-lastStats>1000){const label=game.querySelector('[data-city-performance]');if(label)label.textContent=`${options.paused?'일시정지':Math.round(frames*1000/(now-lastStats))+' fps'} · 목표 ${quality.fps} · DPR ${quality.dpr.toFixed(2)} · 그림자 ${quality.shadow||'OFF'} · ${minCalls===peakCalls?peakCalls:minCalls+'–'+peakCalls} draws · ${Math.round(peakTriangles/1000)}k tris`;lastStats=now;frames=0;minCalls=Infinity;peakCalls=0;peakTriangles=0;}
  }
- function rebuild(layout,id){if(village){scene.remove(village.root);village.dispose();}village=createVillage(assetCache,layout,id);villageLayout=layout;villageEditId=id;scene.add(village.root);renderer.shadowMap.needsUpdate=true;dirty=true;}
+ function rebuild(layout,id){if(village){scene.remove(village.root);village.dispose();}village=createVillage(assetCache,layout,id);villageLayout=layout;villageEditId=id;scene.add(village.root);renderer.shadowMap.needsUpdate=true;adaptive.suspend(performance.now());dirty=true;}
  async function load(){
   const loader=new GLTFLoader(),assets={},response=await fetch(new URL('sources.json',assetRoot));if(!response.ok)throw Error('Asset manifest');const manifest=await response.json();
   const names=manifest.kenney.models;let sharedMaterial=null,failed=0;
@@ -197,15 +214,5 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   // Keep source models until disposal: Apply rebuilds the static mesh once.
  }
  load().catch(error=>{if(disposed)return;console.error('3D village load failed',error);status.innerHTML='마을을 불러오지 못했습니다. <button type="button" data-city3d-retry>다시 열기</button> · <a href="#city">기존 도시</a>';});
- return {draw,zoom,rotate,reset,focus,cameraInfo,beginLayout(){clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();release(scene);if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;}};
-}
-
-// Fixed simulation ticks independent of the WebGL frame rate. Never acquire a 2D context.
-export function createThreeLoop({update,render}){
- let raf=0,last=0,accumulator=0,running=false;
- function frame(now){if(!running)return;const dt=last?Math.min(.2,(now-last)/1000):0;last=now;
-  if(!document.hidden){accumulator+=dt;while(accumulator>=1/30){update(1/30);accumulator-=1/30;}render();}else accumulator=0;
-  raf=requestAnimationFrame(frame);
- }
- return {start(){if(running)return;running=true;last=0;raf=requestAnimationFrame(frame);},stop(){running=false;cancelAnimationFrame(raf);}};
+ return {draw,zoom,rotate,reset,focus,cameraInfo,captureMotion:s=>motion.capture(s),beginLayout(){clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();release(scene);if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;}};
 }

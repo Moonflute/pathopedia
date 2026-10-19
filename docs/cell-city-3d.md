@@ -54,17 +54,21 @@ Orthographic camera, damped panning and rotation, interpolated cursor-centred wh
 
 The models/palette/license/provenance total about 528 KB; the Three.js runtime/addons/license total about 910 KB (uncompressed). Custom scene code is additional. A mobile-width browser observation in v0.47.0 showed approximately 73k rendered triangles and 53 draw calls during play, compared with 89–90k triangles in the initial v0.46.0 scene. Visible machinery, construction, combat and supply overlays affect these counts.
 
-Static scenery is merged by material. Eight cell silhouettes and couriers share 16 instanced part/effect batches, with lower-detail face and limb geometry and active-range instance buffer uploads. Simulation ticks at 30 Hz independently of rendering. No post-processing, physics engine, skeletal animation, per-cell DOM elements or per-frame route search.
+Static scenery is merged by material. Eight cell silhouettes and couriers share 16 instanced part/effect batches, with lower-detail face and limb geometry and active-range instance buffer uploads. Simulation ticks at 30 Hz independently of rendering. Previous/current positions and the animation clock are interpolated for cells, couriers and pathogens; picking and the follow camera use those same displayed positions. No post-processing, physics engine, skeletal animation, per-cell DOM elements or per-frame route search.
 
 | Budget | Narrow view | Desktop view |
 | --- | --- | --- |
-| Rendering cap | 30 fps | 60 fps |
+| Rendering target | 60 fps | 60 fps |
 | Pixel ratio cap | 1.35 | 1.75 |
 | Shadow map | 512² | 1024² |
-| Shadow refresh | 5 Hz | 5 Hz |
+| Shadow refresh (initial quality) | 5 Hz | 5 Hz |
 | Simulation population cap | 96 | 96 |
 
-The desktop in-app browser observed roughly 49 fps at 1280×800 and 30 fps at a 390×844 viewport during play. These are development-machine measurements with viewport resizing, not physical-phone benchmarks. Paused scenes render only as needed (with a low-frequency refresh).
+Automatic quality adjustment samples active rAF cadence in two-second windows. Sustained overload lowers pixel ratio first, then shadow resolution/refresh (2.5 Hz), then turns shadows off. Only after those steps can the renderer fall back to 30 fps. Stable headroom for at least 12 seconds restores one step at a time, with a two-second settling period after each change. Loading, layout rebuilds, pauses, hidden tabs and long interruptions are excluded. The quality level is session-local and does not change population, assets, gameplay timing or saved cities. Environment/settings shows actual fps, target fps, DPR and shadow size.
+
+On the development computer, the 60 fps implementation observed 60 fps at a 390×844 viewport, DPR 1.00, 512² shadows, about 28–30 draw calls and 71–76k rendered triangles in the saved simulation city. At 1280×720 it also observed 60 fps with 1024² shadows. Neither viewport overflowed, and no browser errors were reported during follow, double speed, pause or edit/cancel transitions. These are desktop browser checks, not physical-phone benchmarks. Paused scenes still render only as needed, with a low-frequency refresh. Existing historical measurements below predate the 60 fps change.
+
+`tests/city-three-performance.test.mjs` checks gradual degradation/recovery, interruption handling, pacing on 60/90/120/144 Hz screens, fixed simulation timing, shared interpolated picking positions, unchanged save data, double speed/catch-up, pause, spawning, teleports and layout/run replacement. Snapshots are bounded to the existing actor caps; no new meshes, textures or dependencies are added. The 60 fps renderer ships alongside the square-tile editor in v0.54.0.
 
 ## Extension points
 

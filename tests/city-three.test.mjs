@@ -23,7 +23,7 @@ test('real delivery, building and combat states remain finite in the 3D layout',
   if(i%30===0)for(const c of [...s.cells,...s.shipments,...s.enemies]){const p=groundPoint(c);assert.ok(Number.isFinite(p.x)&&Number.isFinite(p.z));assert.ok(Math.abs(p.x)<50&&Math.abs(p.z)<50);}
  }
  assert.equal(s.districts.lung.level,2);assert.ok(working);assert.ok(s.stats.deliveries>0);assert.ok(s.stats.defeated>0);assert.equal(restoreCity(serializeCity(s)).workCrews,true);
- const mobile=qualityProfile(390,3);assert.equal(mobile.fps,30);assert.equal(mobile.shadow,512);assert.ok(mobile.dpr<1.5);
+ const mobile=qualityProfile(390,3);assert.equal(mobile.fps,60);assert.equal(mobile.shadow,512);assert.ok(mobile.dpr<1.5);
 });
 test('3D construction waits for a living worker as well as materials',()=>{
  const s=createCity('normal','steady',{workCrews:true});s.cells=s.cells.filter(c=>c.kind!=='fibroblast');command(s,'upgrade','heart');

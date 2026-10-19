@@ -148,7 +148,7 @@ export function createCityGame(data,options={}){
     if(run.status!=='running')region('[data-city-result]',`<div><span>${run.status==='won'?'CITY PROTECTED':'CITY OFFLINE'}</span><h2>${run.status==='won'?(SCENARIOS[run.scenario]?.kind==='restore'?'도시 복구 완료':'도시 유지 성공'):(run.endReason||'도시가 멈췄다')}</h2><p>방어 ${run.stats.defeated} · 배송 ${run.stats.deliveries} · ${time(run.time)}</p>${run.status==='won'?button('continue','계속 운영하기'):button('restart','다시 시작하기')}</div>`);
     const notification=game.querySelector('[data-city-toast]');notification.hidden=!toast||performance.now()>toastUntil;if(!notification.hidden)notification.textContent=toast;
   }
-  function paint(){renderer?.draw(run,{selected,layer,editor,paused:!!editor||atStart||speed===0||run.status!=='running',selectedKind,selectedWall:panel==='frontier'&&front==='skin'?wall:null,inset:editor?(game?.querySelector('[data-city-layout-editor]')?.offsetHeight||210)+12:panel&&sheetLayout.matches?308:0});}
+  function paint(interpolation,frameTime){renderer?.draw(run,{selected,layer,editor,interpolation,frameTime,paused:!!editor||atStart||speed===0||run.status!=='running',selectedKind,selectedWall:panel==='frontier'&&front==='skin'?wall:null,inset:editor?(game?.querySelector('[data-city-layout-editor]')?.offsetHeight||210)+12:panel&&sheetLayout.matches?308:0});}
   function select(id){if(editor)return;if(id==='observe'){panel='';update();return;}if(is3d&&(id.startsWith('front:')||id.startsWith('wall:'))){if(id.startsWith('wall:')){wall=Number(id.split(':')[1]);front='skin';}else front=id.split(':')[1];panel='frontier';frontPage='fronts';update();renderer?.invalidate();paint();return;}if(!districtDef(id))return;selected=id;panel='district';update();renderer?.invalidate();paint();}
   function handleClick(b){
     const action=b.dataset.cityAction,id=b.dataset.cityId;if(!action||!active||!game)return false;
@@ -221,7 +221,7 @@ export function createCityGame(data,options={}){
     game.addEventListener('click',e=>{if(e.target.closest('[data-card-open]')){speed=0;save();}},{signal:abort.signal});
     const callbacks={update(dt){
       if(!active||document.hidden)return;
-      if(!editor&&!atStart&&run.status==='running')for(let n=0;n<speed;n++)tickCity(run,dt,data);
+      if(!editor&&!atStart&&run.status==='running'&&speed>0){renderer?.captureMotion?.(run);for(let n=0;n<speed;n++)tickCity(run,dt,data);}
       hud+=dt;saveClock+=dt;if(hud>.4){hud=0;update();}if(saveClock>5){saveClock=0;save();}
     },render:paint};
     loop=options.loop?options.loop(callbacks):GameLoop({context:canvas.getContext('2d'),clearCanvas:false,blur:true,...callbacks});
