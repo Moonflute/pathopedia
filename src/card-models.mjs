@@ -303,10 +303,23 @@ export function createCardModels(data, catalog) {
     if(models.has(key))return models.get(key);
     const base=content.immuneElement(id);if(!base)return null;
     const category=catalog.immuneCategories[base.category];
+    const priority={binds:0,activates:1,inhibits:1,recruits:1,produces:2,induces:2,presents:2,cooperates:2,'processed-into':2,component:3,expresses:4,precursor:5,includes:6,hosts:7};
+    const related=new Map();
+    for(const relation of [...base.interactions].sort((a,b)=>priority[a.type]-priority[b.type] || (a.direction==='outgoing'?0:1)-(b.direction==='outgoing'?0:1))){
+      if(!related.has(relation.counterpart.id))related.set(relation.counterpart.id,[]);
+      related.get(relation.counterpart.id).push(relation);
+    }
     const model={
       ...base,entityId:id,domain:'immunity',lineage:category.label,
-      route:{icon:'immunity',label:'면역',description:category.label},
-      artwork:cardArtwork('immune-element',id) || {placeholder:IMMUNE_CATEGORY_ICONS[base.category],label:category.label}
+      route:{icon:'immunity',label:base.immuneArms.length>1?'선·적':base.immuneArms[0]==='innate'?'선천':'적응',description:base.properties.entityType.label+' · '+base.properties.arms.map(item=>item.label).join('·')+'\n'+base.properties.locations.map(item=>item.label).join('·')},
+      artwork:cardArtwork('immune-element',id) || {placeholder:IMMUNE_CATEGORY_ICONS[base.category],label:category.label},
+      leftHeading:'역할',rightHeading:'연결',leftLabel:'역할·기능',rightLabel:'연관 면역 요소',
+      leftProperties:base.properties.functions.map(item=>({...item,active:true,note:item.label,tooltip:{title:item.label}})),
+      rightProperties:[...related.values()].slice(0,8).map(relations=>{
+        const counterpart=relations[0].counterpart;
+        const note=relations.map(relation=>relation.from.name+(relation.relationType.symmetric?' ↔ ':' → ')+relation.to.name+' · '+relation.relationType.verb+'\n'+relation.context+(relation.via?'\n매개: '+relation.via:'')).join('\n\n');
+        return {icon:IMMUNE_CATEGORY_ICONS[counterpart.category],label:counterpart.name,shortLabel:counterpart.symbol,active:true,note,tooltip:{title:counterpart.name,body:note}};
+      })
     };
     models.set(key,model);return model;
   }

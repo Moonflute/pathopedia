@@ -51,6 +51,16 @@ export const CARD_ICONS = Object.freeze({
   receptor: '<path d="M3 19h18M12 19v-8m0 0L7 5m5 6 5-6"/><circle cx="7" cy="4" r="2"/><circle cx="17" cy="4" r="2"/>',
   antibody: '<path d="M12 21V11m0 0L5 4m7 7 7-7M3 2l4 4m14-4-4 4"/><circle cx="12" cy="21" r="1"/>',
   signal: '<circle cx="4" cy="12" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="20" cy="12" r="2"/><circle cx="12" cy="19" r="2"/><path d="m6 10 4-4m4 0 4 4m0 4-4 4m-4 0-4-4"/>',
+  development: '<circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><path d="M12 8v4m0 0-7 4m7-4 7 4"/>',
+  presentation: '<path d="M4 21V9h16v12M7 9V5h10v4"/><circle cx="10" cy="5" r="1"/><circle cx="14" cy="5" r="1"/><path d="M8 14h8M8 17h5"/>',
+  phagocyte: '<path d="M21 13a9 9 0 1 1-8-10l-1 5 5 1 4 4Z"/><circle cx="9" cy="15" r="3"/><circle cx="19" cy="5" r="2"/>',
+  cytotoxic: '<path d="M5 3h5l2 7 7 2v5M3 21l7-7M3 16v5h5M16 3l5 5m0-5-5 5"/><circle cx="16" cy="17" r="4"/>',
+  activation: '<path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z"/>',
+  recruitment: '<circle cx="5" cy="6" r="3"/><circle cx="5" cy="18" r="3"/><path d="M10 12h12m-5-5 5 5-5 5M8 8l4 4-4 4"/>',
+  opsonin: '<circle cx="12" cy="12" r="5"/><path d="M12 1v4m-3-3 3 3 3-3M1 12h4m-3-3 3 3-3 3M23 12h-4m3-3-3 3 3 3M12 23v-4m-3 3 3-3 3 3"/>',
+  complement: '<path d="m12 2 8 5v10l-8 5-8-5V7l8-5ZM12 2v6m8-1-5 3m5 7-5-3m-3 8v-6m-8 1 5-3M4 7l5 3"/><circle cx="12" cy="12" r="4"/>',
+  regulation: '<path d="m12 2 8 4v7c0 5-8 9-8 9s-8-4-8-9V6l8-4ZM8 12h8"/>',
+  memory: '<path d="M4 8a9 9 0 1 1 0 8M4 3v5h5"/><circle cx="13" cy="12" r="4"/><path d="M13 9v3l2 2"/>',
   artwork: '<rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8" cy="8" r="2"/><path d="m3 17 6-6 4 4 3-3 5 5"/>'
 });
 
@@ -119,17 +129,31 @@ function diseaseConnections(model) {
 }
 
 
+function renderBackTabs(model,tabs) {
+  const active=tabs.some(([id])=>id===model.backTab)?model.backTab:'clinical';
+  const prefix='card-back-'+model.kind+'-'+model.id;
+  return '<div class="card-back-tabs" role="tablist" aria-label="카드 뒷면 내용">'+tabs.map(([id,label])=>'<button type="button" role="tab" data-card-back-tab="'+id+'" id="'+esc(prefix+'-'+id)+'-tab" aria-controls="'+esc(prefix+'-'+id)+'" aria-selected="'+(id===active)+'" tabindex="'+(id===active?'0':'-1')+'">'+label+'</button>').join('')+'</div><div class="card-back-content">'+tabs.map(([id,,markup])=>'<div class="card-back-pane card-back-prose" id="'+esc(prefix+'-'+id)+'" data-card-back-pane="'+id+'" role="tabpanel" aria-labelledby="'+esc(prefix+'-'+id)+'-tab" tabindex="0" '+(id!==active?'hidden':'')+'>'+markup+'</div>').join('')+'</div>';
+}
+
 function renderBackPanels(model) {
   if(model.guide){
     return '<div class="card-back-tabs card-guide-back-label">기호 읽는 법</div><div class="card-back-content"><div class="card-back-pane card-back-prose" tabindex="0" aria-label="예시 카드 설명">'+model.guide.notes.map((note,index)=>'<section class="card-back-section card-guide-description" data-card-guide-description="'+esc(note.id)+'" tabindex="-1"><h3><span>'+(index+1)+'</span>'+esc(note.title)+'</h3><p>'+esc(note.text)+'</p></section>').join('')+'</div></div>';
   }
   if(model.kind==='immune-element'){
-    const back=model.back || {};
-    return '<div class="card-back-tabs card-immune-back-label">'+esc(back.label || '면역계 요소')+'</div><div class="card-back-content"><div class="card-back-pane card-back-prose" tabindex="0" aria-label="면역계 요소 설명">'+
-      '<p class="card-back-summary">'+esc(back.summary || model.summary)+'</p>'+
-      (back.sections || []).map(section=>'<section class="card-back-section"><h3>'+esc(section.title)+'</h3><p>'+esc(section.text)+'</p></section>').join('')+
-      (back.references?.length?'<section class="card-back-section card-back-references"><h3>출처</h3><ul>'+back.references.map(reference=>'<li><a href="'+esc(reference.url)+'" target="_blank" rel="noopener noreferrer">'+esc(reference.title)+'</a></li>').join('')+'</ul></section>':'')+
-      '</div></div>';
+    const back=model.back,properties=model.properties;
+    const description=back.sections.map(section=>'<section class="card-back-section"><h3>'+esc(section.title)+'</h3><p>'+esc(section.text)+'</p></section>').join('');
+    const sourceLink=reference=>'<a href="'+esc(reference.url)+'" target="_blank" rel="noopener noreferrer">'+esc(reference.title)+'</a>';
+    const connections='<p class="card-back-label">연결 '+back.interactions.length+'개</p>'+back.interactions.map(relation=>
+      '<section class="card-immune-relation">'+relatedButton('immune-element',relation.counterpart.id,relation.counterpart.name,relation.relationType.label)+
+      '<p class="card-immune-direction">'+esc(relation.from.name)+(relation.relationType.symmetric?' ↔ ':' → ')+esc(relation.to.name)+'</p>'+
+      '<p>'+esc(relation.context)+'</p>'+(relation.via?'<small>매개: '+esc(relation.via)+'</small>':'')+
+      '<div class="card-immune-relation-sources">'+relation.references.map(reference=>'<a href="'+esc(reference.url)+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(reference.title)+'">['+(back.references.findIndex(item=>item.id===reference.id)+1)+']</a>').join(' ')+'</div></section>'
+    ).join('');
+    const facts='<dl class="card-immune-facts"><div><dt>종류</dt><dd>'+esc(properties.entityType.label)+'</dd></div><div><dt>면역</dt><dd>'+esc(properties.arms.map(item=>item.label).join(' · '))+'</dd></div><div><dt>위치</dt><dd>'+esc(properties.locations.map(item=>item.label).join(' · '))+'</dd></div></dl>'+
+      '<section class="card-back-section"><h3>왼쪽 · 역할</h3><ul class="card-property-list">'+model.leftProperties.map(property=>'<li>'+propertyRune(property,true)+'<div><b>'+esc(property.label)+'</b></div></li>').join('')+'</ul></section>'+
+      '<section class="card-back-section"><h3>오른쪽 · 연관 요소</h3><p>대표 연결을 표시합니다. 전체 관계와 작용 조건은 연결 탭에서 확인합니다.</p></section>'+
+      '<section class="card-back-section card-back-references"><h3>출처</h3><ol>'+back.references.map(reference=>'<li>'+sourceLink(reference)+'</li>').join('')+'</ol></section>';
+    return renderBackTabs(model,[['clinical','설명',description],['responses','연결',connections],['icons','분류·근거',facts]]);
   }
   const back=model.back || {},sections=back.sections || [];
   const disease=model.kind==='disease';
@@ -144,9 +168,7 @@ function renderBackPanels(model) {
     ((back.responses || []).length?'<p class="card-back-label">'+esc(back.responseLabel)+'</p><dl class="card-response-list">'+back.responses.map(response=>'<div><dt>'+esc(response.name)+'<span>'+esc(response.label)+'</span></dt><dd>'+esc(response.note)+(response.applicability?'<small>'+esc(response.applicability)+'</small>':'')+'</dd></div>').join('')+'</dl>':'<p>수록된 약제 반응이 없습니다.</p>');
   const properties=[{label:model.leftLabel,items:model.leftProperties},{label:model.rightLabel,items:model.rightProperties}].map(rail=>'<section class="card-back-section"><h3>'+esc(rail.label)+'</h3><ul class="card-property-list">'+(rail.items || []).map(property=>'<li>'+propertyRune(property,true)+'<div><b>'+esc(property.label)+'</b><p>'+esc(property.note || (property.active?'해당':'—'))+'</p></div></li>').join('')+'</ul></section>').join('');
   const tabs=[['clinical','임상',clinical],['responses',disease?'연결':model.kind==='drug'?'대상':'약제',responses],['icons','기호',properties]];
-  const active=tabs.some(([id])=>id===model.backTab)?model.backTab:'clinical';
-  const prefix='card-back-'+model.kind+'-'+model.id;
-  return '<div class="card-back-tabs" role="tablist" aria-label="카드 뒷면 내용">'+tabs.map(([id,label])=>'<button type="button" role="tab" data-card-back-tab="'+id+'" id="'+esc(prefix+'-'+id)+'-tab" aria-controls="'+esc(prefix+'-'+id)+'" aria-selected="'+(id===active)+'" tabindex="'+(id===active?'0':'-1')+'">'+label+'</button>').join('')+'</div><div class="card-back-content">'+tabs.map(([id,,markup])=>'<div class="card-back-pane card-back-prose" id="'+esc(prefix+'-'+id)+'" data-card-back-pane="'+id+'" role="tabpanel" aria-labelledby="'+esc(prefix+'-'+id)+'-tab" tabindex="0" '+(id!==active?'hidden':'')+'>'+markup+'</div>').join('')+'</div>';
+  return renderBackTabs(model,tabs);
 }
 
 function guideMarkers(model) {
@@ -167,9 +189,9 @@ export function renderReferenceCard(model) {
   return '<div class="reference-card-slot '+(face==='back'?'is-flipped':'')+'" data-card-state="'+face+'" '+(preview?'data-card-preview':'')+'><div class="reference-card-tilt"><div class="reference-card-rotor"><article class="reference-card reference-card--front '+classes+(units>100?' has-long-summary':'')+(resistance?' has-resistance':'')+'" aria-label="'+esc(model.name+(resistance?' · '+resistance.code:''))+'" aria-hidden="'+(face==='back')+'" '+(face==='back'?'inert':'')+'>'+
     '<header class="card-nameplate"><h2>'+esc(model.name)+'</h2><p>'+esc(model.subtitle || '')+'</p></header>'+
     '<'+(preview?'span':'button type="button" data-card-property')+' class="card-route" '+(preview?'':tooltipAttributes({title:route.label,body:route.description || ''}))+'>'+cardIcon(route.icon)+'<span>'+esc(route.label)+'</span></'+(preview?'span':'button')+'>'+
-    (kind==='immune-element'?'':propertyRail(model.leftProperties,model.leftLabel,'left',model.leftHeading,preview))+
+    propertyRail(model.leftProperties,model.leftLabel,'left',model.leftHeading,preview)+
     '<div class="card-artwork'+(model.artwork?.transparent?' card-artwork--transparent':'')+'">'+artwork(model)+'</div>'+
-    (kind==='immune-element'?'':propertyRail(model.rightProperties,model.rightLabel,'right',model.rightHeading,preview))+
+    propertyRail(model.rightProperties,model.rightLabel,'right',model.rightHeading,preview)+
     '<div class="card-lineage"><span class="card-lineage-mark" aria-hidden="true">◆</span><span>'+esc(model.lineage)+'</span><span class="card-lineage-mark" aria-hidden="true">◆</span></div>'+
     '<div class="card-text"><p class="card-summary">'+esc(caption)+'</p><footer><span'+(model.supportiveCare?' class="card-care-label"':'')+'>'+esc(model.supportiveCare?'대증치료':model.id)+'</span>'+(preview?'<span>확대 ↗</span>':'<button type="button" class="card-turn" data-card-face="back" aria-label="'+esc(model.name)+' 뒷장 보기">뒷장 <span aria-hidden="true">↻</span></button>')+'</footer></div>'+
     (resistance?'<div class="card-ribbon-clip"><div class="card-resistance-ribbon"><strong>'+esc(resistance.code)+'</strong><span>'+esc(resistance.label)+'</span></div></div>':'')+

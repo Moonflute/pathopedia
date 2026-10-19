@@ -28,8 +28,10 @@ export function createCardSearch(data,catalog) {
 
   for(const element of Object.values(catalog.immuneElements || {})){
     add('immune-element',element.id,[
-      element.id,element.name,element.englishName,element.summary,
+      element.id,element.name,element.englishName,element.symbol,element.summary,
       catalog.immuneCategories[element.category].label,
+      ...(element.functionIds || []).map(id=>catalog.immuneVocabulary.functions[id].label),
+      ...(element.locationIds || []).map(id=>catalog.immuneVocabulary.locations[id].label),
       ...element.back.sections.map(section=>section.text)
     ]);
   }

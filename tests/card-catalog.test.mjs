@@ -8,8 +8,9 @@ import { createCardGallery } from '../src/card-gallery-ui.mjs';
 import { createCardStacks } from '../src/card-stacks.mjs';
 import { createCardModels } from '../src/card-models.mjs';
 import { createCardSearch } from '../src/card-search.mjs';
-import { renderReferenceCard } from '../src/reference-card.mjs';
+import { CARD_ICONS, renderReferenceCard } from '../src/reference-card.mjs';
 import { resolveAppRoute } from '../src/app-routing.mjs';
+import { compileImmuneElements } from '../scripts/compile-immune-elements.mjs';
 
 const read=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url),'utf8'));
 const data=read('data/organisms.json'),db=read('data/library.json');
@@ -49,7 +50,9 @@ test('immune element deck uses the shared card frame, search and direct route',(
   assert.match(markup,/reference-card--immune-element/);
   assert.match(markup,/IMM-069/);
   assert.match(markup,/CRP/);
-  assert.match(markup,/핵심 특징/);
+  assert.match(markup,/실제 역할/);
+  assert.match(markup,/data-card-related="immune-element:IMM-084"/);
+  assert.match(markup,/data-card-back-tab="responses"/);
   assert.match(markup,/card-back-references/);
   assert.equal(createCardSearch(data,db).matches('immune-element','IMM-069','C-reactive protein'),true);
   assert.deepEqual(resolveAppRoute('#cards/immunity'),{view:'cards',domain:'immunity',archiveOnly:false,hash:'#cards/immunity'});
@@ -76,6 +79,44 @@ test('immune element deck uses the shared card frame, search and direct route',(
   }finally{
     if(previousDocument===undefined)delete globalThis.document;else globalThis.document=previousDocument;
   }
+});
+
+test('immune interactions preserve direction, intermediaries and reciprocal lookup',()=>{
+  const cards=createCardCatalog(db);
+  const induction=cards.immuneInteractions('IMM-069',{direction:'incoming',type:'induces'}).find(relation=>relation.fromId==='IMM-084');
+  assert.equal(induction.mode,'mediated');
+  assert.match(induction.via,/간세포/);
+  assert.equal(induction.counterpart.name,'IL-6');
+  const binding=cards.immuneInteractions('IMM-069',{direction:'outgoing',type:'binds'}).find(relation=>relation.toId==='IMM-057');
+  assert.equal(binding.mode,'direct');
+  assert.equal(binding.relationType.symmetric,true);
+  assert.equal(cards.immuneInteractions('IMM-057').find(relation=>relation.id===binding.id).counterpart.name,'CRP');
+  const cgas=cards.immuneInteractions('IMM-042',{direction:'outgoing',type:'activates'})[0];
+  assert.equal(cgas.toId,'IMM-043');assert.match(cgas.via,/cGAMP/);
+  const models=createCardModels(data,db);
+  for(const element of Object.values(db.immuneElements)){
+    const model=models.immuneElement(element.id);
+    assert.equal(model.back.sections.length,4);
+    assert(model.back.sections.reduce((sum,section)=>sum+[...section.text].length,0)>=240);
+    assert(model.leftProperties.length>0 && model.rightProperties.length>0);
+    assert([...model.leftProperties,...model.rightProperties].every(property=>CARD_ICONS[property.icon]));
+    const markup=renderReferenceCard(model);
+    assert.match(markup,/card-rail--left/);assert.match(markup,/card-rail--right/);
+  }
+});
+
+test('immune authoring rejects broken edges and missing mechanism context',()=>{
+  for(const [mutate,pattern]of [
+    [copy=>{copy.interactions[0].toId='IMM-999';},/invalid interaction endpoints/],
+    [copy=>{copy.interactions.push(structuredClone(copy.interactions[0]));},/duplicate interaction/],
+    [copy=>{delete copy.interactions.find(relation=>relation.mode==='mediated').via;},/invalid context or mode/],
+    [copy=>{copy.entities[0].functionIds=['made-up-role'];},/invalid codes/]
+  ]){
+    const copy=structuredClone(authored.immuneContent);mutate(copy);
+    assert.throws(()=>compileImmuneElements(copy,db.sources),pattern);
+  }
+  const copy=structuredClone(db);copy.immuneElements['IMM-069'].interactionIds.pop();
+  assert.throws(()=>validateCardCatalog(copy,data),/asymmetric immune interaction/);
 });
 
 test('card validation blocks dangling IDs, missing sources, altered responses and inconsistent totals',()=>{

@@ -137,13 +137,13 @@ export function compileLibraryCatalog(dataset, sources, authored) {
   const diseaseCatalog=compileDiseases(authored.diseaseContent,{pathogens,drugs,sources});
   const immuneCatalog=compileImmuneElements(authored.immuneContent,sources);
   const catalog = {
-    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.5.0',
+    $schema:'./library-schema.json', schemaVersion:1, catalogVersion:'1.6.0',
     sourceDatasetVersion:dataset.datasetVersion, locale:'ko-KR', reviewStatus:dataset.reviewStatus,
     contentOrigin:'content/cards/*.json + content/diseases/*.json',
     interpretation:dataset.interpretation,
     panels:Object.fromEntries(dataset.panels.map(panel => [panel.id,panel])),
     categories:Object.fromEntries(dataset.categories.map(category => [category.id,category])),
-    counts:{ diseases:Object.keys(diseaseCatalog.diseases).length, immuneElements:Object.keys(immuneCatalog.immuneElements).length, pathogens:Object.keys(pathogens).length, variants:Object.keys(variants).length, drugs:Object.keys(drugs).length, responses:Object.values(responses).reduce((sum,entries) => sum + Object.keys(entries).length,0), responseProfiles:Object.keys(responseProfiles).length },
+    counts:{ diseases:Object.keys(diseaseCatalog.diseases).length, immuneElements:Object.keys(immuneCatalog.immuneElements).length, immuneInteractions:Object.keys(immuneCatalog.immuneInteractions).length, pathogens:Object.keys(pathogens).length, variants:Object.keys(variants).length, drugs:Object.keys(drugs).length, responses:Object.values(responses).reduce((sum,entries) => sum + Object.keys(entries).length,0), responseProfiles:Object.keys(responseProfiles).length },
     ...diseaseCatalog, ...immuneCatalog, pathogens, variants, drugs, responses, responseProfiles, therapyContexts, sources
   };
   validateCardCatalog(catalog,dataset);

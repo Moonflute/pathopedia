@@ -3,7 +3,8 @@ import { renderReferenceCard, setReferenceCardFace } from './reference-card.mjs'
 const EXAMPLES=[
   {kind:'pathogen',id:'SAU-002',label:'병원체'},
   {kind:'drug',id:'oxacillin',label:'항생제'},
-  {kind:'disease',id:'community-pneumonia',label:'질병'}
+  {kind:'disease',id:'community-pneumonia',label:'질병'},
+  {kind:'immune-element',id:'IMM-010',label:'면역계'}
 ];
 const COMMON=[
   {id:'name',title:'이름',text:'위쪽 중앙은 카드의 이름. 그 아래 작은 글씨는 한글명이나 영문명, 약제 계열을 보여줘.'},
@@ -29,11 +30,18 @@ function explanations(model) {
     set('lineage','Penicillin·3세대 Cepha 같은 약제 계열. 이 예시는 Penicillin이야.');
     set('left','효과 있는 병원체 계통이야. 금색은 그 계통 안의 특정 임상 상황에서 우선 선택되는 경우, 흰색은 사용 가능한 대상. 세부 병원체·조건은 기호 설명에 나와.');
     set('right','내성·비활성이 명시된 병원체 계통이야. 같은 계통이라도 균종·내성형이 다르면 좌우가 모두 켜질 수 있어.');
-  }else{
+  }else if(model.kind==='disease'){
     set('route','감염이 발생하는 경로야. 원인 병원체나 상황에 따라 여러 경로가 있으면 ‘복수’로 표시해.');
     set('lineage','호흡기·장관 같은 질환 분류와 감염 질환·증후군 등의 종류를 보여줘.');
     set('left','이 질병의 원인이 되는 병원체 계통이야. 기호 설명에서 원인 병원체 이름을 볼 수 있어.');
     set('right','이 질병의 치료 약제야. 금색은 현재 치료 상황의 우선 선택, 흰색은 대안·조건부 치료. 이 예시의 기준은 ‘'+model.selectedTreatment.context+'’. 증상 완화·지지치료가 중심이면 의료 십자와 ‘대증치료’를 표시해.');
+  }else{
+    set('route','선천·적응면역 구분이야. 기호 설명에서 요소 종류와 대표 위치를 함께 볼 수 있어.');
+    set('artwork','면역 요소의 그림이나 분류 문양을 보여줘.');
+    set('lineage','세포·수용체·보체 등 면역계 분류를 보여줘.');
+    set('summary','이 요소가 하는 일을 한 문장으로 요약해. 상세 역할과 작동·조절은 뒷면에서 볼 수 있어.');
+    set('left','장벽·탐식·분비·항원제시 같은 역할이야. 밝은 기호는 수록된 기능을 뜻하고 강도나 우선순위를 나타내지는 않아.');
+    set('right','상호작용하는 대표 면역 요소야. 기호에서 방향과 작용 조건을 확인하고 뒷면 연결 탭에서 다른 요소의 카드를 열 수 있어.');
   }
   return notes;
 }
@@ -61,7 +69,7 @@ export function createCardGuide(models) {
   }
   function open(domain) {
     const dialog=host();if(!dialog || dialog.open)return;
-    current=domain==='drugs'?'drug':domain==='diseases'?'disease':'pathogen';
+    current=domain==='drugs'?'drug':domain==='diseases'?'disease':domain==='immunity'?'immune-element':'pathogen';
     opener=document.querySelector('[data-card-guide="open"]');
     dialog.innerHTML=content();
     dialog.onclose=()=>{

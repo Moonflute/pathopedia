@@ -73,21 +73,44 @@ export function createCardCatalog(catalog) {
     diseaseCards.set(id,card);return card;
   }
 
+  function immuneInteractions(id,{direction='all',type}={}) {
+    if(!['all','incoming','outgoing'].includes(direction))return [];
+    const endpoint=entityId=>{
+      const entity=catalog.immuneElements[entityId];
+      return {id:entity.id,name:entity.name,symbol:entity.symbol,category:entity.category};
+    };
+    return (catalog.immuneElements?.[id]?.interactionIds || []).map(relationId=>catalog.immuneInteractions[relationId])
+      .filter(relation=>relation && (!type || relation.type===type) && (direction==='all' || relation[direction==='outgoing'?'fromId':'toId']===id))
+      .map(relation=>({
+        ...relation,direction:relation.fromId===id?'outgoing':'incoming',
+        relationType:catalog.immuneVocabulary.relationTypes[relation.type],
+        from:endpoint(relation.fromId),to:endpoint(relation.toId),
+        counterpart:endpoint(relation.fromId===id?relation.toId:relation.fromId),
+        references:references(relation.sourceIds)
+      }));
+  }
+
   function immuneElement(id) {
     if(immuneElementCards.has(id))return immuneElementCards.get(id);
     const entity=catalog.immuneElements?.[id];
     if(!entity)return null;
+    const interactions=immuneInteractions(id),vocabulary=catalog.immuneVocabulary;
+    const coded=(table,ids)=>ids.map(code=>({id:code,...vocabulary[table][code]}));
     const card={
       kind:'immune-element',id:entity.id,name:entity.name,subtitle:entity.englishName,
-      category:entity.category,sortOrder:entity.sortOrder,summary:entity.summary,
+      symbol:entity.symbol,category:entity.category,sortOrder:entity.sortOrder,summary:entity.summary,
+      entityType:entity.entityType,immuneArms:entity.immuneArms,
+      locationIds:entity.locationIds,functionIds:entity.functionIds,interactionIds:entity.interactionIds,interactions,
+      properties:{entityType:{id:entity.entityType,...vocabulary.entityTypes[entity.entityType]},arms:coded('arms',entity.immuneArms),locations:coded('locations',entity.locationIds),functions:coded('functions',entity.functionIds)},
       back:{
         label:catalog.immuneCategories[entity.category].label,summary:entity.summary,
-        sections:entity.back.sections,references:references([...entity.sourceIds,...entity.back.sections.flatMap(section=>section.sourceIds || [])]),
+        sections:entity.back.sections,interactions,
+        references:references([...entity.sourceIds,...entity.back.sections.flatMap(section=>section.sourceIds || []),...interactions.flatMap(relation=>relation.sourceIds)]),
         reviewStatus:entity.reviewStatus
       }
     };
     immuneElementCards.set(id,card);return card;
   }
 
-  return { pathogen, drug, disease, immuneElement, response, summary, therapies, drugTherapies };
+  return { pathogen, drug, disease, immuneElement, immuneInteractions, response, summary, therapies, drugTherapies };
 }

@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateDataset } from './validate-data.mjs';
 import { createCardCatalog } from '../src/card-catalog.mjs';
+import { IMMUNE_VOCABULARY } from '../src/immune-vocabulary.mjs';
 
 const canonical=value=>Array.isArray(value)?value.map(canonical):value && typeof value==='object'
   ? Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonical(value[key])])):value;
@@ -24,7 +25,7 @@ export function validateCardCatalog(db,data) {
   };
   if(db.schemaVersion!==1)fail('unsupported schema version');
   if(db.sourceDatasetVersion!==data.datasetVersion)fail('source dataset version mismatch');
-  for(const name of ['pathogens','variants','drugs','immuneElements','immuneCategories','immuneContent','responses','responseProfiles','therapyContexts','sources','panels','categories','counts']){
+  for(const name of ['pathogens','variants','drugs','immuneElements','immuneCategories','immuneInteractions','immuneVocabulary','immuneContent','responses','responseProfiles','therapyContexts','sources','panels','categories','counts']){
     if(!db[name] || typeof db[name]!=='object' || Array.isArray(db[name]))fail('missing '+name);
   }
   for(const [id,source]of Object.entries(db.sources)){
@@ -74,17 +75,36 @@ export function validateCardCatalog(db,data) {
   }
 
   text(db.immuneContent.version,'immune content version');
+  text(db.immuneContent.relationshipScope,'immune relationship scope');
   if(db.immuneContent.locale!=='ko-KR')fail('immune content locale mismatch');
+  if(!same(db.immuneVocabulary,IMMUNE_VOCABULARY))fail('immune vocabulary differs from shared codes');
   const immuneCategories=Object.entries(db.immuneCategories);
   if(!immuneCategories.length || immuneCategories.some(([id,category],index)=>category.id!==id || !category.label?.trim() || category.sortOrder!==index+1))fail('invalid immune categories');
   const immuneElements=Object.entries(db.immuneElements),cards=createCardCatalog(db);
   if(!immuneElements.length)fail('missing immune elements');
+  const interactionIndex=new Map(immuneElements.map(([id])=>[id,[]]));
+  for(const [id,relation]of Object.entries(db.immuneInteractions)){
+    if(relation.id!==id || id!==relation.fromId+':'+relation.type+':'+relation.toId || relation.fromId===relation.toId || !interactionIndex.has(relation.fromId) || !interactionIndex.has(relation.toId) || !Object.hasOwn(IMMUNE_VOCABULARY.relationTypes,relation.type))fail('invalid immune interaction: '+id);
+    if(!['direct','mediated','structural'].includes(relation.mode))fail(id+' has invalid interaction mode');
+    text(relation.context,id+' context');if(relation.mode==='mediated')text(relation.via,id+' intermediary');
+    refs(relation.sourceIds,id+' interaction sources');
+    interactionIndex.get(relation.fromId).push(id);interactionIndex.get(relation.toId).push(id);
+  }
   for(const [index,[id,item]]of immuneElements.entries()){
     entity(item,id,'immune element');
     if(!/^IMM-[0-9]{3}$/.test(id) || item.kind!=='immune-element' || !db.immuneCategories[item.category] || item.sortOrder!==index+1)fail(id+' has invalid identity or order');
-    text(item.name,item.id+' name');text(item.englishName,item.id+' English name');
+    text(item.name,item.id+' name');text(item.englishName,item.id+' English name');text(item.symbol,item.id+' symbol');
+    if(!Object.hasOwn(IMMUNE_VOCABULARY.entityTypes,item.entityType))fail(id+' has invalid entity type');
+    for(const [field,table]of [['immuneArms','arms'],['locationIds','locations'],['functionIds','functions']]){
+      unique(item[field],id+'/'+field);
+      if(!item[field].length || item[field].some(code=>!Object.hasOwn(IMMUNE_VOCABULARY[table],code)))fail(id+' has invalid immune property codes');
+    }
+    if(!same(item.back.sections.map(section=>section.id),['identity','role','regulation','context']) || item.back.sections.some(section=>[...section.text].length<40))fail(id+' has insufficient immune details');
+    unique(item.interactionIds,id+' interaction IDs');
+    if(!item.interactionIds.length || !same([...item.interactionIds].sort(),interactionIndex.get(id).sort()))fail(id+' has asymmetric immune interaction references');
     const card=cards.immuneElement(id);
-    if(card?.summary!==item.summary || card.back.sections[0]?.text!==item.back.sections[0]?.text || !item.sourceIds.every(id=>card.back.references.some(ref=>ref.id===id)))fail(item.id+' has invalid card projection');
+    if(card?.summary!==item.summary || !same(card.back.sections,item.back.sections) || !same(card.interactionIds,item.interactionIds) || !item.sourceIds.every(id=>card.back.references.some(ref=>ref.id===id)))fail(item.id+' has invalid card projection');
+    for(const relation of card.interactions)if(!relation.sourceIds.every(sourceId=>card.back.references.some(reference=>reference.id===sourceId)))fail(id+' omits an interaction source');
   }
 
   const usedProfiles=new Set();
@@ -181,6 +201,7 @@ export function validateCardCatalog(db,data) {
   const counts={
     ...(db.diseases?{diseases:Object.keys(db.diseases).length}:{}),
     immuneElements:Object.keys(db.immuneElements).length,
+    immuneInteractions:Object.keys(db.immuneInteractions).length,
     pathogens:Object.keys(db.pathogens).length,variants:Object.keys(db.variants).length,drugs:Object.keys(db.drugs).length,
     responses:Object.values(db.responses).reduce((sum,items)=>sum+Object.keys(items).length,0),responseProfiles:Object.keys(db.responseProfiles).length
   };

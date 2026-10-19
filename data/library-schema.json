@@ -26,7 +26,9 @@
     "diseaseEntityTypes",
     "diseaseContent",
     "counts",
-    "therapyContexts"
+    "therapyContexts",
+    "immuneInteractions",
+    "immuneVocabulary"
   ],
   "properties": {
     "schemaVersion": {
@@ -102,20 +104,46 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "required": ["id", "label", "sortOrder"],
+        "required": [
+          "id",
+          "label",
+          "sortOrder"
+        ],
         "properties": {
-          "id": {"type":"string","minLength":1},
-          "label": {"type":"string","minLength":1},
-          "sortOrder": {"type":"integer","minimum":1}
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sortOrder": {
+            "type": "integer",
+            "minimum": 1
+          }
         }
       }
     },
     "immuneContent": {
       "type": "object",
-      "required": ["version", "locale"],
+      "required": [
+        "version",
+        "locale",
+        "relationshipScope"
+      ],
       "properties": {
-        "version": {"type":"string","minLength":1},
-        "locale": {"const":"ko-KR"}
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locale": {
+          "const": "ko-KR"
+        },
+        "relationshipScope": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
     "responses": {
@@ -265,7 +293,8 @@
         "drugs",
         "immuneElements",
         "responses",
-        "responseProfiles"
+        "responseProfiles",
+        "immuneInteractions"
       ],
       "properties": {
         "diseases": {
@@ -295,11 +324,188 @@
         "responseProfiles": {
           "type": "integer",
           "minimum": 0
+        },
+        "immuneInteractions": {
+          "type": "integer",
+          "minimum": 1
         }
       },
       "additionalProperties": {
         "type": "integer",
         "minimum": 0
+      }
+    },
+    "immuneInteractions": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/immuneInteraction"
+      }
+    },
+    "immuneVocabulary": {
+      "type": "object",
+      "required": [
+        "entityTypes",
+        "arms",
+        "locations",
+        "functions",
+        "relationTypes"
+      ],
+      "properties": {
+        "entityTypes": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "label"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "icon": {
+                "type": "string",
+                "minLength": 1
+              },
+              "shortLabel": {
+                "type": "string",
+                "minLength": 1
+              },
+              "verb": {
+                "type": "string",
+                "minLength": 1
+              },
+              "symmetric": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "arms": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "label"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "icon": {
+                "type": "string",
+                "minLength": 1
+              },
+              "shortLabel": {
+                "type": "string",
+                "minLength": 1
+              },
+              "verb": {
+                "type": "string",
+                "minLength": 1
+              },
+              "symmetric": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "locations": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "label"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "icon": {
+                "type": "string",
+                "minLength": 1
+              },
+              "shortLabel": {
+                "type": "string",
+                "minLength": 1
+              },
+              "verb": {
+                "type": "string",
+                "minLength": 1
+              },
+              "symmetric": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "functions": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "label"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "icon": {
+                "type": "string",
+                "minLength": 1
+              },
+              "shortLabel": {
+                "type": "string",
+                "minLength": 1
+              },
+              "verb": {
+                "type": "string",
+                "minLength": 1
+              },
+              "symmetric": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "relationTypes": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "label"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "icon": {
+                "type": "string",
+                "minLength": 1
+              },
+              "shortLabel": {
+                "type": "string",
+                "minLength": 1
+              },
+              "verb": {
+                "type": "string",
+                "minLength": 1
+              },
+              "symmetric": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -542,17 +748,149 @@
     },
     "immuneElement": {
       "type": "object",
-      "required": ["id", "kind", "name", "englishName", "category", "sortOrder", "summary", "back", "sourceIds"],
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "englishName",
+        "category",
+        "sortOrder",
+        "summary",
+        "back",
+        "sourceIds",
+        "symbol",
+        "entityType",
+        "immuneArms",
+        "locationIds",
+        "functionIds",
+        "interactionIds"
+      ],
       "properties": {
-        "id": {"type":"string","pattern":"^IMM-[0-9]{3}$"},
-        "kind": {"const":"immune-element"},
-        "name": {"type":"string","minLength":1},
-        "englishName": {"type":"string","minLength":1},
-        "category": {"type":"string","minLength":1},
-        "sortOrder": {"type":"integer","minimum":1},
-        "summary": {"$ref":"#/$defs/summary"},
-        "back": {"$ref":"#/$defs/back"},
-        "sourceIds": {"$ref":"#/$defs/sourceIds"}
+        "id": {
+          "type": "string",
+          "pattern": "^IMM-[0-9]{3}$"
+        },
+        "kind": {
+          "const": "immune-element"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "englishName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sortOrder": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "summary": {
+          "$ref": "#/$defs/summary"
+        },
+        "back": {
+          "$ref": "#/$defs/back"
+        },
+        "sourceIds": {
+          "$ref": "#/$defs/sourceIds"
+        },
+        "symbol": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8
+        },
+        "entityType": {
+          "enum": [
+            "barrier",
+            "organ",
+            "tissue",
+            "cell",
+            "receptor",
+            "ligand",
+            "presenter",
+            "adaptor",
+            "sensor",
+            "complex",
+            "complement",
+            "regulator",
+            "effector",
+            "antibody",
+            "cytokine",
+            "chemokine"
+          ]
+        },
+        "immuneArms": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "innate",
+              "adaptive"
+            ]
+          }
+        },
+        "locationIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "skin",
+              "mucosa",
+              "airway",
+              "blood",
+              "marrow",
+              "thymus",
+              "lymphoid",
+              "tissue",
+              "surface",
+              "cytosol",
+              "endosome",
+              "er",
+              "granule",
+              "extracellular",
+              "secretion"
+            ]
+          }
+        },
+        "functionIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "barrier",
+              "development",
+              "sensing",
+              "presentation",
+              "phagocytosis",
+              "cytotoxicity",
+              "secretion",
+              "activation",
+              "recruitment",
+              "opsonization",
+              "complement",
+              "neutralization",
+              "regulation",
+              "memory",
+              "repair"
+            ]
+          }
+        },
+        "interactionIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
     },
     "response": {
@@ -1265,6 +1603,84 @@
           "not": {
             "required": [
               "drugId"
+            ]
+          }
+        }
+      ]
+    },
+    "immuneInteraction": {
+      "type": "object",
+      "required": [
+        "id",
+        "fromId",
+        "toId",
+        "type",
+        "mode",
+        "context",
+        "sourceIds"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fromId": {
+          "type": "string",
+          "pattern": "^IMM-[0-9]{3}$"
+        },
+        "toId": {
+          "type": "string",
+          "pattern": "^IMM-[0-9]{3}$"
+        },
+        "type": {
+          "enum": [
+            "hosts",
+            "includes",
+            "component",
+            "precursor",
+            "expresses",
+            "produces",
+            "binds",
+            "presents",
+            "activates",
+            "induces",
+            "recruits",
+            "inhibits",
+            "cooperates",
+            "processed-into"
+          ]
+        },
+        "mode": {
+          "enum": [
+            "direct",
+            "mediated",
+            "structural"
+          ]
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1
+        },
+        "via": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceIds": {
+          "$ref": "#/$defs/sourceIds"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "mediated"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "via"
             ]
           }
         }
