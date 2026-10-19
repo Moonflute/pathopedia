@@ -1,9 +1,9 @@
 import {GameLoop} from './vendor/kontra-10.0.2.mjs';
-import {MODES,RARITIES,TRAITS,AUGMENTS,MAX_CROWD,WAVE_SECONDS,unitById} from './luck-data.mjs';
-import {createLuckRun,summon,summonBatch,summonCost,batchCost,drawOdds,moveUnit,sell,sellValue,upgrade,upgradeCost,recipeSlots,craft,chooseAugment,pause,resume,tickLuck,synergies,drainEvents,unitPower,unitRange,unitInterval} from './luck-engine.mjs';
+import {MODES,RARITIES,TRAITS,ROLES,BOARD,AUGMENTS,MAX_CROWD,WAVE_SECONDS,unitById} from './luck-data.mjs';
+import {createLuckRun,summon,summonBatch,summonCost,batchCost,drawOdds,moveUnit,sell,sellValue,upgrade,upgradeCost,recipeSlots,craft,chooseAugment,pause,resume,tickLuck,synergies,drainEvents,unitPower,unitRange,unitInterval,traitEffects,unitProgress,currentHighlight} from './luck-engine.mjs';
 import {createLuckRenderer} from './luck-renderer.mjs';
 import {createSurvivalAudio} from './survival-audio.mjs';
-import {cardArtwork} from './card-art.mjs';
+import {luckArtwork} from './luck-art.mjs';
 import {icon} from './luck-icons.mjs';
 const KEY='pathopedia:reroll:v1';
 const PANELS={traits:'특성',upgrades:'강화',recipes:'조합'};
@@ -16,7 +16,7 @@ export function createLuckGame(){
   page=0,collectionResume=false,lastVersion=-1,hudTime=0,lastStatus='',resultSaved=false,toastTimer=0,suppressClick=false,drag=null;
  const audio=createSurvivalAudio();audio.setEnabled(saved.sound);
  function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved));}catch{storageOK=false;}}
- function art(def,kind=mode){return cardArtwork(kind==='remedy'?'drug':'pathogen',def.art);}
+ function art(def,kind=mode){return luckArtwork(def,kind);}
  function portrait(def,kind=mode,cls=''){const a=art(def,kind);return a?'<img class="'+cls+'" src="'+esc(a.src)+'" alt="" draggable="false" decoding="async">':'<span class="ll-fallback" aria-hidden="true">✦</span>';}
  const stars=n=>'★'.repeat(n);
  function best(m){const r=saved.records[m];return r?'최고 W'+String(r.wave).padStart(2,'0')+' · '+r.wins+'승':'';}
@@ -38,7 +38,7 @@ export function createLuckGame(){
    const d=u&&unitById(mode,u.id),r=d&&RARITIES[d.rarity],beat=u ? .85+(u.uid%5)*.11 : 1;
    return '<button type="button" class="ll-cell '+(u?'has-unit'+((u.readyAt||0)>run.totalTime?' is-merging':''):'is-empty')+(selected===i?' is-selected':'')+'" data-luck-cell="'+i+'" '+(u?'data-tier="'+d.rarity+'" data-unit-uid="'+u.uid+'" style="--rarity:'+r.color+';--beat:'+beat+'s;--phase:-'+((run.totalTime+u.uid*.21)%beat)+'s"':'')+
     ' aria-label="'+(i+1)+'번 칸'+(u?' '+d.name+' '+u.star+'성 '+r.name:' 비어 있음')+'" aria-pressed="'+(selected===i)+'">'+
-    (u?'<span class="ll-tier-marker">'+r.mark+'</span><span class="ll-unit-shadow"></span><span class="ll-unit-body">'+portrait(d)+'</span><span class="ll-cell-stars">'+stars(u.star)+'</span>':'<span class="ll-cell-plus">·</span>')+'</button>';
+    (u?'<span class="ll-tier-marker">'+r.mark+'</span><span class="ll-role-marker" style="color:'+ROLES[d.role].color+'" title="'+ROLES[d.role].name+'">'+ROLES[d.role].mark+'</span><span class="ll-unit-shadow"></span><span class="ll-unit-body">'+portrait(d)+'</span><span class="ll-cell-stars">'+stars(u.star)+'</span><span class="ll-charge" style="--charge-color:'+ROLES[d.role].color+'" '+(unitProgress(run,u)===null?'hidden':'')+'><i></i></span>':'<span class="ll-cell-plus">·</span>')+'</button>';
   }).join('');
  }
  function traitsMarkup(){
@@ -48,13 +48,19 @@ export function createLuckGame(){
    return '<div class="ll-trait '+(tier>=0?'is-on':'')+'" style="--trait:'+t.color+'"><div><strong>'+t.name+'</strong><b>'+count+'</b></div><span class="ll-trait-tiers">'+t.thresholds.map(n=>'<i class="'+(count>=n?'is-on':'')+'">'+n+'</i>').join('')+'</span><small>'+t.bonuses[Math.max(0,tier)]+'</small></div>';
   }).join('')+'</div>';
  }
+ function unitStats(u,index){
+  const d=unitById(mode,u.id),range=unitRange(run,u);
+  if(d.role==='economy')return '생산 '+(8*u.star+traitEffects(run).income)+'G / 8초 · 누적 '+(u.earned||0)+'G';
+  if(d.skill==='overdrive')return '공속 +'+Math.round((.8+(u.star-1)*.15)*100)+'% · 3초 지속 · 8초 충전';
+  return '피해 '+Math.round(unitPower(run,u))+' · '+unitInterval(run,u,index).toFixed(2)+'초 · 사거리 '+(range>=700?'전체':Math.round(range));
+ }
  function selectedMarkup(){
   const u=run.board[selected];if(!u)return '';
-  const d=unitById(mode,u.id),r=RARITIES[d.rarity],range=unitRange(run,u);
+  const d=unitById(mode,u.id),r=RARITIES[d.rarity];
   return '<div class="ll-selected-art">'+portrait(d)+'</div><div class="ll-selected-copy"><div><strong>'+d.name+'</strong><b class="ll-tier-label" style="--rarity:'+r.color+'">'+r.name+'</b><small class="ll-info-stars">'+stars(u.star)+'</small></div>'+
-   '<span class="ll-unit-stats">피해 '+Math.round(unitPower(run,u))+' · '+unitInterval(run,u,selected).toFixed(2)+'초 · 사거리 '+(range>=700?'전체':Math.round(range))+'</span>'+
+   '<span class="ll-unit-stats">'+unitStats(u,selected)+'</span>'+
    '<span class="ll-unit-skill" style="color:'+d.attack.color+'">'+d.attack.name+' · '+d.description+'</span>'+
-   '<span>'+d.traits.map(id=>'<i style="color:'+TRAITS[id].color+'">'+TRAITS[id].name+'</i>').join('')+'</span></div>'+
+   '<span><i style="color:'+ROLES[d.role].color+'">'+ROLES[d.role].name+'</i>'+d.traits.map(id=>'<i style="color:'+TRAITS[id].color+'">'+TRAITS[id].name+'</i>').join('')+'</span></div>'+
    button('sell','판매 <b>'+sellValue(run,u)+'G</b>','ll-sell','aria-label="'+d.name+' 판매 '+sellValue(run,u)+'골드" '+((u.readyAt||0)>run.totalTime?'disabled':''));
  }
  function recipesMarkup(){
@@ -83,8 +89,8 @@ export function createLuckGame(){
  function battle(){
   return '<div class="ll-battle"><div class="ll-left"><div class="ll-scorebar"><div><small>WAVE</small><strong data-ll-wave>'+String(run.wave).padStart(2,'0')+'</strong><span>/ 20</span></div><div class="ll-crowd"><span>적 <b data-ll-crowd>'+run.enemies.length+'</b> / 60</span><i><b data-ll-crowd-bar></b></i></div>'+
    button('speed','×'+speed,'ll-speed','aria-label="전투 속도 전환"')+'</div><div class="ll-wave-track"><i data-ll-wave-bar></i></div>'+
-   '<div class="ll-field-wrap"><div class="ll-arena"><canvas class="ll-canvas" aria-label="자동 전투 전장"></canvas><div class="ll-board" role="group" aria-label="15칸 소환 보드">'+boardMarkup()+'</div><canvas class="ll-canvas ll-effects" aria-hidden="true"></canvas>'+
-   '<div class="ll-arena-caption"><span>자동 합성</span><span data-ll-kills>'+run.kills+' KILLS</span></div><div class="ll-toast" role="status" aria-live="polite" hidden></div></div></div>'+
+   '<div class="ll-field-wrap"><div class="ll-arena" style="--arena-aspect:'+BOARD.width+'/'+BOARD.height+';--board-x:'+BOARD.x/BOARD.width*100+'%;--board-y:'+BOARD.y/BOARD.height*100+'%;--board-w:'+BOARD.cols*BOARD.cell/BOARD.width*100+'%;--board-h:'+BOARD.rows*BOARD.cell/BOARD.height*100+'%;--board-cols:'+BOARD.cols+';--board-rows:'+BOARD.rows+'"><canvas class="ll-canvas" aria-label="자동 전투 전장"></canvas><div class="ll-board" role="group" aria-label="'+BOARD.cols*BOARD.rows+'칸 소환 보드">'+boardMarkup()+'</div><canvas class="ll-canvas ll-effects" aria-hidden="true"></canvas>'+
+   '<div class="ll-arena-caption"><span>자동 합성</span><span data-ll-kills>'+run.kills+' KILLS</span></div><div class="ll-toast" role="status" aria-live="polite" hidden></div></div><div class="ll-reveal" role="status" aria-live="polite" hidden></div></div>'+
    '<div class="ll-selection">'+selectedMarkup()+'</div>'+controls()+'</div><aside class="ll-sidebar"><nav class="ll-panel-tabs" aria-label="전투 관리">'+
    Object.entries(PANELS).map(([id,label])=>button('panel',label,'','data-luck-id="'+id+'" aria-pressed="'+(panel===id)+'"')).join('')+'</nav><div class="ll-panel-body">'+panelMarkup(panel)+'</div></aside></div>';
  }
@@ -92,7 +98,7 @@ export function createLuckGame(){
  function collection(){
   const units=MODES[mode].units,size=collectionPageSize(),pages=Math.ceil(units.length/size);page=Math.min(page,pages-1);
   return '<div class="ll-modal-head"><h2 id="ll-dialog-title">'+MODES[mode].name+' 도감</h2>'+button('close',icon('x'),'ll-icon','aria-label="도감 닫기"')+'</div><div class="ll-collection">'+
-   units.slice(page*size,(page+1)*size).map(d=>'<article style="--rarity:'+RARITIES[d.rarity].color+'"><div class="ll-collection-identity">'+portrait(d)+'<div><small>'+RARITIES[d.rarity].name+'</small><strong>'+d.name+'</strong></div></div><span class="ll-family">'+d.family+'</span><div class="ll-tags">'+d.traits.map(id=>'<span style="--trait:'+TRAITS[id].color+'">'+TRAITS[id].name+'</span>').join('')+'</div><p>'+d.description+'</p></article>').join('')+'</div><p class="ll-draw-odds">행운 · '+oddsLabel()+'</p><nav class="ll-pagination" aria-label="도감 페이지">'+
+   units.slice(page*size,(page+1)*size).map(d=>'<article style="--rarity:'+RARITIES[d.rarity].color+'"><div class="ll-collection-identity">'+portrait(d)+'<div><small>'+RARITIES[d.rarity].name+'</small><strong>'+d.name+'</strong></div></div><span class="ll-family"><b style="color:'+ROLES[d.role].color+'">'+ROLES[d.role].name+'</b> · '+d.family+'</span><div class="ll-tags">'+d.traits.map(id=>'<span style="--trait:'+TRAITS[id].color+'">'+TRAITS[id].name+'</span>').join('')+'</div><p>'+d.description+'</p></article>').join('')+'</div><p class="ll-draw-odds">행운 · '+oddsLabel()+'</p><nav class="ll-pagination" aria-label="도감 페이지">'+
    button('page-prev',icon('chevron-left'),'ll-icon','aria-label="이전 페이지" '+(page===0?'disabled':''))+'<span>'+(page+1)+' / '+pages+'</span>'+
    button('page-next',icon('chevron-right'),'ll-icon','aria-label="다음 페이지" '+(page===pages-1?'disabled':''))+'</nav>';
  }
@@ -148,7 +154,8 @@ export function createLuckGame(){
   game.querySelector('[data-luck-action="summon"]').disabled=run.status!=='running'||full||run.gold<summonCost(run);
   game.querySelector('[data-luck-action="lucky"]').disabled=run.status!=='running'||full||run.gems<3;
   game.querySelector('[data-luck-action="multi"]').disabled=run.status!=='running'||full||run.gold<batchCost(run);
-  const selectedUnit=run.board[selected],sellButton=game.querySelector('[data-luck-action="sell"]');if(sellButton)sellButton.disabled=run.status!=='running'||(selectedUnit?.readyAt||0)>run.totalTime;
+  const selectedUnit=run.board[selected],stats=game.querySelector('.ll-unit-stats');if(selectedUnit&&stats)stats.textContent=unitStats(selectedUnit,selected);
+  const sellButton=game.querySelector('[data-luck-action="sell"]');if(sellButton)sellButton.disabled=run.status!=='running'||(selectedUnit?.readyAt||0)>run.totalTime;
   game.querySelector('[data-ll-crowd-bar]').style.width=Math.min(100,run.enemies.length/MAX_CROWD*100)+'%';
   game.querySelector('.ll-crowd').classList.toggle('is-danger',run.enemies.length>=40);
   game.querySelector('[data-ll-wave-bar]').style.width=Math.min(100,run.waveTime/WAVE_SECONDS*100)+'%';
@@ -181,13 +188,25 @@ export function createLuckGame(){
   selectedUid=run.board[index]?.uid||0;selected=selectedUid?index:-1;
   updateBoard();refreshHud();
  }
+ function revealState(){
+  const el=game?.querySelector('.ll-reveal');if(!el||!run)return;
+  const h=currentHighlight(run);if(!h){el.hidden=true;el.dataset.key='';return;}
+  const key=h.key+':'+h.id+':'+h.star,def=unitById(mode,h.id),r=RARITIES[h.rarity],p=(run.totalTime-h.at)/h.life;
+  if(el.dataset.key!==key){
+   el.dataset.key=key;el.dataset.tier=h.rarity;el.style.setProperty('--reveal-color',h.kind==='merge'?'#ffe29c':r.color);
+   el.innerHTML='<span class="ll-reveal-rays" aria-hidden="true"></span><span class="ll-reveal-kicker">'+(h.kind==='merge'?h.star+'성 합성':r.name+' 등장')+'</span><span class="ll-reveal-portrait">'+portrait(def)+'</span><strong>'+def.name+'</strong><span class="ll-reveal-stars">'+stars(h.star)+'</span>';
+  }
+  el.hidden=false;el.style.opacity=Math.min(1,p*10,(1-p)*5);el.style.setProperty('--reveal-scale',String(.9+Math.min(1,p*8)*.1));
+ }
  function visualState(){
-  const board=game?.querySelector('.ll-board');if(!board||!run)return;
+  const board=game?.querySelector('.ll-board');if(!board||!run)return;revealState();
   for(const b of board.children){
    const u=run.board[Number(b.dataset.luckCell)];
    b.classList.toggle('is-merging',!!u&&(u.readyAt||0)>run.totalTime);
    b.classList.toggle('is-firing',!!u&&run.totalTime-(u.lastAttackAt??-1)<.13);
    b.classList.toggle('is-drag-source',!!drag?.moved&&drag.uid===u?.uid);
+   b.classList.toggle('is-overdrive',!!u&&(u.overdriveUntil||0)>run.totalTime);
+   const meter=b.querySelector('.ll-charge'),progress=u?unitProgress(run,u):null;if(meter){meter.hidden=progress===null;if(progress!==null)meter.firstElementChild.style.transform='scaleX('+progress+')';}
   }
  }
  function handleClick(b){
@@ -254,13 +273,11 @@ export function createLuckGame(){
   const canvas=game.querySelector('canvas');
   if(!canvas){syncOverlay(false);return;}
   renderer=createLuckRenderer(canvas,game.querySelector('.ll-effects'));
-  const field=game.querySelector('.ll-field-wrap'),arena=game.querySelector('.ll-arena');
+  const arena=game.querySelector('.ll-arena');
   const fit=()=>{
-   const {width,height}=field.getBoundingClientRect();
-   arena.style.width=Math.max(0,Math.min(width,height*600/560,600))+'px';
    renderer.resize();renderer.draw(run,selected,drag);
   };
-  observer=new ResizeObserver(fit);observer.observe(field);fit();
+  observer=new ResizeObserver(fit);observer.observe(arena);fit();
   const board=game.querySelector('.ll-board');
   board.addEventListener('pointerdown',e=>{
    const el=e.target.closest('[data-luck-cell]');if(!el||run.status!=='running'||e.button!==0)return;
@@ -269,7 +286,7 @@ export function createLuckGame(){
   },opts);
   board.addEventListener('pointermove',e=>{
    if(!drag||drag.id!==e.pointerId)return;
-   if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>8){drag.moved=true;if(!board.hasPointerCapture(e.pointerId))board.setPointerCapture(e.pointerId);board.classList.add('is-dragging');const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-luck-cell]');for(const b of board.children)b.classList.toggle('is-drop-target',b===target);const rect=arena.getBoundingClientRect();drag.point={x:(e.clientX-rect.left)/rect.width*600,y:(e.clientY-rect.top)/rect.height*560};}
+   if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>8){drag.moved=true;if(!board.hasPointerCapture(e.pointerId))board.setPointerCapture(e.pointerId);board.classList.add('is-dragging');const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-luck-cell]');for(const b of board.children)b.classList.toggle('is-drop-target',b===target);const rect=arena.getBoundingClientRect();drag.point={x:(e.clientX-rect.left)/rect.width*BOARD.width,y:(e.clientY-rect.top)/rect.height*BOARD.height};}
   },opts);
   board.addEventListener('pointerup',e=>{
    if(!drag||drag.id!==e.pointerId)return;

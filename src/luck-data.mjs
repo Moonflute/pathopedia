@@ -1,6 +1,6 @@
 // Game-only abilities; names and artwork come from the shared collection.
-export const BOARD=Object.freeze({width:600,height:560,x:60,y:148,cell:96,cols:5,rows:3});
-export const TRACK=Object.freeze({x:36,y:84,width:528,height:408});
+export const BOARD=Object.freeze({width:600,height:600,x:90,y:106,cell:84,cols:5,rows:5});
+export const TRACK=Object.freeze({x:36,y:52,width:528,height:504});
 export const MAX_CROWD=60,LAST_WAVE=20,WAVE_SECONDS=17,MAX_STAR=5;
 export const RARITIES=[
  {name:'일반',color:'#b3c5db',mark:'I'},{name:'희귀',color:'#62d9ff',mark:'II'},
@@ -8,6 +8,8 @@ export const RARITIES=[
 ];
 // Thresholds count distinct unit types. Bonuses are game-only and apply to the whole board.
 export const TRAITS={
+ care:{name:'보조 약품',color:'#83e0ee',thresholds:[2],bonuses:['생산 보상 +2G'],effect:'income',values:[2]},
+ colony:{name:'군집',color:'#d5df8d',thresholds:[2],bonuses:['지속 피해 +20%'],effect:'dot',values:[.2]},
  wall:{name:'세포벽',color:'#8ce4d2',thresholds:[2,4],bonuses:['전체 피해 +12%','전체 피해 +24%'],effect:'power',values:[.12,.24]},
  ceph:{name:'세파계',color:'#88ccff',thresholds:[2],bonuses:['범위 피해 +30%'],effect:'area',values:[.3]},
  carb:{name:'카바페넴',color:'#ffbd80',thresholds:[2,3],bonuses:['폭발 반경 +15%','폭발 반경 +30%'],effect:'radius',values:[.15,.3]},
@@ -21,17 +23,27 @@ export const TRAITS={
  capsule:{name:'협막',color:'#f9d18d',thresholds:[2],bonuses:['보스 피해 +30%'],effect:'boss',values:[.3]}
 };
 const UNIT_TAGS={
+ saline:['생리식염수','care'],beta:['포비돈 요오드','care'],adren:['아드레날린','care'],peroxide:['과산화수소','care'],
+ yeast:['효모','fungus','colony'],plasmid:['플라스미드','colony'],phage:['박테리오파지','virus'],toxin:['세균 독소','negative','colony'],
  pen:['페니실린계','wall'],cef:['3세대 세파계','wall','ceph'],cefi:['4세대 세파계','wall','ceph'],
  gen:['아미노글리코사이드','protein'],dox:['테트라사이클린계','protein'],van:['글리코펩타이드','wall'],
  azi:['마크로라이드계','protein'],acy:['DNA 합성 억제','antiviral'],mero:['카바페넴계','wall','carb'],
  line:['옥사졸리디논계','protein'],dap:['리포펩타이드','membrane'],imi:['카바페넴계','wall','carb'],
  atlas:['카바페넴계','wall','carb'],zero:['RNA 합성 억제','antiviral'],
  cocci:['황색포도알균','positive'],coli:['대장균','negative'],flu:['인플루엔자','virus'],cand:['칸디다','fungus'],
- kleb:['폐렴막대균','negative','capsule'],spore:['바실루스 세레우스','positive'],herp:['단순포진','virus'],
+ kleb:['폐렴막대균','negative','capsule'],spore:['바실루스 세레우스','positive','colony'],herp:['단순포진','virus'],
  pseudo:['녹농균','negative'],asper:['아스페르길루스','fungus'],rabid:['광견병 바이러스','virus'],
  crypto:['크립토코쿠스','fungus','capsule'],hydra:['녹농균','negative'],bloom:['아스페르길루스','fungus']
 };
 export const ATTACKS={
+ drip:{name:'골드 수액',color:'#83e0ee',range:0},
+ disinfect:{name:'요오드 지대',color:'#efa35c',range:310},
+ overdrive:{name:'과충전',color:'#ff8c9b',range:124},
+ bubbles:{name:'거품 함정',color:'#b1f3f8',range:310},
+ ferment:{name:'발효 금고',color:'#efda88',range:0},
+ amplify:{name:'교차 증폭',color:'#bce891',range:300},
+ lyse:{name:'용균 사냥',color:'#9dd4ff',range:380},
+ volatile:{name:'연쇄 파열',color:'#c9ed6c',range:280},
  "rapid": {
   "name": "삼연사",
   "color": "#d8f6ef",
@@ -168,7 +180,13 @@ export const ATTACKS={
   "range": 850
  }
 };
-const unit=(id,name,art,rarity,skill,damage,interval,description)=>({id,name,art,rarity,skill,damage,interval,description,attack:ATTACKS[skill],family:UNIT_TAGS[id][0],traits:UNIT_TAGS[id].slice(1)});
+export const ROLES={
+ damage:{name:'화력',mark:'✦',color:'#f0c48c'},control:{name:'제어',mark:'❄',color:'#a7d9fa'},
+ support:{name:'지원',mark:'↑',color:'#a9efce'},economy:{name:'생산',mark:'G',color:'#f8d777'},
+ growth:{name:'성장',mark:'✧',color:'#c8e99e'},finisher:{name:'처형',mark:'◆',color:'#c3b2ff'}
+};
+const roleFor=skill=>['drip','ferment'].includes(skill)?'economy':['support','overdrive','amplify'].includes(skill)?'support':skill==='germinate'?'growth':skill==='lyse'?'finisher':['stun','slow','bind','ram','disinfect','bubbles'].includes(skill)?'control':'damage';
+const unit=(id,name,art,rarity,skill,damage,interval,description)=>({id,name,art,rarity,skill,damage,interval,description,role:roleFor(skill),attack:ATTACKS[skill],family:UNIT_TAGS[id][0],traits:UNIT_TAGS[id].slice(1)});
 export const MODES={
  remedy:{id:'remedy',name:'항생제',subtitle:'THE REMEDY',color:'#88e5d0',rival:'군집',
  units:[
@@ -176,12 +194,16 @@ export const MODES={
  unit('cef','세프','ceftriaxone',0,'splash',24,1.18,'원거리 범위 포격'),
  unit('gen','젠타','gentamicin',0,'chain',17,.95,'3갈래 연쇄 전격'),
  unit('dox','독시','doxycycline',0,'poison',12,.85,'최대 3중첩 독'),
+ unit('saline','수액','item:saline',0,'drip',0,8,'8초마다 ★당 8G'),
  unit('van','반코','vancomycin',1,'stun',46,1.35,'범위 강타 · 기절'),
  unit('azi','아지','azithromycin',1,'support',20,.8,'주변 공속 +22%'),
  unit('acy','아시','acyclovir',1,'slow',29,.9,'범위 빙결 · 둔화'),
  unit('cefi','세핌','cefepime',1,'pierce',42,1.25,'3기 관통탄'),
+ unit('beta','베타딘','item:beta',1,'disinfect',18,2.4,'장판 4초 · 받는 피해 +25%'),
  unit('mero','메로','meropenem',2,'missile',86,1.55,'2발 유도 폭발'),
  unit('line','리네','linezolid',2,'beam',55,.92,'직선 관통 광선'),
+ unit('adren','아드레날린','item:adren',2,'overdrive',0,8,'인접 8칸 · 3초 공속 +80%'),
+ unit('peroxide','퍼옥시','item:peroxide',2,'bubbles',95,3.2,'거품 지뢰 3개 · 폭발 기절'),
  unit('dap','댑토','daptomycin',3,'storm',68,.72,'6갈래 번개 폭풍'),
  unit('imi','이미','imipenem',3,'nova',140,1.5,'원형 충격파'),
  unit('atlas','아틀라스','meropenem',4,'meteor',260,1.7,'3연속 운석 · 광역 폭발'),
@@ -193,13 +215,17 @@ export const MODES={
  unit('coli','콜리','eco',0,'acid',24,1.18,'점액 폭발 · 독'),
  unit('flu','플루','influenza-a',0,'infect',17,.95,'연쇄 감염 · 지속 피해'),
  unit('cand','캔디','cal',0,'spores',12,.85,'2갈래 독성 포자'),
+ unit('yeast','이스트','item:yeast',0,'ferment',0,8,'8초마다 ★당 8G'),
  unit('kleb','클렙','kpn',1,'ram',46,1.35,'협막 돌진 · 밀쳐내기'),
- unit('spore','스포리','bce',1,'germinate',20,.8,'주변 공속 +22% · 2갈래 포자'),
+ unit('spore','스포리','bce',1,'germinate',20,.8,'24 / 36초 성장 · 최대 3성'),
  unit('herp','허피','hsv1',1,'bind',29,.9,'2기 속박 · 둔화'),
+ unit('plasmid','플라스미드','item:plasmid',1,'amplify',16,1.2,'같은 행·열 피해 +24%'),
+ unit('toxin','톡신','item:toxin',1,'volatile',22,1.6,'표식 적 처치 시 연쇄 폭발'),
  unit('pseudo','슈도','pae',2,'pool',72,1.3,'지속 피해 · 독성 장판'),
  unit('asper','아스퍼','afu',2,'split',50,1,'3갈래 확산탄'),
  unit('rabid','레이비','rabies',3,'frenzy',39,.32,'발톱 연타 · 점점 빨라짐'),
  unit('crypto','크립토','cne',3,'rupture',140,1.5,'협막 파편 · 범위 기절'),
+ unit('phage','파지','item:phage',3,'lyse',100,1.2,'체력 15% 처형 · 보스 5%'),
  unit('hydra','히드라','pae',4,'hydra',175,.85,'5갈래 추적탄'),
  unit('bloom','블룸 퀸','afu',4,'bloom',210,1.4,'포자 장판 · 개화 폭발')
  ],recipes:[{id:'hydra',needs:['asper','kleb','flu']},{id:'bloom',needs:['pseudo','herp','cand']}]}

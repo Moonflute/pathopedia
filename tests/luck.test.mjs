@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {MODES,MAX_CROWD,unitById} from '../src/luck-data.mjs';
-import {createLuckRun,summon,summonCost,moveUnit,canMerge,craft,recipeSlots,pause,tickLuck,chooseAugment,autoMerge,synergies,traitEffects,unitPower,summonBatch,batchCost,drawOdds,unitRange} from '../src/luck-engine.mjs';
+import {MODES,BOARD,MAX_CROWD,unitById,cellCenter,trackPoint} from '../src/luck-data.mjs';
+import {createLuckRun,summon,summonCost,moveUnit,canMerge,craft,recipeSlots,pause,tickLuck,chooseAugment,autoMerge,synergies,traitEffects,unitPower,summonBatch,batchCost,drawOdds,unitRange,unitInterval,supportCells,currentHighlight} from '../src/luck-engine.mjs';
 test('re-roll: seeded draws and both factions remain deterministic',()=>{
  for(const mode of Object.keys(MODES)){
   const a=createLuckRun(mode,1234),b=createLuckRun(mode,1234);
@@ -87,7 +87,7 @@ test('re-roll: ten-draw is identical to ten singles and charges the quoted price
 });
 test('re-roll: failed ten-draws cannot spend currency, consume pity or advance RNG',()=>{
  const r=createLuckRun('remedy',7);r.gold=10000;r.fusions=[];r.board.fill(null);
- MODES.remedy.units.forEach((def,i)=>r.board[i]={id:def.id,star:5,uid:100+i,cooldown:0,shots:0});
+ r.board=r.board.map((_,i)=>({id:MODES.remedy.units[i%MODES.remedy.units.length].id,star:5,uid:100+i,cooldown:0,shots:0}));r.board[24]=null;
  const before=structuredClone(r);assert.equal(summonBatch(r),false);
  assert.deepEqual({...r,events:[]},{...before,events:[]});
  r.board.fill(null);r.gold=batchCost(r)-1;const rng=r.rng;assert.equal(summonBatch(r),false);assert.equal(r.rng,rng);
@@ -109,14 +109,73 @@ test('re-roll: chained merge animations finish in order and 3-star results get a
  const fancy=r.fusions.find(f=>f.star>=3);assert.ok(fancy);assert.ok(fancy.end-fancy.start>.8);
  const settled=r.board.find(Boolean);assert.equal(settled.readyAt,r.fusions.at(-1).end);
 });
-test('re-roll: every unit has a distinct attack that damages targets with finite values',()=>{
+test('re-roll: each piece has a distinct attack or productive role with finite effects',()=>{
  const skills=new Set();
  for(const mode of Object.keys(MODES))for(const def of MODES[mode].units){
-  skills.add(def.skill);const r=createLuckRun(mode,444);r.board.fill(null);r.effects=[];r.fusions=[];r.spawned=r.spawnCount;
-  r.board[7]={id:def.id,star:1,uid:200,cooldown:0,shots:0,readyAt:0};
-  r.enemies=[264,274,284].map((d,i)=>({id:500+i,hp:1e6,maxHp:1e6,d,x:36+d,y:84,speed:0,hit:0,slow:0,stun:0,poison:0,poisonDamage:0,radius:10}));
-  tickLuck(r,1/60);assert.ok(r.enemies.some(e=>e.hp<1e6),mode+':'+def.id);assert.ok(r.enemies.every(e=>Number.isFinite(e.hp)));assert.ok(r.effects.length>0);
-  const range=unitRange(r,r.board[7]);r.augments.push('range');assert.equal(unitRange(r,r.board[7]),range*1.35);
+  skills.add(def.skill);const r=quietRun(mode);r.board[2]=piece(def.id);r.board[2].cooldown=0;
+  r.enemies=[264,274,284].map((d,i)=>enemy(500+i,d));
+  tickLuck(r,1/60);const effects=r.effects.length;
+  for(let i=0;i<30;i++)tickLuck(r,1/60);
+  if(def.damage>0)assert.ok(r.enemies.some(e=>e.hp<1e6),mode+':'+def.id);
+  assert.ok(r.enemies.every(e=>Number.isFinite(e.hp)));assert.ok(effects>0);
+  const range=unitRange(r,r.board[2]);r.augments.push('range');assert.equal(unitRange(r,r.board[2]),range*1.35);
  }
- assert.equal(skills.size,27);
+ assert.equal(skills.size,Object.values(MODES).reduce((n,m)=>n+m.units.length,0));
+});
+function quietRun(mode='remedy'){
+ const r=createLuckRun(mode,444);r.board.fill(null);r.effects=[];r.fusions=[];r.highlights=[];r.spawned=r.spawnCount=0;r.waveTime=-100;return r;
+}
+function piece(id,star=1,uid=200){return{id,star,uid,cooldown:0,shots:0,readyAt:0,growthAge:0};}
+function enemy(id,d=264,hp=1e6){return{id,hp,maxHp:hp,d,...trackPoint(d),speed:0,hit:0,slow:0,stun:0,poison:0,poisonDamage:0,radius:10};}
+function advance(r,seconds){for(let i=0;i<Math.round(seconds*60);i++)tickLuck(r,1/60);}
+test('re-roll: all 25 cells can be reached and dragging respects the new boundary',()=>{
+ const r=quietRun();assert.equal(r.board.length,25);assert.equal(BOARD.cols,5);assert.equal(BOARD.rows,5);
+ r.board[0]=piece('pen');assert.ok(moveUnit(r,0,24));assert.equal(r.board[24].id,'pen');assert.equal(moveUnit(r,24,25),false);
+ const last=cellCenter(24);assert.ok(last.x<BOARD.width&&last.y<BOARD.height);
+});
+test('re-roll: producers earn on their own clock without enemies or attack-speed exploits',()=>{
+ for(const [mode,id] of [['remedy','saline'],['colony','yeast']]){
+  const r=quietRun(mode);r.board[12]=piece(id,2);r.board[12].cooldown=8;r.augments=['haste'];
+  const gold=r.gold;advance(r,7.9);assert.equal(r.gold,gold);
+  advance(r,.2);assert.equal(r.gold,gold+16);assert.equal(unitInterval(r,r.board[12],12),8);
+  pause(r);advance(r,8);assert.equal(r.gold,gold+16);
+ }
+});
+test('re-roll: support follows placement, excludes the caster and expires after a pulse',()=>{
+ const r=quietRun('colony');r.board[12]=piece('plasmid');r.board[2]=piece('cocci',1,201);r.board[1]=piece('cocci',1,202);
+ assert.equal(unitPower(r,r.board[2])/unitPower(r,r.board[1]),1.24);assert.equal(supportCells(r,12).length,8);
+ moveUnit(r,12,6);assert.equal(unitPower(r,r.board[1])/unitPower(r,r.board[2]),1.24);
+ const a=quietRun();a.board[12]=piece('adren');a.board[6]=piece('pen',1,201);a.board[0]=piece('pen',1,202);
+ const interval=unitInterval(a,a.board[6],6);tickLuck(a,1/60);
+ assert.ok(unitInterval(a,a.board[6],6)<interval);assert.equal(unitInterval(a,a.board[0],0),interval);
+ advance(a,3.1);assert.equal(unitInterval(a,a.board[6],6),interval);
+});
+test('re-roll: traps arm before exploding, while iodine weakens enemies for allied attacks',()=>{
+ const r=quietRun();r.board[2]=piece('peroxide');r.enemies=[enemy(500)];
+ tickLuck(r,1/60);assert.equal(r.traps.length,1);assert.equal(r.enemies[0].hp,1e6);
+ advance(r,.4);assert.equal(r.traps.length,0);assert.ok(r.enemies[0].hp<1e6);assert.ok(r.enemies[0].stun>0);
+ const a=quietRun();a.board[2]=piece('beta');a.enemies=[enemy(500)];tickLuck(a,1/60);
+ assert.ok(a.enemies[0].exposed>0);assert.equal(a.pools[0].kind,'iodine');
+ a.pools=[];a.board[2]=piece('pen');const b=structuredClone(a);b.enemies[0].exposed=0;
+ const hp=a.enemies[0].hp;tickLuck(a,1/60);tickLuck(b,1/60);
+ assert.ok(Math.abs((hp-a.enemies[0].hp)/(hp-b.enemies[0].hp)-1.25)<1e-7);
+});
+test('re-roll: phage uses a lower boss execution threshold and toxin deaths trigger splash',()=>{
+ for(const boss of [false,true]){
+  const r=quietRun('colony');r.board[2]=piece('phage');
+  r.enemies=[{...enemy(500,264,300),maxHp:2000,boss,deadline:999,skillTimer:7}];tickLuck(r,1/60);
+  assert.equal(r.enemies.length,boss?1:0);
+ }
+ const r=quietRun('colony');r.board[2]=piece('toxin');r.enemies=[enemy(500,264),enemy(501,274)];tickLuck(r,1/60);
+ assert.ok(r.enemies.every(e=>e.volatile>0));
+ r.enemies[1].hp=1;r.board[2]=piece('cocci');const before=r.enemies[0].hp;tickLuck(r,1/60);
+ assert.ok(r.enemies[0].hp<before-40);assert.ok(r.effects.some(e=>e.type==='toxinburst'));
+});
+test('re-roll: growth resolves auto-merges and reveals only after the gathering completes',()=>{
+ const r=quietRun('colony');r.board[0]=piece('spore');r.board[0].growthAge=23.99;r.board[1]=piece('spore',2,201);
+ tickLuck(r,1/60);assert.equal(r.board.filter(Boolean).length,1);assert.ok(r.board[0].star>=3);
+ assert.equal(currentHighlight(r),null);const end=r.board[0].readyAt;r.totalTime=end;
+ assert.ok(currentHighlight(r)?.star>=3);assert.ok(moveUnit(r,0,24));
+ r.totalTime=end+2;assert.equal(currentHighlight(r),null);
+ const a=quietRun();a.gems=3;a.rng=1;summon(a,true);assert.equal(currentHighlight(a)?.rarity,4);
 });

@@ -1,4 +1,5 @@
 // Procedural Canvas effects reuse the existing transparent card artwork.
+import {BOARD} from './luck-data.mjs';
 const TAU=Math.PI*2,clamp=n=>Math.max(0,Math.min(1,n));
 export function drawLuckEffects(ctx,run,unitImage,reduced=false){
  const dot=(x,y,r,color)=>{ctx.beginPath();ctx.arc(x,y,Math.max(0,r),0,TAU);ctx.fillStyle=color;ctx.fill();};
@@ -9,7 +10,7 @@ export function drawLuckEffects(ctx,run,unitImage,reduced=false){
   for(let i=0;i<8;i++){const a=i*Math.PI/4,s=i%2?r*.24:r;ctx.lineTo(Math.cos(a)*s,Math.sin(a)*s);}ctx.closePath();ctx.fill();ctx.restore();
  };
  const sprite=(id,x,y,scale=1,alpha=1)=>{
-  ctx.save();ctx.globalAlpha*=alpha;const img=unitImage(run.mode,id),size=57*scale;
+  ctx.save();ctx.globalAlpha*=alpha;const img=unitImage(run.mode,id),size=BOARD.cell*.58*scale;
   if(img?.complete&&img.naturalWidth)ctx.drawImage(img,x-size/2,y-size/2-9,size,size);
   else{dot(x,y-9,14*scale,'#cbdcf4');star(x,y-9,8*scale,'#fff');}
   ctx.restore();
@@ -33,6 +34,17 @@ export function drawLuckEffects(ctx,run,unitImage,reduced=false){
     line(-len,0,2,0,c,f.kind==='needle'?2:4);
     ctx.beginPath();ctx.moveTo(8,0);ctx.lineTo(-3,-size);ctx.lineTo(-3,size);ctx.closePath();ctx.fill();
     if(f.kind==='meteor')dot(-4,0,7,'#fff3bb');
+   }else if(f.kind==='bubble'){
+    ring(0,0,8,c,2);ring(-8,4,4,c,1.5);dot(-3,-4,2,'#fff');
+   }else if(f.kind==='iodine'){
+    ctx.beginPath();ctx.moveTo(0,-11);ctx.bezierCurveTo(14,4,9,13,0,13);ctx.bezierCurveTo(-9,13,-14,4,0,-11);ctx.fill();dot(-3,4,2,'#fff9');
+   }else if(f.kind==='dna'){
+    for(let i=0;i<5;i++){const x=i*5-10,y=Math.sin(i+p*9)*5;line(x,y,x,-y,'#fff8',1);dot(x,y,2.5,c);dot(x,-y,2,'#eaffbe');}
+   }else if(f.kind==='phage'){
+    ctx.beginPath();for(let i=0;i<6;i++){const a=i*TAU/6;ctx.lineTo(Math.cos(a)*7,Math.sin(a)*7);}ctx.closePath();ctx.fill();
+    line(-7,0,-17,0,c,2);line(-16,0,-21,-5,c,2);line(-16,0,-21,5,c,2);
+   }else if(f.kind==='toxin'){
+    ctx.rotate(p*6);ctx.beginPath();ctx.moveTo(9,0);ctx.lineTo(-6,-8);ctx.lineTo(-6,8);ctx.closePath();ctx.fill();dot(0,0,2,'#fff');
    }else if(f.kind==='ice'){
     ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(0,-5);ctx.lineTo(-8,0);ctx.lineTo(0,5);ctx.closePath();ctx.fill();line(-5,0,6,0,'#fff',1);
    }else if(f.kind==='hammer'){
@@ -50,6 +62,25 @@ export function drawLuckEffects(ctx,run,unitImage,reduced=false){
     if(f.kind==='glob')for(let i=0;i<3;i++)dot(-7-i*4,Math.sin(i+p*7)*4,3-i*.6,c);
    }
    ctx.restore();
+  }else if(f.type==='income'){
+   ctx.textAlign='center';ctx.font='800 17px SUIT, sans-serif';ctx.fillText(f.text,f.x,f.y-25-p*26);
+   for(let i=0;i<3;i++){const a=i*TAU/3+p;star(f.x+Math.cos(a)*20,f.y-10+Math.sin(a)*12-p*15,4*(1-p),c);}
+  }else if(f.type==='charge'){
+   ctx.translate(f.x,f.y-15);ctx.beginPath();ctx.moveTo(3,-14);ctx.lineTo(-7,0);ctx.lineTo(2,0);ctx.lineTo(-2,14);ctx.lineTo(9,-3);ctx.lineTo(1,-3);ctx.closePath();ctx.fill();
+   ring(0,4,r*p,c,1);
+  }else if(f.type==='pulse'){
+   ring(f.x,f.y,r*p,c,3);ring(f.x,f.y,r*p*.7,'#ffcbd4',1);
+   for(let i=0;i<8;i++){const a=i*TAU/8;star(f.x+Math.cos(a)*r*p,f.y+Math.sin(a)*r*p,5*(1-p),c,a);}
+  }else if(f.type==='bubbleburst'){
+   for(let i=0;i<9;i++){const a=i*TAU/9;ring(f.x+Math.cos(a)*r*p*.7,f.y+Math.sin(a)*r*p*.7,(9+i%3*3)*(1-p),c,2);}
+   ring(f.x,f.y,r*p,'#edffff',2);
+  }else if(f.type==='execute'){
+   line(f.x-r*p*.6,f.y-r*p,f.x+r*p*.6,f.y+r*p,'#e7f3ff',5*(1-p));
+   line(f.x+r*p*.6,f.y-r*p,f.x-r*p*.6,f.y+r*p,c,5*(1-p));ring(f.x,f.y,r*p,c,2);
+   for(let i=0;i<8;i++){const a=i*TAU/8;star(f.x+Math.cos(a)*r*p,f.y+Math.sin(a)*r*p,7*(1-p),c,a);}
+  }else if(f.type==='toxinmark'||f.type==='toxinburst'){
+   const radius=f.type==='toxinmark'?r*.5:r*p;ring(f.x,f.y,radius,c,2);
+   for(let i=0;i<6;i++){const a=i*TAU/6+p;star(f.x+Math.cos(a)*radius,f.y+Math.sin(a)*radius,6*(1-p),c,a);}
   }else if(f.type==='beam'){
    line(f.x,f.y,f.tx,f.ty,c,10*(1-p));line(f.x,f.y,f.tx,f.ty,'#fff',2.5*(1-p));star(f.tx,f.ty,14*(1-p),c);
   }else if(['chain','storm'].includes(f.type)){
@@ -90,7 +121,7 @@ export function drawLuckEffects(ctx,run,unitImage,reduced=false){
  }
  // Merge chains are scheduled per piece, so a ten-draw never flashes all stages at once.
  for(const f of run.fusions){
-  const t=run.totalTime,elapsed=t-f.start,c=f.star>=3?'#ffe29c':f.color,arrival=.4;
+  const t=run.totalTime,elapsed=t-f.start,c=f.star>=3?'#ffe29c':f.color,arrival=f.growth?0:.4;
   ctx.save();
   if(elapsed<0){
    if(t>=f.aReady)sprite(f.id,f.from.x,f.from.y,1,.9);
@@ -99,7 +130,6 @@ export function drawLuckEffects(ctx,run,unitImage,reduced=false){
   }
   if(elapsed<arrival&&!reduced){
    const p=clamp(elapsed/arrival),ease=p*p*(3-2*p),x=f.from.x+(f.to.x-f.from.x)*ease,y=f.from.y+(f.to.y-f.from.y)*ease-Math.sin(p*Math.PI)*26;
-   ctx.globalAlpha=.45;line(f.from.x,f.from.y-8,x,y-8,c,2);ctx.globalAlpha=1;
    sprite(f.id,x,y,1-p*.25);sprite(f.id,f.to.x,f.to.y-Math.sin(p*Math.PI)*9,1-p*.15);
    ring(f.to.x,f.to.y-8,36-20*p,c,1.5);
   }else{
@@ -112,7 +142,7 @@ export function drawLuckEffects(ctx,run,unitImage,reduced=false){
     for(let i=0;i<count;i++){const a=i*TAU/count,power=(i%3+3)/5;star(f.to.x+Math.cos(a)*size*p*power,f.to.y-8+Math.sin(a)*size*p*power,(fancy?7:4)*(1-p),i%2?c:'#fff',a+p);}
    }
    ctx.globalAlpha=1;ctx.fillStyle=c;ctx.textAlign='center';ctx.font=(f.star>=3?'800 15px':'700 11px')+' SUIT, sans-serif';
-   ctx.fillText('★'.repeat(f.star),f.to.x,f.to.y-47);
+   ctx.fillText('★'.repeat(f.star),f.to.x,f.to.y-BOARD.cell*.48);
   }
   ctx.restore();
  }
