@@ -27,7 +27,7 @@ export function cellObservation(s,c){
   destination=work?.kind==='signal'?district(work.site)+' · 신호 발신':c.recordId?district(s.rally)+' · 방어 집결지':'림프절 · 항원 확인';
   if(c.recordId)cargo='항원 정보';
  }else if(c.kind==='platelet')destination=district(work?.site||c.target)+(c.task==='봉합 순찰'?' · 순찰 구역':' · 봉합 지점');
- else destination=nearest(work||end)+(c.task==='감염 대응'?' · 교전 지점':c.task==='잔해 청소'?' · 잔해 지점':' · 순찰 구역');
+ else destination=nearest(s,work||end)+(c.task==='감염 대응'?' · 교전 지점':c.task==='잔해 청소'?' · 잔해 지점':' · 순찰 구역');
  if(work&&['load','unload','produce','build'].includes(work.kind)){
   const building=s.districts[c.buildSite]?.building;
   const progress=work.kind==='build'&&building?1-(building.remaining??building.duration)/building.duration:activityProgress(work,s.time);
