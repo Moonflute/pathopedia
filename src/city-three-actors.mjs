@@ -17,7 +17,7 @@ export const CELL_STYLES=Object.freeze({
  courier:{w:.26,h:.3,y:.38,face:.43,hat:0xa48461}
 });
 export function createActors(profile){
- const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={},last=new Map(),positions=[];
+ const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={},last=new Map(),positions=[];let lastRun=null,lastLayout=null;
  const capacity=profile.maxCells+profile.maxShipments,standard=new T.MeshStandardMaterial({color:0xffffff,roughness:.9}),flat=new T.MeshBasicMaterial({color:0xffffff});
  const body=new T.SphereGeometry(1,profile.mobile?10:12,profile.mobile?7:8),hat=new T.SphereGeometry(1,profile.mobile?8:10,profile.mobile?5:6),small=new T.SphereGeometry(1,6,4),box=new T.BoxGeometry(1,1,1),rod=new T.CylinderGeometry(1,1,1,6),rim=new T.TorusGeometry(1,.13,4,12);
  function batch(id,geometry,limit=capacity,shadow=true,unlit=false){const m=new T.InstancedMesh(geometry,unlit?flat:standard,limit);m.name=id;m.instanceMatrix.setUsage(T.DynamicDrawUsage);m.count=0;m.frustumCulled=false;m.castShadow=shadow;m.receiveShadow=!unlit;root.add(m);batches[id]=m;}
@@ -36,8 +36,8 @@ export function createActors(profile){
   line(x,y-.15*size,z,x,y+.08*size,z,.045*size,0xf6cf78);
   for(const side of [-1,1])line(x,y+.08*size,z,x+side*.16*size,y+.27*size,z,.045*size,0xf6cf78);
  }
- function worker(unit,kind,id,t,selected,drug,readability){
-  const p=groundPoint(unit),look=CELL_STYLES[kind]||CELL_STYLES.courier,phase=typeof id==='number'?id:Number(id.replace('shipment',''));
+ function worker(unit,kind,id,p,t,selected,drug,readability){
+  const look=CELL_STYLES[kind]||CELL_STYLES.courier,phase=typeof id==='number'?id:Number(id.replace('shipment',''));
   const prev=last.get(id),distance=prev?Math.hypot(p.x-prev.x,p.z-prev.z):0,movedAt=distance>.00001?t:prev?.movedAt??-1,moving=t-movedAt<.12;
   const act=activeActivity(unit,t),progress=activityProgress(act,t),at=act?groundPoint(act):null,doing=act?.kind;
   let angle=prev?.angle??.5;
@@ -136,12 +136,14 @@ export function createActors(profile){
   if(selected){const scale=selected===2?1.3*readability:1;put('selected',p.x,.07,p.z,scale,scale,scale,selected===2?0x438f92:0xe5b854,Math.PI/2);}
   if(selected===2)put('badge',p.x,1.15,p.z,.08*readability,.14*readability,.08*readability,0x75d1cb);
  }
- function draw(s,{selectedKind,selectedCell,readability=1}={}){
+ function draw(s,{selectedKind,selectedCell,readability=1,motion}={}){
+  if(lastRun!==s||lastLayout!==s.layout){last.clear();lastRun=s;lastLayout=s.layout;}
+  const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time;
   for(const m of Object.values(batches))m.count=0;positions.length=0;const living=new Set(),drug=DRUGS.find(d=>d.id===s.drug);
-  for(const c of s.cells.slice(0,profile.maxCells)){const p=groundPoint(c);positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,s.time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability);}
-  for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=groundPoint(sh);positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,s.time,selectedCell===id?2:0,drug,readability);}
+  for(const c of s.cells.slice(0,profile.maxCells)){const p=point(c,c.id);positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability);}
+  for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=point(sh,id);positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability);}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
-   const p=groundPoint(e),bacillus=['ECO-009','GNX-220','CDF-121'].includes(e.recordId);put('enemy',p.x,.35,p.z,bacillus?.5:.38,bacillus?.25:.35,.37,e.color);
+   const p=point(e,'enemy'+e.id),bacillus=['ECO-009','GNX-220','CDF-121'].includes(e.recordId);put('enemy',p.x,.35,p.z,bacillus?.5:.38,bacillus?.25:.35,.37,e.color);
    for(let n=0;n<4;n++){const angle=n*Math.PI/2;put('spikes',p.x+Math.cos(angle)*.3,.62,p.z+Math.sin(angle)*.3,.09,.3,.09,e.color,0,0,Math.cos(angle)*.5);}
    for(const side of [-1,1])put('enemyEyes',p.x+side*.12,.42,p.z+.32,.04,.05,.03,0x41464c);
    if(e.opsonized>.08){antibody(p.x,.95,p.z,.55+e.opsonized*.25);put('selected',p.x,.09,p.z,.85,.85,.85,0xdac686,Math.PI/2);}
