@@ -6,6 +6,7 @@ import {createActors} from './city-three-actors.mjs';
 import {SITES,qualityProfile,groundPoint} from './city-three-layout.mjs';
 import {WALLS,FRONTS} from './city-frontier-data.mjs';
 import {cityHealth} from './city-engine.mjs';
+import {STAGES} from './city-biology.mjs';
 import {cellObservation,createCellObserver,moveFollowCamera} from './city-cell-observer.mjs';
 
 const assetRoot=new URL('../assets/city3d/',import.meta.url);
@@ -32,11 +33,11 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
  const calmSky=new T.Color(0xe4e6d8),illSky=new T.Color(0xd69b91),warmSun=new T.Color(0xffeacb),illSun=new T.Color(0xffc1b2);
  const watching=createCellObserver();
  const labelLayer=document.createElement('div');labelLayer.className='cc-three-labels';map.append(labelLayer);
- const labels=Object.entries(SITES).map(([id,s])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label'+(s.detail?' cc-three-label--main':'');b.innerHTML=`<i style="background:#${s.color.toString(16)}"></i><span>${s.label}</span><small>${s.detail?'':'연결 거점'}</small>`;b.setAttribute('aria-label',s.label+' 선택');b.addEventListener('click',()=>onSelect(id),{signal:abort.signal});labelLayer.append(b);return {id,site:s,element:b};});
+ const labels=Object.entries(SITES).map(([id,s])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label'+(s.detail?' cc-three-label--main':'');b.innerHTML=`<i style="background:#${s.color.toString(16)}"></i><span>${s.label}</span><small>${s.detail?'':'연결 거점'}</small>`;b.setAttribute('aria-label',s.label+' 선택');b.addEventListener('click',()=>onSelect(id),{signal:abort.signal});labelLayer.append(b);const stage=document.createElement('em');b.append(stage);return {id,site:s,element:b};});
  const inspect=document.createElement('section');inspect.className='cc-three-inspect';inspect.hidden=true;inspect.setAttribute('aria-label','선택한 세포');
- inspect.innerHTML='<header><strong data-cell-name></strong><button type="button" class="cc-cell-follow" aria-label="세포 따라가기" aria-pressed="false">◎ 따라가기 OFF</button><button type="button" class="cc-cell-close" aria-label="세포 관찰 닫기">×</button></header><dl><dt>작업</dt><dd data-cell-task></dd><dt>목적지</dt><dd data-cell-destination></dd><dt>운반 물자</dt><dd data-cell-cargo></dd><dt>다음</dt><dd data-cell-next></dd><dt>대기 원인</dt><dd data-cell-waiting></dd></dl>';
+ inspect.innerHTML='<header><strong data-cell-name></strong><button type="button" class="cc-cell-follow" aria-label="세포 따라가기" aria-pressed="false">◎ 따라가기 OFF</button><button type="button" class="cc-cell-close" aria-label="세포 관찰 닫기">×</button></header><dl><dt>작업</dt><dd data-cell-task></dd><dt>목적지</dt><dd data-cell-destination></dd><dt>운반 물자</dt><dd data-cell-cargo></dd><dt>다음</dt><dd data-cell-next></dd><dt>대기 원인</dt><dd data-cell-waiting></dd><dt>상태</dt><dd data-cell-condition></dd></dl>';
  map.append(inspect);
- const fields=Object.fromEntries(['name','task','destination','cargo','next','waiting'].map(key=>[key,inspect.querySelector('[data-cell-'+key+']')]));
+ const fields=Object.fromEntries(['name','task','destination','cargo','next','waiting','condition'].map(key=>[key,inspect.querySelector('[data-cell-'+key+']')]));
  const followButton=inspect.querySelector('.cc-cell-follow');
  followButton.addEventListener('click',()=>setFollowing(!watching.following),{signal:abort.signal});
  inspect.querySelector('.cc-cell-close').addEventListener('click',clearObservation,{signal:abort.signal});
@@ -127,7 +128,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
  const frontLabels=Object.entries(FRONTS).map(([id,p])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label cc-front-label';b.textContent={skin:'보수 공방',airway:'호흡기 입구',gut:'검역 입구'}[id];b.setAttribute('aria-label',b.textContent+' 선택');b.addEventListener('click',()=>onSelect('front:'+id),{signal:abort.signal});labelLayer.append(b);return {site:p,element:b};});
  function updateLabels(s,options){
   for(const {site,element} of frontLabels){vec.set(site.x,2.3,site.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;element.hidden=x<45||x>width-45||y<125||y>height-inset-90||camera.zoom<.6;if(!element.hidden)element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;}
-  for(const {id,site,element} of labels){vec.set(site.building[0],site.detail?3.8:2.8,site.building[1]).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;const hidden=x<45||x>width-45||y<35||y>height-inset-75||!site.detail&&camera.zoom<.65;element.hidden=hidden;if(!hidden){element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;element.classList.toggle('is-selected',options.selected===id);const small=element.querySelector('small');small.textContent=options.layer==='supply'?`O₂ ${Math.round(s.districts[id].oxygen)}%`:site.detail?'':'연결 거점';}}
+  for(const {id,site,element} of labels){vec.set(site.building[0],site.detail?3.8:2.8,site.building[1]).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;const hidden=x<45||x>width-45||y<35||y>height-inset-75||!site.detail&&camera.zoom<.65;element.hidden=hidden;if(!hidden){element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;element.classList.toggle('is-selected',options.selected===id);const bio=s.biology?.sites[id];element.dataset.infection=bio?.stage||'clear';element.querySelector('em').textContent=bio&&bio.stage!=='clear'?STAGES[bio.stage]:'';const small=element.querySelector('small');small.textContent=options.layer==='supply'?`O₂ ${Math.round(s.districts[id].oxygen)}%`:site.detail?'':'연결 거점';}}
 
  }
  function draw(s,options={}){

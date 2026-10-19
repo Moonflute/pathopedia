@@ -50,7 +50,7 @@ export function createActors(profile){
   const stride=t*(kind==='macrophage'?8:kind==='platelet'?14:11)+phase;
   const waiting=!!unit.waitReason&&!moving;
   const bob=act?-beat*(hammering?.04:.018):moving?Math.abs(Math.sin(stride))*.055:Math.sin(t*(waiting?3:2)+phase)*(waiting?.025:.012);
-  const base=CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf?reach*.23:firing?-recoil*.1:0;
+  const base=unit.integrity<40?'#bfb9ab':CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf?reach*.23:firing?-recoil*.1:0;
   const part=(id,x,y,z,sx,sy,sz,c,rx=0,rz=0)=>put(id,p.x+x*cs+(z+shift)*sn,y+bob,p.z-x*sn+(z+shift)*cs,sx,sy,sz,c,rx,angle,rz);
   part('body',0,look.y,0,look.w*(1+reach*.12),look.h*(1-reach*.12),look.w*.88,base);
   if(kind==='rbc'){part('rim',0,.51,0,.25,.25,.25,look.hat,Math.PI/2);part('cap',0,.485,0,.18,.035,.16,0xc65b67);}
@@ -75,7 +75,8 @@ export function createActors(profile){
   const hand=hands[1];
   if(kind==='neutrophil'){
    part('box',0,.64,.245,.2,.055,.035,0x91b3af);part('badge',0,.34,.25,.055,.06,.035,0x839da8);
-   part('box',hand.x,hand.y,hand.z+.15,.12,.14,.43,drug?.color||0xaac6ad);part('rod',hand.x,hand.y,hand.z+.41,.055,.15,.055,0x697d83,Math.PI/2);
+   if(unit.integrity==null){part('box',hand.x,hand.y,hand.z+.15,.12,.14,.43,drug?.color||0xaac6ad);part('rod',hand.x,hand.y,hand.z+.41,.055,.15,.055,0x697d83,Math.PI/2);}
+   else{part('pod',hand.x,hand.y,hand.z+.1,.12,.1,.12,0xcbd7bb);if(engulf)part('rim',0,.36,.39+reach*.22,.18+reach*.1,.18+reach*.1,.18,0xe3dca5);}
    if(firing&&progress<.36)part('badge',hand.x,hand.y,hand.z+.52,.13*(1-progress),.12,.2,0xffd68c);
   }else if(kind==='macrophage'){
    part('box',0,.32,.33,.43,.3,.045,0xf4dfbb);part('box',0,.37,-.35,.43,.4,.28,0x8c779d);
@@ -105,6 +106,9 @@ export function createActors(profile){
   if(unit.materialCargo)part('box',-.3,.4,.22,.3,.3,.3,0xcba875);
   if(unit.debrisCargo)for(let i=0;i<unit.debrisCargo;i++)part('pod',-.2+i*.16,.53,-.35,.1,.11,.1,0xa6979f);
   if(unit.bornAt!=null&&t-unit.bornAt<1.2)put('badge',p.x,1+(t-unit.bornAt)*.3,p.z,.08,.14,.08,0xe5d79c);
+  if(unit.integrity<60){part('box',-.12,.45,.26,.17,.07,.03,0xf4e7d6,0,-.4);}
+  if(unit.recovering)put('selected',p.x,.08,p.z,.9,.9,.9,0x86b6b5,Math.PI/2);
+  if(selected===2&&unit.energy!=null){put('box',p.x,.92,p.z,.62,.055,.035,0xd8d2c2);put('box',p.x-(100-unit.energy)*.0031,.925,p.z+.025,.62*unit.energy/100,.055,.035,0x8db8a0);}
   if(kind==='rbc'){
    if(transfer){const q=doing==='load'?1-progress:progress,arc=Math.sin(q*Math.PI)*.35;
     put('pod',(p.x-sn*.3)*(1-q)+at.x*q,.39*(1-q)+.69*q+arc,(p.z-cs*.3)*(1-q)+at.z*q,.19,.26,.19,0xa5dfd4);
@@ -137,11 +141,12 @@ export function createActors(profile){
   for(const c of s.cells.slice(0,profile.maxCells)){const p=groundPoint(c);positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,s.time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability);}
   for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=groundPoint(sh);positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,s.time,selectedCell===id?2:0,drug,readability);}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
-   const p=groundPoint(e);put('enemy',p.x,.35,p.z,.38,.35,.37,e.color);
+   const p=groundPoint(e),bacillus=['ECO-009','GNX-220','CDF-121'].includes(e.recordId);put('enemy',p.x,.35,p.z,bacillus?.5:.38,bacillus?.25:.35,.37,e.color);
    for(let n=0;n<4;n++){const angle=n*Math.PI/2;put('spikes',p.x+Math.cos(angle)*.3,.62,p.z+Math.sin(angle)*.3,.09,.3,.09,e.color,0,0,Math.cos(angle)*.5);}
    for(const side of [-1,1])put('enemyEyes',p.x+side*.12,.42,p.z+.32,.04,.05,.03,0x41464c);
+   if(e.opsonized>.08){antibody(p.x,.95,p.z,.55+e.opsonized*.25);put('selected',p.x,.09,p.z,.85,.85,.85,0xdac686,Math.PI/2);}
   }
-  for(const e of s.debris.slice(0,80)){const p=groundPoint(e);put('debris',p.x,.09,p.z,.14,.08,.12,0xa3929e);}
+  for(const e of s.debris.slice(0,80)){const p=groundPoint(e);put('debris',p.x,.09,p.z,e.cellKind?.21:.14,.08,.12,e.cellKind?0xc6bba8:0xa3929e);}
   for(const fx of s.effects.slice(0,64)){
    const from=groundPoint(fx),to=groundPoint({x:fx.tx,y:fx.ty}),q=Math.max(0,Math.min(1,1-fx.life/.42));
    if(fx.kind==='engulf'){put('selected',to.x,.18,to.z,.7+q*.4,.7+q*.4,.7+q*.4,fx.color,Math.PI/2);continue;}

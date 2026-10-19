@@ -3,7 +3,7 @@ import {vascularRoute} from './city-map.mjs';
 import {workStation} from './city-activity.mjs';
 import {groundCoordinate,groundPoint} from './city-three-layout.mjs';
 
-export const workplaceCapacity=(s,site,role)=>role==='dock'||role==='waste'?1:Math.min(6,3+s.districts[site].level-1+(s.frontier?.plots[site]?.filter(p=>p==='production').length||0));
+export const workplaceCapacity=(s,site,role)=>role==='dock'||role==='waste'?1:role==='rest'?3:Math.min(6,3+s.districts[site].level-1+(s.frontier?.plots[site]?.filter(p=>p==='production').length||0));
 export const releaseWorkplace=c=>{c.workplace=null;c.queueMove=null;};
 // Tickets and reserved slots live on the actors, so retirement and completed
 // deliveries release reservations without a second registry or a path search.

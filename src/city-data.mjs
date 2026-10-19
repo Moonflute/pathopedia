@@ -51,5 +51,6 @@ export const HOSTS = Object.freeze({normal:'일반 숙주',neutropenia:'호중�
 export const SCENARIOS=Object.freeze({
   recovery:{name:'감염 도시 복구',tag:'RESTORE',symbol:'✚',host:'normal',terrain:'valley',duration:480,kind:'restore',health:85,waste:30,goal:'감염 3회 정리 · 모든 구역 85%',detail:'8분 제한 · 노폐물 30% · 안정화 15초',waves:[0,110,220]},
   steady:{name:'건강한 도시 유지',tag:'SUSTAIN',symbol:'♥',host:'normal',terrain:'valley',duration:300,kind:'hold',health:70,waste:65,goal:'도시 건강 70% 이상 · 5분 유지',detail:'건강·노폐물 기준 이탈은 15초까지',waves:[45,125,220]},
-  fragile:{name:'면역저하 도시 유지',tag:'PROTECT',symbol:'◇',host:'neutropenia',terrain:'desert',duration:360,kind:'hold',health:75,waste:65,goal:'도시 건강 75% 이상 · 6분 유지',detail:'호중구 감소 · 충원 지연 · 15초 유예',waves:[60,170,280]}
+  fragile:{name:'면역저하 도시 유지',tag:'PROTECT',symbol:'◇',host:'neutropenia',terrain:'desert',duration:360,kind:'hold',health:75,waste:65,goal:'도시 건강 75% 이상 · 6분 유지',detail:'호중구 감소 · 충원 지연 · 15초 유예',waves:[60,170,280]},
+  simulation:{name:'면역·감염 시뮬레이션',tag:'SIMULATION',symbol:'⚗',host:'normal',terrain:'valley',duration:0,kind:'sandbox',health:0,waste:100,goal:'병원체 유입 · 항생제 보급 직접 조작',detail:'자동 감염 없음 · 종료 제한 없음',waves:[],only3d:true}
 });

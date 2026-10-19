@@ -44,7 +44,7 @@ test('antibody work needs antigen and nutrition, uses distinct bench places, and
  assert.equal(s.stats.antibodyBatches,3);assert.ok(s.antibodies['SPN-105']>0);assert.equal(serializeCity(s),serializeCity(copy));
 });
 
-test('construction starts after materials and an on-site worker; combat uses distinct target poses',()=>{
+test('construction waits for materials and a worker; both phagocytes engage at their target',()=>{
  const s=village();command(s,'upgrade','heart');
  until(s,()=>s.cells.some(c=>c.task==='자재 도착 대기'||c.task==='시설 건설'));
  const builder=s.cells.find(c=>c.buildSite==='heart');
@@ -55,7 +55,7 @@ test('construction starts after materials and an on-site worker; combat uses dis
  for(const kind of ['neutrophil','macrophage']){
   const c=fighters.find(c=>c.kind===kind);s.cells=[c];Object.assign(c,{x:870,y:270,cooldown:0,activity:null});
   s.enemies=[{id:999,recordId:'SPN-105',x:874,y:274,hp:100,maxHp:100,dead:false}];step(s);
-  assert.equal(c.activity.kind,kind==='neutrophil'?'shoot':'engulf');assert.ok(s.enemies[0].hp<100);
+  assert.equal(c.activity.kind,'engulf');assert.ok(s.enemies[0].hp<100);assert.ok(c.energy<100);
  }
 });
 
@@ -68,7 +68,7 @@ test('work and combat remain in the same 16 bounded actor batches',()=>{
   actors.draw(s,{selectedKind:'fibroblast',readability:1.5});let triangles=0;
   actors.root.traverse(m=>{if(!m.isInstancedMesh)return;assert.ok(m.count<=m.instanceMatrix.count);assert.ok(m.instanceMatrix.array.every(Number.isFinite));triangles+=(m.geometry.index?.count??m.geometry.attributes.position.count)/3*m.count;});peak=Math.max(peak,triangles);
  }
- for(const kind of ['load','unload','produce','build','shoot','engulf'])assert.ok(seen.has(kind),kind);
+ for(const kind of ['load','unload','produce','build','engulf'])assert.ok(seen.has(kind),kind);
  assert.equal(actors.root.children.length,16);assert.ok(peak<43000,peak);
  const bad=JSON.parse(serializeCity(s));bad.cells[0].activity={kind:'load',started:0,duration:0,x:0,y:0,site:'lung'};assert.equal(restoreCity(bad),null);
 });

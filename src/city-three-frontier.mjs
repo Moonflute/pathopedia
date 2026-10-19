@@ -4,6 +4,8 @@ import {WALLS,FRONTS,WORKSHOP,TISSUES} from './city-frontier-data.mjs';
 import {wallMaximum} from './city-frontier.mjs';
 import {workStation} from './city-activity.mjs';
 import {workplaceCapacity,facilityState} from './city-workplaces.mjs';
+import {infectionLoad} from './city-biology.mjs';
+import {CITY_ROADS} from './city-three-layout.mjs';
 
 // Seven fixed-size pools: structures, modules, stores and tiny effects share
 // geometries. No particle emitters, textures, extra lights or scene graph churn.
@@ -62,6 +64,16 @@ export function createFrontierScene(){
   put('box',15,.4,-4,.12,.8,2.1,f.gut.quarantine?0xb8b983:0xd8c49e,0,f.gut.quarantine?0:.7);
   for(const [id,site] of Object.entries(SITES)){
    const d=s.districts[id],state=facilityState(s,id),cap=workplaceCapacity(s,id,'oxygen');
+   const biology=s.biology?.sites[id];
+   if(biology){
+    const load=infectionLoad(biology),tint=biology.stage==='recovering'||biology.stage==='suppressed'?0x9fb8a5:0xd79783;
+    const count=Math.min(6,Math.ceil(Math.max(load,biology.inflammation)/12));
+    for(let n=0;n<count;n++){const a=n*Math.PI/3+t*.12;put('orb',site.x+Math.cos(a)*1.9,.07,site.z+Math.sin(a)*1.9,.28,.025,.28,tint);}
+    if(biology.isolated)for(let n=0;n<4;n++)put('box',site.x-1.5+n,.35,site.z+1.5,.8,.07,.06,0xc5ae73);
+    if(biology.toxin>2)put('orb',site.x+.65,.15,site.z+.9,.3,.05,.3,0xae92b7);
+    const road=CITY_ROADS.find(r=>r.id===id),level=Math.max(...Object.values(biology.drugs));
+    if(road&&level>1){const p=road.points[Math.floor((t*.15)%1*(road.points.length-1))];put('glow',p.x,.18,p.z,.09,.1,.09,0x91ccc3);}
+   }
    put('glow',site.building[0]+.6,2.2,site.building[1]+.4,.09,.12,.09,state.color);
    if(state.id==='damage'&&fireCount<7)fire(site.building[0]+.6,site.building[1]+.7,t,fireCount++);
    const dock=groundPoint(workStation(id,'dock').target);
@@ -82,6 +94,11 @@ export function createFrontierScene(){
     else if(kind==='barrier'){put('box',x,.4,z,.8,.8,.3,0xd7c0a6);put('box',x,.9,z,.9,.2,.4,0xefe1c8);}
     else{put('post',x,.4,z,.35,.8,.35,0x95bab0);put('orb',x,.95,z,.3,.3,.3,0xc2d7c6);}
    }
+  }
+  if(s.biology){
+   for(const flow of s.biology.transfers){const road=CITY_ROADS.find(r=>r.id===(flow.from==='heart'?flow.to:flow.from));if(!road)continue;const q=Math.min(1,(t-flow.started)/6),index=Math.round((flow.from==='heart'?q:1-q)*(road.points.length-1)),p=road.points[index];put('orb',p.x,.25,p.z,.18,.17,.18,0xbca270);}
+   for(let i=0;i<3;i++){const p=groundPoint(workStation('heart','rest',i).target);put('box',p.x,.2,p.z,.75,.15,.8,0xb5c8ae);put('box',p.x,.3,p.z-.25,.55,.1,.25,0xe5e2cf);}
+   for(const id of ['heart','gut']){const p=groundPoint(workStation(id,'dock').target),stock=Object.values(s.districts[id].ammo).reduce((a,b)=>a+b,0);put('post',p.x+.35,.8,p.z,.035,1.6,.035,0x97a59c);put('box',p.x+.35,1.35,p.z,.26,.38,.12,stock>0?0x9bc9bd:0xd0d4c6);}
   }
   store({x:6.6,z:10.2},f.waste.stock*2,0x9f929d,6);
   put('post',7,.3,10,.5,.6,.5,0xc9c1b0);put('box',7,.67,10,1,.06,.08,0x9b8c75,f.waste.stock>0?t*.8:0);

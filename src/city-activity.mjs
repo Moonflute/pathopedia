@@ -6,6 +6,7 @@ export function workStation(id,role,slot=0){
  const d=SITES[id];let x=d.x,z=d.z,dx=0,dz=.65;
  if(role==='oxygen'){x+=-1.05+(slot%3)*1.05;z-=.6+Math.floor(slot/3)*1.1;}
  if(role==='dock'){x+=1.7;z-=.2;dx=-1.15;dz=0;}
+ if(role==='rest'){x+=-1.2+(slot%3)*1.1;z+=2.1+Math.floor(slot/3)*1.1;dz=.35;}
  if(role==='build'||role==='repair'){
   [x,z]=BUILD_SITES[id];dx=-.75;dz=0;
   if(role==='repair'){const angle=slot*Math.PI/3;dx=Math.cos(angle)*.75;dz=Math.sin(angle)*.75;}
