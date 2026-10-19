@@ -138,7 +138,7 @@ Performance: biology and pharmacology update at 2 Hz with six fixed districts an
 
 Browser verification: no document or treatment-panel overflow at 390×844 and 1280×800. Manual exposure, IV delivery, oral vancomycin delivery, response orders and save/resume were checked through the UI, with no console errors. The development computer at mobile viewport dimensions observed the existing 30 fps limit, 29–34 draws and approximately 70–75k rendered triangles; this is not a physical-phone benchmark. Runtime source grows by about 33.4 kB, with zero new asset bytes.
 
-## Editable village layout: design assessment
+## Editable village layout: v0.51.0 design assessment (historical)
 
 Editing the layout is feasible, but a drag-and-drop editor is not part of v0.51.0. The current projection derives 3D positions from a fixed six-sector logical map, and the bespoke facility machinery still has absolute coordinates in city-three-facilities.mjs. Moving only SITES would therefore detach buildings, working points, roads, intake machinery and supply props. Arbitrarily exchanging sectors can also invalidate the coordinate transform.
 
@@ -151,3 +151,29 @@ The proposed layout format separates:
 A layout compiler should validate socket references, connected circulation, working clearances, perimeter/entry consistency and terrain constraints, then cache routes and rebuild merged static geometry once when an edit is applied. Preview should pause simulation; commit should migrate actors to the new route graph, release/reissue workplace reservations, and preserve resources, pathogen burden and shipment IDs. Cancel should retain the old compiled layout. Saving needs a separate layout revision alongside the simulation save, plus validation and a default-layout fallback.
 
 Implementation order: convert one facility to local coordinates and shared sockets; replace the fixed sector projection with a layout-owned route graph; migrate all six facilities and boundary systems; then add a paused editor with grid snapping, undo/redo and layout import/export. This keeps per-frame work similar: editing incurs an occasional rebuild, not continuous pathfinding or scene regeneration. Until those migrations are complete, the current map remains intentionally fixed.
+
+
+## Square-tile village editor (v0.52.0)
+
+The 3D city now places six organ facility complexes, the skin-repair workshop and eleven cottages on a one-world-unit square grid. A cottage uses 3×3 cells; larger facilities include their courtyard and working space. Existing 3D saves migrate once to a connected default layout without restarting the simulation. The original 2D city remains separate.
+
+Open **▦ 배치** to pause the city. Drag a facility, use the one-cell arrow controls, or rotate it in 90-degree steps. R / Shift-R rotate on a focused canvas; Ctrl/Cmd-Z and Shift-Z undo/redo. Empty-ground dragging pans; wheel or two-finger pinch zooms. The facility list selects and focuses an item. Temporary storage frees its footprint while rearranging a crowded area; all stored facilities must be placed before saving. Undo/redo retains up to 30 steps. Cancel leaves the running layout unchanged. Save validates placement and connectivity, writes the complete save successfully, then applies it; a storage error keeps the draft open. Layouts are saved in this browser with the city's existing save, not synced between devices.
+
+Facilities move as functional complexes: their authored building, courtyard, machinery, ports and workstations rotate together. Pulmonary and systemic circulation, external intake and cottage/workshop walking links are rebuilt automatically. Overlapping footprints, blocked entrances, river/perimeter conflicts and disconnected links are rejected. Actor routes are reissued while health, inventory, infection, shipment identities and job progress persist. Workplace tickets and reservations remain attached to the same workers. District alerts, tissue-repair targets and logistics destinations follow the moved facilities.
+
+The river, skin perimeter, respiratory gate and food gate remain fixed landscape features. This version rearranges the existing 18 facilities; it does not add/delete buildings, edit individual wall segments, paint roads manually or import/export layouts. Internal work movements use existing approach waypoints rather than general pedestrian collision avoidance. Future buildable types can declare a footprint, rotation and port. Grid topology is isolated in city-tile-layout.mjs, but hex-grid migration would still require new occupancy, rotation, routing and save-conversion rules.
+
+### Implementation and resource budget
+
+- city-tile-layout.mjs stores versioned per-city tile layouts, transforms, occupancy constraints and cached connections. The original invertible projection stays intact; facility-local transforms map through it, so two city saves do not share mutable layout state.
+- city-layout-editor.mjs owns a separate draft and history. city-three-editor.mjs draws the grid as one line geometry and the selected footprint as one bounded instanced batch.
+- Static models and tile paving merge by material. In the editor only the selected facility has its own small baked mesh group (at most four meshes in the focused check). Dragging changes its transform; it does not rebuild the town every pointer move. Selection and committed draft changes rebuild once.
+- Road searches are cached by immutable layout and bounded to 2,400 explored cells per connection. Simulation frames reuse those routes. Undo history, footprint instances and searches are bounded.
+- Existing Kenney CC0 models/palette and Three.js MIT modules are reused. No new model, image, texture, dependency, light, rig or physics package. Runtime source increases by approximately 37 kB uncompressed. Decorative trees/rocks are capped at 26 instead of 36. No cells or cottages were added.
+- Development-browser observations: approximately 32–33 draw calls / 75k triangles during desktop play, and 24–27 calls / 40–41k triangles while editing. Counts vary with camera, selected facility and shadow refresh. Existing frame-rate, pixel-ratio and shadow limits remain. This is a desktop browser measurement, not a physical-phone benchmark.
+
+### Verification
+
+Eight focused layout checks cover default connectivity/occupancy, all four rotations, draft isolation and undo/redo, state-preserving relocation and deterministic save continuation, one-time medicine delivery, bounded selected geometry temporary-storage validation and an active tissue repair following its moved house. Existing engine, specialist, frontier, biology and renderer checks passed in the initial focused run. Browser checks covered an old saved city migrating, canvas dragging, rotation, temporary storage and re-placement, save/reload continuation, cancellation and resumed simulation. The editor has no page/panel overflow at 390×844 or 740×420; the compact landscape panel is 132 px high. No browser errors were observed. Touch gesture code is implemented; physical multitouch hardware was not available.
+
+The interaction reference was Supercell's [Clash of Clans interface update](https://supercell.com/en/games/clashofclans/blog/news/weve-revamped-the-clash-of-clans-user-interface/): clear edit selection and explicit layout confirmation. No Supercell artwork or game assets are included.

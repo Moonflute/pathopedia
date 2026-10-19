@@ -1,10 +1,11 @@
+import {cityDistricts} from './city-tile-layout.mjs';
 import {WALLS,FRONTS} from './city-frontier-data.mjs';
 import {CELL_JOBS,districtDef,DISTRICTS,DRUGS} from './city-data.mjs';
 import {activeActivity,activityProgress} from './city-activity.mjs';
 
 const clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
 const district=id=>districtDef(id)?.short||'배정 대기';
-const nearest=p=>DISTRICTS.reduce((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)<Math.hypot(b.x-p.x,b.y-p.y)?a:b).short;
+const nearest=(s,p)=>cityDistricts(s).reduce((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)<Math.hypot(b.x-p.x,b.y-p.y)?a:b).short;
 
 // Read actual work/cargo state. A combatant's target field can still contain an
 // old district, and a plasma cell's recordId is a recipe, not a carried antigen.
@@ -20,7 +21,7 @@ export function cellObservation(s,c){
   destination=district(site)+' · '+(c.buildSite?'공사장':c.assignment?.endsWith(':fabricate')?'자재 작업대':'복구 현장');
  }else if(c.kind==='plasma')destination='림프절 · 항체 작업대';
  else if(c.kind==='dendritic'){
-  destination=c.recordId?'림프절 · 항원 전달':nearest(end)+(c.task==='항원 수집'?' · 항원 발견 지점':' · 감시 구역');
+  destination=c.recordId?'림프절 · 항원 전달':nearest(s,end)+(c.task==='항원 수집'?' · 항원 발견 지점':' · 감시 구역');
   if(c.recordId)cargo='항원 표본';
  }else if(c.kind==='helperT'){
   destination=work?.kind==='signal'?district(work.site)+' · 신호 발신':c.recordId?district(s.rally)+' · 방어 집결지':'림프절 · 항원 확인';

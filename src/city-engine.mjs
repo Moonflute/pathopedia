@@ -1,3 +1,4 @@
+import {cityDistricts,cityDistrict,cityRoute,intakeRoute,localPoint,createTileLayout,applyTileLayout,validateTileLayout,compileLayout} from './city-tile-layout.mjs';
 import {ensureFrontier,frontierCommand,deliverFrontier,frontierDestination,assignFronts,spawnAtFront,tickFrontierEnemy,tickFrontier,frontierCell,receiveAntigen,completeInvestment,frontDepot,validateFrontier} from './city-frontier.mjs';
 import {supportCount} from './city-frontier-data.mjs';
 import {groundCoordinate,SITES} from './city-three-layout.mjs';
@@ -10,7 +11,7 @@ import {ensureBiology,biologyCommand,tickBiology,seedInfection,combatDestination
 export const SAVE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-const point=id=>{const {x,y}=districtDef(id);return {x,y};};
+const point=(s,id)=>{const {x,y}=cityDistrict(s,id);return {x,y};};
 const avg=items=>items.reduce((a,b)=>a+b,0)/items.length;
 export const cityHealth=s=>avg(Object.values(s.districts).map(d=>d.hp))*(s.frontier?.8:1)+(s.frontier?avg(s.frontier.tissues.map(t=>t.hp))*.2:0);
 export const cityOxygen=s=>avg(Object.values(s.districts).map(d=>d.oxygen));
@@ -24,7 +25,7 @@ function log(s,text){s.log.unshift({time:Math.floor(s.time),text});s.log.length=
 const frontierAPI={route,move,log,shipment,output,damage,seed:seedInfection};
 function cell(s,kind,x,y){
   const c={id:++s.serial,kind,x,y,age:0,life:CELL_JOBS[kind].life,home:'marrow',target:'lung',path:[],step:0,cooldown:0,cargo:0,recordId:null,task:CELL_JOBS[kind].task};
-  if(kind==='rbc')route(c,vascularRoute('marrow','lung'));
+  if(kind==='rbc')route(c,cityRoute(s,'marrow','lung'));
   s.cells.push(c);return c;
 }
 function route(c,points){c.path=points.map(p=>({...p}));c.step=0;}
@@ -33,14 +34,14 @@ function move(c,speed,dt){
   while(c.step<c.path.length){const p=c.path[c.step],d=dist(c,p);if(d>budget){c.x+=(p.x-c.x)/d*budget;c.y+=(p.y-c.y)/d*budget;return false;}c.x=p.x;c.y=p.y;c.step++;budget-=d;}
   return true;
 }
-const vascular=vascularRoute;
+const vascular=cityRoute;
 export function createCity(host='normal',scenario='legacy',options={}){
   const preset=SCENARIOS[scenario];if(preset)host=preset.host;
   const s={schema:SAVE_VERSION,time:0,serial:0,host:host==='neutropenia'?host:'normal',status:'running',endless:false,policy:'balanced',rally:'lung',drug:'ampicillin',resources:{food:110,materials:65},waste:12,inflammation:0,barrier:100,wave:0,nextWave:45,spawn:[],spawnClock:0,weather:{id:'clear',until:0},districts:{},cells:[],shipments:[],enemies:[],debris:[],effects:[],antigens:{},antibodies:{},recruits:[],log:[],stats:{defeated:0,deliveries:0,oxygen:0},supplyClock:0,drugClock:0};
   Object.assign(s,{scenario:preset?scenario:'legacy',workCrews:options.workCrews===true,specialists:false,lifecycle:false,turnover:{},rawFood:24,intakeClock:0,breach:0,recovered:0,endReason:''});s.stats.born=0;s.stats.retired=0;s.stats.signals=0;s.stats.antibodyBatches=0;s.stats.clots=0;
-  for(const d of DISTRICTS)s.districts[d.id]={level:1,hp:100,oxygen:85,food:12,ammo:{ampicillin:0,oxacillin:0,vancomycin:0},tower:0,building:null};
+  for(const d of cityDistricts(s))s.districts[d.id]={level:1,hp:100,oxygen:85,food:12,ammo:{ampicillin:0,oxacillin:0,vancomycin:0},tower:0,building:null};
   s.districts.lung.ammo.ampicillin=18;
-  for(let i=0;i<9;i++){const c=cell(s,'rbc',575+(i%3)*13,359+Math.floor(i/3)*9);c.target=DISTRICTS[i%6].id;route(c,[point('lung')]);}
+  for(let i=0;i<9;i++){const c=cell(s,'rbc',575+(i%3)*13,359+Math.floor(i/3)*9);c.target=DISTRICTS[i%6].id;route(c,[point(s,'lung')]);}
   for(let i=0;i<(s.host==='neutropenia'?2:4);i++)cell(s,'neutrophil',784+i*18,298+i%2*22);
   for(let i=0;i<2;i++)cell(s,'macrophage',795+i*45,340);
   for(let i=0;i<2;i++)cell(s,'fibroblast',265+i*24,575);
@@ -51,13 +52,13 @@ export function createCity(host='normal',scenario='legacy',options={}){
     for(let i=0;i<2;i++){cell(s,'macrophage',740+i*45,390);cell(s,'fibroblast',255+i*25,570);}
     cell(s,'dendritic',295,270);
     let i=0;for(const c of s.cells){c.age=(c.id%7)*c.life*.035;if(c.kind!=='rbc')continue;
-      c.target=DISTRICTS.filter(d=>d.id!=='lung')[i%5].id;c.cargo=i%2?18:0;
-      route(c,c.cargo?vascular('lung',c.target):vascular(c.target,'lung'));
+      c.target=cityDistricts(s).filter(d=>d.id!=='lung')[i%5].id;c.cargo=i%2?18:0;
+      route(c,c.cargo?vascular(s,'lung',c.target):vascular(s,c.target,'lung'));
       const step=(i*3)%Math.max(1,c.path.length-1);Object.assign(c,c.path[step]);c.step=step+1;i++;
     }
     s.nextWave=preset.waves[0]??Infinity;
     if(scenario==='recovery'){
-      for(const d of DISTRICTS){s.districts[d.id].hp=d.id==='lung'?45:62;s.districts[d.id].oxygen=58;}
+      for(const d of cityDistricts(s)){s.districts[d.id].hp=d.id==='lung'?45:62;s.districts[d.id].oxygen=58;}
       s.waste=58;s.barrier=25;s.resources.materials=95;startWave(s);
       for(let n=0;n<4;n++)s.enemies.push({...s.spawn.shift(),id:++s.serial,x:875+n*14,y:295+n*10,dead:false});
     }
@@ -73,7 +74,7 @@ export function upgradeVillage(s){
   s.cells=s.cells.filter(c=>!remove.has(c.id));
   const roster={neutrophil:s.host==='neutropenia'?4:10,macrophage:6,fibroblast:6,dendritic:4,helperT:3,plasma:3,platelet:4};
   for(const [kind,total] of Object.entries(roster))for(let n=counts(s,kind);n<total&&s.cells.length<96;n++){
-    const home=kind==='plasma'||kind==='helperT'?'lymph':kind==='platelet'?'heart':'marrow',p=point(home);
+    const home=kind==='plasma'||kind==='helperT'?'lymph':kind==='platelet'?'heart':'marrow',p=point(s,home);
     const c=cell(s,kind,p.x+(n%3-1)*22,p.y+12+Math.floor(n/3)*15);c.target=home;
   }
   s.stats.signals??=0;s.stats.antibodyBatches??=0;s.stats.clots??=0;
@@ -94,8 +95,8 @@ export function drugActivity(data,recordId,drugId){
   return {category:result?.category||'—',active};
 }
 function shipment(s,kind,to,amount,extra={}){
-  const sh={id:++s.serial,kind,from:'gut',to,amount,...point('gut'),path:vascular('gut',to),step:0,...extra};
-  if(s.specialists){sh.phase='pickup';route(sh,[workStation('gut','dock').stand]);}
+  const sh={id:++s.serial,kind,from:'gut',to,amount,...point(s,'gut'),path:vascular(s,'gut',to),step:0,...extra};
+  if(s.specialists){sh.phase='pickup';route(sh,[workStation('gut','dock',0,s.layout).stand]);}
   s.shipments.push(sh);return sh;
 }
 export function command(s,action,id,data){
@@ -105,7 +106,7 @@ export function command(s,action,id,data){
   const d=s.districts[id],front=frontierCommand(s,action,id,frontierAPI);if(front)return front;
   if(action==='lifecycle'){s.lifecycle=!s.lifecycle;return {ok:true};}
   if(action==='policy'&&['balanced','defense','repair'].includes(id)){s.policy=id;return {ok:true};}
-  if(action==='rally'&&d){s.rally=id;log(s,districtDef(id).short+' 방어 집결');return {ok:true};}
+  if(action==='rally'&&d){s.rally=id;log(s,cityDistrict(s,id).short+' 방어 집결');return {ok:true};}
   if(action==='drug'&&DRUGS.some(x=>x.id===id)){s.drug=id;log(s,DRUGS.find(x=>x.id===id).name+' 보급 요청');return {ok:true};}
   if(action==='continue'&&s.status==='won'){s.status='running';s.endless=true;log(s,'방어 완료 · 자유 운영 시작');return {ok:true};}
   if(action==='wave'){
@@ -158,10 +159,10 @@ function damage(s,e,amount,from,color){
   e.hp-=amount;s.effects.push({x:from.x,y:from.y,tx:e.x,ty:e.y,color,life:s.specialists?.42:.18,kind:from.kind==='macrophage'||s.biology&&from.kind==='neutrophil'?'engulf':'shot'});
   if(e.hp<=0&&!e.dead){e.dead=true;s.stats.defeated++;s.debris.push({id:++s.serial,x:e.x,y:e.y,recordId:e.recordId});s.waste=clamp(s.waste+.5);s.inflammation=clamp(s.inflammation+.8);}
 }
-function station(c,id,tag,dx,dy,dt,speed=58){
+function station(s,c,id,tag,dx,dy,dt,speed=58){
   if(c.assignment!==tag){
-    const from=DISTRICTS.reduce((a,b)=>dist(c,a)<dist(c,b)?a:b),p=point(id);
-    c.target=id;c.assignment=tag;route(c,[point(from.id),...vascular(from.id,id),{x:p.x+dx,y:p.y+dy}]);
+    const from=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b),p=point(s,id);
+    c.target=id;c.assignment=tag;route(c,[point(s,from.id),...vascular(s,from.id,id),{x:p.x+dx,y:p.y+dy}]);
   }
   return move(c,speed,dt);
 }
@@ -185,25 +186,25 @@ function specialist(s,c,dt){
   }
   if(c.kind==='helperT'){
     if(!c.recordId){
-      c.task='항원 확인';if(station(c,'lymph','helper:lymph',32,slot*18,dt)&&c.cooldown===0){
+      c.task='항원 확인';if(station(s,c,'lymph','helper:lymph',32,slot*18,dt)&&c.cooldown===0){
         const id=Object.keys(s.antigens).find(id=>s.antigens[id]);if(id){c.recordId=id;c.assignment=null;}
       }
     }else{
-      c.task='방어 신호 전달';if(station(c,s.rally,'helper:'+s.rally,-26,slot*18,dt,64)){
-        s.districts[s.rally].supportUntil=s.time+15;s.stats.signals++;c.recordId=null;c.assignment=null;c.cooldown=6;c.task='지원 신호 발신';beginActivity(s,c,'signal',.9,point(s.rally),s.rally);
+      c.task='방어 신호 전달';if(station(s,c,s.rally,'helper:'+s.rally,-26,slot*18,dt,64)){
+        s.districts[s.rally].supportUntil=s.time+15;s.stats.signals++;c.recordId=null;c.assignment=null;c.cooldown=6;c.task='지원 신호 발신';beginActivity(s,c,'signal',.9,point(s,s.rally),s.rally);
       }
     }
     return true;
   }
   if(c.kind==='platelet'){
-    const damaged=s.barrier<92?districtDef('lung'):DISTRICTS.filter(d=>s.districts[d.id].hp<92).sort((a,b)=>s.districts[a.id].hp-s.districts[b.id].hp)[0];
+    const damaged=s.barrier<92?cityDistrict(s,'lung'):cityDistricts(s).filter(d=>s.districts[d.id].hp<92).sort((a,b)=>s.districts[a.id].hp-s.districts[b.id].hp)[0];
     if(damaged){
       const barrier=damaged.id==='lung'&&s.barrier<92;c.task='손상 부위 이동';
-      if(station(c,damaged.id,'clot:'+damaged.id,barrier?85:24+slot*10,barrier?-48:28,dt,70)){
+      if(station(s,c,damaged.id,'clot:'+damaged.id,barrier?85:24+slot*10,barrier?-48:28,dt,70)){
         c.task='응급 봉합';if(c.cooldown===0){if(barrier)s.barrier=clamp(s.barrier+.45);else s.districts[damaged.id].hp=clamp(s.districts[damaged.id].hp+.3);c.cooldown=2;s.stats.clots++;beginActivity(s,c,'patch',.85,{x:c.x+12,y:c.y},damaged.id);}
       }
     }else{
-      const id=['heart','lung','marrow'][(Math.floor(s.time/18)+c.id)%3];c.task='봉합 순찰';station(c,id,'rest:'+id,12,slot*12,dt,52);
+      const id=['heart','lung','marrow'][(Math.floor(s.time/18)+c.id)%3];c.task='봉합 순찰';station(s,c,id,'rest:'+id,12,slot*12,dt,52);
     }
     return true;
   }
@@ -218,11 +219,11 @@ function updateCell(s,c,dt,speed,data){
   if(c.kind==='rbc'){
     if(s.specialists){updateOxygen(s,c,dt,speed);return;}
     if(!move(c,speed*1.1,dt))return;
-    if(c.cargo){const d=s.districts[c.target];d.oxygen=clamp(d.oxygen+c.cargo);s.stats.oxygen+=c.cargo;c.cargo=0;c.task='폐로 복귀';route(c,vascular(c.target,'lung'));}
+    if(c.cargo){const d=s.districts[c.target];d.oxygen=clamp(d.oxygen+c.cargo);s.stats.oxygen+=c.cargo;c.cargo=0;c.task='폐로 복귀';route(c,vascular(s,c.target,'lung'));}
     else {
       const inbound={};for(const other of s.cells)if(other.kind==='rbc'&&other.cargo)inbound[other.target]=(inbound[other.target]||0)+1;
-      let best=null,bestScore=Infinity;for(const d of DISTRICTS)if(d.id!=='lung'){const score=s.districts[d.id].oxygen+(inbound[d.id]||0)*30;if(score<bestScore){best=d;bestScore=score;}}
-      c.target=best.id;c.cargo=32*(1+(s.districts.lung.level-1)*.25)*output(s,'lung')*(s.weather.id==='dry'?.55:1);c.task=districtDef(c.target).short+' 산소 배송';route(c,vascular('lung',c.target));
+      let best=null,bestScore=Infinity;for(const d of cityDistricts(s))if(d.id!=='lung'){const score=s.districts[d.id].oxygen+(inbound[d.id]||0)*30;if(score<bestScore){best=d;bestScore=score;}}
+      c.target=best.id;c.cargo=32*(1+(s.districts.lung.level-1)*.25)*output(s,'lung')*(s.weather.id==='dry'?.55:1);c.task=cityDistrict(s,c.target).short+' 산소 배송';route(c,vascular(s,'lung',c.target));
     }return;
   }
   if(c.kind==='fibroblast'){
@@ -231,27 +232,27 @@ function updateCell(s,c,dt,speed,data){
     if(s.workCrews){
       if(c.buildSite&&!s.districts[c.buildSite]?.building){c.buildSite=null;c.path=[];c.assignment=null;c.activity=null;}
       if(!c.buildSite){
-        const site=DISTRICTS.filter(d=>s.districts[d.id].building&&!s.cells.some(other=>other!==c&&other.buildSite===d.id)).sort((a,b)=>dist(c,a)-dist(c,b))[0];
-        if(site){releaseWorkplace(c);const from=DISTRICTS.reduce((a,b)=>dist(c,a)<dist(c,b)?a:b);c.buildSite=site.id;c.target=site.id;c.assignment=null;route(c,[point(from.id),...vascular(from.id,site.id),{x:site.x+25,y:site.y+38}]);}
+        const site=cityDistricts(s).filter(d=>s.districts[d.id].building&&!s.cells.some(other=>other!==c&&other.buildSite===d.id)).sort((a,b)=>dist(c,a)-dist(c,b))[0];
+        if(site){releaseWorkplace(c);const from=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b);c.buildSite=site.id;c.target=site.id;c.assignment=null;route(c,[point(s,from.id),...vascular(s,from.id,site.id),{x:site.x+25,y:site.y+38}]);}
       }
       if(c.buildSite){
-        const work=workStation(c.buildSite,'build'),d=point(c.buildSite);
-        const arrived=s.specialists?station(c,c.buildSite,'build:'+c.buildSite,work.stand.x-d.x,work.stand.y-d.y,dt,60):move(c,60,dt);c.task=!arrived?'공사장 이동':s.districts[c.buildSite].building.remaining==null?'자재 도착 대기':'시설 건설';
+        const work=workStation(c.buildSite,'build',0,s.layout),d=point(s,c.buildSite);
+        const arrived=s.specialists?station(s,c,c.buildSite,'build:'+c.buildSite,work.stand.x-d.x,work.stand.y-d.y,dt,60):move(c,60,dt);c.task=!arrived?'공사장 이동':s.districts[c.buildSite].building.remaining==null?'자재 도착 대기':'시설 건설';
         c.nextTask='시설 완공 → 다음 작업';if(c.task==='자재 도착 대기')c.waitReason='시설 자재 배송 중';
-        if(s.specialists){if(c.task==='시설 건설'){if(!activeActivity(c,s.time)||c.activity.kind!=='build')beginActivity(s,c,'build',.95,workStation(c.buildSite,'build').target,c.buildSite);}else c.activity=null;}
+        if(s.specialists){if(c.task==='시설 건설'){if(!activeActivity(c,s.time)||c.activity.kind!=='build')beginActivity(s,c,'build',.95,workStation(c.buildSite,'build',0,s.layout).target,c.buildSite);}else c.activity=null;}
         return;
       }
     }
     if(s.specialists){updateCraftsman(s,c,dt);return;}
     if(c.path.length&& !move(c,46,dt))return;
     if(c.cooldown>0)return;
-    const weakest=DISTRICTS.reduce((a,b)=>s.districts[a.id].hp<s.districts[b.id].hp?a:b);
+    const weakest=cityDistricts(s).reduce((a,b)=>s.districts[a.id].hp<s.districts[b.id].hp?a:b);
     if(c.target===weakest.id&&s.districts[weakest.id].hp<98){s.districts[weakest.id].hp=clamp(s.districts[weakest.id].hp+(s.policy==='repair'?3.8:2));c.task='조직 복구';c.cooldown=2;}
     else if(s.resources.food>=1){s.resources.food-=.6;s.resources.materials=Math.min(300,s.resources.materials+1.4*output(s,'marrow')*(1+.2*(s.districts.marrow.level-1)));c.cooldown=4;c.task='자재 생산';}
     c.target=weakest.id;route(c,[{x:weakest.x+25*Math.sin(s.time+c.id),y:weakest.y+38}]);return;
   }
   if(c.kind==='dendritic'){
-    if(c.recordId){c.task='림프절로 항원 운반';if(!c.path.length)route(c,[point('heart'),point('lymph')]);if(move(c,63,dt)){receiveAntigen(s,c.recordId,frontierAPI);log(s,'항원 도착 · 접수 진행');c.recordId=null;c.path=[];c.cooldown=10;}return;}
+    if(c.recordId){c.task='림프절로 항원 운반';if(!c.path.length)route(c,[point(s,'heart'),point(s,'lymph')]);if(move(c,63,dt)){receiveAntigen(s,c.recordId,frontierAPI);log(s,'항원 도착 · 접수 진행');c.recordId=null;c.path=[];c.cooldown=10;}return;}
     const evidence=s.debris.find(e=>e.recordId&&!s.antigens[e.recordId])||s.enemies.find(e=>!e.dead&&!s.antigens[e.recordId])||antigenEvidence(s);
     if(evidence&&c.cooldown===0){c.task='항원 수집';route(c,[evidence]);if(move(c,65,dt)){c.recordId=evidence.recordId;c.path=[];}}
     else {c.task='감시';wander(s,c,dt);}return;
@@ -266,7 +267,7 @@ function updateCell(s,c,dt,speed,data){
     c.task='감염 대응';const range=c.kind==='neutrophil'&&!s.biology?66:34;
     if(dist(c,target)>range){route(c,[target]);move(c,c.kind==='neutrophil'?82:56,dt);}
     else if(c.cooldown===0){
-      const near=DISTRICTS.reduce((a,b)=>dist(c,a)<dist(c,b)?a:b),d=s.districts[near.id];
+      const near=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b),d=s.districts[near.id];
       const depot=frontDepot(s,c),supply=clamp(d.oxygen/45,.3,1)*((depot?depot.food:d.food)>0?1:.5),base=(c.kind==='macrophage'?8:4)*(s.policy==='defense'?1.3:1)*supply*(d.supportUntil>s.time?1.15:1);
       const support=s.biology&&target.entered?1+antibodySupport(s,target.recordId,near.id)*.85:1;
       damage(s,target,base*support*(s.biology?clamp(c.energy/65,.35,1):1),c,JOBS[c.kind].color);combatEffort(c);
@@ -283,20 +284,20 @@ function updateOxygen(s,c,dt,speed){
   if(!dock.arrived){c.task=dock.ready?(c.cargo?'산소 하역대 이동':'산소 충전대 이동'):'산소 접안 대기';return;}
   if(!c.activity||!['load','unload'].includes(c.activity.kind)){beginActivity(s,c,c.cargo?'unload':'load',.75,dock.target,site);c.task=c.cargo?'산소 하역':'산소 충전';return;}
   if(activityProgress(c.activity,s.time)<1)return;
-  if(c.cargo){const d=s.districts[c.target];d.oxygen=clamp(d.oxygen+c.cargo);s.stats.oxygen+=c.cargo;c.cargo=0;c.task='폐로 복귀';route(c,[point(c.target),...vascular(c.target,'lung')]);}
+  if(c.cargo){const d=s.districts[c.target];d.oxygen=clamp(d.oxygen+c.cargo);s.stats.oxygen+=c.cargo;c.cargo=0;c.task='폐로 복귀';route(c,[point(s,c.target),...vascular(s,c.target,'lung')]);}
   else{
     const inbound={};for(const other of s.cells)if(other.kind==='rbc'&&other.cargo)inbound[other.target]=(inbound[other.target]||0)+1;
-    const best=DISTRICTS.filter(d=>d.id!=='lung').sort((a,b)=>s.districts[a.id].oxygen+(inbound[a.id]||0)*30-s.districts[b.id].oxygen-(inbound[b.id]||0)*30)[0];
-    c.target=best.id;c.cargo=32*(1+(s.districts.lung.level-1)*.25)*output(s,'lung')*(s.weather.id==='dry'?.55:1);c.task=best.short+' 산소 배송';route(c,[point('lung'),...vascular('lung',c.target)]);
+    const best=cityDistricts(s).filter(d=>d.id!=='lung').sort((a,b)=>s.districts[a.id].oxygen+(inbound[a.id]||0)*30-s.districts[b.id].oxygen-(inbound[b.id]||0)*30)[0];
+    c.target=best.id;c.cargo=32*(1+(s.districts.lung.level-1)*.25)*output(s,'lung')*(s.weather.id==='dry'?.55:1);c.task=best.short+' 산소 배송';route(c,[point(s,'lung'),...vascular(s,'lung',c.target)]);
   }
   c.activity=null;c.dock=null;releaseWorkplace(c);
 }
 function updateCraftsman(s,c,dt){
   if(['repair','fabricate'].includes(activeActivity(c,s.time)?.kind))return;
   if(c.activity&&['repair','fabricate'].includes(c.activity.kind)){c.activity=null;releaseWorkplace(c);}
-  const current=c.assignment?.startsWith('craft:')&&s.districts[c.target].hp<98?districtDef(c.target):null;
+  const current=c.assignment?.startsWith('craft:')&&s.districts[c.target].hp<98?cityDistrict(s,c.target):null;
   const assigned=id=>s.cells.filter(other=>other!==c&&other.kind==='fibroblast'&&other.target===id).length;
-  const weak=current||DISTRICTS.filter(d=>s.districts[d.id].hp<98).sort((a,b)=>s.districts[a.id].hp+assigned(a.id)*8-s.districts[b.id].hp-assigned(b.id)*8)[0];
+  const weak=current||cityDistricts(s).filter(d=>s.districts[d.id].hp<98).sort((a,b)=>s.districts[a.id].hp+assigned(a.id)*8-s.districts[b.id].hp-assigned(b.id)*8)[0];
   const id=weak?.id||'marrow',kind=weak?'repair':'fabricate';c.target=id;c.assignment='craft:'+id+':'+kind;c.nextTask=weak?'조직 복구':'자재 생산';
   const work=approachWorkplace(s,c,id,kind,dt,move,route,56);
   if(!work.arrived){c.task=work.ready?(weak?'복구 현장 이동':'자재 작업대 이동'):'작업대 대기';c.activity=null;return;}
@@ -316,20 +317,20 @@ function updateShipment(s,sh,dt,speed){
   if(!sh.workplace&&!move(sh,speed,dt))return false;
   const pickup=sh.phase==='pickup',site=pickup?'gut':sh.to;
   if(pickup&&sh.frontDelivery?.type==='depot'&&!sh.prepared){
-    if(!sh.staged){releaseWorkplace(sh);const slot=['skin','airway','gut'].indexOf(sh.frontDelivery.id)*3+['food','materials','drug'].indexOf(sh.kind);route(sh,[groundCoordinate({x:SITES.gut.x+3.5+(slot%3)*.85,z:SITES.gut.z+2+Math.floor(slot/3)*.85})]);sh.staged=true;}
+    if(!sh.staged){releaseWorkplace(sh);const slot=['skin','airway','gut'].indexOf(sh.frontDelivery.id)*3+['food','materials','drug'].indexOf(sh.kind);route(sh,[localPoint(s,'gut',{x:SITES.gut.x+3.5+(slot%3)*.85,z:SITES.gut.z+2+Math.floor(slot/3)*.85})]);sh.staged=true;}
     move(sh,speed,dt);sh.waitReason='보급 출고 인력 작업 중';return false;
   }
-  const dock=approachWorkplace(s,sh,site,'dock',dt,move,route,speed,pickup?null:frontierDestination(sh));
+  const dock=approachWorkplace(s,sh,site,'dock',dt,move,route,speed,pickup?null:frontierDestination(sh,s));
   if(!dock.arrived)return false;
   if(!sh.activity){beginActivity(s,sh,pickup?'load':'unload',.85,dock.target,site);return false;}
   if(activityProgress(sh.activity,s.time)<1)return false;
   sh.activity=null;releaseWorkplace(sh);
-  if(pickup){sh.phase='transit';route(sh,[point('gut'),...vascular('gut',sh.to),frontierDestination(sh)||point(sh.to)]);}
-  else{delivery(s,sh);sh.phase='leaving';route(sh,[point(sh.to)]);}
+  if(pickup){sh.phase='transit';route(sh,[point(s,'gut'),...vascular(s,'gut',sh.to),frontierDestination(sh)||point(s,sh.to)]);}
+  else{delivery(s,sh);sh.phase='leaving';route(sh,[point(s,sh.to)]);}
   return false;
 }
 function wander(s,c,dt){
-  const destination=s.biology&&['neutrophil','macrophage'].includes(c.kind)?combatDestination(s,c):point(s.rally);
+  const destination=s.biology&&['neutrophil','macrophage'].includes(c.kind)?combatDestination(s,c):point(s,s.rally);
   if(!c.path.length||c.step>=c.path.length){const d=destination,phase=s.time*.19+c.id*2.4;route(c,[{x:d.x+Math.cos(phase)*95,y:d.y+Math.sin(phase)*60+25}]);}
   move(c,35,dt);
 }
@@ -343,13 +344,13 @@ export function tickCity(s,dt,data){
   if(s.frontier)tickFrontier(s,dt,frontierAPI);
   tickBiology(s,dt,data,frontierAPI);
   const fever=s.weather.id==='fever',speed=(85+(s.districts.heart.level-1)*19)*output(s,'heart')*clamp(1-s.waste/180,.4,1);
-  s.intakeClock-=dt;if(s.intakeClock<=0){if(!s.specialists||s.shipments.length<48)s.shipments.push({id:++s.serial,kind:'raw',from:'outside',to:'gut',amount:16+s.districts.gut.level*6,...FOOD_ENTRY,path:FOOD_ROAD.map(p=>({...p})),step:0});s.intakeClock=8;}
+  s.intakeClock-=dt;if(s.intakeClock<=0){if(!s.specialists||s.shipments.length<48)s.shipments.push({id:++s.serial,kind:'raw',from:'outside',to:'gut',amount:16+s.districts.gut.level*6,...intakeRoute(s)[0],path:intakeRoute(s).map(p=>({...p})),step:0});s.intakeClock=8;}
   const processed=Math.min(s.rawFood,dt*1.8*(1+.35*(s.districts.gut.level-1))*output(s,'gut')*(s.frontier?.gut.quarantine?.55:1));
   s.rawFood-=processed;s.resources.food=Math.min(400,s.resources.food+processed);
   s.waste=clamp(s.waste+dt*(.24+(fever?.2:0)+s.enemies.length*.012-.36*(1+.45*(s.districts.kidney.level-1))*output(s,'kidney')));
   s.inflammation=clamp(s.inflammation-dt*.12);
   s.barrier=clamp(s.barrier+dt*.35*s.districts.lung.level);
-  for(const def of DISTRICTS){
+  for(const def of cityDistricts(s)){
     const d=s.districts[def.id];
     d.oxygen=clamp(d.oxygen+dt*(def.id==='lung'?10:-1.35-(fever?.55:0)));
     d.food=Math.max(0,d.food-dt*.12);
@@ -360,7 +361,7 @@ export function tickCity(s,dt,data){
   }
   s.supplyClock-=dt;s.drugClock-=dt;
   if(s.supplyClock<=0){
-    const targets=DISTRICTS.filter(d=>s.districts[d.id].food<22+supportCount(s,d.id,'supply')*8&&!s.shipments.some(x=>x.kind==='food'&&x.to===d.id)).sort((a,b)=>s.districts[a.id].food-s.districts[b.id].food);
+    const targets=cityDistricts(s).filter(d=>s.districts[d.id].food<22+supportCount(s,d.id,'supply')*8&&!s.shipments.some(x=>x.kind==='food'&&x.to===d.id)).sort((a,b)=>s.districts[a.id].food-s.districts[b.id].food);
     const t=targets[0],amount=6+s.districts.gut.level*2+(t?supportCount(s,t.id,'supply')*4:0);
     if(t&&s.resources.food>=amount&&(!s.specialists||s.shipments.length<48)){s.resources.food-=amount;shipment(s,'food',t.id,amount);}s.supplyClock=2.5;
   }
@@ -371,7 +372,7 @@ export function tickCity(s,dt,data){
     s.drugClock=4;
   }
   s.shipments=s.shipments.filter(sh=>!updateShipment(s,sh,dt,speed));
-  for(const r of [...s.recruits])if(r.remaining!=null){r.remaining-=dt*output(s,'marrow');if(r.remaining<=0){const spawn=s.specialists?workStation('marrow','spawn',r.bay||0).stand:{x:279,y:583};const born=cell(s,r.kind,spawn.x,spawn.y);born.bornAt=s.time;s.stats.born++;s.recruits=s.recruits.filter(x=>x.id!==r.id);log(s,CELL_JOBS[r.kind].name+' · 골수에서 출동');}}
+  for(const r of [...s.recruits])if(r.remaining!=null){r.remaining-=dt*output(s,'marrow');if(r.remaining<=0){const spawn=s.specialists?workStation('marrow','spawn',r.bay||0,s.layout).stand:{x:279,y:583};const born=cell(s,r.kind,spawn.x,spawn.y);born.bornAt=s.time;s.stats.born++;s.recruits=s.recruits.filter(x=>x.id!==r.id);log(s,CELL_JOBS[r.kind].name+' · 골수에서 출동');}}
   if(s.lifecycle){
     for(const c of s.cells)c.age+=dt;
     const retired=s.cells.filter(c=>c.age>=c.life);
@@ -387,10 +388,10 @@ export function tickCity(s,dt,data){
   for(const e of s.enemies){
     if(e.dead)continue;
     if(s.frontier&&tickFrontierEnemy(s,e,dt,frontierAPI)){if(!s.biology&&!e.dead&&(s.antibodies[e.recordId]||0)>=100)damage(s,e,dt*1.3,e,'#c6df9c');continue;}
-    const lung=point('lung');
+    const lung=point(s,'lung');
     if(dist(e,ENTRANCE)<160&&s.barrier>0){const p={x:983,y:180},distance=dist(e,p);if(distance>8){e.x+=(p.x-e.x)/distance*20*dt;e.y+=(p.y-e.y)/distance*20*dt;}else{s.barrier=clamp(s.barrier-dt*3);e.hp-=dt*.55*s.districts.lung.level;if(e.hp<=0)damage(s,e,0,e,'#a4cab0');}}
     else {
-      const target=s.districts.lung.hp>28?lung:point('heart'),distance=dist(e,target);
+      const target=s.districts.lung.hp>28?lung:point(s,'heart'),distance=dist(e,target);
       if(distance>38){e.x+=(target.x-e.x)/distance*15*dt;e.y+=(target.y-e.y)/distance*15*dt;}
       else{s.districts[target===lung?'lung':'heart'].hp=clamp(s.districts[target===lung?'lung':'heart'].hp-dt*.7);s.inflammation=clamp(s.inflammation+dt*.12);}
     }
@@ -423,22 +424,22 @@ export function restoreCity(raw){
   try{
     const s=typeof raw==='string'?JSON.parse(raw):raw;
     if(!s||s.schema!==SAVE_VERSION||!['running','won','lost'].includes(s.status)||!['normal','neutropenia'].includes(s.host))return null;
-    if(!Number.isFinite(s.time)||s.time<0||!Number.isInteger(s.serial)||!Number.isInteger(s.wave)||s.wave<0||!['balanced','defense','repair'].includes(s.policy)||!districtDef(s.rally)||!DRUGS.some(d=>d.id===s.drug))return null;
+    if(!Number.isFinite(s.time)||s.time<0||!Number.isInteger(s.serial)||!Number.isInteger(s.wave)||s.wave<0||!['balanced','defense','repair'].includes(s.policy)||!cityDistrict(s,s.rally)||!DRUGS.some(d=>d.id===s.drug))return null;
     const finite=(v,max=1e7)=>Number.isFinite(v)&&v>=0&&v<=max;
     if(!finite(s.resources?.food,400)||!finite(s.resources?.materials,300)||!finite(s.waste,100)||!finite(s.inflammation,100)||!finite(s.barrier,100))return null;
-    for(const def of DISTRICTS){const d=s.districts?.[def.id];if(!d||!finite(d.hp,100)||!finite(d.oxygen,100)||!finite(d.food,56)||!Number.isInteger(d.level)||d.level<1||d.level>4||!finite(d.tower,2)||DRUGS.some(x=>!finite(d.ammo?.[x.id],200)))return null;if(d.building&&(!['upgrade','repair','tower','plot'].includes(d.building.type)||!finite(d.building.duration,10)||d.building.remaining!=null&&!finite(d.building.remaining,10)))return null;}
+    for(const def of cityDistricts(s)){const d=s.districts?.[def.id];if(!d||!finite(d.hp,100)||!finite(d.oxygen,100)||!finite(d.food,56)||!Number.isInteger(d.level)||d.level<1||d.level>4||!finite(d.tower,2)||DRUGS.some(x=>!finite(d.ammo?.[x.id],200)))return null;if(d.building&&(!['upgrade','repair','tower','plot'].includes(d.building.type)||!finite(d.building.duration,10)||d.building.remaining!=null&&!finite(d.building.remaining,10)))return null;}
     for(const k of ['cells','shipments','enemies','debris','recruits','log','spawn'])if(!Array.isArray(s[k])||s[k].length>200)return null;
-    for(const c of [...s.cells,...s.shipments])if(!Number.isFinite(c.x)||!Number.isFinite(c.y)||!Array.isArray(c.path)||c.path.length>64||c.path.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y))||!Number.isInteger(c.step)||c.step<0||c.step>c.path.length)return null;
+    for(const c of [...s.cells,...s.shipments])if(!Number.isFinite(c.x)||!Number.isFinite(c.y)||!Array.isArray(c.path)||c.path.length>160||c.path.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y))||!Number.isInteger(c.step)||c.step<0||c.step>c.path.length)return null;
     s.specialists??=false;if(typeof s.specialists!=='boolean')return null;
-    if(s.cells.some(c=>!cityJobs(s)[c.kind]||!districtDef(c.target)||!finite(c.cooldown)||!finite(c.cargo)))return null;
-    if(s.shipments.some(c=>!districtDef(c.to)||!['raw','food','drug','materials','recruit'].includes(c.kind)||!finite(c.amount)||c.kind==='drug'&&!DRUGS.some(d=>d.id===c.drugId)))return null;
+    if(s.cells.some(c=>!cityJobs(s)[c.kind]||!cityDistrict(s,c.target)||!finite(c.cooldown)||!finite(c.cargo)))return null;
+    if(s.shipments.some(c=>!cityDistrict(s,c.to)||!['raw','food','drug','materials','recruit'].includes(c.kind)||!finite(c.amount)||c.kind==='drug'&&!DRUGS.some(d=>d.id===c.drugId)))return null;
     for(const c of [...s.cells,...s.shipments]){
-      const a=c.activity;if(a&&(!ACTIVITY_KINDS.includes(a.kind)||!finite(a.started)||a.started>s.time||!finite(a.duration,4)||a.duration===0||!Number.isFinite(a.x)||!Number.isFinite(a.y)||a.site!=null&&!districtDef(a.site)))return null;
-      if(c.workSlot!=null&&(!Number.isInteger(c.workSlot)||!finite(c.workSlot,5))||c.dock!=null&&!districtDef(c.dock))return null;
+      const a=c.activity;if(a&&(!ACTIVITY_KINDS.includes(a.kind)||!finite(a.started)||a.started>s.time||!finite(a.duration,4)||a.duration===0||!Number.isFinite(a.x)||!Number.isFinite(a.y)||a.site!=null&&!cityDistrict(s,a.site)))return null;
+      if(c.workSlot!=null&&(!Number.isInteger(c.workSlot)||!finite(c.workSlot,5))||c.dock!=null&&!cityDistrict(s,c.dock))return null;
       if(c.kind==='plasma'&&a?.kind==='produce'&&(typeof c.recordId!=='string'||!s.antigens?.[c.recordId]))return null;
     }
     if(s.shipments.some(sh=>sh.phase!=null&&!['pickup','transit','leaving'].includes(sh.phase)))return null;
-    if(s.enemies.some(e=>!Number.isFinite(e.x)||!Number.isFinite(e.y)||!finite(e.hp)||!pathogenDef(e.recordId)||e.site!=null&&!districtDef(e.site)))return null;
+    if(s.enemies.some(e=>!Number.isFinite(e.x)||!Number.isFinite(e.y)||!finite(e.hp)||!pathogenDef(e.recordId)||e.site!=null&&!cityDistrict(s,e.site)))return null;
     if(s.spawn.some(e=>!pathogenDef(e.recordId)||!finite(e.hp)||!finite(e.maxHp)))return null;
     if(s.recruits.some(r=>!cityJobs(s)[r.kind]||r.remaining!=null&&!finite(r.remaining)))return null;
     if(s.debris.some(e=>!Number.isFinite(e.x)||!Number.isFinite(e.y)||!pathogenDef(e.recordId)&&!(e.recordId===null&&['neutrophil','macrophage'].includes(e.cellKind))))return null;
@@ -446,13 +447,13 @@ export function restoreCity(raw){
     if(!s.antigens||!s.antibodies||!s.stats||!s.weather||!['clear','dry','fever'].includes(s.weather.id)||!finite(s.weather.until)||!Number.isFinite(s.supplyClock)||!Number.isFinite(s.drugClock)||!Number.isFinite(s.spawnClock))return null;
     if(['defeated','deliveries','oxygen'].some(k=>!finite(s.stats[k]))||Object.values(s.antibodies).some(v=>!finite(v,100)))return null;
     s.scenario??='legacy';if(s.scenario!=='legacy'&&!SCENARIOS[s.scenario])return null;
-    s.workCrews??=false;if(typeof s.workCrews!=='boolean'||s.cells.some(c=>c.buildSite&&!districtDef(c.buildSite)))return null;
+    s.workCrews??=false;if(typeof s.workCrews!=='boolean'||s.cells.some(c=>c.buildSite&&!cityDistrict(s,c.buildSite)))return null;
     s.lifecycle??=false;s.turnover??={};s.rawFood??=24;s.intakeClock??=0;s.breach??=0;s.recovered??=0;s.endReason??='';s.stats.born??=0;s.stats.retired??=0;
     if(typeof s.lifecycle!=='boolean'||!finite(s.rawFood,80)||!finite(s.breach,16)||!finite(s.recovered,16)||!Number.isFinite(s.intakeClock)||typeof s.endReason!=='string'||!finite(s.stats.born)||!finite(s.stats.retired)||!s.turnover||Array.isArray(s.turnover)||Object.entries(s.turnover).some(([k,v])=>!cityJobs(s)[k]||!Number.isInteger(v)||!finite(v,200)))return null;
     for(const key of ['signals','antibodyBatches','clots']){s.stats[key]??=0;if(!finite(s.stats[key]))return null;}
     for(const d of Object.values(s.districts))if(d.supportUntil!=null&&!finite(d.supportUntil))return null;
     for(const c of s.cells){c.age??=0;c.life??=CELL_JOBS[c.kind].life;if(!finite(c.age,2000)||!finite(c.life,2000)||c.life<=0)return null;}
-    if(!validateFrontier(s)||!validateBiology(s))return null;
+    if(s.layout&&(!validateTileLayout(s.layout)||!compileLayout(s.layout).valid)||!validateFrontier(s)||!validateBiology(s))return null;
     s.nextWave=s.nextWave??Infinity;s.effects=[];return s;
   }catch{return null;}
 }

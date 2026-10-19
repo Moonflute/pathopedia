@@ -1,3 +1,4 @@
+import {cityDistricts,cityDistrict} from './city-tile-layout.mjs';
 import {DISTRICTS,DRUGS,WAVES,districtDef} from './city-data.mjs';
 import {WALLS} from './city-frontier-data.mjs';
 import {approachWorkplace,releaseWorkplace} from './city-workplaces.mjs';
@@ -19,13 +20,13 @@ const clamp=(v,max=100)=>Math.max(0,Math.min(max,v));
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const drugs=()=>Object.fromEntries(DRUGS.map(d=>[d.id,0]));
 const fighter=c=>c.kind==='neutrophil'||c.kind==='macrophage';
-const nearest=p=>DISTRICTS.reduce((a,b)=>distance(p,a)<distance(p,b)?a:b).id;
+const nearest=(s,p)=>cityDistricts(s).reduce((a,b)=>distance(p,a)<distance(p,b)?a:b).id;
 export const infectionLoad=d=>Object.values(d?.strains||{}).reduce((n,v)=>n+v,0);
 export const localInfection=s=>s.biology?Object.values(s.biology.sites).reduce((n,d)=>n+infectionLoad(d),0):0;
 
 export function ensureBiology(s){
  if(!s.specialists||s.biology)return;
- s.biology={version:1,clock:0,sites:Object.fromEntries(DISTRICTS.map(d=>[d.id,{strains:{},inflammation:0,toxin:0,stage:'clear',quiet:0,spreadClock:0,isolated:false,drugs:drugs()}])),blood:drugs(),lumen:drugs(),transfers:[],order:{mode:'auto',site:s.rally},autoMedicine:s.scenario!=='simulation',stats:{introduced:0,medicine:0,losses:0,resolved:0}};
+ s.biology={version:1,clock:0,sites:Object.fromEntries(cityDistricts(s).map(d=>[d.id,{strains:{},inflammation:0,toxin:0,stage:'clear',quiet:0,spreadClock:0,isolated:false,drugs:drugs()}])),blood:drugs(),lumen:drugs(),transfers:[],order:{mode:'auto',site:s.rally},autoMedicine:s.scenario!=='simulation',stats:{introduced:0,medicine:0,losses:0,resolved:0}};
  // Old weapon stocks become IV supply; they no longer belong to immune cells.
  for(const id of DRUGS.map(d=>d.id)){
   let stock=0;for(const d of Object.values(s.districts)){stock+=d.ammo[id];d.ammo[id]=0;}
@@ -33,7 +34,7 @@ export function ensureBiology(s){
   if(s.scenario!=='simulation')s.districts.heart.ammo[id]=Math.min(200,stock);
  }
  if(s.scenario==='simulation'){s.nextWave=Infinity;s.frontier.woundDone=true;s.frontier.warned=false;}
- for(const e of s.enemies){if(!e.front){e.front='airway';e.entered=distance(e,districtDef('lung'))<120;}if(e.entered&&!e.focusSeeded)seedInfection(s,e,infectionSite(e),0);}
+ for(const e of s.enemies){if(!e.front){e.front='airway';e.entered=distance(e,cityDistrict(s,'lung'))<120;}if(e.entered&&!e.focusSeeded)seedInfection(s,e,infectionSite(e),0);}
  for(const c of s.cells)if(fighter(c)){c.integrity=100;c.energy=100;c.recovering=false;}
 }
 export function infectionSite(e){return e.site|| (e.front==='blood'?'heart':e.front==='gut'?'gut':e.front==='skin'?WALLS[e.wall??11].district:'lung');}
@@ -48,7 +49,7 @@ export function seedInfection(s,e,site,dt){
 }
 export function antigenEvidence(s){
  if(!s.biology)return null;
- for(const def of DISTRICTS){const id=Object.keys(s.biology.sites[def.id].strains).find(id=>!s.antigens[id]);if(id)return {x:def.x,y:def.y,recordId:id};}
+ for(const def of cityDistricts(s)){const id=Object.keys(s.biology.sites[def.id].strains).find(id=>!s.antigens[id]);if(id)return {x:def.x,y:def.y,recordId:id};}
  return null;
 }
 export function antibodySupport(s,recordId,site){
@@ -86,10 +87,10 @@ export function medicineOrder(s,drugId,route,packs,api,free=false){
 export function biologyCommand(s,action,id,data,api){
  if(!s.biology)return null;
  if(action==='response'){
-  const [mode,site]=String(id).split(':');if(!RESPONSE_ORDERS[mode]||!districtDef(site))return {ok:false};
+  const [mode,site]=String(id).split(':');if(!RESPONSE_ORDERS[mode]||!cityDistrict(s,site))return {ok:false};
   s.biology.order={mode,site};s.rally=site;
   for(const c of s.cells)if(fighter(c)){c.path=[];releaseWorkplace(c);}
-  api.log(s,districtDef(site).short+' · '+RESPONSE_ORDERS[mode]);return {ok:true};
+  api.log(s,cityDistrict(s,site).short+' · '+RESPONSE_ORDERS[mode]);return {ok:true};
  }
  if(action==='isolate'&&s.biology.sites[id]){const d=s.biology.sites[id];d.isolated=!d.isolated;return {ok:true,text:d.isolated?'구역 격리 · 확산·가동량 감소':'구역 격리 해제'};}
  if(action==='auto-medicine'){s.biology.autoMedicine=!s.biology.autoMedicine;return {ok:true};}
@@ -118,16 +119,16 @@ function tickMedicine(s,dt,api){
   // Oxacillin uses mixed clearance; renal function modulates the other two.
   const clearance=id==='oxacillin'?.035:.012+.022*api.output(s,'kidney');
   b.blood[id]*=Math.exp(-dt*clearance);b.lumen[id]*=Math.exp(-dt*.035);
-  for(const def of DISTRICTS){const d=b.sites[def.id],flow=api.output(s,'heart')*Math.max(.15,s.districts[def.id].oxygen/100);d.drugs[id]+=(b.blood[id]-d.drugs[id])*(1-Math.exp(-dt*.2*flow));}
+  for(const def of cityDistricts(s)){const d=b.sites[def.id],flow=api.output(s,'heart')*Math.max(.15,s.districts[def.id].oxygen/100);d.drugs[id]+=(b.blood[id]-d.drugs[id])*(1-Math.exp(-dt*.2*flow));}
  }
 }
 function advanceBiology(s,dt,data,api){
  const b=s.biology;
  tickMedicine(s,dt,api);
- const groups=Object.fromEntries(DISTRICTS.map(d=>[d.id,[]]));
- for(const c of s.cells)if(fighter(c)&&!c.recovering)groups[nearest(c)].push(c);
+ const groups=Object.fromEntries(cityDistricts(s).map(d=>[d.id,[]]));
+ for(const c of s.cells)if(fighter(c)&&!c.recovering)groups[nearest(s,c)].push(c);
  const transfers=[];
- for(const def of DISTRICTS){
+ for(const def of cityDistricts(s)){
   const id=def.id,d=b.sites[id],before=infectionLoad(d),organ=s.districts[id];
   for(const [recordId,load] of Object.entries(d.strains)){
    const profile=pathogenDef(recordId),mark=antibodySupport(s,recordId,id);
@@ -138,7 +139,7 @@ function advanceBiology(s,dt,data,api){
    if(next<.12){delete d.strains[recordId];b.stats.resolved++;}else d.strains[recordId]=next;
    if(profile?.toxin)d.toxin=clamp(d.toxin+dt*(next*.022));
    if(!profile?.lumen&&next>48&&!d.isolated&&d.spreadClock>=18){
-    const target=id==='heart'?DISTRICTS.filter(x=>x.id!=='heart')[(Math.floor(s.time/18)+PATHOGENS.indexOf(profile))%5].id:'heart';
+    const target=id==='heart'?cityDistricts(s).filter(x=>x.id!=='heart')[(Math.floor(s.time/18)+PATHOGENS.indexOf(profile))%5].id:'heart';
     if(!b.sites[target].isolated)transfers.push({from:id,to:target,recordId,amount:2.5});
    }
   }
@@ -153,7 +154,7 @@ function advanceBiology(s,dt,data,api){
   organ.hp=clamp(organ.hp-dt*stress);organ.oxygen=clamp(organ.oxygen-dt*(Math.min(100,total)*.003));
  }
  b.transfers=b.transfers.filter(t=>s.time-t.started<6);
- for(const t of transfers){exposeSite(s,t.to,t.recordId,t.amount);b.transfers.push({...t,started:s.time});api.log(s,districtDef(t.from).short+' → '+districtDef(t.to).short+' · 혈행 확산');}b.transfers=b.transfers.slice(-12);
+ for(const t of transfers){exposeSite(s,t.to,t.recordId,t.amount);b.transfers.push({...t,started:s.time});api.log(s,cityDistrict(s,t.from).short+' → '+cityDistrict(s,t.to).short+' · 혈행 확산');}b.transfers=b.transfers.slice(-12);
  s.inflammation=clamp(Math.max(s.inflammation,Object.values(b.sites).reduce((n,d)=>n+d.inflammation,0)/6));
  for(const e of s.enemies){
   if(e.dead||!e.entered)continue;const site=infectionSite(e);
@@ -168,16 +169,16 @@ export function tickBiology(s,dt,data,api){
  if(s.biology.clock>=.5){const elapsed=s.biology.clock;s.biology.clock=0;advanceBiology(s,elapsed,data,api);}
 }
 export function combatDestination(s,c){
- if(!s.biology)return districtDef(s.rally);
+ if(!s.biology)return cityDistrict(s,s.rally);
  const order=s.biology.order;
- if(order.mode!=='auto')return districtDef(order.mode==='recover'?'heart':order.site);
- const threats=DISTRICTS.map(d=>({d,score:infectionLoad(s.biology.sites[d.id])+s.enemies.filter(e=>!e.dead&&infectionSite(e)===d.id).length*7})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
- return threats.length?threats[c.id%Math.min(2,threats.length)].d:districtDef(s.rally);
+ if(order.mode!=='auto')return cityDistrict(s,order.mode==='recover'?'heart':order.site);
+ const threats=cityDistricts(s).map(d=>({d,score:infectionLoad(s.biology.sites[d.id])+s.enemies.filter(e=>!e.dead&&infectionSite(e)===d.id).length*7})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+ return threats.length?threats[c.id%Math.min(2,threats.length)].d:cityDistrict(s,s.rally);
 }
 export function updateCombatCondition(s,c,dt,api){
  if(!s.biology||!fighter(c))return false;
  c.integrity??=100;c.energy??=100;c.recovering??=false;
- const here=nearest(c),d=s.districts[here],hazards=s.enemies.filter(e=>!e.dead&&e.entered&&distance(e,c)<65).length;
+ const here=nearest(s,c),d=s.districts[here],hazards=s.enemies.filter(e=>!e.dead&&e.entered&&distance(e,c)<65).length;
  c.integrity=clamp(c.integrity-dt*(hazards*.65+s.biology.sites[here].inflammation*.002));
  if(c.integrity===0){c.lost=true;return true;}
  c.energy=clamp(c.energy+dt*(hazards?-.38:d.oxygen>=25&&d.food>0?.45:-.12));
@@ -197,14 +198,14 @@ export function updateCombatCondition(s,c,dt,api){
 }
 export function combatEffort(c){if(c.energy!=null)c.energy=clamp(c.energy-(c.kind==='macrophage'?3:2));}
 export function cleanLocalDebris(s,debris){
- if(!s.biology)return;const d=s.biology.sites[nearest(debris)];d.inflammation=clamp(d.inflammation-(debris.cellKind?3:1.3));
+ if(!s.biology)return;const d=s.biology.sites[nearest(s,debris)];d.inflammation=clamp(d.inflammation-(debris.cellKind?3:1.3));
 }
 export function validateBiology(s){
  const b=s.biology;if(!b)return true;
  const n=(v,max=100)=>Number.isFinite(v)&&v>=0&&v<=max,validDrugs=d=>d&&DRUGS.every(x=>n(d[x.id]));
- if(!s.specialists||b.version!==1||!n(b.clock,.75)||!validDrugs(b.blood)||!validDrugs(b.lumen)||!RESPONSE_ORDERS[b.order?.mode]||!districtDef(b.order?.site)||typeof b.autoMedicine!=='boolean'||!b.stats||['introduced','medicine','losses','resolved'].some(k=>!n(b.stats[k],1e8)))return false;
- if(!Array.isArray(b.transfers)||b.transfers.length>12||b.transfers.some(t=>!districtDef(t.from)||!districtDef(t.to)||!pathogenDef(t.recordId)||!n(t.started,s.time)||!n(t.amount)))return false;
- for(const def of DISTRICTS){const d=b.sites?.[def.id];if(!d||!d.strains||Object.entries(d.strains).some(([id,v])=>!pathogenDef(id)||!n(v))||!n(d.inflammation)||!n(d.toxin)||!STAGES[d.stage]||!n(d.quiet,600)||!n(d.spreadClock,19)||typeof d.isolated!=='boolean'||!validDrugs(d.drugs))return false;}
+ if(!s.specialists||b.version!==1||!n(b.clock,.75)||!validDrugs(b.blood)||!validDrugs(b.lumen)||!RESPONSE_ORDERS[b.order?.mode]||!cityDistrict(s,b.order?.site)||typeof b.autoMedicine!=='boolean'||!b.stats||['introduced','medicine','losses','resolved'].some(k=>!n(b.stats[k],1e8)))return false;
+ if(!Array.isArray(b.transfers)||b.transfers.length>12||b.transfers.some(t=>!cityDistrict(s,t.from)||!cityDistrict(s,t.to)||!pathogenDef(t.recordId)||!n(t.started,s.time)||!n(t.amount)))return false;
+ for(const def of cityDistricts(s)){const d=b.sites?.[def.id];if(!d||!d.strains||Object.entries(d.strains).some(([id,v])=>!pathogenDef(id)||!n(v))||!n(d.inflammation)||!n(d.toxin)||!STAGES[d.stage]||!n(d.quiet,600)||!n(d.spreadClock,19)||typeof d.isolated!=='boolean'||!validDrugs(d.drugs))return false;}
  if(s.cells.some(c=>fighter(c)&&(c.integrity!=null&&!n(c.integrity)||c.energy!=null&&!n(c.energy)||c.recovering!=null&&typeof c.recovering!=='boolean')))return false;
  return !s.shipments.some(sh=>sh.administration!=null&&(!MEDICINE_ROUTES[sh.administration]||sh.kind!=='drug'||sh.administration==='oral'&&sh.drugId==='oxacillin'||sh.to!==(sh.administration==='oral'?'gut':'heart')));
 }

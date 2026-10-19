@@ -1,3 +1,4 @@
+import {transformPoint,compileLayout} from './city-tile-layout.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {SITES,groundPoint} from './city-three-layout.mjs';
 import {WALLS,FRONTS,WORKSHOP,TISSUES} from './city-frontier-data.mjs';
@@ -16,14 +17,16 @@ export function createFrontierScene(){
  batch('box',new T.BoxGeometry(1,1,1),700,surface,true);batch('post',new T.CylinderGeometry(1,1,1,6),130,surface,true);
  batch('orb',new T.IcosahedronGeometry(1,0),120);batch('roof',new T.ConeGeometry(1,1,4),40,surface,true);
  batch('glow',new T.IcosahedronGeometry(1,0),100,unlit);batch('flame',new T.ConeGeometry(1,1,5),36,unlit);batch('smoke',new T.IcosahedronGeometry(1,0),24);
- function put(id,x,y,z,sx,sy,sz,c,ry=0,rz=0){const m=batches[id],i=m.count;if(i>=m.instanceMatrix.count)return;dummy.position.set(x,y,z);dummy.scale.set(sx,sy,sz);dummy.rotation.set(0,ry,rz);dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix);m.setColorAt(i,color.set(c));m.count++;}
+ let owner=null,layout=null,poseLayout=null;
+ function put(id,x,y,z,sx,sy,sz,c,ry=0,rz=0){if(owner&&layout){const p=transformPoint(poseLayout,owner,{x,z});x=p.x;z=p.z;ry-=poseLayout.items[owner].rot*Math.PI/2;}const m=batches[id],i=m.count;if(i>=m.instanceMatrix.count)return;dummy.position.set(x,y,z);dummy.scale.set(sx,sy,sz);dummy.rotation.set(0,ry,rz);dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix);m.setColorAt(i,color.set(c));m.count++;}
+ function worldPut(...args){const was=owner;owner=null;put(...args);owner=was;}
  function store(p,count,c,limit=6){for(let i=0;i<Math.min(limit,Math.ceil(count/4));i++)put('box',p.x+i%3*.36,.17+Math.floor(i/3)*.3,p.z,.29,.28,.3,c);}
  function fire(x,z,t,index){
   for(let i=0;i<3;i++){const q=(t*.8+i/3+index*.17)%1;put('flame',x+(i-1)*.16,.17+q*.45,z,.15*(1-q*.5),.45+Math.sin(q*Math.PI)*.25,.15,i%2?0xf0bd68:0xdf8a65,0,Math.sin(t*3+i)*.13);}
   const q=(t*.35+index*.21)%1;put('smoke',x+.18*q,.6+q*.9,z,.18+q*.2,.23+q*.2,.18+q*.2,0x9a9995);
  }
- function update(s,{camera,target,selectedWall}={}){
-  for(const m of Object.values(batches))m.count=0;const f=s.frontier;if(!f)return;
+ function update(s,{camera,target,selectedWall,editor}={}){
+  layout=s.layout;poseLayout=editor?.preview?{...layout,items:{...layout.items,[editor.selected]:editor.preview}}:layout;owner=null;for(const m of Object.values(batches))m.count=0;const f=s.frontier;if(!f)return;
   const t=s.time,viewX=camera?camera.position.x-target.x:20,viewZ=camera?camera.position.z-target.z:32;
   let fireCount=0;
   for(const [i,def] of WALLS.entries()){
@@ -47,13 +50,14 @@ export function createFrontierScene(){
    put('glow',x,2.1,z+.4,.15,.15,.15,w.warningUntil>t||w.hp<50?(Math.sin(t*5)>0?0xe89b68:0xe8c681):0x9fc9b7);
   }
   for(const [id,front] of Object.entries(FRONTS)){
-   const p=front.depot,d=f.depots[id];put('box',p.x+.45,.12,p.z,2,.24,1.25,0xb9aa90);put('roof',p.x+.45,1.7,p.z,1.45,.6,1,0x92aea1,Math.PI/4);
+   owner=id==='skin'?'workshop':id==='airway'?'lung':'gut';const p=front.depot,d=f.depots[id];put('box',p.x+.45,.12,p.z,2,.24,1.25,0xb9aa90);put('roof',p.x+.45,1.7,p.z,1.45,.6,1,0x92aea1,Math.PI/4);
    for(const x of [p.x-.4,p.x+1.3])put('post',x,.8,p.z-.5,.055,1.6,.055,0x9e8867);
    store({x:p.x-.3,z:p.z+.25},d.materials,0xc4a16e,6);store({x:p.x-.3,z:p.z-.25},d.food,0xd5bf80,6);
    const ammo=Object.values(d.ammo).reduce((a,b)=>a+b,0);for(let n=0;n<Math.min(4,Math.ceil(ammo/4));n++)put('post',p.x+.9+n%2*.22,.3+Math.floor(n/2)*.25,p.z+.2,.07,.25,.07,0xaab7cb);
   }
-  const awaiting=f.walls.filter(w=>w.repair?.materials&&!w.repair.delivered).length;
+  owner='workshop';const awaiting=f.walls.filter(w=>w.repair?.materials&&!w.repair.delivered).length;
   store({x:WORKSHOP.x+.1,z:WORKSHOP.z+.65},awaiting*8,0xc7a074,6);
+  owner=null;
   // Mucus rollers and a timed cilia rake at the mouth of the respiratory channel.
   for(let i=0;i<6;i++){
    const x=-7.1+i*.43,swing=Math.sin(t*(f.airway.boostUntil>t?7:3)+i*.6)*.32;
@@ -63,7 +67,7 @@ export function createFrontierScene(){
   for(let i=0;i<5;i++){const q=(t*.25+i/5)%1;put('glow',-6+Math.sin(i*2)*.5,.35,-18+q*7,.035,.035,.2,0xc2e1d7);}
   put('box',15,.4,-4,.12,.8,2.1,f.gut.quarantine?0xb8b983:0xd8c49e,0,f.gut.quarantine?0:.7);
   for(const [id,site] of Object.entries(SITES)){
-   const d=s.districts[id],state=facilityState(s,id),cap=workplaceCapacity(s,id,'oxygen');
+   owner=id;const d=s.districts[id],state=facilityState(s,id),cap=workplaceCapacity(s,id,'oxygen');
    const biology=s.biology?.sites[id];
    if(biology){
     const load=infectionLoad(biology),tint=biology.stage==='recovering'||biology.stage==='suppressed'?0x9fb8a5:0xd79783;
@@ -71,8 +75,8 @@ export function createFrontierScene(){
     for(let n=0;n<count;n++){const a=n*Math.PI/3+t*.12;put('orb',site.x+Math.cos(a)*1.9,.07,site.z+Math.sin(a)*1.9,.28,.025,.28,tint);}
     if(biology.isolated)for(let n=0;n<4;n++)put('box',site.x-1.5+n,.35,site.z+1.5,.8,.07,.06,0xc5ae73);
     if(biology.toxin>2)put('orb',site.x+.65,.15,site.z+.9,.3,.05,.3,0xae92b7);
-    const road=CITY_ROADS.find(r=>r.id===id),level=Math.max(...Object.values(biology.drugs));
-    if(road&&level>1){const p=road.points[Math.floor((t*.15)%1*(road.points.length-1))];put('glow',p.x,.18,p.z,.09,.1,.09,0x91ccc3);}
+    const road=layout?{points:compileLayout(layout).vascular[id]}:CITY_ROADS.find(r=>r.id===id),level=Math.max(...Object.values(biology.drugs));
+    if(road?.points?.length&&level>1){const p=road.points[Math.floor((t*.15)%1*(road.points.length-1))];worldPut('glow',p.x,.18,p.z,.09,.1,.09,0x91ccc3);}
    }
    put('glow',site.building[0]+.6,2.2,site.building[1]+.4,.09,.12,.09,state.color);
    if(state.id==='damage'&&fireCount<7)fire(site.building[0]+.6,site.building[1]+.7,t,fireCount++);
@@ -95,24 +99,25 @@ export function createFrontierScene(){
     else{put('post',x,.4,z,.35,.8,.35,0x95bab0);put('orb',x,.95,z,.3,.3,.3,0xc2d7c6);}
    }
   }
+  owner=null;
   if(s.biology){
-   for(const flow of s.biology.transfers){const road=CITY_ROADS.find(r=>r.id===(flow.from==='heart'?flow.to:flow.from));if(!road)continue;const q=Math.min(1,(t-flow.started)/6),index=Math.round((flow.from==='heart'?q:1-q)*(road.points.length-1)),p=road.points[index];put('orb',p.x,.25,p.z,.18,.17,.18,0xbca270);}
-   for(let i=0;i<3;i++){const p=groundPoint(workStation('heart','rest',i).target);put('box',p.x,.2,p.z,.75,.15,.8,0xb5c8ae);put('box',p.x,.3,p.z-.25,.55,.1,.25,0xe5e2cf);}
-   for(const id of ['heart','gut']){const p=groundPoint(workStation(id,'dock').target),stock=Object.values(s.districts[id].ammo).reduce((a,b)=>a+b,0);put('post',p.x+.35,.8,p.z,.035,1.6,.035,0x97a59c);put('box',p.x+.35,1.35,p.z,.26,.38,.12,stock>0?0x9bc9bd:0xd0d4c6);}
+   for(const flow of s.biology.transfers){const rid=flow.from==='heart'?flow.to:flow.from,road=layout?{points:compileLayout(layout).vascular[rid]}:CITY_ROADS.find(r=>r.id===rid);if(!road?.points?.length)continue;const q=Math.min(1,(t-flow.started)/6),index=Math.round((flow.from==='heart'?q:1-q)*(road.points.length-1)),p=road.points[index];put('orb',p.x,.25,p.z,.18,.17,.18,0xbca270);}
+   owner='heart';for(let i=0;i<3;i++){const p=groundPoint(workStation('heart','rest',i).target);put('box',p.x,.2,p.z,.75,.15,.8,0xb5c8ae);put('box',p.x,.3,p.z-.25,.55,.1,.25,0xe5e2cf);}
+   for(const id of ['heart','gut']){owner=id;const p=groundPoint(workStation(id,'dock').target),stock=Object.values(s.districts[id].ammo).reduce((a,b)=>a+b,0);put('post',p.x+.35,.8,p.z,.035,1.6,.035,0x97a59c);put('box',p.x+.35,1.35,p.z,.26,.38,.12,stock>0?0x9bc9bd:0xd0d4c6);}
   }
-  store({x:6.6,z:10.2},f.waste.stock*2,0x9f929d,6);
+  owner='kidney';store({x:6.6,z:10.2},f.waste.stock*2,0x9f929d,6);
   put('post',7,.3,10,.5,.6,.5,0xc9c1b0);put('box',7,.67,10,1,.06,.08,0x9b8c75,f.waste.stock>0?t*.8:0);
-  for(let i=0;i<3;i++){
+  owner='marrow';for(let i=0;i<3;i++){
    const p=groundPoint(workStation('marrow','spawn',i).target),r=s.recruits.find(r=>r.bay===i),progress=r?.remaining!=null?1-r.remaining/(r.duration||8):0;
    put('post',p.x,.3,p.z,.31,.6,.31,0xc2b8b6);put('orb',p.x,.7,p.z,.32,.35,.32,0xb4d1c1);
    if(r){put('glow',p.x,.6+progress*.2,p.z,.13+progress*.09,.1+progress*.23,.13+progress*.09,r.remaining==null?0xd4b77b:0xe3a8a3);put('box',p.x,.08,p.z-.4,.65*Math.max(.05,progress),.05,.12,0x9ebea9);}
   }
-  for(const [i,item] of f.inbox.entries()){
+  owner='lymph';for(const [i,item] of f.inbox.entries()){
    put('box',-12.1+i*.35,.5,1.9,.28,.12,.23,item.stage==='접수'?0xd4bd83:0xa2bfa5);
    put('glow',-12.1+i*.35,.75+Math.sin(t*3+i)*.05,1.9,.07,.08,.07,0xdcc481);
   }
   for(const [i,d] of TISSUES.entries()){
-   const health=f.tissues[i].hp,organ=s.districts[d.district],bad=health<55;
+   owner='house-'+d.index;const health=f.tissues[i].hp,organ=s.districts[d.district],bad=health<55;
    put('box',d.x,.7,d.z+.72,.25,.27,.04,bad?0x7f7470:organ.food<1||organ.oxygen<20?0xafa797:0xe7cf8c);
    if(bad&&fireCount<9)fire(d.x+.4,d.z+.4,t,fireCount++);
    if(health<80)put('glow',d.x,2.2,d.z,.08,.12,.08,bad?0xd77e64:0xd3ae74);

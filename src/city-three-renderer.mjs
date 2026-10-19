@@ -1,3 +1,5 @@
+import {siteAt,SQUARE_GRID,placeable,transformPoint} from './city-tile-layout.mjs';
+import {createEditorOverlay} from './city-three-editor.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {OrbitControls} from './vendor/three/OrbitControls.js';
 import {GLTFLoader} from './vendor/three/GLTFLoader.js';
@@ -12,7 +14,7 @@ import {cellObservation,createCellObserver,moveFollowCamera} from './city-cell-o
 const assetRoot=new URL('../assets/city3d/',import.meta.url);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const release=root=>{const geometries=new Set(),materials=new Set(),textures=new Set();root?.traverse(o=>{if(o.geometry)geometries.add(o.geometry);for(const m of [o.material].flat().filter(Boolean)){materials.add(m);if(m.map)textures.add(m.map);}});for(const g of geometries)g.dispose();for(const t of textures)t.dispose();for(const m of materials)m.dispose();};
-export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
+export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  const map=canvas.parentElement,game=canvas.closest('.cc-game'),abort=new AbortController();
  const status=document.createElement('div');status.className='cc-three-loading';status.setAttribute('role','status');status.textContent='작은 마을을 짓는 중…';map.append(status);
  let renderer;
@@ -27,7 +29,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
  const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.14;controls.screenSpacePanning=false;controls.panSpeed=.8;controls.rotateSpeed=.55;
  controls.minPolarAngle=Math.PI*.2;controls.maxPolarAngle=Math.PI*.36;controls.minAzimuthAngle=-.6;controls.maxAzimuthAngle=1.45;
  controls.mouseButtons={LEFT:T.MOUSE.PAN,MIDDLE:T.MOUSE.DOLLY,RIGHT:T.MOUSE.ROTATE};controls.touches={ONE:T.TOUCH.PAN,TWO:T.TOUCH.DOLLY_ROTATE};controls.zoomToCursor=true;
- const actor=createActors(profile);scene.add(actor.root);
+ const actor=createActors(profile);scene.add(actor.root);const editOverlay=createEditorOverlay();scene.add(editOverlay.root);let assetCache=null,villageLayout=null,villageEditId=null,currentEditor=null,currentRun=null;
  const selection=new T.Mesh(new T.TorusGeometry(2.33,.035,4,60),new T.MeshBasicMaterial({color:0xd1ae6c}));selection.rotation.x=-Math.PI/2;scene.add(selection);
  let village=null,disposed=false,ready=false,dirty=true,lastFrame=0,lastShadow=0,lastStats=0,frames=0,minCalls=Infinity,peakCalls=0,peakTriangles=0,width=0,height=0,fit=1,zoomTarget=null,zoomAnchor=null,inset=0,lastInspect=0,inspectHeight=170,focusTarget=null;
  const calmSky=new T.Color(0xe4e6d8),illSky=new T.Color(0xd69b91),warmSun=new T.Color(0xffeacb),illSun=new T.Color(0xffc1b2);
@@ -91,21 +93,40 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
  const observer=new ResizeObserver(resize);observer.observe(map);
  canvas.addEventListener('contextmenu',e=>e.preventDefault(),{signal:abort.signal});
  canvas.addEventListener('wheel',e=>{e.preventDefault();e.stopImmediatePropagation();const r=canvas.getBoundingClientRect();zoom(-clamp(e.deltaY,-200,200)*.002);if(!watching.following)zoomAnchor=new T.Vector2((e.clientX-r.left)/width*2-1,1-(e.clientY-r.top)/height*2);},{capture:true,passive:false,signal:abort.signal});
+ const editorPointers=new Map();let editDrag=null,editGesture=null;
+ function hitAt(x,y){const rect=canvas.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((x-rect.left)/width*2-1,1-(y-rect.top)/height*2),camera);return ray.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),new T.Vector3());}
+ function gesture(){const a=[...editorPointers.values()];return {x:a.reduce((n,p)=>n+p.x,0)/a.length,y:a.reduce((n,p)=>n+p.y,0)/a.length,d:a.length>1?Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y):0};}
+ function consume(e){e.preventDefault();e.stopImmediatePropagation();}
+ canvas.addEventListener('pointerdown',e=>{
+  if(!currentEditor)return;consume(e);canvas.setPointerCapture(e.pointerId);canvas.focus({preventScroll:true});editorPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});editGesture=gesture();
+  if(editorPointers.size>1){editDrag=null;onEdit?.('preview',null);return;}
+  const hit=hitAt(e.clientX,e.clientY),id=currentEditor.isStored(currentEditor.selected)?currentEditor.selected:hit&&editOverlay.pick(currentEditor,hit);
+  if(id&&e.button===0){onEdit?.('select',id);const a=currentEditor.draft.items[id];const stored=currentEditor.isStored(id);editDrag={pointer:e.pointerId,dx:stored?0:hit.x-a.col,dz:stored?0:hit.z-a.row};if(stored)onEdit?.('preview',{...SQUARE_GRID.fromWorld(hit),rot:a.rot});}else editDrag=null;
+ },{capture:true,signal:abort.signal});
+ canvas.addEventListener('pointermove',e=>{
+  if(!currentEditor||!editorPointers.has(e.pointerId))return;consume(e);editorPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});const now=gesture();
+  if(editDrag&&editorPointers.size===1){const hit=hitAt(e.clientX,e.clientY);if(hit){const p=SQUARE_GRID.fromWorld({x:hit.x-editDrag.dx,z:hit.z-editDrag.dz});onEdit?.('preview',{...p,rot:currentEditor.draft.items[currentEditor.selected].rot});}}
+  else if(editGesture){const before=hitAt(editGesture.x,editGesture.y);if(now.d&&editGesture.d){camera.zoom=clamp(camera.zoom*now.d/editGesture.d,fit,3.3);camera.updateProjectionMatrix();}const after=hitAt(now.x,now.y);if(before&&after){before.sub(after);controls.target.add(before);camera.position.add(before);}dirty=true;}
+  editGesture=now;
+ },{capture:true,signal:abort.signal});
+ const finishEditPointer=e=>{if(!currentEditor||!editorPointers.has(e.pointerId))return;consume(e);if(editDrag?.pointer===e.pointerId)onEdit?.(e.type==='pointercancel'?'preview':'drop',null);editDrag=null;editorPointers.delete(e.pointerId);if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId);editGesture=editorPointers.size?gesture():null;};
+ canvas.addEventListener('pointerup',finishEditPointer,{capture:true,signal:abort.signal});canvas.addEventListener('pointercancel',finishEditPointer,{capture:true,signal:abort.signal});
+ canvas.addEventListener('keydown',e=>{if(!currentEditor)return;const key=e.key.toLowerCase();if(key==='r'){consume(e);onEdit?.('rotate',e.shiftKey?-1:1);}else if((e.ctrlKey||e.metaKey)&&key==='z'){consume(e);onEdit?.(e.shiftKey?'redo':'undo');}else if(key.startsWith('arrow')){consume(e);onEdit?.('nudge',key==='arrowleft'?[-1,0]:key==='arrowright'?[1,0]:key==='arrowup'?[0,-1]:[0,1]);}},{capture:true,signal:abort.signal});
  let down=null,panStart=null;const pointers=new Map();
  const remainingPointer=()=>pointers.size===1?{...pointers.values().next().value}:null;
  canvas.addEventListener('pointerdown',e=>{
-  const modified=e.ctrlKey||e.metaKey||e.shiftKey;
+  if(currentEditor)return;const modified=e.ctrlKey||e.metaKey||e.shiftKey;
   const point={x:e.clientX,y:e.clientY,id:e.pointerId,button:e.button,time:performance.now(),pan:e.pointerType==='touch'||e.button===0&&!modified||e.button===2&&modified};
   pointers.set(e.pointerId,point);down=remainingPointer();panStart=remainingPointer();
  },{signal:abort.signal});
  canvas.addEventListener('pointermove',e=>{
-  const point=pointers.get(e.pointerId);if(point){point.x=e.clientX;point.y=e.clientY;}
+  if(currentEditor)return;const point=pointers.get(e.pointerId);if(point){point.x=e.clientX;point.y=e.clientY;}
   if(panStart&&panStart.id===e.pointerId&&Math.hypot(e.clientX-panStart.x,e.clientY-panStart.y)>7){
    if(panStart.pan)setFollowing(false);panStart=null;down=null;
   }
  },{signal:abort.signal});
  canvas.addEventListener('pointerup',e=>{
-  const tap=down&&down.id===e.pointerId&&down.button===0&&performance.now()-down.time<600;pointers.delete(e.pointerId);down=null;panStart=remainingPointer();if(!tap||!ready)return;
+  if(currentEditor)return;const tap=down&&down.id===e.pointerId&&down.button===0&&performance.now()-down.time<600;pointers.delete(e.pointerId);down=null;panStart=remainingPointer();if(!tap||!ready)return;
   const rect=canvas.getBoundingClientRect(),px=e.clientX-rect.left,py=e.clientY-rect.top;
   const ray=new T.Raycaster();ray.setFromCamera(new T.Vector2(px/width*2-1,1-py/height*2),camera);
   const obstruction=village?ray.intersectObject(village.root,true).find(h=>h.object.visible&&h.object.material?.opacity!==0):null;
@@ -113,7 +134,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
   for(const p of actor.positions){vec.set(p.x,.5,p.z).project(camera);const d=Math.hypot((vec.x+1)*width/2-px,(1-vec.y)*height/2-py);if(d<distance){const depth=new T.Vector3(p.x,.5,p.z).sub(ray.ray.origin).dot(ray.ray.direction);if(!obstruction||depth<obstruction.distance+.65){nearest=p;distance=d;}}}
   if(nearest){onSelect('observe');watching.select(nearest.id);lastInspect=0;dirty=true;return;}
   clearObservation();const hit=ray.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),new T.Vector3());
-  if(hit){let chosen=null,dist=3.5;for(const [id,s] of Object.entries(SITES)){const d=Math.min(Math.hypot(hit.x-s.x,hit.z-s.z),Math.hypot(hit.x-s.building[0],hit.z-s.building[1]));if(d<dist){chosen=id;dist=d;}}if(chosen)onSelect(chosen);else{const wall=WALLS.find(w=>Math.hypot(hit.x-w.x,hit.z-w.z)<2.5);if(wall)onSelect('wall:'+wall.id);}}dirty=true;
+  if(hit){let chosen=null,dist=3.5;for(const id of Object.keys(SITES)){const s=siteAt(currentRun?.layout,id),d=Math.min(Math.hypot(hit.x-s.x,hit.z-s.z),Math.hypot(hit.x-s.building[0],hit.z-s.building[1]));if(d<dist){chosen=id;dist=d;}}if(chosen)onSelect(chosen);else{const wall=WALLS.find(w=>Math.hypot(hit.x-w.x,hit.z-w.z)<2.5);if(wall)onSelect('wall:'+wall.id);}}dirty=true;
  },{signal:abort.signal});
  canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);down=null;panStart=remainingPointer();},{signal:abort.signal});
  canvas.addEventListener('keydown',e=>{
@@ -125,14 +146,19 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
  function rotate(direction){const offset=camera.position.clone().sub(controls.target),spherical=new T.Spherical().setFromVector3(offset);spherical.theta=clamp(spherical.theta+direction*.22,controls.minAzimuthAngle,controls.maxAzimuthAngle);camera.position.copy(controls.target).add(offset.setFromSpherical(spherical));controls.update();dirty=true;}
  function focus(point){if(!point)return;setFollowing(false);focusTarget=new T.Vector3(point.x,0,point.z);dirty=true;}
  function reset(){focusTarget=null;setFollowing(false);controls.target.set(-1,0,1);camera.position.set(19,32,33);zoomAnchor=null;zoomTarget=fit;controls.update();dirty=true;}
- const frontLabels=Object.entries(FRONTS).map(([id,p])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label cc-front-label';b.textContent={skin:'보수 공방',airway:'호흡기 입구',gut:'검역 입구'}[id];b.setAttribute('aria-label',b.textContent+' 선택');b.addEventListener('click',()=>onSelect('front:'+id),{signal:abort.signal});labelLayer.append(b);return {site:p,element:b};});
+ const frontLabels=Object.entries(FRONTS).map(([id,p])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label cc-front-label';b.textContent={skin:'보수 공방',airway:'호흡기 입구',gut:'검역 입구'}[id];b.setAttribute('aria-label',b.textContent+' 선택');b.addEventListener('click',()=>onSelect('front:'+id),{signal:abort.signal});labelLayer.append(b);return {id,site:p,element:b};});
  function updateLabels(s,options){
-  for(const {site,element} of frontLabels){vec.set(site.x,2.3,site.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;element.hidden=x<45||x>width-45||y<125||y>height-inset-90||camera.zoom<.6;if(!element.hidden)element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;}
-  for(const {id,site,element} of labels){vec.set(site.building[0],site.detail?3.8:2.8,site.building[1]).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;const hidden=x<45||x>width-45||y<35||y>height-inset-75||!site.detail&&camera.zoom<.65;element.hidden=hidden;if(!hidden){element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;element.classList.toggle('is-selected',options.selected===id);const bio=s.biology?.sites[id];element.dataset.infection=bio?.stage||'clear';element.querySelector('em').textContent=bio&&bio.stage!=='clear'?STAGES[bio.stage]:'';const small=element.querySelector('small');small.textContent=options.layer==='supply'?`O₂ ${Math.round(s.districts[id].oxygen)}%`:site.detail?'':'연결 거점';}}
+  for(const {id,site:base,element} of frontLabels){const site=id==='skin'?transformPoint(s.layout,'workshop',base):base;vec.set(site.x,2.3,site.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;element.hidden=x<45||x>width-45||y<125||y>height-inset-90||camera.zoom<.6;if(!element.hidden)element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;}
+  for(const {id,element} of labels){const site=siteAt(currentEditor?.draft||s.layout,id);vec.set(site.building[0],site.detail?3.8:2.8,site.building[1]).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;const hidden=x<45||x>width-45||y<35||y>height-inset-75||!site.detail&&camera.zoom<.65;element.hidden=hidden;if(!hidden){element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;element.classList.toggle('is-selected',options.selected===id);const bio=s.biology?.sites[id];element.dataset.infection=bio?.stage||'clear';element.querySelector('em').textContent=bio&&bio.stage!=='clear'?STAGES[bio.stage]:'';const small=element.querySelector('small');small.textContent=options.layer==='supply'?`O₂ ${Math.round(s.districts[id].oxygen)}%`:site.detail?'':'연결 거점';}}
 
  }
  function draw(s,options={}){
-  if(disposed||document.hidden)return;inset=options.inset||0;
+  if(disposed||document.hidden)return;inset=options.inset||0;currentRun=s;const changedEditor=!!currentEditor!==!!options.editor;currentEditor=options.editor||null;
+  if(changedEditor){clearObservation();controls.enabled=!currentEditor;editorPointers.clear();editDrag=null;}
+  const layout=currentEditor?.draft||s.layout,editId=currentEditor?.selected||null;
+  if(assetCache&&(layout!==villageLayout||editId!==villageEditId))rebuild(layout,editId);
+  editOverlay.update(currentEditor);if(currentEditor)village?.movePreview(currentEditor.preview||currentEditor.draft.items[currentEditor.selected]);
+  actor.root.visible=!currentEditor;labelLayer.hidden=!!currentEditor;
   const now=performance.now(),interval=1000/qualityProfile(width,devicePixelRatio).fps;
   if(now-lastFrame<interval*.9)return;
   const cell=watching.resolve(s);
@@ -147,12 +173,13 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
   if(watching.following&&cell)trackCell(cell,(now-lastFrame)/1000);
   controls.update();const cx=clamp(controls.target.x,-18,18),cz=clamp(controls.target.z,-19,18);camera.position.x+=cx-controls.target.x;camera.position.z+=cz-controls.target.z;controls.target.x=cx;controls.target.z=cz;camera.updateMatrixWorld();
   if(options.paused&&!dirty&&now-lastFrame<250)return;
-  lastFrame=now;actor.draw(s,{...options,selectedCell:watching.id,readability:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(s,{...options,camera,target:controls.target});updateLabels(s,options);const site=SITES[options.selected];selection.visible=!!site;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
+  lastFrame=now;actor.draw(s,{...options,selectedCell:watching.id,readability:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(currentEditor?{...s,layout:currentEditor.draft}:s,{...options,camera,target:controls.target});updateLabels(s,options);const site=siteAt(s.layout,options.selected);selection.visible=!!site&&!currentEditor;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
   if(now-lastShadow>200){renderer.shadowMap.needsUpdate=true;lastShadow=now;}
   const illness=clamp(Math.max((75-cityHealth(s))/65,(s.inflammation-30)/70),0,1);scene.background.copy(calmSky).lerp(illSky,illness*.8);scene.fog.color.copy(scene.background);sun.color.copy(warmSun).lerp(illSun,illness);
   renderer.render(scene,camera);dirty=false;frames++;minCalls=Math.min(minCalls,renderer.info.render.calls);peakCalls=Math.max(peakCalls,renderer.info.render.calls);peakTriangles=Math.max(peakTriangles,renderer.info.render.triangles);
   if(now-lastStats>1000){const label=game.querySelector('[data-city-performance]');if(label)label.textContent=`${options.paused?'일시정지':Math.round(frames*1000/(now-lastStats))+' fps'} · ${minCalls===peakCalls?peakCalls:minCalls+'–'+peakCalls} draws · ${Math.round(peakTriangles/1000)}k tris`;lastStats=now;frames=0;minCalls=Infinity;peakCalls=0;peakTriangles=0;}
  }
+ function rebuild(layout,id){if(village){scene.remove(village.root);village.dispose();}village=createVillage(assetCache,layout,id);villageLayout=layout;villageEditId=id;scene.add(village.root);renderer.shadowMap.needsUpdate=true;dirty=true;}
  async function load(){
   const loader=new GLTFLoader(),assets={},response=await fetch(new URL('sources.json',assetRoot));if(!response.ok)throw Error('Asset manifest');const manifest=await response.json();
   const names=manifest.kenney.models;let sharedMaterial=null,failed=0;
@@ -165,13 +192,12 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange){
    }catch{failed++;}
   }));
   if(disposed){for(const a of Object.values(assets))release(a);return;}
-  village=createVillage(assets);scene.add(village.root);ready=true;dirty=true;renderer.shadowMap.needsUpdate=true;
+  assetCache=assets;rebuild(currentEditor?.draft||currentRun?.layout,currentEditor?.selected||null);ready=true;dirty=true;renderer.shadowMap.needsUpdate=true;
   game.dataset.renderer='three';game.dataset.assets=failed?'partial':'ready';status.hidden=!failed;if(failed){status.classList.add('cc-three-loading--warning');status.textContent='일부 마을 소품을 불러오지 못했습니다.';}
-  // Static geometry was baked; source buffers and shared atlas remain owned by scene.
-  const sourceGeometries=new Set(),retained=new Set();scene.traverse(m=>{if(m.geometry)retained.add(m.geometry);});for(const a of Object.values(assets))a.traverse(m=>{if(m.geometry)sourceGeometries.add(m.geometry);});for(const g of sourceGeometries)if(!retained.has(g))g.dispose();
+  // Keep source models until disposal: Apply rebuilds the static mesh once.
  }
  load().catch(error=>{if(disposed)return;console.error('3D village load failed',error);status.innerHTML='마을을 불러오지 못했습니다. <button type="button" data-city3d-retry>다시 열기</button> · <a href="#city">기존 도시</a>';});
- return {draw,zoom,rotate,reset,focus,cameraInfo,invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();release(scene);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;}};
+ return {draw,zoom,rotate,reset,focus,cameraInfo,beginLayout(){clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();release(scene);if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;}};
 }
 
 // Fixed simulation ticks independent of the WebGL frame rate. Never acquire a 2D context.

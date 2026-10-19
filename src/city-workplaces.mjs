@@ -1,5 +1,4 @@
-import {DISTRICTS,districtDef} from './city-data.mjs';
-import {vascularRoute} from './city-map.mjs';
+import {cityDistricts,cityDistrict,cityRoute,rotateOffset} from './city-tile-layout.mjs';
 import {workStation} from './city-activity.mjs';
 import {groundCoordinate,groundPoint} from './city-three-layout.mjs';
 
@@ -13,15 +12,15 @@ export function requestWorkplace(s,c,site,role,anchor=null){
  const occupants=[...s.cells,...s.shipments].filter(a=>a.workplace?.key===key).sort((a,b)=>a.workplace.ticket-b.workplace.ticket);
  const used=new Set(occupants.filter(a=>a.workplace.slot!=null).map(a=>a.workplace.slot));
  for(const a of occupants){if(a.workplace.slot!=null)continue;let slot=role==='oxygen'?a.id%3:a.workSlot??0;if(slot>=capacity||used.has(slot)){slot=0;while(used.has(slot)&&slot<capacity)slot++;}if(slot>=capacity)break;a.workplace.slot=slot;used.add(slot);}
- const slot=c.workplace.slot,queue=occupants.filter(a=>a.workplace.slot==null),index=queue.indexOf(c),bay=anchor?{target:anchor,stand:groundCoordinate({x:groundPoint(anchor).x-1.15,z:groundPoint(anchor).z})}:workStation(site,role,slot??0);
+ const slot=c.workplace.slot,queue=occupants.filter(a=>a.workplace.slot==null),index=queue.indexOf(c),bay=anchor?{target:anchor,stand:groundCoordinate({x:groundPoint(anchor).x-1.15,z:groundPoint(anchor).z})}:workStation(site,role,slot??0,s.layout);
  const p=groundPoint(bay.stand);
- const wait=groundCoordinate({x:p.x-2.3-(Math.max(0,index)%3)*1.25,z:p.z+1.2+Math.floor(Math.max(0,index)/3)*1.25});
+ const offset=rotateOffset({x:-2.3-(Math.max(0,index)%3)*1.25,z:1.2+Math.floor(Math.max(0,index)/3)*1.25},s.layout?.items[site]?.rot||0),wait=groundCoordinate({x:p.x+offset.x,z:p.z+offset.z});
  c.waitReason=slot==null?'자리 사용 중 · 대기 '+(index+1):'';
  return {slot,index,ready:slot!=null,target:bay.target,stand:slot==null?wait:bay.stand};
 }
 export function approachWorkplace(s,c,site,role,dt,move,route,speed=58,anchor=null){
  const bay=requestWorkplace(s,c,site,role,anchor),key=site+':'+role+':'+(bay.slot??'q'+bay.index);
- if(c.queueMove!==key){c.queueMove=key;const d=districtDef(site),from=DISTRICTS.reduce((a,b)=>Math.hypot(c.x-a.x,c.y-a.y)<Math.hypot(c.x-b.x,c.y-b.y)?a:b);route(c,Math.hypot(c.x-d.x,c.y-d.y)>125&&!anchor?[{x:from.x,y:from.y},...vascularRoute(from.id,site),bay.stand]:[bay.stand]);}
+ if(c.queueMove!==key){c.queueMove=key;const d=cityDistrict(s,site),from=cityDistricts(s).reduce((a,b)=>Math.hypot(c.x-a.x,c.y-a.y)<Math.hypot(c.x-b.x,c.y-b.y)?a:b);route(c,Math.hypot(c.x-d.x,c.y-d.y)>125&&!anchor?[{x:from.x,y:from.y},...cityRoute(s,from.id,site),bay.stand]:[bay.stand]);}
  const arrived=move(c,speed,dt);
  return {...bay,arrived:arrived&&bay.ready};
 }
