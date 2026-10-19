@@ -1,4 +1,4 @@
-# Cell City 3D village · v0.48.2
+# Cell City 3D village · v0.49.0
 
 Entry: `#city3d`. The original `#city` remains available. The two games use separate local saves: `pathopedia:cell-city:3d:v1` and `pathopedia:cell-city:v1`. No save is imported, migrated, or deleted when switching views.
 
@@ -23,6 +23,12 @@ The 3D pilot enables `workCrews`: a fibroblast claims a construction site, follo
 
 World-space work bays maintain 0.8–0.95 metre separation and 0.65–0.75 metre arm reach (1.15 metres for a cart counter). The inverse sector transform converts these anchors to simulation coordinates. Facilities and actors use the same anchors. Three redundant parked carts and three independently animated bench vials were removed. New fixed fittings are baked with existing scenery; construction frames were reduced to two meshes per active site.
 
+## Individual observation (v0.49.0)
+
+Tap a cell or supply courier to show its job/number, current task, destination and actual cargo. A teal ground ring and small marker distinguish that individual from the gold role highlights. Toggle **따라가기 ON/OFF** to follow smoothly without changing the zoom or view angle. Zoom and rotation stay available; a map drag, arrow-key pan or whole-town view turns following off while retaining the selected unit. Closing the inspector or tapping empty ground clears it. Retirement, courier departure and a newly created city also end observation; view selection is never saved into the simulation.
+
+The camera uses the existing MIT OrbitControls and moves its position and target together with frame-rate-independent easing. On narrow screens it leaves room above the inspector and any management sheet. One stable HTML card refreshes changed text at most five times per second; there are no per-cell DOM nodes or new assets. Selection uses the existing instanced ring/badge batches, so the actor batch count remains 16. Destination labels use real job/route state instead of the stale district target carried by some jobs. Empty returning RBCs point to the lung; a plasma recipe is not reported as carried antigen; unloaded couriers show empty cargo.
+
 ## Controls
 
 | Action | Desktop | Touch |
@@ -31,7 +37,8 @@ World-space work bays maintain 0.8–0.95 metre separation and 0.65–0.75 metre
 | Zoom | Wheel / + − | Two finger pinch / + − |
 | Rotate | Right drag / Q E / ↶ ↷ | Two finger rotation / ↶ ↷ |
 | Whole town | Home / 전체 | 전체 |
-| Inspect | Click a facility label or cell | Tap |
+| Inspect | Click a facility label, cell or courier | Tap |
+| Follow selected unit | 따라가기 ON/OFF | 따라가기 ON/OFF |
 
 Orthographic camera, damped panning and rotation, interpolated cursor-centred wheel zoom, bounded tilt/yaw/translation. Opening a district panel does not focus the camera. Mobile starts closer to lung and heart; whole-town view reveals the surrounding valley.
 
@@ -66,7 +73,8 @@ The desktop in-app browser observed roughly 49 fps at 1280×800 and 30 fps at a 
 - `city-three-village.mjs`: district construction, static scenery batching, working machinery, construction sites, upgrade additions and supply layer. Replace an outpost here to expand one organ without rebuilding simulation/UI.
 - `city-three-facilities.mjs`: the six organ facilities, reused CC0 modules, static machinery and a bounded set of animated parts driven by city state.
 - `city-three-actors.mjs`: pooled instanced cells, couriers, pathogens, combat effects and selection rings. Each visible role has a distinct colour, cap and equipment. Working poses use a bounded per-actor activity record and existing instanced rods, boxes and rings.
-- `city-three-renderer.mjs`: camera, picking, labels, asset lifecycle and the 3D frame loop.
+- `city-cell-observer.mjs`: read-only task/destination/cargo summaries, selection lifetime and smooth follow translation.
+- `city-three-renderer.mjs`: camera, picking, the single observation card, labels, asset lifecycle and the 3D frame loop.
 - `city-three-ui.mjs`: renderer/loop/save-key injection into the shared `createCityGame`.
 
 ## Verification
@@ -82,3 +90,5 @@ At 390×844 on the development computer, the final workshop view observed 30 fps
 The v0.48.1 finishing pass opens the construction frame, keeping the hammer, worker and growing material stack visible from the default camera.
 
 The v0.48.2 inspector reports total construction completion for builders; loading and production show their own current cycle progress.
+
+The v0.49.0 focused checks cover oxygen loading/delivery/empty return, antigen carriers versus production recipes, total construction progress, real combat destinations, courier loading/unloading, selection removal/reset, and equal easing at the 30/60 fps caps. At a 390×844 browser viewport, follow plus zoom/rotation observed 30 fps and no page overflow on the development computer; this is not a physical-phone benchmark.
