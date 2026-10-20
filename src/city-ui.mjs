@@ -11,6 +11,7 @@ import {biologyPanel,biologyReadout,createBiologyControls} from './city-biology-
 import {pathogenDef,STAGES} from './city-biology.mjs';
 import {SITES} from './city-three-layout.mjs';
 import {createCityRenderer} from './city-renderer.mjs';
+import {defaultCityRules,loadRuleProfile,storeRuleProfile,applyCityRules,ruleFingerprint} from './city-rules.mjs';
 
 const KEY='pathopedia:cell-city:v1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -19,10 +20,12 @@ const time=n=>`${Math.floor(n/60).toString().padStart(2,'0')}:${Math.floor(n%60)
 const card=(kind,id,label)=>id?`<button type="button" class="cc-card-link" data-card-open="${kind}:${id}" aria-label="${esc(label)} 도감 열기">↗</button>`:'';
 export function createCityGame(data,options={}){
   const is3d=options.mode==='3d',saveKey=options.saveKey||KEY;
-  const newCity=(host,scenario)=>{const s=createCity(host,scenario,{workCrews:is3d,specialists:is3d});if(is3d)applyTileLayout(s,createTileLayout());return s;};
+  let ruleProfile=null;try{if(is3d)ruleProfile=loadRuleProfile(localStorage);}catch{}
+  const newCity=(host,scenario)=>{const s=createCity(host,scenario,{workCrews:is3d,specialists:is3d});if(is3d){applyTileLayout(s,createTileLayout());if(ruleProfile)applyCityRules(s,ruleProfile.current);}return s;};
   let run,storageFailed=false,restored=false;
   try{const raw=localStorage.getItem(saveKey);run=restoreCity(raw);restored=!!run;storageFailed=!!raw&&!run;}catch{storageFailed=true;}
   run ||= newCity('normal','steady');if(is3d){upgradeVillage(run);if(!run.layout)applyTileLayout(run,createTileLayout());}
+  if(is3d&&ruleProfile)applyCityRules(run,ruleProfile.current);
   let atStart=true,started=restored,choice=SCENARIOS[run.scenario]?run.scenario:'steady',selectedKind='',workersPage=0;
   let front='skin',wall=11,frontPage='fronts';
   const biology=createBiologyControls();let editor=null,information=null,informationRequest=0;
@@ -210,7 +213,13 @@ export function createCityGame(data,options={}){
     try{
       const {openCityInfo,loadCityInfoStyles}=await import('./city-info.mjs');await loadCityInfoStyles();
       if(request!==informationRequest||game!==root||!active)return;
-      loop?.stop();information=openCityInfo({trigger:button,onClose(){information=null;if(active&&game===root)loop?.start();}});
+      loop?.stop();information=openCityInfo({trigger:button,getRules:()=>run.rules||defaultCityRules(),getPreviousRules:()=>ruleProfile?.previous,
+        onApplyRules(config){
+          const before=run.rules||defaultCityRules();
+          try{const latest=loadRuleProfile(localStorage);if(latest&&ruleFingerprint(latest.current)!==ruleFingerprint(ruleProfile?.current||before))return {ok:false,text:'다른 탭에서 규칙이 바뀌었어요. 새로고침 후 적용해 주세요.'};if(!storeRuleProfile(localStorage,config,before))return {ok:false,text:'저장 공간 부족 · 게임에는 적용하지 않았어요.'};}catch{return {ok:false,text:'저장소 접근 불가 · 게임에는 적용하지 않았어요.'};}
+          const result=applyCityRules(run,config);ruleProfile={current:structuredClone(config),previous:structuredClone(before)};speed=0;
+          run.log.unshift({time:Math.floor(run.time),text:'관계도 실행 규칙 적용'});run.log.length=Math.min(24,run.log.length);save();update();renderer?.invalidate();return result;
+        },onClose(){information=null;if(active&&game===root)loop?.start();}});
     }catch{if(game===root){toast='정보를 불러오지 못했어요. 다시 눌러 주세요.';toastUntil=performance.now()+4000;button.textContent='정보 · 다시 시도';loop?.start();}}
     finally{if(button.isConnected){button.disabled=false;if(information)button.textContent='정보';}}
   }

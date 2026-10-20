@@ -1,3 +1,4 @@
+import {setRuleGraph} from './city-info-rules.mjs';
 // This is a map of the implemented 3D game, not a complete model of human physiology.
 // Keep each explanation tied to its implementing function; don't mix planned features in.
 export const INFO_KINDS = Object.freeze({
@@ -114,5 +115,5 @@ const views=[
   ])
 ];
 export function createCityInfoDocument(){
-  return {schema:1,basis:'Cell City 3D · 현재 구현',nodes:structuredClone(nodes),views:structuredClone(views)};
+  return setRuleGraph({schema:2,basis:'Cell City 3D · 현재 구현',nodes:structuredClone(nodes),views:structuredClone(views)});
 }

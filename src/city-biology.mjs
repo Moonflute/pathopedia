@@ -172,6 +172,8 @@ export function combatDestination(s,c){
  if(!s.biology)return cityDistrict(s,s.rally);
  const order=s.biology.order;
  if(order.mode!=='auto')return cityDistrict(s,order.mode==='recover'?'heart':order.site);
+ const target=s.rules?.entries?.[c.kind]?.target;
+ if(target&&target!=='pathogens')return cityDistrict(s,{skinThreat:'gut',airwayThreat:'lung',gutThreat:'gut',bloodThreat:'heart'}[target]||s.rally);
  const threats=cityDistricts(s).map(d=>({d,score:infectionLoad(s.biology.sites[d.id])+s.enemies.filter(e=>!e.dead&&infectionSite(e)===d.id).length*7})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
  return threats.length?threats[c.id%Math.min(2,threats.length)].d:cityDistrict(s,s.rally);
 }

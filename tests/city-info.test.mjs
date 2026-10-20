@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createCityInfoDocument} from '../src/city-info-data.mjs';
 import {CITY_INFO_KEY,createInfoEditor,parseCityInfo,loadCityInfo} from '../src/city-info-model.mjs';
 
-test('shipped interaction map is complete and all eight flows can round-trip',()=>{
+test('shipped interaction map is complete and explanation/execution flows can round-trip',()=>{
   const d=createCityInfoDocument();assert.deepEqual(parseCityInfo(JSON.stringify(d)),d);
   const shown=new Set(d.views.flatMap(v=>Object.keys(v.positions)));
   assert.equal(shown.size,d.nodes.length);
@@ -35,5 +35,5 @@ test('imports reject malformed references and normalize executable-looking conte
 test('unavailable or full storage keeps edits unsaved and never overwrites a city save',()=>{
   const storage={getItem(){throw Error('blocked');},setItem(){throw Error('quota');}},loaded=loadCityInfo(storage),e=createInfoEditor(loaded.document);
   assert.match(loaded.message,/접근 불가/);e.change(d=>{d.nodes[0].summary='수정한 설명';});assert.equal(e.save(storage),false);assert.equal(e.dirty,true);assert.equal(e.document.nodes[0].summary,'수정한 설명');
-  const corrupt=loadCityInfo({getItem:()=>'{broken'});assert.match(corrupt.message,/형식 오류/);assert.equal(corrupt.document.views.length,8);
+  const corrupt=loadCityInfo({getItem:()=>'{broken'});assert.match(corrupt.message,/형식 오류/);assert.equal(corrupt.document.views.length,12);
 });

@@ -1,4 +1,5 @@
 import {createCityInfoDocument,INFO_KINDS,INFO_LINKS} from './city-info-data.mjs';
+import {setRuleGraph} from './city-info-rules.mjs';
 export const CITY_INFO_KEY='pathopedia:cell-city:information:v1';
 export const INFO_LIMITS=Object.freeze({bytes:512000,nodes:180,edges:220,coordinate:12000});
 const idOK=v=>typeof v==='string'&&/^[a-zA-Z0-9_-]{1,64}$/.test(v)&&!['__proto__','constructor','prototype'].includes(v);
@@ -7,12 +8,13 @@ export function parseCityInfo(raw){
   try{
     if(typeof raw!=='string'||raw.length>INFO_LIMITS.bytes||new TextEncoder().encode(raw).byteLength>INFO_LIMITS.bytes)return null;
     const d=JSON.parse(raw),ids=new Set(),viewIDs=new Set();
-    if(d?.schema!==1||!textOK(d.basis,100)||!Array.isArray(d.nodes)||!d.nodes.length||d.nodes.length>INFO_LIMITS.nodes||!Array.isArray(d.views)||d.views.length!==8)return null;
+    if(![1,2].includes(d?.schema)||!textOK(d.basis,100)||!Array.isArray(d.nodes)||!d.nodes.length||d.nodes.length>INFO_LIMITS.nodes||!Array.isArray(d.views)||d.views.length!==(d.schema===1?8:12))return null;
     for(const n of d.nodes){
       if(!n||!idOK(n.id)||ids.has(n.id)||!Object.hasOwn(INFO_KINDS,n.kind)||!textOK(n.label,48)||!n.label.trim()||!textOK(n.summary,90)||!textOK(n.detail,1600)||!textOK(n.source,160))return null;
+      if(n.rule&&(!idOK(n.rule.op)||typeof n.rule.enabled!=='boolean'||!n.rule.params||Array.isArray(n.rule.params)||Object.keys(n.rule.params).length>24||Object.entries(n.rule.params).some(([k,v])=>!idOK(k)||!Number.isFinite(v)||Math.abs(v)>1e6)))return null;
       ids.add(n.id);
     }
-    const expected=new Set(createCityInfoDocument().views.map(v=>v.id));
+    const expected=new Set(createCityInfoDocument().views.filter(v=>d.schema===2||!v.id.startsWith('rules-')).map(v=>v.id));
     for(const v of d.views){
       if(!v||!expected.has(v.id)||viewIDs.has(v.id)||!textOK(v.name,40)||!textOK(v.caption,200)||!v.positions||typeof v.positions!=='object'||Array.isArray(v.positions)||!Array.isArray(v.edges)||v.edges.length>INFO_LIMITS.edges)return null;
       viewIDs.add(v.id);const edges=new Set();
@@ -23,7 +25,8 @@ export function parseCityInfo(raw){
       }
     }
     // Normalize imported data. Never render supplied HTML, CSS, URLs, or unknown keys.
-    return {schema:1,basis:d.basis,nodes:d.nodes.map(({id,label,kind,summary,detail,source})=>({id,label,kind,summary,detail,source})),views:d.views.map(({id,name,caption,positions,edges})=>({id,name,caption,positions:Object.fromEntries(Object.entries(positions).map(([id,p])=>[id,{x:p.x,y:p.y}])),edges:edges.map(({id,from,to,label,kind})=>({id,from,to,label,kind}))}))};
+    const clean={schema:2,basis:d.basis,nodes:d.nodes.map(({id,label,kind,summary,detail,source,rule})=>({id,label,kind,summary,detail,source,...(rule?{rule:{op:rule.op,enabled:rule.enabled,params:{...rule.params}}}:{})})),views:d.views.map(({id,name,caption,positions,edges})=>({id,name,caption,positions:Object.fromEntries(Object.entries(positions).map(([id,p])=>[id,{x:p.x,y:p.y}])),edges:edges.map(({id,from,to,label,kind})=>({id,from,to,label,kind}))}))};
+    return d.schema===1?setRuleGraph(clean):clean;
   }catch{return null;}
 }
 export function loadCityInfo(storage){
