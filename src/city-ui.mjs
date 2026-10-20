@@ -25,7 +25,7 @@ export function createCityGame(data,options={}){
   run ||= newCity('normal','steady');if(is3d){upgradeVillage(run);if(!run.layout)applyTileLayout(run,createTileLayout());}
   let atStart=true,started=restored,choice=SCENARIOS[run.scenario]?run.scenario:'steady',selectedKind='',workersPage=0;
   let front='skin',wall=11,frontPage='fronts';
-  const biology=createBiologyControls();let editor=null;
+  const biology=createBiologyControls();let editor=null,information=null,informationRequest=0;
   let speed=0,selected='lung',layer='city',panel='',cityPage='log',logPage=0,active=false,game=null,loop=null,renderer=null,abort=null,hud=0,saveClock=0,toast='',toastUntil=0,resetArmed=false;
   const markupCache=new WeakMap();
   const sheetLayout=matchMedia('(max-width:619px), (max-width:760px) and (min-height:621px)');
@@ -57,7 +57,7 @@ export function createCityGame(data,options={}){
   function startScreen(){return `<section class="cc-start" aria-label="시나리오 선택">
     <div class="cc-start-heading"><span>CELL CITY / ${is3d?'3D VILLAGE':'PROTOTYPE'}</span><h2>${is3d?'작은 세포들의 마을':'작은 세포, 하나의 도시'}</h2><p>${is3d?'여섯 구역 · 여덟 종류의 세포':'오늘의 도시를 선택하세요'}</p></div>
     <div class="cc-scenario-cards">${Object.entries(SCENARIOS).filter(([,p])=>!p.only3d||is3d).map(([id,p])=>button('scenario',`<span class="cc-scenario-art cc-scenario-art--${p.terrain}"><b>${p.symbol}</b><i></i></span><span class="cc-scenario-copy"><small>${p.tag}</small><strong>${p.name}</strong><span>${p.goal}</span><em>${p.detail}</em></span>`,`data-city-id="${id}" aria-pressed="${choice===id}"`)).join('')}</div>
-    <div class="cc-start-actions">${button('resume','이어하기',`${started?'':'hidden'}`)}${button('start',is3d?'마을 들어가기':'선택한 도시 시작','class="cc-start-primary"')}</div>
+    <div class="cc-start-actions">${is3d?button('information','정보','class="cc-start-information" aria-label="정보 · 도시 관계도"'):''}${button('resume','이어하기',`${started?'':'hidden'}`)}${button('start',is3d?'마을 들어가기':'선택한 도시 시작','class="cc-start-primary"')}</div>
   </section>`;}
   function region(selector,html){
     const el=game?.querySelector(selector);if(!el||markupCache.get(el)===html)return;
@@ -152,6 +152,7 @@ export function createCityGame(data,options={}){
   function select(id){if(editor)return;if(id==='observe'){panel='';update();return;}if(is3d&&(id.startsWith('front:')||id.startsWith('wall:'))){if(id.startsWith('wall:')){wall=Number(id.split(':')[1]);front='skin';}else front=id.split(':')[1];panel='frontier';frontPage='fronts';update();renderer?.invalidate();paint();return;}if(!districtDef(id))return;selected=id;panel='district';update();renderer?.invalidate();paint();}
   function handleClick(b){
     const action=b.dataset.cityAction,id=b.dataset.cityId;if(!action||!active||!game)return false;
+    if(action==='information'&&is3d){openInformation(b);return true;}
     if(action!=='reset'&&resetArmed){resetArmed=false;game.querySelector('[data-city-action="reset"]').textContent='새 도시';}
     if(action==='edit-layout'&&is3d){speed=0;panel='';editor=createLayoutEditor(run.layout);renderer?.beginLayout?.();}
     else if(action.startsWith('layout-')&&editor){
@@ -203,7 +204,17 @@ export function createCityGame(data,options={}){
     update();renderer?.invalidate();paint();return true;
   }
   function layoutEvent(action,value){if(!editor)return;editor.event(action,value);if(action!=='preview')update();renderer?.invalidate();paint();}
-  function detach(){editor=null;loop?.stop();loop=null;renderer?.dispose();renderer=null;abort?.abort();abort=null;if(active){speed=0;save();}game=null;}
+  async function openInformation(button){
+    if(information||button.disabled)return;
+    const request=++informationRequest,root=game;button.disabled=true;button.textContent='불러오는 중';
+    try{
+      const {openCityInfo,loadCityInfoStyles}=await import('./city-info.mjs');await loadCityInfoStyles();
+      if(request!==informationRequest||game!==root||!active)return;
+      loop?.stop();information=openCityInfo({trigger:button,onClose(){information=null;if(active&&game===root)loop?.start();}});
+    }catch{if(game===root){toast='정보를 불러오지 못했어요. 다시 눌러 주세요.';toastUntil=performance.now()+4000;button.textContent='정보 · 다시 시도';loop?.start();}}
+    finally{if(button.isConnected){button.disabled=false;if(information)button.textContent='정보';}}
+  }
+  function detach(){informationRequest++;editor=null;loop?.stop();loop=null;information?.destroy();information=null;renderer?.dispose();renderer=null;abort?.abort();abort=null;if(active){speed=0;save();}game=null;}
   function mount(root,isActive){
     detach();active=isActive;if(!active)return;game=root.querySelector('.cc-game');if(!game)return;
     const canvas=game.querySelector('canvas');renderer=(options.renderer||createCityRenderer)(canvas,select,updateCamera,layoutEvent);abort=new AbortController();
