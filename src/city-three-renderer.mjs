@@ -47,6 +47,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  const watching=createCellObserver();
  const labelLayer=document.createElement('div');labelLayer.className='cc-three-labels';map.append(labelLayer);
  const labels=Object.entries(SITES).map(([id,s])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label'+(s.detail?' cc-three-label--main':'');b.innerHTML=`<i style="background:#${s.color.toString(16)}">${{heart:'♥',lung:'O₂',gut:'▤',kidney:'≋',marrow:'✚',lymph:'Y'}[id]}</i><span>${s.label}</span><small>${s.detail?'':'연결 거점'}</small>`;b.setAttribute('aria-label',s.label+' 선택');b.addEventListener('click',()=>onSelect(id),{signal:abort.signal});labelLayer.append(b);const stage=document.createElement('em');b.append(stage);return {id,site:s,element:b};});
+ const outletLabel=document.createElement('span');outletLabel.className='cc-outlet-label';outletLabel.textContent='↗ 배출구';outletLabel.hidden=true;labelLayer.append(outletLabel);
  const inspect=document.createElement('section');inspect.className='cc-three-inspect';inspect.hidden=true;inspect.setAttribute('aria-label','선택한 세포');
  inspect.innerHTML='<header><strong data-cell-name></strong><button type="button" class="cc-cell-follow" aria-label="세포 따라가기" aria-pressed="false">◎ 따라가기 OFF</button><button type="button" class="cc-cell-close" aria-label="세포 관찰 닫기">×</button></header><dl><dt>작업</dt><dd data-cell-task></dd><dt>목적지</dt><dd data-cell-destination></dd><dt>운반 물자</dt><dd data-cell-cargo></dd><dt>항원 특이성</dt><dd data-cell-specificity></dd><dt>다음</dt><dd data-cell-next></dd><dt>대기 원인</dt><dd data-cell-waiting></dd><dt>상태</dt><dd data-cell-condition></dd></dl>';
  map.append(inspect);
@@ -187,6 +188,8 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
    element.hidden=x<45||x>width-45||y<top||y>height-inset-60||(id==='skin'&&camera.zoom<.85)||occupied.some(r=>Math.abs(x-r.x-r.w/2)<85&&Math.abs(y-r.y)<40);
    if(!element.hidden)element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;
   }
+  const outlet=village?.canals?.outlet;outletLabel.hidden=!outlet;
+  if(outlet){vec.set(outlet.portal.x,1.7,outlet.portal.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;outletLabel.hidden=x<35||x>width-35||y<top||y>height-inset-60||occupied.some(r=>Math.abs(x-r.x-r.w/2)<65&&Math.abs(y-r.y)<35);if(!outletLabel.hidden)outletLabel.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;}
  }
  function draw(s,options={}){
   if(disposed||document.hidden)return;inset=options.inset||0;currentRun=s;if(!framed){home(s);framed=true;}const changedEditor=!!currentEditor!==!!options.editor;currentEditor=options.editor||null;
