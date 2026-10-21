@@ -273,4 +273,4 @@ Changed-file index:
 - Camera and management: `city-three-renderer.mjs`, `city-ui.mjs`, `city-three.css`.
 - Verification: `tests/city-redesign.test.mjs`, `tests/city-assets.test.mjs`, this document and `docs/city-redesign/*.jpg`.
 
-All ten stages are implemented and committed locally. Deployment and the release version are unchanged; the live site remains v0.60.0. Remaining verification limits are physical mobile hardware and user-specific layouts beyond the migration/editor fixtures and the saved city inspected here.
+All ten stages are included in release v0.61.0. Remaining verification limits are physical mobile hardware and user-specific layouts beyond the migration/editor fixtures and the saved city inspected here.
