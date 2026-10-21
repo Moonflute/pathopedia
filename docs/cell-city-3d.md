@@ -194,3 +194,17 @@ New normal 3D cities start with 108 cells; the fragile roster has 96. Existing c
 Static scenery is merged by material within 16-unit regions. Offscreen cells, couriers, pathogens and debris skip their display-instance updates while simulation and follow snapshots continue. Workplace occupancy uses an index per simulation tick. Existing local Kenney/RG Poly assets and Three.js are reused; no new media or dependencies were downloaded.
 
 Focused checks cover original work cycles, construction/delivery, reservations, editable layouts, migration, optional building save/undo/removal, secondary dock anchors, 210-worker saves, camera bounds and offscreen rendering. In a 60-second new-city simulation, 108 workers completed an organ upgrade and 23 deliveries, including 18 units of medicine, with district oxygen between 88 and 100. Browser checks covered a migrated city, add/remove/save/reload, and the editor at 390 × 844. The development browser observed 60 fps with a whole-town view of the migrated city, DPR 1.00, 1024 shadows, approximately 125 draws and 240k triangles; this is not a physical-phone benchmark.
+
+## Living workshop redesign (2026-10-22)
+
+### TASK 01 — baseline
+
+The baseline is production commit `1f8498b` (v0.60.0). Reference images are retained in `docs/city-redesign/`: `01-before-desktop.jpg` (1280×800), `01-before-mobile.jpg` (390×844), and `01-local-draft.jpg` (the uncommitted house/lighting experiment, not the production baseline). The visible problems are repeated long barn silhouettes, isolated square plots, weak central hierarchy and small machinery relative to buildings.
+
+Layout ownership and grid routing live in `city-tile-layout.mjs`; `city-three-layout.mjs` maps simulation coordinates and facility-local anchors. `city-three-village.mjs` builds and region-batches static scenery. `city-three-facilities.mjs`, `city-three-frontier.mjs` and `city-three-actors.mjs` animate machines, defenses and cells from simulation state. The orthographic camera and label/performance budget live in `city-three-renderer.mjs`; `city-ui.mjs` and `city-three.css` own the HUD/editor. Existing Kenney and RG Poly CC0 models and their local license manifests will be reused.
+
+The default expanded town contains 54 facilities. Version 1 layouts migrate once while preserving original placements; version 2 saves retain their full authored/user layout. New presets must therefore affect new layouts only. Known routing debt: walking connections are independently searched, and internal workstation approaches are authored waypoints rather than obstacle-aware paths.
+
+The focused regression run passed 14/14 tests across `city-redesign`, `city-layout` and `city-expansion`: default occupancy/connectivity, all 36 organ endpoint pairs, four rotations, isolated editor undo/redo, state-preserving relocation, medicine delivery, tissue repair, old-layout migration, extensions and 210-cell saves. New tests also require exact version-2 save round trips. The local browser reported no console errors.
+
+Development-browser observations, not physical-device benchmarks: the paused desktop default camera rendered 100 draws / 234k triangles at DPR 1.00 and 1024 shadows. The running mobile viewport sustained 60 fps with 73–75 draws / 200–202k triangles at DPR 1.00 and adaptive 512 shadows. Counts vary with culling and shadow refresh. No production build was run. Remaining design/routing issues are assigned to TASK 02–10.
