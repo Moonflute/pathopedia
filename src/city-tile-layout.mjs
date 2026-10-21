@@ -3,6 +3,7 @@ import {DISTRICTS,districtDef} from './city-data.mjs';
 import {SITES,COTTAGES,RIVER_PATH,groundPoint,groundCoordinate} from './city-three-layout.mjs';
 import {PERIMETER,WORKSHOP,FRONTS,TISSUES,WALLS} from './city-frontier-data.mjs';
 import {vascularRoute,FOOD_ROAD} from './city-map.mjs';
+import {TOWN_PLAN,TOWN_HOUSES,GROWTH_OFFSETS} from './city-town-plan.mjs';
 
 // Grid topology is independent of organ state and rendering. A future hex grid
 // supplies its own neighbours, rotation and coordinate conversion here.
@@ -61,10 +62,10 @@ export function placementCheck(layout,id,a){
  return {ok:true,reason:'배치 가능'};
 }
 function findPlacement(layout,d,start=d.origin){
- const base={...SQUARE_GRID.fromWorld(start),rot:0};
+ const base={...SQUARE_GRID.fromWorld(start),rot:start.rot||0};
  for(let radius=0;radius<=48;radius++)for(let dz=-radius;dz<=radius;dz++)for(let dx=-radius;dx<=radius;dx++){
   if(Math.max(Math.abs(dx),Math.abs(dz))!==radius)continue;
-  const a={col:base.col+dx,row:base.row+dz,rot:0};
+  const a={col:base.col+dx,row:base.row+dz,rot:base.rot};
   if(placementCheck(layout,d.id,a).ok)return a;
  }
  return null;
@@ -78,10 +79,11 @@ function populateExpansion(l){
 }
 export function createTileLayout(){
  const l={version:2,grid:'square',revision:0,items:{}};
- for(const d of PLACEABLES){const xy=centres[d.id],start=xy?{x:xy[0],z:xy[1]}:{x:d.origin.x*2,z:d.origin.z*2};
-  const a=findPlacement(l,d,start);if(!a)throw Error('No default tile placement: '+d.id);l.items[d.id]=a;
- }
- return populateExpansion(l);
+ for(const [id,p] of Object.entries(TOWN_PLAN))l.items[id]={col:p.centre[0],row:p.centre[1],rot:0};
+ l.items.workshop={col:-22,row:17,rot:0};
+ TOWN_HOUSES.forEach(({col,row,rot},i)=>{l.items['house-'+i]={col,row,rot};});
+ for(const [id,p] of Object.entries(TOWN_PLAN))for(const kind of ['depot','production'])l.items[kind+'-'+id+'-0']={col:p[kind][0],row:p[kind][1],rot:0};
+ return l;
 }
 export function migrateTileLayout(l){
  if(!l||l.version!==1)return l;
@@ -100,7 +102,11 @@ export function migrateTileLayout(l){
 export function addLayoutBuilding(layout,kind,site='heart'){
  const d=additions.find(d=>d.kind===kind&&!layout.items[d.id]&&(kind==='house'||d.district===site));
  if(!d)return {ok:false,text:'증설 한도에 도달했습니다.'};
- const centre=layout.items[site],start=centre?{x:centre.col+7,z:centre.row+5}:d.origin,a=findPlacement(layout,d,start);
+ const centre=layout.items[site],offsets=GROWTH_OFFSETS[kind]||[[7,5]];
+ const starts=centre?offsets.map(([x,z])=>{const p=rotateOffset({x,z},centre.rot);return {x:centre.col+p.x,z:centre.row+p.z,rot:centre.rot};}):[d.origin];
+ // Prefer complete small courts near the selected district before the general search.
+ let a=starts.map(p=>({...SQUARE_GRID.fromWorld(p),rot:p.rot||0})).find(p=>placementCheck(layout,d.id,p).ok);
+ if(!a)a=findPlacement(layout,d,starts[0]);
  if(!a)return {ok:false,text:'배치 공간이 부족합니다.'};
  const next=cloneLayout(layout);next.items[d.id]=a;
  if(!compileLayout(next).valid)return {ok:false,text:'도로 공간을 확보해 주세요.'};

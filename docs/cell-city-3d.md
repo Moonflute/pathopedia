@@ -212,3 +212,7 @@ Development-browser observations, not physical-device benchmarks: the paused des
 ### TASK 02 — shared style
 
 `city-three-style.mjs` defines meadow, plaster, timber, muted roof families, paving, water, roughness and scale rules. Village houses reuse Kenney roofs/chimneys on compact plaster bodies; rounded tree crowns and softer daylight separate the cells from the ground. Facilities and imported bundle materials use the shared rules; atlas tint is applied once per material and textures remain shared. The imported model on/off and resource-lifetime regression passed. `02-style.jpg` records the rendered saved town; no browser errors. The stretched heart roof and repeated organ silhouettes remain assigned to TASK 05/06, and legacy placements remain unchanged.
+
+### TASK 03 — authored neighborhoods
+
+`city-town-plan.mjs` defines the heart court and six district clusters, with 35 cottages facing shared lanes, six production yards and six supply yards. `city-tile-layout.mjs` uses these exact coordinates for new towns and district-relative growth candidates for additions. The original version-1 migration and all saved version-2 coordinates remain intact. Initial entrance/river conflicts were corrected before proceeding; 14/14 layout, expansion and save checks pass. The new town was rendered on an isolated local origin (port 4183), preserving the existing local save; `03-neighborhoods.jpg` shows the six districts. Road consolidation and door alignment remain TASK 04.
