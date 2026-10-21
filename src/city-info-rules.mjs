@@ -20,7 +20,7 @@ export function setRuleGraph(d,config=defaultCityRules()){
   for(const v of d.views){for(const id of ids)delete v.positions[id];v.edges=v.edges.filter(e=>!ids.has(e.from)&&!ids.has(e.to));}
   for(const [group,name]of Object.entries(RULE_VIEWS))d.views.push({id:'rules-'+group,name,caption:'입력 → 실행 규칙 → 대상 · 수치는 게임 단위',positions:{},edges:[]});
   for(const id of Object.keys(RULE_SPECS))addRuleNode(d,id,config.entries[id]);
-  d.schema=2;return d;
+  d.schema=Math.max(2,d.schema||1);return d;
 }
 export function setRuleTarget(d,nodeID,target){
   const n=d.nodes.find(n=>n.id===nodeID),s=RULE_SPECS[n.rule.op],v=d.views.find(v=>v.id==='rules-'+s.group),p=v.positions[nodeID];

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createCity,serializeCity,restoreCity} from '../src/city-engine.mjs';
+import {createCity,tickCity,serializeCity,restoreCity} from '../src/city-engine.mjs';
 import {createTileLayout,compileLayout,cityRoute,applyTileLayout,cloneLayout,validateTileLayout,walkingRoute} from '../src/city-tile-layout.mjs';
 import {groundPoint,groundCoordinate} from '../src/city-three-layout.mjs';
 import {DISTRICTS} from '../src/city-data.mjs';
@@ -54,4 +54,30 @@ test('interior walking respects the perimeter while external intake stays intact
  assert.ok(route.length>2);assert.ok(Math.hypot(route.at(-1).x-b.x,route.at(-1).z-b.z)<1e-7);
  for(let i=1;i<route.length;i++){const p=route[i-1],q=route[i],n=Math.max(1,Math.ceil(Math.hypot(q.x-p.x,q.z-p.z)*4));for(let j=0;j<=n;j++)assert.ok(c.walkable({col:Math.round(p.x+(q.x-p.x)*j/n),row:Math.round(p.z+(q.z-p.z)*j/n)}));}
  for(const points of Object.values(c.entries)){const authored=points.slice(0,3).map(groundCoordinate);assert.deepEqual(walkingRoute(l,authored[0],authored.slice(1)),authored.slice(1));}
+});
+
+test('circulation takes paved turns even when a grass shortcut has no obstacle',()=>{
+ const s=createCity('normal','simulation',{specialists:true,expanded:true});applyTileLayout(s,createTileLayout());const n=compileLayout(s.layout);
+ for(const a of DISTRICTS)for(const b of DISTRICTS){
+  const start=groundPoint(n.districts.find(d=>d.id===a.id)),path=walkingRoute(s.layout,groundCoordinate(start),cityRoute(s,a.id,b.id)).map(groundPoint);
+  const points=[start,...path];for(let i=1;i<points.length;i++){const p=points[i-1],q=points[i],steps=Math.max(1,Math.ceil(Math.hypot(q.x-p.x,q.z-p.z)*4));for(let j=0;j<=steps;j++)assert.ok(n.navigation.nearest({x:p.x+(q.x-p.x)*j/steps,z:p.z+(q.z-p.z)*j/steps}).distance<1e-5,a.id+' → '+b.id+' leaves the paving');}
+ }
+});
+
+test('red cells, dock queues and all resting immune cell types remain on the visible roads',()=>{
+ const s=createCity('normal','simulation',{specialists:true,expanded:true});applyTileLayout(s,createTileLayout());const n=compileLayout(s.layout);let queued=false;
+ for(let i=0;i<900;i++){
+  tickCity(s,.05,null);if(i%5)continue;
+  for(const c of s.cells){queued||=c.kind==='rbc'&&c.workplace?.slot===null;assert.ok(n.navigation.nearest(groundPoint(c)).distance<1e-5,c.kind+' left a road during '+c.task);}
+ }
+ assert.ok(queued,'exercise oxygen docking queues');assert.ok(s.stats.oxygen>300);assert.ok(s.stats.deliveries>0);
+ const copy=restoreCity(serializeCity(s));assert.ok(copy);for(let i=0;i<100;i++){tickCity(s,.05,null);tickCity(copy,.05,null);}assert.equal(serializeCity(copy),serializeCity(s));
+});
+
+test('old off-road saves rejoin the streets without teleporting or resetting their cargo',()=>{
+ const s=createCity('normal','simulation',{specialists:true,expanded:true});applyTileLayout(s,createTileLayout());const n=compileLayout(s.layout);let gap=null;
+ for(let x=-8;x<=5&&!gap;x++)for(let z=4;z<=12&&!gap;z++)if(n.walkable({col:x,row:z})&&n.navigation.nearest({x,z}).distance>1.5)gap={x,z};
+ assert.ok(gap);s.time=12;const red=s.cells.find(c=>c.kind==='rbc');s.cells=[red];Object.assign(red,groundCoordinate(gap),{cargo:12,target:'heart',dock:null,path:cityRoute(s,'lung','heart'),step:0});delete red.roadPathVersion;
+ const restored=restoreCity(serializeCity(s));assert.ok(restored);const c=restored.cells[0];tickCity(restored,.05,null);assert.equal(c.roadPathVersion,1);assert.ok(c.path.length>1);assert.equal(c.cargo,12);assert.ok(Math.hypot(groundPoint(c).x-gap.x,groundPoint(c).z-gap.z)<.5);
+ for(let i=0;i<200;i++)tickCity(restored,.05,null);assert.ok(n.navigation.nearest(groundPoint(c)).distance<1e-5);
 });

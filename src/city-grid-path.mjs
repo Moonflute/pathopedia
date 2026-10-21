@@ -29,3 +29,42 @@ export function streetNetwork(connections){
  const corners=new Map();for(const r of runs)for(const p of r.points){const k=p.x+','+p.z;if(!corners.has(k)||corners.get(k).level<r.level)corners.set(k,{...p,level:r.level});}
  return {runs,junctions:[...corners.values()],edges:edges.size};
 }
+
+// Navigation uses the same paved polylines as the renderer, including short
+// workshop spurs. Adjacent streets only connect at a real shared road node.
+export function roadNavigator(lines){
+ const nodes=new Map(),edges=[],edgeKeys=new Set(),buckets=new Map(),distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z),pointKey=p=>Math.round(p.x*1e6)+','+Math.round(p.z*1e6);
+ const node=p=>{const k=pointKey(p);if(!nodes.has(k))nodes.set(k,{...p,key:k,links:[]});return nodes.get(k);};
+ function edge(a,b){
+  const length=distance(a,b);if(length<1e-7)return;const u=node(a),v=node(b),k=[u.key,v.key].sort().join('>');if(edgeKeys.has(k))return;edgeKeys.add(k);
+  const e={a:u,b:v,length,id:edges.length};edges.push(e);u.links.push({node:v,length});v.links.push({node:u,length});
+  for(let x=Math.floor(Math.min(a.x,b.x)/4);x<=Math.floor(Math.max(a.x,b.x)/4);x++)for(let z=Math.floor(Math.min(a.z,b.z)/4);z<=Math.floor(Math.max(a.z,b.z)/4);z++){const key=x+','+z;if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(e);}
+ }
+ for(const points of lines)for(let i=1;i<points.length;i++){
+  const a=points[i-1],b=points[i],axis=Math.abs(a.x-b.x)<1e-7?'z':Math.abs(a.z-b.z)<1e-7?'x':null,parts=[a];
+  if(axis){const lo=Math.min(a[axis],b[axis]),hi=Math.max(a[axis],b[axis]);for(let n=Math.floor(lo)+1;n<hi-1e-7;n++)parts.push({...a,[axis]:n});parts.splice(1,parts.length-1,...parts.slice(1).sort((p,q)=>(p[axis]-q[axis])*Math.sign(b[axis]-a[axis])));}
+  parts.push(b);for(let j=1;j<parts.length;j++)edge(parts[j-1],parts[j]);
+ }
+ function nearest(p){
+  const x=Math.floor(p.x/4),z=Math.floor(p.z/4),seen=new Set();let best=null;
+  for(let r=0;r<=32;r++){
+   for(let dx=-r;dx<=r;dx++)for(let dz=-r;dz<=r;dz++){if(r&&Math.max(Math.abs(dx),Math.abs(dz))!==r)continue;for(const e of buckets.get((x+dx)+','+(z+dz))||[]){if(seen.has(e.id))continue;seen.add(e.id);const t=Math.max(0,Math.min(1,((p.x-e.a.x)*(e.b.x-e.a.x)+(p.z-e.a.z)*(e.b.z-e.a.z))/(e.length*e.length))),point={x:e.a.x+(e.b.x-e.a.x)*t,z:e.a.z+(e.b.z-e.a.z)*t},d=distance(p,point);if(!best||d<best.distance-1e-8)best={point,edge:e,distance:d};}}
+   if(best&&best.distance<=Math.min(p.x-(x-r)*4,(x+r+1)*4-p.x,p.z-(z-r)*4,(z+r+1)*4-p.z)+1e-7)return best;
+  }
+  return best;
+ }
+ const cache=new Map();
+ function route(a,b){
+  const start=nearest(a),end=nearest(b);if(!start||!end)return null;
+  if(start.edge===end.edge)return [start.point,end.point];
+  const k=start.point.x+','+start.point.z+'>'+end.point.x+','+end.point.z;if(cache.has(k))return cache.get(k);
+  const open=[],scores=new Map(),previous=new Map();
+  const push=(n,g,parent=null)=>{if(g>=(scores.get(n.key)??Infinity))return;scores.set(n.key,g);previous.set(n.key,parent);const item={node:n,g,f:g+distance(n,end.point)};let i=open.length;open.push(item);while(i){const j=(i-1)>>1;if(open[j].f<=item.f)break;open[i]=open[j];i=j;}open[i]=item;};
+  const pop=()=>{const first=open[0],last=open.pop();if(open.length){let i=0;while(i*2+1<open.length){let j=i*2+1;if(j+1<open.length&&open[j+1].f<open[j].f)j++;if(open[j].f>=last.f)break;open[i]=open[j];i=j;}open[i]=last;}return first;};
+  for(const n of [start.edge.a,start.edge.b])push(n,distance(start.point,n));let best=Infinity,finish=null;
+  while(open.length){const item=pop(),n=item.node;if(item.f>=best)break;if(item.g!==scores.get(n.key))continue;if(n===end.edge.a||n===end.edge.b){const total=item.g+distance(n,end.point);if(total<best){best=total;finish=n;}}for(const link of n.links)push(link.node,item.g+link.length,n);}
+  if(!finish)return null;const path=[end.point];for(let n=finish;n;n=previous.get(n.key))path.push({x:n.x,z:n.z});path.push(start.point);path.reverse();
+  if(cache.size>=512)cache.delete(cache.keys().next().value);cache.set(k,path);return path;
+ }
+ return {nearest,route,nodes:nodes.size,edges:edges.length};
+}

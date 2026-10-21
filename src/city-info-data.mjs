@@ -29,16 +29,16 @@ const nodes=[
   n('shipment','물자 운반원','resource','적재 → 이동 → 하역','식재료·영양·건축 자재·충원 물자·약품을 운반하는 배송 객체다. 세포 직업과는 별개이며 확장 도시에서 최대 96건이다. 실제 하역을 마쳐야 현장 재고나 작업 진행이 바뀐다.','city-engine.mjs · shipment / updateShipment / delivery'),
   n('workplace','접안대·작업대','facility','예약 · 점유 · 대기열','먼저 받은 예약 번호 순으로 자리를 배정한다. 자리가 없으면 대기 지점으로 이동한다. 배송·청소 접안대는 1칸, 회복 자리는 3칸이며 일부 작업대는 시설 확장으로 늘어난다.','city-workplaces.mjs · requestWorkplace / workplaceCapacity'),
   n('marrow','골수 · 조혈 공방','facility','충원 물자 도착 → 세포 출동','충원 물자가 도착하면 생산칸의 시간이 진행된다. 골수 가동률·레벨이 충원 속도에 영향을 준다. 게임에서는 섬유아세포 등 모든 직업도 이 생산 창구를 공유하도록 단순화했다.','city-engine.mjs · command / delivery / tickCity'),
-  n('roster','세포 인력','rule','8종 직업 · 주택에 따라 최대 256','적혈구·호중구·대식세포·섬유아세포·수지상세포·도움 T세포·형질세포·혈소판으로 구성된다. 직업별 정원과 확장 도시의 충원 대기열 6칸을 함께 적용한다.','city-data.mjs · CELL_JOBS / city-engine.mjs · command'),
+  n('roster','세포 인력','rule','16종 역할 · 분화·기억 상태','선천·적응 면역세포와 운반·복구 세포를 함께 계산한다. 대식세포 증원은 단핵구 분화, 형질세포 증원은 B세포 분화로 이어진다. 성숙 T세포의 합류는 흉선 발달을 생략한 표현이다.','city-data.mjs · CELL_JOBS / city-immunity.mjs'),
   n('fibroblast','섬유아세포','cell','자재 생산 · 건설 · 복구','같은 인력이 피부 보수, 전선 보급 준비, 조직 블록 복구, 시설 공사, 자재 생산을 맡는다. 현장 이동과 자재 도착이 필요하다. 역할과 생산 수치는 게임용 단순화다.','city-engine.mjs · updateCraftsman / city-frontier.mjs · frontierCell'),
   n('materials','건축 자재','resource','증설·공사·장벽 보수 비용','섬유아세포가 영양분을 써 생산한다. 시설 확장·초소·복구·투자와 피부 장벽 보수가 재고를 공유한다. 주문 시 차감하고 필요한 현장으로 배송한다.','city-engine.mjs · updateCraftsman / command'),
   n('construction','시설 공사','rule','자재 도착 + 작업자 도착','자재가 도착하고 섬유아세포가 현장에서 건설 중일 때만 진행된다. 완공 시 시설 레벨, 방어 초소 또는 증설 모듈이 실제로 늘어난다.','city-engine.mjs · updateCell / tickCity'),
   n('wall','피부 장벽','facility','정상 · 손상 · 파손 · 복구','외곽 14개 구간의 내구도를 따로 관리한다. 바깥 병원체는 장벽을 공격하고 파손된 구간으로만 진입한다. 복구 완료 시 새 침입을 막지만 이미 들어온 병원체를 없애지는 않는다.','city-frontier.mjs · tickFrontierEnemy / frontierCell'),
-  n('workshop','피부 보수 공방','facility','자재 인수 → 현장 보수','보수 주문에는 자재 8이 필요하다. 가까운 비축 자재를 사용하거나 중앙에서 공방으로 배송한다. 배정된 섬유아세포가 자재를 들고 순찰로를 따라 현장으로 간다.','city-frontier.mjs · repairOrder / frontierCell'),
+  n('workshop','피부 보수 공방','facility','자동 접수 → 자재 인수 → 현장 보수','손상된 장벽은 기본 운영에서도 보수를 접수한다. 자재 8을 비축 창고나 중앙에서 받아 섬유아세포가 현장까지 운반하고 점진적으로 재건한다.','city-frontier.mjs · repairOrder / frontierCell'),
   n('depot','현장 보급창고','facility','전선 가까이 영양·자재 비축','피부·호흡기·소화기 전선의 현장 창고다. 영양은 주변 전투 세포를 지원하고 자재는 피부 보수에 사용한다. 현재 3D의 약품은 별도 투여 경로를 사용한다.','city-frontier.mjs · supplyOrder / frontDepot'),
   n('tissue','조직 블록','facility','공급 부족·침입에 반응','일부 민가 4곳이 건강을 가진 조직 블록이다. 피부를 통과한 병원체가 공격할 수 있다. 심하게 손상되면 섬유아세포가 자재를 써 복구한다.','city-frontier.mjs · repairTissue / tickFrontierEnemy'),
   n('sensor','감지 초소','facility','상처 위험을 미리 알림','증설한 감지 초소 수에 따라 예정된 피부 상처의 경고가 더 빨리 나타난다. 위험 알림을 선택하면 해당 현장으로 카메라를 이동할 수 있다.','city-frontier.mjs · tickFrontier / frontierAlerts'),
-  n('pathogens','병원체','threat','호흡기·피부·소화기·혈류','폐렴사슬알균, MSSA, MRSA, 대장균, 살모넬라, C. difficile 분리주를 지원한다. 시뮬레이션에서 병원체에 허용된 유입 경로와 수량을 골라 투입한다.','city-biology.mjs · PATHOGENS / biologyCommand'),
+  n('pathogens','병원체','threat','12개 분리주 · 최대 256개체','폐 정착, 연조직 침범, 장 상피 손상, 독소성 손상을 구분한다. 확장 도시에서 노출 수량 3~256개를 선택한다. 대응 세포의 !와 공격 지점 효과로 반응을 표시한다.','city-pathogens.mjs · PATHOGENS / city-frontier.mjs · tickFrontierEnemy'),
   n('gutBarrier','소화기 검역','facility','유입 억제 ↔ 가공량 감소','검역 중에는 소화기 병원체가 느려지고 피해를 입는다. 동시에 장의 식재료 가공량이 줄어드는 운영상 교환 관계가 있다.','city-frontier.mjs · tickFrontierEnemy / city-engine.mjs · tickCity'),
   n('infection','구역 감염','threat','정착 → 확산 위험 → 억제·회복','화면의 병원체와 구역별 감염량은 따로 존재한다. 병원체가 도달하면 감염을 심고, 감염량은 증식·국소 면역·약물 효과로 변한다. 화면의 적이 없어도 감염과 염증이 남을 수 있다.','city-biology.mjs · seedInfection / advanceBiology'),
   n('spread','혈행 확산','threat','감염 구역 → 심장 → 타 구역','감염량이 높은 구역은 조건을 만족하면 심장으로, 심장은 다른 구역으로 감염을 보낸다. 장내 C. difficile은 이 혈행 확산 대상에서 제외한다.','city-biology.mjs · advanceBiology'),
@@ -47,18 +47,29 @@ const nodes=[
   n('debris','전투·사멸 잔해','resource','수거 전에는 염증 부담','병원체 격파와 전투 세포 사멸로 생성된다. 수지상세포에는 항원 단서가 되고 대식세포가 수거한다. 게임 수명으로 교체된 세포는 이 사멸 경로와 별도로 처리한다.','city-engine.mjs · damage / tickCity'),
   n('kidney','신장 · 정화 수로','facility','노폐물·잔해 처리 · 약물 소실','가동률·시설 레벨에 따라 전역 노폐물을 줄인다. 집하된 잔해를 처리해 노폐물과 염증도 낮춘다. 잔해 처리까지 신장 구역에 모은 것은 게임상 표현이다.','city-engine.mjs · tickCity / city-frontier.mjs · tickFrontier'),
   n('waste','노폐물·염증','threat','순환·건강에 부담','노폐물이 많으면 운송이 느려지고, 높은 노폐물·염증은 구역 건강을 낮춘다. 감염과 주변 잔해는 국소 염증을 높인다. C. difficile 독소는 장 구역에 추가 부담을 준다.','city-engine.mjs · tickCity / city-biology.mjs · advanceBiology'),
-  n('dendritic','수지상세포','cell','항원 단서 수집 → 림프절','병원체·잔해·구역 감염에서 아직 알려지지 않은 항원을 수집한다. 림프절까지 운반해야 접수와 반응 준비가 시작된다.','city-engine.mjs · updateCell / city-biology.mjs · antigenEvidence'),
-  n('lymph','림프절 · 기억 서고','facility','항원 접수 → 반응 준비','운반된 항원을 접수한 뒤 시설 가동률·레벨에 따라 준비 시간이 진행된다. 완료된 항원 정보는 형질세포 생산과 도움 T세포 지원의 공통 조건이 된다.','city-frontier.mjs · receiveAntigen / tickFrontier'),
-  n('helperT','도움 T세포','cell','항원 확인 → 방어 지원 신호','림프절에서 알려진 항원을 확인한 뒤 집결 구역으로 이동한다. 신호가 유지되는 동안 해당 구역의 전투 피해량을 높인다. 형질세포의 분화 과정은 아직 별도 구현되지 않았다.','city-engine.mjs · specialist'),
-  n('plasma','형질세포','cell','영양 소비 → 표적 항체 생산','림프절 작업대에서 알려진 표적 중 항체가 부족한 것을 선택한다. 지역 영양 재고와 작업 시간이 필요하고, 생산량은 림프절 가동률·레벨에 영향을 받는다.','city-engine.mjs · specialist'),
-  n('antibody','표적 항체','resource','같은 병원체의 포식·제거 지원','병원체 종류별로 쌓인다. 같은 표적을 상대로 포식 전투와 국소 면역 제거를 돕는다. 지원 효과는 해당 구역의 산소가 부족하면 약해진다.','city-biology.mjs · antibodySupport / advanceBiology'),
+  n('dendritic','수지상세포','cell','포획 → CCR7 이동 → MHC 제시','조직 항원을 포획하고 성숙한 뒤 림프절에서 공동자극과 함께 제시한다. 바이러스 항원의 MHC-I 교차제시는 CD8, MHC-II 제시는 CD4 활성화에 쓰인다.','city-immunity.mjs · dendritic / presentation'),
+  n('lymph','림프절 · 기억 서고','facility','클론 선택 · T–B 협력','조직에서 운반된 항원 제시와 배액된 온전한 항원을 구분한다. 미경험 T세포 활성화, 동일 항원 Tfh–B 협력, 배중심 분화가 연결된다.','city-immunity.mjs · primeT / bcell'),
+  n('helperT','CD4 T세포','cell','Tfh · Th1 · Th2 · Th17','MHC-II·공동자극 후 클론을 증식한다. Tfh는 같은 항원 B세포, Th1은 IFN-γ, Th2는 IL-4/5/13, Th17은 IL-17을 통해 반응을 돕는다. 항원이 줄면 기억 상태로 전환한다.','city-immunity.mjs · helper / primeT'),
+  n('bcell','B세포','cell','BCR → Tfh 도움 → 배중심','온전한 항원을 인식하고 동일 항원 Tfh의 도움을 받아 증식한다. 초기 IgM 형질세포, 동형 전환된 형질세포와 기억 B세포로 분화한다. IgE 전환에는 IL-4도 필요하다.','city-immunity.mjs · bcell'),
+  n('plasma','형질세포','cell','특이 항원·동형을 유지해 분비','B세포 분화로 생긴 세포가 영양과 작업 시간을 소비해 해당 항원의 항체만 분비한다. 생산 도중 다른 항원으로 임의 전환하지 않는다.','city-immunity.mjs · plasma'),
+  n('antibody','항원 특이 항체','resource','IgM · IgG · IgA · IgE','IgM·IgG는 보체·옵소닌화를 돕고 IgA는 점막 중화, IgE는 FcεRI 감작에 연결된다. IgE를 일반 세균 포식 보너스로 계산하지 않는다.','city-immunity.mjs · humoralSupport / tickImmunity'),
+  n('monocyte','단핵구','cell','CCL2 유주 → M-CSF 분화','혈류를 순찰하다 염증 신호에 따라 조직에 진입한다. 조직 M-CSF 환경에서 시간을 거쳐 같은 세포 ID의 대식세포로 분화한다. 기존 조직 상주 대식세포도 유지한다.','city-immunity.mjs · monocyte'),
+  n('nk','NK세포','cell','스트레스 + missing-self / ADCC','스트레스를 받고 MHC-I가 낮아진 감염 세포를 초기 제거한다. 충분한 일치 IgG가 있으면 CD16 ADCC 경로도 사용할 수 있다. 세포자멸 잔해는 대식세포가 수거한다.','city-immunity.mjs · cytotoxic'),
+  n('cd8','CD8 T세포','cell','교차제시 → 특이 세포독성','MHC-I 교차제시·공동자극·CD4 도움 뒤 활성화한다. 일치 항원 peptide/MHC-I를 표시하는 감염 숙주 세포에 perforin·granzyme 작용을 표현한다.','city-immunity.mjs · primeT / cytotoxic'),
+  n('treg','조절 T세포','cell','CTLA-4 · IL-10 · TGF-β','효과 반응의 IL-2를 이용해 활성화하고 공동자극과 염증을 낮춘다. 조절이 강하면 초기 면역 반응도 느려질 수 있다. 병원체를 직접 공격하지 않는다.','city-immunity.mjs · regulatory / tickImmunity'),
+  n('eosinophil','호산구','cell','IL-5·CCL11 → 연충 과립 방출','큰 연충을 통째로 포식하지 않고 표면에 과립을 방출한다. 활성화된 후기 알레르기 반응에서는 조직 손상을 더할 수 있다.','city-immunity.mjs · granulocyte'),
+  n('basophil','호염기구','cell','혈류 → 2형 염증 · IL-4','2형 염증 구역으로 유주하고 IL-4를 공급한다. 표면 IgE와 같은 항원이 만나면 히스타민 등 과립 반응을 일으킨다.','city-immunity.mjs · granulocyte'),
+  n('mast','비만세포','cell','조직 상주 · FcεRI–IgE','조직에 상주하며 IgE를 표면에 결합한다. 동일 항원 교차결합으로 탈과립하며, 신호만 생겼다고 아무 세균이나 공격하는 세포가 되지 않는다.','city-immunity.mjs · granulocyte'),
+  n('infectedCell','감염 숙주 세포','threat','바이러스 부담 · MHC-I · 스트레스','자유 병원체와 별도로 존재한다. I형 IFN은 바이러스 증식을 늦추고, NK와 CD8은 서로 다른 인식 조건으로 숙주 세포를 제거한다.','city-immunity.mjs · tickImmunity / cytotoxic'),
+  n('type2','연충·알레르겐','threat','알라민 → 2형 반응','연충과 감작 조건의 알레르겐을 별도 자극으로 추가한다. 호산구·Th2·IgE·비만세포가 연결되며 항생제 감수성 데이터와 혼용하지 않는다.','city-immunity.mjs · immuneCommand'),
+  n('cytokines','국소 신호','resource','케모카인 · 사이토카인 · 보체','CXCL8·CCL2·CCL11, IFN, IL-2/4/5/13/17/21과 조절 신호를 구역별로 생성·소실시킨다. 신호가 이동·활성화·제거·부수 손상에 반영된다.','city-immunity.mjs · tickImmunity'),
   n('drugs','항생제 보급','resource','AMP · OXA · VAN','약품 주문은 배송을 생성한다. 정맥 또는 지원되는 경구 경로를 선택하며 하역 전에는 약효가 생기지 않는다. 현재 자동 보급은 선택된 약품의 정맥 경로를 사용한다.','city-biology.mjs · medicineOrder / city-engine.mjs · tickCity'),
   n('iv','심장 정맥 투여대','facility','약품 재고 → 혈중 농도','정맥 배송이 심장에 도착한 뒤 심장 가동률에 따라 재고를 투여한다. 그 결과 혈중 약물 상태가 증가한다. 양과 시간은 임상 용량이 아닌 게임 단위다.','city-biology.mjs · tickMedicine'),
   n('oral','장 경구 투여대','facility','AMP 흡수 · VAN 장내 작용','경구 ampicillin은 혈중으로 흡수된다. 경구 vancomycin은 장내 구획에 남는다. 현재 oxacillin의 경구 경로는 지원하지 않는다.','city-biology.mjs · medicineOrder / tickMedicine'),
   n('bloodDrug','혈중 약물','resource','순환을 따라 각 구역으로','심장 가동률과 각 구역 산소 상태에 따라 조직 약물 상태가 혈중 상태를 따라간다. 시간에 따른 소실을 계산하며 AMP·VAN은 신장 가동률도 반영한다.','city-biology.mjs · tickMedicine'),
   n('lumen','장내 약물','resource','경구 VAN의 별도 구획','경구 vancomycin을 장내 약물로 계산한다. 장내 C. difficile의 치료에는 이 구획을 사용하므로 정맥 vancomycin으로 대체되지 않는다.','city-biology.mjs · tickMedicine / medicineEffect'),
   n('susceptibility','감수성·경로 판정','rule','분리주 기록 + 작용 부위 확인','해당 분리주의 조건 없는 S 결과를 약효에 반영한다. 장내 C. difficile·경구 VAN에는 별도 REGIMEN 조건을 사용한다. 미상이나 비적용 기록을 임의로 감수성으로 해석하지 않는다.','city-biology.mjs · medicationActivity / medicineEffect'),
-  n('platelet','혈소판','cell','호흡기·구역 응급 봉합','손상된 호흡기 장벽이나 장기 구역에 이동해 소량씩 복구한다. 현재 외곽 피부 장벽 구간의 정식 보수는 혈소판이 아니라 공방과 섬유아세포가 담당한다.','city-engine.mjs · specialist'),
+  n('platelet','혈소판','cell','피부 상처 → 응급 봉합','손상된 피부 장벽을 먼저 봉합하고 섬유아세포의 재건으로 이어진다. 피부 상처가 없으면 호흡기 장벽·구역의 응급 복구를 돕는다.','city-frontier.mjs · patchSkin / city-engine.mjs · specialist'),
   n('rest','후방 회복','rule','활력·무결성 부족 → 심장','호중구·대식세포가 지치거나 손상되면 심장 회복 자리로 이동한다. 그곳의 영양·산소가 있어야 회복하며 충분히 회복하면 방어로 복귀한다.','city-biology.mjs · updateCombatCondition'),
   n('weather','숙주·환경','rule','건조 · 발열 · 호중구 감소','건조는 산소 적재와 점액 포획을 낮추고 발열은 산소 소모·노폐물을 높인다. 호중구 감소 숙주는 시작 호중구가 적고 충원도 느리다.','city-data.mjs · SCENARIOS / city-engine.mjs · tickCity'),
   n('isolation','구역 격리','rule','확산 차단 ↔ 가동률 감소','격리 구역에서는 혈행 확산의 출발·도착을 차단한다. 대신 해당 구역의 가동률을 낮춘다. 이미 있는 감염이 바로 없어지는 기능은 아니다.','city-biology.mjs · advanceBiology / city-engine.mjs · output'),
@@ -93,10 +104,20 @@ const views=[
   ],[
     ['pathogens','wall','파손 전까지 공격','damage'],['wall','tissue','파손 구간으로 진입','damage'],['pathogens','airway','호흡기 유입','damage'],['airway','infection','포획 실패 시 진입','damage'],['pathogens','gutBarrier','소화기 유입','damage'],['gutBarrier','infection','검역으로 유입 억제','defend'],['pathogens','infection','혈류 직접 유입','damage'],['infection','spread','높은 감염량','damage'],['spread','infection','심장 경유 확산','damage'],['neutrophil','infection','포식·국소 제거','defend'],['macrophage','infection','포식·국소 제거','defend'],['infection','waste','염증·독소 증가','damage'],['isolation','spread','유입·유출 차단','defend'],['neutrophil','rest','손상·활력 저하'],['rest','neutrophil','회복 후 복귀']
   ]),
-  view('adaptive','항원·항체','항원이 림프절에 도착한 뒤 두 지원 흐름이 열린다.',[
-    ['pathogens','dendritic','lymph'],['debris','helperT','plasma'],['oxygen','neutrophil','antibody']
+  view('adaptive','적응 면역','항원 제시·공동자극·동일 항원 T–B 협력을 따라간다.',[
+    ['pathogens','dendritic','lymph'],['helperT','bcell','plasma'],['infectedCell','cd8','antibody'],['treg','cytokines','neutrophil']
   ],[
-    ['pathogens','dendritic','항원 단서'],['debris','dendritic','항원 단서'],['dendritic','lymph','항원 운반·접수'],['lymph','helperT','준비된 항원 확인','signal'],['lymph','plasma','생산 표적 등록','signal'],['helperT','neutrophil','집결 구역 지원','signal'],['plasma','antibody','영양 소비·생산'],['antibody','neutrophil','같은 표적 포식 지원','defend'],['oxygen','antibody','국소 지원 효과 결정','signal']
+    ['pathogens','dendritic','항원 포획'],['infectedCell','dendritic','교차제시 항원'],['dendritic','lymph','CCR7 이동·공동자극'],['lymph','helperT','MHC-II·클론 선택','signal'],['lymph','cd8','MHC-I·교차제시','signal'],['helperT','bcell','동일 항원 Tfh·CD40L','signal'],['bcell','plasma','증식·동형 전환·분화'],['plasma','antibody','항원·동형 유지'],['antibody','neutrophil','옵소닌화·보체','defend'],['cd8','infectedCell','일치 peptide/MHC-I','defend'],['helperT','cytokines','Th1/Th2/Th17','signal'],['treg','cytokines','IL-10·TGF-β','defend'],['treg','lymph','CTLA-4·공동자극 억제','defend']
+  ]),
+  view('innate','선천 면역','감지 → 유주 → 포식·세포독성 → 정리.',[
+    ['pathogens','macrophage','cytokines'],['monocyte','neutrophil','dendritic'],['infectedCell','nk','treg'],['debris','kidney','lymph']
+  ],[
+    ['pathogens','macrophage','PAMP 감지'],['macrophage','cytokines','TNF·CXCL8·CCL2','signal'],['cytokines','neutrophil','CXCL8·C5a 유주','signal'],['cytokines','monocyte','CCL2 유주','signal'],['monocyte','macrophage','조직 M-CSF·분화'],['neutrophil','pathogens','포식·ROS·NET','defend'],['dendritic','lymph','항원 운반·제시'],['infectedCell','nk','스트레스·MHC-I 저하'],['nk','infectedCell','초기 세포자멸 유도','defend'],['infectedCell','debris','제거 뒤 잔해'],['debris','macrophage','efferocytosis'],['cytokines','treg','IL-2·조절 활성','signal'],['macrophage','kidney','잔해 집하']
+  ]),
+  view('type2','2형 면역','연충 방어와 IgE 감작·재노출을 구분한다.',[
+    ['type2','dendritic','helperT'],['basophil','bcell','plasma'],['eosinophil','antibody','mast'],['cytokines','treg','waste']
+  ],[
+    ['type2','dendritic','알라민·항원'],['dendritic','helperT','MHC-II·2형 프로그램','signal'],['helperT','bcell','Tfh 도움·IL-4','signal'],['bcell','plasma','IgE 동형 전환'],['plasma','antibody','항원 특이 IgE'],['antibody','mast','FcεRI 감작','signal'],['type2','mast','동일 항원 재노출'],['mast','cytokines','히스타민·탈과립','signal'],['basophil','cytokines','IL-4','signal'],['helperT','eosinophil','IL-5·CCL11 유주','signal'],['eosinophil','type2','연충 표면 과립','defend'],['eosinophil','waste','후기 반응·부수 손상','damage'],['treg','cytokines','반응 억제','defend']
   ]),
   view('medicine','항생제·투여','하역 → 투여 → 분포 → 감수성 판정 순서로 작용한다.',[
     ['drugs','shipment','iv'],['oral','bloodDrug','susceptibility'],['lumen','kidney','infection']
@@ -115,5 +136,5 @@ const views=[
   ])
 ];
 export function createCityInfoDocument(){
-  return setRuleGraph({schema:2,basis:'Cell City 3D · 현재 구현',nodes:structuredClone(nodes),views:structuredClone(views)});
+  return setRuleGraph({schema:3,basis:'Cell City 3D · 현재 구현',nodes:structuredClone(nodes),views:structuredClone(views)});
 }

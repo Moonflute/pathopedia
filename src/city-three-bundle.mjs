@@ -63,9 +63,9 @@ export function createBundleWalls(bundle){
   for(const [i,wall] of WALLS.entries()){
    const state=s.frontier?.walls[i];if(!state||state.hp<=0)continue;
    const dx=wall.b.x-wall.a.x,dz=wall.b.z-wall.a.z,length=Math.hypot(dx,dz),front=wall.nx*vx+wall.nz*vz>Math.hypot(vx,vz)*.3;
-   // Leave the respiratory portal open rather than bridging across its mouth.
-   const partial=i===1?Math.min(1,(CITY_ENTRIES.airway.portal.x-1.4-wall.a.x)/dx):1,cx=wall.a.x+dx*partial/2,cz=wall.a.z+dz*partial/2;
-   position.set(cx,.02,cz);quaternion.setFromAxisAngle(axis,-Math.atan2(dz,dx));scale.set(length*partial*.99/Math.max(.01,walls.size.x),front?.6:1.7,1);
+   // Leave both biological entrances open in the perimeter.
+   const start=i===5?.25:0,end=i===1?Math.min(1,(CITY_ENTRIES.airway.portal.x-1.4-wall.a.x)/dx):1,cx=wall.a.x+dx*(start+end)/2,cz=wall.a.z+dz*(start+end)/2;
+   position.set(cx,.02,cz);quaternion.setFromAxisAngle(axis,-Math.atan2(dz,dx));scale.set(length*(end-start)*.99/Math.max(.01,walls.size.x),front?.6:1.7,1);
    color.set(state.repair?0xb9ccc2:state.hp/wallMaximum(s,i)<.75?0xc9ab93:STYLE.plasterWarm);
    wallMatrix.compose(position,quaternion,scale);
    put(walls);

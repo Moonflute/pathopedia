@@ -14,7 +14,7 @@ function until(s,condition,seconds=30){for(let i=0;i<seconds*30;i++){step(s);if(
 
 test('legacy maps migrate without losing notes; executable drafts round-trip and undo',()=>{
  const d=createCityInfoDocument();assert.deepEqual(compileRuleGraph(d).config,defaultCityRules());
- const old=structuredClone(d);old.schema=1;old.nodes=old.nodes.filter(n=>!n.rule);old.views=old.views.filter(v=>!isRuleView(v));old.nodes[0].label='사용자 설명';old.views[0].positions.lung.x=145;
+ const old=structuredClone(d);old.schema=1;old.nodes=old.nodes.filter(n=>!n.rule);old.views=old.views.filter(v=>!isRuleView(v)&&!['innate','type2'].includes(v.id));old.nodes[0].label='사용자 설명';old.views[0].positions.lung.x=145;
  const migrated=parseCityInfo(JSON.stringify(old));assert.equal(migrated.nodes[0].label,'사용자 설명');assert.equal(migrated.views[0].positions.lung.x,145);assert.equal(compileRuleGraph(migrated).ok,true);
  const e=createInfoEditor(migrated);e.change(d=>{setRuleTarget(d,'exec-oxygen','kidney');d.nodes.find(n=>n.rule?.op==='oxygen').rule.params.amount=12;});
  const c=compileRuleGraph(e.document);assert.equal(c.config.entries.oxygen.target,'kidney');assert.equal(c.config.entries.oxygen.params.amount,12);assert.deepEqual(parseCityInfo(JSON.stringify(e.document)),e.document);e.undo();assert.equal(compileRuleGraph(e.document).config.entries.oxygen.target,'organs');
@@ -52,7 +52,7 @@ test('material and antibody batches charge their costs; paid antibody batches re
  const s=createCity('normal','simulation',{specialists:true}),c=s.cells.find(c=>c.kind==='fibroblast');s.cells=[c];s.supplyClock=10000;s.frontier.supplyClock=10000;
  Object.assign(c,{...workStation('marrow','fabricate',0).stand,path:[],step:0});edit(s,r=>{r.food.enabled=false;r.materials.params.cost=2;r.materials.params.amount=4;});const food=s.resources.food,materials=s.resources.materials;
  until(s,()=>c.task==='자재 생산');assert.equal(s.resources.food,food-2);assert.ok(Math.abs(s.resources.materials-materials-4)<1e-8);
- const p=createCity('normal','simulation',{specialists:true}),cell=p.cells.find(c=>c.kind==='plasma');p.cells=[cell];p.antigens['SPN-105']=true;p.supplyClock=10000;p.frontier.supplyClock=10000;
+ const p=createCity('normal','simulation',{specialists:true}),cell=p.cells.find(c=>c.kind==='bcell');Object.assign(cell,{kind:'plasma',licensed:true,recordId:'SPN-105',isotype:'IgG'});p.cells=[cell];p.antigens['SPN-105']=true;p.supplyClock=10000;p.frontier.supplyClock=10000;
  Object.assign(cell,{...workStation('lymph','produce',0).stand,path:[],step:0});edit(p,r=>{r.antibody.params.amount=3;r.antibody.params.cost=1;r.antibody.params.duration=2;});
  const localFood=p.districts.lymph.food;until(p,()=>cell.activity?.kind==='produce');assert.ok(p.districts.lymph.food<localFood-1);const paid=cell.activity.ruleYield;
  edit(p,r=>{r.antibody.params.amount=5;r.antibody.enabled=false;});until(p,()=>p.stats.antibodyBatches===1);assert.equal(p.antibodies['SPN-105'],paid);advance(p,1);assert.equal(p.stats.antibodyBatches,1);
@@ -63,7 +63,7 @@ test('combat target, damage and oxygen condition affect real attacks; other fron
  const attack=(target,minOxygen=0)=>{
   const s=createCity('normal','simulation',{specialists:true}),c=s.cells.find(c=>c.kind==='neutrophil');s.cells=[c];Object.assign(c,{x:875,y:240,cooldown:0,activity:null,energy:100});
   edit(s,r=>{r.neutrophil.params.damage=12;r.neutrophil.params.interval=3;r.neutrophil.params.minOxygen=minOxygen;r.neutrophil.target=target;});
-  s.enemies=[{id:999,recordId:'SPN-105',x:879,y:242,hp:100,maxHp:100,dead:false,front:'airway',entered:true,site:'lung'}];step(s);return {s,c};
+  s.enemies=[{id:999,recordId:'GNX-225',x:879,y:242,hp:100,maxHp:100,dead:false,front:'airway',entered:true,site:'lung'}];step(s);return {s,c};
  };
  const hit=attack('airwayThreat');assert.ok(hit.s.enemies[0].hp<=88);assert.equal(hit.c.cooldown,3);
  assert.equal(attack('skinThreat').s.enemies[0].hp,100);assert.equal(attack('airwayThreat',95).s.enemies[0].hp,100);

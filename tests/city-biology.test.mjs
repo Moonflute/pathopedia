@@ -23,7 +23,7 @@ test('skin exposure must cross a broken segment before it seeds an infection',()
  assert.ok(command(s,'expose',{recordId:'SAU-002',front:'skin',wall:11,amount:3},data).ok);
  advance(s,8);assert.equal(localInfection(s),0);assert.ok(s.frontier.walls[11].hp>0);
  command(s,'lab-wound','11');until(s,()=>localInfection(s)>0);
- assert.ok(infectionLoad(s.biology.sites[WALLS[11].district])>0);
+ const seeded=s.enemies.find(e=>e.focusSeeded);assert.ok(seeded);assert.ok(infectionLoad(s.biology.sites[seeded.site])>0);
 });
 test('local infection persists without visible enemies, spreads via blood, and isolation blocks that route',()=>{
  const a=city(),b=city();for(const s of [a,b]){s.cells=[];exposeSite(s,'lung','SAU-002',70);}

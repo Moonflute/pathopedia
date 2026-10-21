@@ -13,7 +13,7 @@ import {qualityProfile} from '../src/city-three-layout.mjs';
 const town=()=>{const s=createCity('normal','simulation',{specialists:true,expanded:true});assert.ok(applyTileLayout(s,createTileLayout()).ok);return s;};
 test('fourfold town connects 54 facilities and added buildings survive editing and saving',()=>{
  const area=Math.abs(PERIMETER.reduce((n,p,i)=>{const q=PERIMETER[(i+1)%PERIMETER.length];return n+p[0]*q[1]-p[1]*q[0];},0)/2);
- assert.equal(area,1149*4);const s=town();assert.equal(s.cells.length,108);assert.equal(populationLimit(s),192);assert.equal(Object.keys(s.layout.items).length,54);
+ assert.equal(area,1149*4);const s=town();assert.ok(s.cells.length>108&&s.cells.length<populationLimit(s));assert.equal(populationLimit(s),192);assert.equal(Object.keys(s.layout.items).length,54);
  const e=createLayoutEditor(s.layout);e.event('site','gut');e.event('add','depot');assert.equal(e.error,'');const id=e.selected;assert.ok(e.draft.items[id]);e.event('undo');assert.ok(!e.draft.items[id]);e.event('redo');assert.ok(e.draft.items[id]);
  assert.ok(applyTileLayout(s,e.draft).ok);assert.equal(workplaceCapacity(s,'gut','dock'),3);assert.ok(restoreCity(serializeCity(s)).layout.items[id]);
  e.event('select',id);e.event('remove');assert.ok(!e.draft.items[id]);assert.ok(compileLayout(e.draft).valid);assert.ok(s.layout.items[id],'draft does not change live town');
@@ -41,7 +41,7 @@ test('secondary docks use their real building and enlarged saves keep more than 
 });
 
 test('offscreen cells leave render batches while simulation and follow coordinates stay intact',()=>{
- const s=town(),before=serializeCity(s),actors=createActors(qualityProfile(390));actors.draw(s);assert.equal(actors.positions.length,108);
+ const s=town(),before=serializeCity(s),actors=createActors(qualityProfile(390));actors.draw(s);assert.equal(actors.positions.length,s.cells.length);
  actors.draw(s,{visible:()=>false});assert.equal(actors.positions.length,0);assert.equal(actors.root.children.find(m=>m.name==='body').count,0);assert.equal(serializeCity(s),before);
- actors.draw(s,{visible:()=>true});assert.equal(actors.positions.length,108);
+ actors.draw(s,{visible:()=>true});assert.equal(actors.positions.length,s.cells.length);
 });

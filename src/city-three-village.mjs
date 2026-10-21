@@ -1,5 +1,5 @@
 import {CITY_STYLE as STYLE} from './city-three-style.mjs';
-import {CITY_BOUNDS,CITY_ENTRIES,CITY_SCALE,storedPlacement} from './city-world.mjs';
+import {CITY_BOUNDS,CITY_ENTRIES,CITY_SCALE,LANDSCAPE_RADIUS,storedPlacement} from './city-world.mjs';
 import {layoutPlaceables,placeable,transformPoint,compileLayout,occupiedTiles,riverX} from './city-tile-layout.mjs';
 import {createFrontierScene} from './city-three-frontier.mjs';
 import {WALLS,WORKSHOP,AIRWAY_PATH} from './city-frontier-data.mjs';
@@ -85,30 +85,30 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
   return g;
  }
  // Ground extends into the landscape: no floating square board or map edge.
- const meadowColor=STYLE.meadow,ground=disc(0,0,100,meadowColor,-.035);ground.name='meadow';
+ const meadowColor=STYLE.meadow,ground=disc(0,0,LANDSCAPE_RADIUS,meadowColor,-.035);ground.name='meadow';
  // Broad, quiet grass patches break up the expanded ground without a tile grid.
  for(let i=0;i<26;i++){const x=CITY_BOUNDS.left+6+(i*17.3)%72,z=CITY_BOUNDS.top+5+(i*23.7)%65,m=disc(x,z,3.2+i%4,i%2?STYLE.grassLight:STYLE.grassDark,-.026+i*.0001);m.scale.set(1.6,1,1);m.rotation.z=i*.7;}
  const terrain=[];
  for(let i=0;i<13;i++){const x=(-33+i*5.1)*CITY_SCALE,z=(-26-Math.sin(i*.8)*5)*CITY_SCALE;const hill=orb(x,-2,z,1,newAssets?(i%2?0x9fb28e:0xabbc98):(i%2?0xadb8a0:0xb8bda7));hill.scale.set(5+i%3,5+i%4,4.6);terrain.push(hill);}
  for(let i=0;i<7;i++){const hill=orb((-26-i%2*3)*CITY_SCALE,-1,(-14+i*6)*CITY_SCALE,1,newAssets?0xaabd97:0xb9c2a7);hill.scale.set(5,3.5+i%3,5);terrain.push(hill);}
- const river=smooth(RIVER_PATH);ribbon(river,4.15,0xc4c1a1,-.005);ribbon(river,3.25,STYLE.water,.004);ribbon(river,1.65,STYLE.waterLight,.006);
+ const river=smooth([[32,-420],[32,-150],...RIVER_PATH,[54,150],[75,420]]);ribbon(river,4.15,0xc4c1a1,-.005);ribbon(river,3.25,STYLE.water,.004);ribbon(river,1.65,STYLE.waterLight,.006);
  if(network){const width=level=>level===2?STYLE.mainRoad:level===1?1.1:STYLE.alley;for(const r of network.streets.runs)road(r.points,width(r.level));for(const p of network.streets.junctions){disc(p.x,p.z,width(p.level)/2+.13,STYLE.roadEdge,.026);disc(p.x,p.z,width(p.level)/2,STYLE.road,.036);}}
+ if(network)for(const r of network.access)road(r.points,r.width);
  for(const r of roads.filter(r=>r.points.length>1)){if(!network)road(r.points,STYLE.mainRoad);
   const pts=r.points.map(p=>new T.Vector3(p.x,.08,p.z));
   const line=new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),32,.075,4,false),new T.MeshBasicMaterial({color:r.pulmonary?0x4f9aa9:newAssets?0xc77f77:0xc89b63}));supply.add(line);
  }
  road(intake.slice(0,network?3:undefined),1.05);if(!network)road(smooth([[-12,-11],[-13,-6],[-10,-2],[-7,4],[-3,7],[3,7],[6,4],[5,0],[2,-3],[-1,-6]]),.9);
  road(network?network.entries.airway.slice(0,4):AIRWAY_PATH.map(groundPoint),1.8);
- road(WALLS.map(w=>groundPoint(w.inside)).concat([groundPoint(WALLS[0].inside)]),.65);
+ if(!layout)road(WALLS.map(w=>groundPoint(w.inside)).concat([groundPoint(WALLS[0].inside)]),.65);
  if(!layout)road([{x:-5,z:10},{x:-10,z:10},{x:WORKSHOP.x+1,z:WORKSHOP.z+.5}],.85);
  if(!layout)road([{x:19,z:-4},{x:15,z:-4},{x:11.7,z:-3.4},{x:8,z:-3}],1.2);
  for(const [id,site] of Object.entries(SITES)){
   scope(id);
-  if(layout){const p=placeable(id).port;road([{x:site.x,z:site.z},{x:site.x+p[0],z:site.z+p[1]}],STYLE.mainRoad);}
   disc(site.x,site.z,id==='heart'?3.1:2.35,0xb8b7a1,.041);disc(site.x,site.z,id==='heart'?2.9:2.13,STYLE.plaza,.044);
   if(id==='heart'){const ring=make(new T.RingGeometry(2.55,2.6,40),STYLE.trim,site.x,.046,site.z);ring.rotation.x=-Math.PI/2;ring.castShadow=false;for(const [x,z] of [[-2.65,1],[-2.65,4.1]]){cylinder(x,.18,z,.35,.28,.35,STYLE.trim);leaf(x,.45,z,.35,STYLE.foliage[1]);model('lantern',x,0,z-.55,.9);}}
   const [bx,bz]=site.building;road([{x:site.x,z:site.z},{x:bx,z:bz+1.4}],.9);
-  for(const role of ['oxygen','dock',...(id==='lymph'?['produce']:id==='marrow'||id==='gut'?['fabricate']:[])])for(let slot=0;slot<(role==='dock'?1:3);slot++){const bay=workStation(id,role,slot);road([{x:site.x,z:site.z},groundPoint(bay.stand),groundPoint(bay.target)],.48);}
+  if(!layout)for(const role of ['oxygen','dock',...(id==='lymph'?['produce']:id==='marrow'||id==='gut'?['fabricate']:[])])for(let slot=0;slot<(role==='dock'?1:3);slot++){const bay=workStation(id,role,slot);road([{x:site.x,z:site.z},groundPoint(bay.stand),groundPoint(bay.target)],.48);}
   districts[id]={...site,work:new T.Group(),tower:new T.Group(),level:new T.Group()};animated.add(districts[id].work,districts[id].tower,districts[id].level);
   const work=districts[id].work,siteWork=groundPoint(workStation(id,'build').target);work.position.set(siteWork.x,0,siteWork.z);
   const frame=[];
@@ -142,6 +142,23 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
   for(const x of [portal.x-1.4,portal.x+1.4])box(x,.8,portal.z,.4,1.6,.75,0xe3d3b6);
   const arch=make(new T.TorusGeometry(1.4,.25,6,16,Math.PI),0xe3d3b6,portal.x,1.5,portal.z);arch.castShadow=true;}
  for(const x of [portal.x-1.5,portal.x+1.5]){road([{x,z:portal.z},{x,z:screen.z},{x,z:screen.z+3}],.24);box(x,.18,(portal.z+screen.z)/2,.25,.36,screen.z-portal.z,0xc0c4a6);}
+ // The oxygen sign and cyan intake channel remain readable from the town view.
+ box(portal.x,4.2,portal.z+.7,1.8,.88,.16,STYLE.teal);
+ const oxygenO=make(new T.TorusGeometry(.27,.065,5,18),0xf2fff1,portal.x-.35,4.22,portal.z+.8);oxygenO.castShadow=false;
+ for(const [dx,dy,w,h] of [[.28,.2,.34,.07],[.42,.08,.07,.27],[.28,-.04,.34,.07],[.14,-.18,.07,.27],[.28,-.31,.34,.07]])box(portal.x+dx,4.28+dy,portal.z+.81,w,h,.04,0xf2fff1);
+ ribbon(network?network.entries.airway:AIRWAY_PATH.map(groundPoint),.36,0x82c9c3,.045);
+ // A mouth-shaped gate frames the existing food/intestinal route; its centre is open.
+ const mouth=CITY_ENTRIES.gut.mouth;
+ for(const [dx,radius,tube,color] of [[.18,1.62,.23,0xcb8b83],[-.18,1.4,.15,0x8f5e59],[-1.4,1.32,.12,0xc5a68e],[-2.6,1.2,.12,0xc5a68e]]){
+  const arch=make(new T.TorusGeometry(radius,tube,7,24),color,mouth.x+dx,1.45,mouth.z);arch.rotation.y=dx>-.5?Math.PI/3:Math.PI/2;arch.scale.set(1.15,.83,1);
+ }
+ for(const z of [-.9,-.45,0,.45,.9]){
+  const top=2.5-Math.abs(z)*.18;box(mouth.x+.3-z*.5,top,mouth.z+z*.866,.34,.33,.34,STYLE.plaster);
+  box(mouth.x+.28-z*.5,.34+Math.abs(z)*.08,mouth.z+z*.866,.3,.18,.32,STYLE.plaster);
+ }
+ const tongue=orb(mouth.x-.65,.11,mouth.z,1,0xc59083);tongue.scale.set(2.05,.1,.83);
+ box(mouth.x-1.1,.13,mouth.z,.035,.025,1.1,0xa5776b);
+ for(const side of [-1,1]){box(mouth.x-1.7,.32,mouth.z+side*1.75,3.6,.64,.35,0xd6c4a7);model('lantern',mouth.x+.4,.02,mouth.z+side*2.15,.85);}
  scope('workshop');
  if(newModel){
   const shop=cottage(WORKSHOP.x,WORKSHOP.z-1,1.9,.05,true);shop.scale.x*=1.25;
@@ -155,7 +172,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  }else{cottage(WORKSHOP.x,WORKSHOP.z-1,1.7,.05,true);box(WORKSHOP.x+1.1,.35,WORKSHOP.z+.5,.7,.7,.65,0xb9a078);}
  model('banner-red',WORKSHOP.x+.9,.8,WORKSHOP.z-1,.8);
  if(newModel){scope('heart');newModel('bench',-2,.04,3.6,.65,.15,fixed,1.5);}
- scope(null);model('stall-green',CITY_ENTRIES.gut.portal.x+.8,0,CITY_ENTRIES.gut.portal.z-.8,1.2,0);
+ scope(null);
  const frontier=createFrontierScene({detailedWalls:!!newAssets}),bundleWalls=newAssets?createBundleWalls(newAssets):null;root.add(frontier.root);if(bundleWalls)root.add(bundleWalls.root);
  const allRoads=[...roads.map(r=>r.points),intake,network?network.entries.airway:AIRWAY_PATH.map(groundPoint),...(network?network.connections.filter(c=>c.kind==='walk').map(c=>c.points):[])];
  function nearRoad(x,z,clearance=1.5){return allRoads.some(points=>points.slice(1).some((b,i)=>{const a=points[i],dx=b.x-a.x,dz=b.z-a.z,l=dx*dx+dz*dz,t=l?Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/l)):0;return Math.hypot(x-a.x-dx*t,z-a.z-dz*t)<clearance;}));}

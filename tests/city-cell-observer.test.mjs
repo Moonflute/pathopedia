@@ -19,11 +19,11 @@ test('oxygen observation follows the real loading, delivery and empty return cyc
 });
 
 test('antigen carriers show their actual destination; a production recipe is not cargo',()=>{
- const s=village(),d=s.cells.find(c=>c.kind==='dendritic'),p=s.cells.find(c=>c.kind==='plasma'),h=s.cells.find(c=>c.kind==='helperT');
- Object.assign(d,{recordId:'SPN-105',target:'lung'});assert.equal(cellObservation(s,d).destination,'림프절 · 항원 전달');assert.equal(cellObservation(s,d).cargo,'항원 표본');
- p.recordId='SPN-105';assert.equal(cellObservation(s,p).cargo,'없음');assert.equal(cellObservation(s,p).destination,'림프절 · 항체 작업대');
- s.rally='heart';h.recordId='SPN-105';assert.equal(cellObservation(s,h).destination,'심장 · 방어 집결지');assert.equal(cellObservation(s,h).cargo,'항원 정보');
- h.recordId=null;h.target='heart';assert.equal(cellObservation(s,h).destination,'림프절 · 항원 확인');
+ const s=village(),d=s.cells.find(c=>c.kind==='dendritic'),p=s.cells.find(c=>c.kind==='bcell'),h=s.cells.find(c=>c.kind==='helperT');
+ Object.assign(d,{recordId:'SPN-105',target:'lung'});assert.equal(cellObservation(s,d).destination,'림프절 · CCR7 항원 운반');assert.match(cellObservation(s,d).cargo,/폐렴/);
+ Object.assign(p,{kind:'plasma',recordId:'SPN-105',isotype:'IgG'});assert.equal(cellObservation(s,p).cargo,'없음');assert.match(cellObservation(s,p).specificity,/IgG/);assert.equal(cellObservation(s,p).destination,'림프절 · 항체 분비대');
+ Object.assign(h,{recordId:'SPN-105',immuneSite:'heart',immuneState:'effector',lineage:'Th1'});assert.equal(cellObservation(s,h).destination,'심장 · 효과 반응');assert.equal(cellObservation(s,h).cargo,'없음');assert.match(cellObservation(s,h).specificity,/폐렴/);
+ h.recordId=null;h.immuneState='naive';assert.equal(cellObservation(s,h).destination,'림프절 · 항원 선택');
 });
 
 test('construction reports overall completion; combat ignores a stale district target',()=>{

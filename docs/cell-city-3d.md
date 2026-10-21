@@ -1,4 +1,6 @@
-# Cell City 3D village · v0.49.0
+# Cell City 3D village · v0.62.0
+
+Current immune behavior is described in [Immune network](#immune-network-2026-10-22-v0620). Earlier sections record the preceding models.
 
 Entry: `#city3d`. The original `#city` remains available. The two games use separate local saves: `pathopedia:cell-city:3d:v1` and `pathopedia:cell-city:v1`. No save is imported, migrated, or deleted when switching views.
 
@@ -274,3 +276,96 @@ Changed-file index:
 - Verification: `tests/city-redesign.test.mjs`, `tests/city-assets.test.mjs`, this document and `docs/city-redesign/*.jpg`.
 
 All ten stages are included in release v0.61.0. Remaining verification limits are physical mobile hardware and user-specific layouts beyond the migration/editor fixtures and the saved city inspected here.
+
+## Pathogen behavior and wound response (2026-10-22, v0.62.0)
+
+`city-pathogens.mjs` defines twelve fixed isolates already present in `data/organisms.json`. Introductions now offer 3, 6, 12, 24 or 32 visible representatives, within the existing 32/64 combined active/pending limit for original/expanded layouts. The three scheduled 3D waves mix respiratory, wound and intestinal organisms, each using an allowed entry route. The original 2D waves are unchanged.
+
+| Isolate | Implemented target / behavior |
+| --- | --- |
+| SPN-105 | Lung after airway entry; capsule reduces unmarked phagocytosis; pulmonary damage consumes oxygen and airway barrier integrity. |
+| SAU-001 / SAU-002 | Stable soft-tissue target after wound entry; circulation after blood entry; invasive burden can spread. Resistance still comes from the individual sourced record. |
+| ECO-009 | Wound tissue or circulation, with higher inflammatory pressure. No diarrheagenic or ascending urinary mechanism is assigned to this record. |
+| GNX-220 | Intestinal invasion; sufficient invasive burden can enter circulation. |
+| CDF-121 | Intestinal lumen; persistent toxin state causes damage, without a second direct-contact damage path or blood spread. |
+| SPY-101 | Soft tissue, faster destruction and limited damage to neighboring tissue blocks; invasive burden can spread. |
+| PAE-013 | Wound tissue or lung, with direct tissue injury; blood exposure enters the circulation compartment. |
+| KPN-011 | Lung injury and a stronger capsule penalty that target antibodies can relieve. |
+| GNX-225 | Respiratory mucosal injury; no capsule is presumed for this untyped record. |
+| GNX-221 | Intestinal epithelial injury and inflammation, without routine blood dissemination or an invented Shiga-toxin mechanism for S. sonnei. |
+| CPE-122 | Wound-associated tissue necrosis; local low oxygen increases growth and injury. |
+
+Invaders retain their selected tissue target until it is destroyed. Burden is seeded in the target tissue's actual owning district. Internal movement uses the existing obstacle-aware walking routes, which are reissued after a layout edit. Bloodstream spread chooses modeled preferred sites or vulnerable unisolated districts instead of a rotating arbitrary organ. The heart remains the game's circulation compartment; bloodstream exposure alone does not assert myocarditis or endocarditis. Target selection, numeric rates, simulated toxin injury and the small set of tissue blocks are educational game abstractions, not patient-level pathogenesis predictions.
+
+Skin damage below 75 starts a material order automatically in balanced/defense operation (95 under repair priority). At most two automatic orders run concurrently, or three under repair priority. Platelets first provide a small provisional seal. A fibroblast collects actual material at the skin workshop, travels to the segment, then reconstructs it progressively. Reconstruction still requires delivered material and a living assigned worker; another worker can take over without collecting the same delivered material again. Completed/cleared routes reset their step index so immediate saves remain valid.
+
+Responding phagocytes, antigen couriers, signal cells and repair workers display a short repeating `!` above their heads, yellow for infection and teal for repair. Moving invaders mark their destination; attacks show a pulsing contact ring and directed contact effect. Clusters, chains, pairs, rods and short rods share the existing actor geometries. Wounds and damaged buildings use larger two-color flames, three smoke puffs per site, scorch marks and rubble. Delivered repair material extinguishes the wound effect and a scaffold bar follows reconstruction progress. All sites can display damage simultaneously in the existing seven frontier batches; the actor renderer retains sixteen batches. Existing local Three.js MIT and Kenney/RG Poly CC0 assets are reused with no downloads or new dependencies.
+
+Mechanism references, alongside each isolate's existing source IDs:
+
+- [CDC: Pseudomonas aeruginosa](https://www.cdc.gov/pseudomonas-aeruginosa/about/) and [Klebsiella](https://www.cdc.gov/klebsiella/about/) — supported infection sites and wound/respiratory exposure.
+- [CDC: group A streptococcal necrotizing fasciitis](https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/necrotizing-fasciitis.html) — invasive soft-tissue destruction.
+- [CDC PHIL: Shigella mucosal invasion](https://wwwn.cdc.gov/phil/Details.aspx?pid=15089) and [CDC: C. diff](https://www.cdc.gov/c-diff/about/) — distinct intestinal injury mechanisms.
+- [Klebsiella capsule experiments](https://pubmed.ncbi.nlm.nih.gov/31997409/) and [C. perfringens toxin-mutant experiments](https://pubmed.ncbi.nlm.nih.gov/11705975/) — capsule-mediated evasion and toxin-dependent myonecrosis.
+
+Focused verification covers route/count validation, actual tissue ownership, stable targets, toxin-only versus invasive damage, hypoxic necrosis, default-policy wound repair and crew replacement, immediate save/continuation, reaction effects and fixed renderer capacities. No production build is required for this local change.
+
+## Entry visibility and large introductions (2026-10-22, v0.62.0)
+
+Pathogen bodies, eyes, clusters and spikes now share the heading of their displayed movement, including interpolated turns. Stationary attackers face their world-space target. Rods extend along the same forward axis as their eyes. This is presentation state and does not change saved infection targets.
+
+The meadow radius is 2,048 world units and the river continues into distant fog. The camera's existing overview, pan limits and tilt remain usable without exposing the circular ground edge. The respiratory route now has larger paired oxygen molecules, directional chevrons, a cyan intake trace and an O₂ sign. Molecules follow the compiled airway route into the lung; density/speed reflect lung output and dry weather, and pause with simulation time. The digestive entry has an open mouth frame, lips, teeth, tongue, throat ribs and a hinged quarantine barrier. It occupies the actual food-route perimeter crossing, with a matching gap in both wall renderers. Both entrances have short labels visible from the overview. Existing Three.js, Kenney and RG Poly resources are reused.
+
+Expanded cities support 256 combined pending/active pathogen representatives. The exposure menu adds 64, 128 and 256 (previous maximum 32). Large introductions release 2, 4 or 8 per 0.45 game seconds; a 256 cohort releases in about 15 game seconds. Existing small exposures and scheduled waves retain their pacing. Large arrivals spread across entry lanes or the blood-entry area. Threat priorities are indexed once per simulation tick instead of rescanning every district for each phagocyte. Actor batches remain sixteen, frontier batches seven; all 256 enemies have real engine state and fit the renderer/motion/save budgets. Queued cohorts retain release size through saving; restored enemy routes keep their completed navigation state.
+
+One bounded CPU sample on the development PC, 108 cells, persistent representative enemies, 40 warmup and 180 measured ticks per count (`node scripts/benchmark-city-pathogens.mjs`):
+
+| Enemies | Mean tick | 95th percentile | Actor triangles |
+| --- | --- | --- | --- |
+| 64 | 1.565 ms | 3.037 ms | 105,312 |
+| 128 | 1.535 ms | 2.645 ms | 143,876 |
+| 256 | 2.054 ms | 3.461 ms | 223,532 |
+
+These are CPU and instance counts, not physical-phone FPS guarantees. The development browser showed 60 fps, DPR 1.00, 1024 shadows, 68 draws and 244k triangles at 3× simulation speed with 248 active representatives remaining after a 256 introduction. This is one desktop view, not a physical-device or whole-town benchmark. Browser error logs were empty.
+
+Portrait verification also exposed foreground clipping: at minimum orthographic zoom, bottom screen rays could begin below the ground even with a large meadow. `landscapeCameraRange` now derives camera distance, far clip and fog depth from the visible span, zoom and tilt. This preserves orthographic framing while keeping ground intersections in front of the camera. Focused checks cover facing in two directions and at rest, intake-route sampling and ventilation response, landscape and clip-plane coverage, a complete 256 cohort, rendering capacity and exact save continuation. No production build was run.
+
+## Road movement (2026-10-22, v0.62.0)
+
+Routine cell and freight travel now follows a cached graph of the actual paved streets. Facility workstations, loading bays, the skin workshop and inner wall patrol have shared paved access paths; docking queues and idle patrol destinations stay on that graph. Emergency work can still reach its specific target. Existing road geometry, grid search and local assets are reused.
+
+Movement advances along each segment in displayed ground coordinates, so crossing a coordinate-transform sector no longer bends an actor off the road. New cells start on a road. Older off-road saves walk back onto the network; current saved routes resume at the same step with their cargo and work intact.
+
+The focused navigation/layout/entry/pathogen checks pass (27 tests), including sampled movement of all eight cell types, docking queues, unobstructed grass shortcuts, old-save recovery, exact continuation, relocated facilities and skin reconstruction. One bounded 256-pathogen/108-cell CPU sample measured a 2.030 ms mean tick and 3.145 ms 95th percentile, with the existing sixteen actor batches. No production build was run.
+
+## Immune network (2026-10-22, v0.62.0)
+
+`city-immunity.mjs` connects tissue danger, local signals, antigen transport and presentation, clonal selection, effector action, antibody classes, memory and resolution. It runs alongside the existing infection, medicine, oxygen and repair compartments. The 3D roster has sixteen roles, including the thirteen immune-cell roles below; RBCs, fibroblasts and platelets retain their existing work. Normal expanded cities start with 151 representatives and still share the town's 192–256 population capacity. Plasma cells arise during a response. The cellular categories follow the [NIAID immune-system overview](https://pubweb-prod.niaid.nih.gov/research/immune-system-overview).
+
+| Cell | Trigger and implemented action |
+| --- | --- |
+| Neutrophil | CXCL8/C5a-associated recruitment, bacterial phagocytic damage, opsonin support, bounded NET zones under high burden; NETs also add inflammation. |
+| Eosinophil | IL-5/CCL11-associated recruitment, granule damage at a helminth's surface, possible collateral injury during allergic late responses. |
+| Basophil | Circulating type-2 responder, early IL-4 contribution, antigen-matched surface-IgE degranulation. |
+| Monocyte | CCL2-associated tissue entry followed by timed differentiation in a tissue M-CSF environment; the resulting macrophage keeps the actor ID. |
+| Macrophage | Existing resident pool plus monocyte-derived cells; phagocytosis, inflammatory signals, apoptotic-debris uptake and IL-10/TGF-β resolution signals. |
+| Mast cell | Resident at the entry tissues; IgE surface loading precedes same-antigen FcεRI cross-linking and histamine release. Recruited precursors mature after tissue arrival. |
+| Dendritic cell | Tissue antigen capture, danger-dependent maturation, CCR7-associated travel to the lymph node, MHC-II presentation and viral MHC-I cross-presentation with co-stimulation. |
+| NK cell | Stressed infected host cells with reduced MHC-I; sufficient matching IgG also permits the modeled CD16/ADCC route. Healthy tissue and free bacteria are not cytotoxic targets. |
+| B cell | Native antigen uptake through the modeled BCR, cognate MHC-II/Tfh/CD40L help, early IgM progeny, timed germinal-center maturation, switched plasma cells and memory B cells. |
+| CD4 T cell | MHC-II/co-stimulation-dependent selection and expansion; Tfh supports cognate B cells, Th1 supplies IFN-γ, Th2 supplies IL-4/5/13, and Th17 supplies IL-17-dependent recruitment signals. |
+| CD8 T cell | Viral MHC-I cross-presentation, co-stimulation and CD4/IL-2 help in this chosen priming scenario; effectors recognize matching peptide/MHC-I on host cells and induce apoptosis. |
+| Treg | IL-2-supported feedback, reduced APC co-stimulation and local IL-10/TGF-β suppression; it reduces inflammatory injury without directly killing pathogens. |
+| Plasma cell | A committed antigen and isotype, actual nutrient cost and a timed secretion batch. It does not choose a different antigen just because another antibody stock is lower. |
+
+Viral host cells, large helminths and a sensitization-prone allergen challenge are separate from the twelve bacterial isolates and their antibiotic-susceptibility data. Infected host cells carry antigen, burden, stress and MHC-I state. I-type IFN restrains replication, neutralizing IgA/IgG limits new viral infection, NK preferentially handles missing-self targets, and cognate CD8 cells handle MHC-I-positive targets. Cross-presentation is based on [Sigal et al., 1999](https://pubmed.ncbi.nlm.nih.gov/10078533/); the NK inhibitory-recognition basis is illustrated by the [Kärre et al. original study, reprinted](https://pubmed.ncbi.nlm.nih.gov/15905492/).
+
+IgM/IgG support complement and opsonization; mucosal IgA contributes to the lumen/neutralization compartments. IgE switching requires cognate Tfh/CD40L help and IL-4, following the distinction demonstrated by [Gascan et al., 1991](https://pubmed.ncbi.nlm.nih.gov/1711085/). IgE then sensitizes mast cells/basophils; antigen-specific re-exposure causes degranulation. IgE is not a universal bacterial-killing multiplier. NET effects follow the qualitative mechanism in [Brinkmann et al., 2004](https://pubmed.ncbi.nlm.nih.gov/15001782/). Treg effects include reduced co-stimulatory potency, consistent with [Wing et al., 2008](https://pubmed.ncbi.nlm.nih.gov/18845758/).
+
+Clones require food, available lineage slots and population capacity. A bounded initial responding cohort leaves naive representatives for another antigen. T cells contract into memory after antigen withdrawal; some expanded cells undergo apoptosis. Memory B/T cells retain specificity and reactivate faster. Short-lived IgM progeny expire independently of the optional whole-city lifetime toggle. Switched plasma cells have a longer modeled survival; neither the seconds nor these survival periods are human biological estimates. Thymic selection, individual receptor repertoires, affinity mutations and physical cell-contact synapses are represented by cohort states and a mixed lymph-node compartment, not molecular simulations. Not every CD8 priming context requires CD4 help; this implementation chooses a help-dependent scenario. The allergen experiment models sensitization conditions, not the claim that all pollen exposure causes allergy.
+
+**치료 → 면역 자극** adds the three challenges and focuses the selected tissue. **면역 과정** shows actual presentation, active T cells, B/plasma/memory counts, isotype stocks, host targets and leading local signals. Cell inspection separates carried cargo from antigen specificity and identifies monocyte-derived macrophages and memory/subset states. All sixteen cell appearances, infected-host markers, worms, allergen particles, presentation tokens, granules, cytotoxic traces, Treg rings and NET webs reuse the existing sixteen instanced renderer batches. Forty-eight paved lymph-node positions disperse resting B/T cells and presenting DCs. Existing Three.js MIT and local Kenney/RG Poly CC0 assets are reused; there are no new models, raster assets or dependencies.
+
+Old cities retain their clock, cargo, work, layout and committed antibody batches. Uncommitted old plasma representatives become B cells; already committed plasma cells keep their recipe. Mature macrophages/plasma cells are not purchased directly: monocytes/B cells provide those lineages. Explanatory maps migrate to schema 3 by adding immune views while retaining saved notes and positions. Navigation caches use exact projection coordinates so hidden cache history cannot change a resumed route by a few floating-point bits.
+
+Focused checks cover missing-DC/B-cell controls, stable monocyte identity, NK/CD8 MHC and specificity controls, complete viral priming and class switching, IgE sensitization/re-exposure, helminth damage, Treg feedback, exact saved continuation, bounded rendering, streets and facility relocation. A bounded 151-cell CPU sample measured mean/p95 ticks of 2.098/3.642 ms with 64 bacteria, 2.122/3.678 ms with 128, and 2.677/4.007 ms with 256. These development-PC samples are not physical-phone FPS guarantees or maximum mixed-challenge benchmarks. Local production builds were omitted; the release workflow runs the full test suite and static build before deployment.

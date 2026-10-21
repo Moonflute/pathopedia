@@ -27,7 +27,7 @@ test('repair consumes stock, waits for delivery and a living crew, restores the 
  const s=city();s.frontier.walls[11].hp=0;const before=s.resources.materials;
  assert.equal(command(s,'wall-repair','11').ok,true);assert.equal(s.resources.materials,before-8);
  const crew=s.cells.filter(c=>c.kind==='fibroblast');s.cells=s.cells.filter(c=>c.kind!=='fibroblast');
- advance(s,25);assert.equal(s.frontier.walls[11].hp,0);assert.equal(s.frontier.walls[11].repair.remaining,7);assert.equal(s.frontier.walls[11].repair.materials,true);
+ advance(s,25);assert.ok(s.frontier.walls[11].hp<30,'platelets can patch, but only a builder completes reconstruction');assert.equal(s.frontier.walls[11].repair.remaining,7);assert.equal(s.frontier.walls[11].repair.materials,true);
  s.cells.push(...crew);until(s,()=>s.cells.some(c=>c.frontStage==='field'));
  const worker=s.cells.find(c=>c.frontStage==='field');assert.equal(worker.materialCargo,8);assert.match(cellObservation(s,worker).destination,/피부 12/);
  const copy=restoreCity(serializeCity(s));assert.ok(copy);advance(s,1);advance(copy,1);assert.equal(serializeCity(s),serializeCity(copy));

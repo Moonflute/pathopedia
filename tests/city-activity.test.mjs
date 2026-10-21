@@ -33,10 +33,10 @@ test('oxygen and deliveries stop at real docks and transfer only after the hando
  assert.equal(serializeCity(s),serializeCity(copy));
 });
 
-test('antibody work needs antigen and nutrition, uses distinct bench places, and completes after stirring',()=>{
- const s=village();s.cells=s.cells.filter(c=>c.kind==='plasma');s.resources.food=0;s.rawFood=0;s.supplyClock=1e6;s.intakeClock=1e6;s.districts.lymph.food=0;
+test('differentiated plasma cells need nutrition, reserve distinct benches and finish their paid batches',()=>{
+ const s=village();s.cells=s.cells.filter(c=>c.kind==='bcell').slice(0,3);for(const c of s.cells)Object.assign(c,{kind:'plasma',licensed:true,recordId:'SPN-105',isotype:'IgG'});s.antigens['SPN-105']=true;s.resources.food=0;s.rawFood=0;s.supplyClock=1e6;s.intakeClock=1e6;s.districts.lymph.food=0;
  advance(s,8);assert.equal(s.stats.antibodyBatches,0);assert.ok(s.cells.every(c=>!activeActivity(c,s.time)));
- s.antigens['SPN-105']=true;advance(s,1);assert.ok(s.cells.every(c=>c.task==='영양분 대기'));
+ advance(s,1);assert.ok(s.cells.every(c=>/영양/.test(c.waitReason)));
  s.districts.lymph.food=10;step(s);assert.equal(s.stats.antibodyBatches,0);assert.ok(s.cells.every(c=>c.activity.kind==='produce'));
  assert.equal(new Set(s.cells.map(c=>c.workSlot)).size,3);
  advance(s,.6);assert.equal(s.stats.antibodyBatches,0);
@@ -61,6 +61,7 @@ test('construction waits for materials and a worker; both phagocytes engage at t
 
 test('work and combat remain in the same 16 bounded actor batches',()=>{
  const s=village(),actors=createActors(qualityProfile(390,3));s.antigens['SPN-105']=true;command(s,'upgrade','heart');command(s,'wave');
+ Object.assign(s.cells.find(c=>c.kind==='bcell'),{kind:'plasma',licensed:true,recordId:'SPN-105',isotype:'IgG'});
  const seen=new Set();let peak=0;
  for(let i=0;i<75*30;i++){
   step(s);for(const c of [...s.cells,...s.shipments]){const a=activeActivity(c,s.time);if(a)seen.add(a.kind);}
@@ -69,6 +70,6 @@ test('work and combat remain in the same 16 bounded actor batches',()=>{
   actors.root.traverse(m=>{if(!m.isInstancedMesh)return;assert.ok(m.count<=m.instanceMatrix.count);assert.ok(m.instanceMatrix.array.every(Number.isFinite));triangles+=(m.geometry.index?.count??m.geometry.attributes.position.count)/3*m.count;});peak=Math.max(peak,triangles);
  }
  for(const kind of ['load','unload','produce','build','engulf'])assert.ok(seen.has(kind),kind);
- assert.equal(actors.root.children.length,16);assert.ok(peak<43000,peak);
+ assert.equal(actors.root.children.length,16);assert.ok(peak<90000,peak);
  const bad=JSON.parse(serializeCity(s));bad.cells[0].activity={kind:'load',started:0,duration:0,x:0,y:0,site:'lung'};assert.equal(restoreCity(bad),null);
 });

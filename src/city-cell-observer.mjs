@@ -3,6 +3,7 @@ import {cityDistricts} from './city-tile-layout.mjs';
 import {WALLS,FRONTS} from './city-frontier-data.mjs';
 import {CELL_JOBS,districtDef,DISTRICTS,DRUGS} from './city-data.mjs';
 import {activeActivity,activityProgress} from './city-activity.mjs';
+import {immuneAntigen} from './city-immunity.mjs';
 
 const clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
 const district=id=>districtDef(id)?.short||'배정 대기';
@@ -13,7 +14,7 @@ const nearest=(s,p)=>cityDistricts(s).reduce((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)<
 export function cellObservation(s,c){
  if(!CELL_JOBS[c.kind])return shipmentObservation(s,c);
  const work=activeActivity(c,s.time),job=CELL_JOBS[c.kind],end=c.path?.at(-1)||c;
- let destination='배정 대기',cargo='없음',task=c.task||job.task;
+ let destination='배정 대기',cargo='없음',specificity='없음',task=c.task||job.task;
  if(c.kind==='rbc'){
   destination=district(c.cargo>0?c.target:'lung')+' · '+(c.cargo>0?'산소 하역대':'산소 충전대');
   if(c.cargo>0)cargo='O₂ '+Math.round(c.cargo);
@@ -36,11 +37,23 @@ export function cellObservation(s,c){
  }
  if(c.logisticsJob!=null)destination='소화기 · 전선 보급 출고대';
  if(c.frontJob!=null){destination=c.frontStage==='shop'?'피부 보수 공방':WALLS[c.frontJob].name+' · 보수 현장';if(c.materialCargo)cargo='복구 자재 '+c.materialCargo;const repair=s.frontier?.walls[c.frontJob].repair;if(c.frontStage==='repair'&&repair)task='피부장벽 보수 · '+Math.round((1-repair.remaining/7)*100)+'%';}
+ if(c.patchWall!=null)destination=WALLS[c.patchWall].name+' · 응급 봉합';
  if(c.debrisCargo){cargo='잔해 '+c.debrisCargo;if(c.wasteTrip)destination='신장 · 잔해 집하장';}
- const next=c.nextTask||(c.kind==='rbc'?(c.cargo?'산소 하역 → 폐 복귀':'산소 충전 → 배송'):c.kind==='dendritic'?(c.recordId?'항원 접수 → 감시':'항원 수집'):c.kind==='helperT'?(c.recordId?'지원 신호 발신':'항원 확인 → 방어 지원'):c.kind==='platelet'?'손상 탐색 → 봉합':'현장 작업 → 순찰');
+ let next=c.nextTask||(c.kind==='rbc'?(c.cargo?'산소 하역 → 폐 복귀':'산소 충전 → 배송'):c.kind==='dendritic'?(c.recordId?'항원 접수 → 감시':'항원 수집'):c.kind==='helperT'?(c.recordId?'지원 신호 발신':'항원 확인 → 방어 지원'):c.kind==='platelet'?'손상 탐색 → 봉합':'현장 작업 → 순찰');
+ if(s.immunity){
+  const adaptive=['helperT','cd8','bcell','plasma'].includes(c.kind),antigen=immuneAntigen(c.recordId);
+  if(adaptive){destination=c.memory?'림프절 · 기억 감시':c.kind==='plasma'?'림프절 · 항체 분비대':c.kind==='bcell'||!c.immuneSite||c.immuneState!=='effector'||c.lineage==='Tfh'?'림프절 · 항원 선택':district(c.immuneSite)+' · 효과 반응';cargo='없음';if(antigen)specificity=(c.isotype?c.isotype+' · ':'')+antigen.name;next=c.kind==='bcell'?'BCR·MHC-II → Tfh 도움 → 형질·기억':c.kind==='helperT'?'공동자극 → 클론 증식 → 도움·기억':c.kind==='cd8'?'일치 peptide/MHC-I → 세포자멸 유도':'동일 항원 항체 분비';}
+  if(c.kind==='monocyte'){destination=district(c.target)+' · CCL2 유주';next='조직 M-CSF → 대식세포 분화';}
+  if(c.kind==='mast'){destination=district(c.residentSite||c.target)+' · 조직 상주';next='IgE 감작 → 동일 항원 교차결합';}
+  if(c.kind==='basophil'){destination=district(c.target)+' · 2형 염증';next='IL-4·IgE 탈과립';}
+  if(c.kind==='eosinophil'){destination=district(c.target)+' · 연충·알레르기 현장';next='IL-5·CCL11 → 표면 과립 방출';}
+  if(c.kind==='nk'){destination=district(c.immuneSite||c.target)+' · 감염 세포 탐색';next='스트레스·missing-self / IgG ADCC';}
+  if(c.kind==='treg'){destination=district(c.target)+' · 면역 조절';next='IL-2 → CTLA-4·IL-10·TGF-β';}
+  if(c.kind==='dendritic'&&c.recordId){destination=c.immuneState==='presenting'?'림프절 · MHC 제시':'림프절 · CCR7 항원 운반';cargo=antigen?.name||'항원 표본';next='MHC-II→CD4 · 교차제시 MHC-I→CD8';}
+ }
  if(c.recovering)destination='심장 · 회복 쉼터';
  const condition=c.integrity!=null?`활동 ${Math.round(c.energy)}% · 세포 상태 ${Math.round(c.integrity)}%`:'정상';
- return {name:job.name,id:c.id,task,destination,cargo,next,waiting:c.waitReason||'없음',condition};
+ return {name:job.name+(c.origin==='monocyte'?' · 단핵구 유래':c.memory?' · 기억':c.lineage?' · '+c.lineage:''),id:c.id,task,destination,cargo,specificity,next,waiting:c.waitReason||'없음',condition};
 }
 
 function shipmentObservation(s,sh){
@@ -49,7 +62,7 @@ function shipmentObservation(s,sh){
  let task=finished?'배송 완료':pickup?'물자 수령대 이동':label+' 배송';
  if(work){task=(work.kind==='load'?'물자 적재':'물자 하역')+' · '+Math.round(activityProgress(work,s.time)*100)+'%';}
  const front=sh.frontDelivery,destination=!pickup&&sh.administration?(sh.administration==='oral'?'소화기 · 경구 투여대':'심장 · 정맥 투여대'):!pickup&&front?(front.type==='wall'?'피부 보수 공방':FRONTS[front.id].name+' · 전선 보급창고'):district(pickup?'gut':sh.to)+(finished?' · 도착 광장':pickup?' · 물자 수령대':' · 물자 하역대');
- return {name:'보급 운반원',id:sh.id,task,destination,cargo:pickup||finished?'없음':label+' '+Math.round(sh.amount),next:sh.administration?(pickup?'약품 적재 → 투여대로 배송':finished?'운반 종료':sh.administration==='oral'?'하역 → 장내 방출·흡수':'하역 → 혈류 분포'):sh.nextTask||(pickup?'물자 적재 → 배송':finished?'운반 종료':'현장 하역'),waiting:sh.waitReason||'없음',condition:'운반 중'};
+ return {name:'보급 운반원',id:sh.id,task,destination,cargo:pickup||finished?'없음':label+' '+Math.round(sh.amount),specificity:'없음',next:sh.administration?(pickup?'약품 적재 → 투여대로 배송':finished?'운반 종료':sh.administration==='oral'?'하역 → 장내 방출·흡수':'하역 → 혈류 분포'):sh.nextTask||(pickup?'물자 적재 → 배송':finished?'운반 종료':'현장 하역'),waiting:sh.waitReason||'없음',condition:'운반 중'};
 }
 
 // Selection is a view state: it never enters the simulation or saved city.

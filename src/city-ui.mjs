@@ -61,7 +61,7 @@ export function createCityGame(data,options={}){
       <footer class="cc-command-bar"><div class="cc-status"><i></i><span data-city-save>자동 저장</span><small data-city-last-log></small></div><nav class="cc-dock" aria-label="도시 관리 메뉴">${[['district','▦','구역'],['workers','✦','세포'],...(is3d?[['frontier','⬡','방어']]:[]),['armory','⚑',is3d?'치료':'장비'],['city','☷','운영']].map(([id,glyph,name])=>button('panel',`<span>${glyph}</span><strong>${name}</strong>`,`data-city-id="${id}" aria-label="${name} 관리" aria-controls="city-management" aria-expanded="${panel===id}"`)).join('')}</nav><span class="cc-view-label">${is3d?'LIVING CITY <b>3D VILLAGE</b>':'BODY DISTRICT 01 <b>2.5D</b>'}</span></footer>${startScreen()}</section>`;
   }
   function startScreen(){return `<section class="cc-start" aria-label="시나리오 선택">
-    <div class="cc-start-heading"><span>CELL CITY / ${is3d?'3D VILLAGE':'PROTOTYPE'}</span><h2>${is3d?'작은 세포들의 마을':'작은 세포, 하나의 도시'}</h2><p>${is3d?'여섯 구역 · 여덟 종류의 세포':'오늘의 도시를 선택하세요'}</p></div>
+    <div class="cc-start-heading"><span>CELL CITY / ${is3d?'3D VILLAGE':'PROTOTYPE'}</span><h2>${is3d?'작은 세포들의 마을':'작은 세포, 하나의 도시'}</h2><p>${is3d?'여섯 구역 · 열여섯 세포 역할':'오늘의 도시를 선택하세요'}</p></div>
     <div class="cc-scenario-cards">${Object.entries(SCENARIOS).filter(([,p])=>!p.only3d||is3d).map(([id,p])=>button('scenario',`<span class="cc-scenario-art cc-scenario-art--${p.terrain}"><b>${p.symbol}</b><i></i></span><span class="cc-scenario-copy"><small>${p.tag}</small><strong>${p.name}</strong><span>${p.goal}</span><em>${p.detail}</em></span>`,`data-city-id="${id}" aria-pressed="${choice===id}"`)).join('')}</div>
     <div class="cc-start-actions">${is3d?button('information','정보','class="cc-start-information" aria-label="정보 · 도시 관계도"'):''}${button('resume','이어하기',`${started?'':'hidden'}`)}${button('start',is3d?'마을 들어가기':'선택한 도시 시작','class="cc-start-primary"')}</div>
   </section>`;}
@@ -83,8 +83,8 @@ export function createCityGame(data,options={}){
       ${button('rally',run.rally===selected?'⚑ 방어 집결 구역':'⚑ 이 구역에 집결',`data-city-id="${selected}" class="cc-rally" aria-pressed="${run.rally===selected}"`)}${selected==='marrow'?button('panel','세포 생산 · 대기 '+run.recruits.length+'/3','data-city-id="workers" class="cc-production"'):''}</div>`;
   }
   function workers(){const jobs=Object.entries(cityJobs(run)),pages=is3d?Math.ceil(jobs.length/4):1;workersPage=Math.min(workersPage,pages-1);return (is3d?jobs.slice(workersPage*4,workersPage*4+4):jobs).map(([id,job])=>{
-    const n=counts(run,id),queued=run.recruits.filter(r=>r.kind===id),status=queued.length?`충원 ${queued.length} · ${queued[0].remaining==null?'배송 중':Math.ceil(queued[0].remaining)+'초'}`:run.lifecycle?`게임 수명 ${job.life/60}분 · 교체 ${run.turnover[id]||0}`:job.task;
-    return `<div class="cc-worker">${button('inspect-kind',job.glyph||(id==='rbc'?'●':id==='dendritic'?'✳':'✦'),`class="cc-worker-icon" style="--cell:${job.color}" data-city-id="${id}" aria-label="${job.name} 위치 표시" aria-pressed="${selectedKind===id}"`)}<div><strong>${job.name} <b>${n}</b></strong><small>${status}</small></div>${card('immune-element',job.card,job.name)}${button('recruit','+ '+job.cost,`data-city-id="${id}" aria-label="${job.name} 충원 영양 ${job.cost}" ${run.resources.food<job.cost||run.recruits.length>=(run.layout?.version===2?6:3)||n+queued.length>=cellCap(run,id)||is3d&&run.cells.length+run.recruits.length>=populationLimit(run)?'disabled':''}`)}</div>`;
+    const n=counts(run,id),queued=run.recruits.filter(r=>r.kind===id),status=queued.length?`충원 ${queued.length} · ${queued[0].remaining==null?'배송 중':Math.ceil(queued[0].remaining)+'초'}`:run.lifecycle?`게임 수명 ${job.life/60}분 · 교체 ${run.turnover[id]||0}`:job.task,derived=run.immunity&&['plasma','macrophage'].includes(id);
+    return `<div class="cc-worker">${button('inspect-kind',job.glyph||(id==='rbc'?'●':id==='dendritic'?'✳':'✦'),`class="cc-worker-icon" style="--cell:${job.color}" data-city-id="${id}" aria-label="${job.name} 위치 표시" aria-pressed="${selectedKind===id}"`)}<div><strong>${job.name} <b>${n}</b></strong><small>${status}</small></div>${card('immune-element',job.card,job.name)}${button('recruit',derived?'분화':'+ '+job.cost,`data-city-id="${id}" aria-label="${derived?(id==='plasma'?'B세포에서 분화':'단핵구에서 분화'):job.name+' 충원 영양 '+job.cost}" ${derived||run.resources.food<job.cost||run.recruits.length>=(run.layout?.version===2?6:3)||n+queued.length>=cellCap(run,id)||is3d&&run.cells.length+run.recruits.length>=populationLimit(run)?'disabled':''}`)}</div>`;
   }).join('')+(pages>1?`<div class="cc-worker-pages">${button('workers-page','←',`data-city-id="-1" aria-label="이전 세포 종류" ${workersPage===0?'disabled':''}`)}<span>${workersPage+1} / ${pages}</span>${button('workers-page','→',`data-city-id="1" aria-label="다음 세포 종류" ${workersPage===pages-1?'disabled':''}`)}</div>`:'');}
   function updateCamera(camera=renderer?.cameraInfo()){
     if(!game||!camera)return;
@@ -112,7 +112,7 @@ export function createCityGame(data,options={}){
     for(const [id,n]of Object.entries(stats)){set(`[data-city-value="${id}"]`,Math.floor(n)+(['health','oxygen','waste'].includes(id)?'%':''));game.querySelector(`[data-city-meter="${id}"]`)?.style.setProperty('--fill',Math.min(100,n)+'%');}
     set('[data-city-time]',time(run.time));set('[data-city-population]',run.cells.length+(is3d?' / '+populationLimit(run):'')+'명');set('[data-city-rally]',districtDef(run.rally).short+' 보급');
     updateCamera();
-    const threat=run.enemies.length+run.spawn.length,objective=objectiveState(run);
+    const threat=run.enemies.length+run.spawn.length+(run.immunity?run.immunity.infected.length+run.immunity.parasites.length:0),objective=objectiveState(run);
     set('[data-city-objective]',run.endless?'자유 운영':objective.title);
     set('[data-city-objective-detail]',(run.endless?'도시 관찰':objective.detail)+(threat?' · 감염 '+threat:''));
     game.querySelector('[data-city-objective-progress]').value=objective.progress;
@@ -175,10 +175,11 @@ export function createCityGame(data,options={}){
     else if(action==='bio-page')biology.page=id;
     else if(action==='bio-drug'){biology.drug=id;if(id==='oxacillin')biology.route='iv';run.drug=id;}
     else if(action==='bio-focus')renderer?.focus?.(siteAt(run.layout,id));
-    else if(['lab-expose','lab-medicine','lab-response'].includes(action)){
-      const key=action==='lab-expose'?'expose':action==='lab-medicine'?'medicine':'response';
-      const payload=key==='expose'?{recordId:biology.record,front:biology.front,amount:Number(biology.amount),wall:Number(biology.wall)}:key==='medicine'?{drugId:biology.drug,route:biology.route,packs:Number(biology.packs)}:biology.order+':'+biology.site;
+    else if(['lab-expose','lab-medicine','lab-response','lab-immune'].includes(action)){
+      const key=action==='lab-expose'?'expose':action==='lab-medicine'?'medicine':action==='lab-immune'?'immune-challenge':'response';
+      const payload=key==='expose'?{recordId:biology.record,front:biology.front,amount:Number(biology.amount),wall:Number(biology.wall)}:key==='medicine'?{drugId:biology.drug,route:biology.route,packs:Number(biology.packs)}:key==='immune-challenge'?{type:biology.challenge,site:biology.challengeSite,amount:Number(biology.challengeAmount)}:biology.order+':'+biology.site;
       const result=command(run,key,payload,data);if(result.text){toast=result.text;toastUntil=performance.now()+3500;}save();
+      if(result.ok&&key==='immune-challenge')renderer?.focus?.(siteAt(run.layout,biology.challengeSite));
     }
     else if(action==='wave'&&run.scenario==='simulation'){panel='armory';biology.page='exposure';}
     else if(action==='front-page')frontPage=id;
@@ -238,6 +239,7 @@ export function createCityGame(data,options={}){
       if(e.target.matches('[data-city-layout-select]')){layoutEvent('select',e.target.value);if(!editor.isStored(e.target.value))renderer?.focus?.(siteAt(editor.draft,e.target.value)||{x:editor.draft.items[e.target.value].col,z:editor.draft.items[e.target.value].row});return;}
       const key=e.target.dataset.cityInput;if(!key||!Object.hasOwn(biology,key))return;
       biology[key]=e.target.value;
+      if(key==='challenge'){biology.challengeSite=biology.challenge==='helminth'?'gut':'lung';biology.immuneRecord={virus:'IMM-VIRUS',helminth:'IMM-HELMINTH',allergen:'IMM-ALLERGEN'}[biology.challenge];}
       if(key==='record'&&!pathogenDef(biology.record).routes.includes(biology.front))biology.front=pathogenDef(biology.record).routes[0];
       update();
     },{signal:abort.signal});

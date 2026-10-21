@@ -28,12 +28,20 @@ export const JOBS = Object.freeze({
 });
 // Additional jobs are enabled by the 3D village; the original city's roster stays intact.
 export const CELL_JOBS=Object.freeze({...JOBS,
- helperT:{name:'도움 T세포',task:'항원 확인 · 방어 지원',color:'#6aaab8',cost:28,cap:6,life:900,card:null,glyph:'⚑'},
+ eosinophil:{name:'호산구',task:'연충 방어 · 과립 방출',color:'#e69c7a',cost:25,cap:8,life:300,card:null,glyph:'•'},
+ basophil:{name:'호염기구',task:'IgE 반응 · IL-4 신호',color:'#8581bf',cost:26,cap:4,life:300,card:null,glyph:'⁙'},
+ monocyte:{name:'단핵구',task:'혈류 순찰 → 조직 대식세포',color:'#b2a7ce',cost:24,cap:12,life:420,card:null,glyph:'◒'},
+ mast:{name:'비만세포',task:'조직 감시 · IgE 탈과립',color:'#cd86ac',cost:28,cap:6,life:1200,card:null,glyph:'⁙'},
+ nk:{name:'NK세포',task:'스트레스·MHC-I 저하 감지',color:'#8d9fc9',cost:30,cap:10,life:600,card:null,glyph:'✦'},
+ bcell:{name:'B세포',task:'항원 인식 → 형질·기억세포',color:'#82b6d2',cost:26,cap:16,life:900,card:null,glyph:'Y'},
+ helperT:{name:'CD4 T세포',task:'MHC-II 인식 · Tfh/Th1/Th2/Th17',color:'#6aaab8',cost:28,cap:12,life:900,card:null,glyph:'4'},
+ cd8:{name:'CD8 T세포',task:'MHC-I 항원 특이 세포독성',color:'#7f9c8f',cost:30,cap:12,life:900,card:null,glyph:'8'},
+ treg:{name:'조절 T세포',task:'CTLA-4 · IL-10 · 염증 억제',color:'#86bba6',cost:28,cap:6,life:1000,card:null,glyph:'−'},
  plasma:{name:'형질세포',task:'표적 항체 생산',color:'#a590ca',cost:32,cap:6,life:900,card:'IMM-035',glyph:'Y'},
  platelet:{name:'혈소판',task:'손상 부위 응급 봉합',color:'#dfad75',cost:12,cap:8,life:420,card:null,glyph:'✚'}
 });
 export const cityJobs=s=>s.specialists?CELL_JOBS:JOBS;
-export const cellCap=(s,kind)=>s.layout?.version===2?({rbc:96,neutrophil:72,macrophage:32,fibroblast:32,dendritic:16,helperT:12,plasma:12,platelet:24}[kind]):s.specialists&&kind==='rbc'?32:CELL_JOBS[kind]?.cap;
+export const cellCap=(s,kind)=>s.layout?.version===2?({rbc:96,neutrophil:72,macrophage:32,fibroblast:32,dendritic:20,eosinophil:24,basophil:12,monocyte:32,mast:16,nk:32,bcell:32,helperT:32,cd8:40,treg:16,plasma:32,platelet:24}[kind]??CELL_JOBS[kind]?.cap):s.specialists&&kind==='rbc'?32:CELL_JOBS[kind]?.cap;
 export const DRUGS = Object.freeze([
   {id:'ampicillin',name:'Ampicillin',short:'AMP',color:'#b6d38e',cost:10},
   {id:'oxacillin',name:'Oxacillin',short:'OXA',color:'#f0bb77',cost:14},

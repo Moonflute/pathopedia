@@ -3,8 +3,9 @@ import {groundPoint} from './city-three-layout.mjs';
 import {CELL_JOBS,DRUGS} from './city-data.mjs';
 import {activeActivity,activityProgress} from './city-activity.mjs';
 import {CITY_STYLE as STYLE} from './city-three-style.mjs';
+import {pathogenDef} from './city-pathogens.mjs';
 
-// Shared, rigid parts: eight silhouettes and all work effects still use 16
+// Shared, rigid parts: sixteen cell roles and all work effects use 16
 // batches, without skeletons, particle objects, lights or per-cell DOM.
 export const CELL_STYLES=Object.freeze({
  rbc:{w:.30,h:.21,y:.32,face:.35,hat:0xb55261},
@@ -12,6 +13,14 @@ export const CELL_STYLES=Object.freeze({
  macrophage:{w:.39,h:.36,y:.43,face:.48,hat:0x997db9},
  fibroblast:{w:.25,h:.34,y:.4,face:.45,hat:0xe5b854},
  dendritic:{w:.25,h:.29,y:.37,face:.43,hat:0x789b73},
+ eosinophil:{w:.29,h:.31,y:.39,face:.44,hat:0xc47862},
+ basophil:{w:.27,h:.30,y:.39,face:.44,hat:0x665b9c},
+ monocyte:{w:.33,h:.34,y:.41,face:.46,hat:0x9f8bb2},
+ mast:{w:.34,h:.34,y:.41,face:.46,hat:0xad648f},
+ nk:{w:.30,h:.32,y:.40,face:.45,hat:0x697ba7},
+ bcell:{w:.27,h:.30,y:.38,face:.43,hat:0x629ab5},
+ cd8:{w:.28,h:.32,y:.39,face:.44,hat:0x597f6f},
+ treg:{w:.27,h:.31,y:.39,face:.44,hat:0x629d85},
  helperT:{w:.25,h:.32,y:.39,face:.44,hat:0x648a9b},
  plasma:{w:.32,h:.33,y:.4,face:.45,hat:0xb5a0cf},
  platelet:{w:.22,h:.16,y:.25,face:.29,hat:0xedcc90},
@@ -23,9 +32,9 @@ export function createActors(profile){
  const body=new T.SphereGeometry(1,profile.mobile?10:12,profile.mobile?7:8),hat=new T.SphereGeometry(1,profile.mobile?8:10,profile.mobile?5:6),small=new T.SphereGeometry(1,6,4),box=new T.BoxGeometry(1,1,1),rod=new T.CylinderGeometry(1,1,1,6),rim=new T.TorusGeometry(1,.13,4,12);
  function batch(id,geometry,limit=capacity,shadow=true,unlit=false){const m=new T.InstancedMesh(geometry,unlit?flat:standard,limit);m.name=id;m.instanceMatrix.setUsage(T.DynamicDrawUsage);m.count=0;m.frustumCulled=false;m.castShadow=shadow;m.receiveShadow=!unlit;root.add(m);batches[id]=m;}
  batch('body',body);batch('cap',hat);batch('eyes',small,capacity*2,false);batch('feet',small,capacity*2);batch('hands',small,capacity*2,false);
- batch('box',box,capacity*5);batch('pod',small,capacity*5,false);batch('rod',rod,capacity*5,false);batch('rim',rim,capacity*2,false);batch('badge',new T.IcosahedronGeometry(1,0),capacity*4,false);
- batch('enemy',new T.IcosahedronGeometry(1,1),profile.maxEnemies);batch('spikes',new T.ConeGeometry(1,1,5),profile.maxEnemies*4);batch('enemyEyes',small,profile.maxEnemies*2,false);
- batch('debris',new T.IcosahedronGeometry(1,0),80,false);batch('selected',new T.TorusGeometry(.43,.035,4,18),capacity*2,false,true);batch('beam',rod,128,false,true);
+ batch('box',box,capacity*5);batch('pod',small,capacity*8,false);batch('rod',rod,capacity*5,false);batch('rim',rim,capacity*3,false);batch('badge',new T.IcosahedronGeometry(1,0),capacity*7,false);
+ batch('enemy',new T.IcosahedronGeometry(1,1),profile.maxEnemies*4);batch('spikes',new T.ConeGeometry(1,1,5),profile.maxEnemies*4);batch('enemyEyes',small,profile.maxEnemies*2,false);
+ batch('debris',new T.IcosahedronGeometry(1,0),160,false);batch('selected',new T.TorusGeometry(.43,.035,4,18),capacity*4+profile.maxEnemies*2+160,false,true);batch('beam',rod,capacity*6+profile.maxEnemies*4,false,true);
  function put(id,x,y,z,sx,sy,sz,c,rx=0,ry=0,rz=0){const m=batches[id],n=m.count;if(n>=m.instanceMatrix.count)return;dummy.position.set(x,y,z);dummy.scale.set(sx,sy,sz);dummy.rotation.set(rx,ry,rz,'YXZ');dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,color.set(c));m.count++;}
  const up=new T.Vector3(0,1,0),a=new T.Vector3(),b=new T.Vector3(),direction=new T.Vector3();
  function line(x,y,z,tx,ty,tz,r,c){
@@ -97,6 +106,23 @@ export function createActors(profile){
    const wave=doing==='signal'?Math.sin(progress*16)*.16:0;
    part('box',0,.48,-.19,.45,.37,.045,0x6f97ad);part('rod',.31,.67,.01,.025,.62,.025,0xa48d69,0,wave);
    part('box',.44-wave*.35,.88,.01,.27,.19,.025,unit.recordId||doing==='signal'?0xe4c779:0x91c5c6,0,wave);part('badge',0,.64,.22,.07,.06,.03,0xe7cb86);
+   const tint={Tfh:0xe4c779,Th1:0x7c91bd,Th2:0xdf997e,Th17:0x98b77d}[unit.lineage]||0xb7d7dd;part('box',-.06,.76,.2,.06,.2,.04,tint);part('box',.05,.76,.2,.06,.2,.04,tint);part('box',0,.75,.2,.2,.05,.04,tint);
+  }else if(kind==='eosinophil'||kind==='basophil'||kind==='mast'){
+   for(let n=0;n<(kind==='mast'?6:kind==='basophil'?5:4);n++){const a=n*2.399;part('badge',Math.cos(a)*.2,.58+(n%2)*.1,Math.sin(a)*.2,.065,.07,.065,kind==='eosinophil'?0xedb98a:kind==='mast'?0xe2a6bb:0x9a8bce);}
+   if(kind==='eosinophil')for(const side of [-1,1])part('pod',side*.12,.68,0,.12,.10,.1,0xa36782);
+   if(kind==='mast')part('rim',0,.17,0,.4,.4,.4,0xc289a8,Math.PI/2);
+  }else if(kind==='monocyte'){
+   part('pod',-.08,.7,.01,.21,.1,.13,0x8c709f);part('pod',.1,.72,.05,.1,.08,.1,0xcbb6d7);part('box',0,.36,.28,.25,.08,.04,0xd8d1e4);
+  }else if(kind==='nk'||kind==='cd8'){
+   part('box',0,.37,.26,.3,.23,.045,kind==='nk'?0x6579a6:0x527969);
+   for(let n=0;n<3;n++)part('badge',-.13+n*.13,.36,.30,.04,.05,.04,0xe3c47f);
+   if(kind==='nk')part('badge',0,.75,.01,.17,.17,.17,0xc6cbea);
+   else for(const y of [.69,.83])part('rim',0,y,.13,.075,.075,.075,0xe3edc6,Math.PI/2);
+  }else if(kind==='bcell'){
+   part('rod',0,.77,.02,.025,.22,.025,0xd8e8e7);for(const side of [-1,1])part('rod',side*.06,.88,.02,.025,.17,.025,0xd8e8e7,0,-side*.65);
+   part('box',0,.38,.24,.25,.14,.04,0xd8e7ef);
+  }else if(kind==='treg'){
+   part('rim',0,.78,.02,.17,.17,.17,0xa7d2b5,Math.PI/2);part('box',0,.4,.26,.25,.055,.04,0xe3f3d9);
   }else if(kind==='plasma'){
    part('box',0,.31,.28,.43,.28,.04,0xf7e8d3);part('pod',0,.43,-.29,.21,.28,.17,0x91c5c6);
    part('rod',hand.x,hand.y+.09,hand.z,.06,.24,.06,producing?0xc4d6a1:0xb0bfc8,producing?.5:0);part('rim',0,.69,-.29,.1,.1,.1,0xc6b1d8,Math.PI/2);
@@ -109,6 +135,15 @@ export function createActors(profile){
   if(unit.bornAt!=null&&t-unit.bornAt<1.2)put('badge',p.x,1+(t-unit.bornAt)*.3,p.z,.08,.14,.08,0xe5d79c);
   if(unit.integrity<60){part('box',-.12,.45,.26,.17,.07,.03,0xf4e7d6,0,-.4);}
   if(unit.recovering)put('selected',p.x,.08,p.z,.9,.9,.9,0x86b6b5,Math.PI/2);
+  if(unit.alertUntil>t){
+   const lift=Math.sin(Math.min(1,(unit.alertUntil-t)/.3)*Math.PI)*.12+Math.abs(Math.sin(t*5+phase))*.06;
+   const y=1.25+lift,size=Math.max(1,readability),tint=unit.alertKind==='repair'?0x86e5cb:0xffc44d;
+   // A 3D exclamation stays legible at every camera rotation, without text sprites.
+   line(p.x,y+.14*size,p.z,p.x,y+.54*size,p.z,.085*size,tint);
+   line(p.x,y-.07*size,p.z,p.x,y+.035*size,p.z,.085*size,tint);
+   const ripple=(t*.8+phase*.13)%1;
+   put('selected',p.x,.06,p.z,.8+ripple,.8+ripple,.8+ripple,tint,Math.PI/2);
+  }
   if(selected===2&&unit.energy!=null){put('box',p.x,.92,p.z,.62,.055,.035,0xd8d2c2);put('box',p.x-(100-unit.energy)*.0031,.925,p.z+.025,.62*unit.energy/100,.055,.035,0x8db8a0);}
   if(kind==='rbc'){
    if(transfer){const q=doing==='load'?1-progress:progress,arc=Math.sin(q*Math.PI)*.35;
@@ -138,6 +173,11 @@ export function createActors(profile){
    put('rod',at.x,.49+progress*.08,at.z,.10,.12+progress*.2,.10,0xa8d6c5);
    if(progress>.6)antibody(at.x,.95+(progress-.6)*.6,at.z,readability);
   }
+  if(unit.memory)part('badge',-.25,.81,-.1,.07,.1,.07,0xe5cc80);
+  if(doing==='present'||doing==='prime'){for(const side of [-1,1])put('box',p.x+side*.13,.96+beat*.09,p.z,.12,.13,.045,doing==='present'?0xb8cd89:0x8fc9d0);}
+  if(doing==='degranulate'&&at){for(let n=0;n<5;n++){const q=Math.min(1,progress*1.4),spread=(n-2)*.12;put('badge',p.x+(at.x-p.x)*q+spread,.5+Math.sin(q*Math.PI)*.5,p.z+(at.z-p.z)*q-spread,.065,.08,.065,0xe3a597);}}
+  if(doing==='cytotoxic'&&at){line(p.x,.5,p.z,at.x,.3,at.z,.05,0x9299d3);put('selected',at.x,.11,at.z,.75+beat*.45,.75+beat*.45,.75+beat*.45,0xc190c2,Math.PI/2);}
+  if(doing==='regulate'){const r=.9+progress;put('selected',p.x,.1,p.z,r,r,r,0x87d6b6,Math.PI/2);}
   if(doing==='signal'||doing==='patch')put('selected',p.x,.08,p.z,1+beat*.6,1+beat*.6,1+beat*.6,doing==='signal'?0x85c2cb:0xe3bd82,Math.PI/2);
   if(selected){const scale=selected===2?1.3*readability:1;put('selected',p.x,.07,p.z,scale,scale,scale,selected===2?0x438f92:0xe5b854,Math.PI/2);}
   if(selected===2)put('badge',p.x,1.15,p.z,.08*readability,.14*readability,.08*readability,0x75d1cb);
@@ -149,12 +189,43 @@ export function createActors(profile){
   for(const c of s.cells.slice(0,profile.maxCells)){const p=point(c,c.id);if(visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability);}
   for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability);}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
-   const p=point(e,'enemy'+e.id);if(visible&&!visible(p))continue;const bacillus=['ECO-009','GNX-220','CDF-121'].includes(e.recordId);put('enemy',p.x,.35,p.z,bacillus?.5:.38,bacillus?.25:.35,.37,e.color);
-   for(let n=0;n<4;n++){const angle=n*Math.PI/2;put('spikes',p.x+Math.cos(angle)*.3,.62,p.z+Math.sin(angle)*.3,.09,.3,.09,e.color,0,0,Math.cos(angle)*.5);}
-   for(const side of [-1,1])put('enemyEyes',p.x+side*.12,.42,p.z+.32,.04,.05,.03,0x41464c);
+   const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);
+   const target=e.action==='attack'&&e.attackX!=null?groundPoint({x:e.attackX,y:e.attackY}):null;
+   const moved=prev&&Math.hypot(p.x-prev.x,p.z-prev.z)>.00001;
+   const angle=moved?Math.atan2(p.x-prev.x,p.z-prev.z):target&&Math.hypot(target.x-p.x,target.z-p.z)>.001?Math.atan2(target.x-p.x,target.z-p.z):prev?.angle??0;
+   last.set(id,{x:p.x,z:p.z,angle});if(visible&&!visible(p))continue;
+   const def=pathogenDef(e.recordId),shape=def?.shape,bacillus=shape==='rod'||shape==='shortRod',color=e.color||def?.color||'#bc856f',cs=Math.cos(angle),sn=Math.sin(angle);
+   const part=(id,x,y,z,sx,sy,sz,c,rz=0)=>put(id,p.x+x*cs+z*sn,y,p.z-x*sn+z*cs,sx,sy,sz,c,0,angle,rz);
+   const pulse=e.action==='attack'?1+Math.sin(time*9+e.id)*.09:1,depth=bacillus?(shape==='shortRod'?.43:.57):.36;
+   part('enemy',0,.35,0,(bacillus?.27:.36)*pulse,bacillus?.25:.34,depth,color);
+   if(['cluster','chain','pair'].includes(shape))for(let n=0;n<(shape==='cluster'?3:shape==='chain'?3:1);n++){
+    const a=shape==='cluster'?n*Math.PI*2/3:0,offset=shape==='cluster'?.24:(n+1)*.18;
+    part('enemy',Math.cos(a)*offset,.34+(n%2)*.1,Math.sin(a)*offset,.24,.23,.24,color);
+   }
+   for(let n=0;n<4;n++){const a=n*Math.PI/2;part('spikes',Math.cos(a)*.3,.62,Math.sin(a)*depth*.85,.09,.3,.09,color,Math.cos(a)*.5);}
+   for(const side of [-1,1])part('enemyEyes',side*.115,.42,depth*.91,.04,.05,.03,0x41464c);
+   if(def?.capsule)put('selected',p.x,.22,p.z,1.2,1.2,1.2,e.opsonized>.08?0xf1d58e:0xb5cbd3,Math.PI/2);
+   if(e.action==='approach'&&e.entered&&e.attackX!=null){
+    const target=groundPoint({x:e.attackX,y:e.attackY}),q=(time*.8+e.id*.13)%1;
+    put('selected',target.x,.07,target.z,1.1,1.1,1.1,0xe5a373,Math.PI/2);
+    for(let n=0;n<2;n++){const progress=(q+n*.5)%1;put('badge',p.x+(target.x-p.x)*progress,.2,p.z+(target.z-p.z)*progress,.07,.09,.07,0xe5a373);}
+   }
+   if(e.action==='attack'&&e.attackX!=null){
+    const target=groundPoint({x:e.attackX,y:e.attackY}),q=(time*2+e.id*.17)%1;
+    const tint=def?.toxin?0xbe8ee5:def?.anaerobic?0xff9f55:0xff7654;
+    line(p.x+(target.x-p.x)*q,.38,p.z+(target.z-p.z)*q,p.x+(target.x-p.x)*Math.min(1,q+.3),.2,p.z+(target.z-p.z)*Math.min(1,q+.3),.075*readability,tint);
+    put('selected',target.x,.11,target.z,(.7+q*.7)*readability,(.7+q*.7)*readability,(.7+q*.7)*readability,tint,Math.PI/2);
+    put('badge',target.x,.3+Math.sin(q*Math.PI)*.35,target.z,.13*readability,.22*readability,.13*readability,tint);
+   }
    if(e.opsonized>.08){antibody(p.x,.95,p.z,.55+e.opsonized*.25);put('selected',p.x,.09,p.z,.85,.85,.85,0xdac686,Math.PI/2);}
   }
-  for(const e of s.debris.slice(0,80)){const p=groundPoint(e);if(visible&&!visible(p))continue;put('debris',p.x,.09,p.z,e.cellKind?.21:.14,.08,.12,e.cellKind?0xc6bba8:0xa3929e);}
+  if(s.immunity){
+   for(const h of s.immunity.infected){const p=groundPoint(h);if(visible&&!visible(p))continue;const pulse=1+Math.sin(time*3+h.id)*.08;put('pod',p.x,.24,p.z,.45*pulse,.27,.4*pulse,0xb88ba6);put('rim',p.x,.52,p.z,.16,.16,.16,h.mhcI<.5?0xda9d67:0x7fc6db,Math.PI/2);put('selected',p.x,.075,p.z,1.15,1.15,1.15,0xd88b89,Math.PI/2);for(let n=0;n<3;n++)put('badge',p.x+Math.cos(n*2.1)*.2,.35,p.z+Math.sin(n*2.1)*.2,.06,.08,.06,0x9170b0);}
+   for(const w of s.immunity.parasites){const p=groundPoint(w);if(visible&&!visible(p))continue;for(let n=0;n<6;n++)put('pod',p.x+(n-2.5)*.23,.16,p.z+Math.sin(time*2+n*.9)*.15,.19,.16,.17,n%2?0xd4b48b:0xb79a72);put('selected',p.x,.06,p.z,1.8,1.8,1.8,0xd8b782,Math.PI/2);}
+   for(const e of s.immunity.exposures){const p=groundPoint(e);if(visible&&!visible(p))continue;for(let n=0;n<6;n++){const a=time*.7+n*Math.PI/3;put('badge',p.x+Math.cos(a)*.65,.5+Math.sin(time*2+n)*.2,p.z+Math.sin(a)*.65,.12,.13,.12,0xe3c48a);}}
+   for(const net of s.immunity.nets){const p=groundPoint(net);if(visible&&!visible(p))continue;for(let n=0;n<4;n++){const a=n*Math.PI/4;line(p.x-Math.cos(a)*.85,.07,p.z-Math.sin(a)*.85,p.x+Math.cos(a)*.85,.07,p.z+Math.sin(a)*.85,.025,0xe5deb9);}put('selected',p.x,.07,p.z,1.5,1.5,1.5,0xe5deb9,Math.PI/2);}
+  }
+  for(const e of s.debris.slice(0,80)){const p=groundPoint(e);if(visible&&!visible(p))continue;put('debris',p.x,.11,p.z,e.cellKind?.3:.22,.14,.22,e.cellKind?0xc6bba8:0xa3929e);put('debris',p.x+.2,.08,p.z-.15,.13,.08,.12,0x766a66);}
   for(const fx of s.effects.slice(0,64)){
    const from=groundPoint(fx),to=groundPoint({x:fx.tx,y:fx.ty}),q=Math.max(0,Math.min(1,1-fx.life/.42));
    if(fx.kind==='engulf'){put('selected',to.x,.18,to.z,.7+q*.4,.7+q*.4,.7+q*.4,fx.color,Math.PI/2);continue;}

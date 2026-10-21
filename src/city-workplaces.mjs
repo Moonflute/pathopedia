@@ -1,5 +1,5 @@
 import {CITY_CAPS,expansionCount,travelScale} from './city-world.mjs';
-import {cityDistricts,cityDistrict,cityRoute,rotateOffset,extensionRoute,walkablePoint} from './city-tile-layout.mjs';
+import {cityDistricts,cityDistrict,cityRoute,rotateOffset,extensionRoute,walkablePoint,roadPoint} from './city-tile-layout.mjs';
 import {workStation} from './city-activity.mjs';
 import {groundCoordinate,groundPoint} from './city-three-layout.mjs';
 
@@ -29,7 +29,8 @@ export function requestWorkplace(s,c,site,role,anchor=null){
  const p=groundPoint(bay.stand);
  const offset=rotateOffset({x:-2.3-(Math.max(0,index)%3)*1.25,z:1.2+Math.floor(Math.max(0,index)/3)*1.25},s.layout?.items[bay.owner||site]?.rot||0),wait=groundCoordinate({x:p.x+offset.x,z:p.z+offset.z});
  c.waitReason=slot==null?'자리 사용 중 · 대기 '+(index+1):'';
- return {owner:bay.owner||site,slot,index,ready:slot!=null,target:bay.target,stand:groundCoordinate(walkablePoint(s.layout,groundPoint(slot==null?wait:bay.stand)))};
+ const stand=walkablePoint(s.layout,groundPoint(slot==null?wait:bay.stand));
+ return {owner:bay.owner||site,slot,index,ready:slot!=null,target:bay.target,stand:groundCoordinate(slot==null?roadPoint(s.layout,stand):stand)};
 }
 export function approachWorkplace(s,c,site,role,dt,move,route,speed=58,anchor=null){
  const bay=requestWorkplace(s,c,site,role,anchor),key=site+':'+role+':'+(bay.slot??'q'+bay.index);

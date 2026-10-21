@@ -1,10 +1,10 @@
 import {CITY_BOUNDS,CITY_CAPS,CITY_ENTRIES,storedPlacement} from './city-world.mjs';
 import {DISTRICTS,districtDef} from './city-data.mjs';
-import {SITES,COTTAGES,RIVER_PATH,groundPoint,groundCoordinate} from './city-three-layout.mjs';
+import {SITES,COTTAGES,RIVER_PATH,groundPoint,groundCoordinate,workStationPoints,lymphocyteBay} from './city-three-layout.mjs';
 import {PERIMETER,WORKSHOP,FRONTS,TISSUES,WALLS} from './city-frontier-data.mjs';
 import {vascularRoute,FOOD_ROAD} from './city-map.mjs';
 import {TOWN_PLAN,TOWN_HOUSES,GROWTH_OFFSETS} from './city-town-plan.mjs';
-import {gridPath,streetNetwork} from './city-grid-path.mjs';
+import {gridPath,streetNetwork,roadNavigator} from './city-grid-path.mjs';
 
 // Grid topology is independent of organ state and rendering. A future hex grid
 // supplies its own neighbours, rotation and coordinate conversion here.
@@ -149,26 +149,51 @@ export function compileLayout(layout){
  }
  for(const d of layoutPlaceables(layout).filter(d=>d.kind!=='organ')){const nearest=d.kind!=='house'&&d.district?districtDef(d.district):DISTRICTS.reduce((a,b)=>Math.hypot(centre(a.id).x-centre(d.id).x,centre(a.id).z-centre(d.id).z)<Math.hypot(centre(b.id).x-centre(d.id).x,centre(b.id).z-centre(d.id).z)?a:b);connect(d.id,port(d.id),port(nearest.id),'walk');}
  const districts=DISTRICTS.map(d=>({...d,...groundCoordinate(centre(d.id))}));
- const streets=streetNetwork(connections);pathCache.clear();
- const result={connections,vascular,entries,roadCells,streets,occupied,walkable,path,districts,valid:connections.every(c=>c.ok),ports:Object.fromEntries(layoutPlaceables(layout).map(d=>[d.id,port(d.id)]))};compiled.set(layout,result);return result;
+ const streets=streetNetwork(connections),access=[],free=p=>freePoint(walkable,p);
+ function pave(from,to,width=.62){
+  const a=free(from),b=free(to),middle=path(a,b,true);if(!middle)return;
+  for(const p of middle){const k=p.x+','+p.z;if(!roadCells.has(k))roadCells.set(k,new Set(['walk']));}
+  const points=simplify([a,...middle,b].filter((p,i,list)=>!i||Math.hypot(p.x-list[i-1].x,p.z-list[i-1].z)>1e-7));if(points.length>1)access.push({points,width});
+ }
+ for(const d of DISTRICTS){
+  pave(port(d.id),centre(d.id),1.4);
+  for(const role of ['oxygen','dock','rest','build','repair',...(d.id==='lymph'?['produce']:[]),...(['marrow','gut'].includes(d.id)?['fabricate']:[]),...(d.id==='kidney'?['waste']:[])]){
+   const slots=['oxygen','produce','fabricate'].includes(role)?CITY_CAPS.workSlots:role==='dock'?1+CITY_CAPS.extensions:3;
+   for(let slot=0;slot<slots;slot++){const owner=stationOwner(layout,d.id,role,slot),bay=workStationPoints(d.id,role,slot,owner!==d.id?placeable(owner).origin:null);pave(owner===d.id?centre(d.id):port(owner),transformPoint(layout,owner,bay.stand));}
+  }
+ }
+ for(const d of layoutPlaceables(layout).filter(d=>d.kind==='house'))pave(port(d.id),transformPoint(layout,d.id,{x:d.origin.x,z:d.origin.z+1.4}));
+ for(let slot=0;slot<48;slot++)pave(centre('lymph'),transformPoint(layout,'lymph',lymphocyteBay(slot)),.6);
+ pave(port('workshop'),transformPoint(layout,'workshop',{x:WORKSHOP.x+1.1,z:WORKSHOP.z+.5}));
+ for(const [id,front] of Object.entries(FRONTS)){const owner=id==='skin'?'workshop':front.district,p=transformPoint(layout,owner,front.depot);pave(port(owner),{x:p.x-1.15,z:p.z});}
+ for(let slot=0;slot<9;slot++)pave(centre('gut'),transformPoint(layout,'gut',{x:SITES.gut.x+3.5+slot%3*.85,z:SITES.gut.z+2+Math.floor(slot/3)*.85}));
+ const patrol=WALLS.map(w=>free(groundPoint(w.inside)));
+ for(let i=0;i<patrol.length;i++)pave(patrol[i],patrol[(i+1)%patrol.length],.65);
+ const near=patrol.reduce((a,b)=>Math.hypot(a.x-port('workshop').x,a.z-port('workshop').z)<Math.hypot(b.x-port('workshop').x,b.z-port('workshop').z)?a:b);pave(port('workshop'),near,.65);
+ const entrances=Object.entries(entries).map(([id,points])=>points.slice(0,id==='airway'?4:3)),navigation=roadNavigator([...streets.runs.map(r=>r.points),...access.map(r=>r.points),...entrances]);pathCache.clear();
+ const result={connections,vascular,entries,entrances,roadCells,streets,access,navigation,occupied,walkable,path,districts,valid:connections.every(c=>c.ok),ports:Object.fromEntries(layoutPlaceables(layout).map(d=>[d.id,port(d.id)]))};compiled.set(layout,result);return result;
 }
 
-export function walkablePoint(layout,p){
- if(!layout)return p;const c=compileLayout(layout),start=SQUARE_GRID.fromWorld(p);if(c.walkable(start))return p;
- for(let r=1;r<10;r++)for(let z=-r;z<=r;z++)for(let x=-r;x<=r;x++){if(Math.max(Math.abs(x),Math.abs(z))!==r)continue;const q={col:start.col+x,row:start.row+z};if(c.walkable(q))return {x:q.col,z:q.row};}
+function freePoint(walkable,p){
+ const start=SQUARE_GRID.fromWorld(p);if(walkable(start))return p;
+ for(let r=1;r<10;r++)for(let z=-r;z<=r;z++)for(let x=-r;x<=r;x++){if(Math.max(Math.abs(x),Math.abs(z))!==r)continue;const q={col:start.col+x,row:start.row+z};if(walkable(q))return {x:q.col,z:q.row};}
  return p;
 }
+export const walkablePoint=(layout,p)=>layout?freePoint(compileLayout(layout).walkable,p):p;
+export const roadPoint=(layout,p)=>layout?(compileLayout(layout).navigation.nearest(p)?.point||p):p;
 export function walkingRoute(layout,from,points){
  if(!layout)return points;const c=compileLayout(layout),out=[];let a=groundPoint(from);
- for(const target of points){const b=groundPoint(target),length=Math.hypot(b.x-a.x,b.z-a.z),steps=Math.ceil(length*3);let clear=true;
-  // Interior shortcuts must respect the bank and perimeter as well as houses.
-  // Authored intake and wall-repair endpoints can intentionally lie outside it.
-  const interior=c.walkable(SQUARE_GRID.fromWorld(a))&&c.walkable(SQUARE_GRID.fromWorld(b));
-  for(let i=1;i<=steps;i++){const p={col:Math.round(a.x+(b.x-a.x)*i/steps),row:Math.round(a.z+(b.z-a.z)*i/steps)};if(c.occupied.has(key(p))||interior&&!c.walkable(p)){clear=false;break;}}
-  if(clear){out.push(target);a=b;continue;}
-  const start=walkablePoint(layout,a),end=walkablePoint(layout,b),route=c.path(start,end,true);
-  if(route){out.push(...simplify([start,...route,end]).map(groundCoordinate));a=end;}
-  else{out.push(groundCoordinate(a));break;}
+ const clear=(u,v,exterior=false)=>{const n=Math.max(1,Math.ceil(Math.hypot(v.x-u.x,v.z-u.z)*4));for(let i=0;i<=n;i++){const p=SQUARE_GRID.fromWorld({x:u.x+(v.x-u.x)*i/n,z:u.z+(v.z-u.z)*i/n});if(c.occupied.has(key(p))||!exterior&&!c.walkable(p))return false;}return true;};
+ const approach=(u,v)=>Math.hypot(u.x-v.x,u.z-v.z)<1e-6?[]:clear(u,v)?[v]:(c.path(u,v,true)?.concat([v])||null);
+ const onSegment=(p,u,v)=>Math.abs(Math.hypot(p.x-u.x,p.z-u.z)+Math.hypot(p.x-v.x,p.z-v.z)-Math.hypot(v.x-u.x,v.z-u.z))<1e-6;
+ for(const target of points){const b=groundPoint(target);
+  // Preserve the authored path outside the mouth/airway before joining town.
+  if(c.entrances.some(points=>points.some((p,i)=>i&&onSegment(a,points[i-1],p)&&onSegment(b,points[i-1],p)))){out.push(target);a=b;continue;}
+  const start=walkablePoint(layout,a),end=walkablePoint(layout,b),road=c.navigation.route(start,end);
+  if(!road){out.push(groundCoordinate(a));break;}
+  const entry=approach(start,road[0]),exit=approach(road.at(-1),end);
+  if(!entry||!exit){out.push(groundCoordinate(a));break;}
+  out.push(...simplify([...(Math.hypot(start.x-a.x,start.z-a.z)>1e-6?[start]:[]),...entry,...road,...exit].filter((p,i,list)=>!i||Math.hypot(p.x-list[i-1].x,p.z-list[i-1].z)>1e-6)).map(groundCoordinate));a=end;
  }
  return out.slice(0,CITY_CAPS.path);
 }
@@ -191,11 +216,14 @@ export function applyTileLayout(s,next){
  for(const a of [...s.cells,...s.shipments,...s.debris,...s.enemies]){
   if(a.front&&!a.entered||a.frontJob!=null&&a.frontStage==='repair')continue;const frame=a.tissueJob!=null?'house-'+TISSUES[a.tissueJob].index:a.frontJob!=null&&a.frontStage==='shop'?'workshop':(a.workplace?stationOwner(old,a.workplace.site,a.workplace.role,a.workplace.slot):a.activity?.site);Object.assign(a,mapped(a,frame));
   if(a.activity)Object.assign(a.activity,mapped(a.activity,frame||a.activity.site));
-  if(a.path){a.path=[];a.step=0;a.queueMove=null;a.assignment=null;a.staged=false;}
+  if(a.path){a.path=[];a.step=0;delete a.roadPathVersion;a.queueMove=null;a.assignment=null;a.staged=false;}
+  if(a.immuneMove!=null)a.immuneMove=null;
  }
+ if(s.immunity)for(const a of [...s.immunity.infected,...s.immunity.parasites,...s.immunity.exposures,...s.immunity.nets])Object.assign(a,mapped(a,a.site));
  s.layout=cloneLayout(next);s.effects=[];
- for(const c of s.cells){if(c.kind==='rbc'){c.path=cityRoute(s,cityDistricts(s).reduce((a,b)=>Math.hypot(c.x-a.x,c.y-a.y)<Math.hypot(c.x-b.x,c.y-b.y)?a:b).id,c.cargo?c.target:'lung');c.step=0;}if(c.frontJob!=null){c.path=c.frontStage==='shop'?[localPoint(s,'workshop',{x:WORKSHOP.x+1.1,z:WORKSHOP.z+.5})]:c.frontStage==='field'?[WALLS[c.frontJob].inside]:[];c.step=0;}if(c.tissueJob!=null){c.path=[tissueAt(s,TISSUES[c.tissueJob]).point];c.step=0;}}
+ if(s.time===0)for(const c of s.cells)if(!c.activity)Object.assign(c,groundCoordinate(roadPoint(s.layout,groundPoint(c))));
+ for(const c of s.cells){if(c.kind==='rbc'){c.path=cityRoute(s,cityDistricts(s).reduce((a,b)=>Math.hypot(c.x-a.x,c.y-a.y)<Math.hypot(c.x-b.x,c.y-b.y)?a:b).id,c.cargo?c.target:'lung');c.step=0;}if(c.frontJob!=null){c.path=c.frontStage==='shop'?[localPoint(s,'workshop',{x:WORKSHOP.x+1.1,z:WORKSHOP.z+.5})]:c.frontStage==='field'?[WALLS[c.frontJob].inside]:[];c.step=0;}if(c.patchWall!=null){c.path=[WALLS[c.patchWall].inside];c.step=0;}if(c.tissueJob!=null){c.path=[tissueAt(s,TISSUES[c.tissueJob]).point];c.step=0;}}
  for(const sh of s.shipments){const from=cityDistricts(s).reduce((a,b)=>Math.hypot(sh.x-a.x,sh.y-a.y)<Math.hypot(sh.x-b.x,sh.y-b.y)?a:b);sh.path=sh.kind==='raw'&&sh.phase!=='leaving'?intakeRoute(s):cityRoute(s,from.id,sh.phase==='pickup'?'gut':sh.to);sh.step=0;}
- for(const e of s.enemies)e.entryStep=null;
+ for(const e of s.enemies){e.entryStep=null;e.attackX=null;e.attackY=null;e.action='approach';}
  return {ok:true,text:'마을 배치 저장 완료'};
 }
