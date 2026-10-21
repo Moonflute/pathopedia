@@ -1,5 +1,5 @@
 import {CITY_CAPS,populationLimit,shipmentLimit,travelScale} from './city-world.mjs';
-import {cityDistricts,cityDistrict,cityRoute,intakeRoute,localPoint,createTileLayout,migrateTileLayout,applyTileLayout,validateTileLayout,compileLayout} from './city-tile-layout.mjs';
+import {cityDistricts,cityDistrict,cityRoute,intakeRoute,localPoint,createTileLayout,migrateTileLayout,applyTileLayout,validateTileLayout,compileLayout,walkingRoute} from './city-tile-layout.mjs';
 import {ensureFrontier,frontierCommand,deliverFrontier,frontierDestination,assignFronts,spawnAtFront,tickFrontierEnemy,tickFrontier,frontierCell,receiveAntigen,completeInvestment,frontDepot,validateFrontier} from './city-frontier.mjs';
 import {supportCount,WALLS} from './city-frontier-data.mjs';
 import {groundCoordinate,SITES} from './city-three-layout.mjs';
@@ -28,10 +28,13 @@ const frontierAPI={route,move,log,shipment,output,damage,seed:seedInfection};
 function cell(s,kind,x,y){
   const c={id:++s.serial,kind,x,y,age:0,life:CELL_JOBS[kind].life,home:'marrow',target:'lung',path:[],step:0,cooldown:0,cargo:0,recordId:null,task:CELL_JOBS[kind].task};
   if(kind==='rbc')route(c,cityRoute(s,'marrow','lung'));
-  s.cells.push(c);return c;
+  if(s.layout)movementLayouts.set(c,s.layout);s.cells.push(c);return c;
 }
+const movementLayouts=new WeakMap(),navigatedPaths=new WeakMap();
 function route(c,points){c.path=points.map(p=>({...p}));c.step=0;}
 function move(c,speed,dt){
+  const layout=movementLayouts.get(c);
+  if(layout&&navigatedPaths.get(c)!==c.path){c.path=walkingRoute(layout,c,c.path.slice(c.step));c.step=0;navigatedPaths.set(c,c.path);}
   let budget=speed*dt;
   while(c.step<c.path.length){const p=c.path[c.step],d=dist(c,p);if(d>budget){c.x+=(p.x-c.x)/d*budget;c.y+=(p.y-c.y)/d*budget;return false;}c.x=p.x;c.y=p.y;c.step++;budget-=d;}
   return true;
@@ -354,6 +357,7 @@ function wander(s,c,dt){
   move(c,35,dt);
 }
 export function tickCity(s,dt,data){
+  if(s.layout)for(const actor of [...s.cells,...s.shipments])movementLayouts.set(actor,s.layout);
   if(s.status!=='running'||!Number.isFinite(dt)||dt<=0)return;
   dt=Math.min(dt,.25);s.time+=dt;
   if(s.weather.until<=s.time)s.weather={id:'clear',until:0};

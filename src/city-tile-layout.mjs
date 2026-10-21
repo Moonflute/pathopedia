@@ -4,12 +4,13 @@ import {SITES,COTTAGES,RIVER_PATH,groundPoint,groundCoordinate} from './city-thr
 import {PERIMETER,WORKSHOP,FRONTS,TISSUES,WALLS} from './city-frontier-data.mjs';
 import {vascularRoute,FOOD_ROAD} from './city-map.mjs';
 import {TOWN_PLAN,TOWN_HOUSES,GROWTH_OFFSETS} from './city-town-plan.mjs';
+import {gridPath,streetNetwork} from './city-grid-path.mjs';
 
 // Grid topology is independent of organ state and rendering. A future hex grid
 // supplies its own neighbours, rotation and coordinate conversion here.
 export const SQUARE_GRID=Object.freeze({id:'square',size:1,turns:4,neighbours:[[1,0],[0,1],[-1,0],[0,-1]],toWorld:(x,z)=>({x,z}),fromWorld:p=>({col:Math.round(p.x),row:Math.round(p.z)})});
 const bounds={heart:[-3,-4,4,4],lung:[-6,-6,4,4],gut:[-2,-4,6,4],kidney:[-3,-1,6,6],marrow:[-5,-3,4,5],lymph:[-5,-2,4,5]};
-const solids={heart:[-2,-5,2,0],lung:[-6,-6,4,-1],gut:[0,-4,6,-1],kidney:[1,-1,6,4],marrow:[-4,1,1,4],lymph:[-5,-2,-1,2]};
+const solids={heart:[-2,-5,2,-1],lung:[-6,-6,4,-1],gut:[0,-4,6,-1],kidney:[1,-1,6,4],marrow:[-4,1,1,4],lymph:[-5,-2,-1,2]};
 const ports={heart:[4,0],lung:[0,4],gut:[-3,0],kidney:[-4,0],marrow:[0,-4],lymph:[4,0]};
 export const PLACEABLES=Object.freeze([
  ...DISTRICTS.map(d=>({id:d.id,name:SITES[d.id].label,kind:'organ',origin:SITES[d.id],bounds:bounds[d.id],solid:solids[d.id],port:ports[d.id],color:SITES[d.id].color})),
@@ -61,12 +62,12 @@ export function placementCheck(layout,id,a){
  if(cells.some(c=>other.has(c.col+','+c.row)))return {ok:false,reason:'다른 시설과 겹침'};
  return {ok:true,reason:'배치 가능'};
 }
-function findPlacement(layout,d,start=d.origin){
+function findPlacement(layout,d,start=d.origin,accept=()=>true){
  const base={...SQUARE_GRID.fromWorld(start),rot:start.rot||0};
  for(let radius=0;radius<=48;radius++)for(let dz=-radius;dz<=radius;dz++)for(let dx=-radius;dx<=radius;dx++){
   if(Math.max(Math.abs(dx),Math.abs(dz))!==radius)continue;
   const a={col:base.col+dx,row:base.row+dz,rot:base.rot};
-  if(placementCheck(layout,d.id,a).ok)return a;
+  if(placementCheck(layout,d.id,a).ok&&accept(a))return a;
  }
  return null;
 }
@@ -105,8 +106,9 @@ export function addLayoutBuilding(layout,kind,site='heart'){
  const centre=layout.items[site],offsets=GROWTH_OFFSETS[kind]||[[7,5]];
  const starts=centre?offsets.map(([x,z])=>{const p=rotateOffset({x,z},centre.rot);return {x:centre.col+p.x,z:centre.row+p.z,rot:centre.rot};}):[d.origin];
  // Prefer complete small courts near the selected district before the general search.
- let a=starts.map(p=>({...SQUARE_GRID.fromWorld(p),rot:p.rot||0})).find(p=>placementCheck(layout,d.id,p).ok);
- if(!a)a=findPlacement(layout,d,starts[0]);
+ const connected=a=>compileLayout({...layout,items:{...layout.items,[d.id]:a}}).valid;
+ let a=starts.map(p=>({...SQUARE_GRID.fromWorld(p),rot:p.rot||0})).find(p=>placementCheck(layout,d.id,p).ok&&connected(p));
+ if(!a)a=findPlacement(layout,d,starts[0],connected);
  if(!a)return {ok:false,text:'배치 공간이 부족합니다.'};
  const next=cloneLayout(layout);next.items[d.id]=a;
  if(!compileLayout(next).valid)return {ok:false,text:'도로 공간을 확보해 주세요.'};
@@ -127,16 +129,16 @@ export function compileLayout(layout){
  const connections=[],roadCells=new Map();
  const port=id=>{const a=layout.items[id],q=rotateOffset({x:placeable(id).port[0],z:placeable(id).port[1]},a.rot);return {x:a.col+q.x,z:a.row+q.z};};
  const centre=id=>({x:layout.items[id].col,z:layout.items[id].row});
- // Bounded breadth-first search, performed once on Apply, never per frame.
- function path(a,b,owners=[]){
-  const start=SQUARE_GRID.fromWorld(a),end=SQUARE_GRID.fromWorld(b),todo=[start],previous=new Map([[key(start),null]]);let head=0,found=false;
-  while(head<todo.length&&head<((CITY_BOUNDS.right-CITY_BOUNDS.left+1)*(CITY_BOUNDS.bottom-CITY_BOUNDS.top+1))){const p=todo[head++];if(key(p)===key(end)){found=true;break;}
-   for(const [dx,dz] of SQUARE_GRID.neighbours){const q={col:p.col+dx,row:p.row+dz},k=key(q),owner=occupied.get(k);if(previous.has(k)||!tileAllowed(q.col,q.row)||owner&&!owners.includes(owner))continue;previous.set(k,p);todo.push(q);}
-  }
-  if(!found)return null;const cells=[];let p=end;while(p){cells.push({x:p.col,z:p.row});p=previous.get(key(p));}cells.reverse();return cells;
- }
+ const walkable=p=>tileAllowed(p.col,p.row)&&!occupied.has(key(p));
+ // A modest discount joins existing streets without creating long detours.
+ const pathCache=new Map();
+ const path=(a,b,reuse=false)=>{const start=SQUARE_GRID.fromWorld(a),end=SQUARE_GRID.fromWorld(b),k=key(start)+'>'+key(end)+':'+reuse;
+  if(pathCache.has(k))return pathCache.get(k);
+  const result=gridPath(start,end,walkable,p=>reuse&&roadCells.has(key(p))?.65:1);
+  if(pathCache.size>=512)pathCache.delete(pathCache.keys().next().value);pathCache.set(k,result);return result;
+ };
  function connect(id,from,to,kind,owners=[]){
-  const middle=path(from,to,owners);if(!middle){connections.push({id,kind,ok:false,points:[]});return null;}
+  const middle=path(from,to,kind==='walk');if(!middle){connections.push({id,kind,ok:false,points:[]});return null;}
   for(const p of middle){const k=p.x+','+p.z;if(!roadCells.has(k))roadCells.set(k,new Set());roadCells.get(k).add(kind);}
   const points=simplify([from,...middle,to].filter((p,i,a)=>!i||p.x!==a[i-1].x||p.z!==a[i-1].z));connections.push({id,kind,ok:true,points});return points;
  }
@@ -147,7 +149,25 @@ export function compileLayout(layout){
  }
  for(const d of layoutPlaceables(layout).filter(d=>d.kind!=='organ')){const nearest=d.kind!=='house'&&d.district?districtDef(d.district):DISTRICTS.reduce((a,b)=>Math.hypot(centre(a.id).x-centre(d.id).x,centre(a.id).z-centre(d.id).z)<Math.hypot(centre(b.id).x-centre(d.id).x,centre(b.id).z-centre(d.id).z)?a:b);connect(d.id,port(d.id),port(nearest.id),'walk',[d.id,nearest.id]);}
  const districts=DISTRICTS.map(d=>({...d,...groundCoordinate(centre(d.id))}));
- const result={connections,vascular,entries,roadCells,districts,valid:connections.every(c=>c.ok),ports:Object.fromEntries(layoutPlaceables(layout).map(d=>[d.id,port(d.id)]))};compiled.set(layout,result);return result;
+ const streets=streetNetwork(connections);pathCache.clear();
+ const result={connections,vascular,entries,roadCells,streets,occupied,walkable,path,districts,valid:connections.every(c=>c.ok),ports:Object.fromEntries(layoutPlaceables(layout).map(d=>[d.id,port(d.id)]))};compiled.set(layout,result);return result;
+}
+
+export function walkablePoint(layout,p){
+ if(!layout)return p;const c=compileLayout(layout),start=SQUARE_GRID.fromWorld(p);if(c.walkable(start))return p;
+ for(let r=1;r<10;r++)for(let z=-r;z<=r;z++)for(let x=-r;x<=r;x++){if(Math.max(Math.abs(x),Math.abs(z))!==r)continue;const q={col:start.col+x,row:start.row+z};if(c.walkable(q))return {x:q.col,z:q.row};}
+ return p;
+}
+export function walkingRoute(layout,from,points){
+ if(!layout)return points;const c=compileLayout(layout),out=[];let a=groundPoint(from);
+ for(const target of points){const b=groundPoint(target),length=Math.hypot(b.x-a.x,b.z-a.z),steps=Math.ceil(length*3);let clear=true;
+  for(let i=1;i<steps;i++){const p={col:Math.round(a.x+(b.x-a.x)*i/steps),row:Math.round(a.z+(b.z-a.z)*i/steps)};if(c.occupied.has(key(p))){clear=false;break;}}
+  if(clear){out.push(target);a=b;continue;}
+  const start=walkablePoint(layout,a),end=walkablePoint(layout,b),route=c.path(start,end,true);
+  if(route){out.push(...simplify([start,...route,end]).map(groundCoordinate));a=end;}
+  else{out.push(groundCoordinate(a));break;}
+ }
+ return out.slice(0,CITY_CAPS.path);
 }
 export const cityDistricts=s=>s?.layout?compileLayout(s.layout).districts:DISTRICTS;
 export const cityDistrict=(s,id)=>cityDistricts(s).find(d=>d.id===id);

@@ -90,18 +90,19 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  for(let i=0;i<13;i++){const x=(-33+i*5.1)*CITY_SCALE,z=(-26-Math.sin(i*.8)*5)*CITY_SCALE;const hill=orb(x,-2,z,1,newAssets?(i%2?0x9fb28e:0xabbc98):(i%2?0xadb8a0:0xb8bda7));hill.scale.set(5+i%3,5+i%4,4.6);terrain.push(hill);}
  for(let i=0;i<7;i++){const hill=orb((-26-i%2*3)*CITY_SCALE,-1,(-14+i*6)*CITY_SCALE,1,newAssets?0xaabd97:0xb9c2a7);hill.scale.set(5,3.5+i%3,5);terrain.push(hill);}
  const river=smooth(RIVER_PATH);ribbon(river,4.15,0xc4c1a1,-.005);ribbon(river,3.25,STYLE.water,.004);ribbon(river,1.65,STYLE.waterLight,.006);
- for(const r of roads.filter(r=>r.points.length>1)){ribbon(r.points,r.pulmonary?2:1.8,STYLE.roadEdge,.025);ribbon(r.points,r.pulmonary?1.7:1.5,r.pulmonary?0xc4cdb4:0xdccab0,.035);
+ if(network){const width=level=>level===2?STYLE.mainRoad:level===1?1.1:STYLE.alley;for(const r of network.streets.runs)road(r.points,width(r.level));for(const p of network.streets.junctions){disc(p.x,p.z,width(p.level)/2+.13,STYLE.roadEdge,.026);disc(p.x,p.z,width(p.level)/2,STYLE.road,.036);}}
+ for(const r of roads.filter(r=>r.points.length>1)){if(!network)road(r.points,STYLE.mainRoad);
   const pts=r.points.map(p=>new T.Vector3(p.x,.08,p.z));
   const line=new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),32,.075,4,false),new T.MeshBasicMaterial({color:r.pulmonary?0x4f9aa9:newAssets?0xc77f77:0xc89b63}));supply.add(line);
-  if(r.pulmonary)for(const side of [-1,1]){const points=r.points.map((p,i)=>{const a=r.points[Math.max(0,i-1)],b=r.points[Math.min(r.points.length-1,i+1)],l=Math.hypot(b.x-a.x,b.z-a.z)||1;return {x:p.x-(b.z-a.z)/l*.39*side,z:p.z+(b.x-a.x)/l*.39*side};});ribbon(points,.07,side>0?0xe1b5ad:0x7eafb3,.042);}
  }
- road(intake,1.05);if(network){for(const c of network.connections)if(c.kind==='walk')road(c.points,.65);}else road(smooth([[-12,-11],[-13,-6],[-10,-2],[-7,4],[-3,7],[3,7],[6,4],[5,0],[2,-3],[-1,-6]]),.9);
- road(network?network.entries.airway:AIRWAY_PATH.map(groundPoint),1.8);
+ road(intake.slice(0,network?3:undefined),1.05);if(!network)road(smooth([[-12,-11],[-13,-6],[-10,-2],[-7,4],[-3,7],[3,7],[6,4],[5,0],[2,-3],[-1,-6]]),.9);
+ road(network?network.entries.airway.slice(0,4):AIRWAY_PATH.map(groundPoint),1.8);
  road(WALLS.map(w=>groundPoint(w.inside)).concat([groundPoint(WALLS[0].inside)]),.65);
  if(!layout)road([{x:-5,z:10},{x:-10,z:10},{x:WORKSHOP.x+1,z:WORKSHOP.z+.5}],.85);
  if(!layout)road([{x:19,z:-4},{x:15,z:-4},{x:11.7,z:-3.4},{x:8,z:-3}],1.2);
  for(const [id,site] of Object.entries(SITES)){
   scope(id);
+  if(layout){const p=placeable(id).port;road([{x:site.x,z:site.z},{x:site.x+p[0],z:site.z+p[1]}],STYLE.mainRoad);}
   disc(site.x,site.z,site.detail?2.35:1.65,0xb8b7a1,.041);disc(site.x,site.z,site.detail?2.13:1.5,STYLE.plaza,.044);
   const [bx,bz]=site.building;road([{x:site.x,z:site.z},{x:bx,z:bz+1.4}],.9);
   for(const role of ['oxygen','dock',...(id==='lymph'?['produce']:id==='marrow'||id==='gut'?['fabricate']:[])])for(let slot=0;slot<(role==='dock'?1:3);slot++){const bay=workStation(id,role,slot);road([{x:site.x,z:site.z},groundPoint(bay.stand),groundPoint(bay.target)],.48);}
@@ -117,7 +118,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
   const tower=districts[id].tower;tower.position.set(site.x+2,0,site.z+1.5);cylinder(0,.8,0,.5,.7,1.6,0xd8caae,tower);cylinder(0,1.65,0,.7,.7,.16,0xb19a79,tower);const shield=orb(0,1.95,0,.32,site.color,tower);shield.scale.y=1.3;
   // Upgrade modules are drawn by the bounded frontier instance pools.
  }
- for(const d of layoutPlaceables(layout).filter(d=>d.kind==='house')){const i=Number(d.id.slice(6)),p=d.origin;scope(d.id);cottage(p.x,p.z,d.size,d.angle,i%3===0);if(i%3===0)model('lantern',p.x+.85,0,p.z+.7,.8);}
+ for(const d of layoutPlaceables(layout).filter(d=>d.kind==='house')){const i=Number(d.id.slice(6)),p=d.origin;scope(d.id);cottage(p.x,p.z,d.size,layout?0:d.angle,i%3===0);if(layout)road([{x:p.x,z:p.z+.8},{x:p.x,z:p.z+2}],STYLE.alley);if(i%3===0)model('lantern',p.x+.85,0,p.z+.7,.8);}
  for(const d of layoutPlaceables(layout).filter(d=>d.kind==='depot'||d.kind==='production')){
   scope(d.id);const {x,z}=d.origin;
   if(newModel&&d.kind==='depot')newModel('house-b',x,0,z-.8,2.8,0,fixed,3.4);
