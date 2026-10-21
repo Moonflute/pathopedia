@@ -2,6 +2,7 @@ import * as T from './vendor/three/three.module.min.js';
 import {groundPoint} from './city-three-layout.mjs';
 import {CELL_JOBS,DRUGS} from './city-data.mjs';
 import {activeActivity,activityProgress} from './city-activity.mjs';
+import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 
 // Shared, rigid parts: eight silhouettes and all work effects still use 16
 // batches, without skeletons, particle objects, lights or per-cell DOM.
@@ -127,6 +128,11 @@ export function createActors(profile){
   }
   if(hammering&&progress>.62&&progress<.9){const q=(progress-.62)/.28;
    for(const side of [-1,0,1])put('badge',at.x+side*q*.32,.55+Math.sin(q*Math.PI)*.27,at.z+side*.11,.055*readability,.07*readability,.055*readability,0xe9c77e);
+  }
+  if(at&&STYLE.activity[doing]){
+   const tint=STYLE.activity[doing],radius=.45*readability;
+   put('selected',p.x,.055,p.z,readability,readability,readability,tint,Math.PI/2);
+   put('badge',at.x+Math.cos(progress*Math.PI*2)*radius,.13,at.z+Math.sin(progress*Math.PI*2)*radius,.07*readability,.06,.07*readability,tint);
   }
   if(producing){
    put('rod',at.x,.49+progress*.08,at.z,.10,.12+progress*.2,.10,0xa8d6c5);

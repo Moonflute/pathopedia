@@ -234,3 +234,9 @@ The facility module now gives the lung paired round fan towers, the gut grain ho
 ### TASK 07 — homes, commons and boundary
 
 Cottages now vary porches, rear windows, planted edges and herb/flower boxes within their footprints. Tall planting is removed from organ work courts. Random scatter is replaced by outer wall groves, reeds/stones along the river, and clear-space neighborhood commons with benches; candidate commons are omitted when saved buildings or roads occupy their clearance. Imported wall/tower geometry is reused with a shared warm stone material, reduced tower height and the existing damage/repair behavior. Gates share the same plaster palette. The asset switch/resource-lifetime check passed; imported geometries remain owned by the cache and the new wall material is explicitly disposed. `07-landscape.jpg` records the unobstructed courts and softer boundary.
+
+### TASK 08 — working state and activity
+
+Machine drive is derived from real output, facility damage/supply pressure and available raw food. Phase accumulators slow/stutter machines and freeze with simulation time; an empty gut feed stops the processing drive. Enlarged courtyard lamps show actual facility state. Construction/repair/fabrication/collection/antibody work use colored ground rings and a progress marker from the existing activity clock. Nursery pods now use only the existing recruitment-bay instance data, removing duplicate decorative pods. Actor effects remain in 16 bounded batches; frontier effects remain in seven.
+
+Thirteen focused activity/state/save/render checks pass. In the isolated browser city, heart expansion visibly progressed from material delivery to active work and then Lv.2, preserving stocks and the running city. The running view observed 60 fps, DPR 1.00, 1024 shadows, 126 draws and 220k triangles; `08-working-city.jpg` records the completed live upgrade. No browser errors. Performance consolidation remains TASK 10.

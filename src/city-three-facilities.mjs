@@ -7,12 +7,17 @@ import {output} from './city-engine.mjs';
 import {workStation} from './city-activity.mjs';
 import {SITES} from './city-three-layout.mjs';
 
+export function machineDrive(s,id){
+ const state=facilityState(s,id),fed=id!=='gut'||s.rawFood>.1;
+ return {state,rate:fed?output(s,id)*state.speed:0};
+}
+
 // CC0 modular walls, roofs, mills, stalls and carts share the existing atlas.
 // Bespoke organ machinery uses the same small palette and only moving parts
 // remain outside the static geometry bake.
 export function createFacilities({fixed,animated,make,box,cylinder,orb,model,newModel=null,cottage,road,scope=()=>{}}){
  const {plaster:ivory,brass,timber:wood,teal,rose,sage:green,stone}=STYLE;
- const rotors=[],pistons=[],belts=[],born=[],pumps=[];
+ const rotors=[],pistons=[],belts=[],pumps=[],phases=Object.fromEntries(DISTRICTS.map(d=>[d.id,0]));
  function pipe(points,r=.11,color=brass,segments=14){return make(new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),segments,r,6,false),color,0,0,0);}
  function rim(x,y,z,r,color=ivory){const m=make(new T.TorusGeometry(r,.09,5,18),color,x,y,z);m.rotation.x=Math.PI/2;return m;}
  scope('lung');
@@ -97,7 +102,6 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  box(-6.8,3.08,11,3.5,.3,.32,ivory);
  const nurseryRoof=cylinder(-6.8,2,12,.83,.83,3.5,ivory);nurseryRoof.rotation.z=Math.PI/2;
  box(-6.8,3.12,10.79,.8,.18,.08,STYLE.roofs[4]);box(-6.8,3.12,10.78,.18,.8,.08,STYLE.roofs[4]);
- for(let i=0;i<3;i++){const p=groundPoint(workStation('marrow','spawn',i).target);cylinder(p.x,.34,p.z,.28,.34,.68,teal);rim(p.x,.7,p.z,.29,ivory);const bud=orb(p.x,.85,p.z,.24,rose,animated);born.push({mesh:bud,phase:i*1.4});}
  // Production bays are instanced and follow each actual recruitment order.
  model('cart',-4.5,.05,11.4,.75,.6);model('chimney',-7.9,2.15,12.2,.8);
  scope('lymph');
@@ -137,11 +141,12 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  let last=0,beltPhase=0;
  return {update(s){
   const dt=Math.max(0,Math.min(.3,s.time-last));last=s.time;
-  for(const r of rotors){const state=facilityState(s,r.id);if(r.gauge){r.mesh.rotation.z=-.8+output(s,r.id)*state.speed*1.6;continue;}r.mesh.rotation[r.axis]+=dt*r.speed*output(s,r.id)*state.speed*(state.id==='damage'&&Math.sin(s.time*5)<0?0:1)*(r.id==='lung'&&s.weather.id==='dry'?.55:1);}
-  for(const p of pumps){const beat=Math.sin(s.time*4)*.055*output(s,'heart')*facilityState(s,'heart').speed;p.scale.set(1+beat,.7+beat,1+beat);}
-  for(const p of pistons)p.mesh.position.y=p.y+Math.sin(s.time*(p.id==='lung'?2:4))*.16*output(s,p.id)*facilityState(s,p.id).speed;
-  beltPhase+=dt*.16*facilityState(s,'gut').speed*(s.frontier?.gut.quarantine?.55:1);
+  const drives=Object.fromEntries(DISTRICTS.map(d=>[d.id,machineDrive(s,d.id)]));
+  for(const [id,d] of Object.entries(drives)){d.rate*=d.state.id==='damage'&&Math.sin(s.time*5)<0?0:1;if(id==='lung'&&s.weather.id==='dry')d.rate*=.55;phases[id]+=dt*d.rate;}
+  for(const r of rotors){const d=drives[r.id];if(r.gauge){r.mesh.rotation.z=-.8+d.rate*1.6;continue;}r.mesh.rotation[r.axis]+=dt*r.speed*d.rate;}
+  for(const p of pumps){const beat=Math.sin(phases.heart*4)*.055*drives.heart.rate;p.scale.set(1+beat,.7+beat,1+beat);}
+  for(const p of pistons)p.mesh.position.y=p.y+Math.sin(phases[p.id]*(p.id==='lung'?2:4))*.19;
+  beltPhase+=dt*.16*drives.gut.rate*(s.frontier?.gut.quarantine?.55:1);
   for(const b of belts){b.mesh.visible=s.rawFood>(b.phase*18);b.mesh.position.x=9.5+((beltPhase+b.phase)%1)*2.25;}
-  for(const b of born){const busy=s.recruits.length>0;b.mesh.position.y=.85+(busy?Math.sin(s.time*4+b.phase)*.1:0);b.mesh.scale.setScalar(busy?1+Math.sin(s.time*3+b.phase)*.12:1);}
  }};
 }

@@ -10,5 +10,6 @@ export const CITY_STYLE=Object.freeze({
  roughness:.92,atlasTint:0xe5e3d7,
  houseHeight:1.08,houseUpperHeight:1.48,landmarkHeight:4.6,
  labelHeight:Object.freeze({heart:4.9,lung:4.3,gut:3.9,kidney:4,marrow:4.2,lymph:4.9}),
+ activity:Object.freeze({build:0xd6a451,repair:0x69a59a,fabricate:0xd1aa65,produce:0x75b5a7,collect:0xa596ad,patch:0xd6b77b}),
  mainRoad:1.5,alley:.72,curb:.22
 });

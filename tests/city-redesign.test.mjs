@@ -4,6 +4,7 @@ import {createCity,serializeCity,restoreCity} from '../src/city-engine.mjs';
 import {createTileLayout,compileLayout,cityRoute,applyTileLayout,cloneLayout,validateTileLayout,walkingRoute} from '../src/city-tile-layout.mjs';
 import {groundPoint,groundCoordinate} from '../src/city-three-layout.mjs';
 import {DISTRICTS} from '../src/city-data.mjs';
+import {machineDrive} from '../src/city-three-facilities.mjs';
 
 test('all organ pairs preserve circulation endpoints and finite traversable segments',()=>{
  const s=createCity('normal','simulation',{specialists:true,expanded:true});assert.ok(applyTileLayout(s,createTileLayout()).ok);
@@ -16,6 +17,15 @@ test('all organ pairs preserve circulation endpoints and finite traversable segm
  assert.equal(network.connections.filter(r=>r.kind==='pulmonary').length,1);
  assert.equal(network.connections.filter(r=>r.kind==='systemic').length,4);
  assert.ok(network.entries.airway.length&&network.entries.gut.length);
+});
+
+test('machine motion follows real supply and damage without changing simulation state',()=>{
+ const s=createCity('normal','simulation',{specialists:true,expanded:true});
+ const normal=machineDrive(s,'heart');assert.equal(normal.state.id,'normal');
+ s.districts.heart.hp=30;const damaged=machineDrive(s,'heart');assert.equal(damaged.state.id,'damage');assert.ok(damaged.rate<normal.rate);
+ s.districts.heart.hp=100;s.districts.heart.food=0;const shortage=machineDrive(s,'heart');assert.equal(shortage.state.id,'shortage');assert.ok(shortage.rate<normal.rate);
+ s.rawFood=0;assert.equal(machineDrive(s,'gut').rate,0);s.rawFood=20;assert.ok(machineDrive(s,'gut').rate>0);
+ const saved=serializeCity(s);for(const d of DISTRICTS)machineDrive(s,d.id);assert.equal(serializeCity(s),saved);
 });
 
 test('shared streets and worker detours avoid building solids',()=>{

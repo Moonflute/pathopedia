@@ -8,12 +8,15 @@ import {workStation} from './city-activity.mjs';
 import {workplaceCapacity,facilityState} from './city-workplaces.mjs';
 import {infectionLoad} from './city-biology.mjs';
 import {CITY_ROADS} from './city-three-layout.mjs';
+import {CITY_STYLE as STYLE} from './city-three-style.mjs';
+
+const STATUS_LAMPS={heart:[3,1.3],lung:[1.7,3],gut:[-2,1.5],kidney:[-2,1.5],marrow:[1.8,-2.4],lymph:[2.8,1.5]};
 
 // Seven fixed-size pools: structures, modules, stores and tiny effects share
 // geometries. No particle emitters, textures, extra lights or scene graph churn.
 export function createFrontierScene({detailedWalls=false}={}){
  const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={};
- const surface=new T.MeshStandardMaterial({color:0xffffff,roughness:.95}),unlit=new T.MeshBasicMaterial({color:0xffffff});
+ const surface=new T.MeshStandardMaterial({color:0xffffff,roughness:STYLE.roughness}),unlit=new T.MeshBasicMaterial({color:0xffffff});
  function batch(id,geometry,capacity,material=surface,shadow=false){const mesh=new T.InstancedMesh(geometry,material,capacity);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;mesh.castShadow=shadow;mesh.receiveShadow=material===surface;mesh.count=0;mesh.name='frontier-'+id;root.add(mesh);batches[id]=mesh;}
  batch('box',new T.BoxGeometry(1,1,1),700,surface,true);batch('post',new T.CylinderGeometry(1,1,1,6),260,surface,true);
  batch('orb',new T.IcosahedronGeometry(1,0),180);batch('roof',new T.ConeGeometry(1,1,4),40,surface,true);
@@ -79,7 +82,10 @@ export function createFrontierScene({detailedWalls=false}={}){
     const road=layout?{points:compileLayout(layout).vascular[id]}:CITY_ROADS.find(r=>r.id===id),level=Math.max(...Object.values(biology.drugs));
     if(road?.points?.length&&level>1){const p=road.points[Math.floor((t*.15)%1*(road.points.length-1))];worldPut('glow',p.x,.18,p.z,.09,.1,.09,0x91ccc3);}
    }
-   put('glow',site.building[0]+.6,2.2,site.building[1]+.4,.09,.12,.09,state.color);
+   const [lx,lz]=STATUS_LAMPS[id],sx=site.x+lx,sz=site.z+lz,pulse=state.id==='normal'?1:.83+Math.sin(t*4)*.17;
+   put('post',sx,.6,sz,.045,1.2,.045,STYLE.timber);put('box',sx,1.24,sz,.38,.44,.3,STYLE.plaster);
+   put('glow',sx,1.25,sz+.17,.15*pulse,.18*pulse,.08,state.color);
+   if(state.id==='damage')for(const side of [-1,1])put('box',sx,1.25,sz+.26,.055,.3,.035,STYLE.timber,0,side*.6);
    if(state.id==='damage'&&fireCount<7)fire(site.building[0]+.6,site.building[1]+.7,t,fireCount++);
    for(let slot=1;slot<workplaceCapacity(s,id,'dock');slot++){const p=groundPoint(workStation(id,'dock',slot,poseLayout).target);worldPut('box',p.x,.3,p.z,.85,.6,.5,0xc0ab80);worldPut('glow',p.x,.9,p.z,.07,.1,.07,state.color);}
    const dock=groundPoint(workStation(id,'dock').target);
@@ -111,7 +117,7 @@ export function createFrontierScene({detailedWalls=false}={}){
   put('post',7,.3,10,.5,.6,.5,0xc9c1b0);put('box',7,.67,10,1,.06,.08,0x9b8c75,f.waste.stock>0?t*.8:0);
   owner='marrow';for(let i=0;i<(s.layout?.version===2?6:3);i++){
    const p=groundPoint(workStation('marrow','spawn',i).target),r=s.recruits.find(r=>r.bay===i),progress=r?.remaining!=null?1-r.remaining/(r.duration||8):0;
-   put('post',p.x,.3,p.z,.31,.6,.31,0xc2b8b6);put('orb',p.x,.7,p.z,.32,.35,.32,0xb4d1c1);
+   put('post',p.x,.3,p.z,.31,.6,.31,STYLE.teal);put('post',p.x,.61,p.z,.34,.08,.34,STYLE.plaster);put('orb',p.x,.76,p.z,.3,.28,.3,r?0xc9d9bd:0xa7c1b7);
    if(r){put('glow',p.x,.6+progress*.2,p.z,.13+progress*.09,.1+progress*.23,.13+progress*.09,r.remaining==null?0xd4b77b:0xe3a8a3);put('box',p.x,.08,p.z-.4,.65*Math.max(.05,progress),.05,.12,0x9ebea9);}
   }
   owner='lymph';for(const [i,item] of f.inbox.entries()){
