@@ -136,19 +136,19 @@ export function createActors(profile){
   if(selected){const scale=selected===2?1.3*readability:1;put('selected',p.x,.07,p.z,scale,scale,scale,selected===2?0x438f92:0xe5b854,Math.PI/2);}
   if(selected===2)put('badge',p.x,1.15,p.z,.08*readability,.14*readability,.08*readability,0x75d1cb);
  }
- function draw(s,{selectedKind,selectedCell,readability=1,motion}={}){
+ function draw(s,{selectedKind,selectedCell,readability=1,motion,visible}={}){
   if(lastRun!==s||lastLayout!==s.layout){last.clear();lastRun=s;lastLayout=s.layout;}
   const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time;
   for(const m of Object.values(batches))m.count=0;positions.length=0;const living=new Set(),drug=DRUGS.find(d=>d.id===s.drug);
-  for(const c of s.cells.slice(0,profile.maxCells)){const p=point(c,c.id);positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability);}
-  for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=point(sh,id);positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability);}
+  for(const c of s.cells.slice(0,profile.maxCells)){const p=point(c,c.id);if(visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability);}
+  for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability);}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
-   const p=point(e,'enemy'+e.id),bacillus=['ECO-009','GNX-220','CDF-121'].includes(e.recordId);put('enemy',p.x,.35,p.z,bacillus?.5:.38,bacillus?.25:.35,.37,e.color);
+   const p=point(e,'enemy'+e.id);if(visible&&!visible(p))continue;const bacillus=['ECO-009','GNX-220','CDF-121'].includes(e.recordId);put('enemy',p.x,.35,p.z,bacillus?.5:.38,bacillus?.25:.35,.37,e.color);
    for(let n=0;n<4;n++){const angle=n*Math.PI/2;put('spikes',p.x+Math.cos(angle)*.3,.62,p.z+Math.sin(angle)*.3,.09,.3,.09,e.color,0,0,Math.cos(angle)*.5);}
    for(const side of [-1,1])put('enemyEyes',p.x+side*.12,.42,p.z+.32,.04,.05,.03,0x41464c);
    if(e.opsonized>.08){antibody(p.x,.95,p.z,.55+e.opsonized*.25);put('selected',p.x,.09,p.z,.85,.85,.85,0xdac686,Math.PI/2);}
   }
-  for(const e of s.debris.slice(0,80)){const p=groundPoint(e);put('debris',p.x,.09,p.z,e.cellKind?.21:.14,.08,.12,e.cellKind?0xc6bba8:0xa3929e);}
+  for(const e of s.debris.slice(0,80)){const p=groundPoint(e);if(visible&&!visible(p))continue;put('debris',p.x,.09,p.z,e.cellKind?.21:.14,.08,.12,e.cellKind?0xc6bba8:0xa3929e);}
   for(const fx of s.effects.slice(0,64)){
    const from=groundPoint(fx),to=groundPoint({x:fx.tx,y:fx.ty}),q=Math.max(0,Math.min(1,1-fx.life/.42));
    if(fx.kind==='engulf'){put('selected',to.x,.18,to.z,.7+q*.4,.7+q*.4,.7+q*.4,fx.color,Math.PI/2);continue;}

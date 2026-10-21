@@ -1,3 +1,4 @@
+import {CITY_CAPS,CITY_SCALE} from './city-world.mjs';
 import {districtDef} from './city-data.mjs';
 import {ROADS,FOOD_ROAD} from './city-map.mjs';
 
@@ -41,7 +42,7 @@ export function groundCoordinate(p){
 }
 export const CITY_ROADS=ROADS.map(r=>({...r,points:r.points.map(groundPoint)}));
 export const INTAKE_ROAD=FOOD_ROAD.map(groundPoint);
-export const RIVER_PATH=[[16,-27],[14,-19],[15,-10],[13,-1],[14,5],[12,11],[17,19],[20,29]];
+export const RIVER_PATH=[[16,-27],[14,-19],[15,-10],[13,-1],[14,5],[12,11],[17,19],[20,29]].map(([x,z])=>[x*CITY_SCALE,z*CITY_SCALE]);
 export const COTTAGES=[
  // Two staggered streets, a wind-harbour hamlet, and workshops around the square.
  [-4,-1.8,1.55,.4],[-4.8,4.4,1.5,-.3],[-2.8,6.3,1.35,-.5],
@@ -51,5 +52,5 @@ export const COTTAGES=[
 ];
 export function qualityProfile(width,dpr=1,level=0){
  const mobile=width<761,tier=Math.max(0,Math.min(4,Math.floor(level))),base=Math.min(dpr,mobile?1.35:1.75);
- return {mobile,level:tier,dpr:Math.min(base,Math.max(.75,base*[1,.85,.72,.63,.63][tier])),shadow:tier>=3?0:(mobile?512:1024)/(tier>=2?2:1),shadowInterval:tier>=2?400:200,fps:tier===4?30:60,maxCells:96,maxShipments:48,maxEnemies:32};
+ return {mobile,level:tier,dpr:Math.min(base,Math.max(.75,base*[1,.85,.72,.63,.63][tier])),shadow:tier>=3?0:(mobile?512:1024)/(tier>=2?2:1),shadowInterval:tier>=2?400:200,fps:tier===4?30:60,maxCells:CITY_CAPS.cells,maxShipments:CITY_CAPS.shipments,maxEnemies:CITY_CAPS.enemies};
 }

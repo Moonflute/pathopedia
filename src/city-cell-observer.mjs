@@ -1,3 +1,4 @@
+import {CITY_BOUNDS} from './city-world.mjs';
 import {cityDistricts} from './city-tile-layout.mjs';
 import {WALLS,FRONTS} from './city-frontier-data.mjs';
 import {CELL_JOBS,districtDef,DISTRICTS,DRUGS} from './city-data.mjs';
@@ -70,7 +71,7 @@ export function createCellObserver(){
 // Translate both camera and orbit target, preserving zoom, height and angle.
 // Exponential easing behaves consistently at either the 30 or 60 fps cap.
 export function moveFollowCamera(position,target,point,seconds){
- const x=clamp(point.x,-18,18)-target.x,z=clamp(point.z,-19,18)-target.z;
+ const x=clamp(point.x,CITY_BOUNDS.left+3,CITY_BOUNDS.right-3)-target.x,z=clamp(point.z,CITY_BOUNDS.top+2,CITY_BOUNDS.bottom-2)-target.z;
  if(Math.abs(x)+Math.abs(z)<1e-7)return false;
  const alpha=Math.hypot(x,z)<.002?1:1-Math.exp(-8*clamp(seconds,0,.1));
  const dx=x*alpha,dz=z*alpha;

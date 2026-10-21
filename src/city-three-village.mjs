@@ -1,4 +1,5 @@
-import {PLACEABLES,placeable,transformPoint,compileLayout,occupiedTiles,riverX} from './city-tile-layout.mjs';
+import {CITY_BOUNDS,CITY_ENTRIES,CITY_SCALE,storedPlacement} from './city-world.mjs';
+import {layoutPlaceables,placeable,transformPoint,compileLayout,occupiedTiles,riverX} from './city-tile-layout.mjs';
 import {createFrontierScene} from './city-three-frontier.mjs';
 import {WALLS,WORKSHOP,AIRWAY_PATH} from './city-frontier-data.mjs';
 import * as T from './vendor/three/three.module.min.js';
@@ -20,7 +21,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  const network=layout?compileLayout(layout):null;
  const roads=network?Object.entries(network.vascular).map(([id,points])=>({id,points,pulmonary:id==='lung'})):CITY_ROADS;
  const intake=network?network.entries.gut:INTAKE_ROAD;
- function applyTransform(g,id,a=layout?.items[id]){if(!a)return;g.visible=a.col>=-40;const d=placeable(id),q=transformPoint({items:{[id]:a}},id,{x:0,z:0});g.position.set(q.x,0,q.z);g.rotation.y=-a.rot*Math.PI/2;}
+ function applyTransform(g,id,a=layout?.items[id]){if(!a)return;g.visible=!storedPlacement(a);const d=placeable(id),q=transformPoint({items:{[id]:a}},id,{x:0,z:0});g.position.set(q.x,0,q.z);g.rotation.y=-a.rot*Math.PI/2;}
 
  const materials=new Map();
  const mat=color=>{if(!materials.has(color))materials.set(color,new T.MeshStandardMaterial({color,roughness:.95}));return materials.get(color);};
@@ -54,8 +55,8 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  // Ground extends into the landscape: no floating square board or map edge.
  const meadowColor=newAssets?0xb3c499:0xc8ccb2,ground=disc(0,0,100,meadowColor,-.035);ground.name='meadow';
  const terrain=[];
- for(let i=0;i<13;i++){const x=-33+i*5.1,z=-26-Math.sin(i*.8)*5;const hill=orb(x,-2,z,1,newAssets?(i%2?0x9fb28e:0xabbc98):(i%2?0xadb8a0:0xb8bda7));hill.scale.set(5+i%3,5+i%4,4.6);terrain.push(hill);}
- for(let i=0;i<7;i++){const hill=orb(-26-i%2*3,-1,-14+i*6,1,newAssets?0xaabd97:0xb9c2a7);hill.scale.set(5,3.5+i%3,5);terrain.push(hill);}
+ for(let i=0;i<13;i++){const x=(-33+i*5.1)*CITY_SCALE,z=(-26-Math.sin(i*.8)*5)*CITY_SCALE;const hill=orb(x,-2,z,1,newAssets?(i%2?0x9fb28e:0xabbc98):(i%2?0xadb8a0:0xb8bda7));hill.scale.set(5+i%3,5+i%4,4.6);terrain.push(hill);}
+ for(let i=0;i<7;i++){const hill=orb((-26-i%2*3)*CITY_SCALE,-1,(-14+i*6)*CITY_SCALE,1,newAssets?0xaabd97:0xb9c2a7);hill.scale.set(5,3.5+i%3,5);terrain.push(hill);}
  const river=smooth(RIVER_PATH);ribbon(river,4.1,0xaeb8a6,-.005);ribbon(river,3.25,0x84b5b4,.004);ribbon(river,1.7,0x94c7c0,.006);
  for(const r of roads.filter(r=>r.points.length>1)){ribbon(r.points,r.pulmonary?2:1.6,newAssets?0xb4a386:0xbba59a,.025);ribbon(r.points,r.pulmonary?1.7:1.3,newAssets?(r.pulmonary?0xb6c2a9:0xd8bda1):(r.pulmonary?0xc99c9d:0xc68788),.035);
   const pts=r.points.map(p=>new T.Vector3(p.x,.08,p.z));
@@ -84,16 +85,27 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
   const tower=districts[id].tower;tower.position.set(site.x+2,0,site.z+1.5);cylinder(0,.8,0,.5,.7,1.6,0xd8caae,tower);cylinder(0,1.65,0,.7,.7,.16,0xb19a79,tower);const shield=orb(0,1.95,0,.32,site.color,tower);shield.scale.y=1.3;
   // Upgrade modules are drawn by the bounded frontier instance pools.
  }
- for(const [i,p] of COTTAGES.entries()){scope('house-'+i);cottage(...p,i%3===0);if(i%3===0)model('lantern',p[0]+.85,0,p[1]+.7,.8);}
+ for(const d of layoutPlaceables(layout).filter(d=>d.kind==='house')){const i=Number(d.id.slice(6)),p=d.origin;scope(d.id);cottage(p.x,p.z,d.size,d.angle,i%3===0);if(i%3===0)model('lantern',p.x+.85,0,p.z+.7,.8);}
+ for(const d of layoutPlaceables(layout).filter(d=>d.kind==='depot'||d.kind==='production')){
+  scope(d.id);const {x,z}=d.origin;
+  if(newModel)newModel(d.kind==='depot'?'house-b':'workshop',x,0,z-.8,2.8,0,fixed,3.4);
+  else cottage(x,z-.8,1.8,0,true);
+  if(d.kind==='depot'){
+   if(newModel){newModel('crate',x-.8,.03,z+1,.6,0,fixed,.7);newModel('logs',x+.7,.03,z+1,.55,0,fixed,.9);}
+   else{box(x-.7,.3,z+1,.7,.6,.6,0xc1aa7d);box(x+.7,.3,z+1,.7,.6,.6,0xc1aa7d);}
+  }else for(let n=0;n<3;n++){if(newModel)newModel('table',x-1+n,.02,z+1,.55,0,fixed,.75);else box(x-1+n,.28,z+1,.7,.55,.5,0xbba580);}
+ }
+
  const facilities=createFacilities({fixed,animated,make,box,cylinder,orb,model,newModel,cottage,road,scope});
  scope(null);
  // A protected respiratory portal emerges from the northern hillside.
- const intakeHill=orb(-6,-.7,-21,1,0xb6bda7);intakeHill.scale.set(3.9,3.7,3.2);
- if(newModel)newModel('gate',-6,0,-18,3.4,0,fixed,3.6);
- else{box(-6,1.2,-18.25,2.6,2.4,.13,0x587a72);
-  for(const x of [-7.4,-4.6])box(x,.8,-18,.4,1.6,.75,0xe3d3b6);
-  const arch=make(new T.TorusGeometry(1.4,.25,6,16,Math.PI),0xe3d3b6,-6,1.5,-18);arch.castShadow=true;}
- for(const x of [-7.5,-4.5]){road([{x,z:-18},{x,z:-14.2},{x,z:-11.7}],.24);box(x,.18,-15.7,.25,.36,4.2,0xc0c4a6);}
+ const {portal,screen,start:airStart}=CITY_ENTRIES.airway;
+ const intakeHill=orb(airStart.x,-.7,airStart.z,1,0xb6bda7);intakeHill.scale.set(4.5,3.7,4);
+ if(newModel)newModel('gate',portal.x,0,portal.z,3.4,0,fixed,3.6);
+ else{box(portal.x,1.2,portal.z-.25,2.6,2.4,.13,0x587a72);
+  for(const x of [portal.x-1.4,portal.x+1.4])box(x,.8,portal.z,.4,1.6,.75,0xe3d3b6);
+  const arch=make(new T.TorusGeometry(1.4,.25,6,16,Math.PI),0xe3d3b6,portal.x,1.5,portal.z);arch.castShadow=true;}
+ for(const x of [portal.x-1.5,portal.x+1.5]){road([{x,z:portal.z},{x,z:screen.z},{x,z:screen.z+3}],.24);box(x,.18,(portal.z+screen.z)/2,.25,.36,screen.z-portal.z,0xc0c4a6);}
  scope('workshop');
  if(newModel){
   newModel('workshop',WORKSHOP.x,0,WORKSHOP.z-1,2.8,.05,fixed,3.1);
@@ -107,15 +119,15 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  }else{cottage(WORKSHOP.x,WORKSHOP.z-1,1.7,.05,true);box(WORKSHOP.x+1.1,.35,WORKSHOP.z+.5,.7,.7,.65,0xb9a078);}
  model('banner-red',WORKSHOP.x+.9,.8,WORKSHOP.z-1,.8);
  if(newModel){scope('heart');newModel('bench',-2,.04,3.6,.65,.15,fixed,1.5);}
- scope(null);model('stall-green',15.8,0,-4.8,1.2,0);
+ scope(null);model('stall-green',CITY_ENTRIES.gut.portal.x+.8,0,CITY_ENTRIES.gut.portal.z-.8,1.2,0);
  const frontier=createFrontierScene({detailedWalls:!!newAssets}),bundleWalls=newAssets?createBundleWalls(newAssets):null;root.add(frontier.root);if(bundleWalls)root.add(bundleWalls.root);
  let sceneryCount=0,seed=9127;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
  const allRoads=[...roads.map(r=>r.points),intake,network?network.entries.airway:AIRWAY_PATH.map(groundPoint)];
- for(let i=0;i<155;i++){
-  const x=-22+rand()*45,z=-21+rand()*43;
-  if(x>-8.5&&x<-3.5&&z>-20&&z<-10||x>11&&x<17||Object.values(SITES).some(p=>Math.hypot(x-p.x,z-p.z)<4.1)||COTTAGES.some(p=>Math.hypot(x-p[0],z-p[1])<1.6)||allRoads.some(r=>r.some(p=>Math.hypot(x-p.x,z-p.z)<1.5)))continue;
+ for(let i=0;i<450;i++){
+  const x=CITY_BOUNDS.left-2+rand()*84,z=CITY_BOUNDS.top-5+rand()*82;
+  if(Math.abs(x-portal.x)<3&&z<screen.z+3||Math.abs(x-riverX(z))<3||Object.values(SITES).some(p=>Math.hypot(x-p.x,z-p.z)<4.1)||COTTAGES.some(p=>Math.hypot(x-p[0],z-p[1])<1.6)||allRoads.some(r=>r.some(p=>Math.hypot(x-p.x,z-p.z)<1.5)))continue;
   if(layout&&Object.entries(layout.items).some(([id,a])=>occupiedTiles(id,a).some(p=>Math.abs(x-p.col)<1&&Math.abs(z-p.row)<1)))continue;
-  if(sceneryCount>=26)break;sceneryCount++;
+  if(sceneryCount>=64)break;sceneryCount++;
   if(i%4===0)model('rock-small',x,.02,z,.6+rand(),rand()*6);
   else if(newModel)newModel(i%5===0?'bush':i%3?'tree-cube':'tree-round',x,0,z,i%5===0?.65:2.2+rand()*.8,rand()*6,fixed,2.5);
   else model(i%3?'tree':'tree-high-round',x,0,z,.75+rand()*.55,rand()*6);
@@ -124,7 +136,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
   disc(x,z,.6,0x9fb08b,.05);for(let i=0;i<5;i++)orb(x+Math.sin(i*2)*.4,.17,z+Math.cos(i*2)*.4,.13,i%2?0xe9ca9f:0xd6a6a8);
  }
  // Subtle square paving uses the same tiny grid as placement, not one mesh per tile.
- if(layout){for(const d of PLACEABLES){scope(d.id);const [x0,z0,x1,z1]=d.bounds;for(let x=x0;x<x1;x++)for(let z=z0;z<z1;z++){const tile=make(new T.PlaneGeometry(.97,.97),((x+z)&1)?0xd5d5bd:0xd9d8c1,d.origin.x+x,.017,d.origin.z+z);tile.rotation.x=-Math.PI/2;tile.castShadow=false;}}
+ if(layout){for(const d of layoutPlaceables(layout)){scope(d.id);const [x0,z0,x1,z1]=d.bounds;for(let x=x0;x<x1;x++)for(let z=z0;z<z1;z++){const tile=make(new T.PlaneGeometry(.97,.97),((x+z)&1)?0xd5d5bd:0xd9d8c1,d.origin.x+x,.017,d.origin.z+z);tile.rotation.x=-Math.PI/2;tile.castShadow=false;}}
  scope(null);const water=transformPoint(layout,'kidney',{x:13,z:9});const drain=[{x:riverX(water.z),z:water.z},water];ribbon(drain,.6,0xb4bcb0,.14);ribbon(drain,.38,0x91bfba,.15);
  }
  for(const [id,g] of owners.fixed)applyTransform(g,id);for(const [id,g] of owners.moving)applyTransform(g,id);
@@ -134,15 +146,15 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  fixed.updateMatrixWorld(true);const batches=new Map(),vertexMaterial=new T.MeshStandardMaterial({vertexColors:true,roughness:.95});
  fixed.traverse(m=>{
   if(!m.isMesh||Array.isArray(m.material))return;let ancestor=m;while(ancestor){if(!ancestor.visible)return;ancestor=ancestor.parent;}
-  const original=m.material,colored=!original.map&&m!==ground,material=colored?vertexMaterial:original,key=material.uuid+':'+m.castShadow;
-  const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();g.applyMatrix4(m.matrixWorld);
+  const original=m.material,colored=!original.map&&m!==ground,material=colored?vertexMaterial:original;
+  const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();g.applyMatrix4(m.matrixWorld);g.computeBoundingBox();const centre=g.boundingBox.getCenter(new T.Vector3()),region=m===ground?'ground':Math.floor(centre.x/16)+','+Math.floor(centre.z/16),key=material.uuid+':'+m.castShadow+':'+region;
   for(const k of Object.keys(g.attributes))if(!['position','normal','uv'].includes(k))g.deleteAttribute(k);
   if(!g.attributes.uv)g.setAttribute('uv',new T.Float32BufferAttribute(new Float32Array(g.attributes.position.count*2),2));
   if(colored){const colors=new Float32Array(g.attributes.position.count*3),c=original.color;for(let i=0;i<colors.length;i+=3){colors[i]=c.r;colors[i+1]=c.g;colors[i+2]=c.b;}g.setAttribute('color',new T.Float32BufferAttribute(colors,3));}
   g.clearGroups();if(!batches.has(key))batches.set(key,{material,shadow:m.castShadow,geometries:[]});batches.get(key).geometries.push(g);
  });
  root.remove(fixed);const baked=new T.Group();root.add(baked);
- for(const b of batches.values()){const geo=mergeGeometries(b.geometries),mesh=new T.Mesh(geo,b.material);mesh.castShadow=b.shadow;mesh.receiveShadow=true;baked.add(mesh);for(const g of b.geometries)g.dispose();}
+ for(const b of batches.values()){const geo=mergeGeometries(b.geometries),mesh=new T.Mesh(geo,b.material);mesh.castShadow=b.shadow;mesh.receiveShadow=true;geo.computeBoundingSphere();mesh.name='town-region';baked.add(mesh);for(const g of b.geometries)g.dispose();}
  // Bake the selected facility in its own local frame: only two small meshes
  // move during a drag, rather than dozens of imported wall pieces and tiles.
  if(preview){const visible=preview.visible;preview.visible=true;preview.updateMatrixWorld(true);const inverse=preview.matrixWorld.clone().invert(),parts=new Map(),discard=new Set();

@@ -91,3 +91,8 @@
 @media(max-width:760px){.cc-game .cc-layout-editor button{min-height:44px}.cc-layout-actions button:nth-last-child(-n+2){min-height:36px}.cc-three[data-editing=true] .cc-map-tools{bottom:282px}.cc-game .cc-layout-editor footer button{min-height:28px}}
 
 @media(max-height:620px) and (min-width:620px){.cc-layout-editor{padding:6px;bottom:6px}.cc-game .cc-layout-editor button,.cc-layout-editor select{min-height:30px;padding:4px 7px}.cc-layout-selection{margin:3px 0}.cc-layout-actions{display:flex;gap:4px}.cc-layout-actions button:nth-last-child(-n+2){min-height:30px;flex:1.6}.cc-layout-editor footer{margin-top:2px}.cc-game .cc-layout-editor footer button{min-height:22px}.cc-three[data-editing=true] .cc-map-tools{bottom:156px;left:12px}.cc-three[data-editing=true] .cc-toast{bottom:195px}}
+
+/* Expanded town controls share the existing compact editor. */
+.cc-layout-expansion{display:flex;gap:5px;margin:6px 0}.cc-layout-expansion select{min-width:0;flex:1}.cc-layout-expansion button{flex:1;white-space:nowrap}.cc-three[data-editing=true] .cc-map-tools{bottom:290px}.cc-three[data-editing=true] .cc-toast{bottom:335px}
+@media(max-width:760px){.cc-layout-expansion{gap:3px}.cc-game .cc-layout-expansion button{padding:4px;font-size:10px}.cc-layout-expansion select{max-width:72px}.cc-three[data-editing=true] .cc-map-tools{bottom:336px}.cc-three[data-editing=true] .cc-toast{bottom:380px}}
+@media(max-height:620px) and (min-width:620px){.cc-three[data-editing=true] .cc-map-tools{bottom:202px}.cc-three[data-editing=true] .cc-toast{bottom:242px}.cc-layout-expansion{margin:3px 0}}

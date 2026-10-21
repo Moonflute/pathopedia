@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createCity,tickCity,command,serializeCity,restoreCity} from '../src/city-engine.mjs';
-import {createTileLayout,compileLayout,validateTileLayout,applyTileLayout,cloneLayout,placementCheck,occupiedTiles,transformPoint,siteAt,cityRoute,cityDistrict,PLACEABLES,tissueAt} from '../src/city-tile-layout.mjs';
+import {createTileLayout,compileLayout,validateTileLayout,applyTileLayout,cloneLayout,placementCheck,occupiedTiles,transformPoint,siteAt,cityRoute,cityDistrict,PLACEABLES,layoutPlaceables,tissueAt} from '../src/city-tile-layout.mjs';
 import {createLayoutEditor} from '../src/city-layout-editor.mjs';
 import {workStation,beginActivity} from '../src/city-activity.mjs';
 import {TISSUES} from '../src/city-frontier-data.mjs';
@@ -14,11 +14,11 @@ const town=()=>{const s=createCity('normal','simulation',{specialists:true});ass
 const close=(a,b)=>assert.ok(Math.hypot(a.x-b.x,a.z-b.z)<1e-8);
 
 test('all existing facilities and cottages occupy non-overlapping small tiles with connected entrances',()=>{
- const l=createTileLayout(),c=compileLayout(l);assert.equal(validateTileLayout(l),true);assert.equal(c.valid,true);assert.equal(Object.keys(l.items).length,18);
- const used=new Set();for(const d of PLACEABLES)for(const p of occupiedTiles(d.id,l.items[d.id])){const key=p.col+','+p.row;assert.equal(used.has(key),false);used.add(key);}
+ const l=createTileLayout(),c=compileLayout(l);assert.equal(validateTileLayout(l),true);assert.equal(c.valid,true);assert.equal(Object.keys(l.items).length,54);
+ const used=new Set();for(const d of layoutPlaceables(l))for(const p of occupiedTiles(d.id,l.items[d.id])){const key=p.col+','+p.row;assert.equal(used.has(key),false);used.add(key);}
  assert.equal(c.connections.filter(r=>r.kind==='pulmonary').length,1);assert.equal(c.connections.filter(r=>r.kind==='systemic').length,4);assert.equal(compileLayout(l),c);
  const overlap=cloneLayout(l);overlap.items.lung={...overlap.items.heart};assert.equal(validateTileLayout(overlap),false);
- const river=cloneLayout(l);river.items.heart.col=15;assert.equal(validateTileLayout(river),false);
+ const river=cloneLayout(l);river.items.heart.col=32;assert.equal(validateTileLayout(river),false);
 });
 
 test('four-way rotation turns occupied cells, ports and reserved workstations together',()=>{

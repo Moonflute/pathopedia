@@ -29,7 +29,7 @@ test('isolated stalls, hidden time and paused/editor views do not lower quality'
  assert.equal(q.profile.level,0);assert.equal(d.changes.length,0);
  q.resize(1280,3,100000);assert.equal(q.profile.fps,60);assert.equal(q.profile.dpr,1.75);
  for(const width of [390,1280])for(const ratio of [1,2,3])for(let i=0;i<=4;i++){
-  const p=qualityProfile(width,ratio,i);assert.ok(p.dpr<=ratio&&p.dpr>=.75);assert.equal(p.maxCells,96);
+  const p=qualityProfile(width,ratio,i);assert.ok(p.dpr<=ratio&&p.dpr>=.75);assert.equal(p.maxCells,256);
  }
 });
 

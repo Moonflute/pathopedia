@@ -33,7 +33,7 @@ export const CELL_JOBS=Object.freeze({...JOBS,
  platelet:{name:'혈소판',task:'손상 부위 응급 봉합',color:'#dfad75',cost:12,cap:8,life:420,card:null,glyph:'✚'}
 });
 export const cityJobs=s=>s.specialists?CELL_JOBS:JOBS;
-export const cellCap=(s,kind)=>s.specialists&&kind==='rbc'?32:CELL_JOBS[kind]?.cap;
+export const cellCap=(s,kind)=>s.layout?.version===2?({rbc:96,neutrophil:72,macrophage:32,fibroblast:32,dendritic:16,helperT:12,plasma:12,platelet:24}[kind]):s.specialists&&kind==='rbc'?32:CELL_JOBS[kind]?.cap;
 export const DRUGS = Object.freeze([
   {id:'ampicillin',name:'Ampicillin',short:'AMP',color:'#b6d38e',cost:10},
   {id:'oxacillin',name:'Oxacillin',short:'OXA',color:'#f0bb77',cost:14},

@@ -1,3 +1,4 @@
+import {populationLimit} from './city-world.mjs';
 import {createTileLayout,applyTileLayout,siteAt,transformPoint,cloneLayout} from './city-tile-layout.mjs';
 import {createLayoutEditor,layoutEditorMarkup} from './city-layout-editor.mjs';
 import {GameLoop} from './vendor/kontra-10.0.2.mjs';
@@ -23,7 +24,7 @@ export function createCityGame(data,options={}){
   const is3d=options.mode==='3d',saveKey=options.saveKey||KEY;
   let useNewAssets=is3d&&readCityAssets();
   let ruleProfile=null;try{if(is3d)ruleProfile=loadRuleProfile(localStorage);}catch{}
-  const newCity=(host,scenario)=>{const s=createCity(host,scenario,{workCrews:is3d,specialists:is3d});if(is3d){applyTileLayout(s,createTileLayout());if(ruleProfile)applyCityRules(s,ruleProfile.current);}return s;};
+  const newCity=(host,scenario)=>{const s=createCity(host,scenario,{workCrews:is3d,specialists:is3d,expanded:is3d});if(is3d){applyTileLayout(s,createTileLayout());if(ruleProfile)applyCityRules(s,ruleProfile.current);}return s;};
   let run,storageFailed=false,restored=false;
   try{const raw=localStorage.getItem(saveKey);run=restoreCity(raw);restored=!!run;storageFailed=!!raw&&!run;}catch{storageFailed=true;}
   run ||= newCity('normal','steady');if(is3d){upgradeVillage(run);if(!run.layout)applyTileLayout(run,createTileLayout());}
@@ -84,7 +85,7 @@ export function createCityGame(data,options={}){
   }
   function workers(){const jobs=Object.entries(cityJobs(run)),pages=is3d?Math.ceil(jobs.length/4):1;workersPage=Math.min(workersPage,pages-1);return (is3d?jobs.slice(workersPage*4,workersPage*4+4):jobs).map(([id,job])=>{
     const n=counts(run,id),queued=run.recruits.filter(r=>r.kind===id),status=queued.length?`충원 ${queued.length} · ${queued[0].remaining==null?'배송 중':Math.ceil(queued[0].remaining)+'초'}`:run.lifecycle?`게임 수명 ${job.life/60}분 · 교체 ${run.turnover[id]||0}`:job.task;
-    return `<div class="cc-worker">${button('inspect-kind',job.glyph||(id==='rbc'?'●':id==='dendritic'?'✳':'✦'),`class="cc-worker-icon" style="--cell:${job.color}" data-city-id="${id}" aria-label="${job.name} 위치 표시" aria-pressed="${selectedKind===id}"`)}<div><strong>${job.name} <b>${n}</b></strong><small>${status}</small></div>${card('immune-element',job.card,job.name)}${button('recruit','+ '+job.cost,`data-city-id="${id}" aria-label="${job.name} 충원 영양 ${job.cost}" ${run.resources.food<job.cost||run.recruits.length>=3||n+queued.length>=cellCap(run,id)||is3d&&run.cells.length+run.recruits.length>=96?'disabled':''}`)}</div>`;
+    return `<div class="cc-worker">${button('inspect-kind',job.glyph||(id==='rbc'?'●':id==='dendritic'?'✳':'✦'),`class="cc-worker-icon" style="--cell:${job.color}" data-city-id="${id}" aria-label="${job.name} 위치 표시" aria-pressed="${selectedKind===id}"`)}<div><strong>${job.name} <b>${n}</b></strong><small>${status}</small></div>${card('immune-element',job.card,job.name)}${button('recruit','+ '+job.cost,`data-city-id="${id}" aria-label="${job.name} 충원 영양 ${job.cost}" ${run.resources.food<job.cost||run.recruits.length>=(run.layout?.version===2?6:3)||n+queued.length>=cellCap(run,id)||is3d&&run.cells.length+run.recruits.length>=populationLimit(run)?'disabled':''}`)}</div>`;
   }).join('')+(pages>1?`<div class="cc-worker-pages">${button('workers-page','←',`data-city-id="-1" aria-label="이전 세포 종류" ${workersPage===0?'disabled':''}`)}<span>${workersPage+1} / ${pages}</span>${button('workers-page','→',`data-city-id="1" aria-label="다음 세포 종류" ${workersPage===pages-1?'disabled':''}`)}</div>`:'');}
   function updateCamera(camera=renderer?.cameraInfo()){
     if(!game||!camera)return;
@@ -110,7 +111,7 @@ export function createCityGame(data,options={}){
     set('[data-city-panel-title]',{district:'구역 관리',workers:'세포',armory:is3d?(run.scenario==='simulation'?'면역·감염 실험':'치료·감염 대응'):'방어 장비',city:'도시 운영',frontier:'장벽·전선'}[panel]||'도시 관리');
     const stats={health:cityHealth(run),oxygen:cityOxygen(run),food:run.resources.food,materials:run.resources.materials,waste:run.waste};
     for(const [id,n]of Object.entries(stats)){set(`[data-city-value="${id}"]`,Math.floor(n)+(['health','oxygen','waste'].includes(id)?'%':''));game.querySelector(`[data-city-meter="${id}"]`)?.style.setProperty('--fill',Math.min(100,n)+'%');}
-    set('[data-city-time]',time(run.time));set('[data-city-population]',run.cells.length+'명');set('[data-city-rally]',districtDef(run.rally).short+' 보급');
+    set('[data-city-time]',time(run.time));set('[data-city-population]',run.cells.length+(is3d?' / '+populationLimit(run):'')+'명');set('[data-city-rally]',districtDef(run.rally).short+' 보급');
     updateCamera();
     const threat=run.enemies.length+run.spawn.length,objective=objectiveState(run);
     set('[data-city-objective]',run.endless?'자유 운영':objective.title);
@@ -169,7 +170,7 @@ export function createCityGame(data,options={}){
         const result=candidate&&applyTileLayout(candidate,layout);
         if(result?.ok){try{localStorage.setItem(saveKey,serializeCity(candidate));run=candidate;editor=null;storageFailed=false;started=true;toast=result.text;}catch{storageFailed=true;toast='저장 공간 부족 · 배치를 유지하고 있어요';}}else toast=result?.text||'저장 상태를 확인해 주세요.';
         toastUntil=performance.now()+3500;
-      }else editor.event(key,key==='nudge'?id.split(',').map(Number):id);
+      }else{editor.event(key,key==='nudge'?id.split(',').map(Number):id);if(key==='add'&&!editor.error){const a=editor.draft.items[editor.selected];renderer?.focus?.({x:a.col,z:a.row});}}
     }
     else if(editor&&!['zoom','fit','rotate'].includes(action))return true;
     else if(action==='bio-page')biology.page=id;
@@ -233,6 +234,7 @@ export function createCityGame(data,options={}){
     if(is3d){const container=document.createElement('div');container.dataset.cityBiology='';game.querySelector('[data-city-panel="armory"]').prepend(container);}
     game.addEventListener('change',e=>{
       if(is3d&&e.target.matches('[data-city-new-assets]')){useNewAssets=e.target.checked;storeCityAssets(useNewAssets);renderer?.setNewAssets?.(useNewAssets);return;}
+      if(e.target.matches('[data-city-layout-site]')){layoutEvent('site',e.target.value);return;}
       if(e.target.matches('[data-city-layout-select]')){layoutEvent('select',e.target.value);if(!editor.isStored(e.target.value))renderer?.focus?.(siteAt(editor.draft,e.target.value)||{x:editor.draft.items[e.target.value].col,z:editor.draft.items[e.target.value].row});return;}
       const key=e.target.dataset.cityInput;if(!key||!Object.hasOwn(biology,key))return;
       biology[key]=e.target.value;

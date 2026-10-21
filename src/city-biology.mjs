@@ -1,3 +1,4 @@
+import {shipmentLimit,pathogenLimit} from './city-world.mjs';
 import {cityDistricts,cityDistrict} from './city-tile-layout.mjs';
 import {DISTRICTS,DRUGS,WAVES,districtDef} from './city-data.mjs';
 import {WALLS} from './city-frontier-data.mjs';
@@ -73,7 +74,7 @@ export function medicineEffect(s,id,recordId,data){
 }
 export function medicineOrder(s,drugId,route,packs,api,free=false){
  if(!DRUGS.some(d=>d.id===drugId)||!MEDICINE_ROUTES[route]||route==='oral'&&drugId==='oxacillin'||![1,2,3].includes(packs))return {ok:false,text:'이 제형·경로는 지원하지 않음'};
- if(s.shipments.length>=48)return {ok:false,text:'물류 대기열 포화'};
+ if(s.shipments.length>=shipmentLimit(s))return {ok:false,text:'물류 대기열 포화'};
  const to=route==='oral'?'gut':'heart',amount=packs*18;
  const pending=s.shipments.filter(sh=>sh.kind==='drug'&&sh.to===to&&sh.drugId===drugId&&sh.phase!=='leaving').reduce((n,sh)=>n+sh.amount,0);
  if(s.districts[to].ammo[drugId]+pending+amount>200)return {ok:false,text:'투여대 비축 한도'};
@@ -101,7 +102,7 @@ export function biologyCommand(s,action,id,data,api){
  if(action==='expose'&&s.scenario==='simulation'){
   const p=pathogenDef(id?.recordId),amount=Number(id?.amount),wall=Number(id?.wall??11);
   if(!p||!data?.records?.some(r=>r.id===p.recordId)||!p.routes.includes(id?.front)||![3,6,12].includes(amount)||id.front==='skin'&&!WALLS[wall])return {ok:false,text:'지원하지 않는 실험 조건'};
-  if(s.enemies.filter(e=>!e.dead).length+s.spawn.length+amount>32)return {ok:false,text:'병원체 표시 한도 · 현재 유입 정리 후 추가'};
+  if(s.enemies.filter(e=>!e.dead).length+s.spawn.length+amount>pathogenLimit(s))return {ok:false,text:'병원체 표시 한도 · 현재 유입 정리 후 추가'};
   for(let i=0;i<amount;i++)s.spawn.push({recordId:p.recordId,hp:p.hp,maxHp:p.hp,color:p.color,tag:p.tag,front:id.front,...(id.front==='skin'?{wall}:{}),...(id.front==='blood'?{site:'heart',entered:true}:{})});
   s.biology.stats.introduced+=amount;s.spawnClock=0;
   api.log(s,p.name+' · '+EXPOSURE_ROUTES[id.front]+' 유입 '+amount);return {ok:true,text:EXPOSURE_ROUTES[id.front]+' 노출 시작'};

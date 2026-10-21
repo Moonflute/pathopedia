@@ -1,3 +1,4 @@
+import {CITY_ENTRIES} from './city-world.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {GLTFLoader} from './vendor/three/GLTFLoader.js';
 import {WALLS} from './city-frontier-data.mjs';
@@ -60,7 +61,7 @@ export function createBundleWalls(bundle){
    const state=s.frontier?.walls[i];if(!state||state.hp<=0)continue;
    const dx=wall.b.x-wall.a.x,dz=wall.b.z-wall.a.z,length=Math.hypot(dx,dz),front=wall.nx*vx+wall.nz*vz>Math.hypot(vx,vz)*.3;
    // Leave the respiratory portal open rather than bridging across its mouth.
-   const partial=i===1?Math.min(1,(-7.4-wall.a.x)/dx):1,cx=wall.a.x+dx*partial/2,cz=wall.a.z+dz*partial/2;
+   const partial=i===1?Math.min(1,(CITY_ENTRIES.airway.portal.x-1.4-wall.a.x)/dx):1,cx=wall.a.x+dx*partial/2,cz=wall.a.z+dz*partial/2;
    position.set(cx,.02,cz);quaternion.setFromAxisAngle(axis,-Math.atan2(dz,dx));scale.set(length*partial*.99/Math.max(.01,walls.size.x),front?.6:1.7,1);
    color.set(state.repair?0xd8e4d8:state.hp/wallMaximum(s,i)<.75?0xc9ab93:0xffffff);
    wallMatrix.compose(position,quaternion,scale);

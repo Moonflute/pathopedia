@@ -1,3 +1,4 @@
+import {CITY_ENTRIES} from './city-world.mjs';
 import {transformPoint,compileLayout} from './city-tile-layout.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {SITES,groundPoint} from './city-three-layout.mjs';
@@ -14,8 +15,8 @@ export function createFrontierScene({detailedWalls=false}={}){
  const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={};
  const surface=new T.MeshStandardMaterial({color:0xffffff,roughness:.95}),unlit=new T.MeshBasicMaterial({color:0xffffff});
  function batch(id,geometry,capacity,material=surface,shadow=false){const mesh=new T.InstancedMesh(geometry,material,capacity);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;mesh.castShadow=shadow;mesh.receiveShadow=material===surface;mesh.count=0;mesh.name='frontier-'+id;root.add(mesh);batches[id]=mesh;}
- batch('box',new T.BoxGeometry(1,1,1),700,surface,true);batch('post',new T.CylinderGeometry(1,1,1,6),130,surface,true);
- batch('orb',new T.IcosahedronGeometry(1,0),120);batch('roof',new T.ConeGeometry(1,1,4),40,surface,true);
+ batch('box',new T.BoxGeometry(1,1,1),700,surface,true);batch('post',new T.CylinderGeometry(1,1,1,6),260,surface,true);
+ batch('orb',new T.IcosahedronGeometry(1,0),180);batch('roof',new T.ConeGeometry(1,1,4),40,surface,true);
  batch('glow',new T.IcosahedronGeometry(1,0),100,unlit);batch('flame',new T.ConeGeometry(1,1,5),36,unlit);batch('smoke',new T.IcosahedronGeometry(1,0),24);
  let owner=null,layout=null,poseLayout=null;
  function put(id,x,y,z,sx,sy,sz,c,ry=0,rz=0){if(owner&&layout){const p=transformPoint(poseLayout,owner,{x,z});x=p.x;z=p.z;ry-=poseLayout.items[owner].rot*Math.PI/2;}const m=batches[id],i=m.count;if(i>=m.instanceMatrix.count)return;dummy.position.set(x,y,z);dummy.scale.set(sx,sy,sz);dummy.rotation.set(0,ry,rz);dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix);m.setColorAt(i,color.set(c));m.count++;}
@@ -35,7 +36,7 @@ export function createFrontierScene({detailedWalls=false}={}){
    for(let n=0;n<4;n++){
     const q=(n+.5)/4,x=def.a.x+dx*q,z=def.a.z+dz*q;
     // The respiratory portal is a dedicated protected entrance through the rim.
-    if(i===1&&x>-7.4)continue;
+    if(i===1&&x>CITY_ENTRIES.airway.portal.x-1.4)continue;
     if(w.hp===0){put('box',x,.12,z,length/5,.22,.55,0xbfa691,angle,.12*(n%2?1:-1));if(repair?.delivered)put('box',x,.3,z,length/4-.12,.25+(1-repair.remaining/7)*.5,.23,0xa7c9bc,angle);}
     else if(!detailedWalls){put('box',x,height*.5,z,length/4-.1,height,.5,stone,angle);put('box',x,height+.06,z,length/4-.04,.12,.64,ratio<.75?0xb79480:0xf0e3ca,angle);if(ratio<.75&&n%2===0)put('box',x,height*.5,z+.27,.055,height*.65,.025,0x8e7568,0,.3);}
    }
@@ -60,12 +61,12 @@ export function createFrontierScene({detailedWalls=false}={}){
   owner=null;
   // Mucus rollers and a timed cilia rake at the mouth of the respiratory channel.
   for(let i=0;i<6;i++){
-   const x=-7.1+i*.43,swing=Math.sin(t*(f.airway.boostUntil>t?7:3)+i*.6)*.32;
-   put('post',x,.38,-14.4,.055,.65,.055,0xb7c7a0,0,swing);
-   if(i<Math.ceil(f.airway.mucus))put('orb',x,.22,-15,.19,.12,.27,0xb9c799);
+   const x=CITY_ENTRIES.airway.screen.x-1.1+i*.43,swing=Math.sin(t*(f.airway.boostUntil>t?7:3)+i*.6)*.32;
+   put('post',x,.38,CITY_ENTRIES.airway.screen.z,.055,.65,.055,0xb7c7a0,0,swing);
+   if(i<Math.ceil(f.airway.mucus))put('orb',x,.22,CITY_ENTRIES.airway.screen.z-.6,.19,.12,.27,0xb9c799);
   }
-  for(let i=0;i<5;i++){const q=(t*.25+i/5)%1;put('glow',-6+Math.sin(i*2)*.5,.35,-18+q*7,.035,.035,.2,0xc2e1d7);}
-  put('box',15,.4,-4,.12,.8,2.1,f.gut.quarantine?0xb8b983:0xd8c49e,0,f.gut.quarantine?0:.7);
+  for(let i=0;i<5;i++){const q=(t*.25+i/5)%1;put('glow',CITY_ENTRIES.airway.portal.x+Math.sin(i*2)*.5,.35,CITY_ENTRIES.airway.portal.z+q*7,.035,.035,.2,0xc2e1d7);}
+  put('box',CITY_ENTRIES.gut.portal.x,.4,CITY_ENTRIES.gut.portal.z,.12,.8,2.1,f.gut.quarantine?0xb8b983:0xd8c49e,0,f.gut.quarantine?0:.7);
   for(const [id,site] of Object.entries(SITES)){
    owner=id;const d=s.districts[id],state=facilityState(s,id),cap=workplaceCapacity(s,id,'oxygen');
    const biology=s.biology?.sites[id];
@@ -80,13 +81,14 @@ export function createFrontierScene({detailedWalls=false}={}){
    }
    put('glow',site.building[0]+.6,2.2,site.building[1]+.4,.09,.12,.09,state.color);
    if(state.id==='damage'&&fireCount<7)fire(site.building[0]+.6,site.building[1]+.7,t,fireCount++);
+   for(let slot=1;slot<workplaceCapacity(s,id,'dock');slot++){const p=groundPoint(workStation(id,'dock',slot,poseLayout).target);worldPut('box',p.x,.3,p.z,.85,.6,.5,0xc0ab80);worldPut('glow',p.x,.9,p.z,.07,.1,.07,state.color);}
    const dock=groundPoint(workStation(id,'dock').target);
    store({x:dock.x-.3,z:dock.z+.85},d.food,0xd8bb7c,3);
    store({x:dock.x-.3,z:dock.z+1.25},Object.values(d.ammo).reduce((a,b)=>a+b,0),0xa9bbbd,3);
-   for(let slot=3;slot<cap;slot++){const p=groundPoint(workStation(id,'oxygen',slot).target);put('post',p.x,.32,p.z,.16,.64,.16,0x89b9b1);put('post',p.x,.65,p.z,.2,.08,.2,0xe9ddc4);}
+   for(let slot=3;slot<cap;slot++){const p=groundPoint(workStation(id,'oxygen',slot,poseLayout).target);worldPut('post',p.x,.32,p.z,.16,.64,.16,0x89b9b1);worldPut('post',p.x,.65,p.z,.2,.08,.2,0xe9ddc4);}
    if(id==='marrow'||id==='lymph'||id==='gut'){
     const role=id==='lymph'?'produce':'fabricate';
-    for(let slot=3;slot<workplaceCapacity(s,id,role);slot++){const p=groundPoint(workStation(id,role,slot).target);put('box',p.x,.28,p.z,.7,.55,.45,0xbca580);put('orb',p.x,.63,p.z,.15,.2,.15,id==='lymph'?0xa7c5bc:0xd9ba78);}
+    for(let slot=3;slot<workplaceCapacity(s,id,role);slot++){const p=groundPoint(workStation(id,role,slot,poseLayout).target);worldPut('box',p.x,.28,p.z,.7,.55,.45,0xbca580);worldPut('orb',p.x,.63,p.z,.15,.2,.15,id==='lymph'?0xa7c5bc:0xd9ba78);}
    }
    if(id==='kidney')for(let n=0;n<d.level-1;n++){const x=8.8+n*1.3;put('post',x,.4,12.4,.55,.65,.55,0xe7dac2);put('post',x,.74,12.4,.46,.03,.46,0x93bdbc);put('box',x,.8,12.4,.9,.045,.05,0x927f65,t*.3);}
    if(id==='gut')store({x:12.1,z:-2},s.rawFood,0xd8b97e,6);
@@ -107,7 +109,7 @@ export function createFrontierScene({detailedWalls=false}={}){
   }
   owner='kidney';store({x:6.6,z:10.2},f.waste.stock*2,0x9f929d,6);
   put('post',7,.3,10,.5,.6,.5,0xc9c1b0);put('box',7,.67,10,1,.06,.08,0x9b8c75,f.waste.stock>0?t*.8:0);
-  owner='marrow';for(let i=0;i<3;i++){
+  owner='marrow';for(let i=0;i<(s.layout?.version===2?6:3);i++){
    const p=groundPoint(workStation('marrow','spawn',i).target),r=s.recruits.find(r=>r.bay===i),progress=r?.remaining!=null?1-r.remaining/(r.duration||8):0;
    put('post',p.x,.3,p.z,.31,.6,.31,0xc2b8b6);put('orb',p.x,.7,p.z,.32,.35,.32,0xb4d1c1);
    if(r){put('glow',p.x,.6+progress*.2,p.z,.13+progress*.09,.1+progress*.23,.13+progress*.09,r.remaining==null?0xd4b77b:0xe3a8a3);put('box',p.x,.08,p.z-.4,.65*Math.max(.05,progress),.05,.12,0x9ebea9);}

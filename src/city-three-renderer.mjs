@@ -1,3 +1,4 @@
+import {CITY_BOUNDS,CITY_SCALE} from './city-world.mjs';
 import {siteAt,SQUARE_GRID,placeable,transformPoint} from './city-tile-layout.mjs';
 import {createEditorOverlay} from './city-three-editor.mjs';
 import * as T from './vendor/three/three.module.min.js';
@@ -26,12 +27,12 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  try{renderer=new T.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'low-power'});}
  catch{status.innerHTML='이 기기에서 3D 화면을 열 수 없습니다. <a href="#city">기존 도시 열기 →</a>';return {draw(){},zoom(){},reset(){},invalidate(){},dispose(){status.remove();},cameraInfo(){return {scale:1,min:1,max:1};}};}
  const profile=qualityProfile(map.clientWidth,devicePixelRatio),adaptive=createAdaptiveQuality(map.clientWidth,devicePixelRatio),motion=createCityMotion(profile),shouldRender=createFramePacer();let quality=adaptive.profile,interpolation=1;
- const scene=new T.Scene();scene.background=new T.Color(0xe4e6d8);scene.fog=new T.Fog(0xe4e6d8,48,110);
+ const scene=new T.Scene();scene.background=new T.Color(0xe4e6d8);scene.fog=new T.Fog(0xe4e6d8,85,200);
  renderer.setPixelRatio(profile.dpr);renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
  renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
  scene.add(new T.HemisphereLight(0xfff7e1,0x969f89,2.25));
- const sun=new T.DirectionalLight(0xffeacb,2.7);sun.position.set(-16,32,12);sun.castShadow=true;sun.shadow.mapSize.setScalar(profile.shadow);Object.assign(sun.shadow.camera,{left:-26,right:26,top:27,bottom:-27,near:1,far:90});sun.shadow.bias=-.0007;sun.shadow.normalBias=.05;scene.add(sun);
- const camera=new T.OrthographicCamera(-20,20,15,-15,.1,160);camera.position.set(20,32,32);
+ const sun=new T.DirectionalLight(0xffeacb,2.7);sun.position.set(-16,32,12);sun.castShadow=true;sun.shadow.mapSize.setScalar(profile.shadow);Object.assign(sun.shadow.camera,{left:-54,right:54,top:54,bottom:-54,near:1,far:160});sun.shadow.bias=-.0007;sun.shadow.normalBias=.05;scene.add(sun);
+ const camera=new T.OrthographicCamera(-20,20,15,-15,.1,260);camera.position.set(20,32,32);
  const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.14;controls.screenSpacePanning=false;controls.panSpeed=.8;controls.rotateSpeed=.55;
  controls.minPolarAngle=Math.PI*.2;controls.maxPolarAngle=Math.PI*.36;controls.minAzimuthAngle=-.6;controls.maxAzimuthAngle=1.45;
  controls.mouseButtons={LEFT:T.MOUSE.PAN,MIDDLE:T.MOUSE.DOLLY,RIGHT:T.MOUSE.ROTATE};controls.touches={ONE:T.TOUCH.PAN,TWO:T.TOUCH.DOLLY_ROTATE};controls.zoomToCursor=true;
@@ -50,6 +51,8 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  followButton.addEventListener('click',()=>setFollowing(!watching.following),{signal:abort.signal});
  inspect.querySelector('.cc-cell-close').addEventListener('click',clearObservation,{signal:abort.signal});
  inspect.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();clearObservation();}},{signal:abort.signal});
+ const viewFrustum=new T.Frustum(),viewMatrix=new T.Matrix4(),actorSphere=new T.Sphere(new T.Vector3(),2.5);
+ const actorVisible=p=>{actorSphere.center.set(p.x,1,p.z);return viewFrustum.intersectsSphere(actorSphere);};
  const vec=new T.Vector3(),viewOffset=new T.Vector3(),followPoint=new T.Vector3();
  function syncFollowing(){
   const on=watching.following;
@@ -100,9 +103,9 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   width=w;height=h;adaptive.resize(width,devicePixelRatio,performance.now());applyQuality();renderer.setSize(w,h,false);
   // A portrait viewport starts close to the two featured districts; zoom-out reveals all.
   const vertical=h<400?17:w<h?32:27,aspect=w/h;camera.left=-vertical*aspect/2;camera.right=vertical*aspect/2;camera.top=vertical/2;camera.bottom=-vertical/2;camera.updateProjectionMatrix();
-  fit=Math.min(w/h<1?.42:.76,w/h<1?w/h*.66:1.06);controls.minZoom=fit;controls.maxZoom=3.3;camera.zoom=clamp(camera.zoom,fit,3.3);camera.updateProjectionMatrix();dirty=true;
+  fit=Math.min(w/h<1?.42:.76,w/h<1?w/h*.66:1.06)/CITY_SCALE;controls.minZoom=fit;controls.maxZoom=3.3;camera.zoom=clamp(camera.zoom,fit,3.3);camera.updateProjectionMatrix();dirty=true;
  }
- resize();controls.target.set(-3,0,-3);camera.zoom=profile.mobile?1.25:1.22;camera.updateProjectionMatrix();controls.update();
+ resize();controls.target.set(-3,0,-3);camera.zoom=profile.mobile?.78:.82;camera.updateProjectionMatrix();controls.update();
  function cameraInfo(){return {scale:camera.zoom,min:controls.minZoom,max:controls.maxZoom};}
  controls.addEventListener('change',()=>{dirty=true;onCameraChange?.(cameraInfo());});
  controls.addEventListener('start',()=>{zoomTarget=null;zoomAnchor=null;focusTarget=null;});
@@ -186,13 +189,13 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   if(zoomTarget!==null){const ray=new T.Raycaster(),plane=new T.Plane(new T.Vector3(0,1,0),0);let before=null;if(zoomAnchor){ray.setFromCamera(zoomAnchor,camera);before=ray.ray.intersectPlane(plane,new T.Vector3());}camera.zoom+=(zoomTarget-camera.zoom)*.24;if(Math.abs(camera.zoom-zoomTarget)<.002){camera.zoom=zoomTarget;zoomTarget=null;}camera.updateProjectionMatrix();if(before){ray.setFromCamera(zoomAnchor,camera);const after=ray.ray.intersectPlane(plane,new T.Vector3());if(after){before.sub(after);controls.target.add(before);camera.position.add(before);}}dirty=true;}
   if(focusTarget){
    viewOffset.subVectors(camera.position,controls.target);const horizontal=Math.hypot(viewOffset.x,viewOffset.z),elevation=viewOffset.y/viewOffset.length(),focusY=Math.max(100,(130+height-inset-110)/2),shift=(height/2-focusY)*(camera.top-camera.bottom)/(height*camera.zoom*Math.max(.2,elevation));
-   followPoint.set(clamp(focusTarget.x+viewOffset.x/horizontal*shift,-18,18),0,clamp(focusTarget.z+viewOffset.z/horizontal*shift,-19,18));
+   followPoint.set(clamp(focusTarget.x+viewOffset.x/horizontal*shift,CITY_BOUNDS.left+3,CITY_BOUNDS.right-3),0,clamp(focusTarget.z+viewOffset.z/horizontal*shift,CITY_BOUNDS.top+2,CITY_BOUNDS.bottom-2));
    moveFollowCamera(camera.position,controls.target,followPoint,(now-lastFrame)/1000);if(controls.target.distanceTo(followPoint)<.02)focusTarget=null;dirty=true;
   }
   if(watching.following&&cell)trackCell(cell,(now-lastFrame)/1000);
-  controls.update();const cx=clamp(controls.target.x,-18,18),cz=clamp(controls.target.z,-19,18);camera.position.x+=cx-controls.target.x;camera.position.z+=cz-controls.target.z;controls.target.x=cx;controls.target.z=cz;camera.updateMatrixWorld();
+  controls.update();const cx=clamp(controls.target.x,CITY_BOUNDS.left+3,CITY_BOUNDS.right-3),cz=clamp(controls.target.z,CITY_BOUNDS.top+2,CITY_BOUNDS.bottom-2);camera.position.x+=cx-controls.target.x;camera.position.z+=cz-controls.target.z;controls.target.x=cx;controls.target.z=cz;camera.updateMatrixWorld();
   if(options.paused&&!dirty&&now-lastFrame<250)return;
-  lastFrame=now;actor.draw(s,{...options,motion,selectedCell:watching.id,readability:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(currentEditor?{...s,layout:currentEditor.draft}:s,{...options,camera,target:controls.target});updateLabels(s,options);const site=siteAt(s.layout,options.selected);selection.visible=!!site&&!currentEditor;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
+  lastFrame=now;viewMatrix.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);viewFrustum.setFromProjectionMatrix(viewMatrix);actor.draw(s,{...options,motion,visible:actorVisible,selectedCell:watching.id,readability:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(currentEditor?{...s,layout:currentEditor.draft}:s,{...options,camera,target:controls.target});updateLabels(s,options);const site=siteAt(s.layout,options.selected);selection.visible=!!site&&!currentEditor;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
   if(quality.shadow&&now-lastShadow>quality.shadowInterval){renderer.shadowMap.needsUpdate=true;lastShadow=now;}
   const illness=clamp(Math.max((75-cityHealth(s))/65,(s.inflammation-30)/70),0,1);scene.background.copy(calmSky).lerp(illSky,illness*.8);scene.fog.color.copy(scene.background);sun.color.copy(warmSun).lerp(illSun,illness);
   renderer.render(scene,camera);if(ready&&!options.paused&&!currentEditor)adaptive.rendered(performance.now()-now);dirty=false;frames++;minCalls=Math.min(minCalls,renderer.info.render.calls);peakCalls=Math.max(peakCalls,renderer.info.render.calls);peakTriangles=Math.max(peakTriangles,renderer.info.render.triangles);

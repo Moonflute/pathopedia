@@ -1,3 +1,4 @@
+import {CITY_ENTRIES,CITY_CAPS,shipmentLimit,pathogenLimit} from './city-world.mjs';
 import {cityDistricts,cityDistrict,localPoint,siteAt,tissueAt,depotAt,compileLayout} from './city-tile-layout.mjs';
 import {DISTRICTS,DRUGS,WAVES,districtDef} from './city-data.mjs';
 import {groundPoint,groundCoordinate,SITES} from './city-three-layout.mjs';
@@ -37,7 +38,7 @@ function repairOrder(s,id,api){
  if(w.hp>=wallMaximum(s,id))return {ok:false,text:'장벽 정상'};
  const stock=s.frontier.depots.skin,local=stock.materials>=8;
  if(!local&&s.resources.materials<8)return {ok:false,text:'복구 자재 8 부족'};
- if(s.shipments.length>=48)return {ok:false,text:'물류 대기열 포화'};
+ if(s.shipments.length>=shipmentLimit(s))return {ok:false,text:'물류 대기열 포화'};
  if(local)stock.materials-=8;else s.resources.materials-=8;
  w.repair={remaining:7,materials:local,delivered:false,assignee:null};
  if(!local)api.shipment(s,'materials','marrow',8,{frontDelivery:{type:'wall',id}});
@@ -49,7 +50,7 @@ function supplyOrder(s,id,api){
  let sent=0;
  for(const kind of ['food','materials','drug']){
   if(kind==='drug'&&s.biology)continue;
-  if(s.shipments.length>=48)break;
+  if(s.shipments.length>=shipmentLimit(s))break;
   if(s.shipments.some(sh=>sh.frontDelivery?.type==='depot'&&sh.frontDelivery.id===id&&sh.kind===kind&&(kind!=='drug'||sh.drugId===s.drug)))continue;
   const stock=kind==='drug'?depot.ammo[s.drug]:depot[kind];if(stock>=cap*.65)continue;
   const amount=Math.min(8,cap-stock),cost=kind==='drug'?DRUGS.find(d=>d.id===s.drug).cost:amount,resource=kind==='materials'?'materials':'food';
@@ -71,7 +72,7 @@ export function frontierCommand(s,action,id,api){
  if(action==='gut-quarantine'){s.frontier.gut.quarantine=!s.frontier.gut.quarantine;api.log(s,'소화기 · 식재료 검역 '+(s.frontier.gut.quarantine?'ON':'OFF'));return {ok:true};}
  if(action==='skin-wound'){
   const index=Number(id);if(!WALLS[index])return {ok:false};
-  if(s.enemies.length+s.spawn.length>28)return {ok:false,text:'현재 감염 대응 중'};
+  if(s.enemies.length+s.spawn.length>pathogenLimit(s)-4)return {ok:false,text:'현재 감염 대응 중'};
   openWound(s,index,api);return {ok:true};
  }
  if(action==='invest'){
@@ -100,7 +101,7 @@ export function assignFronts(s){
 export function spawnAtFront(s,e){
  if(!s.frontier)return e;
  e.front||='airway';if(e.front==='skin')e.wall??=11;
- const p=e.front==='blood'?point(s,'heart'):e.front==='skin'?WALLS[e.wall??11].outside:e.front==='gut'?groundCoordinate({x:19,z:-4}):AIRWAY_PATH[0];
+ const p=e.front==='blood'?point(s,'heart'):e.front==='skin'?WALLS[e.wall??11].outside:e.front==='gut'?groundCoordinate(CITY_ENTRIES.gut.start):AIRWAY_PATH[0];
  if(e.front==='blood'){e.entered=true;e.site='heart';}
  Object.assign(e,{x:p.x+(e.id%2)*3,y:p.y+(e.id%3)*3});return e;
 }
@@ -240,9 +241,9 @@ export function validateFrontier(s){
  if(!f.airway||!n(f.airway.mucus,12)||!n(f.airway.cleared)||!n(f.airway.boostUntil)||typeof f.gut?.quarantine!=='boolean'||!n(f.waste?.stock,24)||!n(f.waste?.processed))return false;
  if(!Array.isArray(f.inbox)||f.inbox.length>3||f.inbox.some(x=>!pathogenDef(x.recordId)||!n(x.remaining,4)))return false;
  if(!Array.isArray(f.tissues)||f.tissues.length!==TISSUES.length||f.tissues.some(t=>!n(t.hp,100))||!n(f.woundAt)||!Number.isInteger(f.woundId)||!WALLS[f.woundId]||typeof f.woundDone!=='boolean'||typeof f.warned!=='boolean'||!Number.isFinite(f.supplyClock))return false;
- for(const c of [...s.cells,...s.shipments]){const w=c.workplace;if(w&&(!districtDef(w.site)||!['oxygen','dock','produce','fabricate','waste','repair','rest'].includes(w.role)||w.key!==w.site+':'+w.role||!n(w.ticket)||w.slot!=null&&(!Number.isInteger(w.slot)||!n(w.slot,5))))return false;if(c.frontJob!=null&&!WALLS[c.frontJob]||c.tissueJob!=null&&!TISSUES[c.tissueJob]||c.debrisCargo!=null&&!n(c.debrisCargo,3)||c.materialCargo!=null&&!n(c.materialCargo,8))return false;}
+ for(const c of [...s.cells,...s.shipments]){const w=c.workplace;if(w&&(!districtDef(w.site)||!['oxygen','dock','produce','fabricate','waste','repair','rest'].includes(w.role)||w.key!==w.site+':'+w.role||!n(w.ticket)||w.slot!=null&&(!Number.isInteger(w.slot)||!n(w.slot,CITY_CAPS.workSlots-1))))return false;if(c.frontJob!=null&&!WALLS[c.frontJob]||c.tissueJob!=null&&!TISSUES[c.tissueJob]||c.debrisCargo!=null&&!n(c.debrisCargo,3)||c.materialCargo!=null&&!n(c.materialCargo,8))return false;}
  for(const sh of s.shipments){const d=sh.frontDelivery;if(d&&!(d.type==='wall'&&WALLS[d.id]||d.type==='depot'&&FRONTS[d.id]))return false;}
- for(const e of [...s.enemies,...s.spawn])if(e.front&&!FRONTS[e.front]&&e.front!=='blood'||e.front==='skin'&&!WALLS[e.wall]||e.caughtUntil!=null&&!n(e.caughtUntil)||e.entryStep!=null&&(!Number.isInteger(e.entryStep)||!n(e.entryStep,160)))return false;
+ for(const e of [...s.enemies,...s.spawn])if(e.front&&!FRONTS[e.front]&&e.front!=='blood'||e.front==='skin'&&!WALLS[e.wall]||e.caughtUntil!=null&&!n(e.caughtUntil)||e.entryStep!=null&&(!Number.isInteger(e.entryStep)||!n(e.entryStep,CITY_CAPS.path)))return false;
  for(const d of Object.values(s.districts))if(d.building?.type==='plot'&&!INVESTMENTS[d.building.choice])return false;
  const slots=new Set();for(const c of [...s.cells,...s.shipments])if(c.workplace?.slot!=null){const key=c.workplace.key+':'+c.workplace.slot;if(slots.has(key))return false;slots.add(key);}
  return n(s.workTicket||0);
