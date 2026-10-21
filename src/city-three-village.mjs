@@ -1,4 +1,6 @@
-import {CITY_STYLE as STYLE} from './city-three-style.mjs';
+import {CITY_STYLE as BASE_STYLE} from './city-three-style.mjs';
+import {CANAL_STYLE,canalHouse,createCanalScenery} from './city-three-canals.mjs';
+import {compileVascularLayout} from './city-vascular-layout.mjs';
 import {CITY_BOUNDS,CITY_ENTRIES,CITY_SCALE,LANDSCAPE_RADIUS,storedPlacement} from './city-world.mjs';
 import {layoutPlaceables,placeable,transformPoint,compileLayout,occupiedTiles,riverX} from './city-tile-layout.mjs';
 import {createFrontierScene} from './city-three-frontier.mjs';
@@ -11,16 +13,18 @@ import {workStation} from './city-activity.mjs';
 import {bundleModel,createBundleWalls} from './city-three-bundle.mjs';
 
 // All decorative meshes are baked once by material. Only working machinery moves.
-export function createVillage(assets,layout=null,editId=null,newAssets=null){
+export function createVillage(assets,layout=null,editId=null,newAssets=null,theme='1'){
+ const canal=theme==='2',STYLE=canal?{...BASE_STYLE,plaster:0xf1dfbf,plasterWarm:0xebcfa9,trim:0xd4b991,roofs:CANAL_STYLE.roofs,water:CANAL_STYLE.water,waterLight:0x84c7bc}:BASE_STYLE;
  const root=new T.Group(),fixed=new T.Group(),moving=new T.Group(),supply=new T.Group(),districts={};root.add(fixed,moving,supply);supply.visible=false;
  root.userData.bundleModels={};
+ root.userData.theme=canal?'2':'1';
  let owner=null;const owners={fixed:new Map(),moving:new Map()};
  function scope(id){owner=id;}
  function group(type,id=owner){const parent=type==='fixed'?fixed:moving;if(!id)return parent;let g=owners[type].get(id);if(!g){g=new T.Group();g.userData.layoutId=id;parent.add(g);owners[type].set(id,g);}return g;}
  const animated={add(...objects){group('moving').add(...objects);}};
  const staticParent=p=>p===fixed?group('fixed'):p===animated?group('moving'):p;
  const network=layout?compileLayout(layout):null;
- const roads=network?Object.entries(network.vascular).map(([id,points])=>({id,points,pulmonary:id==='lung'})):CITY_ROADS;
+ const roads=canal&&layout?compileVascularLayout(layout).vessels:network?Object.entries(network.vascular).map(([id,points])=>({id,points,pulmonary:id==='lung'})):CITY_ROADS;
  const intake=network?network.entries.gut:INTAKE_ROAD;
  function applyTransform(g,id,a=layout?.items[id]){if(!a)return;g.visible=!storedPlacement(a);const d=placeable(id),q=transformPoint({items:{[id]:a}},id,{x:0,z:0});g.position.set(q.x,0,q.z);g.rotation.y=-a.rot*Math.PI/2;}
 
@@ -33,7 +37,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  const model=(name,x,y,z,size=1,angle=0,parent=fixed)=>{
   const proto=assets[name];if(!proto)return null;const g=proto.clone(true);g.position.set(x,y,z);g.rotation.y=angle;g.scale.setScalar(size);staticParent(parent).add(g);return g;
  };
- const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;if(name==='gate')g.traverse(m=>{if(m.isMesh)m.material=mat(STYLE.plaster);});g.name='bundle-'+name;root.userData.bundleModels[name]=(root.userData.bundleModels[name]||0)+1;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
+ const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{if(canal&&name==='cart')return null;if(canal&&['house-a','house-b','hall','workshop','tower'].includes(name)){const g=cottage(x,z,Math.min(height/2.25,maxWidth/1.5),angle,true);g.position.y=y;return g;}const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;if(name==='gate')g.traverse(m=>{if(m.isMesh)m.material=mat(STYLE.plaster);});g.name='bundle-'+name;root.userData.bundleModels[name]=(root.userData.bundleModels[name]||0)+1;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
  const disc=(x,z,r,c,y=.012)=>{const m=make(new T.CircleGeometry(r,32),c,x,y,z);m.rotation.x=-Math.PI/2;m.castShadow=false;return m;};
  function ribbon(points,width,color,height=.025){
   if(points.length<2)return;
@@ -44,7 +48,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
   const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));for(let i=0;i<idx.length;i+=3){const [a,b,c]=idx.slice(i,i+3).map(n=>n*3),cross=(pos[b+2]-pos[a+2])*(pos[c]-pos[a])-(pos[b]-pos[a])*(pos[c+2]-pos[a+2]);if(cross<0)[idx[i+1],idx[i+2]]=[idx[i+2],idx[i+1]];}geo.setIndex(idx);const normals=new Float32Array(pos.length);for(let i=1;i<normals.length;i+=3)normals[i]=1;geo.setAttribute('normal',new T.Float32BufferAttribute(normals,3));const m=make(geo,color,0,0,0);m.castShadow=false;return m;
  }
  const smooth=points=>new T.CatmullRomCurve3(points.map(([x,z])=>new T.Vector3(x,0,z))).getPoints(90).map(p=>({x:p.x,z:p.z}));
- function road(points,width=1.4){ribbon(points,width+.26,STYLE.roadEdge,.025);ribbon(points,width,STYLE.road,.035);}
+ function road(points,width=1.4){if(canal)return;ribbon(points,width+.26,STYLE.roadEdge,.025);ribbon(points,width,STYLE.road,.035);}
  const roofColors=STYLE.roofs;
  function leaf(x,y,z,r,color,parent){const m=orb(x,y,z,r,color,parent);m.scale.y=.78;return m;}
  function gardenTree(x,z,height=2.5,variant=0,parent=fixed){
@@ -56,6 +60,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  }
  function cottage(x,z,size=1.5,angle=0,large=false){
   const index=owner?.startsWith('house-')?Number(owner.slice(6)):Object.keys(SITES).indexOf(placeable(owner)?.district||owner)+6;
+  if(canal)return canalHouse({box,make,model,mat,parent:group('fixed')},x,z,size,Math.max(0,index),angle);
   const roofColor=roofColors[(index+roofColors.length)%roofColors.length],tall=index%4===1,height=tall?STYLE.houseUpperHeight:STYLE.houseHeight;
   const g=new T.Group();g.position.set(x,0,z);g.rotation.y=angle;g.scale.setScalar(size);group('fixed').add(g);
   // Compact plaster cottages share the existing CC0 roofs and chimneys.
@@ -85,18 +90,19 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
   return g;
  }
  // Ground extends into the landscape: no floating square board or map edge.
- const meadowColor=STYLE.meadow,ground=disc(0,0,LANDSCAPE_RADIUS,meadowColor,-.035);ground.name='meadow';
+ const meadowColor=canal?CANAL_STYLE.water:STYLE.meadow,ground=disc(0,0,LANDSCAPE_RADIUS,meadowColor,canal?-.16:-.035);ground.name=canal?'lagoon':'meadow';
+ if(canal){ground.material.roughness=.48;ground.material.metalness=.12;}
  // Broad, quiet grass patches break up the expanded ground without a tile grid.
- for(let i=0;i<26;i++){const x=CITY_BOUNDS.left+6+(i*17.3)%72,z=CITY_BOUNDS.top+5+(i*23.7)%65,m=disc(x,z,3.2+i%4,i%2?STYLE.grassLight:STYLE.grassDark,-.026+i*.0001);m.scale.set(1.6,1,1);m.rotation.z=i*.7;}
+ if(!canal)for(let i=0;i<26;i++){const x=CITY_BOUNDS.left+6+(i*17.3)%72,z=CITY_BOUNDS.top+5+(i*23.7)%65,m=disc(x,z,3.2+i%4,i%2?STYLE.grassLight:STYLE.grassDark,-.026+i*.0001);m.scale.set(1.6,1,1);m.rotation.z=i*.7;}
  const terrain=[];
- for(let i=0;i<13;i++){const x=(-33+i*5.1)*CITY_SCALE,z=(-26-Math.sin(i*.8)*5)*CITY_SCALE;const hill=orb(x,-2,z,1,newAssets?(i%2?0x9fb28e:0xabbc98):(i%2?0xadb8a0:0xb8bda7));hill.scale.set(5+i%3,5+i%4,4.6);terrain.push(hill);}
- for(let i=0;i<7;i++){const hill=orb((-26-i%2*3)*CITY_SCALE,-1,(-14+i*6)*CITY_SCALE,1,newAssets?0xaabd97:0xb9c2a7);hill.scale.set(5,3.5+i%3,5);terrain.push(hill);}
- const river=smooth([[32,-420],[32,-150],...RIVER_PATH,[54,150],[75,420]]);ribbon(river,4.15,0xc4c1a1,-.005);ribbon(river,3.25,STYLE.water,.004);ribbon(river,1.65,STYLE.waterLight,.006);
- if(network){const width=level=>level===2?STYLE.mainRoad:level===1?1.1:STYLE.alley;for(const r of network.streets.runs)road(r.points,width(r.level));for(const p of network.streets.junctions){disc(p.x,p.z,width(p.level)/2+.13,STYLE.roadEdge,.026);disc(p.x,p.z,width(p.level)/2,STYLE.road,.036);}}
+ if(!canal)for(let i=0;i<13;i++){const x=(-33+i*5.1)*CITY_SCALE,z=(-26-Math.sin(i*.8)*5)*CITY_SCALE;const hill=orb(x,-2,z,1,newAssets?(i%2?0x9fb28e:0xabbc98):(i%2?0xadb8a0:0xb8bda7));hill.scale.set(5+i%3,5+i%4,4.6);terrain.push(hill);}
+ if(!canal)for(let i=0;i<7;i++){const hill=orb((-26-i%2*3)*CITY_SCALE,-1,(-14+i*6)*CITY_SCALE,1,newAssets?0xaabd97:0xb9c2a7);hill.scale.set(5,3.5+i%3,5);terrain.push(hill);}
+ if(!canal){const river=smooth([[32,-420],[32,-150],...RIVER_PATH,[54,150],[75,420]]);ribbon(river,4.15,0xc4c1a1,-.005);ribbon(river,3.25,STYLE.water,.004);ribbon(river,1.65,STYLE.waterLight,.006);}
+ if(network&&!canal){const width=level=>level===2?STYLE.mainRoad:level===1?1.1:STYLE.alley;for(const r of network.streets.runs)road(r.points,width(r.level));for(const p of network.streets.junctions){disc(p.x,p.z,width(p.level)/2+.13,STYLE.roadEdge,.026);disc(p.x,p.z,width(p.level)/2,STYLE.road,.036);}}
  if(network)for(const r of network.access)road(r.points,r.width);
  for(const r of roads.filter(r=>r.points.length>1)){if(!network)road(r.points,STYLE.mainRoad);
   const pts=r.points.map(p=>new T.Vector3(p.x,.08,p.z));
-  const line=new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),32,.075,4,false),new T.MeshBasicMaterial({color:r.pulmonary?0x4f9aa9:newAssets?0xc77f77:0xc89b63}));supply.add(line);
+  const line=canal?new T.Line(new T.BufferGeometry().setFromPoints(pts),new T.LineBasicMaterial({color:r.oxygenated?0xd48d77:0x78b5d1})):new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),32,.075,4,false),new T.MeshBasicMaterial({color:r.pulmonary?0x4f9aa9:newAssets?0xc77f77:0xc89b63}));supply.add(line);
  }
  road(intake.slice(0,network?3:undefined),1.05);if(!network)road(smooth([[-12,-11],[-13,-6],[-10,-2],[-7,4],[-3,7],[3,7],[6,4],[5,0],[2,-3],[-1,-6]]),.9);
  road(network?network.entries.airway.slice(0,4):AIRWAY_PATH.map(groundPoint),1.8);
@@ -105,8 +111,8 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  if(!layout)road([{x:19,z:-4},{x:15,z:-4},{x:11.7,z:-3.4},{x:8,z:-3}],1.2);
  for(const [id,site] of Object.entries(SITES)){
   scope(id);
-  disc(site.x,site.z,id==='heart'?3.1:2.35,0xb8b7a1,.041);disc(site.x,site.z,id==='heart'?2.9:2.13,STYLE.plaza,.044);
-  if(id==='heart'){const ring=make(new T.RingGeometry(2.55,2.6,40),STYLE.trim,site.x,.046,site.z);ring.rotation.x=-Math.PI/2;ring.castShadow=false;for(const [x,z] of [[-2.65,1],[-2.65,4.1]]){cylinder(x,.18,z,.35,.28,.35,STYLE.trim);leaf(x,.45,z,.35,STYLE.foliage[1]);model('lantern',x,0,z-.55,.9);}}
+  if(!canal){disc(site.x,site.z,id==='heart'?3.1:2.35,0xb8b7a1,.041);disc(site.x,site.z,id==='heart'?2.9:2.13,STYLE.plaza,.044);}
+  if(id==='heart'&&!canal){const ring=make(new T.RingGeometry(2.55,2.6,40),STYLE.trim,site.x,.046,site.z);ring.rotation.x=-Math.PI/2;ring.castShadow=false;for(const [x,z] of [[-2.65,1],[-2.65,4.1]]){cylinder(x,.18,z,.35,.28,.35,STYLE.trim);leaf(x,.45,z,.35,STYLE.foliage[1]);model('lantern',x,0,z-.55,.9);}}
   const [bx,bz]=site.building;road([{x:site.x,z:site.z},{x:bx,z:bz+1.4}],.9);
   if(!layout)for(const role of ['oxygen','dock',...(id==='lymph'?['produce']:id==='marrow'||id==='gut'?['fabricate']:[])])for(let slot=0;slot<(role==='dock'?1:3);slot++){const bay=workStation(id,role,slot);road([{x:site.x,z:site.z},groundPoint(bay.stand),groundPoint(bay.target)],.48);}
   districts[id]={...site,work:new T.Group(),tower:new T.Group(),level:new T.Group()};animated.add(districts[id].work,districts[id].tower,districts[id].level);
@@ -136,7 +142,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  scope(null);
  // A protected respiratory portal emerges from the northern hillside.
  const {portal,screen,start:airStart}=CITY_ENTRIES.airway;
- const intakeHill=orb(airStart.x,-.7,airStart.z,1,0xb6bda7);intakeHill.scale.set(4.5,3.7,4);
+ if(!canal){const intakeHill=orb(airStart.x,-.7,airStart.z,1,0xb6bda7);intakeHill.scale.set(4.5,3.7,4);}else box(portal.x,-.12,portal.z,5,.4,3.2,CANAL_STYLE.stone);
  if(newModel)newModel('gate',portal.x,0,portal.z,3.4,0,fixed,3.6);
  else{box(portal.x,1.2,portal.z-.25,2.6,2.4,.13,0x587a72);
   for(const x of [portal.x-1.4,portal.x+1.4])box(x,.8,portal.z,.4,1.6,.75,0xe3d3b6);
@@ -180,19 +186,19 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  const clear=(x,z,r=1.2)=>!nearRoad(x,z,r+1)&&!occupied.some(p=>Math.abs(x-p.col)<r+.6&&Math.abs(z-p.row)<r+.6)&&Math.hypot(x-portal.x,z-portal.z)>5&&Math.hypot(x-CITY_ENTRIES.gut.portal.x,z-CITY_ENTRIES.gut.portal.z)>5;
  // Outside groves frame the wall; its inner patrol/repair strip remains empty.
  let sceneryCount=0;
- for(const [i,w] of WALLS.entries())for(let n=0;n<3;n++){
+ if(!canal)for(const [i,w] of WALLS.entries())for(let n=0;n<3;n++){
   const t=(n+.5)/3,x=w.a.x+(w.b.x-w.a.x)*t+w.nx*(4+n%2*2),z=w.a.z+(w.b.z-w.a.z)*t+w.nz*(4+n%2*2);
   if(!clear(x,z)||Math.abs(x-riverX(z))<2.5)continue;
   gardenTree(x,z,2.8+(i+n)%3*.35,i+n);sceneryCount++;
  }
  // Waterside reeds and smooth stones make the river part of the landscape.
- for(let n=0;n<20;n++){const z=-32+n*3.2,x=riverX(z)+2.2;if(!clear(x,z,.45))continue;
+ if(!canal)for(let n=0;n<20;n++){const z=-32+n*3.2,x=riverX(z)+2.2;if(!clear(x,z,.45))continue;
   for(let j=0;j<3;j++)cylinder(x+j*.18,.34,z+j*.17,.025,.04,.65+(j%2)*.25,STYLE.sage);
   const stone=orb(x+.5,.12,z-.3,.35,STYLE.stone);stone.scale.set(1.5,.55,1);
  }
  const commons={heart:[[-13,4],[-11,-4],[-9,10]],lung:[[5,-1],[6,-7],[-13,-10]],gut:[[-10,-7],[-8,-3]],kidney:[[-7,-6],[7,-3],[-12,10]],marrow:[[7,-3],[-8,-7],[-13,6]],lymph:[[9,4],[-9,-2],[-12,11]]};
  const plantedCommons=[];
- for(const [id,candidates] of Object.entries(commons)){const origin=layout?.items[id],site=SITES[id];if(!origin)continue;
+ if(!canal)for(const [id,candidates] of Object.entries(commons)){const origin=layout?.items[id],site=SITES[id];if(!origin)continue;
   for(const [dx,dz] of candidates){const x=origin.col+dx,z=origin.row+dz;if(!clear(x,z,1.8)||Math.abs(x-riverX(z))<4||plantedCommons.some(p=>Math.hypot(p.x-x,p.z-z)<5))continue;plantedCommons.push({id,x,z});
    disc(x,z,2.1,STYLE.grassLight,.01);const water=id==='kidney',color=id==='marrow'?STYLE.rose:id==='gut'?STYLE.brass:STYLE.sage;
    for(const side of [-1,1]){const gx=x+side*1.2,gz=z-.9;if(!water)gardenTree(gx,gz,2.1,id==='gut'?2:1);else{disc(gx,gz,.5,STYLE.stone,.03);disc(gx,gz,.4,STYLE.water,.035);}sceneryCount++;}
@@ -202,7 +208,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  }
  root.userData.landscapeTrees=sceneryCount;root.userData.commons=plantedCommons;
  // Gardens sit inside each saved footprint and move with the building.
- if(layout){for(const d of layoutPlaceables(layout)){scope(d.id);const [x0,z0,x1,z1]=d.bounds,w=x1-x0,h=z1-z0,cx=d.origin.x+(x0+x1-1)/2,cz=d.origin.z+(z0+z1-1)/2;
+ if(layout&&!canal){for(const d of layoutPlaceables(layout)){scope(d.id);const [x0,z0,x1,z1]=d.bounds,w=x1-x0,h=z1-z0,cx=d.origin.x+(x0+x1-1)/2,cz=d.origin.z+(z0+z1-1)/2;
   const tile=make(new T.PlaneGeometry(w-.1,h-.1),d.kind==='house'?STYLE.meadow:0xd0c7ad,cx,.017,cz);tile.rotation.x=-Math.PI/2;tile.castShadow=false;
   if(d.kind==='house'){
    const i=Number(d.id.slice(6)),x=d.origin.x,z=d.origin.z;
@@ -223,6 +229,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  }
  scope(null);const water=transformPoint(layout,'kidney',{x:13,z:9});const drain=[{x:riverX(water.z),z:water.z},water];ribbon(drain,.6,0xb4bcb0,.14);ribbon(drain,.38,0x91bfba,.15);
  }
+ const canalScene=canal?createCanalScenery({layout,make,box,cylinder,scope,fixed,moving,ribbon}):null;
  for(const [id,g] of owners.fixed)applyTransform(g,id);for(const [id,g] of owners.moving)applyTransform(g,id);
  // Selected geometry stays separate during editing, so dragging moves it without rebuilding.
  const preview=owners.fixed.get(editId);if(preview){fixed.remove(preview);root.add(preview);}
@@ -249,10 +256,10 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  }
  const retainedMaterials=new Set();root.traverse(m=>{if(m.material)retainedMaterials.add(m.material);});for(const m of materials.values())if(!retainedMaterials.has(m))m.dispose();
  const sources=new Set();fixed.traverse(m=>{if(m.isMesh&&!m.userData.kenney&&!m.userData.cityAsset)sources.add(m.geometry);});for(const g of sources)g.dispose();
- return {root,districts,movePreview(a){if(preview)applyTransform(preview,editId,a);const g=owners.moving.get(editId);if(g)applyTransform(g,editId,a);},dispose(){bundleWalls?.dispose();const gs=new Set(),ms=new Set();root.traverse(m=>{if(m.isInstancedMesh)m.dispose();if(m.geometry&&!m.userData.kenney&&!m.userData.cityAsset)gs.add(m.geometry);if(m.material&&!m.userData.kenney&&!m.userData.cityAsset)ms.add(m.material);});for(const g of gs)g.dispose();for(const m of ms)if(!m.map)m.dispose();},update(s,options){
+ return {root,districts,canals:canalScene?.canals,movePreview(a){if(preview)applyTransform(preview,editId,a);const g=owners.moving.get(editId);if(g)applyTransform(g,editId,a);},dispose(){bundleWalls?.dispose();const gs=new Set(),ms=new Set();root.traverse(m=>{if(m.isInstancedMesh)m.dispose();if(m.geometry&&!m.userData.kenney&&!m.userData.cityAsset)gs.add(m.geometry);if(m.material&&!m.userData.kenney&&!m.userData.cityAsset)ms.add(m.material);});for(const g of gs)g.dispose();for(const m of ms)if(!m.map)m.dispose();},update(s,options){
   moving.visible=true;frontier.root.visible=true;supply.visible=!options.editor&&options.layer==='supply';
-  facilities.update(s);frontier.update(s,options);bundleWalls?.update(s,options);
+  facilities.update(s);frontier.update(s,options);bundleWalls?.update(s,options);canalScene?.update(s);
   for(const [id,d] of Object.entries(districts)){const state=s.districts[id];d.work.visible=!!state.building;d.tower.visible=state.tower>0;d.tower.scale.y=state.tower>1?1.25:1;const progress=state.building?.remaining==null?0:1-state.building.remaining/state.building.duration;d.work.userData.progress.scale.y=.3+progress*2;d.work.userData.progress.position.y=.4+d.work.userData.progress.scale.y*.11;d.level.children.forEach((m,i)=>m.visible=i<state.level-1);}
-  ground.material.color.setHex(s.host==='neutropenia'?0xd7c8a7:meadowColor);
+  ground.material.color.setHex(canal?CANAL_STYLE.water:s.host==='neutropenia'?0xd7c8a7:meadowColor);
  }};
 }

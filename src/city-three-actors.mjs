@@ -46,7 +46,7 @@ export function createActors(profile){
   line(x,y-.15*size,z,x,y+.08*size,z,.045*size,0xf6cf78);
   for(const side of [-1,1])line(x,y+.08*size,z,x+side*.16*size,y+.27*size,z,.045*size,0xf6cf78);
  }
- function worker(unit,kind,id,p,t,selected,drug,readability){
+ function worker(unit,kind,id,p,t,selected,drug,readability,onWater=false){
   const look=CELL_STYLES[kind]||CELL_STYLES.courier,phase=typeof id==='number'?id:Number(id.replace('shipment',''));
   const prev=last.get(id),distance=prev?Math.hypot(p.x-prev.x,p.z-prev.z):0,movedAt=distance>.00001?t:prev?.movedAt??-1,moving=t-movedAt<.12;
   const act=activeActivity(unit,t),progress=activityProgress(act,t),at=act?groundPoint(act):null,doing=act?.kind;
@@ -59,7 +59,7 @@ export function createActors(profile){
   const recoil=firing?Math.pow(1-progress,3):0,reach=engulf?Math.sin(Math.PI*progress):doing==='collect'?beat*.65:0;
   const stride=t*(kind==='macrophage'?8:kind==='platelet'?14:11)+phase;
   const waiting=!!unit.waitReason&&!moving;
-  const bob=act?-beat*(hammering?.04:.018):moving?Math.abs(Math.sin(stride))*.055:Math.sin(t*(waiting?3:2)+phase)*(waiting?.025:.012);
+  const bob=onWater?-.12+Math.sin(t*2.2+phase)*.025:act?-beat*(hammering?.04:.018):moving?Math.abs(Math.sin(stride))*.055:Math.sin(t*(waiting?3:2)+phase)*(waiting?.025:.012);
   const base=unit.integrity<40?'#bfb9ab':CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf?reach*.23:firing?-recoil*.1:0;
   const part=(id,x,y,z,sx,sy,sz,c,rx=0,rz=0)=>put(id,p.x+x*cs+(z+shift)*sn,y+bob,p.z-x*sn+(z+shift)*cs,sx,sy,sz,c,rx,angle,rz);
   part('body',0,look.y,0,look.w*(1+reach*.12),look.h*(1-reach*.12),look.w*.88,base);
@@ -72,14 +72,14 @@ export function createActors(profile){
    if(transfer){h.x=side*.23;h.y=.46+beat*.16;h.z=.22+beat*.16;}
    else if(engulf||doing==='collect'){h.x=side*(.35-reach*.15);h.y=.36;h.z=.17+reach*.42;}
    else if(kind==='courier'){h.x=side*.24;h.z=.4;}
-   else if(moving)h.z=Math.sin(stride+side)*.09;
+   else if(moving)h.z=Math.sin((onWater?t*2:stride)+side)*(onWater?.035:.09);
    else if(waiting){h.y+=Math.sin(t*2+phase)*.035;h.z=.06;}
    if(i&&hammering){h.y=.48+strike*.2;h.z=.12;}
    if(i&&firing){h.y=.43;h.z=.25-recoil*.13;}
    if(i&&producing){h.y=.45+Math.sin(progress*Math.PI)*.06;h.z=.47+Math.sin(progress*Math.PI*4)*.07;h.x=.08+Math.cos(progress*Math.PI*4)*.09;}
    if(doing==='patch'){h.y=.16;h.z=.29+Math.sin(progress*10)*.07;}
    part('eyes',side*.09,look.face,look.w*.83,.034,.045,.027,0x41464c);
-   part('feet',side*look.w*.48,.075,moving?Math.sin(stride+side)*.075:firing?side*.08:0,.09,.065,.12,0x826f61);
+   if(!onWater)part('feet',side*look.w*.48,.075,moving?Math.sin(stride+side)*.075:firing?side*.08:0,.09,.065,.12,0x826f61);
    part('hands',h.x,h.y,h.z,.075,.095,.075,base);
   }
   const hand=hands[1];
@@ -154,8 +154,13 @@ export function createActors(profile){
   if(kind==='courier'){
    part('box',0,.35,-.25,.27,.29,.2,0xc9a375);
    const cargoColor=unit.kind==='drug'?0xb6c59a:unit.kind==='materials'?0xc59e68:0xe1ba78;
-   part('box',0,.21,.78,.58,.17,.68,0xa68c6d);
-   for(const side of [-1,1]){part('rod',side*.32,.16,.78,.17,.09,.17,0x806c59,0,Math.PI/2);part('rod',side*.25,.31,.52,.035,.44,.035,0x947656,Math.PI/2);}
+   if(onWater){
+    part('pod',0,.04,.37,.43,.18,1.15,0x6c6255);part('box',0,.15,.4,.62,.08,1.5,0xc2a67b);
+    for(const side of [-1,1])part('rod',side*.34,.19,.4,.045,1.38,.045,0x926e52,Math.PI/2);
+   }else{
+    part('box',0,.21,.78,.58,.17,.68,0xa68c6d);
+    for(const side of [-1,1]){part('rod',side*.32,.16,.78,.17,.09,.17,0x806c59,0,Math.PI/2);part('rod',side*.25,.31,.52,.035,.44,.035,0x947656,Math.PI/2);}
+   }
    if(transfer){const q=doing==='load'?1-progress:progress;
     put('box',(p.x+sn*.78)*(1-q)+at.x*q,.47+Math.sin(q*Math.PI)*.42,(p.z+cs*.78)*(1-q)+at.z*q,.38,.34,.42,cargoColor,0,angle);
     put('selected',at.x,.07,at.z,.6+beat*.25,.6+beat*.25,.6+beat*.25,cargoColor,Math.PI/2);
@@ -179,15 +184,16 @@ export function createActors(profile){
   if(doing==='cytotoxic'&&at){line(p.x,.5,p.z,at.x,.3,at.z,.05,0x9299d3);put('selected',at.x,.11,at.z,.75+beat*.45,.75+beat*.45,.75+beat*.45,0xc190c2,Math.PI/2);}
   if(doing==='regulate'){const r=.9+progress;put('selected',p.x,.1,p.z,r,r,r,0x87d6b6,Math.PI/2);}
   if(doing==='signal'||doing==='patch')put('selected',p.x,.08,p.z,1+beat*.6,1+beat*.6,1+beat*.6,doing==='signal'?0x85c2cb:0xe3bd82,Math.PI/2);
+  if(onWater&&moving)put('selected',p.x-sn*.18,-.135,p.z-cs*.18,kind==='courier'?1.2:.85,.65,kind==='courier'?1.2:.85,0xa8d8cf,Math.PI/2);
   if(selected){const scale=selected===2?1.3*readability:1;put('selected',p.x,.07,p.z,scale,scale,scale,selected===2?0x438f92:0xe5b854,Math.PI/2);}
   if(selected===2)put('badge',p.x,1.15,p.z,.08*readability,.14*readability,.08*readability,0x75d1cb);
  }
- function draw(s,{selectedKind,selectedCell,readability=1,motion,visible}={}){
+ function draw(s,{selectedKind,selectedCell,readability=1,motion,visible,canals}={}){
   if(lastRun!==s||lastLayout!==s.layout){last.clear();lastRun=s;lastLayout=s.layout;}
   const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time;
   for(const m of Object.values(batches))m.count=0;positions.length=0;const living=new Set(),drug=DRUGS.find(d=>d.id===s.drug);
-  for(const c of s.cells.slice(0,profile.maxCells)){const p=point(c,c.id);if(visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability);}
-  for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability);}
+  for(const c of s.cells.slice(0,profile.maxCells)){const p=point(c,c.id);if(visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability,canals?.isWater(p));}
+  for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability,canals?.isWater(p));}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
    const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);
    const target=e.action==='attack'&&e.attackX!=null?groundPoint({x:e.attackX,y:e.attackY}):null;

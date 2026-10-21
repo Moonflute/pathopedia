@@ -1,4 +1,16 @@
-# Cell City 3D village · v0.62.0
+# Cell City 3D village · v0.63.0
+
+## Selectable city themes (v0.63.0, 2026-10-22)
+
+The header's **설정** button opens **테마 1 · 기존 마을** and **테마 2 · 혈관 수로 도시**. Theme 1 remains the default. The choice is stored under `pathopedia:cell-city:3d:theme:v1`, independently of the city save; changing themes preserves placements, elapsed time, cells, cargo, jobs, infection state and resources.
+
+Theme 2 now has a directed vascular network compiled from the saved placements. Paired arteries and veins branch from the heart, pass through thinner organ exchange beds, and return. The pulmonary circuit uses a separate preferred corridor; its artery carries the low-oxygen colour and its vein the oxygen-rich colour. Coral/blue water ribbons and one-way current arrows show the two streams. Continuous stone blocks and quay edges make the channels readable; local loading stations, house entrances and perimeter access remain connected. Terracotta roofs, arched windows, balconies and striped mooring posts reuse the Venice treatment. No pedestrian bridges are added.
+
+RBCs and internal freight couriers follow the directed graph for long-distance travel in Theme 2. Local loading/work movements and external intake retain their existing access routes. Theme switching rejoins the chosen network on the next simulation step without teleporting or resetting cargo or work. The transport selection is runtime state, independent of the save. Theme 1 and the original 2D simulation retain their road navigation. Editing a saved building recompiles its vascular routes and quays. Currents stop with simulation time.
+
+The renderer reuses the local MIT Three.js runtime and CC0 Kenney roofs/chimneys and RG Poly machinery/props. No downloaded models, new textures or runtime dependencies are required. The sixteen actor batches are retained. The circulation is a game routing abstraction, without pressure/fluid dynamics or separate progression slots.
+
+Focused checks: 14 tests in `city-themes.test.mjs` and `city-layout.test.mjs` pass, covering directed circulation, building clearance, water coverage, oxygen delivery after save/resume, switching without teleportation, and existing layout/moving-shipment behaviour. Browser checks cover theme selection, persistence, mobile controls and the vascular revision in an existing saved city. The release uses the GitHub Pages workflow for full tests, build and deployment. Previews: `city-redesign/12-theme-2-canals.jpg` (initial treatment), `city-redesign/13-theme-2-vascular.jpg` (vascular revision).
 
 Current immune behavior is described in [Immune network](#immune-network-2026-10-22-v0620). Earlier sections record the preceding models.
 

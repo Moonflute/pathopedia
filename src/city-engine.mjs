@@ -10,6 +10,7 @@ import {workStation,beginActivity,activityProgress,activeActivity,ACTIVITY_KINDS
 import {ensureBiology,biologyCommand,tickBiology,seedInfection,combatDestination,updateCombatCondition,combatEffort,cleanLocalDebris,localInfection,antibodySupport,medicineOrder,pathogenDef,validateBiology,antigenEvidence} from './city-biology.mjs';
 import {defaultCityRules,validateCityRules,cityRule,ruleReady,ruleTarget,ruleEnemy} from './city-rules.mjs';
 import {ensureImmunity,IMMUNE_ROSTER,immuneCell,tickImmunity,immuneCommand,validateImmunity,immuneClearance} from './city-immunity.mjs';
+import {vascularWalkingRoute} from './city-vascular-layout.mjs';
 
 export const SAVE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
@@ -32,11 +33,11 @@ function cell(s,kind,x,y){
   if(kind==='rbc')route(c,cityRoute(s,'marrow','lung'));
   if(s.layout){Object.assign(c,groundCoordinate(roadPoint(s.layout,groundPoint(c))));movementLayouts.set(c,s.layout);}s.cells.push(c);return c;
 }
-const movementLayouts=new WeakMap(),navigatedPaths=new WeakMap();
+const movementLayouts=new WeakMap(),navigatedPaths=new WeakMap(),movementVessels=new WeakMap();
 function route(c,points){c.path=points.map(p=>({...p}));c.step=0;delete c.roadPathVersion;}
 function move(c,speed,dt){
   const layout=movementLayouts.get(c);
-  if(layout&&navigatedPaths.get(c)!==c.path){c.path=walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=1;navigatedPaths.set(c,c.path);}
+  if(layout&&navigatedPaths.get(c)!==c.path){const vessel=movementVessels.get(c);c.path=vessel?vascularWalkingRoute(layout,c,c.path.slice(c.step).at(-1)):walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=vessel?2:1;navigatedPaths.set(c,c.path);}
   let budget=speed*dt;
   while(c.step<c.path.length){const p=c.path[c.step],d=dist(c,p);if(d>budget){if(layout){const a=groundPoint(c),b=groundPoint(p),q=groundCoordinate({x:a.x+(b.x-a.x)*budget/d,z:a.z+(b.z-a.z)*budget/d});c.x=q.x;c.y=q.y;}else{c.x+=(p.x-c.x)/d*budget;c.y+=(p.y-c.y)/d*budget;}return false;}c.x=p.x;c.y=p.y;c.step++;budget-=d;}
   return true;
@@ -381,8 +382,16 @@ function wander(s,c,dt){
   if(!c.path.length||c.step>=c.path.length){const d=destination,phase=s.time*.19+c.id*2.4,p={x:d.x+Math.cos(phase)*95,y:d.y+Math.sin(phase)*60+25};route(c,[s.layout?groundCoordinate(roadPoint(s.layout,groundPoint(p))):p]);}
   move(c,35,dt);
 }
-export function tickCity(s,dt,data){
-  if(s.layout)for(const actor of [...s.cells,...s.shipments,...s.enemies])movementLayouts.set(actor,s.layout);
+export function tickCity(s,dt,data,canalTransport=false){
+  if(s.layout)for(const actor of [...s.cells,...s.shipments,...s.enemies]){
+    const vessel=canalTransport&&(actor.kind==='rbc'||s.shipments.includes(actor)&&actor.kind!=='raw');
+    if((movementVessels.get(actor)??false)!==vessel||actor.roadPathVersion===2&&!vessel){
+      // Rejoin the selected network from the current position, without resetting
+      // a job, transfer animation, cargo, or the saved city itself.
+      if(actor.path){actor.path=actor.step<actor.path.length?[actor.path.at(-1)]:[];actor.step=0;navigatedPaths.delete(actor);}
+    }
+    movementLayouts.set(actor,s.layout);movementVessels.set(actor,vessel);
+  }
   if(s.status!=='running'||!Number.isFinite(dt)||dt<=0)return;
   dt=Math.min(dt,.25);s.time+=dt;
   if(s.weather.until<=s.time)s.weather={id:'clear',until:0};
