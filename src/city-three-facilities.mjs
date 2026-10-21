@@ -18,9 +18,13 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  scope('lung');
  // Lung: a wind-catching harbour with bellows and open intake funnels.
  for(const [x,z,s] of [[-9,-10,1],[-5.6,-12,.8]]){
-  if(newModel){const tower=newModel('tower',x,0,z,3.3*s,0,fixed,1.7*s);tower.scale.y*=1.3;}
-  else{cylinder(x,1.35*s,z,.57*s,.82*s,2.7*s,ivory);make(new T.ConeGeometry(.88*s,1*s,8),teal,x,3.1*s,z);}
-  const rotor=new T.Group();rotor.position.set(x,2.35*s,z+.82*s);animated.add(rotor);model('windmill',0,0,0,.8*s,Math.PI/2,rotor);rotors.push({mesh:rotor,id:'lung',axis:'z',speed:-.8});
+  if(newModel)newModel('tower',x,0,z,3.3*s,0,fixed,1.7*s);
+  cylinder(x,1.5*s,z,.65*s,.8*s,3*s,ivory);rim(x,.45*s,z,.8*s,teal);rim(x,2.8*s,z,.7*s,teal);
+  make(new T.ConeGeometry(.92*s,.7*s,8),teal,x,3.25*s,z);
+  const guard=make(new T.TorusGeometry(.76*s,.08*s,6,20),ivory,x,2.12*s,z+.76*s);
+  const rotor=new T.Group();rotor.position.set(x,2.12*s,z+.84*s);animated.add(rotor);
+  for(let i=0;i<4;i++){const blade=new T.Group();blade.rotation.z=i*Math.PI/2;rotor.add(blade);box(0,.38*s,0,.25*s,.58*s,.06*s,teal,blade);}
+  orb(0,0,.05,.15*s,brass,rotor);rotors.push({mesh:rotor,id:'lung',axis:'z',speed:-1.05});
   box(x,.4,z+.7,.37,.8,.15,wood);model('banner-green',x+.75,1.3,z,.75);
  }
  cottage(-10.8,-10.5,1.4,.3,true);
@@ -61,6 +65,10 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  if(newModel){newModel('house-b',10,.02,-5,2.9,-.2,fixed,3.2);newModel('silo',12.6,.02,-5.4,2.8,0,fixed,1.3);}
  else{const kitchen=cottage(10,-5,1.8,-.2,true);kitchen.scale.x*=1.25;kitchen.scale.z*=.8;
   for(const [x,z,h] of [[12,-5.8,2.6],[12.8,-4.5,1.9]]){cylinder(x,h/2,z,.52,.58,h,0xdbb66e);make(new T.ConeGeometry(.65,.55,8),wood,x,h+.2,z);rim(x,.5,z,.58,wood);}}
+ cylinder(12.6,1.35,-5.4,.57,.6,2.7,ivory);rim(12.6,2.5,-5.4,.59,brass);make(new T.ConeGeometry(.75,.65,8),STYLE.roofs[2],12.6,3,-5.4);
+ for(const x of [9.35,10.65]){const hopper=make(new T.CylinderGeometry(.6,.24,.8,8),brass,x,2.4,-4.75);rim(x,2.82,-4.75,.61,ivory);orb(x,2.85,-4.75,.42,0xe2c57d);}
+ box(10,1.3,-3.8,2.6,1.45,.2,ivory);box(10,1.6,-3.67,2.7,.2,.28,STYLE.roofs[2]);
+ const mill=new T.Group();mill.position.set(10.6,1.12,-3.55);animated.add(mill);make(new T.TorusGeometry(.37,.1,6,12),brass,0,0,0,mill);box(0,0,0,.65,.09,.08,wood,mill);box(0,0,0,.09,.65,.08,wood,mill);rotors.push({mesh:mill,id:'gut',axis:'z',speed:.75});
  if(newModel)newModel('market',9.4,.02,-2.1,1.45,0,fixed,1.5);else model('stall-green',9.4,.05,-2.1,1.1);
  box(10.7,.28,-2.8,2.6,.28,.65,wood);box(10.7,.45,-2.8,2.65,.08,.58,0xb8b7a1);
  for(let i=0;i<3;i++){const crate=box(9.65+i*.7,.64,-2.8,.38,.28,.36,0xdbb66e,animated);belts.push({mesh:crate,phase:i/3});}
@@ -69,6 +77,8 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  // Kidney: open filtration basins beside the river, with a working waterwheel.
  box(10.6,.09,9.2,4.3,.18,4,stone);
  if(newModel)newModel('workshop',11.9,.02,7.3,1.7,Math.PI/2,fixed,1.8);
+ for(const x of [9.5,12.1]){cylinder(x,1.25,7.3,.33,.44,2.5,ivory);for(const y of [.45,1.2,1.95]){cylinder(x,y,7.3,.36,.36,.34,teal);rim(x,y+.19,7.3,.37,ivory);}cylinder(x,2.75,7.3,.61,.23,.7,teal);rim(x,3.12,7.3,.62,ivory);}
+ pipe([[9.5,2.4,7.3],[9.5,3.25,7.3],[12.1,3.25,7.3],[12.1,2.4,7.3]],.12,teal);
  for(const [x,z] of [[9.8,8.2],[11.2,10.3]]){
   cylinder(x,.45,z,.95,1.04,.8,ivory);cylinder(x,.87,z,.81,.81,.035,0x84b5b4);rim(x,.89,z,.9,stone);
   const rake=new T.Group();rake.position.set(x,.94,z);animated.add(rake);box(0,0,0,1.6,.06,.08,wood,rake);rotors.push({mesh:rake,id:'kidney',axis:'y',speed:.3});
@@ -83,17 +93,21 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  if(newModel){const nursery=newModel('house-a',-6.8,.02,12,2.8,Math.PI,fixed,3.6);nursery.scale.y*=1.1;}
  else{box(-6.8,.85,12,3.3,1.7,1.9,rose);const roof=cylinder(-6.8,1.8,12,.98,.98,3.5,ivory);roof.rotation.z=Math.PI/2;
   box(-6.8,.66,10.99,.95,1.3,.08,wood);box(-6.8,.67,10.93,.65,1.1,.04,0x6b7f78);}
- for(const x of [-8.5,-5.1]){cylinder(x,1.2,11,.19,.19,2.3,ivory);for(const y of [.25,2.25]){orb(x-.13,y,11,.22,ivory);orb(x+.13,y,11,.22,ivory);}}
- box(-6.8,2.3,10.98,.7,.16,.08,0xd06e75);box(-6.8,2.3,10.97,.16,.7,.08,0xd06e75);
+ for(const x of [-8.5,-5.1]){cylinder(x,1.55,11,.22,.22,3.1,ivory);for(const y of [.25,2.95]){orb(x-.16,y,11,.3,ivory);orb(x+.16,y,11,.3,ivory);}}
+ box(-6.8,3.08,11,3.5,.3,.32,ivory);
+ const nurseryRoof=cylinder(-6.8,2,12,.83,.83,3.5,ivory);nurseryRoof.rotation.z=Math.PI/2;
+ box(-6.8,3.12,10.79,.8,.18,.08,STYLE.roofs[4]);box(-6.8,3.12,10.78,.18,.8,.08,STYLE.roofs[4]);
+ for(let i=0;i<3;i++){const p=groundPoint(workStation('marrow','spawn',i).target);cylinder(p.x,.34,p.z,.28,.34,.68,teal);rim(p.x,.7,p.z,.29,ivory);const bud=orb(p.x,.85,p.z,.24,rose,animated);born.push({mesh:bud,phase:i*1.4});}
  // Production bays are instanced and follow each actual recruitment order.
  model('cart',-4.5,.05,11.4,.75,.6);model('chimney',-7.9,2.15,12.2,.8);
  scope('lymph');
  // Lymph: a green rotunda with a signal mast and antibody work benches.
- if(newModel)newModel('tower',-13.6,.02,.5,3.15,0,fixed,2);
- else{make(new T.CylinderGeometry(1.3,1.45,1.55,8),ivory,-13.6,.8,.5);
-  make(new T.ConeGeometry(1.75,1.3,8),green,-13.6,2.1,.5);box(-13.6,.6,1.84,.7,1.2,.08,wood);}
- cylinder(-13.6,3.03,.5,.055,.055,.9,brass);
- for(const side of [-1,1]){const branch=cylinder(-13.6+side*.18,3.42,.5,.05,.05,.48,brass);branch.rotation.z=-side*.7;}
+ if(newModel)newModel('tower',-15.25,.02,.1,2.8,0,fixed,1.1);
+ make(new T.CylinderGeometry(1.3,1.45,1.7,10),ivory,-13.6,.9,.5);
+ make(new T.ConeGeometry(1.65,.9,10),green,-13.6,2.15,.5);box(-13.6,.65,1.86,.65,1.3,.08,wood);
+ for(const side of [-1,1]){box(-13.6+side*.88,1.1,1.57,.35,.55,.08,teal);box(-13.6+side*.88,1.1,1.63,.05,.55,.03,ivory);}
+ cylinder(-13.6,3.05,.5,.1,.12,1.25,brass);
+ for(const side of [-1,1]){const branch=cylinder(-13.6+side*.3,3.72,.5,.09,.09,.9,brass);branch.rotation.z=-side*.7;orb(-13.6+side*.59,4.06,.5,.18,green);}
  model('banner-green',-12.2,1,.6,.8);
  // Bench and dock coordinates are also the workers' real interaction targets.
  // Fixed fittings join the static bake; moving cargo/vials use actor instances.

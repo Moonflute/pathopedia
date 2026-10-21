@@ -226,3 +226,7 @@ Worker movement lazily replaces obstructed segments with cached grid detours; qu
 ### TASK 05 — heart workshop square
 
 The heart now has two broad rose pump chambers, moving piston collars and pressure gauges, a brass manifold, turning flywheel and an extruded heart crest. The existing hall remains as a lower rear workshop. A larger paved court, two planted lamps, bench and compact supply stall frame the real oxygen/dock/build anchors; tall foreground planting was removed. The six surrounding cottages form two short lanes around the court. Labels were raised after the rendered view showed the old label hiding the heart crest. The existing imported-asset/state-preservation check passed; `05-heart.jpg` records the completed hero scene. No game values or organ identities changed.
+
+### TASK 06 — organ landmarks
+
+The facility module now gives the lung paired round fan towers, the gut grain hoppers and a turning mill, the kidney raised filter columns and a connecting manifold, the marrow a bone-framed nursery with incubation pods, and the lymph a sage rotunda with a large Y-shaped mast. Machinery uses the same plaster/brass/accent palette as the heart. Existing imported halls, towers, barns, silo and workshop remain reused; all work anchors and simulation effects remain shared. Landmark label heights follow a common table. The imported asset/state check passed and the complete town rendered without browser errors (`06-organs.jpg`). Fine state/action legibility remains TASK 08.
