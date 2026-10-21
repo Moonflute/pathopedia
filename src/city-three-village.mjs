@@ -103,7 +103,8 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  for(const [id,site] of Object.entries(SITES)){
   scope(id);
   if(layout){const p=placeable(id).port;road([{x:site.x,z:site.z},{x:site.x+p[0],z:site.z+p[1]}],STYLE.mainRoad);}
-  disc(site.x,site.z,site.detail?2.35:1.65,0xb8b7a1,.041);disc(site.x,site.z,site.detail?2.13:1.5,STYLE.plaza,.044);
+  disc(site.x,site.z,id==='heart'?3.1:2.35,0xb8b7a1,.041);disc(site.x,site.z,id==='heart'?2.9:2.13,STYLE.plaza,.044);
+  if(id==='heart'){const ring=make(new T.RingGeometry(2.55,2.6,40),STYLE.trim,site.x,.046,site.z);ring.rotation.x=-Math.PI/2;ring.castShadow=false;for(const [x,z] of [[-2.65,1],[-2.65,4.1]]){cylinder(x,.18,z,.35,.28,.35,STYLE.trim);leaf(x,.45,z,.35,STYLE.foliage[1]);model('lantern',x,0,z-.55,.9);}}
   const [bx,bz]=site.building;road([{x:site.x,z:site.z},{x:bx,z:bz+1.4}],.9);
   for(const role of ['oxygen','dock',...(id==='lymph'?['produce']:id==='marrow'||id==='gut'?['fabricate']:[])])for(let slot=0;slot<(role==='dock'?1:3);slot++){const bay=workStation(id,role,slot);road([{x:site.x,z:site.z},groundPoint(bay.stand),groundPoint(bay.target)],.48);}
   districts[id]={...site,work:new T.Group(),tower:new T.Group(),level:new T.Group()};animated.add(districts[id].work,districts[id].tower,districts[id].level);
@@ -184,7 +185,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
    if(d.kind==='organ'){
     const sx=d.origin.x+x0+.6,sz=d.origin.z+z1-1;
     cylinder(sx,1.2,sz,.035,.045,2.4,0x8a7b5f);box(sx+.27,2.12,sz,.5,.62,.05,accent);box(sx+.27,2.12,sz+.031,.3,.08,.018,0xf1e4c8);
-    gardenTree(d.origin.x+x1-1, d.origin.z+z1-1,2.25,Object.keys(SITES).indexOf(d.id));
+    if(d.id!=='heart')gardenTree(d.origin.x+x1-1, d.origin.z+z1-1,2.25,Object.keys(SITES).indexOf(d.id));
    }
   }
  }

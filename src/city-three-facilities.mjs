@@ -12,7 +12,7 @@ import {SITES} from './city-three-layout.mjs';
 // remain outside the static geometry bake.
 export function createFacilities({fixed,animated,make,box,cylinder,orb,model,newModel=null,cottage,road,scope=()=>{}}){
  const {plaster:ivory,brass,timber:wood,teal,rose,sage:green,stone}=STYLE;
- const rotors=[],pistons=[],belts=[],born=[];
+ const rotors=[],pistons=[],belts=[],born=[],pumps=[];
  function pipe(points,r=.11,color=brass,segments=14){return make(new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),segments,r,6,false),color,0,0,0);}
  function rim(x,y,z,r,color=ivory){const m=make(new T.TorusGeometry(r,.09,5,18),color,x,y,z);m.rotation.x=Math.PI/2;return m;}
  scope('lung');
@@ -34,15 +34,28 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  if(newModel)newModel('market',-4,.02,-9,1.5,.6,fixed,1.8);else model('stall-green',-4,.05,-9,1.1,.6);
  scope('heart');
  // Heart: broad pump house, paired pistons and a continuous brass manifold.
- if(newModel){const hall=newModel('hall',0,.02,-1,3.7,.15,fixed,4.2);hall.scale.y*=1.55;}
- else cottage(0,-1,2.5,.15,true);
- for(const x of [-.85,.85]){
-  cylinder(x,1,-.1,.42,.49,1.8,rose);orb(x,1.96,-.1,.46,0xe2a29a);cylinder(x,1.1,.6,.14,.14,1.5,brass);
-  const piston=cylinder(x,1.4,.6,.25,.25,.25,0xe2ca8d,animated);pistons.push({mesh:piston,y:1.4,id:'heart'});
+ if(newModel)newModel('hall',0,.02,-1.5,2.6,0,fixed,3.8);
+ else cottage(0,-1.5,1.8,0,true);
+ box(0,.14,-.25,4.15,.28,2.45,stone);
+ for(const x of [-1,1]){
+  cylinder(x,1.35,-.25,.57,.64,2.4,rose);rim(x,.32,-.25,.64,brass);rim(x,2.35,-.25,.59,ivory);
+  const dome=orb(x,2.58,-.25,.63,rose,animated);dome.scale.y=.7;pumps.push(dome);
+  cylinder(x,.95,.48,.11,.11,1.55,brass);
+  const piston=cylinder(x,1.35,.48,.3,.3,.26,ivory,animated);pistons.push({mesh:piston,y:1.35,id:'heart'});
+  const gauge=cylinder(x,1.88,.37,.23,.23,.1,ivory);gauge.rotation.x=Math.PI/2;
+  const needle=box(x,1.88,.44,.035,.28,.03,STYLE.roofs[0],animated);rotors.push({mesh:needle,id:'heart',axis:'z',speed:.6,gauge:true});
  }
- pipe([[-1.8,.3,1.2],[-1.8,1,1.2],[-.85,1.15,.6],[.85,1.15,.6],[1.8,1,1.2],[1.8,.3,1.2]],.14);
- const badge=orb(0,2.75,.36,.38,0xd06e75);badge.scale.set(1.1,.8,.45);orb(-.19,2.93,.36,.23,0xd06e75);orb(.19,2.93,.36,.23,0xd06e75);
- model('banner-red',1.7,.6,-.9,1.1);if(newModel)newModel('market',2.5,.02,4.1,1.55,-.6,fixed,1.8);else model('stall-red',2.5,.05,4.1,1.1,-.6);
+ pipe([[-1.8,.3,.5],[-1.8,2.75,.5],[-1,3.15,-.25],[1,3.15,-.25],[1.8,2.75,.5],[1.8,.3,.5]],.17,brass,20);
+ const flywheel=new T.Group();flywheel.position.set(0,1.15,.65);animated.add(flywheel);
+ make(new T.TorusGeometry(.47,.085,6,16),teal,0,0,0,flywheel);
+ for(let i=0;i<4;i++){const spoke=box(0,0,0,.055,.87,.055,brass,flywheel);spoke.rotation.z=i*Math.PI/4;}
+ orb(0,0,.02,.13,ivory,flywheel);rotors.push({mesh:flywheel,id:'heart',axis:'z',speed:1.25});
+ const heart=new T.Shape();heart.moveTo(0,-.48);heart.bezierCurveTo(-1,.1,-.66,.72,-.22,.55);heart.quadraticCurveTo(0,.48,0,.3);heart.quadraticCurveTo(0,.48,.22,.55);heart.bezierCurveTo(.66,.72,1,.1,0,-.48);
+ cylinder(0,3.3,-.3,.08,.1,.6,brass);
+ make(new T.ExtrudeGeometry(heart,{depth:.18,bevelEnabled:true,bevelThickness:.04,bevelSize:.04,bevelSegments:1,steps:1,curveSegments:5}),STYLE.roofs[0],0,3.8,-.3);
+ model('banner-red',-1.85,.3,-1.2,.8);
+ if(newModel){newModel('market',2.55,.02,4.1,1.15,-.35,fixed,1.3);newModel('crate',2.45,.03,2.65,.45,0,fixed,.55);}
+ else model('stall-red',2.55,.05,4.1,.8,-.35);
  scope('gut');
  // Gut: grain silos, food workshop and a short working packing belt.
  if(newModel){newModel('house-b',10,.02,-5,2.9,-.2,fixed,3.2);newModel('silo',12.6,.02,-5.4,2.8,0,fixed,1.3);}
@@ -110,7 +123,8 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  let last=0,beltPhase=0;
  return {update(s){
   const dt=Math.max(0,Math.min(.3,s.time-last));last=s.time;
-  for(const r of rotors){const state=facilityState(s,r.id);r.mesh.rotation[r.axis]+=dt*r.speed*output(s,r.id)*state.speed*(state.id==='damage'&&Math.sin(s.time*5)<0?0:1)*(r.id==='lung'&&s.weather.id==='dry'?.55:1);}
+  for(const r of rotors){const state=facilityState(s,r.id);if(r.gauge){r.mesh.rotation.z=-.8+output(s,r.id)*state.speed*1.6;continue;}r.mesh.rotation[r.axis]+=dt*r.speed*output(s,r.id)*state.speed*(state.id==='damage'&&Math.sin(s.time*5)<0?0:1)*(r.id==='lung'&&s.weather.id==='dry'?.55:1);}
+  for(const p of pumps){const beat=Math.sin(s.time*4)*.055*output(s,'heart')*facilityState(s,'heart').speed;p.scale.set(1+beat,.7+beat,1+beat);}
   for(const p of pistons)p.mesh.position.y=p.y+Math.sin(s.time*(p.id==='lung'?2:4))*.16*output(s,p.id)*facilityState(s,p.id).speed;
   beltPhase+=dt*.16*facilityState(s,'gut').speed*(s.frontier?.gut.quarantine?.55:1);
   for(const b of belts){b.mesh.visible=s.rawFood>(b.phase*18);b.mesh.position.x=9.5+((beltPhase+b.phase)%1)*2.25;}
