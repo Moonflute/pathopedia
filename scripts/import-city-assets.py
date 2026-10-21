@@ -25,6 +25,13 @@ PACKS = [
         ('gate', 'Buildings/Castle_Gate.glb'),
         ('workshop', 'Buildings/BarnWood_1_A.glb'),
         ('cart', 'Other/Cart_1_A.glb'),
+        ('house-a', 'Buildings/Building_1_2_A.glb'),
+        ('house-b', 'Buildings/Barn_2_A.glb'),
+        ('hall', 'Buildings/Buidling_4_2_A.glb'),
+        ('tower', 'Buildings/Tower_2_A.glb'),
+        ('stone-wall', 'Buildings/Castle_Wall.glb'),
+        ('stone-tower', 'Buildings/Castle_Tower.glb'),
+        ('market', 'Buildings/StallWooden_1_A.glb'),
     ]),
     ('Cute Park.zip', 'Cute Park/gLTF/', [
         ('tree-cube', 'TreeCube_1_2.glb'),
@@ -37,6 +44,7 @@ PACKS = [
     ]),
     ('Farm Pack Godot.zip', 'Farm Pack/Models/', [
         ('tank', 'Buildings/SM_MilkTank_1_B.glb'),
+        ('silo', 'Buildings/SM_Silos_1_D.glb'),
     ]),
 ]
 

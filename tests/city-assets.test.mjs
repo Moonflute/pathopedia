@@ -40,13 +40,13 @@ test('load failure can retry and a closed view releases an in-flight bundle',asy
 const root=new URL('../assets/city3d/bundle/',import.meta.url),manifest=JSON.parse(readFileSync(new URL('sources.json',root)));
 const decode=b=>JSON.parse(b.subarray(20,20+b.readUInt32LE(12)));
 test('the reviewed subset has complete local references and three shared 1K atlases',()=>{
- assert.equal(manifest.license,'CC0-1.0');assert.equal(Object.keys(manifest.models).length,16);assert.equal(Object.keys(manifest.textures).length,3);
+ assert.equal(manifest.license,'CC0-1.0');assert.equal(Object.keys(manifest.models).length,24);assert.equal(Object.keys(manifest.textures).length,3);
  let bytes=0;
  for(const item of [...Object.values(manifest.models),...Object.entries(manifest.textures).map(([path,v])=>({...v,path}))]){
   const b=readFileSync(new URL(item.path,root));bytes+=b.length;
   assert.equal(b.length,item.bytes);assert.equal(createHash('sha256').update(b).digest('hex'),item.sha256);
  }
- assert.equal(bytes,manifest.totalBytes);assert.ok(bytes<2_500_000);
+ assert.equal(bytes,manifest.totalBytes);assert.ok(bytes<3_700_000);
  for(const t of Object.values(manifest.textures))assert.ok(t.width<=1024&&t.height<=1024);
  for(const entry of Object.values(manifest.models)){
   const url=new URL(entry.path,root),b=readFileSync(url),doc=decode(b);assert.equal(b.readUInt32LE(8),b.length);
@@ -76,12 +76,16 @@ async function geometryBundle(){
 test('real imported walls track breakage; switching village meshes preserves city and cached geometry',async()=>{
  const bundle=await geometryBundle(),s=createCity('normal','steady',{workCrews:true,specialists:true});applyTileLayout(s,createTileLayout());
  const snapshot=serializeCity(s),walls=createBundleWalls(bundle);
- walls.update(s);assert.ok(walls.root.children.every(m=>m.count===14));
- s.frontier.walls[3].hp=0;walls.update(s);assert.ok(walls.root.children.every(m=>m.count===13));
- s.frontier.walls[3].hp=100;walls.update(s);assert.ok(walls.root.children.every(m=>m.count===14));
+ const panels=walls.root.children.filter(m=>m.userData.structure==='wall'),towers=walls.root.children.filter(m=>m.userData.structure==='tower');assert.ok(panels.length&&towers.length);
+ walls.update(s);assert.ok(panels.every(m=>m.count===14));assert.ok(towers.every(m=>m.count===4));
+ s.frontier.walls[4].hp=0;walls.update(s);assert.ok(panels.every(m=>m.count===13));assert.ok(towers.every(m=>m.count===3));
+ s.frontier.walls[4].hp=100;walls.update(s);assert.ok(panels.every(m=>m.count===14));assert.ok(towers.every(m=>m.count===4));
  let released=0;for(const model of Object.values(bundle.models))model.traverse(m=>{if(m.geometry)m.geometry.addEventListener('dispose',()=>released++);});
  for(const enabled of [true,false,true]){
   const village=createVillage({},s.layout,'workshop',enabled?bundle:null);village.update(s,{});village.movePreview(s.layout.items.workshop);village.dispose();
+  const used=village.root.userData.bundleModels;
+  if(enabled){assert.ok(used['house-a']+used['house-b']>=14);assert.equal(used.hall,1);assert.equal(used.tower,3);assert.equal(used.silo,1);assert.ok(used.market>=3);}
+  else assert.deepEqual(used,{});
  }
  assert.equal(serializeCity(s),snapshot);assert.equal(released,0);
  for(const mesh of walls.root.children)mesh.dispose();

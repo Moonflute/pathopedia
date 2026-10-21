@@ -1,13 +1,13 @@
 # Cell City selected bundle assets
 
-16 models by RG Poly, selected from the user's purchased Creator Bundle: Volume 1.
+24 models by RG Poly, selected from the user's purchased Creator Bundle: Volume 1.
 License: [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
 The creator's product pages were checked on 2026-10-21:
 
-- [Medieval Megapack](https://rg-poly.itch.io/medieval-megapack-low-poly): 10 workshop, supply and wall models.
+- [Medieval Megapack](https://rg-poly.itch.io/medieval-megapack-low-poly): 17 house, hall, workshop, market, supply and fortification models.
 - [Cute Park](https://rg-poly.itch.io/cute-park-pack): 3 tree/bush models.
 - [Kitchen/Restaurant](https://rg-poly.itch.io/kitchenrestaurant-megapack): 2 workbench/jar models.
-- [FarmLand](https://rg-poly.itch.io/farmland): 1 tank model.
+- [FarmLand](https://rg-poly.itch.io/farmland): 2 tank/silo models.
 
 `sources.json` records each original ZIP/internal path, checksum, triangle count
 and runtime dependency. Original accompanying text files are in `licenses/`.
@@ -20,6 +20,6 @@ This reads local `cell-city-assets/` ZIPs without importing their full contents.
 Embedded images become external PNGs deduplicated by checksum; geometry, UVs
 and image pixels are preserved. Roughness/metalness are normalized for Cell City.
 
-The selected models and three shared 1024×1024 PNGs total 2,362,064 bytes.
+The selected models and three shared 1024×1024 PNGs total 3,587,172 bytes.
 The PNGs require about 16 MiB of texture memory with RGBA8 and full mipmaps.
 New model requests start only when the “신규 에셋 적용” checkbox is checked.

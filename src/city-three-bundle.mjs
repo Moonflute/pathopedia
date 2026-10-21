@@ -9,7 +9,7 @@ export async function loadCityBundle(){
  const manifest=await response.json(),models={},textures=new Map(),materials=new Map(),geometries=new Set(),loader=new GLTFLoader();
  const dispose=()=>{for(const g of geometries)g.dispose();for(const m of materials.values())m.dispose();for(const t of textures.values())t.dispose();};
  try{
-  // Limit parallel decoding and never retain 16 copies of the same atlas.
+  // Limit parallel decoding and share the atlas across all source models.
   const entries=Object.entries(manifest.models);
   for(let i=0;i<entries.length;i+=3){const results=await Promise.allSettled(entries.slice(i,i+3).map(async([name,entry])=>{
    const url=new URL(entry.path,root),gltf=await loader.loadAsync(url.href);
@@ -45,9 +45,14 @@ export function bundleModel(bundle,name,height,maxWidth=Infinity){
 // The same 14 wall states drive a small set of instance batches. Broken walls
 // still use the existing rubble, fire and repair effects; no new simulation.
 export function createBundleWalls(bundle){
- const root=new T.Group(),template=bundleModel(bundle,'palisade',1),batches=[],matrix=new T.Matrix4(),wallMatrix=new T.Matrix4(),quaternion=new T.Quaternion(),axis=new T.Vector3(0,1,0),position=new T.Vector3(),scale=new T.Vector3(),color=new T.Color();
- template.updateMatrixWorld(true);const bounds=new T.Box3().setFromObject(template),size=bounds.getSize(new T.Vector3());
- template.traverse(m=>{if(!m.isMesh)return;const mesh=new T.InstancedMesh(m.geometry,m.material,WALLS.length);mesh.userData.cityAsset=true;mesh.castShadow=true;mesh.receiveShadow=true;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;root.add(mesh);batches.push({mesh,local:m.matrixWorld.clone()});});
+ const root=new T.Group(),batches=[],matrix=new T.Matrix4(),wallMatrix=new T.Matrix4(),quaternion=new T.Quaternion(),axis=new T.Vector3(0,1,0),position=new T.Vector3(),scale=new T.Vector3(),color=new T.Color();
+ function pool(name,capacity,kind){
+  const template=bundleModel(bundle,name,1),parts=[];template.updateMatrixWorld(true);const size=new T.Box3().setFromObject(template).getSize(new T.Vector3());
+  template.traverse(m=>{if(!m.isMesh)return;const mesh=new T.InstancedMesh(m.geometry,m.material,capacity);mesh.userData.cityAsset=true;mesh.userData.structure=kind;mesh.castShadow=true;mesh.receiveShadow=true;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;root.add(mesh);const part={mesh,local:m.matrixWorld.clone()};parts.push(part);batches.push(part);});
+  return {size,parts};
+ }
+ const walls=pool('stone-wall',WALLS.length,'wall'),towers=pool('stone-tower',4,'tower');
+ function put(group){for(const {mesh,local} of group.parts){matrix.multiplyMatrices(wallMatrix,local);mesh.setMatrixAt(mesh.count,matrix);mesh.setColorAt(mesh.count,color);mesh.count++;}}
  return {root,update(s,{camera,target}={}){
   const vx=camera?camera.position.x-target.x:20,vz=camera?camera.position.z-target.z:32;
   for(const {mesh} of batches)mesh.count=0;
@@ -56,9 +61,11 @@ export function createBundleWalls(bundle){
    const dx=wall.b.x-wall.a.x,dz=wall.b.z-wall.a.z,length=Math.hypot(dx,dz),front=wall.nx*vx+wall.nz*vz>Math.hypot(vx,vz)*.3;
    // Leave the respiratory portal open rather than bridging across its mouth.
    const partial=i===1?Math.min(1,(-7.4-wall.a.x)/dx):1,cx=wall.a.x+dx*partial/2,cz=wall.a.z+dz*partial/2;
-   position.set(cx,.02,cz);quaternion.setFromAxisAngle(axis,-Math.atan2(dz,dx));scale.set(length*partial*.97/Math.max(.01,size.x),front?.6:1.55,1);
+   position.set(cx,.02,cz);quaternion.setFromAxisAngle(axis,-Math.atan2(dz,dx));scale.set(length*partial*.99/Math.max(.01,walls.size.x),front?.6:1.7,1);
+   color.set(state.repair?0xd8e4d8:state.hp/wallMaximum(s,i)<.75?0xc9ab93:0xffffff);
    wallMatrix.compose(position,quaternion,scale);
-   for(const {mesh,local} of batches){matrix.multiplyMatrices(wallMatrix,local);mesh.setMatrixAt(mesh.count,matrix);mesh.setColorAt(mesh.count,color.set(state.repair?0xd8e4d8:state.hp/wallMaximum(s,i)<.75?0xc9ab93:0xffffff));mesh.count++;}
+   put(walls);
+   if(i===0||i===4||i===7||i===10){position.set(wall.a.x,.02,wall.a.z);quaternion.identity();scale.setScalar(front?1.3:2.8);wallMatrix.compose(position,quaternion,scale);put(towers);}
   }
   for(const {mesh} of batches){mesh.instanceMatrix.needsUpdate=true;if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;}
  }};

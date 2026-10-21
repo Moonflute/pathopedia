@@ -83,6 +83,62 @@
       "sha256": "542d40968933e6e48353701f37197660c2234ba4207da9ea2148e58b85957748",
       "triangles": 2828
     },
+    "house-a": {
+      "path": "models/house-a.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Buildings/Building_1_2_A.glb",
+      "bytes": 216980,
+      "sha256": "a799d5403a9c119229c2c8f045957c4f531e6ab7e55ff6b30624fd8c360002dc",
+      "triangles": 3657
+    },
+    "house-b": {
+      "path": "models/house-b.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Buildings/Barn_2_A.glb",
+      "bytes": 110584,
+      "sha256": "b07f48c5dc0efdec127baa85098217978e256f69022c371a06b2be1b61d9c512",
+      "triangles": 1674
+    },
+    "hall": {
+      "path": "models/hall.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Buildings/Buidling_4_2_A.glb",
+      "bytes": 362180,
+      "sha256": "02ba13380f7e096b5c836c877c1ffdfd7368505eda88e827d4aa91a716150639",
+      "triangles": 6641
+    },
+    "tower": {
+      "path": "models/tower.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Buildings/Tower_2_A.glb",
+      "bytes": 133948,
+      "sha256": "a7a340890d7d6805928008c6abd26fad86431442dd7fda022ac072efc8728aed",
+      "triangles": 1984
+    },
+    "stone-wall": {
+      "path": "models/stone-wall.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Buildings/Castle_Wall.glb",
+      "bytes": 50172,
+      "sha256": "8270cf96c54b871a5f6290fccaf03cbea60fb47d8e3a9ae928fb1a4a12975062",
+      "triangles": 568
+    },
+    "stone-tower": {
+      "path": "models/stone-tower.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Buildings/Castle_Tower.glb",
+      "bytes": 115132,
+      "sha256": "e12f0d59afcbecbe525283a28ee15be538ccc3fce079d45f99de52292fcf6ef7",
+      "triangles": 1234
+    },
+    "market": {
+      "path": "models/market.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Buildings/StallWooden_1_A.glb",
+      "bytes": 130936,
+      "sha256": "323d493119eaacfd1831c317b5ff414e2fd7a635221ec54f08460cda2848bd4b",
+      "triangles": 2617
+    },
     "tree-cube": {
       "path": "models/tree-cube.glb",
       "archive": "Cute Park.zip",
@@ -130,6 +186,14 @@
       "bytes": 18440,
       "sha256": "33135bf7540d3e147c6078c5cd093adb81d60fddaf66b2cb2f6ea25f5aedee83",
       "triangles": 446
+    },
+    "silo": {
+      "path": "models/silo.glb",
+      "archive": "Farm Pack Godot.zip",
+      "source": "Farm Pack/Models/Buildings/SM_Silos_1_D.glb",
+      "bytes": 105176,
+      "sha256": "59e1c6c9c14ff35877582e0b9101ae5ef0b702fc2ca1117011811d49dd38bb21",
+      "triangles": 2508
     }
   },
   "textures": {
@@ -166,5 +230,5 @@
       "sha256": "57f2875777d9621af9f525194ec70a3fc21a75d766ee03c99f3ce8f431b3b1db"
     }
   },
-  "totalBytes": 2362064
+  "totalBytes": 3587172
 }
