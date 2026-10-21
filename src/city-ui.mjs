@@ -32,7 +32,7 @@ export function createCityGame(data,options={}){
   let atStart=true,started=restored,choice=SCENARIOS[run.scenario]?run.scenario:'steady',selectedKind='',workersPage=0;
   let front='skin',wall=11,frontPage='fronts';
   const biology=createBiologyControls();let editor=null,information=null,informationRequest=0;
-  let speed=0,selected='lung',layer='city',panel='',cityPage='log',logPage=0,active=false,game=null,loop=null,renderer=null,abort=null,hud=0,saveClock=0,toast='',toastUntil=0,resetArmed=false;
+  let speed=0,selected=is3d?'heart':'lung',layer='city',panel='',cityPage='log',logPage=0,active=false,game=null,loop=null,renderer=null,abort=null,hud=0,saveClock=0,toast='',toastUntil=0,resetArmed=false;
   const markupCache=new WeakMap();
   const sheetLayout=matchMedia('(max-width:619px), (max-width:760px) and (min-height:621px)');
   const save=()=>{if(!started)return;try{localStorage.setItem(saveKey,serializeCity(run));storageFailed=false;}catch{storageFailed=true;}};
@@ -44,10 +44,9 @@ export function createCityGame(data,options={}){
           <div class="cc-scenario"><div><strong data-city-objective></strong><span data-city-objective-detail></span><progress data-city-objective-progress max="1" value="0"></progress></div>${button('wave','감염 유입 →','class="cc-wave"')}</div>
           <div class="cc-map-label"><span>${is3d?'THE LIVING CITY / 3D VILLAGE':'THE LIVING CITY / AERIAL VIEW'}</span><strong data-city-weather>평온한 환경</strong></div>
       ${is3d?button('front-alert','','class="cc-front-warning" data-city-warning hidden'):''}<div class="cc-resources" aria-label="도시 자원">
-        ${[['health','♥','건강'],['oxygen','O₂','산소'],['food','◈','영양분'],['materials','▥','건축 자재'],['waste','≋','노폐물']].map(([id,glyph,label])=>`<div class="cc-resource cc-resource--${id}"><span>${glyph}</span><div><small>${label}</small><strong data-city-value="${id}">—</strong></div><i data-city-meter="${id}"></i></div>`).join('')}
+        ${[['health','♥','건강'],['oxygen','O₂','산소'],['food','◈','영양분'],['materials','▥',is3d?'자재':'건축 자재'],['waste','≋','노폐물']].map(([id,glyph,label])=>`<div class="cc-resource cc-resource--${id}"><span>${glyph}</span><div><small>${label}</small><strong data-city-value="${id}">—</strong></div><i data-city-meter="${id}"></i></div>`).join('')}
       </div>
-          ${is3d?`<div class="cc-asset-control"><label><input type="checkbox" data-city-new-assets ${useNewAssets?'checked':''}><span>신규 에셋 적용</span></label><span data-city-asset-state role="status"></span></div>`:''}
-          <div class="cc-map-tools">${button('layer','산소·물류','aria-pressed="false"')}${button('zoom','−','data-city-id="-1" aria-label="도시 축소"')}<output data-city-zoom aria-label="도시 배율">72%</output>${button('zoom','+','data-city-id="1" aria-label="도시 확대"')}${button('fit','전체','aria-label="도시 전체 보기"')}${is3d?button('rotate','↶','data-city-id="-1" aria-label="도시 왼쪽 회전"')+button('rotate','↷','data-city-id="1" aria-label="도시 오른쪽 회전"')+button('edit-layout','▦ 배치','class="cc-layout-enter" aria-label="마을 배치 편집"'):''}</div>
+          <div class="cc-map-tools">${button('layer','산소·물류','aria-pressed="false"')}${button('zoom','−','data-city-id="-1" aria-label="도시 축소"')}<output data-city-zoom aria-label="도시 배율">72%</output>${button('zoom','+','data-city-id="1" aria-label="도시 확대"')}${button('fit','전체','aria-label="도시 전체 보기"')}${is3d?button('home','♥ 중심','aria-label="심장 중심가 보기"')+button('rotate','↶','data-city-id="-1" aria-label="도시 왼쪽 회전"')+button('rotate','↷','data-city-id="1" aria-label="도시 오른쪽 회전"')+button('edit-layout','▦ 배치','class="cc-layout-enter" aria-label="마을 배치 편집"'):''}</div>
           ${is3d?'<section class="cc-layout-editor" data-city-layout-editor aria-label="마을 배치 편집" hidden></section>':''}<div class="cc-pause" data-city-paused hidden>${icon('pause')}<span>일시정지</span></div>
           <div class="cc-result" data-city-result hidden></div>
           <div class="cc-toast" role="status" data-city-toast hidden></div>
@@ -57,7 +56,7 @@ export function createCityGame(data,options={}){
           <section class="cc-panel" data-city-panel="district"><nav class="cc-districts" aria-label="장기 구역 선택">${DISTRICTS.map(d=>button('select',`<span style="--organ:${d.color}">${d.symbol}</span><strong>${d.short}</strong>`,`data-city-id="${d.id}" aria-pressed="${d.id===selected}"`)).join('')}</nav><div class="cc-detail" data-city-detail></div></section>
           <section class="cc-panel" data-city-panel="workers" hidden><div class="cc-section-label">세포 인력 <span data-city-population></span></div><div class="cc-workers" data-city-workers></div><div class="cc-policy" role="group" aria-label="도시 운영 방침">${Object.entries(POLICIES).map(([id,name])=>button('policy',name,`data-city-id="${id}" aria-pressed="${id===run.policy}"`)).join('')}</div></section>
           <section class="cc-panel cc-armory" data-city-panel="armory" hidden><div class="cc-section-label">항생제 장비 <span data-city-rally></span></div><div class="cc-drugs">${DRUGS.map(d=>button('drug',`<span style="color:${d.color}">●</span> ${d.short}`,`data-city-id="${d.id}" title="${d.name} · 영양 ${d.cost} → 18 보급" aria-label="${d.name} 장비 선택" aria-pressed="${d.id===run.drug}"`)).join('')}</div><div data-city-ammo></div><div class="cc-ast" data-city-ast></div><div class="cc-antibody" data-city-antibody></div></section>
-          ${is3d?'<section class="cc-panel cc-frontier" data-city-panel="frontier" hidden><div data-city-frontier></div></section>':''}<section class="cc-panel cc-journal" data-city-panel="city" hidden><div class="cc-policy cc-pages" aria-label="도시 운영 메뉴">${button('city-page','도시 기록','data-city-id="log"')}${button('city-page','환경·설정','data-city-id="settings"')}</div><div data-city-page="log"><ol data-city-log></ol><div class="cc-pagination">${button('log-page','←','data-city-id="-1" aria-label="이전 기록 페이지"')}<span data-city-log-page></span>${button('log-page','→','data-city-id="1" aria-label="다음 기록 페이지"')}</div></div><div class="cc-settings" data-city-page="settings" hidden><div>${button('lifecycle','게임 수명 OFF','aria-pressed="false"')}${button('weather','건조 환경 35초')}</div><div>${button('menu','시나리오 선택')}${button('reset','새 도시','class="cc-reset"')}</div><small>수명 ON · 종료된 세포는 골수에서 자동 보충</small><small>생리·전투 수치는 게임용. 장비 감수성은 고정 분리주 기록.</small><small>${is3d?'Three.js · MIT / Kenney·RG Poly · CC0':'Kontra.js · MIT / Lucide · ISC'}</small>${is3d?'<small data-city-performance></small>':''}</div></section>
+          ${is3d?'<section class="cc-panel cc-frontier" data-city-panel="frontier" hidden><div data-city-frontier></div></section>':''}<section class="cc-panel cc-journal" data-city-panel="city" hidden><div class="cc-policy cc-pages" aria-label="도시 운영 메뉴">${button('city-page','도시 기록','data-city-id="log"')}${button('city-page','환경·설정','data-city-id="settings"')}</div><div data-city-page="log"><ol data-city-log></ol><div class="cc-pagination">${button('log-page','←','data-city-id="-1" aria-label="이전 기록 페이지"')}<span data-city-log-page></span>${button('log-page','→','data-city-id="1" aria-label="다음 기록 페이지"')}</div></div><div class="cc-settings" data-city-page="settings" hidden><div>${button('lifecycle','게임 수명 OFF','aria-pressed="false"')}${button('weather','건조 환경 35초')}</div><div>${button('menu','시나리오 선택')}${button('reset','새 도시','class="cc-reset"')}</div><small>수명 ON · 종료된 세포는 골수에서 자동 보충</small><small>생리·전투 수치는 게임용. 장비 감수성은 고정 분리주 기록.</small><small>${is3d?'Three.js · MIT / Kenney·RG Poly · CC0':'Kontra.js · MIT / Lucide · ISC'}</small>${is3d?`<div class="cc-asset-control"><label><input type="checkbox" data-city-new-assets ${useNewAssets?'checked':''}><span>세부 건물 에셋</span></label><span data-city-asset-state role="status"></span></div><div class="cc-camera-settings">${button('rotate','↶ 왼쪽 회전','data-city-id="-1"')}${button('rotate','↷ 오른쪽 회전','data-city-id="1"')}</div><small>이동 드래그 · 회전 Q/E · 전체 Home</small><small data-city-performance></small>`:''}</div></section>
         </aside></div>
       <footer class="cc-command-bar"><div class="cc-status"><i></i><span data-city-save>자동 저장</span><small data-city-last-log></small></div><nav class="cc-dock" aria-label="도시 관리 메뉴">${[['district','▦','구역'],['workers','✦','세포'],...(is3d?[['frontier','⬡','방어']]:[]),['armory','⚑',is3d?'치료':'장비'],['city','☷','운영']].map(([id,glyph,name])=>button('panel',`<span>${glyph}</span><strong>${name}</strong>`,`data-city-id="${id}" aria-label="${name} 관리" aria-controls="city-management" aria-expanded="${panel===id}"`)).join('')}</nav><span class="cc-view-label">${is3d?'LIVING CITY <b>3D VILLAGE</b>':'BODY DISTRICT 01 <b>2.5D</b>'}</span></footer>${startScreen()}</section>`;
   }
@@ -156,7 +155,7 @@ export function createCityGame(data,options={}){
     const notification=game.querySelector('[data-city-toast]');notification.hidden=!toast||performance.now()>toastUntil;if(!notification.hidden)notification.textContent=toast;
   }
   function paint(interpolation,frameTime){renderer?.draw(run,{selected,layer,editor,interpolation,frameTime,paused:!!editor||atStart||speed===0||run.status!=='running',selectedKind,selectedWall:panel==='frontier'&&front==='skin'?wall:null,inset:editor?(game?.querySelector('[data-city-layout-editor]')?.offsetHeight||210)+12:panel&&sheetLayout.matches?308:0});}
-  function select(id){if(editor)return;if(id==='observe'){panel='';update();return;}if(is3d&&(id.startsWith('front:')||id.startsWith('wall:'))){if(id.startsWith('wall:')){wall=Number(id.split(':')[1]);front='skin';}else front=id.split(':')[1];panel='frontier';frontPage='fronts';update();renderer?.invalidate();paint();return;}if(!districtDef(id))return;selected=id;panel='district';update();renderer?.invalidate();paint();}
+  function select(id){if(editor)return;if(id==='observe'){panel='';update();return;}if(is3d&&(id.startsWith('front:')||id.startsWith('wall:'))){if(id.startsWith('wall:')){wall=Number(id.split(':')[1]);front='skin';}else front=id.split(':')[1];panel='frontier';frontPage='fronts';update();renderer?.invalidate();paint();return;}if(!districtDef(id))return;selected=id;panel='district';update();if(is3d)renderer?.focus?.(siteAt(run.layout,id),true);renderer?.invalidate();paint();}
   function handleClick(b){
     const action=b.dataset.cityAction,id=b.dataset.cityId;if(!action||!active||!game)return false;
     if(action==='information'&&is3d){openInformation(b);return true;}
@@ -172,7 +171,7 @@ export function createCityGame(data,options={}){
         toastUntil=performance.now()+3500;
       }else{editor.event(key,key==='nudge'?id.split(',').map(Number):id);if(key==='add'&&!editor.error){const a=editor.draft.items[editor.selected];renderer?.focus?.({x:a.col,z:a.row});}}
     }
-    else if(editor&&!['zoom','fit','rotate'].includes(action))return true;
+    else if(editor&&!['zoom','fit','rotate','home'].includes(action))return true;
     else if(action==='bio-page')biology.page=id;
     else if(action==='bio-drug'){biology.drug=id;if(id==='oxacillin')biology.route='iv';run.drug=id;}
     else if(action==='bio-focus')renderer?.focus?.(siteAt(run.layout,id));
@@ -194,7 +193,7 @@ export function createCityGame(data,options={}){
     else if(action==='scenario'){if(SCENARIOS[id])choice=id;}
     else if(action==='menu'){atStart=true;speed=0;save();}
     else if(action==='resume'){if(started){atStart=false;speed=0;}}
-    else if(action==='start'){run=newCity(SCENARIOS[choice].host,choice);started=true;atStart=false;speed=1;selected='lung';selectedKind='';panel=choice==='simulation'?'armory':'';biology.page=choice==='simulation'?'exposure':'medicine';restored=false;save();}
+    else if(action==='start'){run=newCity(SCENARIOS[choice].host,choice);started=true;atStart=false;speed=1;selected=is3d?'heart':'lung';selectedKind='';panel='';if(is3d)renderer?.home?.(run);biology.page=choice==='simulation'?'exposure':'medicine';restored=false;save();}
     else if(action==='panel')panel=panel===id?'':id;
     else if(action==='close'){const last=panel;panel='';game.querySelector(`[data-city-action="panel"][data-city-id="${last}"]`)?.focus({preventScroll:true});}
     else if(action==='city-page')cityPage=id;
@@ -202,6 +201,7 @@ export function createCityGame(data,options={}){
     else if(action==='speed'){if(!atStart)speed=Number(id);restored=false;}
     else if(action==='zoom')renderer?.zoom(Number(id)*.22);
     else if(action==='fit')renderer?.reset();
+    else if(action==='home')renderer?.home?.();
     else if(action==='rotate')renderer?.rotate?.(Number(id));
     else if(action==='layer')layer=layer==='city'?'supply':'city';
     else if(action==='reset'||action==='restart'){
