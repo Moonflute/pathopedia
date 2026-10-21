@@ -49,14 +49,15 @@ export function bundleModel(bundle,name,height,maxWidth=Infinity){
 // still use the existing rubble, fire and repair effects; no new simulation.
 export function createBundleWalls(bundle){
  const root=new T.Group(),batches=[],matrix=new T.Matrix4(),wallMatrix=new T.Matrix4(),quaternion=new T.Quaternion(),axis=new T.Vector3(0,1,0),position=new T.Vector3(),scale=new T.Vector3(),color=new T.Color();
+ const surface=new T.MeshStandardMaterial({color:0xffffff,roughness:STYLE.roughness});
  function pool(name,capacity,kind){
   const template=bundleModel(bundle,name,1),parts=[];template.updateMatrixWorld(true);const size=new T.Box3().setFromObject(template).getSize(new T.Vector3());
-  template.traverse(m=>{if(!m.isMesh)return;const mesh=new T.InstancedMesh(m.geometry,m.material,capacity);mesh.userData.cityAsset=true;mesh.userData.structure=kind;mesh.castShadow=true;mesh.receiveShadow=true;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;root.add(mesh);const part={mesh,local:m.matrixWorld.clone()};parts.push(part);batches.push(part);});
+  template.traverse(m=>{if(!m.isMesh)return;const mesh=new T.InstancedMesh(m.geometry,surface,capacity);mesh.userData.cityAsset=true;mesh.userData.structure=kind;mesh.castShadow=true;mesh.receiveShadow=true;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;root.add(mesh);const part={mesh,local:m.matrixWorld.clone()};parts.push(part);batches.push(part);});
   return {size,parts};
  }
  const walls=pool('stone-wall',WALLS.length,'wall'),towers=pool('stone-tower',4,'tower');
  function put(group){for(const {mesh,local} of group.parts){matrix.multiplyMatrices(wallMatrix,local);mesh.setMatrixAt(mesh.count,matrix);mesh.setColorAt(mesh.count,color);mesh.count++;}}
- return {root,update(s,{camera,target}={}){
+ return {root,dispose(){surface.dispose();},update(s,{camera,target}={}){
   const vx=camera?camera.position.x-target.x:20,vz=camera?camera.position.z-target.z:32;
   for(const {mesh} of batches)mesh.count=0;
   for(const [i,wall] of WALLS.entries()){
@@ -65,10 +66,10 @@ export function createBundleWalls(bundle){
    // Leave the respiratory portal open rather than bridging across its mouth.
    const partial=i===1?Math.min(1,(CITY_ENTRIES.airway.portal.x-1.4-wall.a.x)/dx):1,cx=wall.a.x+dx*partial/2,cz=wall.a.z+dz*partial/2;
    position.set(cx,.02,cz);quaternion.setFromAxisAngle(axis,-Math.atan2(dz,dx));scale.set(length*partial*.99/Math.max(.01,walls.size.x),front?.6:1.7,1);
-   color.set(state.repair?0xd8e4d8:state.hp/wallMaximum(s,i)<.75?0xc9ab93:0xffffff);
+   color.set(state.repair?0xb9ccc2:state.hp/wallMaximum(s,i)<.75?0xc9ab93:STYLE.plasterWarm);
    wallMatrix.compose(position,quaternion,scale);
    put(walls);
-   if(i===0||i===4||i===7||i===10){position.set(wall.a.x,.02,wall.a.z);quaternion.identity();scale.setScalar(front?1.3:2.8);wallMatrix.compose(position,quaternion,scale);put(towers);}
+   if(i===0||i===4||i===7||i===10){position.set(wall.a.x,.02,wall.a.z);quaternion.identity();scale.setScalar(front?1.1:2.3);wallMatrix.compose(position,quaternion,scale);put(towers);}
   }
   for(const {mesh} of batches){mesh.instanceMatrix.needsUpdate=true;if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;}
  }};

@@ -33,7 +33,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  const model=(name,x,y,z,size=1,angle=0,parent=fixed)=>{
   const proto=assets[name];if(!proto)return null;const g=proto.clone(true);g.position.set(x,y,z);g.rotation.y=angle;g.scale.setScalar(size);staticParent(parent).add(g);return g;
  };
- const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;g.name='bundle-'+name;root.userData.bundleModels[name]=(root.userData.bundleModels[name]||0)+1;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
+ const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;if(name==='gate')g.traverse(m=>{if(m.isMesh)m.material=mat(STYLE.plaster);});g.name='bundle-'+name;root.userData.bundleModels[name]=(root.userData.bundleModels[name]||0)+1;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
  const disc=(x,z,r,c,y=.012)=>{const m=make(new T.CircleGeometry(r,32),c,x,y,z);m.rotation.x=-Math.PI/2;m.castShadow=false;return m;};
  function ribbon(points,width,color,height=.025){
   if(points.length<2)return;
@@ -76,6 +76,8 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
    if(side)box(px+.09,py,pz,.035,.26,.035,0xe5d5b4,g);else box(px,py,pz+.09,.035,.26,.035,0xe5d5b4,g);
   }
   window(-.32,.75,.535);window(.32,.75,.535);window(.555,.77,0,true);
+  box(0,.78,-.54,.35,.36,.06,STYLE.trim,g);box(0,.78,-.579,.27,.27,.025,STYLE.glass,g);
+  if(index%3===2){box(0,.99,.68,.79,.07,.4,roofColor,g);for(const px of [-.34,.34])box(px,.55,.82,.04,.9,.04,STYLE.timber,g);}
   if(tall){box(0,1.08,0,1.14,.075,1.08,0x9b8261,g);window(0,1.35,.535);window(.555,1.35,0,true);}
   for(let n=0;n<3;n++)box(0,.055,.72+n*.15,.34,.055,.13,0xe0d4b9,g);
   box(-.38,.19,.66,.29,.16,.18,0xb39172,g);
@@ -155,29 +157,42 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  if(newModel){scope('heart');newModel('bench',-2,.04,3.6,.65,.15,fixed,1.5);}
  scope(null);model('stall-green',CITY_ENTRIES.gut.portal.x+.8,0,CITY_ENTRIES.gut.portal.z-.8,1.2,0);
  const frontier=createFrontierScene({detailedWalls:!!newAssets}),bundleWalls=newAssets?createBundleWalls(newAssets):null;root.add(frontier.root);if(bundleWalls)root.add(bundleWalls.root);
- let sceneryCount=0,seed=9127;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
  const allRoads=[...roads.map(r=>r.points),intake,network?network.entries.airway:AIRWAY_PATH.map(groundPoint),...(network?network.connections.filter(c=>c.kind==='walk').map(c=>c.points):[])];
- function nearRoad(x,z){return allRoads.some(points=>points.slice(1).some((b,i)=>{const a=points[i],dx=b.x-a.x,dz=b.z-a.z,l=dx*dx+dz*dz,t=l?Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/l)):0;return Math.hypot(x-a.x-dx*t,z-a.z-dz*t)<1.45;}));}
- for(let i=0;i<450;i++){
-  const x=CITY_BOUNDS.left-2+rand()*84,z=CITY_BOUNDS.top-5+rand()*82;
-  if(Math.abs(x-portal.x)<3&&z<screen.z+3||Math.abs(x-riverX(z))<3||Object.values(SITES).some(p=>Math.hypot(x-p.x,z-p.z)<4.1)||COTTAGES.some(p=>Math.hypot(x-p[0],z-p[1])<1.6)||nearRoad(x,z))continue;
-  if(layout&&Object.entries(layout.items).some(([id,a])=>occupiedTiles(id,a).some(p=>Math.abs(x-p.col)<1&&Math.abs(z-p.row)<1)))continue;
-  if(sceneryCount>=100)break;sceneryCount++;
-  if(i%4===0)model('rock-small',x,.02,z,.6+rand(),rand()*6);
-  else gardenTree(x,z,2.4+rand()*1.4,i);
+ function nearRoad(x,z,clearance=1.5){return allRoads.some(points=>points.slice(1).some((b,i)=>{const a=points[i],dx=b.x-a.x,dz=b.z-a.z,l=dx*dx+dz*dz,t=l?Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/l)):0;return Math.hypot(x-a.x-dx*t,z-a.z-dz*t)<clearance;}));}
+ const occupied=layout?Object.entries(layout.items).flatMap(([id,a])=>occupiedTiles(id,a)):[];
+ const clear=(x,z,r=1.2)=>!nearRoad(x,z,r+1)&&!occupied.some(p=>Math.abs(x-p.col)<r+.6&&Math.abs(z-p.row)<r+.6)&&Math.hypot(x-portal.x,z-portal.z)>5&&Math.hypot(x-CITY_ENTRIES.gut.portal.x,z-CITY_ENTRIES.gut.portal.z)>5;
+ // Outside groves frame the wall; its inner patrol/repair strip remains empty.
+ let sceneryCount=0;
+ for(const [i,w] of WALLS.entries())for(let n=0;n<3;n++){
+  const t=(n+.5)/3,x=w.a.x+(w.b.x-w.a.x)*t+w.nx*(4+n%2*2),z=w.a.z+(w.b.z-w.a.z)*t+w.nz*(4+n%2*2);
+  if(!clear(x,z)||Math.abs(x-riverX(z))<2.5)continue;
+  gardenTree(x,z,2.8+(i+n)%3*.35,i+n);sceneryCount++;
  }
- for(const [x,z] of [[-3.1,1],[2.8,5.5],[-11.3,-5.1],[-3.2,-10],[5.6,-4.8]]){
-  disc(x,z,.6,0x9fb08b,.05);for(let i=0;i<5;i++)orb(x+Math.sin(i*2)*.4,.17,z+Math.cos(i*2)*.4,.13,i%2?0xe9ca9f:0xd6a6a8);
+ // Waterside reeds and smooth stones make the river part of the landscape.
+ for(let n=0;n<20;n++){const z=-32+n*3.2,x=riverX(z)+2.2;if(!clear(x,z,.45))continue;
+  for(let j=0;j<3;j++)cylinder(x+j*.18,.34,z+j*.17,.025,.04,.65+(j%2)*.25,STYLE.sage);
+  const stone=orb(x+.5,.12,z-.3,.35,STYLE.stone);stone.scale.set(1.5,.55,1);
  }
+ const commons={heart:[[-13,4],[-11,-4],[-9,10]],lung:[[5,-1],[6,-7],[-13,-10]],gut:[[-10,-7],[-8,-3]],kidney:[[-7,-6],[7,-3],[-12,10]],marrow:[[7,-3],[-8,-7],[-13,6]],lymph:[[9,4],[-9,-2],[-12,11]]};
+ const plantedCommons=[];
+ for(const [id,candidates] of Object.entries(commons)){const origin=layout?.items[id],site=SITES[id];if(!origin)continue;
+  for(const [dx,dz] of candidates){const x=origin.col+dx,z=origin.row+dz;if(!clear(x,z,1.8)||Math.abs(x-riverX(z))<4||plantedCommons.some(p=>Math.hypot(p.x-x,p.z-z)<5))continue;plantedCommons.push({id,x,z});
+   disc(x,z,2.1,STYLE.grassLight,.01);const water=id==='kidney',color=id==='marrow'?STYLE.rose:id==='gut'?STYLE.brass:STYLE.sage;
+   for(const side of [-1,1]){const gx=x+side*1.2,gz=z-.9;if(!water)gardenTree(gx,gz,2.1,id==='gut'?2:1);else{disc(gx,gz,.5,STYLE.stone,.03);disc(gx,gz,.4,STYLE.water,.035);}sceneryCount++;}
+   box(x,.22,z+1.15,1.4,.12,.35,STYLE.timber);for(const dx of [-.5,.5])box(x+dx,.1,z+1.15,.1,.2,.3,STYLE.stone);
+   for(let n=0;n<5;n++)leaf(x-1+n*.5,.12,z+1.8,.12,color);break;
+  }
+ }
+ root.userData.landscapeTrees=sceneryCount;root.userData.commons=plantedCommons;
  // Gardens sit inside each saved footprint and move with the building.
  if(layout){for(const d of layoutPlaceables(layout)){scope(d.id);const [x0,z0,x1,z1]=d.bounds,w=x1-x0,h=z1-z0,cx=d.origin.x+(x0+x1-1)/2,cz=d.origin.z+(z0+z1-1)/2;
-  const tile=make(new T.PlaneGeometry(w-.1,h-.1),d.kind==='house'?0xb2c29b:0xd0c7ad,cx,.017,cz);tile.rotation.x=-Math.PI/2;tile.castShadow=false;
+  const tile=make(new T.PlaneGeometry(w-.1,h-.1),d.kind==='house'?STYLE.meadow:0xd0c7ad,cx,.017,cz);tile.rotation.x=-Math.PI/2;tile.castShadow=false;
   if(d.kind==='house'){
    const i=Number(d.id.slice(6)),x=d.origin.x,z=d.origin.z;
-   box(x+.5,.12,z+1.28,2.7,.18,.09,0xe0d4b9);box(x-.85,.12,z+.45,.09,.18,1.7,0xe0d4b9);box(x+1.8,.12,z+.45,.09,.18,1.7,0xe0d4b9);
-   // A gap faces the existing front-door connection.
-   box(x-.45,.18,z+1.35,.8,.3,.22,0x819a73);box(x+1.2,.18,z+1.35,1.1,.3,.22,0x819a73);
-   gardenTree(x+1.25,z-.4,1.5+(i%3)*.14,i);
+   // Short planted edges open onto the common lane; no full fenced square.
+   for(const side of [-1,1])box(x+side*.95,.13,z+1.3,.7,.2,.18,STYLE.foliage[1]);
+   if(i%3===0)gardenTree(x+1.1,z-.75,1.4+(i%2)*.12,i);
+   else{box(x+1.05,.09,z-.5,.55,.16,.65,STYLE.trim);for(let n=0;n<3;n++)leaf(x+1.05,.24,z-.7+n*.2,.14,i%3===1?STYLE.sage:STYLE.rose);}
   }else{
    const accent=d.color||0x7a9c87;
    for(const px of [cx-w/2+.2,cx+w/2-.2])box(px,.075,cz,.1,.1,h-.3,0xb3ac91);
@@ -185,7 +200,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
    if(d.kind==='organ'){
     const sx=d.origin.x+x0+.6,sz=d.origin.z+z1-1;
     cylinder(sx,1.2,sz,.035,.045,2.4,0x8a7b5f);box(sx+.27,2.12,sz,.5,.62,.05,accent);box(sx+.27,2.12,sz+.031,.3,.08,.018,0xf1e4c8);
-    if(d.id!=='heart')gardenTree(d.origin.x+x1-1, d.origin.z+z1-1,2.25,Object.keys(SITES).indexOf(d.id));
+    // The working court stays free of tall foliage.
    }
   }
  }
@@ -217,7 +232,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null){
  }
  const retainedMaterials=new Set();root.traverse(m=>{if(m.material)retainedMaterials.add(m.material);});for(const m of materials.values())if(!retainedMaterials.has(m))m.dispose();
  const sources=new Set();fixed.traverse(m=>{if(m.isMesh&&!m.userData.kenney&&!m.userData.cityAsset)sources.add(m.geometry);});for(const g of sources)g.dispose();
- return {root,districts,movePreview(a){if(preview)applyTransform(preview,editId,a);const g=owners.moving.get(editId);if(g)applyTransform(g,editId,a);},dispose(){const gs=new Set(),ms=new Set();root.traverse(m=>{if(m.isInstancedMesh)m.dispose();if(m.geometry&&!m.userData.kenney&&!m.userData.cityAsset)gs.add(m.geometry);if(m.material&&!m.userData.kenney&&!m.userData.cityAsset)ms.add(m.material);});for(const g of gs)g.dispose();for(const m of ms)if(!m.map)m.dispose();},update(s,options){
+ return {root,districts,movePreview(a){if(preview)applyTransform(preview,editId,a);const g=owners.moving.get(editId);if(g)applyTransform(g,editId,a);},dispose(){bundleWalls?.dispose();const gs=new Set(),ms=new Set();root.traverse(m=>{if(m.isInstancedMesh)m.dispose();if(m.geometry&&!m.userData.kenney&&!m.userData.cityAsset)gs.add(m.geometry);if(m.material&&!m.userData.kenney&&!m.userData.cityAsset)ms.add(m.material);});for(const g of gs)g.dispose();for(const m of ms)if(!m.map)m.dispose();},update(s,options){
   moving.visible=true;frontier.root.visible=true;supply.visible=!options.editor&&options.layer==='supply';
   facilities.update(s);frontier.update(s,options);bundleWalls?.update(s,options);
   for(const [id,d] of Object.entries(districts)){const state=s.districts[id];d.work.visible=!!state.building;d.tower.visible=state.tower>0;d.tower.scale.y=state.tower>1?1.25:1;const progress=state.building?.remaining==null?0:1-state.building.remaining/state.building.duration;d.work.userData.progress.scale.y=.3+progress*2;d.work.userData.progress.position.y=.4+d.work.userData.progress.scale.y*.11;d.level.children.forEach((m,i)=>m.visible=i<state.level-1);}
