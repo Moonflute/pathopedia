@@ -9,7 +9,7 @@ import {SITES} from './city-three-layout.mjs';
 // CC0 modular walls, roofs, mills, stalls and carts share the existing atlas.
 // Bespoke organ machinery uses the same small palette and only moving parts
 // remain outside the static geometry bake.
-export function createFacilities({fixed,animated,make,box,cylinder,orb,model,cottage,road,scope=()=>{}}){
+export function createFacilities({fixed,animated,make,box,cylinder,orb,model,newModel=null,cottage,road,scope=()=>{}}){
  const ivory=0xf1e6cd,brass=0xc5aa6e,wood=0x947656,teal=0x79a9a6,rose=0xdba39a,green=0xa6b57c,stone=0xb8b1c2;
  const rotors=[],pistons=[],belts=[],born=[];
  function pipe(points,r=.11,color=brass,segments=14){return make(new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),segments,r,6,false),color,0,0,0);}
@@ -23,7 +23,8 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,cot
  }
  cottage(-10.8,-10.5,1.4,.3,true);
  for(const x of [-8,-6.6]){
-  cylinder(x,.65,-8.2,.42,.42,1.3,0xa0c9c5);cylinder(x,1.36,-8.2,.25,.35,.15,ivory);
+  if(newModel)newModel('tank',x,.03,-8.2,1.45,0,fixed,.9);
+  else{cylinder(x,.65,-8.2,.42,.42,1.3,0xa0c9c5);cylinder(x,1.36,-8.2,.25,.35,.15,ivory);}
   const b=box(x,.55,-7.7,.65,.7,.35,wood,animated);pistons.push({mesh:b,y:.55,id:'lung'});
   const funnel=make(new T.CylinderGeometry(.55,.18,.7,8,1,true),teal,x,1.9,-8.25);funnel.rotation.x=-.6;
   pipe([[x,1.45,-8.2],[x,1.65,-8.2],[x,1.75,-8.15]],.13,teal);
@@ -78,7 +79,9 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,cot
  // Fixed fittings join the static bake; moving cargo/vials use actor instances.
  for(const [id,role] of [['lymph','produce'],['marrow','fabricate'],['gut','fabricate']])for(let i=0;i<3;i++){
   scope(id);const p=groundPoint(workStation(id,role,i).target);
-  box(p.x,.34,p.z,.62,.12,.43,wood);for(const x of [-.22,.22])box(p.x+x,.16,p.z,.055,.3,.32,wood);
+  if(newModel)newModel('station',p.x,.02,p.z,.4,0,fixed,.7);
+  else{box(p.x,.34,p.z,.62,.12,.43,wood);for(const x of [-.22,.22])box(p.x+x,.16,p.z,.055,.3,.32,wood);}
+  if(newModel&&role==='produce')newModel('jar',p.x-.2,.44,p.z-.08,.18,0,fixed,.2);
   if(role==='produce'){cylinder(p.x,.45,p.z,.14,.16,.12,ivory);cylinder(p.x+.22,.52,p.z,.05,.05,.25,teal);}
   else{box(p.x,.46,p.z,.32,.12,.22,ivory);box(p.x-.2,.46,p.z,.06,.12,.33,brass);}
  }

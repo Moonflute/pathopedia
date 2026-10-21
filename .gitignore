@@ -3,5 +3,8 @@ node_modules/
 .qa/
 *.log
 
+# Purchased source archives stay local; only the reviewed runtime subset ships.
+/cell-city-assets/
+
 # Preserve original and revision PNGs locally; commit the final WebP artwork.
 /assets/cards/illustrations-v1/**/*.png

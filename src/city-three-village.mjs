@@ -6,9 +6,10 @@ import {mergeGeometries} from './vendor/three/BufferGeometryUtils.js';
 import {SITES,CITY_ROADS,INTAKE_ROAD,RIVER_PATH,COTTAGES,groundPoint} from './city-three-layout.mjs';
 import {createFacilities} from './city-three-facilities.mjs';
 import {workStation} from './city-activity.mjs';
+import {bundleModel,createBundleWalls} from './city-three-bundle.mjs';
 
 // All decorative meshes are baked once by material. Only working machinery moves.
-export function createVillage(assets,layout=null,editId=null){
+export function createVillage(assets,layout=null,editId=null,newAssets=null){
  const root=new T.Group(),fixed=new T.Group(),moving=new T.Group(),supply=new T.Group(),districts={};root.add(fixed,moving,supply);supply.visible=false;
  let owner=null;const owners={fixed:new Map(),moving:new Map()};
  function scope(id){owner=id;}
@@ -29,6 +30,7 @@ export function createVillage(assets,layout=null,editId=null){
  const model=(name,x,y,z,size=1,angle=0,parent=fixed)=>{
   const proto=assets[name];if(!proto)return null;const g=proto.clone(true);g.position.set(x,y,z);g.rotation.y=angle;g.scale.setScalar(size);staticParent(parent).add(g);return g;
  };
+ const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
  const disc=(x,z,r,c,y=.012)=>{const m=make(new T.CircleGeometry(r,32),c,x,y,z);m.rotation.x=-Math.PI/2;m.castShadow=false;return m;};
  function ribbon(points,width,color,height=.025){
   if(points.length<2)return;
@@ -81,18 +83,29 @@ export function createVillage(assets,layout=null,editId=null){
   // Upgrade modules are drawn by the bounded frontier instance pools.
  }
  for(const [i,p] of COTTAGES.entries()){scope('house-'+i);cottage(...p,i%3===0);if(i%3===0)model('lantern',p[0]+.85,0,p[1]+.7,.8);}
- const facilities=createFacilities({fixed,animated,make,box,cylinder,orb,model,cottage,road,scope});
+ const facilities=createFacilities({fixed,animated,make,box,cylinder,orb,model,newModel,cottage,road,scope});
  scope(null);
  // A protected respiratory portal emerges from the northern hillside.
  const intakeHill=orb(-6,-.7,-21,1,0xb6bda7);intakeHill.scale.set(3.9,3.7,3.2);
- box(-6,1.2,-18.25,2.6,2.4,.13,0x587a72);
- for(const x of [-7.4,-4.6])box(x,.8,-18,.4,1.6,.75,0xe3d3b6);
- const arch=make(new T.TorusGeometry(1.4,.25,6,16,Math.PI),0xe3d3b6,-6,1.5,-18);arch.castShadow=true;
+ if(newModel)newModel('gate',-6,0,-18,3.4,0,fixed,3.6);
+ else{box(-6,1.2,-18.25,2.6,2.4,.13,0x587a72);
+  for(const x of [-7.4,-4.6])box(x,.8,-18,.4,1.6,.75,0xe3d3b6);
+  const arch=make(new T.TorusGeometry(1.4,.25,6,16,Math.PI),0xe3d3b6,-6,1.5,-18);arch.castShadow=true;}
  for(const x of [-7.5,-4.5]){road([{x,z:-18},{x,z:-14.2},{x,z:-11.7}],.24);box(x,.18,-15.7,.25,.36,4.2,0xc0c4a6);}
- scope('workshop');cottage(WORKSHOP.x,WORKSHOP.z-1,1.7,.05,true);model('banner-red',WORKSHOP.x+.9,.8,WORKSHOP.z-1,.8);
- box(WORKSHOP.x+1.1,.35,WORKSHOP.z+.5,.7,.7,.65,0xb9a078);
+ scope('workshop');
+ if(newModel){
+  newModel('workshop',WORKSHOP.x,0,WORKSHOP.z-1,2.8,.05,fixed,3.1);
+  newModel('logs',WORKSHOP.x-1.5,.03,WORKSHOP.z+.1,.7,.2,fixed,1.1);
+  newModel('crate',WORKSHOP.x+1.1,.03,WORKSHOP.z+.5,.7,.1,fixed,.75);
+  newModel('table',WORKSHOP.x+.7,.03,WORKSHOP.z+1.4,.65,0,fixed,1.1);
+  newModel('hammer',WORKSHOP.x+.7,.7,WORKSHOP.z+1.4,.24,.6,fixed,.4);
+  newModel('bucket',WORKSHOP.x-.7,.03,WORKSHOP.z+1.1,.45,0,fixed,.5);
+  newModel('cart',WORKSHOP.x+1.9,.03,WORKSHOP.z+2,.8,.4,fixed,1.5);
+ }else{cottage(WORKSHOP.x,WORKSHOP.z-1,1.7,.05,true);box(WORKSHOP.x+1.1,.35,WORKSHOP.z+.5,.7,.7,.65,0xb9a078);}
+ model('banner-red',WORKSHOP.x+.9,.8,WORKSHOP.z-1,.8);
+ if(newModel){scope('heart');newModel('bench',-2,.04,3.6,.65,.15,fixed,1.5);}
  scope(null);model('stall-green',15.8,0,-4.8,1.2,0);
- const frontier=createFrontierScene();root.add(frontier.root);
+ const frontier=createFrontierScene({detailedWalls:!!newAssets}),bundleWalls=newAssets?createBundleWalls(newAssets):null;root.add(frontier.root);if(bundleWalls)root.add(bundleWalls.root);
  let sceneryCount=0,seed=9127;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
  const allRoads=[...roads.map(r=>r.points),intake,network?network.entries.airway:AIRWAY_PATH.map(groundPoint)];
  for(let i=0;i<155;i++){
@@ -101,6 +114,7 @@ export function createVillage(assets,layout=null,editId=null){
   if(layout&&Object.entries(layout.items).some(([id,a])=>occupiedTiles(id,a).some(p=>Math.abs(x-p.col)<1&&Math.abs(z-p.row)<1)))continue;
   if(sceneryCount>=26)break;sceneryCount++;
   if(i%4===0)model('rock-small',x,.02,z,.6+rand(),rand()*6);
+  else if(newModel)newModel(i%5===0?'bush':i%3?'tree-cube':'tree-round',x,0,z,i%5===0?.65:2.2+rand()*.8,rand()*6,fixed,2.5);
   else model(i%3?'tree':'tree-high-round',x,0,z,.75+rand()*.55,rand()*6);
  }
  for(const [x,z] of [[-3.1,1],[2.8,5.5],[-11.3,-5.1],[-3.2,-10],[5.6,-4.8]]){
@@ -131,14 +145,14 @@ export function createVillage(assets,layout=null,editId=null){
  if(preview){const visible=preview.visible;preview.visible=true;preview.updateMatrixWorld(true);const inverse=preview.matrixWorld.clone().invert(),parts=new Map(),discard=new Set();
   preview.traverse(m=>{if(!m.isMesh||Array.isArray(m.material))return;const original=m.material,colored=!original.map,material=colored?vertexMaterial:original,key=material.uuid+':'+m.castShadow;
    const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();g.applyMatrix4(m.matrixWorld).applyMatrix4(inverse);for(const k of Object.keys(g.attributes))if(!['position','normal','uv'].includes(k))g.deleteAttribute(k);if(!g.attributes.uv)g.setAttribute('uv',new T.Float32BufferAttribute(new Float32Array(g.attributes.position.count*2),2));
-   if(colored){const colors=new Float32Array(g.attributes.position.count*3);for(let i=0;i<colors.length;i+=3){colors[i]=original.color.r;colors[i+1]=original.color.g;colors[i+2]=original.color.b;}g.setAttribute('color',new T.Float32BufferAttribute(colors,3));}g.clearGroups();if(!parts.has(key))parts.set(key,{material,shadow:m.castShadow,geometries:[]});parts.get(key).geometries.push(g);if(!m.userData.kenney)discard.add(m.geometry);
+   if(colored){const colors=new Float32Array(g.attributes.position.count*3);for(let i=0;i<colors.length;i+=3){colors[i]=original.color.r;colors[i+1]=original.color.g;colors[i+2]=original.color.b;}g.setAttribute('color',new T.Float32BufferAttribute(colors,3));}g.clearGroups();if(!parts.has(key))parts.set(key,{material,shadow:m.castShadow,geometries:[]});parts.get(key).geometries.push(g);if(!m.userData.kenney&&!m.userData.cityAsset)discard.add(m.geometry);
   });preview.clear();for(const p of parts.values()){const g=mergeGeometries(p.geometries),m=new T.Mesh(g,p.material);m.castShadow=p.shadow;m.receiveShadow=true;preview.add(m);for(const part of p.geometries)part.dispose();}for(const g of discard)g.dispose();preview.visible=visible;
  }
  const retainedMaterials=new Set();root.traverse(m=>{if(m.material)retainedMaterials.add(m.material);});for(const m of materials.values())if(!retainedMaterials.has(m))m.dispose();
- const sources=new Set();fixed.traverse(m=>{if(m.isMesh&&!m.userData.kenney)sources.add(m.geometry);});for(const g of sources)g.dispose();
- return {root,districts,movePreview(a){if(preview)applyTransform(preview,editId,a);const g=owners.moving.get(editId);if(g)applyTransform(g,editId,a);},dispose(){const gs=new Set(),ms=new Set();root.traverse(m=>{if(m.geometry&&!m.userData.kenney)gs.add(m.geometry);if(m.material&&!m.userData.kenney)ms.add(m.material);});for(const g of gs)g.dispose();for(const m of ms)if(!m.map)m.dispose();},update(s,options){
+ const sources=new Set();fixed.traverse(m=>{if(m.isMesh&&!m.userData.kenney&&!m.userData.cityAsset)sources.add(m.geometry);});for(const g of sources)g.dispose();
+ return {root,districts,movePreview(a){if(preview)applyTransform(preview,editId,a);const g=owners.moving.get(editId);if(g)applyTransform(g,editId,a);},dispose(){const gs=new Set(),ms=new Set();root.traverse(m=>{if(m.isInstancedMesh)m.dispose();if(m.geometry&&!m.userData.kenney&&!m.userData.cityAsset)gs.add(m.geometry);if(m.material&&!m.userData.kenney&&!m.userData.cityAsset)ms.add(m.material);});for(const g of gs)g.dispose();for(const m of ms)if(!m.map)m.dispose();},update(s,options){
   moving.visible=true;frontier.root.visible=true;supply.visible=!options.editor&&options.layer==='supply';
-  facilities.update(s);frontier.update(s,options);
+  facilities.update(s);frontier.update(s,options);bundleWalls?.update(s,options);
   for(const [id,d] of Object.entries(districts)){const state=s.districts[id];d.work.visible=!!state.building;d.tower.visible=state.tower>0;d.tower.scale.y=state.tower>1?1.25:1;const progress=state.building?.remaining==null?0:1-state.building.remaining/state.building.duration;d.work.userData.progress.scale.y=.3+progress*2;d.work.userData.progress.position.y=.4+d.work.userData.progress.scale.y*.11;d.level.children.forEach((m,i)=>m.visible=i<state.level-1);}
   ground.material.color.setHex(s.host==='neutropenia'?0xd7c8a7:0xc8ccb2);
  }};

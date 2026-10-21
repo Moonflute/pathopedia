@@ -1,0 +1,170 @@
+{
+  "author": "RG Poly",
+  "license": "CC0-1.0",
+  "page": "https://rg-poly.itch.io/",
+  "models": {
+    "crate": {
+      "path": "models/crate.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Other/Box_1_A.glb",
+      "bytes": 31464,
+      "sha256": "e04cd9ec5d082f9ad3d52c71593380fd0dc5eb2629943123f4e72433924e3a54",
+      "triangles": 316
+    },
+    "logs": {
+      "path": "models/logs.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Other/CutedWood_1_A.glb",
+      "bytes": 17224,
+      "sha256": "da4da9b3f6426ad10ab8721362f81cdc1ded7d06e24a96cafc6dba5e2f3cefcc",
+      "triangles": 284
+    },
+    "hammer": {
+      "path": "models/hammer.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Tools/Hammer_1_A.glb",
+      "bytes": 14308,
+      "sha256": "f29368fa78ca34a00d0758b4812a975f2f9925e9c4de7f30fbd3cc55d4acdbd2",
+      "triangles": 240
+    },
+    "bucket": {
+      "path": "models/bucket.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Tools/Bucket_2_A.glb",
+      "bytes": 25756,
+      "sha256": "cad8a60564b9694bea798577a0c2ac591f4a9c1173c9d237025ea2d2d5086a62",
+      "triangles": 446
+    },
+    "bench": {
+      "path": "models/bench.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Other/Bench_1_A.glb",
+      "bytes": 16728,
+      "sha256": "8d64cd07d10e877604264f3a23a8f515cd8eae91d4e6d2852dea990608c2ad4a",
+      "triangles": 249
+    },
+    "table": {
+      "path": "models/table.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Other/Table_1_A.glb",
+      "bytes": 22436,
+      "sha256": "2f3538e3eef3e61a5c1441567185aacda064e6c45e3de26528eb76400e065225",
+      "triangles": 360
+    },
+    "palisade": {
+      "path": "models/palisade.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Palisade/Palisade_A_2_2.glb",
+      "bytes": 22188,
+      "sha256": "a563849f5d15e9b2466e8940b102fbb4783c043eacb92b92adeb7a713b1a8c5d",
+      "triangles": 402
+    },
+    "gate": {
+      "path": "models/gate.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Buildings/Castle_Gate.glb",
+      "bytes": 29160,
+      "sha256": "bfb3068b7e9c094d794cb35db8a18c73c45bcf612550f5b996a9b1622e706b66",
+      "triangles": 488
+    },
+    "workshop": {
+      "path": "models/workshop.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Buildings/BarnWood_1_A.glb",
+      "bytes": 98120,
+      "sha256": "01199516d3a51d3270632ab0a798c56c5d59916368ea073a0c96ed82ad94f22b",
+      "triangles": 1532
+    },
+    "cart": {
+      "path": "models/cart.glb",
+      "archive": "MedievalMegapack_Godot.zip",
+      "source": "MedievalMegapack_Godot/Models/Other/Cart_1_A.glb",
+      "bytes": 144184,
+      "sha256": "542d40968933e6e48353701f37197660c2234ba4207da9ea2148e58b85957748",
+      "triangles": 2828
+    },
+    "tree-cube": {
+      "path": "models/tree-cube.glb",
+      "archive": "Cute Park.zip",
+      "source": "Cute Park/gLTF/TreeCube_1_2.glb",
+      "bytes": 7084,
+      "sha256": "6266b01a6065ac364f26bb1c435275460d4e1e08ec8f25495cf48eb1df679997",
+      "triangles": 132
+    },
+    "tree-round": {
+      "path": "models/tree-round.glb",
+      "archive": "Cute Park.zip",
+      "source": "Cute Park/gLTF/Tree_2_1.glb",
+      "bytes": 9028,
+      "sha256": "2c03d2e4353a9b8fcda5b3dca8fc8da53bca5ae6532a733e95df1c92c68f5104",
+      "triangles": 244
+    },
+    "bush": {
+      "path": "models/bush.glb",
+      "archive": "Cute Park.zip",
+      "source": "Cute Park/gLTF/Bush_1_1.glb",
+      "bytes": 13668,
+      "sha256": "d029f197bf6dbfeb6c13e797fa0c8fa7bc52b41e296abe18b891c9545ae5099e",
+      "triangles": 376
+    },
+    "station": {
+      "path": "models/station.glb",
+      "archive": "Restaurant_Godot.zip",
+      "source": "Restaurant_Godot/Models/Furniture/StationTable_1_A.glb",
+      "bytes": 15316,
+      "sha256": "e5eb3ba9016f57fe2ffb4da24771106f6305e1ab324f1d20085c64b342f6e337",
+      "triangles": 252
+    },
+    "jar": {
+      "path": "models/jar.glb",
+      "archive": "Restaurant_Godot.zip",
+      "source": "Restaurant_Godot/Models/Food/Jar_1_A.glb",
+      "bytes": 12140,
+      "sha256": "7e3719ef2c7555bbcee83488c3078d683a7d864cf256d42f3ac0c6baf0ff012f",
+      "triangles": 234
+    },
+    "tank": {
+      "path": "models/tank.glb",
+      "archive": "Farm Pack Godot.zip",
+      "source": "Farm Pack/Models/Buildings/SM_MilkTank_1_B.glb",
+      "bytes": 18440,
+      "sha256": "33135bf7540d3e147c6078c5cd093adb81d60fddaf66b2cb2f6ea25f5aedee83",
+      "triangles": 446
+    }
+  },
+  "textures": {
+    "textures/05a2ad9fdf547073.png": {
+      "sha256": "05a2ad9fdf5470737e5ab695dba8d94218c743ff1569c9893a1c4b81bea41c93",
+      "bytes": 753541,
+      "width": 1024,
+      "height": 1024
+    },
+    "textures/9bb62e1f62785742.png": {
+      "sha256": "9bb62e1f627857421e45e7567d0c5dc611fd3dfd922b6dce1b59236720c21b2e",
+      "bytes": 556755,
+      "width": 1024,
+      "height": 1024
+    },
+    "textures/141fe1c737373331.png": {
+      "sha256": "141fe1c73737333126847649ce76a3e56cb6e1ba83d105495df2577b104d8e8b",
+      "bytes": 554524,
+      "width": 1024,
+      "height": 1024
+    }
+  },
+  "archives": {
+    "MedievalMegapack_Godot.zip": {
+      "sha256": "d2b8210c43f39ad5ec4e45d22ef275cc3edd8db12e1beea6a5b89f0a718e3131"
+    },
+    "Cute Park.zip": {
+      "sha256": "c80f8dc76877792435f90a1d668c38601f80d59e2898607b475f9516c62c4038"
+    },
+    "Restaurant_Godot.zip": {
+      "sha256": "5a541bf1558c8b42cd7f5f691ed7005904e1644430b478b9bf699c88078957fc"
+    },
+    "Farm Pack Godot.zip": {
+      "sha256": "57f2875777d9621af9f525194ec70a3fc21a75d766ee03c99f3ce8f431b3b1db"
+    }
+  },
+  "totalBytes": 2362064
+}

@@ -1,0 +1,65 @@
+import * as T from './vendor/three/three.module.min.js';
+import {GLTFLoader} from './vendor/three/GLTFLoader.js';
+import {WALLS} from './city-frontier-data.mjs';
+import {wallMaximum} from './city-frontier.mjs';
+
+const root=new URL('../assets/city3d/bundle/',import.meta.url);
+export async function loadCityBundle(){
+ const response=await fetch(new URL('sources.json',root));if(!response.ok)throw Error('Village assets');
+ const manifest=await response.json(),models={},textures=new Map(),materials=new Map(),geometries=new Set(),loader=new GLTFLoader();
+ const dispose=()=>{for(const g of geometries)g.dispose();for(const m of materials.values())m.dispose();for(const t of textures.values())t.dispose();};
+ try{
+  // Limit parallel decoding and never retain 16 copies of the same atlas.
+  const entries=Object.entries(manifest.models);
+  for(let i=0;i<entries.length;i+=3){const results=await Promise.allSettled(entries.slice(i,i+3).map(async([name,entry])=>{
+   const url=new URL(entry.path,root),gltf=await loader.loadAsync(url.href);
+   gltf.scene.traverse(mesh=>{
+    if(!mesh.isMesh)return;geometries.add(mesh.geometry);
+    const shared=material=>{
+     const index=gltf.parser.associations.get(material)?.materials,definition=gltf.parser.json.materials[index];
+     const source=gltf.parser.json.textures?.[definition?.pbrMetallicRoughness?.baseColorTexture?.index]?.source;
+     const uri=gltf.parser.json.images?.[source]?.uri;
+     if(material.map&&uri){const key=new URL(uri,url).href;if(textures.has(key)){if(material.map!==textures.get(key))material.map.dispose();material.map=textures.get(key);}else{material.map.anisotropy=1;textures.set(key,material.map);}}
+     material.roughness=1;material.metalness=0;
+     const key=[material.map?.uuid,material.color.getHex(),material.side,material.vertexColors,material.transparent,material.opacity,material.alphaTest].join(':');
+     if(materials.has(key)){const existing=materials.get(key);if(existing!==material)material.dispose();return existing;}
+     materials.set(key,material);return material;
+    };
+    mesh.material=Array.isArray(mesh.material)?mesh.material.map(shared):shared(mesh.material);
+    mesh.userData.cityAsset=true;mesh.castShadow=true;mesh.receiveShadow=true;
+   });
+   gltf.scene.updateMatrixWorld(true);const bounds=new T.Box3().setFromObject(gltf.scene),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
+   const model=new T.Group();model.add(gltf.scene);gltf.scene.position.sub(new T.Vector3(center.x,bounds.min.y,center.z));model.userData.size=size;models[name]=model;
+  }));const failed=results.find(r=>r.status==='rejected');if(failed)throw failed.reason;}
+  return {models,dispose};
+ }catch(error){dispose();throw error;}
+}
+
+export function bundleModel(bundle,name,height,maxWidth=Infinity){
+ const proto=bundle?.models[name];if(!proto)return null;
+ const object=proto.clone(true),size=proto.userData.size;
+ object.scale.setScalar(Math.min(height/Math.max(.001,size.y),maxWidth/Math.max(.001,size.x,size.z)));
+ return object;
+}
+
+// The same 14 wall states drive a small set of instance batches. Broken walls
+// still use the existing rubble, fire and repair effects; no new simulation.
+export function createBundleWalls(bundle){
+ const root=new T.Group(),template=bundleModel(bundle,'palisade',1),batches=[],matrix=new T.Matrix4(),wallMatrix=new T.Matrix4(),quaternion=new T.Quaternion(),axis=new T.Vector3(0,1,0),position=new T.Vector3(),scale=new T.Vector3(),color=new T.Color();
+ template.updateMatrixWorld(true);const bounds=new T.Box3().setFromObject(template),size=bounds.getSize(new T.Vector3());
+ template.traverse(m=>{if(!m.isMesh)return;const mesh=new T.InstancedMesh(m.geometry,m.material,WALLS.length);mesh.userData.cityAsset=true;mesh.castShadow=true;mesh.receiveShadow=true;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;root.add(mesh);batches.push({mesh,local:m.matrixWorld.clone()});});
+ return {root,update(s,{camera,target}={}){
+  const vx=camera?camera.position.x-target.x:20,vz=camera?camera.position.z-target.z:32;
+  for(const {mesh} of batches)mesh.count=0;
+  for(const [i,wall] of WALLS.entries()){
+   const state=s.frontier?.walls[i];if(!state||state.hp<=0)continue;
+   const dx=wall.b.x-wall.a.x,dz=wall.b.z-wall.a.z,length=Math.hypot(dx,dz),front=wall.nx*vx+wall.nz*vz>Math.hypot(vx,vz)*.3;
+   // Leave the respiratory portal open rather than bridging across its mouth.
+   const partial=i===1?Math.min(1,(-7.4-wall.a.x)/dx):1,cx=wall.a.x+dx*partial/2,cz=wall.a.z+dz*partial/2;
+   position.set(cx,.02,cz);quaternion.setFromAxisAngle(axis,-Math.atan2(dz,dx));scale.set(length*partial*.97/Math.max(.01,size.x),front?.6:1.55,1);
+   wallMatrix.compose(position,quaternion,scale);
+   for(const {mesh,local} of batches){matrix.multiplyMatrices(wallMatrix,local);mesh.setMatrixAt(mesh.count,matrix);mesh.setColorAt(mesh.count,color.set(state.repair?0xd8e4d8:state.hp/wallMaximum(s,i)<.75?0xc9ab93:0xffffff));mesh.count++;}
+  }
+  for(const {mesh} of batches){mesh.instanceMatrix.needsUpdate=true;if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;}
+ }};
+}

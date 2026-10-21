@@ -12,6 +12,8 @@ import {STAGES} from './city-biology.mjs';
 import {cellObservation,createCellObserver,moveFollowCamera} from './city-cell-observer.mjs';
 import {createCityMotion} from './city-three-motion.mjs';
 import {createAdaptiveQuality,createFramePacer} from './city-three-performance.mjs';
+import {readCityAssets,createAssetSwitch} from './city-asset-preference.mjs';
+import {loadCityBundle} from './city-three-bundle.mjs';
 export {createThreeLoop} from './city-three-performance.mjs';
 
 const assetRoot=new URL('../assets/city3d/',import.meta.url);
@@ -33,7 +35,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.14;controls.screenSpacePanning=false;controls.panSpeed=.8;controls.rotateSpeed=.55;
  controls.minPolarAngle=Math.PI*.2;controls.maxPolarAngle=Math.PI*.36;controls.minAzimuthAngle=-.6;controls.maxAzimuthAngle=1.45;
  controls.mouseButtons={LEFT:T.MOUSE.PAN,MIDDLE:T.MOUSE.DOLLY,RIGHT:T.MOUSE.ROTATE};controls.touches={ONE:T.TOUCH.PAN,TWO:T.TOUCH.DOLLY_ROTATE};controls.zoomToCursor=true;
- const actor=createActors(profile);scene.add(actor.root);const editOverlay=createEditorOverlay();scene.add(editOverlay.root);let assetCache=null,villageLayout=null,villageEditId=null,currentEditor=null,currentRun=null;
+ const actor=createActors(profile);scene.add(actor.root);const editOverlay=createEditorOverlay();scene.add(editOverlay.root);let assetCache=null,villageLayout=null,villageEditId=null,currentEditor=null,currentRun=null,newBundle=null,wantNewAssets=readCityAssets();
  const selection=new T.Mesh(new T.TorusGeometry(2.33,.035,4,60),new T.MeshBasicMaterial({color:0xd1ae6c}));selection.rotation.x=-Math.PI/2;scene.add(selection);
  let village=null,disposed=false,ready=false,dirty=true,lastFrame=0,lastShadow=0,lastStats=0,frames=0,minCalls=Infinity,peakCalls=0,peakTriangles=0,width=0,height=0,fit=1,zoomTarget=null,zoomAnchor=null,inset=0,lastInspect=0,inspectHeight=170,focusTarget=null;
  const calmSky=new T.Color(0xe4e6d8),illSky=new T.Color(0xd69b91),warmSun=new T.Color(0xffeacb),illSun=new T.Color(0xffc1b2);
@@ -196,7 +198,12 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   renderer.render(scene,camera);if(ready&&!options.paused&&!currentEditor)adaptive.rendered(performance.now()-now);dirty=false;frames++;minCalls=Math.min(minCalls,renderer.info.render.calls);peakCalls=Math.max(peakCalls,renderer.info.render.calls);peakTriangles=Math.max(peakTriangles,renderer.info.render.triangles);
   if(now-lastStats>1000){const label=game.querySelector('[data-city-performance]');if(label)label.textContent=`${options.paused?'일시정지':Math.round(frames*1000/(now-lastStats))+' fps'} · 목표 ${quality.fps} · DPR ${quality.dpr.toFixed(2)} · 그림자 ${quality.shadow||'OFF'} · ${minCalls===peakCalls?peakCalls:minCalls+'–'+peakCalls} draws · ${Math.round(peakTriangles/1000)}k tris`;lastStats=now;frames=0;minCalls=Infinity;peakCalls=0;peakTriangles=0;}
  }
- function rebuild(layout,id){if(village){scene.remove(village.root);village.dispose();}village=createVillage(assetCache,layout,id);villageLayout=layout;villageEditId=id;scene.add(village.root);renderer.shadowMap.needsUpdate=true;adaptive.suspend(performance.now());dirty=true;}
+ function rebuild(layout,id){if(village){scene.remove(village.root);village.dispose();}village=createVillage(assetCache,layout,id,newBundle);villageLayout=layout;villageEditId=id;scene.add(village.root);renderer.shadowMap.needsUpdate=true;adaptive.suspend(performance.now());dirty=true;}
+ const assetSwitch=createAssetSwitch({load:loadCityBundle,apply(bundle){newBundle=bundle;rebuild(currentEditor?.draft||currentRun?.layout,currentEditor?.selected||null);},state(state,error){
+  game.dataset.newAssets=state;const note=game.querySelector('[data-city-asset-state]');if(note)note.textContent=state==='loading'?'불러오는 중…':state==='error'?'불러오기 실패 · 다시 체크':'';
+  if(error)console.error('Village asset load failed',error);
+ }});
+ function setNewAssets(enabled){wantNewAssets=!!enabled;if(ready)void assetSwitch.set(wantNewAssets);else game.dataset.newAssets=wantNewAssets?'loading':'off';}
  async function load(){
   const loader=new GLTFLoader(),assets={},response=await fetch(new URL('sources.json',assetRoot));if(!response.ok)throw Error('Asset manifest');const manifest=await response.json();
   const names=manifest.kenney.models;let sharedMaterial=null,failed=0;
@@ -211,8 +218,9 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   if(disposed){for(const a of Object.values(assets))release(a);return;}
   assetCache=assets;rebuild(currentEditor?.draft||currentRun?.layout,currentEditor?.selected||null);ready=true;dirty=true;renderer.shadowMap.needsUpdate=true;
   game.dataset.renderer='three';game.dataset.assets=failed?'partial':'ready';status.hidden=!failed;if(failed){status.classList.add('cc-three-loading--warning');status.textContent='일부 마을 소품을 불러오지 못했습니다.';}
+  void assetSwitch.set(wantNewAssets);
   // Keep source models until disposal: Apply rebuilds the static mesh once.
  }
  load().catch(error=>{if(disposed)return;console.error('3D village load failed',error);status.innerHTML='마을을 불러오지 못했습니다. <button type="button" data-city3d-retry>다시 열기</button> · <a href="#city">기존 도시</a>';});
- return {draw,zoom,rotate,reset,focus,cameraInfo,captureMotion:s=>motion.capture(s),beginLayout(){clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();release(scene);if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;}};
+ return {draw,zoom,rotate,reset,focus,cameraInfo,setNewAssets,captureMotion:s=>motion.capture(s),beginLayout(){clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();village?.dispose();release(scene);assetSwitch.dispose();if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;delete game.dataset.newAssets;}};
 }

@@ -10,7 +10,7 @@ import {CITY_ROADS} from './city-three-layout.mjs';
 
 // Seven fixed-size pools: structures, modules, stores and tiny effects share
 // geometries. No particle emitters, textures, extra lights or scene graph churn.
-export function createFrontierScene(){
+export function createFrontierScene({detailedWalls=false}={}){
  const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={};
  const surface=new T.MeshStandardMaterial({color:0xffffff,roughness:.95}),unlit=new T.MeshBasicMaterial({color:0xffffff});
  function batch(id,geometry,capacity,material=surface,shadow=false){const mesh=new T.InstancedMesh(geometry,material,capacity);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;mesh.castShadow=shadow;mesh.receiveShadow=material===surface;mesh.count=0;mesh.name='frontier-'+id;root.add(mesh);batches[id]=mesh;}
@@ -37,7 +37,7 @@ export function createFrontierScene(){
     // The respiratory portal is a dedicated protected entrance through the rim.
     if(i===1&&x>-7.4)continue;
     if(w.hp===0){put('box',x,.12,z,length/5,.22,.55,0xbfa691,angle,.12*(n%2?1:-1));if(repair?.delivered)put('box',x,.3,z,length/4-.12,.25+(1-repair.remaining/7)*.5,.23,0xa7c9bc,angle);}
-    else{put('box',x,height*.5,z,length/4-.1,height,.5,stone,angle);put('box',x,height+.06,z,length/4-.04,.12,.64,ratio<.75?0xb79480:0xf0e3ca,angle);if(ratio<.75&&n%2===0)put('box',x,height*.5,z+.27,.055,height*.65,.025,0x8e7568,0,.3);}
+    else if(!detailedWalls){put('box',x,height*.5,z,length/4-.1,height,.5,stone,angle);put('box',x,height+.06,z,length/4-.04,.12,.64,ratio<.75?0xb79480:0xf0e3ca,angle);if(ratio<.75&&n%2===0)put('box',x,height*.5,z+.27,.055,height*.65,.025,0x8e7568,0,.3);}
    }
    for(const p of [def.a]){put('post',p.x,height*.6,p.z,.32,height*1.2,.32,0xcfb89e);put('roof',p.x,height*1.25,p.z,.45,.3,.45,repair?0x8caf9f:0xb99581,Math.PI/4);}
    if(repair){put('post',def.x-.5,.7,def.z,.05,1.4,.05,0x977f60);put('post',def.x+.5,.7,def.z,.05,1.4,.05,0x977f60);put('box',def.x,1.36,def.z,1.1,.07,.07,0x977f60);}
