@@ -1,3 +1,4 @@
+import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 import {CITY_ENTRIES} from './city-world.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {GLTFLoader} from './vendor/three/GLTFLoader.js';
@@ -7,7 +8,7 @@ import {wallMaximum} from './city-frontier.mjs';
 const root=new URL('../assets/city3d/bundle/',import.meta.url);
 export async function loadCityBundle(){
  const response=await fetch(new URL('sources.json',root));if(!response.ok)throw Error('Village assets');
- const manifest=await response.json(),models={},textures=new Map(),materials=new Map(),geometries=new Set(),loader=new GLTFLoader();
+ const manifest=await response.json(),models={},textures=new Map(),materials=new Map(),styled=new WeakSet(),geometries=new Set(),loader=new GLTFLoader();
  const dispose=()=>{for(const g of geometries)g.dispose();for(const m of materials.values())m.dispose();for(const t of textures.values())t.dispose();};
  try{
   // Limit parallel decoding and share the atlas across all source models.
@@ -21,7 +22,8 @@ export async function loadCityBundle(){
      const source=gltf.parser.json.textures?.[definition?.pbrMetallicRoughness?.baseColorTexture?.index]?.source;
      const uri=gltf.parser.json.images?.[source]?.uri;
      if(material.map&&uri){const key=new URL(uri,url).href;if(textures.has(key)){if(material.map!==textures.get(key))material.map.dispose();material.map=textures.get(key);}else{material.map.anisotropy=1;textures.set(key,material.map);}}
-     material.roughness=1;material.metalness=0;
+     material.roughness=STYLE.roughness;material.metalness=0;
+     if(!styled.has(material)){material.color.multiply(new T.Color(STYLE.atlasTint));styled.add(material);}
      const key=[material.map?.uuid,material.color.getHex(),material.side,material.vertexColors,material.transparent,material.opacity,material.alphaTest].join(':');
      if(materials.has(key)){const existing=materials.get(key);if(existing!==material)material.dispose();return existing;}
      materials.set(key,material);return material;

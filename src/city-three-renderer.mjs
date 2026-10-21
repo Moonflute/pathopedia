@@ -1,3 +1,4 @@
+import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 import {CITY_BOUNDS,CITY_SCALE} from './city-world.mjs';
 import {siteAt,SQUARE_GRID,placeable,transformPoint} from './city-tile-layout.mjs';
 import {createEditorOverlay} from './city-three-editor.mjs';
@@ -27,11 +28,11 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  try{renderer=new T.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'low-power'});}
  catch{status.innerHTML='이 기기에서 3D 화면을 열 수 없습니다. <a href="#city">기존 도시 열기 →</a>';return {draw(){},zoom(){},reset(){},invalidate(){},dispose(){status.remove();},cameraInfo(){return {scale:1,min:1,max:1};}};}
  const profile=qualityProfile(map.clientWidth,devicePixelRatio),adaptive=createAdaptiveQuality(map.clientWidth,devicePixelRatio),motion=createCityMotion(profile),shouldRender=createFramePacer();let quality=adaptive.profile,interpolation=1;
- const scene=new T.Scene();scene.background=new T.Color(0xe4e6d8);scene.fog=new T.Fog(0xe4e6d8,85,200);
+ const scene=new T.Scene();scene.background=new T.Color(STYLE.sky);scene.fog=new T.Fog(STYLE.sky,105,220);
  renderer.setPixelRatio(profile.dpr);renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
- renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
- scene.add(new T.HemisphereLight(0xfff7e1,0x969f89,2.25));
- const sun=new T.DirectionalLight(0xffeacb,2.7);sun.position.set(-16,32,12);sun.castShadow=true;sun.shadow.mapSize.setScalar(profile.shadow);Object.assign(sun.shadow.camera,{left:-54,right:54,top:54,bottom:-54,near:1,far:160});sun.shadow.bias=-.0007;sun.shadow.normalBias=.05;scene.add(sun);
+ renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1;
+ scene.add(new T.HemisphereLight(0xeaf3ff,0x78866c,1.7));
+ const sun=new T.DirectionalLight(0xfff0dc,2.5);sun.position.set(-24,38,18);sun.castShadow=true;sun.shadow.mapSize.setScalar(profile.shadow);Object.assign(sun.shadow.camera,{left:-54,right:54,top:54,bottom:-54,near:1,far:160});sun.shadow.bias=-.0007;sun.shadow.normalBias=.05;scene.add(sun);
  const camera=new T.OrthographicCamera(-20,20,15,-15,.1,260);camera.position.set(20,32,32);
  const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.14;controls.screenSpacePanning=false;controls.panSpeed=.8;controls.rotateSpeed=.55;
  controls.minPolarAngle=Math.PI*.2;controls.maxPolarAngle=Math.PI*.36;controls.minAzimuthAngle=-.6;controls.maxAzimuthAngle=1.45;
@@ -39,7 +40,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  const actor=createActors(profile);scene.add(actor.root);const editOverlay=createEditorOverlay();scene.add(editOverlay.root);let assetCache=null,villageLayout=null,villageEditId=null,currentEditor=null,currentRun=null,newBundle=null,wantNewAssets=readCityAssets();
  const selection=new T.Mesh(new T.TorusGeometry(2.33,.035,4,60),new T.MeshBasicMaterial({color:0xd1ae6c}));selection.rotation.x=-Math.PI/2;scene.add(selection);
  let village=null,disposed=false,ready=false,dirty=true,lastFrame=0,lastShadow=0,lastStats=0,frames=0,minCalls=Infinity,peakCalls=0,peakTriangles=0,width=0,height=0,fit=1,zoomTarget=null,zoomAnchor=null,inset=0,lastInspect=0,inspectHeight=170,focusTarget=null;
- const calmSky=new T.Color(0xe4e6d8),illSky=new T.Color(0xd69b91),warmSun=new T.Color(0xffeacb),illSun=new T.Color(0xffc1b2);
+ const calmSky=new T.Color(STYLE.sky),illSky=new T.Color(0xd69b91),warmSun=new T.Color(0xfff0dc),illSun=new T.Color(0xffc1b2);
  const watching=createCellObserver();
  const labelLayer=document.createElement('div');labelLayer.className='cc-three-labels';map.append(labelLayer);
  const labels=Object.entries(SITES).map(([id,s])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label'+(s.detail?' cc-three-label--main':'');b.innerHTML=`<i style="background:#${s.color.toString(16)}"></i><span>${s.label}</span><small>${s.detail?'':'연결 거점'}</small>`;b.setAttribute('aria-label',s.label+' 선택');b.addEventListener('click',()=>onSelect(id),{signal:abort.signal});labelLayer.append(b);const stage=document.createElement('em');b.append(stage);return {id,site:s,element:b};});

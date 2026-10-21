@@ -1,3 +1,4 @@
+import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 import {facilityState} from './city-workplaces.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {groundPoint} from './city-three-layout.mjs';
@@ -10,14 +11,14 @@ import {SITES} from './city-three-layout.mjs';
 // Bespoke organ machinery uses the same small palette and only moving parts
 // remain outside the static geometry bake.
 export function createFacilities({fixed,animated,make,box,cylinder,orb,model,newModel=null,cottage,road,scope=()=>{}}){
- const ivory=0xf1e6cd,brass=0xc5aa6e,wood=0x947656,teal=0x79a9a6,rose=0xdba39a,green=0xa6b57c,stone=0xb8b1c2;
+ const {plaster:ivory,brass,timber:wood,teal,rose,sage:green,stone}=STYLE;
  const rotors=[],pistons=[],belts=[],born=[];
  function pipe(points,r=.11,color=brass,segments=14){return make(new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),segments,r,6,false),color,0,0,0);}
  function rim(x,y,z,r,color=ivory){const m=make(new T.TorusGeometry(r,.09,5,18),color,x,y,z);m.rotation.x=Math.PI/2;return m;}
  scope('lung');
  // Lung: a wind-catching harbour with bellows and open intake funnels.
  for(const [x,z,s] of [[-9,-10,1],[-5.6,-12,.8]]){
-  if(newModel)newModel('tower',x,0,z,3.3*s,0,fixed,1.7*s);
+  if(newModel){const tower=newModel('tower',x,0,z,3.3*s,0,fixed,1.7*s);tower.scale.y*=1.3;}
   else{cylinder(x,1.35*s,z,.57*s,.82*s,2.7*s,ivory);make(new T.ConeGeometry(.88*s,1*s,8),teal,x,3.1*s,z);}
   const rotor=new T.Group();rotor.position.set(x,2.35*s,z+.82*s);animated.add(rotor);model('windmill',0,0,0,.8*s,Math.PI/2,rotor);rotors.push({mesh:rotor,id:'lung',axis:'z',speed:-.8});
   box(x,.4,z+.7,.37,.8,.15,wood);model('banner-green',x+.75,1.3,z,.75);
@@ -33,7 +34,7 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  if(newModel)newModel('market',-4,.02,-9,1.5,.6,fixed,1.8);else model('stall-green',-4,.05,-9,1.1,.6);
  scope('heart');
  // Heart: broad pump house, paired pistons and a continuous brass manifold.
- if(newModel){const hall=newModel('hall',0,.02,-1,3.7,.15,fixed,4.2);hall.scale.y*=1.12;}
+ if(newModel){const hall=newModel('hall',0,.02,-1,3.7,.15,fixed,4.2);hall.scale.y*=1.55;}
  else cottage(0,-1,2.5,.15,true);
  for(const x of [-.85,.85]){
   cylinder(x,1,-.1,.42,.49,1.8,rose);orb(x,1.96,-.1,.46,0xe2a29a);cylinder(x,1.1,.6,.14,.14,1.5,brass);
