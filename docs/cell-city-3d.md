@@ -246,3 +246,31 @@ Thirteen focused activity/state/save/render checks pass. In the isolated browser
 The first view and new heart-home control frame the working square. Whole-city framing remains available; selecting an organ zooms back into its working court. Distant labels become colored organ icons, overlapping labels are suppressed, and important labels stay below the resource HUD. A compact resource strip and five management buttons leave the city visible. Asset detail, rotation and performance controls now live under Operations / Settings. New simulations open with the management sheet closed.
 
 Desktop 1280×800 and mobile 390×844 views are recorded in `09-desktop.jpg` and `09-mobile.jpg`. Mobile checks covered the whole-city view, selecting the heart back into close focus, opening/closing details, and scrolling settings. The page has no horizontal overflow; the heart details sheet fits its available width and height. Syntax checks passed, and browser error logs are empty. Physical touch hardware remains outside this desktop-browser verification; final layout/editor and integrated performance checks follow in TASK 10.
+
+### TASK 10 — integration and final quality
+
+Rigid fans and flywheels now merge their colored pieces once while preserving the animated pivot. Four assemblies use four meshes instead of nineteen; imported geometry stays shared and disposal remains owned by the village. Unused road-junction bookkeeping was removed. The final navigation audit found an interior shortcut clipping a perimeter corner; terrain-aware segment checks now route it around the boundary while preserving authored external intake and wall-repair destinations.
+
+The complete City suite covered 91 checks. The initial run passed 90; the added boundary check needed floating-point tolerance and a zero-length sampling guard in the test, then passed its focused rerun. Coverage includes 2D simulation, biology/medicine, workers, transport, layout editing and migration, expansion, rendering budgets, assets and camera controls. No production build was run. Final browser error logs are empty.
+
+Browser integration on the isolated local city verified a house addition (54 → 55 facilities), rotation, one-tile movement, undo/redo, save/reload (55 facilities, capacity 196, 90° rotation retained) and cancellation. The editor fits 390×844 and 740×420 without horizontal page overflow. A real heart upgrade reached Lv.2. A deliberately opened skin segment was assigned a repair crew and returned from 0/100 to 100/100. A medicine crate completed delivery and produced the existing bloodstream distribution. The earlier saved local city still loads at 14:52 with its original layout and stocks (`10-legacy.jpg`); the new preset does not overwrite saved layouts.
+
+| Development-browser observation | FPS | Draws | Triangles | DPR / shadow |
+| --- | --- | --- | --- | --- |
+| Production baseline, desktop default view | paused | 100 | 234k | 1 / 1024 |
+| Final desktop heart view, running | 60 | 98 | 200k | 1 / 1024 |
+| Production baseline, mobile viewport | 60 | 73–75 | 200–202k | 1 / 512 |
+| Final mobile heart view, running | 60 | 73 | 157k | 1 / 512 |
+| Final legacy town, whole-city view | paused | 133 | 196k | 1 / 1024 |
+
+The historical expanded-town whole-view observation was about 125 draws / 240k triangles. Additional landmark machinery raises the whole-view draw count slightly, while rigid-part merging and static regional batching keep the measured running views at the 60 fps target. Different saved layouts, camera framing and actor positions make these observations indicative rather than an identical-scene benchmark. These are desktop-browser viewport measurements, not physical-phone or multitouch tests.
+
+Final comparison images: `01-before-desktop.jpg` → `10-after-desktop.jpg`, `01-before-mobile.jpg` → `10-after-mobile.jpg`, plus `10-after-town.jpg` for the complete six-district structure. The final test city contains the extra house added during editing verification. Screenshots are retained as requested comparison deliverables. No models, textures, dependencies or generated build directories were added.
+
+Changed-file index:
+- Layout and navigation: `city-town-plan.mjs`, `city-grid-path.mjs`, `city-tile-layout.mjs`, `city-engine.mjs`, `city-workplaces.mjs`, `city-activity.mjs`.
+- Appearance and working machinery: `city-three-style.mjs`, `city-three-village.mjs`, `city-three-facilities.mjs`, `city-three-bundle.mjs`, `city-three-frontier.mjs`, `city-three-actors.mjs`.
+- Camera and management: `city-three-renderer.mjs`, `city-ui.mjs`, `city-three.css`.
+- Verification: `tests/city-redesign.test.mjs`, `tests/city-assets.test.mjs`, this document and `docs/city-redesign/*.jpg`.
+
+All ten stages are implemented and committed locally. Deployment and the release version are unchanged; the live site remains v0.60.0. Remaining verification limits are physical mobile hardware and user-specific layouts beyond the migration/editor fixtures and the saved city inspected here.

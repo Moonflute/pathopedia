@@ -137,17 +137,17 @@ export function compileLayout(layout){
   const result=gridPath(start,end,walkable,p=>reuse&&roadCells.has(key(p))?.65:1);
   if(pathCache.size>=512)pathCache.delete(pathCache.keys().next().value);pathCache.set(k,result);return result;
  };
- function connect(id,from,to,kind,owners=[]){
+ function connect(id,from,to,kind){
   const middle=path(from,to,kind==='walk');if(!middle){connections.push({id,kind,ok:false,points:[]});return null;}
   for(const p of middle){const k=p.x+','+p.z;if(!roadCells.has(k))roadCells.set(k,new Set());roadCells.get(k).add(kind);}
   const points=simplify([from,...middle,to].filter((p,i,a)=>!i||p.x!==a[i-1].x||p.z!==a[i-1].z));connections.push({id,kind,ok:true,points});return points;
  }
  const vascular={};
- for(const d of DISTRICTS.filter(d=>d.id!=='heart')){const p=connect(d.id,port('heart'),port(d.id),d.id==='lung'?'pulmonary':'systemic',['heart',d.id]);vascular[d.id]=p?[centre('heart'),...p,centre(d.id)]:[];}
+ for(const d of DISTRICTS.filter(d=>d.id!=='heart')){const p=connect(d.id,port('heart'),port(d.id),d.id==='lung'?'pulmonary':'systemic');vascular[d.id]=p?[centre('heart'),...p,centre(d.id)]:[];}
  const entries={};for(const [id,{start,gate,portal,screen}] of Object.entries(CITY_ENTRIES)){
-  const organ=id==='airway'?'lung':'gut',p=connect('entry-'+id,gate,port(organ),'entry',[organ]);entries[id]=p?[start,...[portal,...(screen?[screen]:[])],...p,centre(organ)]:[];
+  const organ=id==='airway'?'lung':'gut',p=connect('entry-'+id,gate,port(organ),'entry');entries[id]=p?[start,...[portal,...(screen?[screen]:[])],...p,centre(organ)]:[];
  }
- for(const d of layoutPlaceables(layout).filter(d=>d.kind!=='organ')){const nearest=d.kind!=='house'&&d.district?districtDef(d.district):DISTRICTS.reduce((a,b)=>Math.hypot(centre(a.id).x-centre(d.id).x,centre(a.id).z-centre(d.id).z)<Math.hypot(centre(b.id).x-centre(d.id).x,centre(b.id).z-centre(d.id).z)?a:b);connect(d.id,port(d.id),port(nearest.id),'walk',[d.id,nearest.id]);}
+ for(const d of layoutPlaceables(layout).filter(d=>d.kind!=='organ')){const nearest=d.kind!=='house'&&d.district?districtDef(d.district):DISTRICTS.reduce((a,b)=>Math.hypot(centre(a.id).x-centre(d.id).x,centre(a.id).z-centre(d.id).z)<Math.hypot(centre(b.id).x-centre(d.id).x,centre(b.id).z-centre(d.id).z)?a:b);connect(d.id,port(d.id),port(nearest.id),'walk');}
  const districts=DISTRICTS.map(d=>({...d,...groundCoordinate(centre(d.id))}));
  const streets=streetNetwork(connections);pathCache.clear();
  const result={connections,vascular,entries,roadCells,streets,occupied,walkable,path,districts,valid:connections.every(c=>c.ok),ports:Object.fromEntries(layoutPlaceables(layout).map(d=>[d.id,port(d.id)]))};compiled.set(layout,result);return result;
@@ -161,7 +161,10 @@ export function walkablePoint(layout,p){
 export function walkingRoute(layout,from,points){
  if(!layout)return points;const c=compileLayout(layout),out=[];let a=groundPoint(from);
  for(const target of points){const b=groundPoint(target),length=Math.hypot(b.x-a.x,b.z-a.z),steps=Math.ceil(length*3);let clear=true;
-  for(let i=1;i<steps;i++){const p={col:Math.round(a.x+(b.x-a.x)*i/steps),row:Math.round(a.z+(b.z-a.z)*i/steps)};if(c.occupied.has(key(p))){clear=false;break;}}
+  // Interior shortcuts must respect the bank and perimeter as well as houses.
+  // Authored intake and wall-repair endpoints can intentionally lie outside it.
+  const interior=c.walkable(SQUARE_GRID.fromWorld(a))&&c.walkable(SQUARE_GRID.fromWorld(b));
+  for(let i=1;i<=steps;i++){const p={col:Math.round(a.x+(b.x-a.x)*i/steps),row:Math.round(a.z+(b.z-a.z)*i/steps)};if(c.occupied.has(key(p))||interior&&!c.walkable(p)){clear=false;break;}}
   if(clear){out.push(target);a=b;continue;}
   const start=walkablePoint(layout,a),end=walkablePoint(layout,b),route=c.path(start,end,true);
   if(route){out.push(...simplify([start,...route,end]).map(groundCoordinate));a=end;}

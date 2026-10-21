@@ -1,6 +1,7 @@
 import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 import {facilityState} from './city-workplaces.mjs';
 import * as T from './vendor/three/three.module.min.js';
+import {mergeGeometries} from './vendor/three/BufferGeometryUtils.js';
 import {groundPoint} from './city-three-layout.mjs';
 import {DISTRICTS} from './city-data.mjs';
 import {output} from './city-engine.mjs';
@@ -26,7 +27,7 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
   if(newModel)newModel('tower',x,0,z,3.3*s,0,fixed,1.7*s);
   cylinder(x,1.5*s,z,.65*s,.8*s,3*s,ivory);rim(x,.45*s,z,.8*s,teal);rim(x,2.8*s,z,.7*s,teal);
   make(new T.ConeGeometry(.92*s,.7*s,8),teal,x,3.25*s,z);
-  const guard=make(new T.TorusGeometry(.76*s,.08*s,6,20),ivory,x,2.12*s,z+.76*s);
+  make(new T.TorusGeometry(.76*s,.08*s,6,20),ivory,x,2.12*s,z+.76*s);
   const rotor=new T.Group();rotor.position.set(x,2.12*s,z+.84*s);animated.add(rotor);
   for(let i=0;i<4;i++){const blade=new T.Group();blade.rotation.z=i*Math.PI/2;rotor.add(blade);box(0,.38*s,0,.25*s,.58*s,.06*s,teal,blade);}
   orb(0,0,.05,.15*s,brass,rotor);rotors.push({mesh:rotor,id:'lung',axis:'z',speed:-1.05});
@@ -71,7 +72,7 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  else{const kitchen=cottage(10,-5,1.8,-.2,true);kitchen.scale.x*=1.25;kitchen.scale.z*=.8;
   for(const [x,z,h] of [[12,-5.8,2.6],[12.8,-4.5,1.9]]){cylinder(x,h/2,z,.52,.58,h,0xdbb66e);make(new T.ConeGeometry(.65,.55,8),wood,x,h+.2,z);rim(x,.5,z,.58,wood);}}
  cylinder(12.6,1.35,-5.4,.57,.6,2.7,ivory);rim(12.6,2.5,-5.4,.59,brass);make(new T.ConeGeometry(.75,.65,8),STYLE.roofs[2],12.6,3,-5.4);
- for(const x of [9.35,10.65]){const hopper=make(new T.CylinderGeometry(.6,.24,.8,8),brass,x,2.4,-4.75);rim(x,2.82,-4.75,.61,ivory);orb(x,2.85,-4.75,.42,0xe2c57d);}
+ for(const x of [9.35,10.65]){make(new T.CylinderGeometry(.6,.24,.8,8),brass,x,2.4,-4.75);rim(x,2.82,-4.75,.61,ivory);orb(x,2.85,-4.75,.42,0xe2c57d);}
  box(10,1.3,-3.8,2.6,1.45,.2,ivory);box(10,1.6,-3.67,2.7,.2,.28,STYLE.roofs[2]);
  const mill=new T.Group();mill.position.set(10.6,1.12,-3.55);animated.add(mill);make(new T.TorusGeometry(.37,.1,6,12),brass,0,0,0,mill);box(0,0,0,.65,.09,.08,wood,mill);box(0,0,0,.09,.65,.08,wood,mill);rotors.push({mesh:mill,id:'gut',axis:'z',speed:.75});
  if(newModel)newModel('market',9.4,.02,-2.1,1.45,0,fixed,1.5);else model('stall-green',9.4,.05,-2.1,1.1);
@@ -136,6 +137,23 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
   }
   const first=ports[0],last=ports[2];pipe([[first.x,.14,first.z],[last.x,.14,last.z]],.065,teal,1);
   pipe([[first.x,.14,first.z],[first.x,.14,site.building[1]],[site.building[0],.14,site.building[1]]],.065,teal,6);
+ }
+ // A fan or flywheel moves as one rigid part. Bake its colored pieces once,
+ // retaining the animated pivot and leaving imported shared geometry alone.
+ let rotorMaterial;
+ for(const {mesh:rig} of rotors){
+  if(!rig.isGroup)continue;const meshes=[];rig.traverse(m=>{if(m.isMesh)meshes.push(m);});
+  if(meshes.length<2||meshes.some(m=>m.userData.kenney||m.userData.cityAsset||Array.isArray(m.material)||m.material.map))continue;
+  rig.updateMatrixWorld(true);const inverse=rig.matrixWorld.clone().invert(),parts=[];
+  for(const m of meshes){const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();g.applyMatrix4(m.matrixWorld).applyMatrix4(inverse);
+   for(const k of Object.keys(g.attributes))if(!['position','normal'].includes(k))g.deleteAttribute(k);
+   const colors=new Float32Array(g.attributes.position.count*3),c=m.material.color;
+   for(let i=0;i<colors.length;i+=3){colors[i]=c.r;colors[i+1]=c.g;colors[i+2]=c.b;}
+   g.setAttribute('color',new T.Float32BufferAttribute(colors,3));g.clearGroups();parts.push(g);
+  }
+  rotorMaterial??=new T.MeshStandardMaterial({vertexColors:true,roughness:STYLE.roughness});
+  const merged=new T.Mesh(mergeGeometries(parts),rotorMaterial);merged.castShadow=true;merged.receiveShadow=true;
+  rig.clear();rig.add(merged);for(const g of parts)g.dispose();for(const g of new Set(meshes.map(m=>m.geometry)))g.dispose();
  }
  scope(null);
  let last=0,beltPhase=0;

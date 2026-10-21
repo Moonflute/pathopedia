@@ -15,7 +15,7 @@ export function gridPath(start,end,allowed,cost=()=>1,limit=6000){
 
 // Draw each shared street once, with the widest participating road class.
 export function streetNetwork(connections){
- const edges=new Map(),nodes=new Map(),rank={walk:0,entry:1,systemic:2,pulmonary:2};
+ const edges=new Map(),rank={walk:0,entry:1,systemic:2,pulmonary:2};
  for(const c of connections)for(let i=1;i<c.points.length;i++){
   const a=c.points[i-1],b=c.points[i],length=Math.round(Math.abs(b.x-a.x)+Math.abs(b.z-a.z));
   if(!length||a.x!==b.x&&a.z!==b.z)continue;
@@ -24,7 +24,7 @@ export function streetNetwork(connections){
    if(!edges.has(key)||edges.get(key).level<level)edges.set(key,{axis,line,start,level});
   }
  }
- const rows=new Map();for(const e of edges.values()){const k=e.axis+':'+e.line+':'+e.level;if(!rows.has(k))rows.set(k,[]);rows.get(k).push(e);for(const n of [e.start,e.start+1]){const x=e.axis==='x'?n:e.line,z=e.axis==='x'?e.line:n,k=x+','+z;nodes.set(k,(nodes.get(k)||0)+1);}}
+ const rows=new Map();for(const e of edges.values()){const k=e.axis+':'+e.line+':'+e.level;if(!rows.has(k))rows.set(k,[]);rows.get(k).push(e);}
  const runs=[];for(const row of rows.values()){row.sort((a,b)=>a.start-b.start);for(let i=0;i<row.length;){const a=row[i],start=a.start;let end=start+1;while(++i<row.length&&row[i].start===end)end++;runs.push({level:a.level,points:a.axis==='x'?[{x:start,z:a.line},{x:end,z:a.line}]:[{x:a.line,z:start},{x:a.line,z:end}]});}}
  const corners=new Map();for(const r of runs)for(const p of r.points){const k=p.x+','+p.z;if(!corners.has(k)||corners.get(k).level<r.level)corners.set(k,{...p,level:r.level});}
  return {runs,junctions:[...corners.values()],edges:edges.size};

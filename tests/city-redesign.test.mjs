@@ -47,3 +47,11 @@ test('existing version-two saves preserve every user placement and live state',(
  assert.deepEqual(restored.layout,s.layout);assert.equal(restored.time,137);assert.equal(restored.resources.food,73);assert.equal(restored.districts.heart.hp,84);
  assert.equal(serializeCity(restored),before);assert.ok(validateTileLayout(cloneLayout(restored.layout)));
 });
+
+test('interior walking respects the perimeter while external intake stays intact',()=>{
+ const l=createTileLayout(),c=compileLayout(l),a={x:-39,z:-16},b={x:-37,z:-20};
+ const route=[a,...walkingRoute(l,groundCoordinate(a),[groundCoordinate(b)]).map(groundPoint)];
+ assert.ok(route.length>2);assert.ok(Math.hypot(route.at(-1).x-b.x,route.at(-1).z-b.z)<1e-7);
+ for(let i=1;i<route.length;i++){const p=route[i-1],q=route[i],n=Math.max(1,Math.ceil(Math.hypot(q.x-p.x,q.z-p.z)*4));for(let j=0;j<=n;j++)assert.ok(c.walkable({col:Math.round(p.x+(q.x-p.x)*j/n),row:Math.round(p.z+(q.z-p.z)*j/n)}));}
+ for(const points of Object.values(c.entries)){const authored=points.slice(0,3).map(groundCoordinate);assert.deepEqual(walkingRoute(l,authored[0],authored.slice(1)),authored.slice(1));}
+});
