@@ -150,7 +150,7 @@ export function compileLayout(layout){
   const organ=id==='airway'?'lung':'gut';
   // Air crosses the wall on its own elevated conduit and enters the lung
   // directly; it does not meander through the organ's blood-loading entrance.
-  if(id==='airway'){const end=transformPoint(layout,'lung',{x:SITES.lung.x,z:SITES.lung.z-5.8}),points=[start,portal,screen,end];connections.push({id:'entry-'+id,kind:'entry',ok:true,points});entries[id]=points;}
+  if(id==='airway'){const end=transformPoint(layout,'lung',{x:SITES.lung.x,z:SITES.lung.z-7.5}),points=[start,portal,screen,end];connections.push({id:'entry-'+id,kind:'entry',ok:true,points});entries[id]=points;}
   else{const p=connect('entry-'+id,gate,port(organ),'entry');entries[id]=p?[start,portal,...p,centre(organ)]:[];}
  }
  for(const d of layoutPlaceables(layout).filter(d=>d.kind!=='organ')){const nearest=d.kind!=='house'&&d.district?districtDef(d.district):DISTRICTS.reduce((a,b)=>Math.hypot(centre(a.id).x-centre(d.id).x,centre(a.id).z-centre(d.id).z)<Math.hypot(centre(b.id).x-centre(d.id).x,centre(b.id).z-centre(d.id).z)?a:b);connect(d.id,port(d.id),port(nearest.id),'walk');}
@@ -217,9 +217,11 @@ const skinCache=new WeakMap();
 function skinTissuesAt(layout){
  if(!layout)return new Map();if(skinCache.has(layout))return skinCache.get(layout);
  const occupied=new Set(layoutPlaceables(layout).flatMap(d=>occupiedTiles(d.id,layout.items[d.id])).map(p=>p.col+','+p.row)),result=new Map();
+ const corridors=[[CITY_ENTRIES.airway.portal,CITY_ENTRIES.airway.screen,transformPoint(layout,'lung',{x:SITES.lung.x,z:SITES.lung.z-7.5})],[CITY_ENTRIES.gut.start,CITY_ENTRIES.gut.portal,CITY_ENTRIES.gut.gate]];
+ const corridorClear=p=>corridors.every(points=>points.slice(1).every((b,i)=>{const a=points[i],dx=b.x-a.x,dz=b.z-a.z,t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.z-a.z)*dz)/(dx*dx+dz*dz||1)));return Math.hypot(p.x-a.x-dx*t,p.z-a.z-dz*t)>3.4;}));
  for(const t of SKIN_TISSUES){
   let chosen=null;
-  for(const tangent of [0,3,-3,6,-6]){const x=t.x-t.nz*tangent,z=t.z+t.nx*tangent;let free=insideCity(x,z,3);
+  for(const tangent of [0,3,-3,6,-6]){const x=t.x-t.nz*tangent,z=t.z+t.nx*tangent;let free=insideCity(x,z,3)&&corridorClear({x,z});
    for(let a=Math.round(x)-2;a<=Math.round(x)+2;a++)for(let b=Math.round(z)-2;b<=Math.round(z)+2;b++)if(occupied.has(a+','+b))free=false;
    if(free){chosen={...t,x,z,point:groundCoordinate({x:x-t.nx*2.4,z:z-t.nz*2.4})};break;}
   }
