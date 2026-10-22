@@ -21,6 +21,7 @@ import {loadCityBundle} from './city-three-bundle.mjs';
 import {createResponseUI} from './city-response-ui.mjs';
 import {compileVascularLayout} from './city-vascular-layout.mjs';
 import {createCityAlarms} from './city-three-alarms.mjs';
+import {createHostResponseScene} from './city-three-host-response.mjs';
 export {createThreeLoop} from './city-three-performance.mjs';
 
 const assetRoot=new URL('../assets/city3d/',import.meta.url);
@@ -51,6 +52,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  const labelLayer=document.createElement('div');labelLayer.className='cc-three-labels';map.append(labelLayer);
  const responseUI=createResponseUI(map,{focus,overview:reset,signal:abort.signal});
  const alarms=createCityAlarms(map,{focus,signal:abort.signal});scene.add(alarms.root);
+ const hostScene=createHostResponseScene(map);scene.add(hostScene.root);abort.signal.addEventListener('abort',()=>{scene.remove(hostScene.root);hostScene.dispose();},{once:true});
  const labels=Object.entries(SITES).map(([id,s])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label'+(s.detail?' cc-three-label--main':'');b.innerHTML=`<i style="background:#${s.color.toString(16)}">${{heart:'♥',lung:'O₂',gut:'▤',kidney:'≋',marrow:'✚',lymph:'Y'}[id]}</i><span>${s.label}</span><small>${s.detail?'':'연결 거점'}</small>`;b.setAttribute('aria-label',s.label+' 선택');b.addEventListener('click',()=>onSelect(id),{signal:abort.signal});labelLayer.append(b);const stage=document.createElement('em');b.append(stage);return {id,site:s,element:b};});
  const outletLabel=document.createElement('span');outletLabel.className='cc-outlet-label';outletLabel.textContent='↗ 배출구';outletLabel.hidden=true;labelLayer.append(outletLabel);
  const inspect=document.createElement('section');inspect.className='cc-three-inspect';inspect.hidden=true;inspect.setAttribute('aria-label','선택한 세포');
@@ -233,6 +235,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   lastFrame=now;viewMatrix.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);viewFrustum.setFromProjectionMatrix(viewMatrix);actor.draw(s,{...options,motion,canals:village?.canals,visible:actorVisible,selectedCell:watching.id,readability:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(currentEditor?{...s,layout:currentEditor.draft}:s,{...options,camera,target:controls.target});updateLabels(s,options);const site=siteAt(s.layout,options.selected);selection.visible=!!site&&!currentEditor;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
   if(quality.shadow&&now-lastShadow>quality.shadowInterval){renderer.shadowMap.needsUpdate=true;lastShadow=now;}
   const illness=clamp(Math.max((75-cityHealth(s))/65,(s.inflammation-30)/70),0,1);scene.background.copy(calmSky).lerp(illSky,illness*.8);scene.fog.color.copy(scene.background);sun.color.copy(warmSun).lerp(illSun,illness);
+  const hideHost=!!currentEditor||!game.querySelector('.cc-start')?.hidden;hostScene.update(s,hideHost);hostScene.project(camera,width,height,inset,hideHost||labelLayer.hidden||!!game.dataset.panel);
   renderer.render(scene,camera);if(ready&&!options.paused&&!currentEditor)adaptive.rendered(performance.now()-now);dirty=false;frames++;minCalls=Math.min(minCalls,renderer.info.render.calls);peakCalls=Math.max(peakCalls,renderer.info.render.calls);peakTriangles=Math.max(peakTriangles,renderer.info.render.triangles);
   if(now-lastStats>1000){const label=game.querySelector('[data-city-performance]');if(label)label.textContent=`${options.paused?'일시정지':Math.round(frames*1000/(now-lastStats))+' fps'} · 목표 ${quality.fps} · DPR ${quality.dpr.toFixed(2)} · 그림자 ${quality.shadow||'OFF'} · ${minCalls===peakCalls?peakCalls:minCalls+'–'+peakCalls} draws · ${Math.round(peakTriangles/1000)}k tris`;lastStats=now;frames=0;minCalls=Infinity;peakCalls=0;peakTriangles=0;}
  }

@@ -64,7 +64,8 @@ export function createActors(profile){
   const bob=onWater?-.12+Math.sin(t*2.2+phase)*.025:act?-beat*(hammering?.04:.018):moving?Math.abs(Math.sin(stride))*.055:Math.sin(t*(waiting?3:2)+phase)*(waiting?.025:.012);
   const base=unit.integrity<40?'#bfb9ab':kind==='rbc'?(unit.cargo>0?'#df7363':'#6697bd'):CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf||striking?reach*.43:firing?-recoil*.17:0;
   const part=(id,x,y,z,sx,sy,sz,c,rx=0,rz=0)=>put(id,p.x+x*cs+(z+shift)*sn,y+bob,p.z-x*sn+(z+shift)*cs,sx,sy,sz,c,rx,angle,rz);
-  part('body',0,look.y,0,look.w*(1+reach*.12),look.h*(1-reach*.12),look.w*.88,base);
+  const squeezing=unit.trafficStage==='crossing',rolling=unit.trafficStage==='rolling';
+  part('body',0,look.y,0,look.w*(squeezing?.68:1+reach*.12),look.h*(squeezing?.72:1-reach*.12),look.w*(squeezing?1.35:.88),base,0,rolling?Math.sin(t*5+phase)*.27:0);
   if(kind==='rbc'){part('rim',0,.51,0,.25,.25,.25,look.hat,Math.PI/2);part('cap',0,.485,0,.18,.035,.16,0xc65b67);}
   else if(kind==='platelet'){part('cap',0,.36,0,.23,.055,.21,look.hat);part('box',0,.38,.01,.23,.035,.07,0xfff4da);part('box',0,.382,.01,.07,.035,.23,0xfff4da);}
   else part('cap',0,look.y+look.h*.86,0,look.w*1.05,kind==='fibroblast'?.16:.12,look.w,look.hat);
@@ -209,7 +210,7 @@ export function createActors(profile){
    const def=pathogenDef(e.recordId),shape=def?.shape,bacillus=shape==='rod'||shape==='shortRod',hit=Math.max(0,(e.hitUntil||0)-time)/.28,color=hit>.4?0xffd49b:e.color||def?.color||'#bc856f',cs=Math.cos(angle),sn=Math.sin(angle),attacking=e.action==='attack'||e.action==='breach';
    const phase=(time*1.8+e.id*.17)%1,lunge=attacking?Math.max(0,Math.sin((phase-.2)*Math.PI*2))*.35:0,shake=hit*Math.sin(time*55+e.id)*.09,scale=1.24;
    const part=(id,x,y,z,sx,sy,sz,c,rz=0)=>put(id,p.x+(x*cs+(z+lunge)*sn)*scale+shake,(y+Math.sin(phase*Math.PI)*lunge*.35)*scale,p.z+(-x*sn+(z+lunge)*cs)*scale-shake,sx*scale,sy*scale,sz*scale,c,0,angle,rz+(attacking?Math.sin(phase*Math.PI*2)*.12:0));
-   const pulse=e.action==='attack'?1+Math.sin(time*9+e.id)*.09:1,depth=bacillus?(shape==='shortRod'?.43:.57):.36;
+   const pulse=['attack','colonize'].includes(e.action)?1+Math.sin(time*9+e.id)*.12:1,depth=bacillus?(shape==='shortRod'?.43:.57):.36;
    part('enemy',0,.35,0,(bacillus?.27:.36)*pulse,bacillus?.25:.34,depth,color);
    if(['cluster','chain','pair'].includes(shape))for(let n=0;n<(shape==='cluster'?3:shape==='chain'?3:1);n++){
     const a=shape==='cluster'?n*Math.PI*2/3:0,offset=shape==='cluster'?.24:(n+1)*.18;

@@ -4,6 +4,7 @@ import {WALLS,FRONTS} from './city-frontier-data.mjs';
 import {CELL_JOBS,districtDef,DISTRICTS,DRUGS} from './city-data.mjs';
 import {activeActivity,activityProgress} from './city-activity.mjs';
 import {immuneAntigen} from './city-immunity.mjs';
+import {TRAFFIC_LABELS} from './city-immune-traffic.mjs';
 
 const clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
 const district=id=>districtDef(id)?.short||'배정 대기';
@@ -51,6 +52,8 @@ export function cellObservation(s,c){
   if(c.kind==='treg'){destination=district(c.target)+' · 면역 조절';next='IL-2 → CTLA-4·IL-10·TGF-β';}
   if(c.kind==='dendritic'&&c.recordId){destination=c.immuneState==='presenting'?'림프절 · MHC 제시':'림프절 · CCR7 항원 운반';cargo=antigen?.name||'항원 표본';next='MHC-II→CD4 · 교차제시 MHC-I→CD8';}
  }
+ if(c.trafficStage&&TRAFFIC_LABELS[c.trafficStage]){task=TRAFFIC_LABELS[c.trafficStage]+(c.transit?'':c.task?' · '+c.task:'');if(c.transit)destination=district(c.transit.site)+' · 혈관 출구';}
+ if(c.tissueResident){destination=district(c.residentSite)+' · 조직 상주';next=c.recallUntil>s.time?'재노출 인식 → 현장 반응':'같은 항원 재노출 감시';}
  if(c.recovering)destination='심장 · 회복 쉼터';
  const condition=c.integrity!=null?`활동 ${Math.round(c.energy)}% · 세포 상태 ${Math.round(c.integrity)}%`:'정상';
  return {name:job.name+(c.origin==='monocyte'?' · 단핵구 유래':c.memory?' · 기억':c.lineage?' · '+c.lineage:''),id:c.id,task,destination,cargo,specificity,next,waiting:c.waitReason||'없음',condition};

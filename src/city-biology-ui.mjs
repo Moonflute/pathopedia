@@ -3,17 +3,20 @@ import {PATHOGENS,pathogenDef,EXPOSURE_COUNTS,EXPOSURE_ROUTES,MEDICINE_ROUTES,RE
 import {WALLS} from './city-frontier-data.mjs';
 import {pathogenLimit} from './city-world.mjs';
 import {IMMUNE_CHALLENGES,IMMUNE_SIGNALS,immuneAntigen} from './city-immunity.mjs';
+import {HEALING_LABELS,bloodLoad} from './city-host-response.mjs';
 
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const button=(action,label,id='',extra='')=>`<button type="button" data-city-action="${action}" data-city-id="${esc(id)}" ${extra}>${label}</button>`;
 const select=(key,label,values,value)=>`<label class="cc-bio-field"><span>${label}</span><select data-city-input="${key}" aria-label="${label}">${values.map(([id,name])=>`<option value="${esc(id)}" ${String(value)===String(id)?'selected':''}>${esc(name)}</option>`).join('')}</select></label>`;
 const meter=(label,n,color)=>`<div class="cc-bio-meter"><span>${label}</span><progress max="100" value="${Math.min(100,n)}" style="accent-color:${color}"></progress><b>${Math.round(n)}</b></div>`;
-export const createBiologyControls=()=>({page:'medicine',record:'SAU-002',front:'skin',amount:'6',wall:'11',drug:'vancomycin',route:'iv',packs:'1',site:'lung',order:'auto',challenge:'virus',challengeAmount:'6',challengeSite:'lung',immuneRecord:'IMM-VIRUS'});
+export const createBiologyControls=()=>({page:'medicine',record:'SAU-002',front:'skin',amount:'6',wall:'11',drug:'vancomycin',route:'iv',packs:'1',site:'lung',order:'auto',challenge:'virus',challengeFront:'airway',challengeAmount:'6',challengeSite:'lung',immuneRecord:'IMM-VIRUS'});
 export function biologyPanel(s,data,c){
  const sandbox=s.scenario==='simulation',p=pathogenDef(c.record);
  let body='';
  if(c.page==='challenge'&&sandbox){
-  body=select('challenge','면역 자극',Object.entries(IMMUNE_CHALLENGES).map(([id,v])=>[id,v.name]),c.challenge)+`<div class="cc-bio-row">${select('challengeSite','자극 구역',DISTRICTS.map(d=>[d.id,d.short]),c.challengeSite)}${select('challengeAmount','자극 규모',[3,6,12,24,32].map(n=>[n,n]),c.challengeAmount)}</div>`+button('lab-immune','자극 추가','','class="cc-bio-primary"');
+  body=select('challenge','면역 자극',Object.entries(IMMUNE_CHALLENGES).map(([id,v])=>[id,v.name]),c.challenge)+`<div class="cc-bio-row">${c.challenge==='virus'?select('challengeFront','감염 입구',[['airway','호흡기'],['gut','소화기'],['skin','피부']],c.challengeFront):select('challengeSite','자극 구역',DISTRICTS.map(d=>[d.id,d.short]),c.challengeSite)}${select('challengeAmount','자극 규모',[3,6,12,24,32].map(n=>[n,n]),c.challengeAmount)}</div>`;
+  if(c.challenge==='virus'&&c.challengeFront==='skin')body+=`<div class="cc-bio-row">${select('wall','피부 구간',WALLS.map(w=>[w.id,w.name]),c.wall)}${button('lab-wound','상처 열기',c.wall)}</div>`;
+  body+=button('lab-immune',c.challenge==='virus'?'입구로 바이러스 유입':'자극 추가','','class="cc-bio-primary"');
  }else if(c.page==='immune'){
   const records=[...new Set([...Object.keys(s.immunity?.antigens||{}),...Object.values(IMMUNE_CHALLENGES).map(x=>x.id)])];
   body=`<div class="cc-bio-row">${select('immuneRecord','관찰 항원',records.map(id=>[id,immuneAntigen(id).name]),c.immuneRecord)}${select('site','신호 구역',DISTRICTS.map(d=>[d.id,d.short]),c.site)}</div>`;
@@ -21,6 +24,7 @@ export function biologyPanel(s,data,c){
   body=select('record','병원체',PATHOGENS.filter(p=>data?.records?.some(r=>r.id===p.recordId)).map(p=>[p.recordId,p.name]),c.record)+`<div class="cc-bio-row">${select('front','유입 경로',p.routes.map(id=>[id,EXPOSURE_ROUTES[id]]),c.front)}${select('amount','노출 개체',EXPOSURE_COUNTS.filter(n=>n<=pathogenLimit(s)).map(n=>[n,n+'개체']),c.amount)}</div>`;
   if(c.front==='skin')body+=`<div class="cc-bio-row cc-bio-skin">${select('wall','피부 구간',WALLS.map(w=>[w.id,w.name]),c.wall)}${button('lab-wound','상처 열기',c.wall)}</div>`;
   body+=button('lab-expose','선택한 경로로 유입','', 'class="cc-bio-primary"');
+  if(c.front==='gut')body+=`<div class="cc-bio-row">${button('microbiome','정상균총 유지','100')}${button('microbiome','정상균총 저하','25')}</div>`;
  }else if(c.page==='response'){
   body=`<div class="cc-bio-row">${select('site','관찰·대응 구역',DISTRICTS.map(d=>[d.id,d.short]),c.site)}${select('order','면역세포 명령',Object.entries(RESPONSE_ORDERS),c.order)}</div><div class="cc-bio-row">${button('lab-response','명령 적용')}${button('isolate',s.biology.sites[c.site].isolated?'격리 해제':'구역 격리',c.site)}${button('bio-focus','위치 보기',c.site)}</div>`;
  }else{
@@ -31,17 +35,19 @@ export function biologyPanel(s,data,c){
 export function biologyReadout(s,data,c){
  const b=s.biology;
  if((c.page==='immune'||c.page==='challenge')&&s.immunity){
-  const i=s.immunity,id=c.page==='challenge'?IMMUNE_CHALLENGES[c.challenge].id:c.immuneRecord,p=i.presentations[id],a=i.antibodies[id]||{},matching=s.cells.filter(x=>x.recordId===id),t=matching.filter(x=>['helperT','cd8'].includes(x.kind)&&x.immuneState==='effector'),mem=matching.filter(x=>x.memory),signals=Object.entries(i.sites[c.page==='challenge'?c.challengeSite:c.site].signals).sort((a,b)=>b[1]-a[1]).slice(0,4);
-  return `<div class="cc-bio-status">MHC-II ${p?.mhcII?'●':'○'} → CD4 ${t.filter(x=>x.kind==='helperT').length} → B ${matching.filter(x=>x.kind==='bcell').length} → 형질 ${matching.filter(x=>x.kind==='plasma').length}</div><small>MHC-I ${p?.mhcI?'●':'○'} → CD8 ${t.filter(x=>x.kind==='cd8').length} · 기억 ${mem.length}<br>감염 세포 ${i.infected.length} · 연충 ${i.parasites.length} · NK 제거 ${i.stats.nkKills} · CD8 제거 ${i.stats.cd8Kills}<br>${['IgM','IgG','IgA','IgE'].map(k=>k+' '+Math.round(a[k]||0)).join(' · ')}</small>${signals.map(([k,n])=>meter(IMMUNE_SIGNALS[k],n,'#86b6af')).join('')}`;
+  const i=s.immunity,id=c.page==='challenge'?IMMUNE_CHALLENGES[c.challenge].id:c.immuneRecord,p=i.presentations[id],a=i.antibodies[id]||{},matching=s.cells.filter(x=>x.recordId===id),t=matching.filter(x=>['helperT','cd8'].includes(x.kind)&&x.immuneState==='effector'),mem=matching.filter(x=>x.memory),signals=Object.entries(i.sites[c.page==='challenge'?(c.challenge==='virus'?(c.challengeFront==='airway'?'lung':c.challengeFront==='gut'?'gut':WALLS[Number(c.wall)].district):c.challengeSite):c.site].signals).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const host=s.physiology,viral=id==='IMM-VIRUS'?`<br>유리 바이러스 ${host?.virions.length||0} → 잠복 ${i.infected.filter(h=>h.phase==='eclipse').length} → 생산 ${i.infected.filter(h=>h.phase==='productive').length}<br>IFN 보호 ${host?.epithelium.filter(e=>e.antiviral>=50).length||0} · 중화 ${host?.stats.neutralized||0}`:'';
+  return `<div class="cc-bio-status">MHC-II ${p?.mhcII?'●':'○'} → CD4 ${t.filter(x=>x.kind==='helperT').length} → B ${matching.filter(x=>x.kind==='bcell').length} → 형질 ${matching.filter(x=>x.kind==='plasma').length}</div><small>MHC-I ${p?.mhcI?'●':'○'} → CD8 ${t.filter(x=>x.kind==='cd8').length} · 기억 ${mem.length} · 조직 상주 ${matching.filter(c=>c.tissueResident).length}<br>림프 전달 ${host?.stats.lymphDelivered||0} · 혈관 밖 이동 ${host?.stats.extravasations||0}${viral}<br>감염 세포 ${i.infected.length} · 연충 ${i.parasites.length} · NK 제거 ${i.stats.nkKills} · CD8 제거 ${i.stats.cd8Kills}<br>${['IgM','IgG','IgA','IgE'].map(k=>k+' '+Math.round(a[k]||0)).join(' · ')}<br>C3b 표지 ${host?.stats.opsonized||0} · MAC 제거 ${host?.stats.macKills||0}</small>${signals.map(([k,n])=>meter(IMMUNE_SIGNALS[k],n,'#86b6af')).join('')}`;
  }
  if(c.page==='exposure'){
   const p=pathogenDef(c.record),stage=s.frontier.walls[Number(c.wall)];
   const attacking=s.enemies.filter(e=>e.recordId===p.recordId&&e.action==='attack').length;
-  return `<div class="cc-bio-status">${c.front==='skin'?(stage.hp>0?'장벽 유지 · 침입 차단':'장벽 파손 · 침입 가능'):c.front==='airway'?'점액 포획 → 섬모 배출 → 폐':c.front==='gut'?'소화기 입구 → 장내 구역':'혈류 → 중심 순환'}</div><small>${esc(p.mechanism)}<br>대기 ${s.spawn.length} · 활동 ${s.enemies.length} · 공격 ${attacking}</small>`;
+  return `<div class="cc-bio-status">${c.front==='skin'?(stage.hp>0?'장벽 유지 · 침입 차단':'장벽 파손 · 침입 가능'):c.front==='airway'?'점액 포획 → 섬모 배출 → 폐':c.front==='gut'?'위산 → 점액·균총 → 정착':'혈류 → 전신 전파'}</div><small>${esc(p.mechanism)}<br>대기 ${s.spawn.length} · 정착 ${s.enemies.filter(e=>e.action==='colonize').length} · 활동 ${s.enemies.length} · 공격 ${attacking}</small>${c.front==='gut'?meter('정상균총',s.physiology?.microbiome??100,'#8fba84'):''}`;
  }
  if(c.page==='response'){
   const d=b.sites[c.site],active=s.cells.filter(x=>['neutrophil','macrophage'].includes(x.kind)&&!x.recovering).length,recovering=s.cells.filter(x=>x.recovering).length;
-  return `<div class="cc-bio-status">${districtDef(c.site).short} · ${STAGES[d.stage]}${d.isolated?' · 격리':''}</div>${meter('감염 부담',infectionLoad(d),'#be8d7b')}${meter('국소 염증',d.inflammation,'#d1aa72')}${d.toxin>0?meter('장내 독소',d.toxin,'#ae92b7'):''}<small>대응 ${active} · 회복 ${recovering} · 사멸 ${b.stats.losses}　${RESPONSE_ORDERS[b.order.mode]}</small>`;
+  const injury=s.physiology?.injury[c.site],blood=s.physiology?.blood;
+  return `<div class="cc-bio-status">${districtDef(c.site).short} · ${STAGES[d.stage]}${d.isolated?' · 격리':''}</div>${meter('감염 부담',infectionLoad(d),'#be8d7b')}${meter('국소 염증',d.inflammation,'#d1aa72')}${d.toxin>0?meter('장내 독소',d.toxin,'#ae92b7'):''}${blood?meter('전신 관류',blood.perfusion,'#88b9c5'):''}<small>${injury?HEALING_LABELS[injury.phase]+' · 잔해 청소 '+injury.cleaned+'<br>손상 누적 · 병원체 '+Math.round(injury.pathogen)+' / 독소 '+Math.round(injury.toxin)+' / 면역 '+Math.round(injury.immune)+' / 저관류 '+Math.round(injury.ischemia)+'<br>':''}혈류 감염 ${Math.round(bloodLoad(s))}${blood?.sepsis?' · 전신 염증·장기 기능 저하':''}<br>대응 ${active} · 회복 ${recovering} · 사멸 ${b.stats.losses}　${RESPONSE_ORDERS[b.order.mode]}</small>`;
  }
  const sh=s.shipments.filter(sh=>sh.kind==='drug'&&sh.drugId===c.drug&&sh.administration===c.route&&sh.phase!=='leaving');
  const depot=s.districts[c.route==='oral'?'gut':'heart'].ammo[c.drug];

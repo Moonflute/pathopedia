@@ -182,9 +182,10 @@ export function createCityGame(data,options={}){
     else if(action==='bio-focus')renderer?.focus?.(siteAt(run.layout,id));
     else if(['lab-expose','lab-medicine','lab-response','lab-immune'].includes(action)){
       const key=action==='lab-expose'?'expose':action==='lab-medicine'?'medicine':action==='lab-immune'?'immune-challenge':'response';
-      const payload=key==='expose'?{recordId:biology.record,front:biology.front,amount:Number(biology.amount),wall:Number(biology.wall)}:key==='medicine'?{drugId:biology.drug,route:biology.route,packs:Number(biology.packs)}:key==='immune-challenge'?{type:biology.challenge,site:biology.challengeSite,amount:Number(biology.challengeAmount)}:biology.order+':'+biology.site;
+      const challengeSite=biology.challenge==='virus'?(biology.challengeFront==='airway'?'lung':biology.challengeFront==='gut'?'gut':WALLS[Number(biology.wall)].district):biology.challengeSite;
+      const payload=key==='expose'?{recordId:biology.record,front:biology.front,amount:Number(biology.amount),wall:Number(biology.wall)}:key==='medicine'?{drugId:biology.drug,route:biology.route,packs:Number(biology.packs)}:key==='immune-challenge'?{type:biology.challenge,site:challengeSite,front:biology.challengeFront,wall:Number(biology.wall),amount:Number(biology.challengeAmount)}:biology.order+':'+biology.site;
       const result=command(run,key,payload,data);if(result.text){toast=result.text;toastUntil=performance.now()+3500;}save();
-      if(result.ok&&key==='immune-challenge')renderer?.focus?.(siteAt(run.layout,biology.challengeSite));
+      if(result.ok&&key==='immune-challenge')renderer?.focus?.(siteAt(run.layout,challengeSite));
     }
     else if(action==='wave'&&run.scenario==='simulation'){panel='armory';biology.page='exposure';}
     else if(action==='front-page')frontPage=id;

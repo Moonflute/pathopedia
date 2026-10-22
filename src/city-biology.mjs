@@ -3,9 +3,10 @@ import {cityDistricts,cityDistrict} from './city-tile-layout.mjs';
 import {DRUGS} from './city-data.mjs';
 import {WALLS} from './city-frontier-data.mjs';
 import {approachWorkplace,releaseWorkplace} from './city-workplaces.mjs';
-import {pathogenDef,EXPOSURE_COUNTS,spreadDestination} from './city-pathogens.mjs';
+import {pathogenDef,EXPOSURE_COUNTS} from './city-pathogens.mjs';
 import {humoralSupport,immuneClearance,immuneEfferocytosis} from './city-immunity.mjs';
 import {infectionFoci} from './city-infection-focus.mjs';
+import {injure,microbiomeProtection,macSusceptibility,seedBlood,bloodLoad,recordEfferocytosis} from './city-host-response.mjs';
 export {PATHOGENS,pathogenDef,EXPOSURE_COUNTS} from './city-pathogens.mjs';
 
 // Relative teaching units and accelerated time, never clinical doses or PK estimates.
@@ -20,7 +21,7 @@ const drugs=()=>Object.fromEntries(DRUGS.map(d=>[d.id,0]));
 const fighter=c=>c.kind==='neutrophil'||c.kind==='macrophage';
 const nearest=(s,p)=>cityDistricts(s).reduce((a,b)=>distance(p,a)<distance(p,b)?a:b).id;
 export const infectionLoad=d=>Object.values(d?.strains||{}).reduce((n,v)=>n+v,0);
-export const localInfection=s=>s.biology?Object.values(s.biology.sites).reduce((n,d)=>n+infectionLoad(d),0):0;
+export const localInfection=s=>s.biology?Object.values(s.biology.sites).reduce((n,d)=>n+infectionLoad(d),0)+bloodLoad(s):0;
 
 export function ensureBiology(s){
  if(!s.specialists||s.biology)return;
@@ -42,6 +43,7 @@ export function exposeSite(s,id,recordId,amount){
 }
 export function seedInfection(s,e,site,dt){
  if(!s.biology||e.expelled||e.dead)return;
+ if(e.compartment==='blood'){seedBlood(s,e.recordId,e.focusSeeded?dt*.04:6);e.focusSeeded=true;return;}
  e.site=site;
  exposeSite(s,site,e.recordId,e.focusSeeded?dt*.13:6);e.focusSeeded=true;
 }
@@ -92,6 +94,7 @@ export function biologyCommand(s,action,id,data,api){
  }
  if(action==='isolate'&&s.biology.sites[id]){const d=s.biology.sites[id];d.isolated=!d.isolated;return {ok:true,text:d.isolated?'구역 격리 · 확산·가동량 감소':'구역 격리 해제'};}
  if(action==='auto-medicine'){s.biology.autoMedicine=!s.biology.autoMedicine;return {ok:true};}
+ if(action==='microbiome'&&s.scenario==='simulation'&&s.physiology&&[25,100].includes(Number(id))){s.physiology.microbiome=Number(id);return {ok:true,text:'정상균총 '+id+'%'};}
  if(action==='medicine')return medicineOrder(s,id?.drugId,id?.route,Number(id?.packs),api,s.scenario==='simulation');
  if(action==='lab-wound'&&s.scenario==='simulation'&&WALLS[Number(id)]){
   const w=s.frontier.walls[Number(id)];if(w.repair)return {ok:false,text:'보수 진행 중'};w.hp=0;w.warningUntil=s.time+20;api.log(s,WALLS[Number(id)].name+' · 실험 상처');return {ok:true,text:'피부 상처 개방'};
@@ -100,7 +103,7 @@ export function biologyCommand(s,action,id,data,api){
   const p=pathogenDef(id?.recordId),amount=Number(id?.amount),wall=Number(id?.wall??11);
   if(!p||!data?.records?.some(r=>r.id===p.recordId)||!p.routes.includes(id?.front)||!EXPOSURE_COUNTS.includes(amount)||id.front==='skin'&&!WALLS[wall])return {ok:false,text:'지원하지 않는 실험 조건'};
   if(s.enemies.filter(e=>!e.dead).length+s.spawn.length+amount>pathogenLimit(s))return {ok:false,text:'병원체 표시 한도 · 현재 유입 정리 후 추가'};
-  for(let i=0;i<amount;i++)s.spawn.push({recordId:p.recordId,hp:p.hp,maxHp:p.hp,color:p.color,tag:p.tag,front:id.front,...(amount>=64?{releaseBatch:amount/32}:{}),...(id.front==='skin'?{wall}:{}),...(id.front==='blood'?{site:'heart',entered:true}:{})});
+  for(let i=0;i<amount;i++)s.spawn.push({recordId:p.recordId,hp:p.hp,maxHp:p.hp,color:p.color,tag:p.tag,front:id.front,...(amount>=64?{releaseBatch:amount/32}:{}),...(id.front==='skin'?{wall}:{}),...(id.front==='blood'?{site:'heart',entered:true,compartment:'blood'}:{})});
   s.biology.stats.introduced+=amount;s.spawnClock=0;
   api.log(s,p.name+' · '+EXPOSURE_ROUTES[id.front]+' 유입 '+amount);return {ok:true,text:EXPOSURE_ROUTES[id.front]+' 노출 시작'};
  }
@@ -124,7 +127,7 @@ function advanceBiology(s,dt,data,api){
  const b=s.biology;
  tickMedicine(s,dt,api);
  const groups=Object.fromEntries(cityDistricts(s).map(d=>[d.id,[]]));
- for(const c of s.cells)if(fighter(c)&&!c.recovering)groups[nearest(s,c)].push(c);
+ for(const c of s.cells)if(fighter(c)&&!c.recovering&&!c.transit)groups[nearest(s,c)].push(c);
  const transfers=[];
  for(const def of cityDistricts(s)){
   const id=def.id,d=b.sites[id],before=infectionLoad(d),organ=s.districts[id];
@@ -132,14 +135,15 @@ function advanceBiology(s,dt,data,api){
    const profile=pathogenDef(recordId),mark=antibodySupport(s,recordId,id);
    const local=groups[id].reduce((n,c)=>n+(c.energy??100)/100*(c.integrity??100)/100,0);
    const capsule=1-(profile?.capsule||0)*(1-mark);
-   const immune=(.08+local*.26*(1+mark))*capsule*immuneClearance(s,id)*Math.min(1,organ.oxygen/45)*(organ.food>0?1:.4);
-   const growth=load*(profile?.growth||.042)*(profile?.anaerobic&&organ.oxygen<40?1.6:1)*(1-load/100),antibiotic=medicineEffect(s,id,recordId,data)*load*.09;
+   const complement=s.immunity?.sites[id].signals.complement||0,opsonin=profile?.lumen?0:complement*.006;
+   const immune=(profile?.lumen?.08+mark*.6:(.08+local*.26*(1+mark+opsonin))*capsule*immuneClearance(s,id))*Math.min(1,organ.oxygen/45)*(organ.food>0?1:.4);
+   const colonization=id==='gut'?(profile?.lumen?1-microbiomeProtection(s)*.92:1-microbiomeProtection(s)*.25):1;
+   const growth=load*(profile?.growth||.042)*(profile?.anaerobic&&organ.oxygen<40?1.6:1)*(1-load/100)*colonization,antibiotic=medicineEffect(s,id,recordId,data)*load*.09+(profile?.lumen?0:complement*.0008*macSusceptibility(recordId));
    const next=clamp(load+dt*(growth-immune-antibiotic),100);
    if(next<.12){delete d.strains[recordId];b.stats.resolved++;}else d.strains[recordId]=next;
    if(profile?.toxin)d.toxin=clamp(d.toxin+dt*(next*profile.toxinRate));
    if(profile?.spread&&next>profile.spread&&!d.isolated&&d.spreadClock>=18){
-    const target=spreadDestination(s,profile,id);
-    if(target)transfers.push({from:id,to:target,recordId,amount:2.5});
+    if(id!=='heart')transfers.push({from:id,to:'heart',recordId,amount:2.5});
    }
   }
   d.spreadClock+=dt;if(d.spreadClock>=18)d.spreadClock=transfers.some(x=>x.from===id)?0:18;
@@ -150,11 +154,10 @@ function advanceBiology(s,dt,data,api){
   const old=d.stage;
   d.stage=total===0?(d.inflammation>5||d.toxin>2||debris||d.quiet<15&&old!=='clear'?'recovering':'clear'):before-total>.025?'suppressed':total>=48?'spreading':total>=12?'established':'exposed';
   if(d.stage!==old)api.log(s,def.short+' · '+STAGES[d.stage]);
-  const stress=(Math.min(100,total)*.0015+d.inflammation*.002+d.toxin*.005);
-  organ.hp=clamp(organ.hp-dt*stress);organ.oxygen=clamp(organ.oxygen-dt*(Math.min(100,total)*.003));
+  injure(s,id,'pathogen',dt*Math.min(100,total)*.0015);injure(s,id,'immune',dt*d.inflammation*.002);injure(s,id,'toxin',dt*d.toxin*.005);organ.oxygen=clamp(organ.oxygen-dt*(Math.min(100,total)*.003));
  }
  b.transfers=b.transfers.filter(t=>s.time-t.started<6);
- for(const t of transfers){exposeSite(s,t.to,t.recordId,t.amount);b.transfers.push({...t,started:s.time});api.log(s,cityDistrict(s,t.from).short+' → '+cityDistrict(s,t.to).short+' · 혈행 확산');}b.transfers=b.transfers.slice(-12);
+ for(const t of transfers){seedBlood(s,t.recordId,t.amount,t.from);b.transfers.push({...t,started:s.time});api.log(s,cityDistrict(s,t.from).short+' → 혈류 · 균혈증');}b.transfers=b.transfers.slice(-12);
  s.inflammation=clamp(Math.max(s.inflammation,Object.values(b.sites).reduce((n,d)=>n+d.inflammation,0)/6));
  for(const e of s.enemies){
   if(e.dead||!e.entered)continue;const site=infectionSite(e);
@@ -165,6 +168,7 @@ function advanceBiology(s,dt,data,api){
 }
 export function tickBiology(s,dt,data,api){
  if(!s.biology)return;
+ for(const [id,load] of Object.entries(s.physiology?.blood.strains||{}))s.physiology.blood.strains[id]=Math.max(0,load-dt*medicineEffect(s,'heart',id,data)*load*.09);
  s.biology.clock+=dt;
  if(s.biology.clock>=.5){const elapsed=s.biology.clock;s.biology.clock=0;advanceBiology(s,elapsed,data,api);}
 }
@@ -182,11 +186,12 @@ export function combatDestination(s,c){
  let cached=threatCache.get(s);
  if(!cached||cached.time!==s.time||cached.enemies!==s.enemies){
   const counts={};for(const e of s.enemies)if(!e.dead){const id=infectionSite(e);counts[id]=(counts[id]||0)+1;}
-  const threats=cityDistricts(s).map(d=>({d,score:infectionLoad(s.biology.sites[d.id])+(counts[d.id]||0)*7+(s.immunity?.sites[d.id].signals.cxcl8||0)*.6+(s.immunity?.sites[d.id].signals.ccl2||0)*.3})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+   const threats=cityDistricts(s).map(d=>({d,score:infectionLoad(s.biology.sites[d.id])+(counts[d.id]||0)*7+(s.immunity?.sites[d.id].signals.cxcl8||0)*.6+(s.immunity?.sites[d.id].signals.ccl2||0)*.3+(s.immunity?.sites[d.id].signals.c5a||0)*.8})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
   cached={time:s.time,enemies:s.enemies,threats};threatCache.set(s,cached);
  }
  const {threats}=cached;
- return threats.length?threats[c.id%Math.min(2,threats.length)].d:cityDistrict(s,s.rally);
+ const chosen=threats[c.id%Math.min(2,threats.length)]?.d;
+ return chosen?{...chosen,focusKey:'site:'+chosen.id}:cityDistrict(s,s.rally);
 }
 const threatCache=new WeakMap();
 export function updateCombatCondition(s,c,dt,api){
@@ -214,6 +219,7 @@ export function combatEffort(c){if(c.energy!=null)c.energy=clamp(c.energy-(c.kin
 export function cleanLocalDebris(s,debris){
  if(!s.biology)return;const d=s.biology.sites[nearest(s,debris)];d.inflammation=clamp(d.inflammation-(debris.cellKind?3:1.3));
  immuneEfferocytosis(s,debris);
+ recordEfferocytosis(s,debris);
 }
 export function validateBiology(s){
  const b=s.biology;if(!b)return true;

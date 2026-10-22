@@ -28,7 +28,7 @@ test('skin exposure must cross a broken segment before it seeds an infection',()
 test('local infection persists without visible enemies, spreads via blood, and isolation blocks that route',()=>{
  const a=city(),b=city();for(const s of [a,b]){s.cells=[];exposeSite(s,'lung','SAU-002',70);}
  command(b,'isolate','lung');advance(a,22);advance(b,22);
- assert.ok(infectionLoad(a.biology.sites.heart)>0);assert.equal(infectionLoad(b.biology.sites.heart),0);
+ assert.ok(a.physiology.blood.strains['SAU-002']>0);assert.equal(Object.keys(b.physiology.blood.strains).length,0);assert.equal(infectionLoad(a.biology.sites.heart),0);
  assert.ok(a.biology.sites.lung.inflammation>0);assert.ok(a.districts.lung.hp<100);assert.ok(a.biology.transfers.length<=12);
 });
 test('medicine needs physical delivery; oral vancomycin stays local and IV stock distributes',()=>{

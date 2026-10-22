@@ -1,5 +1,8 @@
 import {CITY_ENTRIES,CITY_CAPS,shipmentLimit,pathogenLimit,travelScale} from './city-world.mjs';
 import {cityDistricts,cityDistrict,localPoint,siteAt,tissueAt,tissuePresent,depotAt,compileLayout,walkablePoint} from './city-tile-layout.mjs';
+import {surfaceColonization,injure,microbiomeProtection} from './city-host-response.mjs';
+import {hostPaths} from './city-immune-traffic.mjs';
+import {vascularWalkingRoute} from './city-vascular-layout.mjs';
 import {DISTRICTS,DRUGS,WAVES,districtDef} from './city-data.mjs';
 import {groundPoint,groundCoordinate,SITES} from './city-three-layout.mjs';
 import {WALLS,WALL_COVERAGE,FRONTS,WORKSHOP,AIRWAY_PATH,TISSUES,INVESTMENTS,supportCount,districtName,wallState} from './city-frontier-data.mjs';
@@ -108,7 +111,7 @@ export function spawnAtFront(s,e){
  if(!s.frontier)return e;
  e.front||='airway';if(e.front==='skin')e.wall??=11;
  const p=e.front==='blood'?point(s,'heart'):e.front==='skin'?WALLS[e.wall??11].outside:e.front==='gut'?groundCoordinate(CITY_ENTRIES.gut.start):AIRWAY_PATH[0];
- if(e.front==='blood'){e.entered=true;e.site='heart';}
+ if(e.front==='blood'){e.entered=true;e.site='heart';e.compartment='blood';}
  if(s.enemies.length+s.spawn.length>=64){
   const world=groundPoint(p),a=e.id*2.399963229728653,lane=(e.id%7-3)*.27;
   const offset=e.front==='blood'?{x:Math.cos(a)*(1.5+e.id%5*.3),z:Math.sin(a)*(1.5+e.id%5*.3)}:e.front==='airway'?{x:lane,z:0}:e.front==='gut'?{x:0,z:lane}:{x:-WALLS[e.wall].nz*lane,z:WALLS[e.wall].nx*lane};
@@ -120,11 +123,11 @@ function entryWalk(s,e,front,speed,dt){if(!s.layout)return walk(e,front==='gut'?
 export function tickFrontierEnemy(s,e,dt,api){
  const f=s.frontier;if(!f||!e.front)return false;
  if(e.front==='skin'&&!e.entered){
-  e.action='breach';
+  e.action='blocked';e.entryStage='exposure';
   const def=WALLS[e.wall],w=f.walls[e.wall];
-  if(w.hp>0){if(walk(e,def.outside,24,dt)){w.hp=clamp(w.hp-dt*2.6,wallMaximum(s,e.wall));if(w.hp===0)api.log(s,def.name+' 파손 · 침입 가능');}return true;}
-  walk(e,def.inside,28,dt);const p=groundPoint(e);
-  if((p.x-def.x)*def.nx+(p.z-def.z)*def.nz<-.1)e.entered=true;
+  if(w.hp>0&&!e.colonization){walk(e,def.outside,24,dt);return true;}
+  e.action='breach';walk(e,def.inside,28,dt);const p=groundPoint(e);
+  if((p.x-def.x)*def.nx+(p.z-def.z)*def.nz<-.1)surfaceColonization(s,e,dt);
   return true;
  }
  if(e.front==='airway'&&!e.entered){
@@ -135,13 +138,22 @@ export function tickFrontierEnemy(s,e,dt,api){
    const cap=Math.max(1,Math.floor((3+s.districts.lung.level)*s.barrier/100*(s.weather.id==='dry'?.5:1)));
    if(f.airway.mucus<cap){f.airway.mucus++;e.caughtUntil=s.time+(f.airway.boostUntil>s.time?.7:2.4);return true;}
   }
-  if(entryWalk(s,e,'airway',22,dt))e.entered=true;
+  if(entryWalk(s,e,'airway',22,dt))surfaceColonization(s,e,dt);
   s.barrier=clamp(s.barrier-dt*.15);return true;
  }
  if(e.front==='gut'&&!e.entered){
   e.action='approach';
   if(f.gut.quarantine){api.damage(s,e,dt*4,e,'#d7bd79');if(e.dead)return true;}
-  if(entryWalk(s,e,'gut',f.gut.quarantine?12:24,dt))e.entered=true;return true;
+  if(!e.acidScreened){e.acidScreened=true;e.entryStage='gastric';api.damage(s,e,e.maxHp*(e.recordId==='CDF-121'||e.recordId==='GNX-221'?.03:.12),e,'#e5c67b');}
+  if(entryWalk(s,e,'gut',f.gut.quarantine?12:24,dt)){
+   if(e.recordId==='CDF-121')api.damage(s,e,dt*microbiomeProtection(s)*.6,e,'#9dc384');
+   if(!e.dead)surfaceColonization(s,e,dt);
+  }return true;
+ }
+ if(e.compartment==='blood'){
+  api.seed?.(s,e,'heart',dt);e.action='circulate';
+  if(!e.path?.length||e.step>=e.path.length){const network=hostPaths(s)?.vascular,v=network?.vessels.find(v=>v.id==='systemic-venous-ring');if(v)api.route(e,[...vascularWalkingRoute(s.layout,e,groundCoordinate(v.points[0]),network),...v.points.slice(1).map(groundCoordinate)]);else api.route(e,[point(s,'heart')]);e.travelMode='blood';}
+  api.move?.(e,50*travelScale(s),dt);return true;
  }
  const target=pathogenTarget(s,e),profile=pathogenDef(e.recordId);
  if(e.attackTarget?.kind!==target.kind||e.attackTarget?.id!==target.id||e.attackX!==target.point.x||e.attackY!==target.point.y){
@@ -155,9 +167,9 @@ export function tickFrontierEnemy(s,e,dt,api){
  e.action='attack';api.seed?.(s,e,target.site,dt);
  const rate=profile?.damage??.65,organ=s.districts[target.site];
  if(target.kind==='tissue'){
-  f.tissues[target.id].hp=clamp(f.tissues[target.id].hp-dt*rate*(profile?.anaerobic&&organ.oxygen<40?1.6:1));
-  if(profile?.localSpread)for(const t of TISSUES)if(t.id!==target.id&&tissuePresent(s,t)&&distance(tissueAt(s,t).point,target.point)<300)f.tissues[t.id].hp=clamp(f.tissues[t.id].hp-dt*rate*.2);
- }else organ.hp=clamp(organ.hp-dt*rate);
+  injure(s,target.site,profile?.anaerobic?'toxin':'pathogen',dt*rate*(profile?.anaerobic&&organ.oxygen<40?1.6:1),target.point,target.id);
+  if(profile?.localSpread)for(const t of TISSUES)if(t.id!==target.id&&tissuePresent(s,t)&&distance(tissueAt(s,t).point,target.point)<300)injure(s,t.district,'pathogen',dt*rate*.2,tissueAt(s,t).point,t.id);
+ }else injure(s,target.site,'pathogen',dt*rate,target.point);
  if(target.site==='lung'&&profile?.oxygen){organ.oxygen=clamp(organ.oxygen-dt*profile.oxygen);s.barrier=clamp(s.barrier-dt*profile.oxygen*.3);}
  s.inflammation=clamp(s.inflammation+dt*.12*(profile?.inflammation||1));return true;
 }

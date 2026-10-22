@@ -37,19 +37,18 @@ export function pathogenTarget(s,e){
  return {kind:'district',id:focus,site:focus,point:{x:d.x,y:d.y}};
 }
 
-// Heart is the circulation compartment. Secondary spread uses preferred sites,
-// then vulnerable organs; it is not a claim that all bacteremias infect myocardium.
+// Blood is a separate compartment; entering circulation does not infect heart tissue.
 export function spreadDestination(s,profile,from){
  if(!profile?.spread)return null;
- if(from!=='heart')return s.biology.sites.heart.isolated?null:'heart';
+ if(from!=='blood')return s.biology.sites[from]?.isolated?null:'blood';
  const preferred=profile.secondary||Object.keys(s.districts);
- return preferred.filter(id=>id!==from&&!s.biology.sites[id].isolated)
+ return preferred.filter(id=>id!=='heart'&&id!=='lymph'&&!s.biology.sites[id].isolated)
   .sort((a,b)=>s.districts[a].hp-s.districts[b].hp||a.localeCompare(b))[0]||null;
 }
 
 export function validatePathogenTarget(e){
  const target=e.attackTarget;
  return (!target||(target.kind==='tissue'?Number.isInteger(target.id)&&!!TISSUES[target.id]:target.kind==='district'&&['lung','heart','gut','kidney','marrow','lymph'].includes(target.id)))
-  &&(e.action==null||['approach','breach','trapped','expelled','attack'].includes(e.action))
+  &&(e.action==null||['approach','breach','trapped','expelled','attack','blocked','colonize','circulate'].includes(e.action))
   &&['attackX','attackY','hitUntil','hitX','hitY'].every(k=>e[k]==null||Number.isFinite(e[k]));
 }

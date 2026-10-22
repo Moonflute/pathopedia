@@ -6,13 +6,14 @@ import {siteAt} from './city-tile-layout.mjs';
 
 export function cityAlarmPoints(s){
  const groups=new Map();
- for(const e of [...s.enemies.filter(e=>!e.dead),...s.spawn]){
+ for(const e of [...s.enemies.filter(e=>!e.dead),...s.spawn,...(s.physiology?.virions||[]),...(s.immunity?.infected||[]).map(h=>({...h,front:h.site==='gut'?'gut':'airway',entered:true}))]){
   const key=e.front==='skin'?'skin:'+e.wall:e.front||'airway',inside=!!e.entered,site=e.site||(key==='gut'?'gut':'lung');
   let g=groups.get(key);if(!g){g={key,count:0,inside:0,x:0,z:0,site,wall:e.wall,front:e.front||'airway'};groups.set(key,g);}
   g.count++;if(inside){const p=groundPoint(e);g.inside++;g.x+=p.x;g.z+=p.z;}
  }
  const out=[...groups.values()].map(g=>{const p=g.inside?{x:g.x/g.inside,z:g.z/g.inside}:g.front==='skin'?WALLS[g.wall]:CITY_ENTRIES[g.front]?.portal||siteAt(s.layout,g.site),name=g.front==='skin'?WALLS[g.wall].name:g.front==='gut'?'소화기':g.front==='blood'?'혈류':'호흡기';return {...g,point:p,text:name+' · '+(g.inside?'침입 ':'접근 ')+g.count,color:g.inside?0xf45f38:0xe6a947};});
  for(const [id,b] of Object.entries(s.biology?.sites||{})){const burden=Object.values(b.strains).reduce((a,b)=>a+b,0);if(burden<8||out.some(a=>a.site===id&&a.inside))continue;out.push({key:'site:'+id,count:Math.round(burden),point:siteAt(s.layout,id),text:siteAt(s.layout,id).label+' · 감염',color:0xe47742});}
+ const blood=s.physiology?.blood,burden=Object.values(blood?.strains||{}).reduce((a,b)=>a+b,0);if(blood?.sepsis||burden>8)out.push({key:'blood-systemic',inside:blood.sepsis?100:1,count:Math.round(burden),point:siteAt(s.layout,'heart'),text:blood.sepsis?'전신 염증 · 관류 '+Math.round(blood.perfusion)+'%':'혈류 감염 · 전파 위험',color:0xef5658});
  return out.sort((a,b)=>(b.inside||0)-(a.inside||0)||b.count-a.count).slice(0,8);
 }
 export function createCityAlarms(map,{focus,signal}){

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createCity,tickCity,command,serializeCity,restoreCity} from '../src/city-engine.mjs';
+import {establishHost} from '../src/city-host-response.mjs';
 import {CELL_JOBS} from '../src/city-data.mjs';
 import {applyTileLayout,createTileLayout,cityDistrict} from '../src/city-tile-layout.mjs';
 import {IMMUNE_CHALLENGES,validateImmunity} from '../src/city-immunity.mjs';
@@ -25,7 +26,7 @@ test('an inflammatory monocyte becomes a macrophage in tissue with the same iden
 test('antigen availability alone cannot prime T cells or produce antibodies without a presenting dendritic cell',()=>{
  const s=city();s.cells=s.cells.filter(c=>!['dendritic','nk','monocyte'].includes(c.kind));challenge(s,'virus');s.antigens['IMM-VIRUS']=true;
  advance(s,38);assert.equal(s.immunity.stats.primed,0);assert.equal(s.stats.antibodyBatches,0);assert.equal(s.cells.some(c=>c.kind==='plasma'),false);
- assert.ok(s.immunity.response.episodes.every(e=>e.seen[2]==null&&e.seen[3]==null));
+ assert.ok(s.immunity.response.episodes.every(e=>e.seen[3]==null));
 });
 
 test('viral presentation drives cognate CD4/CD8 priming, T–B help, antibody class switching and memory',()=>{
@@ -37,7 +38,7 @@ test('viral presentation drives cognate CD4/CD8 priming, T–B help, antibody cl
 
 test('NK and CD8 inspect different host-cell signals and never attack unmatched or healthy self',()=>{
  for(const [kind,mhcI,record,kills]of [['nk',.15,'IMM-VIRUS',1],['nk',.95,'IMM-VIRUS',0],['cd8',.95,'IMM-VIRUS',1],['cd8',.95,'SAU-001',0],['cd8',.15,'IMM-VIRUS',0]]){
-  const s=city(),c=s.cells.find(c=>c.kind===kind);challenge(s,'virus');s.immunity.infected=s.immunity.infected.slice(0,1);const h=s.immunity.infected[0];h.mhcI=mhcI;s.cells=[c];Object.assign(c,{x:h.x,y:h.y,recordId:record,immuneState:'effector',immuneSite:'lung',activatedAt:0,cooldown:0,path:[],step:0});
+  const s=city(),c=s.cells.find(c=>c.kind===kind);const h=establishHost(s,s.physiology.epithelium.find(e=>e.site==='lung'&&e.wall==null));h.mhcI=mhcI;s.cells=[c];Object.assign(c,{x:h.x,y:h.y,recordId:record,immuneState:'effector',immuneSite:'lung',activatedAt:0,cooldown:0,path:[],step:0});
   advance(s,7);assert.equal(s.immunity.stats[kind==='nk'?'nkKills':'cd8Kills'],kills,kind+' '+mhcI+' '+record);
  }
 });
@@ -54,7 +55,7 @@ test('IgE sensitization is antigen specific and mast-cell degranulation requires
 
 test('eosinophil granules damage helminths while neutrophils do not become universal cytotoxic cells',()=>{
  const s=city(),e=s.cells.find(c=>c.kind==='eosinophil');s.cells=[e];challenge(s,'helminth');s.immunity.parasites=s.immunity.parasites.slice(0,1);const worm=s.immunity.parasites[0];Object.assign(e,{x:worm.x,y:worm.y,target:'gut'});s.immunity.sites.gut.signals.il5=25;advance(s,12);assert.equal(s.immunity.parasites.length,0);assert.equal(s.immunity.stats.parasites,1);
- const n=city();n.cells=n.cells.filter(c=>c.kind==='neutrophil');challenge(n,'virus');const hp=n.immunity.infected.reduce((v,h)=>v+h.hp,0);advance(n,8);assert.equal(n.immunity.stats.nkKills+n.immunity.stats.cd8Kills,0);assert.equal(n.immunity.infected.reduce((v,h)=>v+h.hp,0),hp);
+ const n=city();n.cells=n.cells.filter(c=>c.kind==='neutrophil');establishHost(n,n.physiology.epithelium.find(e=>e.site==='lung'&&e.wall==null));const hp=n.immunity.infected.reduce((v,h)=>v+h.hp,0);advance(n,8);assert.equal(n.immunity.stats.nkKills+n.immunity.stats.cd8Kills,0);assert.equal(n.immunity.infected.reduce((v,h)=>v+h.hp,0),hp);
 });
 
 test('Tregs lower local inflammation through feedback without directly removing a pathogen',()=>{

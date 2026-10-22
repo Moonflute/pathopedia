@@ -64,7 +64,7 @@ test('toxin-only gut damage, epithelial invasion, and low oxygen necrosis differ
  for(const oxygen of [85,15]){const s=city(),t=TISSUES[0];s.districts[t.district].oxygen=oxygen;tickFrontierEnemy(s,{recordId:'CPE-122',front:'skin',wall:11,entered:true,attackTarget:{kind:'tissue',id:0},...t.point},1,api);damage.push(100-s.frontier.tissues[0].hp);}
  assert.ok(damage[1]>damage[0]);
  assert.equal(spreadDestination(toxin,pathogenDef('CDF-121'),'gut'),null);
- assert.equal(spreadDestination(toxin,pathogenDef('KPN-011'),'heart'),'lung');
+ assert.equal(spreadDestination(toxin,pathogenDef('KPN-011'),'blood'),'lung');
 });
 
 test('balanced policy automatically patches and reconstructs skin with a replacement crew',()=>{

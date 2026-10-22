@@ -7,14 +7,16 @@ import {beginActivity,activityProgress,activeActivity} from './city-activity.mjs
 import {approachWorkplace,releaseWorkplace} from './city-workplaces.mjs';
 import {cityRule,ruleReady} from './city-rules.mjs';
 import {infectionFocus} from './city-infection-focus.mjs';
+import {ensureHostResponse,tickHostResponse,viralExposure,killHost,injure,hostEvent,bloodLoad} from './city-host-response.mjs';
+import {moveToInflammation,moveDendriticToNode,leaveNode} from './city-immune-traffic.mjs';
 
 // Accelerated teaching compartments, not quantitative human physiology.
 export const IMMUNE_CHALLENGES=Object.freeze({
- virus:{id:'IMM-VIRUS',name:'바이러스 감염 세포',type:'virus',site:'lung',color:0x9c85bd},
+ virus:{id:'IMM-VIRUS',name:'바이러스 · 상피 감염',type:'virus',site:'lung',color:0x9c85bd},
  helminth:{id:'IMM-HELMINTH',name:'연충 · 2형 면역',type:'helminth',site:'gut',color:0xd2ad7f},
  allergen:{id:'IMM-ALLERGEN',name:'알레르겐 감작·재노출',type:'allergen',site:'lung',color:0xd5ad79}
 });
-export const IMMUNE_SIGNALS=Object.freeze({tnf:'TNF·IL-1',cxcl8:'CXCL8',ccl2:'CCL2',ccl11:'CCL11·eotaxin',mcsf:'M-CSF',ifn1:'I형 IFN',il12:'IL-12',il4:'IL-4',il5:'IL-5',il13:'IL-13',il17:'IL-17',ifng:'IFN-γ',il2:'IL-2',il21:'IL-21',il10:'IL-10',tgfb:'TGF-β',histamine:'히스타민',complement:'C3b·C5a'});
+export const IMMUNE_SIGNALS=Object.freeze({tnf:'TNF·IL-1',cxcl8:'CXCL8',ccl2:'CCL2',ccl11:'CCL11·eotaxin',mcsf:'M-CSF',ifn1:'I형 IFN',il12:'IL-12',il4:'IL-4',il5:'IL-5',il13:'IL-13',il17:'IL-17',ifng:'IFN-γ',il2:'IL-2',il21:'IL-21',il10:'IL-10',tgfb:'TGF-β',histamine:'히스타민',complement:'보체 활성',c5a:'C5a · 유인'});
 export const IMMUNE_ROSTER=Object.freeze({eosinophil:5,basophil:3,monocyte:8,mast:3,nk:6,bcell:10,cd8:8,treg:4});
 const dedicated=new Set(['eosinophil','basophil','monocyte','mast','nk','bcell','helperT','cd8','treg','dendritic','plasma']);
 const clamp=(n,max=100)=>Math.max(0,Math.min(max,n)),distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -24,7 +26,7 @@ const emptySignals=()=>Object.fromEntries(Object.keys(IMMUNE_SIGNALS).map(id=>[i
 export const immuneAntigen=id=>Object.values(IMMUNE_CHALLENGES).find(c=>c.id===id)|| (pathogenDef(id)?{id,name:pathogenDef(id).name,type:'bacteria'}:null);
 const type2=id=>['helminth','allergen'].includes(immuneAntigen(id)?.type);
 export function ensureImmunity(s){
- if(!s.specialists||s.immunity)return s.immunity;
+ if(!s.specialists)return;ensureHostResponse(s);if(s.immunity)return s.immunity;
  s.immunity={version:1,roster:0,sites:Object.fromEntries(cityDistricts(s).map(d=>[d.id,{signals:emptySignals(),danger:0,alarmin:0,regulation:0}])),antigens:{},presentations:{},antibodies:{},infected:[],parasites:[],exposures:[],nets:[],viralClock:0,events:[],stats:{presented:0,primed:0,clones:0,differentiated:0,nkKills:0,cd8Kills:0,parasites:0,degranulations:0,regulation:0,nets:0}};
  for(const [id,value]of Object.entries(s.antibodies))if(immuneAntigen(id))s.immunity.antibodies[id]={IgM:0,IgG:value,IgA:0,IgE:0};
  for(const c of s.cells){
@@ -52,7 +54,7 @@ export function humoralSupport(s,id,site){
 }
 export function immuneClearance(s,site){
  const d=s.immunity?.sites[site];if(!d)return 1;
- return (1+d.signals.complement*.009+d.signals.ifng*.006+d.signals.il13*.002)*(1-d.regulation*.003);
+ return (1+d.signals.ifng*.006+d.signals.il13*.002)*(1-d.regulation*.003);
 }
 export function immuneEfferocytosis(s,debris){if(!s.immunity||!debris.cellKind)return;const site=nearest(s,debris);emit(s,site,'il10',2);emit(s,site,'tgfb',1.5);immuneEvent(s,'efferocytosis',null,debris.antigenId,site);}
 export function immuneCommand(s,action,payload,api){
@@ -60,12 +62,15 @@ export function immuneCommand(s,action,payload,api){
  if(!s.immunity||s.scenario!=='simulation')return {ok:false,text:'시뮬레이션에서 사용'};
  const challenge=IMMUNE_CHALLENGES[payload?.type],site=payload?.site,amount=Number(payload?.amount);
  if(!challenge||!cityDistrict(s,site)||![3,6,12,24,32].includes(amount))return {ok:false,text:'면역 자극 조건 확인'};
- const i=s.immunity,list=payload.type==='virus'?i.infected:payload.type==='helminth'?i.parasites:i.exposures,limit=payload.type==='virus'?96:32;
+ if(payload.type==='virus'){
+  const exposed=viralExposure(s,{...payload,amount});if(!exposed)return {ok:false,text:'바이러스 유입 한도·경로 확인'};
+  immuneEvent(s,'exposure',null,challenge.id,exposed.site);api.log(s,'바이러스 · '+({airway:'호흡기',gut:'소화기',skin:'피부'}[exposed.front])+' 노출');return {ok:true,text:'바이러스 유입 시작'};
+ }
+ const i=s.immunity,list=payload.type==='helminth'?i.parasites:i.exposures,limit=32;
  const count=payload.type==='allergen'?1:amount;if(list.length+count>limit)return {ok:false,text:'진행 중인 면역 자극 한도'};
  for(let n=0;n<count;n++){
   const p=hostPoint(s,site,n+list.length);
-  if(payload.type==='virus')list.push({id:++s.serial,recordId:challenge.id,site,...p,hp:30,burden:8,mhcI:n%2?.95:.15,stress:.85});
-  else if(payload.type==='helminth')list.push({id:++s.serial,recordId:challenge.id,site,...p,hp:50,maxHp:50});
+  if(payload.type==='helminth')list.push({id:++s.serial,recordId:challenge.id,site,...p,hp:50,maxHp:50});
   else list.push({id:++s.serial,recordId:challenge.id,site,...p,amount,remaining:8});
  }
  immuneEvent(s,'exposure',null,challenge.id,site);api.log(s,challenge.name+' · '+cityDistrict(s,site).short);return {ok:true,text:challenge.name+' · 자극 추가'};
@@ -79,6 +84,8 @@ function clone(s,parent,kind,api,extra={}){
  s.resources.food-=2;const c=api.cell(s,kind,parent.x,parent.y);Object.assign(c,{cloneOf:parent.id,recordId:parent.recordId,immuneState:parent.immuneState,lineage:parent.lineage,cd40l:parent.cd40l,isotype:parent.isotype,activatedAt:s.time,...extra});s.immunity.stats.clones++;return c;
 }
 function go(s,c,p,key,dt,api,speed=65){
+ if(!key.startsWith('lymph:'))return moveToInflammation(s,c,p,key,dt,api,speed*travelScale(s));
+ c.travelMode=null;c.trafficStage=null;
  if(c.immuneMove!==key||c.step>=c.path.length&&distance(c,p)>18){c.immuneMove=key;releaseWorkplace(c);api.route(c,[p]);}
  return api.move(c,speed*travelScale(s),dt);
 }
@@ -87,6 +94,7 @@ function node(s,c,dt,api){
  const p=localPoint(s,'lymph',lymphocyteBay(c.immuneSeat)),q=s.layout?groundCoordinate(walkablePoint(s.layout,groundPoint(p))):p;return go(s,c,q,'lymph:'+c.immuneSeat,dt,api);
 }
 function patrol(s,c,dt,api,site='heart'){
+ c.travelMode=null;c.transit=null;c.trafficStage=null;
  if(c.step>=c.path.length||c.immuneMove!==site+':patrol'){
   const p=at(s,site),a=c.id*2.4+s.time*.15,q={x:p.x+Math.cos(a)*65,y:p.y+Math.sin(a)*45};c.immuneMove=site+':patrol';api.route(c,[s.layout?groundCoordinate(roadPoint(s.layout,groundPoint(q))):q]);
  }api.move(c,42*travelScale(s),dt);
@@ -97,17 +105,19 @@ function matchingHelp(s,id,site='lymph',lineage=null){const p=groundPoint(at(s,s
 function presentation(s,id,mhc){const p=s.immunity.presentations[id];return p&&p.expires>s.time&&p[mhc]&&p.costimulation>.2&&s.cells.some(c=>c.id===p.presenter&&c.kind==='dendritic'&&c.immuneState==='presenting')?p:null;}
 
 export function tickImmunity(s,dt,api){
- const i=s.immunity;if(!i)return;index(s);
+ const i=s.immunity;if(!i)return;ensureHostResponse(s);index(s);
  for(const a of Object.values(i.antigens))a.sites={};
  for(const [site,d]of Object.entries(s.biology.sites))for(const [id,load]of Object.entries(d.strains))register(s,id,site,load);
  for(const e of s.enemies)if(e.entered&&!e.dead)register(s,e.recordId,e.site||'heart',2);
  for(const h of i.infected)register(s,h.recordId,h.site,h.burden);
+ for(const v of s.physiology.virions)if(v.entered)register(s,v.recordId,v.site,1);
+ for(const [id,load]of Object.entries(s.physiology.blood.strains))register(s,id,'heart',load);
  for(const w of i.parasites)register(s,w.recordId,w.site,8*w.hp/w.maxHp);
  for(const e of i.exposures){register(s,e.recordId,e.site,e.amount);e.remaining-=dt;}
  i.exposures=i.exposures.filter(e=>e.remaining>0);
- for(const a of Object.values(i.antigens)){a.lymph=clamp(a.lymph+dt*(Object.values(a.sites).reduce((n,x)=>n+x,0)*.08-a.lymph*.008));}
  for(const def of cityDistricts(s)){
   const site=def.id,d=i.sites[site],signals=d.signals,local=index(s).local[site],b=s.biology.sites[site];
+  signals.c5a??=0;
   for(const id of Object.keys(signals))signals[id]*=Math.exp(-dt*(id==='histamine'?.3:id==='complement'?.09:.12));
   const bacteria=Object.entries(i.antigens).filter(([id])=>immuneAntigen(id).type==='bacteria').reduce((n,[,a])=>n+(a.sites[site]||0),0),viral=i.infected.filter(h=>h.site===site).reduce((n,h)=>n+h.burden,0),two=Object.entries(i.antigens).filter(([id])=>type2(id)).reduce((n,[,a])=>n+(a.sites[site]||0),0);
   const damage=100-s.districts[site].hp;d.danger=clamp(bacteria+viral+damage*.3);d.alarmin=clamp(two);
@@ -117,18 +127,16 @@ export function tickImmunity(s,dt,api){
   for(const c of local)if(['macrophage','dendritic'].includes(c.kind)&&d.danger>1){emit(s,site,'tnf',dt*Math.min(2,d.danger*.04));emit(s,site,'cxcl8',dt*Math.min(3,d.danger*.07));emit(s,site,'ccl2',dt*Math.min(2,d.danger*.04));}
   emit(s,site,'complement',dt*bacteria*(.015+Object.entries(i.antibodies).filter(([id])=>i.antigens[id]?.sites[site]>0).reduce((n,[,a])=>n+(a.IgM*.025+a.IgG*.012),0)*.01));
   b.inflammation=clamp(b.inflammation+dt*(signals.tnf*.012+signals.histamine*.025-signals.il10*.018-signals.tgfb*.012));
-  if(b.inflammation>45)s.districts[site].hp=clamp(s.districts[site].hp-dt*(b.inflammation-45)*.002);
+  if(b.inflammation>45)injure(s,site,'immune',dt*(b.inflammation-45)*.002);
   for(const c of local)if(c.kind==='neutrophil'&&!c.recovering&&bacteria>30&&(c.netAt??-100)+12<s.time&&(c.energy??100)>35){
    c.netAt=s.time;c.energy=clamp((c.energy??100)-12);i.nets.push({id:++s.serial,site,x:c.x,y:c.y,until:s.time+5});i.nets=i.nets.slice(-12);i.stats.nets++;beginActivity(s,c,'net',.8,c,site);alert(s,c);b.inflammation=clamp(b.inflammation+.7);
   }
  }
- for(const n of i.nets){const b=s.biology.sites[n.site];for(const id of Object.keys(b.strains))b.strains[id]=Math.max(0,b.strains[id]-dt*.1);for(const e of s.enemies)if(e.entered&&!e.dead&&distance(e,n)<55)api.damage(s,e,dt*.7,n,'#e5dcb6');}
+ for(const n of i.nets){const b=s.biology.sites[n.site];for(const id of Object.keys(b.strains))if(!pathogenDef(id)?.lumen)b.strains[id]=Math.max(0,b.strains[id]-dt*.1);for(const e of s.enemies)if(e.entered&&e.compartment!=='lumen'&&!e.dead&&distance(e,n)<55)api.damage(s,e,dt*.7,n,'#e5dcb6');injure(s,n.site,'immune',dt*.025,n);}
  i.nets=i.nets.filter(n=>n.until>s.time);
- for(const h of i.infected){const sig=i.sites[h.site].signals;h.burden=clamp(h.burden+dt*h.burden*(.035-sig.ifn1*.001),20);s.districts[h.site].hp=clamp(s.districts[h.site].hp-dt*h.burden*.004);}
  for(const w of i.parasites){const sig=i.sites[w.site].signals;w.hp=Math.max(0,w.hp-dt*sig.il13*.012);s.districts[w.site].hp=clamp(s.districts[w.site].hp-dt*.025);}
  const expelled=i.parasites.filter(w=>w.hp<=0);i.stats.parasites+=expelled.length;i.parasites=i.parasites.filter(w=>w.hp>0);
- i.viralClock+=dt;
- if(i.viralClock>=10){i.viralClock=0;const parent=i.infected.find(h=>h.burden>11&&signal(s,h.site,'ifn1')<35&&antibodyLevel(s,h.recordId,'IgA')<20&&antibodyLevel(s,h.recordId,'IgG')<20);if(parent&&i.infected.length<96)i.infected.push({...parent,id:++s.serial,...hostPoint(s,parent.site,i.infected.length),hp:30,burden:5});}
+ tickHostResponse(s,dt,api);
  for(const [id,a]of Object.entries(i.antibodies)){for(const iso of ['IgM','IgG','IgA','IgE'])a[iso]*=Math.exp(-dt*(iso==='IgE'?.0015:.0008));s.antibodies[id]=clamp(a.IgG+a.IgM*.45+a.IgA*.4);}
  for(const [id,p]of Object.entries(i.presentations)){p.costimulation=p.baseCostimulation*clamp(1-i.sites.lymph.regulation*.009,1);if(p.expires<s.time||!s.cells.some(c=>c.id===p.presenter))delete i.presentations[id];}
 }
@@ -140,7 +148,7 @@ function dendritic(s,c,dt,api){
   c.recordId=null;c.immuneState='survey';c.immuneMove=null;c.cooldown=5;
  }
  if(c.recordId&&c.immuneState==='migrating'){
-  c.task='CCR7 · 림프절로 항원 운반';if(!node(s,c,dt,api))return;
+  if(!moveDendriticToNode(s,c,dt,api))return;c.travelMode=null;c.trafficStage=null;
   c.immuneState='presenting';c.presentUntil=s.time+35;beginActivity(s,c,'present',2,at(s,'lymph'),'lymph');
   const p={presenter:c.id,site:c.immuneSite,mhcII:true,mhcI:immuneAntigen(c.recordId).type==='virus',baseCostimulation:c.costimAtPickup,costimulation:c.costimAtPickup,expires:c.presentUntil};
   s.immunity.presentations[c.recordId]=p;s.antigens[c.recordId]=true;s.immunity.stats.presented++;immuneEvent(s,'presentation',c,c.recordId,c.immuneSite);alert(s,c);return;
@@ -172,14 +180,23 @@ function primeT(s,c,dt,api){
   c.lineage=peers.some(x=>x.lineage==='Tfh')?(type2(c.recordId)?'Th2':program==='virus'?'Th1':'Th17'):'Tfh';c.cd40l=c.lineage==='Tfh';
  }
  clone(s,c,c.kind,api,{immuneSite:c.immuneSite});immuneEvent(s,'priming',c,c.recordId,c.immuneSite);alert(s,c);
+ if(c.kind==='cd8'||c.lineage!=='Tfh')leaveNode(s,c);
 }
 function contract(s,c,dt,api){
  const a=s.immunity.antigens[c.recordId];
  if(s.time-(a?.lastSeen??0)<20||s.time-(c.activatedAt??s.time)<25)return false;
- c.immuneState='memory';c.memory=true;c.activity=null;c.immuneMove=null;c.task='기억 '+(c.kind==='cd8'?'CD8':'CD4')+' · 림프절 회귀';
+ if((c.kind==='cd8'||c.lineage!=='Tfh')&&(!c.extravascular||c.tissueSite!==c.immuneSite)){
+  c.task='감염 조직 · 기억세포 정착';go(s,c,infectionFocus(s,c.immuneSite,c.recordId),'memory:'+c.immuneSite,dt,api);return true;
+ }
+ c.immuneState='memory';c.memory=true;c.activity=null;c.immuneMove=null;
+ if(c.kind==='cd8'||c.lineage!=='Tfh'){
+  c.tissueResident=true;c.residentSite=c.immuneSite;c.extravascular=true;c.tissueSite=c.immuneSite;c.trafficStage='resident';c.path=[];c.step=0;c.task='조직상주 기억 · 항원 감시';hostEvent(s,'resident-memory',c.immuneSite,c,c.recordId);return true;
+ }
+ c.task='기억 CD4 · 림프절 회귀';
  if(c.cloneOf&&c.id%3===0){c.lost=true;immuneEvent(s,'contraction',c,c.recordId,c.immuneSite);}else node(s,c,dt,api);return true;
 }
 function helper(s,c,dt,api){
+ if(residentRecall(s,c,dt,api))return;
  if(c.immuneState!=='effector'){
   if(c.memory&&s.time-(s.immunity.antigens[c.recordId]?.lastSeen??0)>8){c.task='기억 CD4 감시';node(s,c,dt,api);return;}
   primeT(s,c,dt,api);return;
@@ -238,6 +255,7 @@ function monocyte(s,c,dt,api){
  c.kind='macrophage';c.origin='monocyte';c.differentiatedAt=s.time;c.life=CELL_JOBS.macrophage.life;c.age=0;c.immuneTimer=0;c.activity=null;c.immuneMove=null;c.immuneState='resident';s.immunity.stats.differentiated++;immuneEvent(s,'monocyte-macrophage',c,null,best.id);alert(s,c);
 }
 function cytotoxic(s,c,dt,api){
+ if(residentRecall(s,c,dt,api))return;
  const nk=c.kind==='nk';if(!nk&&c.immuneState!=='effector'){
   if(c.memory&&s.time-(s.immunity.antigens[c.recordId]?.lastSeen??0)>8){c.task='기억 CD8 감시';node(s,c,dt,api);return;}primeT(s,c,dt,api);return;
  }
@@ -246,11 +264,11 @@ function cytotoxic(s,c,dt,api){
  const target=targets.sort((a,b)=>distance(c,a)-distance(c,b))[0];
  if(!target){c.task=nk?'NK · 스트레스·MHC-I 감시':'CD8 · 일치 항원 탐색';patrol(s,c,dt,api,c.immuneSite||'lung');return;}
  c.task=nk?(target.mhcI<.5?'NK · missing-self 인식':'NK · CD16·IgG ADCC'):'CD8 · TCR–peptide/MHC-I 인식';c.target=target.site;c.immuneSite=target.site;
- if(distance(c,target)>35){go(s,c,target,'kill:'+target.id,dt,api,nk?76:72);return;}
+ if(!go(s,c,target,'kill:'+target.id,dt,api,nk?76:72))return;
  if(c.cooldown>0)return;
  const amount=(nk?9:15)*(1-s.immunity.sites[target.site].regulation*.004)*Math.max(.3,(c.energy??100)/100);target.hp=Math.max(0,target.hp-amount);c.energy=clamp((c.energy??100)-3);c.cooldown=nk?1.5:1.2;beginActivity(s,c,'cytotoxic',.75,target,target.site);alert(s,c);
  if(target.hp===0){
-  s.immunity.stats[nk?'nkKills':'cd8Kills']++;immuneEvent(s,nk?'nk-apoptosis':'cd8-apoptosis',c,target.recordId,target.site);s.debris.push({id:++s.serial,x:target.x,y:target.y,recordId:null,cellKind:'epithelial',antigenId:target.recordId});s.immunity.infected=s.immunity.infected.filter(h=>h.id!==target.id);
+  s.immunity.stats[nk?'nkKills':'cd8Kills']++;immuneEvent(s,nk?'nk-apoptosis':'cd8-apoptosis',c,target.recordId,target.site);killHost(s,target);s.immunity.infected=s.immunity.infected.filter(h=>h.id!==target.id);
  }
 }
 function granulocyte(s,c,dt,api){
@@ -280,6 +298,13 @@ function regulatory(s,c,dt,api){
  c.task='Treg · CTLA-4·IL-10·TGF-β';emit(s,best.id,'il10',dt*1.6);emit(s,best.id,'tgfb',dt*1.2);s.immunity.sites[best.id].signals.il2=Math.max(0,signal(s,best.id,'il2')-dt*.15);s.immunity.stats.regulation+=dt;
  if(!activeActivity(c,s.time))beginActivity(s,c,'regulate',1,c,best.id);
 }
+function residentRecall(s,c,dt,api){
+ if(!c.tissueResident||c.immuneState==='effector')return false;
+ const site=c.residentSite,amount=s.immunity.antigens[c.recordId]?.sites[site]||0;c.task='조직상주 기억 · 항원 감시';c.trafficStage='resident';
+ if(amount<=.1)return true;
+ c.immuneState='effector';c.memory=false;c.activatedAt=s.time;c.immuneSite=site;c.immuneMove=null;c.recallUntil=s.time+7;
+ emit(s,site,'ifng',8);emit(s,site,'cxcl8',10);emit(s,site,'ifn1',8);s.physiology.stats.recalls++;hostEvent(s,'memory-recall',site,c,c.recordId);alert(s,c);return false;
+}
 export function immuneCell(s,c,dt,api){
  if(!s.immunity||!dedicated.has(c.kind))return false;
  if(c.immuneExpires!=null&&s.time>=c.immuneExpires){c.lost=true;return true;}
@@ -297,7 +322,7 @@ export function immuneCell(s,c,dt,api){
 export function validateImmunity(s){
  const i=s.immunity;if(!i)return true;const n=(x,max=100)=>Number.isFinite(x)&&x>=0&&x<=max,site=id=>!!cityDistrict(s,id),record=id=>!!immuneAntigen(id),point=p=>Number.isFinite(p.x)&&Number.isFinite(p.y);
  if(!s.specialists||i.version!==1||![0,1].includes(i.roster)||!n(i.viralClock,11)||!i.stats||['presented','primed','clones','differentiated','nkKills','cd8Kills','parasites','degranulations','regulation','nets'].some(k=>!n(i.stats[k],1e8)))return false;
- if(!i.sites||cityDistricts(s).some(d=>{const a=i.sites[d.id];return !a||!n(a.danger)||!n(a.alarmin)||!n(a.regulation)||!a.signals||Object.keys(IMMUNE_SIGNALS).some(k=>!n(a.signals[k]));}))return false;
+ if(!i.sites||cityDistricts(s).some(d=>{const a=i.sites[d.id];return !a||!n(a.danger)||!n(a.alarmin)||!n(a.regulation)||!a.signals||Object.keys(IMMUNE_SIGNALS).some(k=>!n(a.signals[k]??(k==='c5a'?0:NaN)));}))return false;
  if(!i.antigens||Object.keys(i.antigens).length>32||Object.entries(i.antigens).some(([id,a])=>!record(id)||!n(a.lymph)||!n(a.lastSeen,s.time)||!a.sites||Object.entries(a.sites).some(([id,x])=>!site(id)||!n(x))))return false;
  if(!i.antibodies||Object.keys(i.antibodies).length>32||Object.entries(i.antibodies).some(([id,a])=>!record(id)||['IgM','IgG','IgA','IgE'].some(k=>!n(a[k]))))return false;
  if(!i.presentations||Object.keys(i.presentations).length>32||Object.entries(i.presentations).some(([id,p])=>!record(id)||!site(p.site)||!n(p.presenter,1e8)||!n(p.expires,1e9)||typeof p.mhcI!=='boolean'||typeof p.mhcII!=='boolean'||!n(p.costimulation,1)||!n(p.baseCostimulation,1)))return false;

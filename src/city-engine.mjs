@@ -13,6 +13,8 @@ import {ensureImmunity,IMMUNE_ROSTER,immuneCell,tickImmunity,immuneCommand,valid
 import {vascularWalkingRoute} from './city-vascular-layout.mjs';
 import {compileThemeLayout} from './city-theme-layout.mjs';
 import {tickResponse,validateResponse} from './city-response.mjs';
+import {ensureHostResponse,validateHostResponse} from './city-host-response.mjs';
+import {moveToInflammation} from './city-immune-traffic.mjs';
 
 export const SAVE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
@@ -25,7 +27,7 @@ export const upgradeCost=(s,id)=>22+s.districts[id].level*16;
 export const counts=(s,kind)=>s.cells.filter(c=>c.kind===kind).length;
 export const output=(s,id)=>{
   const d=s.districts[id];
-  return clamp(d.hp/100,.12,1)*clamp(d.oxygen/45,.25,1)*(d.food>0?1:.3)*(s.biology?.sites[id].isolated?.65:1);
+  return clamp(d.hp/100,.12,1)*clamp(d.oxygen/45,.25,1)*(d.food>0?1:.3)*(s.biology?.sites[id].isolated?.65:1)*clamp((s.physiology?.blood.perfusion??100)/100,.25,1);
 };
 function log(s,text){s.log.unshift({time:Math.floor(s.time),text});s.log.length=Math.min(s.log.length,s.specialists?24:6);}
 const frontierAPI={route,move,log,shipment,output,damage,cell,seed:seedInfection};
@@ -36,10 +38,10 @@ function cell(s,kind,x,y){
   if(s.layout){Object.assign(c,groundCoordinate(roadPoint(s.layout,groundPoint(c))));movementLayouts.set(c,s.layout);}s.cells.push(c);return c;
 }
 const movementLayouts=new WeakMap(),navigatedPaths=new WeakMap(),movementVessels=new WeakMap();
-function route(c,points){c.path=points.map(p=>({...p}));c.step=0;delete c.roadPathVersion;}
+function route(c,points){c.path=points.map(p=>({...p}));c.step=0;c.travelMode=null;delete c.roadPathVersion;}
 function move(c,speed,dt){
   const layout=movementLayouts.get(c);
-  if(layout&&navigatedPaths.get(c)!==c.path){const vessel=movementVessels.get(c);c.path=vessel?vascularWalkingRoute(layout,c,c.path.slice(c.step).at(-1),compileThemeLayout(layout,vessel).vascular):walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=vessel?2:1;navigatedPaths.set(c,c.path);}
+  if(layout&&navigatedPaths.get(c)!==c.path){const vessel=movementVessels.get(c);if(!c.travelMode){c.path=vessel?vascularWalkingRoute(layout,c,c.path.slice(c.step).at(-1),compileThemeLayout(layout,vessel).vascular):walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=vessel?2:1;}navigatedPaths.set(c,c.path);}
   // The outer circuit is much longer than the former radial map. Transit speed
   // compensates for that drawing scale; loading and local work retain timing.
   let budget=speed*dt*(movementVessels.get(c)&&!c.dock?2.4:1);
@@ -296,20 +298,22 @@ function updateCell(s,c,dt,speed,data){
   }
   if(c.kind==='macrophage'&&s.debris.length&&(s.policy==='repair'||!s.enemies.some(e=>!e.dead&&dist(e,c)<80))){
     if(s.specialists&&activeActivity(c,s.time)?.kind==='collect')return;
-    const debris=s.debris.reduce((a,b)=>dist(a,c)<dist(b,c)?a:b);c.task=debris.cellKind?'사멸 세포 수거':'잔해 청소';route(c,[debris]);if(move(c,60,dt)){cleanLocalDebris(s,debris);s.debris=s.debris.filter(e=>e.id!==debris.id);if(s.specialists)c.debrisCargo=(c.debrisCargo||0)+1;else{s.waste=clamp(s.waste-1.4);s.inflammation=clamp(s.inflammation-1.8);}c.cooldown=.8;if(s.specialists)beginActivity(s,c,'collect',.7,debris);}return;
+    const debris=s.debris.reduce((a,b)=>dist(a,c)<dist(b,c)?a:b);c.task=debris.cellKind?'사멸 세포 수거':'잔해 청소';const site=cityDistricts(s).reduce((a,b)=>dist(a,debris)<dist(b,debris)?a:b).id;
+    if(moveToInflammation(s,c,{...debris,site},'cleanup:'+debris.id,dt,frontierAPI,60*travelScale(s))){cleanLocalDebris(s,debris);s.debris=s.debris.filter(e=>e.id!==debris.id);if(s.specialists)c.debrisCargo=(c.debrisCargo||0)+1;else{s.waste=clamp(s.waste-1.4);s.inflammation=clamp(s.inflammation-1.8);}c.cooldown=.8;if(s.specialists)beginActivity(s,c,'collect',.7,debris);}return;
   }
   const assigned=combatDestination(s,c),hold=s.biology?.order.mode==='hold';
   if(assigned?.id)c.target=assigned.id;
   const combat=cityRule(s,c.kind),here=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b);
   if(!ruleReady(s,c.kind,here.id)){c.task='전투 대기';c.waitReason=combat.enabled?'규칙의 최소 산소 미달':'전투 규칙 꺼짐';wander(s,c,dt);return;}
-  let target=null,nearest=Infinity;for(const e of s.enemies)if(!e.dead&&(!s.biology||!e.front||e.entered)&&ruleEnemy(s,c.kind,e)&&(!hold||dist(e,assigned)<180)){const distance=(e.x-c.x)**2+(e.y-c.y)**2;if(distance<nearest){nearest=distance;target=e;}}
+  let target=null,nearest=Infinity;for(const e of s.enemies)if(!e.dead&&e.compartment!=='lumen'&&(!s.biology||!e.front||e.entered)&&ruleEnemy(s,c.kind,e)&&(!hold||dist(e,assigned)<180)){const distance=(e.x-c.x)**2+(e.y-c.y)**2;if(distance<nearest){nearest=distance;target=e;}}
   if(target&&(dist(target,c)<(hold?160:240)||dist(target,assigned)<200)){
     c.task='감염 대응';const range=c.kind==='neutrophil'&&!s.biology?66:combat.params.range;
+    if(s.physiology&&!moveToInflammation(s,c,target,'combat:'+target.id,dt,frontierAPI,(c.kind==='neutrophil'?82:56)*travelScale(s)))return;
     if(dist(c,target)>range){route(c,[target]);move(c,c.kind==='neutrophil'?82:56,dt);}
     else if(c.cooldown===0){
       const near=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b),d=s.districts[near.id];
       const depot=frontDepot(s,c),supply=clamp(d.oxygen/45,.3,1)*((depot?depot.food:d.food)>0?1:.5),base=combat.params.damage*(s.policy==='defense'?1.3:1)*supply*(d.supportUntil>s.time?1.15:1);
-      const support=s.biology&&target.entered?1+antibodySupport(s,target.recordId,near.id)*.85:1;
+      const support=s.biology&&target.entered?1+antibodySupport(s,target.recordId,near.id)*.85+(target.c3b||0)*.8:1;
       const capsule=s.biology?1-(pathogenDef(target.recordId)?.capsule||0)*(1-antibodySupport(s,target.recordId,near.id)):1;
       damage(s,target,base*support*capsule*immuneClearance(s,near.id)*(s.biology?clamp(c.energy/65,.35,1):1),c,JOBS[c.kind].color);combatEffort(c);
       if(!s.biology&&c.kind==='neutrophil'&&(depot||d).ammo[s.drug]>=1&&drugActivity(data,target.recordId,s.drug).active){(depot||d).ammo[s.drug]--;damage(s,target,8,c,DRUGS.find(d=>d.id===s.drug).color);}
@@ -391,18 +395,21 @@ function wander(s,c,dt){
   const destination=s.biology&&['neutrophil','macrophage'].includes(c.kind)?combatDestination(s,c):point(s,s.rally);
   if(destination.focusKey){
    c.target=destination.id;c.task='염증 신호 추적';c.alertKind='threat';c.alertUntil=s.time+1;
-   if(c.chemotaxisKey!==destination.focusKey||s.time>=(c.chemotaxisAt||0)){c.chemotaxisKey=destination.focusKey;c.chemotaxisAt=s.time+2;route(c,[destination]);}
-   move(c,(c.kind==='neutrophil'?76:60)*travelScale(s),dt);return;
+   moveToInflammation(s,c,{...destination,site:destination.id},'focus:'+destination.focusKey,dt,frontierAPI,(c.kind==='neutrophil'?76:60)*travelScale(s));return;
   }
-  c.chemotaxisKey=null;
+  c.chemotaxisKey=null;c.travelMode=null;c.transit=null;c.trafficStage=null;
   if(!c.path.length||c.step>=c.path.length){const d=destination,phase=s.time*.19+c.id*2.4,p={x:d.x+Math.cos(phase)*95,y:d.y+Math.sin(phase)*60+25};route(c,[s.layout?groundCoordinate(roadPoint(s.layout,groundPoint(p))):p]);}
   move(c,35,dt);
 }
 export function tickCity(s,dt,data,canalTransport=false){
   const transport=canalTransport===true?'2':canalTransport==='1'||canalTransport==='2'?canalTransport:false;
+  const previousTransport=s.transportTheme;
+  if(s.specialists){ensureHostResponse(s);s.transportTheme=transport||s.transportTheme||'2';}
   if(s.layout)for(const actor of [...s.cells,...s.shipments,...s.enemies]){
-    const vessel=transport&&(actor.kind==='rbc'||s.shipments.includes(actor)&&actor.kind!=='raw');
-    if((movementVessels.get(actor)??false)!==vessel||actor.roadPathVersion===2&&!vessel){
+    const vessel=transport&&(actor.kind==='rbc'||s.shipments.includes(actor)&&actor.kind!=='raw')?transport:false;
+    const restoredVessel=actor.roadPathVersion===2&&previousTransport===transport?transport:false;
+    if(!movementVessels.has(actor)&&restoredVessel===vessel&&actor.roadPathVersion)navigatedPaths.set(actor,actor.path);
+    if((movementVessels.get(actor)??restoredVessel)!==vessel||actor.roadPathVersion===2&&!vessel){
       // Rejoin the selected network from the current position, without resetting
       // a job, transfer animation, cargo, or the saved city itself.
       if(actor.path){actor.path=actor.step<actor.path.length?[actor.path.at(-1)]:[];actor.step=0;navigatedPaths.delete(actor);}
@@ -484,7 +491,9 @@ export function tickCity(s,dt,data,canalTransport=false){
   }
   for(const c of s.cells){updateCell(s,c,dt,speed,data);cellAlert(s,c);}
   if(s.biology){for(const c of s.cells.filter(c=>c.lost)){s.biology.stats.losses++;s.debris.push({id:++s.serial,x:c.x,y:c.y,recordId:null,cellKind:c.kind});log(s,CELL_JOBS[c.kind].name+' · 사멸');}s.cells=s.cells.filter(c=>!c.lost);}
-  s.enemies=s.enemies.filter(e=>!e.dead);s.debris=s.debris.slice(-80);
+  s.enemies=s.enemies.filter(e=>!e.dead);
+  // Keep dead epithelial remains available for cleanup even after a large battle.
+  const epithelialDebris=s.debris.filter(e=>e.epithelialId);s.debris=[...epithelialDebris,...s.debris.filter(e=>!e.epithelialId).slice(-(80-epithelialDebris.length))];
   s.effects=s.effects.filter(e=>(e.life-=dt)>0);tickResponse(s);
   const preset=SCENARIOS[s.scenario];
   if(s.scenario==='simulation')return;
@@ -541,7 +550,7 @@ export function restoreCity(raw){
     for(const key of ['signals','antibodyBatches','clots']){s.stats[key]??=0;if(!finite(s.stats[key]))return null;}
     for(const d of Object.values(s.districts))if(d.supportUntil!=null&&!finite(d.supportUntil))return null;
     for(const c of s.cells){c.age??=0;c.life??=CELL_JOBS[c.kind].life;if(!finite(c.age,2000)||!finite(c.life,2000)||c.life<=0)return null;}
-    if(s.layout&&(!validateTileLayout(s.layout)||!compileLayout(s.layout).valid)||!validateFrontier(s)||!validateBiology(s)||!validateImmunity(s)||!validateResponse(s))return null;
+    if(s.layout&&(!validateTileLayout(s.layout)||!compileLayout(s.layout).valid)||!validateFrontier(s)||!validateBiology(s)||!validateImmunity(s)||!validateResponse(s)||!validateHostResponse(s))return null;
     s.nextWave=s.nextWave??Infinity;s.effects=[];
     if(s.frontier){while(s.frontier.tissues.length<TISSUES.length)s.frontier.tissues.push({hp:100});
      if(s.frontier.rimVersion!==1||s.frontier.routesVersion!==2){
@@ -553,6 +562,7 @@ export function restoreCity(raw){
     // Old saves rejoin the streets once; current routes resume at their exact step.
     if(s.layout)for(const a of [...s.cells,...s.shipments,...s.enemies])if(a.roadPathVersion===1&&a.path)navigatedPaths.set(a,a.path);
     if(s.specialists&&!s.immunity)upgradeImmuneRoster(s);
+    if(s.specialists)ensureHostResponse(s);
     return s;
   }catch{return null;}
 }

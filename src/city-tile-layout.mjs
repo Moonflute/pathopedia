@@ -242,8 +242,15 @@ export function applyTileLayout(s,next){
   if(a.activity)Object.assign(a.activity,mapped(a.activity,frame||a.activity.site));
   if(a.path){a.path=[];a.step=0;delete a.roadPathVersion;a.queueMove=null;a.assignment=null;a.staged=false;a.perfusionId=null;}
   if(a.immuneMove!=null)a.immuneMove=null;
+  if(a.transit){a.transit=null;a.extravascular=null;}a.travelMode=null;a.trafficStage=null;
  }
  if(s.immunity)for(const a of [...s.immunity.infected,...s.immunity.parasites,...s.immunity.exposures,...s.immunity.nets])Object.assign(a,mapped(a,a.site));
+ if(s.physiology){
+  for(const ep of s.physiology.epithelium){if(ep.wall==null)Object.assign(ep,mapped(ep,ep.site));else Object.assign(ep,tissueAt({layout:next},SKIN_TISSUES[ep.wall]).point);}
+  for(const h of s.immunity?.infected||[]){const ep=s.physiology.epithelium.find(e=>e.id===h.epithelialId);if(ep){h.x=ep.x;h.y=ep.y;}}
+  for(const v of s.physiology.virions){if(v.entered){Object.assign(v,mapped(v,v.site));v.path=v.path.slice(v.step).map(p=>mapped(p,v.site));v.step=0;}else{v.path=[];v.step=0;const front=v.front,ep=s.physiology.epithelium.find(e=>e.id===v.targetId),points=front==='skin'?[WALLS[v.wall].outside,WALLS[v.wall].inside]:compileLayout(next).entries[front].map(groundCoordinate);Object.assign(v,points[0]);v.path=[...points.slice(1),{x:ep.x,y:ep.y}];}}
+  for(const packet of s.physiology.lymphPackets){Object.assign(packet,mapped(packet,packet.site));packet.path=[];packet.step=0;packet.reroute=true;}
+ }
  s.layout=cloneLayout(next);s.effects=[];
  if(s.time===0)for(const c of s.cells)if(!c.activity)Object.assign(c,groundCoordinate(roadPoint(s.layout,groundPoint(c))));
  for(const c of s.cells){if(c.kind==='rbc'){c.path=cityRoute(s,cityDistricts(s).reduce((a,b)=>Math.hypot(c.x-a.x,c.y-a.y)<Math.hypot(c.x-b.x,c.y-b.y)?a:b).id,c.cargo?c.target:'lung');c.step=0;}if(c.frontJob!=null){c.path=c.frontStage==='shop'?[localPoint(s,'workshop',{x:WORKSHOP.x+1.1,z:WORKSHOP.z+.5})]:c.frontStage==='field'?[WALLS[c.frontJob].inside]:[];c.step=0;}if(c.patchWall!=null){c.path=[WALLS[c.patchWall].inside];c.step=0;}if(c.tissueJob!=null){c.path=[tissueAt(s,TISSUES[c.tissueJob]).point];c.step=0;}}

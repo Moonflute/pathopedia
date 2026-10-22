@@ -16,7 +16,7 @@ function until(s,predicate,seconds=80){for(let i=0;i<seconds*30;i++){step(s);if(
 test('skin admits enemies only through an open segment; closing intercepts entrants before crossing',()=>{
  const s=city(),w=s.frontier.walls[11],e={id:900,front:'skin',wall:11,hp:100,...WALLS[11].outside};
  for(let i=0;i<30;i++)tickFrontierEnemy(s,e,1/30,api);
- assert.ok(w.hp<100&&w.hp>0);assert.ok(!e.entered);assert.deepEqual({x:e.x,y:e.y},WALLS[11].outside);
+ assert.equal(w.hp,100);assert.ok(!e.entered);assert.deepEqual({x:e.x,y:e.y},WALLS[11].outside);
  w.hp=0;tickFrontierEnemy(s,e,1/30,api);w.hp=100;
  for(let i=0;i<30;i++)tickFrontierEnemy(s,e,1/30,api);assert.ok(!e.entered);
  w.hp=0;for(let i=0;i<180;i++)tickFrontierEnemy(s,e,1/30,api);assert.equal(e.entered,true);
