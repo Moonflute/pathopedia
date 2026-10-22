@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CITY_THEME_KEY,readCityTheme,storeCityTheme} from '../src/city-theme.mjs';
 import {compileCanalLayout,canalFlowPoint} from '../src/city-canal-layout.mjs';
-import {createTileLayout,compileLayout,applyTileLayout,cityRoute} from '../src/city-tile-layout.mjs';
+import {createTileLayout,compileLayout,applyTileLayout,cityRoute,addLayoutBuilding} from '../src/city-tile-layout.mjs';
 import {createCity,serializeCity,restoreCity,tickCity} from '../src/city-engine.mjs';
 import {roadNavigator} from '../src/city-grid-path.mjs';
 import {compileVascularLayout,vascularWalkingRoute} from '../src/city-vascular-layout.mjs';
@@ -34,6 +34,23 @@ test('one-way vessels require a full circuit instead of reversing on the same ed
  const length=path=>path.slice(1).reduce((s,p,i)=>s+Math.hypot(p.x-path[i].x,p.z-path[i].z),0);
  assert.ok(Math.abs(length(roadNavigator([{points,oneWay:true}]).route(a,b))-7.4)<1e-6);
  assert.ok(Math.abs(length(roadNavigator([points]).route(a,b))-.6)<1e-6);
+});
+
+test('waterfront blocks leave traffic and real building expansion clear',()=>{
+ const layout=createTileLayout(),expanded=addLayoutBuilding(layout,'house');assert.ok(expanded.ok);
+ for(const town of [layout,expanded.layout]){
+  const snapshot=JSON.stringify(town),c=compileCanalLayout(town),network=compileLayout(town);
+  assert.ok(c.blocks.frontages.length>=30);assert.ok(c.blocks.gardens.length>=3);
+  for(const b of [...c.blocks.frontages,...c.blocks.gardens]){
+   const vertical=Math.abs(Math.sin(b.angle||0))>.5,w=b.w||3.5,d=b.d||3.5,hx=(vertical?d:w)/2,hz=(vertical?w:d)/2;
+   for(let x=b.x-hx;x<=b.x+hx;x+=.25)for(let z=b.z-hz;z<=b.z+hz;z+=.25){
+    assert.equal(c.isWater({x,z}),false,'infill covers water');
+    assert.equal(network.occupied.has(Math.round(x)+','+Math.round(z)),false,'infill covers a playable building');
+    assert.equal(network.roadCells.has(Math.round(x)+','+Math.round(z)),false,'infill covers a transport route');
+   }
+  }
+  assert.equal(JSON.stringify(town),snapshot);
+ }
 });
 
 test('organ vessels separate outward/return paths, avoid buildings and close both circuits',()=>{

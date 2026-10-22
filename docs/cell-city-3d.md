@@ -1,4 +1,4 @@
-# Cell City 3D village · v0.63.1
+# Cell City 3D village · v0.64.0
 
 ## Selectable city themes (v0.63.0, 2026-10-22)
 
@@ -6,7 +6,9 @@ The header's **설정** button opens **테마 1 · 기존 마을** and **테마 
 
 Theme 2 now has a directed vascular network compiled from the saved placements. Paired arteries and veins branch from the heart, pass through thinner organ exchange beds, and return. The pulmonary circuit uses a separate preferred corridor; its artery carries the low-oxygen colour and its vein the oxygen-rich colour. Coral/blue water ribbons and one-way current arrows show the two streams. Continuous stone blocks and quay edges make the channels readable; local loading stations, house entrances and perimeter access remain connected. Terracotta roofs, arched windows, balconies and striped mooring posts reuse the Venice treatment. No pedestrian bridges are added.
 
-In v0.63.1, the kidney-side river setback is filled to the wall in Theme 2. One narrow discharge pipe links the saved filtration facility to an outer culvert, avoiding other buildings and favouring dry ground. Its outlet is separate from the blood/boat navigation graph; small outward markers run while the kidney processes waste and stop with simulation time. The existing kidney processing rules, wall defense state and Theme 1 river remain unchanged.
+The kidney-side river setback is filled to the wall in Theme 2. The utility connection to the outer culvert is buried beneath the quay; only a short final outfall, grille and small sluice house remain exposed. Its outlet is separate from the blood/boat navigation graph; small outward markers run while the kidney processes waste and stop with simulation time. The existing kidney processing rules, wall defense state and Theme 1 river remain unchanged.
+
+In v0.64.0, waterfront infill forms rows of two- and three-storey façades along the actual canals, with windows on all four sides, varied terracotta roofs, balconies and planted courts. The starting layout receives 49 infill façades and seven small courts. These are scenery: no extra population, production or transport jobs are created. Their footprints avoid navigation water, service routes, saved buildings, organ courts and entry/outfall gates. Rebuilding after expansion or a layout edit recomputes the infill around the real facilities. The static geometry is merged into the existing regional batches; no per-frame placement search is added.
 
 RBCs and internal freight couriers follow the directed graph for long-distance travel in Theme 2. Local loading/work movements and external intake retain their existing access routes. Theme switching rejoins the chosen network on the next simulation step without teleporting or resetting cargo or work. The transport selection is runtime state, independent of the save. Theme 1 and the original 2D simulation retain their road navigation. Editing a saved building recompiles its vascular routes and quays. Currents stop with simulation time.
 
@@ -17,6 +19,8 @@ Focused checks: 14 tests in `city-themes.test.mjs` and `city-layout.test.mjs` pa
 Current immune behavior is described in [Immune network](#immune-network-2026-10-22-v0620). Earlier sections record the preceding models.
 
 The outlet patch passes the six existing theme tests. A focused geometry check confirms filled shoreline tiles and a single unobstructed default outlet; browser inspection confirms the saved-city result in `city-redesign/14-kidney-outlet.jpg`.
+
+The v0.64.0 revision passes seven focused theme tests, including infill clearance before and after a real building expansion. Browser proof: `city-redesign/15-theme-2-waterfront.jpg`. Existing Three.js primitives and CC0 roofs/chimneys are reused.
 
 Entry: `#city3d`. The original `#city` remains available. The two games use separate local saves: `pathopedia:cell-city:3d:v1` and `pathopedia:cell-city:v1`. No save is imported, migrated, or deleted when switching views.
 

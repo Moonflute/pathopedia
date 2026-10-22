@@ -8,9 +8,9 @@ export const CANAL_STYLE=Object.freeze({water:0x4caaa8,deep:0x338b91,foam:0xb6e1
 
 // Reuse the existing CC0 roof and chimney meshes; façades and mooring posts
 // are low-poly geometry baked with the other village scenery.
-export function canalHouse({box,make,model,mat,parent},x,z,size,index=0,angle=0){
+export function canalHouse({box,make,model,mat,parent},x,z,size,index=0,angle=0,floors=2){
  const g=new T.Group();g.position.set(x,0,z);g.rotation.y=angle;g.scale.setScalar(size);parent.add(g);
- const height=index%3===1?2.05:1.68,roof=CANAL_STYLE.roofs[index%4],wall=CANAL_STYLE.walls[index%5],ivory=0xf5e4c5,shutter=0x4e7974;
+ const height=floors===3?2.85:index%3===1?2.05:1.68,roof=CANAL_STYLE.roofs[index%4],wall=CANAL_STYLE.walls[index%5],ivory=0xf5e4c5,shutter=0x4e7974;
  box(0,.04,0,1.35,.16,1.23,0xa29d8b,g);box(0,height/2+.12,0,1.24,height,1.12,wall,g);
  for(const y of [.19,.99,height+.12])box(0,y,0,1.32,.08,1.2,ivory,g);
  for(const px of [-.59,.59])box(px,height/2+.14,.58,.07,height,.08,ivory,g);
@@ -19,14 +19,17 @@ export function canalHouse({box,make,model,mat,parent},x,z,size,index=0,angle=0)
  else{const m=make(new T.ConeGeometry(.98,.6,4),roof,0,height+.48,0,g);m.rotation.y=Math.PI/4;}
  model('chimney',-.38,height+.45,-.23,.55,0,g);
  const arch=new T.Shape();arch.moveTo(-.14,0);arch.lineTo(-.14,.25);arch.absarc(0,.25,.14,Math.PI,0,true);arch.lineTo(.14,0);arch.closePath();
- function window(px,py,pz,side=false){
-  const f=new T.Group();f.position.set(px,py,pz);if(side)f.rotation.y=Math.PI/2;g.add(f);
+ function window(px,py,pz,angle=0){
+  const f=new T.Group();f.position.set(px,py,pz);f.rotation.y=angle;g.add(f);
   const border=make(new T.ShapeGeometry(arch,7),ivory,0,-.025,0,f);border.scale.set(1.22,1.16,1);
   make(new T.ShapeGeometry(arch,7),0x496d70,0,0,.015,f);
   for(const s of [-1,1]){box(s*.21,.17,.02,.095,.34,.035,shutter,f);for(const y of [.09,.19,.29])box(s*.21,y,.045,.09,.017,.025,0x71948a,f);}
   box(0,.16,.04,.025,.29,.02,ivory,f);box(0,-.04,.06,.43,.055,.16,ivory,f);
  }
- for(const py of [.51,height-.5]){for(const px of [-.31,.31])window(px,py,.577);window(.635,py,-.05,true);}
+ for(const py of floors===3?[.51,1.43,2.35]:[.51,height-.5]){
+  for(const px of [-.31,.31]){window(px,py,.577);window(px,py,-.577,Math.PI);}
+  window(.635,py,-.05,Math.PI/2);window(-.635,py,-.05,-Math.PI/2);
+ }
  box(0,.39,.583,.27,.52,.04,0x677b69,g);box(0,.67,.61,.36,.06,.12,ivory,g);
  if(index%3!==0){box(0,1.02,.76,.92,.08,.38,ivory,g);box(0,1.29,.92,.94,.035,.035,shutter,g);for(let n=0;n<5;n++)box(-.42+n*.21,1.16,.92,.025,.26,.025,shutter,g);}
  if(index%4===0){const awning=box(0,.91,.82,.95,.055,.45,0xc39168,g);awning.rotation.x=.2;for(const px of [-.33,0,.33])box(px,.93,.83,.12,.045,.46,ivory,g);}
@@ -34,7 +37,7 @@ export function canalHouse({box,make,model,mat,parent},x,z,size,index=0,angle=0)
  return g;
 }
 
-export function createCanalScenery({layout,make,box,cylinder,scope,fixed,moving,ribbon}){
+export function createCanalScenery({layout,make,box,cylinder,model,mat,scope,fixed,moving,ribbon}){
  const canals=compileCanalLayout(layout);if(!canals)return null;
  function geometry(quadList){const p=[],uv=[];for(const q of quadList)for(const i of [0,2,1,0,3,2]){p.push(...q[i]);uv.push(q[i][0],q[i][2]);}const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(p,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.computeVertexNormals();return g;}
  const tops=canals.rows.map(r=>[[r.x,.018,r.z],[r.x+r.w,.018,r.z],[r.x+r.w,.018,r.z+r.d],[r.x,.018,r.z+r.d]]);
@@ -43,6 +46,24 @@ export function createCanalScenery({layout,make,box,cylinder,scope,fixed,moving,
  const banks=make(geometry(sides),CANAL_STYLE.quay,0,0,0);banks.name='canal-quays';banks.material.side=T.DoubleSide;
  const rims=canals.edges.map(([x,z,xx,zz])=>{const length=Math.hypot(xx-x,zz-z),dx=-(zz-z)/length*.11,dz=(xx-x)/length*.11;return [[x,.035,z],[xx,.035,zz],[xx+dx,.035,zz+dz],[x+dx,.035,z+dz]];});
  make(geometry(rims),0xf0dfbf,0,0,0).castShadow=false;
+ // Continuous waterfront façades use the same CC0 roofs as the playable town.
+ // Infill is rebuilt around real placements and never covers transport water.
+ for(const b of canals.blocks.frontages){
+  const g=canalHouse({box,make,model,mat,parent:fixed},b.x,b.z,1,b.variant,b.angle,b.variant%4===0?3:2);
+  g.scale.set(b.w/1.35,1.15+(b.variant%3)*.1,b.d/1.4);g.name='canal-frontage';
+ }
+ for(const p of canals.blocks.gardens){
+  const g=new T.Group();g.position.set(p.x,0,p.z);fixed.add(g);g.name='canal-court';
+  box(0,.035,0,3.5,.06,3.5,0xe5d8bb,g);
+  for(const x of [-1.6,1.6])box(x,.075,0,.1,.04,3.3,0xb8ab8e,g);
+  for(const z of [-1.6,1.6])box(0,.075,z,3.3,.04,.1,0xb8ab8e,g);
+  for(const [x,z] of [[-.8,-.7],[.8,.7]]){
+   box(x,.16,z,.85,.28,.85,0xc5b28c,g);box(x,.31,z,.7,.025,.7,0x87966d,g);
+   cylinder(x,.82,z,.05,.08,1.1,0x877056,g);
+   for(let i=0;i<3;i++)make(new T.ConeGeometry(.48-i*.1,.95,7),[0x6f8b69,0x839b77,0x91a582][i],x,1.05+i*.53,z,g);
+  }
+  for(const z of [-1.25,1.25]){box(0,.27,z,1.25,.12,.32,0x9b8060,g);for(const x of [-.45,.45])box(x,.13,z,.11,.24,.24,0xb4a386,g);}
+ }
  // Width and oxygen tint make the circulation legible from the overview.
  // Low-oxygen blood also leaves the heart for the lungs in the pulmonary artery.
  for(const bed of canals.vascular.beds)for(const points of bed.branches)ribbon(points,bed.width,0x8bb8ab,-.145);
@@ -53,13 +74,23 @@ export function createCanalScenery({layout,make,box,cylinder,scope,fixed,moving,
  // A narrow stone foundation supports the existing skin wall above the lagoon.
  for(const wall of WALLS)ribbon([wall.a,wall.b],1.3,0xb8ac90,-.035);
  const outlet=canals.outlet;
- let discharge=null;
+ let discharge=null,dischargeFlow=null;
  if(outlet){
-  const curve=new T.CurvePath();for(let i=1;i<outlet.points.length;i++){const a=outlet.points[i-1],b=outlet.points[i];curve.add(new T.LineCurve3(new T.Vector3(a.x,.16,a.z),new T.Vector3(b.x,.16,b.z)));}
-  const pipe=make(new T.TubeGeometry(curve,Math.max(12,Math.ceil(outlet.length*2)),outlet.width/2,6,false),0xb5a487,0,0,0);pipe.name='kidney-discharge-pipe';
+  // The long utility connection is buried beneath the quay. Only the short
+  // final outfall is exposed beside the wall; it does not cut across the city.
+  const inlet=outlet.points[0];box(inlet.x,.06,inlet.z,.8,.1,.8,0xb6a98e);
+  for(const x of [-.22,0,.22])box(inlet.x+x,.12,inlet.z,.06,.025,.54,0x65716b);
+  const start={x:outlet.portal.x-outlet.dx*2.4,z:outlet.portal.z-outlet.dz*2.4};
+  dischargeFlow={points:[start,outlet.portal,outlet.end],lengths:[0,2.4,4.4],length:4.4};
+  ribbon(dischargeFlow.points,1.05,0xb8a586,.045);ribbon(dischargeFlow.points,.55,0x8caca0,.06);
   // A protected culvert sits through the existing wall. The wall's defensive
   // state remains intact, and blood circulation has no connection to this pipe.
   const p={x:outlet.portal.x+outlet.dx*.7,z:outlet.portal.z+outlet.dz*.7},gate=new T.Group();gate.position.set(p.x,0,p.z);gate.rotation.y=Math.atan2(outlet.dx,outlet.dz);fixed.add(gate);
+  box(-.8,.55,-2.7,1.05,1.1,1.3,0xe4d2b2,gate);box(-.8,1.16,-2.7,1.25,.14,1.5,0xac6550,gate);
+  box(-.8,.55,-1.99,.42,.6,.04,0x577b73,gate);box(-.8,.2,-1.9,.65,.18,.3,0xb9a585,gate);
+  for(const x of [-.5,.5])box(x,.21,-1.85,.14,.28,1.45,0xd9c7a6,gate);
+  cylinder(.8,.7,-2.6,.075,.09,1.4,0x6f8074,gate);
+  const valve=make(new T.TorusGeometry(.32,.055,5,12),0x6f8074,.8,1.2,-2.6,gate);valve.rotation.x=Math.PI/2;
   box(0,.09,0,1.5,.18,1.1,0xc8b79a,gate);
   for(const x of [-.6,.6])box(x,.42,0,.25,.75,.65,0xe4d2b2,gate);
   const arch=make(new T.TorusGeometry(.6,.15,6,16,Math.PI),0xe4d2b2,0,.76,0,gate);arch.name='kidney-outlet-arch';
@@ -95,8 +126,8 @@ export function createCanalScenery({layout,make,box,cylinder,scope,fixed,moving,
   mesh.instanceMatrix.needsUpdate=true;
   if(discharge){
    const rate=output(s,'kidney'),working=rate>0&&(s.waste>.01||(s.frontier?.waste.stock||0)>.01);
-   dischargePhase+=dt*rate*.7/outlet.length;discharge.visible=working;
-   if(working){for(let i=0;i<8;i++){const p=canalFlowPoint(outlet,dischargePhase+i/8);dummy.position.set(p.x,.48,p.z);dummy.rotation.set(0,p.angle,0);dummy.scale.set(.075,.045,.13);dummy.updateMatrix();discharge.setMatrixAt(i,dummy.matrix);}discharge.instanceMatrix.needsUpdate=true;}
+   dischargePhase+=dt*rate*.7/dischargeFlow.length;discharge.visible=working;
+   if(working){for(let i=0;i<8;i++){const p=canalFlowPoint(dischargeFlow,dischargePhase+i/8);dummy.position.set(p.x,.12,p.z);dummy.rotation.set(0,p.angle,0);dummy.scale.set(.075,.025,.13);dummy.updateMatrix();discharge.setMatrixAt(i,dummy.matrix);}discharge.instanceMatrix.needsUpdate=true;}
   }
  }};
 }

@@ -229,7 +229,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  }
  scope(null);const water=transformPoint(layout,'kidney',{x:13,z:9});const drain=[{x:riverX(water.z),z:water.z},water];ribbon(drain,.6,0xb4bcb0,.14);ribbon(drain,.38,0x91bfba,.15);
  }
- const canalScene=canal?createCanalScenery({layout,make,box,cylinder,scope,fixed,moving,ribbon}):null;
+ const canalScene=canal?createCanalScenery({layout,make,box,cylinder,model,mat,scope,fixed,moving,ribbon}):null;
  for(const [id,g] of owners.fixed)applyTransform(g,id);for(const [id,g] of owners.moving)applyTransform(g,id);
  // Selected geometry stays separate during editing, so dragging moves it without rebuilding.
  const preview=owners.fixed.get(editId);if(preview){fixed.remove(preview);root.add(preview);}
