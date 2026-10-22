@@ -72,18 +72,25 @@ export function createCanalScenery({layout,make,box,cylinder,model,mat,scope,fix
   ribbon(vessel.points,vessel.width,vessel.oxygenated?0xd86b5a:0x508fca,-.14);
   ribbon(vessel.points,.14,vessel.oxygenated?0xf2b095:0x9dd8ec,-.132);
  }
+ for(const path of canals.patrol)ribbon(path.points,Math.min(.8,path.width),0xc8b493,.065);
  // A narrow stone foundation supports the existing skin wall above the lagoon.
  for(const wall of WALLS)for(const p of wallPieces(wall))ribbon([p.a,p.b],1.3,0xb8ac90,-.035);
  const outlet=canals.outlet;
  let discharge=null,dischargeFlow=null;
  if(outlet){
-  // The long utility connection is buried beneath the quay. Only the short
-  // final outfall is exposed beside the wall; it does not cut across the city.
+  // An exposed utility pipe makes the kidney's separate waste route legible.
   const inlet=outlet.points[0];box(inlet.x,.06,inlet.z,.8,.1,.8,0xb6a98e);
   for(const x of [-.22,0,.22])box(inlet.x+x,.12,inlet.z,.06,.025,.54,0x65716b);
-  const start={x:outlet.portal.x-outlet.dx*2.4,z:outlet.portal.z-outlet.dz*2.4};
-  dischargeFlow={points:[start,outlet.portal,outlet.end],lengths:[0,2.4,4.4],length:4.4};
-  ribbon(dischargeFlow.points,1.05,0xb8a586,.045);ribbon(dischargeFlow.points,.55,0x8caca0,.06);
+  dischargeFlow=outlet;
+  const up=new T.Vector3(0,1,0),direction=new T.Vector3();
+  for(let i=1;i<outlet.points.length-1;i++){
+   const a=outlet.points[i-1],b=outlet.points[i],length=Math.hypot(b.x-a.x,b.z-a.z);if(length<.02)continue;
+   const pipe=make(new T.CylinderGeometry(.25,.25,length,10),0x708c7a,(a.x+b.x)/2,.38,(a.z+b.z)/2);pipe.name='renal-drain-pipe';direction.set(b.x-a.x,0,b.z-a.z).normalize();pipe.quaternion.setFromUnitVectors(up,direction);
+   const steps=Math.max(1,Math.ceil(length/3));for(let j=0;j<=steps;j++){
+    const q=j/steps,x=a.x+(b.x-a.x)*q,z=a.z+(b.z-a.z)*q;
+    const band=make(new T.CylinderGeometry(.3,.3,.12,10),0xb4a57e,x,.38,z);band.quaternion.copy(pipe.quaternion);box(x,.12,z,.55,.22,.55,0xb9aa8f);
+   }
+  }
   // A protected culvert sits through the existing wall. The wall's defensive
   // state remains intact, and blood circulation has no connection to this pipe.
   const p={x:outlet.portal.x+outlet.dx*.7,z:outlet.portal.z+outlet.dz*.7},gate=new T.Group();gate.position.set(p.x,0,p.z);gate.rotation.y=Math.atan2(outlet.dx,outlet.dz);fixed.add(gate);
@@ -97,8 +104,8 @@ export function createCanalScenery({layout,make,box,cylinder,model,mat,scope,fix
   const arch=make(new T.TorusGeometry(.6,.15,6,16,Math.PI),0xe4d2b2,0,.76,0,gate);arch.name='kidney-outlet-arch';
   const mouth=make(new T.CircleGeometry(.49,16),0x415c55,0,.51,.35,gate);mouth.material.side=T.DoubleSide;
   for(const x of [-.28,0,.28])box(x,.5,.37,.045,.74,.055,0x9d967d,gate);
-  ribbon([outlet.portal,outlet.end],.52,0x9cbcac,-.115);
-  discharge=new T.InstancedMesh(new T.IcosahedronGeometry(1,0),new T.MeshBasicMaterial({color:0xd4bb85}),8);discharge.name='kidney-discharge-flow';discharge.frustumCulled=false;discharge.instanceMatrix.setUsage(T.DynamicDrawUsage);moving.add(discharge);
+  ribbon([outlet.portal,outlet.end],.8,0x9cbcac,-.115);
+  discharge=new T.InstancedMesh(new T.IcosahedronGeometry(1,0),new T.MeshBasicMaterial({color:0xe0ce9a}),24);discharge.name='kidney-discharge-flow';discharge.frustumCulled=false;discharge.instanceMatrix.setUsage(T.DynamicDrawUsage);moving.add(discharge);
  }
  for(const [id] of Object.entries(SITES)){
   scope(id);
@@ -114,21 +121,18 @@ export function createCanalScenery({layout,make,box,cylinder,model,mat,scope,fix
  }
  scope(null);
  const arrow=new T.BufferGeometry();arrow.setAttribute('position',new T.Float32BufferAttribute([-.45,0,-.35,0,0,.45,.45,0,-.35,.45,0,-.35,0,0,.12,-.45,0,-.35],3));arrow.computeVertexNormals();
- const flowSlots=canals.flows.map(f=>Math.max(8,Math.ceil(f.length/4))),count=flowSlots.reduce((a,b)=>a+b,0),mesh=new T.InstancedMesh(arrow,new T.MeshBasicMaterial({color:0xffffff,side:T.DoubleSide}),count),dummy=new T.Object3D();
- let colorSlot=0;for(const [i,flow] of canals.flows.entries())for(let j=0;j<flowSlots[i];j++)mesh.setColorAt(colorSlot++,new T.Color(flow.oxygenated?0xffdbbd:0xc9f3ff));
- mesh.name='canal-current';mesh.frustumCulled=false;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);moving.add(mesh);
+ const flowSlots=canals.flows.map(f=>Math.max(1,Math.ceil(f.length/12))),count=flowSlots.reduce((a,b)=>a+b,0),mesh=new T.InstancedMesh(arrow,new T.MeshBasicMaterial({color:0xffffff,side:T.DoubleSide}),count),dummy=new T.Object3D();
+ let slot=0;for(const [i,flow] of canals.flows.entries())for(let j=0;j<flowSlots[i];j++){
+  const point=canalFlowPoint(flow,(j+.5)/flowSlots[i]);dummy.position.set(point.x,-.08,point.z);dummy.rotation.set(0,point.angle,0);dummy.scale.set(.58,1,.8);dummy.updateMatrix();mesh.setMatrixAt(slot,dummy.matrix);mesh.setColorAt(slot++,new T.Color(flow.oxygenated?0xf4b29c:0xa8d6e9));
+ }
+ mesh.name='canal-current';mesh.frustumCulled=false;moving.add(mesh);
  let lastTime=null,dischargePhase=0;
  return {canals,update(s){
   if(lastTime===s.time)return;const dt=lastTime==null?0:Math.max(0,Math.min(.3,s.time-lastTime));lastTime=s.time;
-  let n=0;for(const [i,flow] of canals.flows.entries())for(let j=0;j<flowSlots[i];j++){
-   const point=canalFlowPoint(flow,j/flowSlots[i]+s.time*2/flow.length);
-   dummy.position.set(point.x,-.08,point.z);dummy.rotation.set(0,point.angle,0);dummy.scale.set(flow.circuit==='pulmonary'?.95:1.1,1,1.35);dummy.updateMatrix();mesh.setMatrixAt(n++,dummy.matrix);
-  }
-  mesh.instanceMatrix.needsUpdate=true;
   if(discharge){
    const rate=output(s,'kidney'),working=rate>0&&(s.waste>.01||(s.frontier?.waste.stock||0)>.01);
-   dischargePhase+=dt*rate*.7/dischargeFlow.length;discharge.visible=working;
-   if(working){for(let i=0;i<8;i++){const p=canalFlowPoint(dischargeFlow,dischargePhase+i/8);dummy.position.set(p.x,.12,p.z);dummy.rotation.set(0,p.angle,0);dummy.scale.set(.075,.025,.13);dummy.updateMatrix();discharge.setMatrixAt(i,dummy.matrix);}discharge.instanceMatrix.needsUpdate=true;}
+   dischargePhase+=dt*rate*2/dischargeFlow.length;discharge.visible=working;
+   if(working){for(let i=0;i<24;i++){const q=(dischargePhase+i/24)%1,p=canalFlowPoint(dischargeFlow,q),fall=Math.max(0,(q*dischargeFlow.length-(dischargeFlow.length-2))/2);dummy.position.set(p.x,.67-fall*.8,p.z);dummy.rotation.set(0,p.angle,0);dummy.scale.set(.12,.06,.24);dummy.updateMatrix();discharge.setMatrixAt(i,dummy.matrix);}discharge.instanceMatrix.needsUpdate=true;}
   }
  }};
 }

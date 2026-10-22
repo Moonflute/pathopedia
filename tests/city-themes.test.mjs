@@ -18,9 +18,9 @@ test('theme defaults to the original village and persists independently of game 
  assert.equal(readCityTheme({getItem(){throw Error('blocked');}}),'1');assert.equal(storeCityTheme('2',{setItem(){throw Error('full');}}),false);
 });
 
-test('water covers the actual navigation graph including loading bays and perimeter patrols',()=>{
+test('water covers the blood network while the skin patrol keeps a separate dry route',()=>{
  const layout=createTileLayout(),before=JSON.stringify(layout),network=compileLayout(layout),surface=compileCanalLayout(layout);
- assert.ok(surface.rows.length&&surface.edges.length);assert.equal(surface.flows.length,14);
+ assert.ok(surface.rows.length&&surface.edges.length);assert.equal(surface.flows.length,42);assert.ok(surface.patrol.length>=14);assert.ok(surface.patrol.every(r=>!surface.channels.includes(r)));
  for(const points of surface.channels.map(r=>r.points))for(let i=1;i<points.length;i++){
   const a=points[i-1],b=points[i],samples=Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)*4);
   for(let j=0;j<=samples;j++){const t=samples?j/samples:0,p={x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t};assert.ok(surface.isWater(p),'land blocks route '+JSON.stringify(p));}
@@ -40,7 +40,7 @@ test('waterfront blocks leave traffic and real building expansion clear',()=>{
  const layout=createTileLayout(),expanded=addLayoutBuilding(layout,'house');assert.ok(expanded.ok);
  for(const town of [layout,expanded.layout]){
   const snapshot=JSON.stringify(town),c=compileCanalLayout(town),network=compileLayout(town);
-  assert.ok(c.blocks.frontages.length>=15);assert.ok(c.blocks.gardens.length>=3);assert.ok(c.blocks.tissues.length>=100);
+  assert.ok(c.blocks.frontages.length>=8);assert.ok(c.blocks.gardens.length>=2);assert.ok(c.blocks.tissues.length>=100);assert.ok(c.blocks.lung.length>=3);
   for(const b of [...c.blocks.frontages,...c.blocks.gardens]){
    const vertical=Math.abs(Math.sin(b.angle||0))>.5,w=b.w||3.5,d=b.d||3.5,hx=(vertical?d:w)/2,hz=(vertical?w:d)/2;
    for(let x=b.x-hx;x<=b.x+hx;x+=.25)for(let z=b.z-hz;z<=b.z+hz;z+=.25){

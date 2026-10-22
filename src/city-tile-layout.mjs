@@ -1,7 +1,7 @@
 import {CITY_BOUNDS,CITY_CAPS,CITY_ENTRIES,storedPlacement} from './city-world.mjs';
 import {DISTRICTS,districtDef} from './city-data.mjs';
 import {SITES,COTTAGES,RIVER_PATH,groundPoint,groundCoordinate,workStationPoints,lymphocyteBay} from './city-three-layout.mjs';
-import {PERIMETER,WORKSHOP,FRONTS,TISSUES,WALLS} from './city-frontier-data.mjs';
+import {PERIMETER,WORKSHOP,FRONTS,TISSUES,WALLS,SKIN_TISSUES} from './city-frontier-data.mjs';
 import {vascularRoute,FOOD_ROAD} from './city-map.mjs';
 import {TOWN_PLAN,TOWN_HOUSES,GROWTH_OFFSETS} from './city-town-plan.mjs';
 import {gridPath,streetNetwork,roadNavigator} from './city-grid-path.mjs';
@@ -127,6 +127,7 @@ function simplify(points){return points.filter((p,i)=>{if(!i||i===points.length-
 export function compileLayout(layout){
  if(compiled.has(layout))return compiled.get(layout);
  const occupied=new Map();for(const [id,a] of Object.entries(layout.items)){const d=placeable(id);for(const c of occupiedTiles(id,a)){const q=rotateOffset({x:c.col-a.col,z:c.row-a.row},-a.rot),r=d.solid;if(!r||q.x>=r[0]&&q.x<=r[2]&&q.z>=r[1]&&q.z<=r[3])occupied.set(key(c),id);}}
+ for(const t of skinTissuesAt(layout).values())for(let x=Math.round(t.x)-1;x<=Math.round(t.x)+1;x++)for(let z=Math.round(t.z)-1;z<=Math.round(t.z)+1;z++)occupied.set(x+','+z,'skin-tissue-'+t.id);
  const connections=[],roadCells=new Map();
  const port=id=>{const a=layout.items[id],q=rotateOffset({x:placeable(id).port[0],z:placeable(id).port[1]},a.rot);return {x:a.col+q.x,z:a.row+q.z};};
  const centre=id=>({x:layout.items[id].col,z:layout.items[id].row});
@@ -146,15 +147,19 @@ export function compileLayout(layout){
  const vascular={};
  for(const d of DISTRICTS.filter(d=>d.id!=='heart')){const p=connect(d.id,port('heart'),port(d.id),d.id==='lung'?'pulmonary':'systemic');vascular[d.id]=p?[centre('heart'),...p,centre(d.id)]:[];}
  const entries={};for(const [id,{start,gate,portal,screen}] of Object.entries(CITY_ENTRIES)){
-  const organ=id==='airway'?'lung':'gut',p=connect('entry-'+id,gate,port(organ),'entry');entries[id]=p?[start,...[portal,...(screen?[screen]:[])],...p,centre(organ)]:[];
+  const organ=id==='airway'?'lung':'gut';
+  // Air crosses the wall on its own elevated conduit and enters the lung
+  // directly; it does not meander through the organ's blood-loading entrance.
+  if(id==='airway'){const end=transformPoint(layout,'lung',{x:SITES.lung.x,z:SITES.lung.z-5.8}),points=[start,portal,screen,end];connections.push({id:'entry-'+id,kind:'entry',ok:true,points});entries[id]=points;}
+  else{const p=connect('entry-'+id,gate,port(organ),'entry');entries[id]=p?[start,portal,...p,centre(organ)]:[];}
  }
  for(const d of layoutPlaceables(layout).filter(d=>d.kind!=='organ')){const nearest=d.kind!=='house'&&d.district?districtDef(d.district):DISTRICTS.reduce((a,b)=>Math.hypot(centre(a.id).x-centre(d.id).x,centre(a.id).z-centre(d.id).z)<Math.hypot(centre(b.id).x-centre(d.id).x,centre(b.id).z-centre(d.id).z)?a:b);connect(d.id,port(d.id),port(nearest.id),'walk');}
  const districts=DISTRICTS.map(d=>({...d,...groundCoordinate(centre(d.id))}));
  const streets=streetNetwork(connections.filter(c=>c.kind!=='entry')),access=[],free=p=>freePoint(walkable,p);
- function pave(from,to,width=.62){
+ function pave(from,to,width=.62,kind='service'){
   const a=free(from),b=free(to),middle=path(a,b,true);if(!middle)return;
   for(const p of middle){const k=p.x+','+p.z;if(!roadCells.has(k))roadCells.set(k,new Set(['walk']));}
-  const points=simplify([a,...middle,b].filter((p,i,list)=>!i||Math.hypot(p.x-list[i-1].x,p.z-list[i-1].z)>1e-7));if(points.length>1)access.push({points,width});
+  const points=simplify([a,...middle,b].filter((p,i,list)=>!i||Math.hypot(p.x-list[i-1].x,p.z-list[i-1].z)>1e-7));if(points.length>1)access.push({points,width,kind});
  }
  for(const d of DISTRICTS){
   pave(port(d.id),centre(d.id),1.4);
@@ -169,8 +174,9 @@ export function compileLayout(layout){
  for(const [id,front] of Object.entries(FRONTS)){const owner=id==='skin'?'workshop':front.district,p=transformPoint(layout,owner,front.depot);pave(port(owner),{x:p.x-1.15,z:p.z});}
  for(let slot=0;slot<9;slot++)pave(centre('gut'),transformPoint(layout,'gut',{x:SITES.gut.x+3.5+slot%3*.85,z:SITES.gut.z+2+Math.floor(slot/3)*.85}));
  const patrol=WALLS.map(w=>free(groundPoint(w.inside)));
- for(let i=0;i<patrol.length;i++)pave(patrol[i],patrol[(i+1)%patrol.length],.65);
- const near=patrol.reduce((a,b)=>Math.hypot(a.x-port('workshop').x,a.z-port('workshop').z)<Math.hypot(b.x-port('workshop').x,b.z-port('workshop').z)?a:b);pave(port('workshop'),near,.65);
+ for(let i=0;i<patrol.length;i++)pave(patrol[i],patrol[(i+1)%patrol.length],.65,'patrol');
+ for(const t of skinTissuesAt(layout).values()){pave(patrol[t.skinWall],groundPoint(t.point),.8,'patrol');pave(port(t.district),groundPoint(t.point),.65,'patrol');}
+ const near=patrol.reduce((a,b)=>Math.hypot(a.x-port('workshop').x,a.z-port('workshop').z)<Math.hypot(b.x-port('workshop').x,b.z-port('workshop').z)?a:b);pave(port('workshop'),near,.65,'patrol');
  const entrances=Object.values(entries),navigation=roadNavigator([...streets.runs.map(r=>r.points),...access.map(r=>r.points)]);pathCache.clear();
  const result={connections,vascular,entries,entrances,roadCells,streets,access,navigation,occupied,walkable,path,districts,valid:connections.every(c=>c.ok),ports:Object.fromEntries(layoutPlaceables(layout).map(d=>[d.id,port(d.id)]))};compiled.set(layout,result);return result;
 }
@@ -207,8 +213,22 @@ export function cityRoute(s,from,to){
  return [...out,...back].map(groundCoordinate);
 }
 export const intakeRoute=s=>s?.layout?compileLayout(s.layout).entries.gut.map(groundCoordinate):FOOD_ROAD;
-export function tissueAt(s,t){const id='house-'+t.index,base=t.managed?placeable(id).origin:t,p=transformPoint(s?.layout,id,base);return {...t,...p,point:localPoint(s,id,{x:base.x,z:base.z+1.4})};}
-export const tissuePresent=(s,t)=>!s.layout?!t.managed:!!s.layout.items['house-'+t.index]&&!storedPlacement(s.layout.items['house-'+t.index]);
+const skinCache=new WeakMap();
+function skinTissuesAt(layout){
+ if(!layout)return new Map();if(skinCache.has(layout))return skinCache.get(layout);
+ const occupied=new Set(layoutPlaceables(layout).flatMap(d=>occupiedTiles(d.id,layout.items[d.id])).map(p=>p.col+','+p.row)),result=new Map();
+ for(const t of SKIN_TISSUES){
+  let chosen=null;
+  for(const tangent of [0,3,-3,6,-6]){const x=t.x-t.nz*tangent,z=t.z+t.nx*tangent;let free=insideCity(x,z,3);
+   for(let a=Math.round(x)-2;a<=Math.round(x)+2;a++)for(let b=Math.round(z)-2;b<=Math.round(z)+2;b++)if(occupied.has(a+','+b))free=false;
+   if(free){chosen={...t,x,z,point:groundCoordinate({x:x-t.nx*2.4,z:z-t.nz*2.4})};break;}
+  }
+  if(chosen)result.set(t.id,chosen);
+ }
+ skinCache.set(layout,result);return result;
+}
+export function tissueAt(s,t){if(t.skinWall!=null)return skinTissuesAt(s?.layout).get(t.id)||t;const id='house-'+t.index,base=t.managed?placeable(id).origin:t,p=transformPoint(s?.layout,id,base);return {...t,...p,point:localPoint(s,id,{x:base.x,z:base.z+1.4})};}
+export const tissuePresent=(s,t)=>t.skinWall!=null?skinTissuesAt(s.layout).has(t.id):!s.layout?!t.managed:!!s.layout.items['house-'+t.index]&&!storedPlacement(s.layout.items['house-'+t.index]);
 export const depotAt=(s,id)=>transformPoint(s?.layout,id==='skin'?'workshop':id==='airway'?'lung':'gut',FRONTS[id].depot);
 // Map a saved actor through its nearest facility's local frame. Transit routes
 // are reissued; resources, jobs, IDs and progress are not recreated.
@@ -218,7 +238,7 @@ export function applyTileLayout(s,next){
  for(const a of [...s.cells,...s.shipments,...s.debris,...s.enemies]){
   if(a.front&&!a.entered||a.frontJob!=null&&a.frontStage==='repair')continue;const frame=a.tissueJob!=null?'house-'+TISSUES[a.tissueJob].index:a.frontJob!=null&&a.frontStage==='shop'?'workshop':(a.workplace?stationOwner(old,a.workplace.site,a.workplace.role,a.workplace.slot):a.activity?.site);Object.assign(a,mapped(a,frame));
   if(a.activity)Object.assign(a.activity,mapped(a.activity,frame||a.activity.site));
-  if(a.path){a.path=[];a.step=0;delete a.roadPathVersion;a.queueMove=null;a.assignment=null;a.staged=false;}
+  if(a.path){a.path=[];a.step=0;delete a.roadPathVersion;a.queueMove=null;a.assignment=null;a.staged=false;a.perfusionId=null;}
   if(a.immuneMove!=null)a.immuneMove=null;
  }
  if(s.immunity)for(const a of [...s.immunity.infected,...s.immunity.parasites,...s.immunity.exposures,...s.immunity.nets])Object.assign(a,mapped(a,a.site));

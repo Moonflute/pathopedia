@@ -32,7 +32,7 @@ export function createActors(profile){
  const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={},last=new Map(),positions=[];let lastRun=null,lastLayout=null,elevation=0;
  const capacity=profile.maxCells+profile.maxShipments,standard=new T.MeshStandardMaterial({color:0xffffff,roughness:.9}),flat=new T.MeshBasicMaterial({color:0xffffff});
  const body=new T.SphereGeometry(1,profile.mobile?10:12,profile.mobile?7:8),hat=new T.SphereGeometry(1,profile.mobile?8:10,profile.mobile?5:6),small=new T.SphereGeometry(1,6,4),box=new T.BoxGeometry(1,1,1),rod=new T.CylinderGeometry(1,1,1,6),rim=new T.TorusGeometry(1,.13,4,12);
- function batch(id,geometry,limit=capacity,shadow=true,unlit=false){const m=new T.InstancedMesh(geometry,unlit?flat:standard,limit);m.name=id;m.instanceMatrix.setUsage(T.DynamicDrawUsage);m.count=0;m.frustumCulled=false;m.castShadow=shadow;m.receiveShadow=!unlit;root.add(m);batches[id]=m;}
+ function batch(id,geometry,limit=capacity,shadow=true,unlit=false){const m=new T.InstancedMesh(geometry,unlit?flat:standard,limit);m.name=id;m.instanceMatrix.setUsage(T.DynamicDrawUsage);m.instanceColor=new T.InstancedBufferAttribute(new Float32Array(limit*3).fill(1),3);m.instanceColor.setUsage(T.DynamicDrawUsage);m.count=0;m.frustumCulled=false;m.castShadow=shadow;m.receiveShadow=!unlit;root.add(m);batches[id]=m;}
  batch('body',body);batch('cap',hat);batch('eyes',small,capacity*2,false);batch('feet',small,capacity*2);batch('hands',small,capacity*2,false);
  batch('box',box,capacity*5);batch('pod',small,capacity*8,false);batch('rod',rod,capacity*5,false);batch('rim',rim,capacity*3,false);batch('badge',new T.IcosahedronGeometry(1,0),capacity*7,false);
  batch('enemy',new T.IcosahedronGeometry(1,1),profile.maxEnemies*4);batch('spikes',new T.ConeGeometry(1,1,5),profile.maxEnemies*4);batch('enemyEyes',small,profile.maxEnemies*2,false);
@@ -56,13 +56,13 @@ export function createActors(profile){
   if(distance>.00001)angle=Math.atan2(p.x-prev.x,p.z-prev.z);
   else if(at&&Math.hypot(at.x-p.x,at.z-p.z)>.01)angle=Math.atan2(at.x-p.x,at.z-p.z);
   last.set(id,{x:p.x,z:p.z,angle,movedAt});
-  const transfer=doing==='load'||doing==='unload',hammering=['build','repair','fabricate'].includes(doing),firing=doing==='shoot',engulf=doing==='engulf',producing=doing==='produce';
+  const transfer=doing==='load'||doing==='unload',hammering=['build','repair','fabricate'].includes(doing),firing=doing==='shoot',engulf=doing==='engulf',striking=doing==='cytotoxic'||doing==='degranulate',producing=doing==='produce';
   const beat=Math.sin(progress*Math.PI),strike=hammering?(progress<.48?progress/.48:progress<.68?1-(progress-.48)/.2:0):0;
-  const recoil=firing?Math.pow(1-progress,3):0,reach=engulf?Math.sin(Math.PI*progress):doing==='collect'?beat*.65:0;
+  const recoil=firing?Math.pow(1-progress,3):0,reach=engulf||striking?Math.sin(Math.PI*progress):doing==='collect'?beat*.65:0;
   const stride=t*(kind==='macrophage'?8:kind==='platelet'?14:11)+phase;
   const waiting=!!unit.waitReason&&!moving;
   const bob=onWater?-.12+Math.sin(t*2.2+phase)*.025:act?-beat*(hammering?.04:.018):moving?Math.abs(Math.sin(stride))*.055:Math.sin(t*(waiting?3:2)+phase)*(waiting?.025:.012);
-  const base=unit.integrity<40?'#bfb9ab':kind==='rbc'?(unit.cargo>0?'#df7363':'#6697bd'):CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf?reach*.23:firing?-recoil*.1:0;
+  const base=unit.integrity<40?'#bfb9ab':kind==='rbc'?(unit.cargo>0?'#df7363':'#6697bd'):CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf||striking?reach*.43:firing?-recoil*.17:0;
   const part=(id,x,y,z,sx,sy,sz,c,rx=0,rz=0)=>put(id,p.x+x*cs+(z+shift)*sn,y+bob,p.z-x*sn+(z+shift)*cs,sx,sy,sz,c,rx,angle,rz);
   part('body',0,look.y,0,look.w*(1+reach*.12),look.h*(1-reach*.12),look.w*.88,base);
   if(kind==='rbc'){part('rim',0,.51,0,.25,.25,.25,look.hat,Math.PI/2);part('cap',0,.485,0,.18,.035,.16,0xc65b67);}
@@ -72,7 +72,7 @@ export function createActors(profile){
   for(let i=0;i<2;i++){
    const side=i?1:-1,h=hands[i];
    if(transfer){h.x=side*.23;h.y=.46+beat*.16;h.z=.22+beat*.16;}
-   else if(engulf||doing==='collect'){h.x=side*(.35-reach*.15);h.y=.36;h.z=.17+reach*.42;}
+   else if(engulf||striking||doing==='collect'){h.x=side*(.39-reach*.16);h.y=.4+reach*.13;h.z=.17+reach*.6;}
    else if(kind==='courier'){h.x=side*.24;h.z=.4;}
    else if(moving)h.z=Math.sin((onWater?t*2:stride)+side)*(onWater?.035:.09);
    else if(waiting){h.y+=Math.sin(t*2+phase)*.035;h.z=.06;}
@@ -184,6 +184,10 @@ export function createActors(profile){
   if(doing==='present'||doing==='prime'){for(const side of [-1,1])put('box',p.x+side*.13,.96+beat*.09,p.z,.12,.13,.045,doing==='present'?0xb8cd89:0x8fc9d0);}
   if(doing==='degranulate'&&at){for(let n=0;n<5;n++){const q=Math.min(1,progress*1.4),spread=(n-2)*.12;put('badge',p.x+(at.x-p.x)*q+spread,.5+Math.sin(q*Math.PI)*.5,p.z+(at.z-p.z)*q-spread,.065,.08,.065,0xe3a597);}}
   if(doing==='cytotoxic'&&at){line(p.x,.5,p.z,at.x,.3,at.z,.05,0x9299d3);put('selected',at.x,.11,at.z,.75+beat*.45,.75+beat*.45,.75+beat*.45,0xc190c2,Math.PI/2);}
+  if((engulf||striking)&&at){
+   put('selected',p.x+sn*.55,.45,p.z+cs*.55,1.1+reach*.65,1.1+reach*.65,1.1+reach*.65,engulf?0xffde8c:0xb6b7ef,Math.PI/2,angle);
+   if(progress>.42&&progress<.8){const q=(progress-.42)/.38;for(let n=0;n<4;n++){const a=n*Math.PI/2+angle,r=.2+q*.55;line(at.x+Math.cos(a)*r,.4+q*.45,at.z+Math.sin(a)*r,at.x+Math.cos(a)*(r+.22),.55+q*.45,at.z+Math.sin(a)*(r+.22),.045,0xffe2a0);}}
+  }
   if(doing==='regulate'){const r=.9+progress;put('selected',p.x,.1,p.z,r,r,r,0x87d6b6,Math.PI/2);}
   if(doing==='signal'||doing==='patch')put('selected',p.x,.08,p.z,1+beat*.6,1+beat*.6,1+beat*.6,doing==='signal'?0x85c2cb:0xe3bd82,Math.PI/2);
   if(onWater&&moving)put('selected',p.x-sn*.18,-.135,p.z-cs*.18,kind==='courier'?1.2:.85,.65,kind==='courier'?1.2:.85,0xa8d8cf,Math.PI/2);
@@ -195,15 +199,16 @@ export function createActors(profile){
   const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time,entries=s.layout?compileLayout(s.layout).entries:{};elevation=0;
   for(const m of Object.values(batches))m.count=0;positions.length=0;const living=new Set(),drug=DRUGS.find(d=>d.id===s.drug);
   for(const c of s.cells.slice(0,profile.maxCells)){const p=point(c,c.id);if(visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability,canals?.isWater(p));}
-  for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;elevation=sh.kind==='raw'?entryTrackHeight(entries.gut,p):0;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability,!elevation&&canals?.isWater(p));}
+  for(const sh of s.shipments.slice(0,profile.maxShipments)){if(sh.harbourUntil>s.time)continue;const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;elevation=sh.kind==='raw'?entryTrackHeight(entries.gut,p):0;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability,!elevation&&canals?.isWater(p));}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
    const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);elevation=!e.entered?entryTrackHeight(entries[e.front],p):0;
    const target=e.action==='attack'&&e.attackX!=null?groundPoint({x:e.attackX,y:e.attackY}):null;
    const moved=prev&&Math.hypot(p.x-prev.x,p.z-prev.z)>.00001;
    const angle=moved?Math.atan2(p.x-prev.x,p.z-prev.z):target&&Math.hypot(target.x-p.x,target.z-p.z)>.001?Math.atan2(target.x-p.x,target.z-p.z):prev?.angle??0;
    last.set(id,{x:p.x,z:p.z,angle});if(visible&&!visible(p))continue;
-   const def=pathogenDef(e.recordId),shape=def?.shape,bacillus=shape==='rod'||shape==='shortRod',color=e.color||def?.color||'#bc856f',cs=Math.cos(angle),sn=Math.sin(angle);
-   const part=(id,x,y,z,sx,sy,sz,c,rz=0)=>put(id,p.x+x*cs+z*sn,y,p.z-x*sn+z*cs,sx,sy,sz,c,0,angle,rz);
+   const def=pathogenDef(e.recordId),shape=def?.shape,bacillus=shape==='rod'||shape==='shortRod',hit=Math.max(0,(e.hitUntil||0)-time)/.28,color=hit>.4?0xffd49b:e.color||def?.color||'#bc856f',cs=Math.cos(angle),sn=Math.sin(angle),attacking=e.action==='attack'||e.action==='breach';
+   const phase=(time*1.8+e.id*.17)%1,lunge=attacking?Math.max(0,Math.sin((phase-.2)*Math.PI*2))*.35:0,shake=hit*Math.sin(time*55+e.id)*.09,scale=1.24;
+   const part=(id,x,y,z,sx,sy,sz,c,rz=0)=>put(id,p.x+(x*cs+(z+lunge)*sn)*scale+shake,(y+Math.sin(phase*Math.PI)*lunge*.35)*scale,p.z+(-x*sn+(z+lunge)*cs)*scale-shake,sx*scale,sy*scale,sz*scale,c,0,angle,rz+(attacking?Math.sin(phase*Math.PI*2)*.12:0));
    const pulse=e.action==='attack'?1+Math.sin(time*9+e.id)*.09:1,depth=bacillus?(shape==='shortRod'?.43:.57):.36;
    part('enemy',0,.35,0,(bacillus?.27:.36)*pulse,bacillus?.25:.34,depth,color);
    if(['cluster','chain','pair'].includes(shape))for(let n=0;n<(shape==='cluster'?3:shape==='chain'?3:1);n++){
@@ -212,6 +217,7 @@ export function createActors(profile){
    }
    for(let n=0;n<4;n++){const a=n*Math.PI/2;part('spikes',Math.cos(a)*.3,.62,Math.sin(a)*depth*.85,.09,.3,.09,color,Math.cos(a)*.5);}
    for(const side of [-1,1])part('enemyEyes',side*.115,.42,depth*.91,.04,.05,.03,0x41464c);
+   if(attacking)for(const side of [-1,1])line(p.x+sn*.25+cs*side*.1,.65,p.z+cs*.25-sn*side*.1,p.x+sn*.25+cs*side*.23,.7,p.z+cs*.25-sn*side*.23,.035,0x584744);
    if(def?.capsule)put('selected',p.x,.22,p.z,1.2,1.2,1.2,e.opsonized>.08?0xf1d58e:0xb5cbd3,Math.PI/2);
    if(e.action==='approach'&&e.entered&&e.attackX!=null){
     const target=groundPoint({x:e.attackX,y:e.attackY}),q=(time*.8+e.id*.13)%1;

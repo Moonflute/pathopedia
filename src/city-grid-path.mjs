@@ -34,16 +34,16 @@ export function streetNetwork(connections){
 // {points, oneWay:true} is a directed vessel. Connections require shared nodes.
 export function roadNavigator(lines){
  const nodes=new Map(),edges=[],edgeKeys=new Set(),buckets=new Map(),distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z),pointKey=p=>Math.round(p.x*1e6)+','+Math.round(p.z*1e6);
- const node=p=>{const k=pointKey(p);if(!nodes.has(k))nodes.set(k,{...p,key:k,links:[]});return nodes.get(k);};
- function edge(a,b,oneWay=false){
-  const length=distance(a,b);if(length<1e-7)return;const u=node(a),v=node(b),k=(oneWay?[u.key,v.key]:[u.key,v.key].sort()).join('>')+':'+oneWay;if(edgeKeys.has(k))return;edgeKeys.add(k);
+ const node=(p,layer,junctions)=>{const k=junctions?.get(pointKey(p))||(layer?layer+':':'')+pointKey(p);if(!nodes.has(k))nodes.set(k,{...p,key:k,links:[]});return nodes.get(k);};
+ function edge(a,b,oneWay=false,layer='',junctions=null){
+  const length=distance(a,b);if(length<1e-7)return;const u=node(a,layer,junctions),v=node(b,layer,junctions),k=(oneWay?[u.key,v.key]:[u.key,v.key].sort()).join('>')+':'+oneWay;if(edgeKeys.has(k))return;edgeKeys.add(k);
   const e={a:u,b:v,length,oneWay,id:edges.length};edges.push(e);u.links.push({node:v,length});if(!oneWay)v.links.push({node:u,length});
   for(let x=Math.floor(Math.min(a.x,b.x)/4);x<=Math.floor(Math.max(a.x,b.x)/4);x++)for(let z=Math.floor(Math.min(a.z,b.z)/4);z<=Math.floor(Math.max(a.z,b.z)/4);z++){const key=x+','+z;if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(e);}
  }
- for(const line of lines){const points=line.points||line;for(let i=1;i<points.length;i++){
+ for(const line of lines){const points=line.points||line,junctions=line.junctions&&new Map(line.junctions.map(j=>[pointKey(j.point),j.id]));for(let i=1;i<points.length;i++){
   const a=points[i-1],b=points[i],axis=Math.abs(a.x-b.x)<1e-7?'z':Math.abs(a.z-b.z)<1e-7?'x':null,parts=[a];
   if(axis){const lo=Math.min(a[axis],b[axis]),hi=Math.max(a[axis],b[axis]);for(let n=Math.floor(lo)+1;n<hi-1e-7;n++)parts.push({...a,[axis]:n});parts.splice(1,parts.length-1,...parts.slice(1).sort((p,q)=>(p[axis]-q[axis])*Math.sign(b[axis]-a[axis])));}
-  parts.push(b);for(let j=1;j<parts.length;j++)edge(parts[j-1],parts[j],line.oneWay===true);
+  parts.push(b);for(let j=1;j<parts.length;j++)edge(parts[j-1],parts[j],line.oneWay===true,line.layer,junctions);
  }}
  function nearest(p){
   const x=Math.floor(p.x/4),z=Math.floor(p.z/4),seen=new Set();let best=null;

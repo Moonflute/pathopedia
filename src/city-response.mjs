@@ -4,6 +4,7 @@ import {WALLS,TISSUES} from './city-frontier-data.mjs';
 import {CITY_ENTRIES} from './city-world.mjs';
 import {siteAt,tissuePresent} from './city-tile-layout.mjs';
 import {groundPoint} from './city-three-layout.mjs';
+import {infectionFocus} from './city-infection-focus.mjs';
 
 export const RESPONSE_STEPS=['진입','선천 방어','항원 전달','후천 반응','제거','복구'];
 const fronts={skin:'피부',airway:'호흡기',gut:'소화기',blood:'혈류'};
@@ -44,7 +45,7 @@ export function tickResponse(s){
 export function responseView(s,selected=null){
  const list=s.immunity?.response?.episodes||[],e=list.find(e=>e.recordId+'@'+e.started===selected)||list.find(e=>e.closedAt==null)||list[0];if(!e)return null;
  const c=e.counts||{},name=immuneAntigen(e.recordId)?.name||e.recordId,dc=s.cells.find(c=>c.kind==='dendritic'&&c.recordId===e.recordId&&c.immuneState==='migrating');
- const site=siteAt(s.layout,e.site),entry=e.front==='skin'?WALLS[e.wall??11]:CITY_ENTRIES[e.front]?.mouth||CITY_ENTRIES[e.front]?.portal||site;
+ const site=groundPoint(infectionFocus(s,e.site,e.recordId)),entry=e.front==='skin'?WALLS[e.wall??11]:CITY_ENTRIES[e.front]?.mouth||CITY_ENTRIES[e.front]?.portal||site;
  const cleared=e.closedAt!=null||e.active?.[4],stage=cleared?5:e.seen[3]!=null?3:e.seen[2]!=null?2:e.seen[1]!=null?1:0;
  const detail=[`${c.incoming||0}개 접근`,`${c.innate||0}세포 반응${c.barrier?' · 점액 포획 '+c.barrier:''}`,`수지상세포 ${c.dc||0}`,`T·B·형질 ${c.adaptive||0} · 항체 ${c.antibodies||0}`,cleared?'감염 제거':'감염 진행',e.closedAt!=null?'조직 안정':`복구 ${c.repair||0} · 조직 ${c.hp??100}%`];
  return {episode:e,name,route:fronts[e.front]||'조직',stage,steps:RESPONSE_STEPS.map((name,n)=>({name,detail:detail[n],state:e.closedAt!=null&&e.seen[n]==null?'skipped':n>=4&&!cleared?'waiting':n===stage?'active':e.seen[n]!=null?'done':'waiting',point:n===0?entry:n===2?(dc?groundPoint(dc):siteAt(s.layout,'lymph')):n===3?siteAt(s.layout,'lymph'):n===5&&e.wall!=null?WALLS[e.wall]:site}))};

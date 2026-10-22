@@ -4,7 +4,10 @@ import fs from 'node:fs';
 import {createCity,tickCity,command,serializeCity,restoreCity} from '../src/city-engine.mjs';
 import {PATHOGENS,pathogenDef,pathogenTarget,spreadDestination} from '../src/city-pathogens.mjs';
 import {createTileLayout,applyTileLayout,cityDistrict,tissueAt} from '../src/city-tile-layout.mjs';
-import {WALLS,TISSUES} from '../src/city-frontier-data.mjs';
+import {WALLS,TISSUES,SKIN_TISSUES} from '../src/city-frontier-data.mjs';
+import {combatDestination} from '../src/city-biology.mjs';
+import {infectionFocus} from '../src/city-infection-focus.mjs';
+import {cityAlarmPoints} from '../src/city-three-alarms.mjs';
 import {tickFrontierEnemy} from '../src/city-frontier.mjs';
 import {createActors} from '../src/city-three-actors.mjs';
 import {createFrontierScene} from '../src/city-three-frontier.mjs';
@@ -15,6 +18,18 @@ const data=JSON.parse(fs.readFileSync(new URL('../data/organisms.json',import.me
 const city=()=>createCity('normal','simulation',{specialists:true});
 const advance=(s,n)=>{for(let i=0;i<n*20;i++)tickCity(s,.05,data);};
 const api={log(){},damage(){}};
+
+test('each skin breach damages its local tissue first and recruits cells to that actual position',()=>{
+ const s=city();applyTileLayout(s,createTileLayout());const c=s.cells.find(c=>c.kind==='neutrophil');
+ for(const wall of WALLS){
+  const e={id:900+wall.id,recordId:'SAU-002',front:'skin',wall:wall.id,entered:true,hp:50,maxHp:50,...wall.inside};
+  const target=pathogenTarget(s,e);assert.equal(target.id,SKIN_TISSUES[wall.id].id);Object.assign(e,target.point,{site:target.site});s.enemies=[e];
+  const focus=infectionFocus(s,target.site,e.recordId,c),destination=combatDestination(s,c);assert.equal(focus.x,e.x);assert.equal(focus.y,e.y);assert.equal(destination.focusKey,'skin:'+wall.id);assert.equal(destination.x,e.x);
+  const before=s.frontier.tissues[target.id].hp;for(let n=0;n<80&&s.frontier.tissues[target.id].hp===before;n++)tickFrontierEnemy(s,e,.2,api);assert.ok(s.frontier.tissues[target.id].hp<before);
+  const alarm=cityAlarmPoints(s)[0];assert.equal(alarm.inside,1);assert.match(alarm.text,/침입/);
+  s.frontier.tissues[target.id].hp=0;assert.notEqual(pathogenTarget(s,e).id,target.id);s.time++;
+ }
+});
 
 test('twelve sourced isolates expose supported routes and larger bounded introductions',()=>{
  const s=city();applyTileLayout(s,createTileLayout());

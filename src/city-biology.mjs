@@ -5,6 +5,7 @@ import {WALLS} from './city-frontier-data.mjs';
 import {approachWorkplace,releaseWorkplace} from './city-workplaces.mjs';
 import {pathogenDef,EXPOSURE_COUNTS,spreadDestination} from './city-pathogens.mjs';
 import {humoralSupport,immuneClearance,immuneEfferocytosis} from './city-immunity.mjs';
+import {infectionFoci} from './city-infection-focus.mjs';
 export {PATHOGENS,pathogenDef,EXPOSURE_COUNTS} from './city-pathogens.mjs';
 
 // Relative teaching units and accelerated time, never clinical doses or PK estimates.
@@ -173,6 +174,11 @@ export function combatDestination(s,c){
  if(order.mode!=='auto')return cityDistrict(s,order.mode==='recover'?'heart':order.site);
  const target=s.rules?.entries?.[c.kind]?.target;
  if(target&&target!=='pathogens')return cityDistrict(s,{skinThreat:'gut',airwayThreat:'lung',gutThreat:'gut',bloodThreat:'heart'}[target]||s.rally);
+ const foci=infectionFoci(s);
+ if(foci.length){
+  const focus=[...foci].sort((a,b)=>(distance(c,a)/(1+Math.sqrt(a.count)))-(distance(c,b)/(1+Math.sqrt(b.count))))[0];
+  return {...cityDistrict(s,focus.site),x:focus.x,y:focus.y,focusKey:focus.key};
+ }
  let cached=threatCache.get(s);
  if(!cached||cached.time!==s.time||cached.enemies!==s.enemies){
   const counts={};for(const e of s.enemies)if(!e.dead){const id=infectionSite(e);counts[id]=(counts[id]||0)+1;}

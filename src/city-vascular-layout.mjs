@@ -1,8 +1,10 @@
-import {compileLayout,walkingRoute,stationOwner,placeable,transformPoint} from './city-tile-layout.mjs';
+import {compileLayout,walkingRoute,stationOwner,placeable,transformPoint,tissueAt,tissuePresent} from './city-tile-layout.mjs';
 import {groundPoint,groundCoordinate,workStationPoints} from './city-three-layout.mjs';
 import {CITY_CAPS} from './city-world.mjs';
 import {gridPath,roadNavigator} from './city-grid-path.mjs';
 import {insideCity,rimPoint} from './city-boundary.mjs';
+import {SKIN_TISSUES} from './city-frontier-data.mjs';
+export const SYSTEMIC_RADII=Object.freeze({artery:31,vein:28.6});
 
 // Two directed trunks share each corridor: outward arteries and returning veins.
 // They meet only at the heart and local exchange beds. Pulmonary circulation has
@@ -40,11 +42,11 @@ export function compileVascularLayout(layout){
  const network=compileLayout(layout),centres=Object.fromEntries(network.districts.map(d=>[d.id,groundPoint(d)])),heart=centres.heart;
  const vessels=[],beds=[],lines=[];
  const allowed=p=>insideCity(p.col,p.row,1.6)&&!network.occupied.has(p.col+','+p.row);
- const free=p=>allowed({col:Math.round(p.x),row:Math.round(p.z)});
+ const free=p=>[[0,0],[.08,.08],[-.08,.08],[.08,-.08],[-.08,-.08]].every(([x,z])=>allowed({col:Math.round(p.x+x),row:Math.round(p.z+z)}));
  const clear=(a,b)=>{const steps=Math.max(2,Math.ceil(distance(a,b)*8));for(let i=0;i<=steps;i++)if(!free({x:a.x+(b.x-a.x)*i/steps,z:a.z+(b.z-a.z)*i/steps}))return false;return true;};
  const safe=p=>{if(free(p))return p;for(let r=1;r<8;r++)for(let z=-r;z<=r;z++)for(let x=-r;x<=r;x++){const q={x:Math.round(p.x)+x,z:Math.round(p.z)+z};if(free(q))return q;}return p;};
  const link=(a,b,cost=()=>1)=>{if(clear(a,b))return [a,b];const middle=gridPath({col:Math.round(a.x),row:Math.round(a.z)},{col:Math.round(b.x),row:Math.round(b.z)},allowed,cost,12000);return simplify([a,...(middle||[]),b]);};
- const add=(id,kind,points,width,site,circuit='systemic')=>{const v=flow(id,kind,points,width,site==='lung'?kind==='vein':kind==='artery');Object.assign(v,{site,circuit,oneWay:true});vessels.push(v);lines.push(v);return v;};
+ const add=(id,kind,points,width,site,circuit='systemic')=>{const safePoints=[];for(let i=1;i<points.length;i++)safePoints.push(...link(points[i-1],points[i]).slice(0,-1));safePoints.push(points.at(-1));const v=flow(id,kind,id.startsWith('systemic-')?clean(safePoints):simplify(safePoints),width,site==='lung'?kind==='vein':kind==='artery');Object.assign(v,{site,circuit,oneWay:true,layer:id});vessels.push(v);lines.push(v);return v;};
  function ring(radius){
   const gates=Array.from({length:72},(_,n)=>safe(rimPoint(-Math.PI/2+n*Math.PI/36,radius))),points=[];
   for(let n=0;n<gates.length;n++)points.push(...link(gates[n],gates[(n+1)%72],p=>1+Math.abs(Math.hypot(p.col,p.row)-radius)*2).slice(0,-1));
@@ -52,15 +54,15 @@ export function compileVascularLayout(layout){
  }
  // Blood exits the heart, traverses a circular supply ring, exchanges in a
  // tissue bed, then continues clockwise on the return ring to the heart.
- const arterial=ring(40.2),venous=ring(37.8);
+ const arterial=ring(SYSTEMIC_RADII.artery),venous=ring(SYSTEMIC_RADII.vein);
  add('systemic-arterial-ring','artery',arterial.points,1.65,'body');
  add('systemic-venous-ring','vein',venous.points,1.5,'body');
- const stem=link(heart,safe({x:39,z:0}));
+ const stem=link(heart,safe({x:29.8,z:0}));
  add('aorta','artery',[...lane(stem,1,network).slice(0,-1),arterial.gates[18]],1.2,'body');
  add('vena-cava','vein',[venous.gates[18],...lane(stem,-1,network).slice(0,-1).reverse()],1.2,'body');
  for(const id of ['gut','kidney','marrow','lymph']){
   const p=centres[id],angle=(Math.atan2(p.z,p.x)+Math.PI/2+Math.PI*2)%(Math.PI*2),n=Math.round(angle/Math.PI*36)%72;
-  const base=link(p,safe(rimPoint(-Math.PI/2+n*Math.PI/36,39)));
+  const base=link(p,safe(rimPoint(-Math.PI/2+n*Math.PI/36,29.8)));
   add('artery-'+id,'artery',[arterial.gates[n],...lane(base,1,network).slice(0,-1).reverse()],.95,id);
   add('vein-'+id,'vein',[...lane(base,-1,network).slice(0,-1),venous.gates[n]],.95,id);
  }
@@ -69,17 +71,36 @@ export function compileVascularLayout(layout){
  const pulmonaryBase=simplify([heart,...(pulmonary||network.vascular.lung),lung]);
  add('artery-lung','artery',lane(pulmonaryBase,1,network),1.25,'lung','pulmonary');
  add('vein-lung','vein',lane(pulmonaryBase,-1,network).reverse(),1.25,'lung','pulmonary');
+ const peripheral=[];
+ for(const t of SKIN_TISSUES){
+  if(!tissuePresent({layout},t))continue;
+  const p=safe(groundPoint(tissueAt({layout},t).point)),angle=(Math.atan2(p.z,p.x)+Math.PI/2+Math.PI*2)%(Math.PI*2),n=Math.round(angle/Math.PI*36)%72;
+  const base=link(p,safe(rimPoint(-Math.PI/2+n*Math.PI/36,29.8)));
+  add('artery-skin-'+t.skinWall,'artery',[arterial.gates[n],...lane(base,1,network).slice(0,-1).reverse()],.65,'skin');
+  add('vein-skin-'+t.skinWall,'vein',[...lane(base,-1,network).slice(0,-1),venous.gates[n]],.58,'skin');
+  peripheral.push({id:t.id,site:t.district,point:p});
+ }
  for(const [id,centre] of Object.entries(centres)){
   const branches=[];
   for(const role of ['oxygen','dock'])for(let slot=0;slot<(role==='oxygen'?CITY_CAPS.workSlots:1+CITY_CAPS.extensions);slot++){
    const owner=stationOwner(layout,id,role,slot),bay=workStationPoints(id,role,slot,owner!==id?placeable(owner).origin:null),stand=transformPoint(layout,owner,bay.stand);
    const points=simplify([centre,...walkingRoute(layout,groundCoordinate(centre),[groundCoordinate(stand)]).map(groundPoint)]);
-   if(points.length<2)continue;branches.push(points);lines.push({points});
+   if(points.length<2)continue;branches.push(points);lines.push({points,layer:'bed:'+id,junctions:[{point:centre,id:'exchange:'+id}]});
   }
   beds.push({id,centre,branches,width:.62});
  }
+ // Crossing vessels are not shunts: only authored gates and exchange beds
+ // connect the two circulations, even when a narrow old block shares a quay.
+ const gateId=(kind,p)=>kind+':'+Math.round(p.x*1e6)+','+Math.round(p.z*1e6);
+ for(const v of vessels){
+  if(v.id==='systemic-arterial-ring'||v.id==='systemic-venous-ring'){const ring=v.kind==='artery'?arterial:venous;v.junctions=ring.gates.map(point=>({point,id:gateId(v.kind,point)}));continue;}
+  const first=v.points[0],last=v.points.at(-1),out=v.kind==='artery';
+  if(v.circuit==='pulmonary')v.junctions=[{point:first,id:'exchange:'+(out?'heart':'lung')},{point:last,id:'exchange:'+(out?'lung':'heart')}];
+  else if(v.id==='aorta'||v.id==='vena-cava')v.junctions=[{point:out?first:last,id:'exchange:heart'},{point:out?last:first,id:gateId(v.kind,out?last:first)}];
+  else {const id=v.site==='skin'?'skin-'+v.id.split('-').at(-1):v.site;v.junctions=[{point:out?first:last,id:gateId(v.kind,out?first:last)},{point:out?last:first,id:'exchange:'+id}];}
+ }
  const navigation=roadNavigator(lines);
- const result={vessels,beds,navigation,centres,systemic:{arterial,venous},pulmonary: vessels.filter(v=>v.circuit==='pulmonary')};cache.set(layout,result);return result;
+ const result={vessels,beds,navigation,centres,peripheral,systemic:{arterial,venous},pulmonary: vessels.filter(v=>v.circuit==='pulmonary')};cache.set(layout,result);return result;
 }
 
 // The engine keeps its jobs and cargo. Only long-distance RBC/courier navigation

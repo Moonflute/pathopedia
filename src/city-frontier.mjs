@@ -1,5 +1,5 @@
 import {CITY_ENTRIES,CITY_CAPS,shipmentLimit,pathogenLimit,travelScale} from './city-world.mjs';
-import {cityDistricts,cityDistrict,localPoint,siteAt,tissueAt,tissuePresent,depotAt,compileLayout} from './city-tile-layout.mjs';
+import {cityDistricts,cityDistrict,localPoint,siteAt,tissueAt,tissuePresent,depotAt,compileLayout,walkablePoint} from './city-tile-layout.mjs';
 import {DISTRICTS,DRUGS,WAVES,districtDef} from './city-data.mjs';
 import {groundPoint,groundCoordinate,SITES} from './city-three-layout.mjs';
 import {WALLS,WALL_COVERAGE,FRONTS,WORKSHOP,AIRWAY_PATH,TISSUES,INVESTMENTS,supportCount,districtName,wallState} from './city-frontier-data.mjs';
@@ -15,7 +15,7 @@ const shop=s=>localPoint(s,'workshop',{x:WORKSHOP.x+1.1,z:WORKSHOP.z+.5});
 export function ensureFrontier(s){
  if(!s.specialists||s.frontier)return;
  s.frontier={version:1,walls:WALLS.map(w=>({hp:100,repair:null,warningUntil:0})),plots:Object.fromEntries(DISTRICTS.map(d=>[d.id,[]])),depots:Object.fromEntries(Object.keys(FRONTS).map(id=>[id,{food:6,materials:0,ammo:{ampicillin:4,oxacillin:0,vancomycin:0}}])),airway:{mucus:0,cleared:0,boostUntil:0},gut:{quarantine:false},waste:{stock:0,processed:0},inbox:[],tissues:TISSUES.map(t=>({hp:100})),woundAt:s.time+70,woundId:11,woundDone:false,warned:false,supplyClock:10};
- s.frontier.rimVersion=1;s.workTicket??=0;
+ s.frontier.rimVersion=1;s.frontier.routesVersion=2;s.workTicket??=0;
 }
 export function wallMaximum(s,id){return 100+DISTRICTS.reduce((n,d)=>n+(WALL_COVERAGE[d.id].includes(id)?supportCount(s,d.id,'barrier')*35:0),0);}
 export function frontierDestination(sh,s){
@@ -146,7 +146,8 @@ export function tickFrontierEnemy(s,e,dt,api){
  const target=pathogenTarget(s,e),profile=pathogenDef(e.recordId);
  if(e.attackTarget?.kind!==target.kind||e.attackTarget?.id!==target.id||e.attackX!==target.point.x||e.attackY!==target.point.y){
   e.attackTarget={kind:target.kind,id:target.id};e.attackX=target.point.x;e.attackY=target.point.y;e.site=target.site;
-  const length=distance(e,target.point)||1,stand={x:target.point.x+(e.x-target.point.x)/length*12,y:target.point.y+(e.y-target.point.y)/length*12};
+  const length=distance(e,target.point)||1;let stand={x:target.point.x+(e.x-target.point.x)/length*12,y:target.point.y+(e.y-target.point.y)/length*12};
+  if(s.layout&&Number.isInteger(e.id)){const p=groundPoint(target.point),from=groundPoint(e),angle=Math.atan2(from.z-p.z,from.x-p.x)+(e.id%9-4)*.27,radius=.7+(Math.floor(e.id/9)%3)*.55;stand=groundCoordinate(walkablePoint(s.layout,{x:p.x+Math.cos(angle)*radius,z:p.z+Math.sin(angle)*radius}));}
   if(api.route)api.route(e,[stand]);else e.attackStand=stand;
  }
  e.action='approach';
@@ -277,7 +278,7 @@ export function validateFrontier(s){
  if(!f.depots||Object.keys(FRONTS).some(id=>!f.depots[id]||!n(f.depots[id].food,40)||!n(f.depots[id].materials,40)||DRUGS.some(d=>!n(f.depots[id].ammo?.[d.id],60))))return false;
  if(!f.airway||!n(f.airway.mucus,12)||!n(f.airway.cleared)||!n(f.airway.boostUntil)||typeof f.gut?.quarantine!=='boolean'||!n(f.waste?.stock,24)||!n(f.waste?.processed))return false;
  if(!Array.isArray(f.inbox)||f.inbox.length>12||f.inbox.some(x=>!pathogenDef(x.recordId)||!n(x.remaining,4)))return false;
- if(!Array.isArray(f.tissues)||![4,TISSUES.length].includes(f.tissues.length)||f.tissues.some(t=>!n(t.hp,100))||!n(f.woundAt)||!Number.isInteger(f.woundId)||!WALLS[f.woundId]||typeof f.woundDone!=='boolean'||typeof f.warned!=='boolean'||!Number.isFinite(f.supplyClock))return false;
+ if(!Array.isArray(f.tissues)||![4,35,TISSUES.length].includes(f.tissues.length)||f.tissues.some(t=>!n(t.hp,100))||!n(f.woundAt)||!Number.isInteger(f.woundId)||!WALLS[f.woundId]||typeof f.woundDone!=='boolean'||typeof f.warned!=='boolean'||!Number.isFinite(f.supplyClock))return false;
  for(const c of [...s.cells,...s.shipments]){const w=c.workplace;if(w&&(!districtDef(w.site)||!['oxygen','dock','produce','fabricate','waste','repair','rest'].includes(w.role)||w.key!==w.site+':'+w.role||!n(w.ticket)||w.slot!=null&&(!Number.isInteger(w.slot)||!n(w.slot,CITY_CAPS.workSlots-1))))return false;if(c.frontJob!=null&&!WALLS[c.frontJob]||c.tissueJob!=null&&!TISSUES[c.tissueJob]||c.debrisCargo!=null&&!n(c.debrisCargo,3)||c.materialCargo!=null&&!n(c.materialCargo,8))return false;}
  for(const sh of s.shipments){const d=sh.frontDelivery;if(d&&!(d.type==='wall'&&WALLS[d.id]||d.type==='depot'&&FRONTS[d.id]))return false;}
  for(const c of s.cells)if(c.patchWall!=null&&!WALLS[c.patchWall]||c.alertKind!=null&&!['threat','repair'].includes(c.alertKind)||c.alertUntil!=null&&!n(c.alertUntil))return false;

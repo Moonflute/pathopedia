@@ -13,6 +13,7 @@ import {workStation} from './city-activity.mjs';
 import {bundleModel,createBundleWalls} from './city-three-bundle.mjs';
 import {createEntryTracks} from './city-entry-tracks.mjs';
 import {createTissueScene} from './city-three-tissue.mjs';
+import {createCityPorts} from './city-three-ports.mjs';
 
 // All decorative meshes are baked once by material. Only working machinery moves.
 export function createVillage(assets,layout=null,editId=null,newAssets=null,theme='1'){
@@ -154,19 +155,8 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  box(portal.x,4.2,portal.z+.7,1.8,.88,.16,STYLE.teal);
  const oxygenO=make(new T.TorusGeometry(.27,.065,5,18),0xf2fff1,portal.x-.35,4.22,portal.z+.8);oxygenO.castShadow=false;
  for(const [dx,dy,w,h] of [[.28,.2,.34,.07],[.42,.08,.07,.27],[.28,-.04,.34,.07],[.14,-.18,.07,.27],[.28,-.31,.34,.07]])box(portal.x+dx,4.28+dy,portal.z+.81,w,h,.04,0xf2fff1);
- // A mouth-shaped gate frames the existing food/intestinal route; its centre is open.
- const mouth=CITY_ENTRIES.gut.mouth;
- for(const [dx,radius,tube,color] of [[.18,1.62,.23,0xcb8b83],[-.18,1.4,.15,0x8f5e59],[-1.4,1.32,.12,0xc5a68e],[-2.6,1.2,.12,0xc5a68e]]){
-  const arch=make(new T.TorusGeometry(radius,tube,7,24),color,mouth.x+dx,1.45,mouth.z);arch.rotation.y=dx>-.5?Math.PI/3:Math.PI/2;arch.scale.set(1.15,.83,1);
- }
- for(const z of [-.9,-.45,0,.45,.9]){
-  const top=2.5-Math.abs(z)*.18;box(mouth.x+.3-z*.5,top,mouth.z+z*.866,.34,.33,.34,STYLE.plaster);
-  box(mouth.x+.28-z*.5,.34+Math.abs(z)*.08,mouth.z+z*.866,.3,.18,.32,STYLE.plaster);
- }
- const tongue=orb(mouth.x-.65,.11,mouth.z,1,0xc59083);tongue.scale.set(2.05,.1,.83);
- box(mouth.x-1.1,.13,mouth.z,.035,.025,1.1,0xa5776b);
- for(const side of [-1,1]){box(mouth.x-1.7,.32,mouth.z+side*1.75,3.6,.64,.35,0xd6c4a7);model('lantern',mouth.x+.4,.02,mouth.z+side*2.15,.85);}
  if(network)for(const mesh of fixed.children.slice(portalStart))mesh.position.y+=1.65;
+ const portsScene=createCityPorts({layout,make,box,cylinder,model,fixed,moving});
  scope('workshop');
  if(newModel){
   const shop=cottage(WORKSHOP.x,WORKSHOP.z-1,1.9,.05,true);shop.scale.x*=1.25;
@@ -232,7 +222,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  scope(null);const water=transformPoint(layout,'kidney',{x:13,z:9});const drain=[{x:riverX(water.z),z:water.z},water];ribbon(drain,.6,0xb4bcb0,.14);ribbon(drain,.38,0x91bfba,.15);
  }
  const canalScene=canal?createCanalScenery({layout,make,box,cylinder,model,mat,scope,fixed,moving,ribbon}):null;
- const tissueScene=layout?createTissueScene(layout,canalScene?.canals.blocks.tissues):null;if(tissueScene)moving.add(tissueScene.root);
+ const tissueScene=layout?createTissueScene(layout,canalScene?.canals.blocks.tissues,canalScene?.canals.blocks.lung):null;if(tissueScene)moving.add(tissueScene.root);
  for(const [id,g] of owners.fixed)applyTransform(g,id);for(const [id,g] of owners.moving)applyTransform(g,id);
  // Selected geometry stays separate during editing, so dragging moves it without rebuilding.
  const preview=owners.fixed.get(editId);if(preview){fixed.remove(preview);root.add(preview);}
@@ -260,7 +250,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  const retainedMaterials=new Set();root.traverse(m=>{if(m.material)retainedMaterials.add(m.material);});for(const m of materials.values())if(!retainedMaterials.has(m))m.dispose();
  const sources=new Set();fixed.traverse(m=>{if(m.isMesh&&!m.userData.kenney&&!m.userData.cityAsset)sources.add(m.geometry);});for(const g of sources)g.dispose();
  return {root,districts,canals:canalScene?.canals,movePreview(a){if(preview)applyTransform(preview,editId,a);const g=owners.moving.get(editId);if(g)applyTransform(g,editId,a);},dispose(){bundleWalls?.dispose();const gs=new Set(),ms=new Set();root.traverse(m=>{if(m.isInstancedMesh)m.dispose();if(m.geometry&&!m.userData.kenney&&!m.userData.cityAsset)gs.add(m.geometry);if(m.material&&!m.userData.kenney&&!m.userData.cityAsset)ms.add(m.material);});for(const g of gs)g.dispose();for(const m of ms)if(!m.map)m.dispose();},update(s,options){
-  moving.visible=true;frontier.root.visible=true;supply.visible=!options.editor&&options.layer==='supply';
+  moving.visible=true;frontier.root.visible=true;supply.visible=!options.editor&&options.layer==='supply';portsScene.update(s);
   facilities.update(s);frontier.update(s,options);bundleWalls?.update(s,options);canalScene?.update(s);tissueScene?.update(s);
   for(const [id,d] of Object.entries(districts)){const state=s.districts[id];d.work.visible=!!state.building;d.tower.visible=state.tower>0;d.tower.scale.y=state.tower>1?1.25:1;const progress=state.building?.remaining==null?0:1-state.building.remaining/state.building.duration;d.work.userData.progress.scale.y=.3+progress*2;d.work.userData.progress.position.y=.4+d.work.userData.progress.scale.y*.11;d.level.children.forEach((m,i)=>m.visible=i<state.level-1);}
   ground.material.color.setHex(canal?CANAL_STYLE.water:s.host==='neutropenia'?0xd7c8a7:meadowColor);

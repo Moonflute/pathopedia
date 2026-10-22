@@ -16,8 +16,10 @@ test('systemic blood completes all four sides while pulmonary blood stays betwee
  const v=compileVascularLayout(createTileLayout());
  for(const id of ['gut','kidney','marrow','lymph']){
   const circuit=[...v.navigation.route(v.centres.heart,v.centres[id]),...v.navigation.route(v.centres[id],v.centres.heart)];
-  for(const axis of ['x','z']){assert.ok(Math.min(...circuit.map(p=>p[axis]))<-35,id+' negative '+axis);assert.ok(Math.max(...circuit.map(p=>p[axis]))>35,id+' positive '+axis);}
+  for(const axis of ['x','z']){assert.ok(Math.min(...circuit.map(p=>p[axis]))<-26,id+' negative '+axis);assert.ok(Math.max(...circuit.map(p=>p[axis]))>26,id+' positive '+axis);}
  }
+ assert.ok(v.systemic.arterial.points.every(p=>Math.hypot(p.x,p.z)<CITY_RADIUS-8),'trunk leaves a tissue neighbourhood before the skin');
+ assert.equal(v.peripheral.length,14);for(const bed of v.peripheral){assert.ok(Math.hypot(bed.point.x,bed.point.z)>33);assert.ok(v.navigation.route(v.centres.heart,bed.point)?.length);assert.ok(v.navigation.route(bed.point,v.centres.heart)?.length);}
  for(const id of ['artery-lung','vein-lung'])assert.ok(v.vessels.find(v=>v.id===id).points.every(p=>Math.hypot(p.x,p.z)<30));
  assert.equal(RIM_WALLS.length,14);for(const w of RIM_WALLS){assert.ok(wallPieces(w).length>3);for(const p of w.points)assert.ok(Math.abs(Math.hypot(p.x,p.z)-CITY_RADIUS)<1e-8);}
  const layout=createTileLayout();for(const wall of WALLS){const route=walkingRoute(layout,groundCoordinate(v.centres.heart),[wall.inside]),end=groundPoint(route.at(-1)),target=groundPoint(wall.inside);assert.ok(Math.hypot(end.x-target.x,end.z-target.z)<.01,'repair route '+wall.id);}

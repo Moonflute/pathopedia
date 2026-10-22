@@ -6,6 +6,7 @@ import {pathogenDef} from './city-pathogens.mjs';
 import {beginActivity,activityProgress,activeActivity} from './city-activity.mjs';
 import {approachWorkplace,releaseWorkplace} from './city-workplaces.mjs';
 import {cityRule,ruleReady} from './city-rules.mjs';
+import {infectionFocus} from './city-infection-focus.mjs';
 
 // Accelerated teaching compartments, not quantitative human physiology.
 export const IMMUNE_CHALLENGES=Object.freeze({
@@ -78,7 +79,7 @@ function clone(s,parent,kind,api,extra={}){
  s.resources.food-=2;const c=api.cell(s,kind,parent.x,parent.y);Object.assign(c,{cloneOf:parent.id,recordId:parent.recordId,immuneState:parent.immuneState,lineage:parent.lineage,cd40l:parent.cd40l,isotype:parent.isotype,activatedAt:s.time,...extra});s.immunity.stats.clones++;return c;
 }
 function go(s,c,p,key,dt,api,speed=65){
- if(c.immuneMove!==key){c.immuneMove=key;releaseWorkplace(c);api.route(c,[p]);}
+ if(c.immuneMove!==key||c.step>=c.path.length&&distance(c,p)>18){c.immuneMove=key;releaseWorkplace(c);api.route(c,[p]);}
  return api.move(c,speed*travelScale(s),dt);
 }
 function node(s,c,dt,api){
@@ -149,7 +150,7 @@ function dendritic(s,c,dt,api){
   const score=distance(c,at(s,site))+cells(s,'dendritic').filter(d=>d!==c&&d.recordId===id).length*120;if(!choice||score<choice.score)choice={id,site,score};
  }
  if(!choice||c.cooldown>0){c.task='항원 감시';patrol(s,c,dt,api,c.target||'lung');return;}
- c.task='항원 포획 · 성숙';if(!go(s,c,at(s,choice.site),'sample:'+choice.id+':'+choice.site,dt,api))return;
+ c.task='항원 포획 · 성숙';const sample=infectionFocus(s,choice.site,choice.id,c);if(!go(s,c,sample,'sample:'+choice.id+':'+choice.site+':'+(sample.key||''),dt,api))return;
  c.recordId=choice.id;c.immuneSite=choice.site;c.immuneState='migrating';c.costimAtPickup=s.immunity.sites[choice.site].danger+s.immunity.sites[choice.site].alarmin>1?clamp(1-s.immunity.sites[choice.site].regulation*.009,1):0;c.immuneMove=null;alert(s,c);beginActivity(s,c,'collect',.6,c,choice.site);
 }
 function primeT(s,c,dt,api){
@@ -230,7 +231,7 @@ function plasma(s,c,dt,api){
 function monocyte(s,c,dt,api){
  const best=bestSite(s,id=>signal(s,id,'ccl2')+s.immunity.sites[id].danger*.05);
  if(best.score<1){c.task='혈류 · 단핵구 순찰';patrol(s,c,dt,api);return;}
- c.target=best.id;c.task='CCL2 유주 · 조직 진입';if(!go(s,c,at(s,best.id),'monocyte:'+best.id,dt,api))return;
+ c.target=best.id;c.task='CCL2 유주 · 조직 진입';const focus=infectionFocus(s,best.id,null,c);if(!go(s,c,focus,'monocyte:'+best.id+':'+(focus.key||''),dt,api))return;
  if(signal(s,best.id,'mcsf')<1){c.waitReason='조직 M-CSF 환경 대기';return;}
  if(c.immuneState!=='differentiating'){c.immuneState='differentiating';c.immuneTimer=4;beginActivity(s,c,'differentiate',3.5,c,best.id);}
  c.task='M-CSF 환경 · 대식세포 분화';c.immuneTimer-=dt;if(c.immuneTimer>0)return;

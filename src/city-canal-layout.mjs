@@ -37,7 +37,7 @@ export function compileCanalLayout(layout){
  if(!layout)return null;if(cache.has(layout))return cache.get(layout);
  const network=compileLayout(layout),vascular=compileVascularLayout(layout),channels=[
   ...network.streets.runs.map(r=>({points:r.points,width:r.level===1?1.2:.65,kind:'service'})),
-  ...network.access.map(r=>({points:r.points,width:Math.max(.62,r.width*.65),kind:'service'})),
+  ...network.access.filter(r=>r.kind!=='patrol').map(r=>({points:r.points,width:Math.max(.62,r.width*.65),kind:'service'})),
   ...vascular.vessels,
   ...vascular.beds.flatMap(b=>b.branches.map(points=>({points,width:b.width,kind:'capillary'})))
  ];
@@ -81,7 +81,7 @@ export function compileCanalLayout(layout){
  }
  const flows=vascular.vessels.filter(r=>r.length>0);
  const outlet=kidneyOutlet(layout,network),blocks=compileCanalBlocks(layout,network,channels,land,outlet);
- const result={channels,parcels,rows,edges,flows,vascular,outlet,blocks,entries:network.entries,isWater:p=>!land.has(key(Math.floor(p.x/STEP),Math.floor(p.z/STEP)))};
+ const result={channels,parcels,rows,edges,flows,vascular,outlet,blocks,patrol:network.access.filter(r=>r.kind==='patrol'),entries:network.entries,isWater:p=>!land.has(key(Math.floor(p.x/STEP),Math.floor(p.z/STEP)))};
  cache.set(layout,result);return result;
 }
 export function canalFlowPoint(flow,progress,side=0){

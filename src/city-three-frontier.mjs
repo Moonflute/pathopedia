@@ -1,5 +1,5 @@
 import {CITY_ENTRIES} from './city-world.mjs';
-import {transformPoint,compileLayout,placeable,tissuePresent} from './city-tile-layout.mjs';
+import {transformPoint,compileLayout,placeable,tissuePresent,tissueAt} from './city-tile-layout.mjs';
 import {wallPieces} from './city-boundary.mjs';
 import {entryTrackHeight} from './city-entry-tracks.mjs';
 import * as T from './vendor/three/three.module.min.js';
@@ -163,8 +163,8 @@ export function createFrontierScene({detailedWalls=false}={}){
    put('glow',-12.1+i*.35,.75+Math.sin(t*3+i)*.05,1.9,.07,.08,.07,0xdcc481);
   }
   for(const [i,tissue] of TISSUES.entries()){
-   if(!tissuePresent(s,tissue))continue;const d=tissue.managed?{...tissue,...placeable('house-'+tissue.index).origin}:tissue;
-   owner='house-'+d.index;const health=f.tissues[i].hp,organ=s.districts[d.district],bad=health<55,repair=s.cells.some(c=>c.tissueJob===i&&c.task==='조직 블록 복구');
+   if(!tissuePresent(s,tissue))continue;const d=tissue.skinWall!=null?tissueAt(s,tissue):tissue.managed?{...tissue,...placeable('house-'+tissue.index).origin}:tissue;
+   owner=d.skinWall!=null?null:'house-'+d.index;const health=f.tissues[i].hp,organ=s.districts[d.district],bad=health<55,repair=s.cells.some(c=>c.tissueJob===i&&c.task==='조직 블록 복구');
    put('box',d.x,.7,d.z+.72,.25,.27,.04,bad?0x7f7470:organ.food<1||organ.oxygen<20?0xafa797:0xe7cf8c);
    if(bad&&!repair)fire(d.x+.4,d.z+.4,t,fireCount++,.85+(55-health)/90,1);
    else if(health<85)injury(d.x,d.z+.8,t,1,.5);

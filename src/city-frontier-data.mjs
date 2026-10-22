@@ -21,6 +21,9 @@ export const FRONTS={
 };
 export const TISSUES=[0,4,7,9].map((index,i)=>{const [x,z]=COTTAGES[index],district=Object.entries(SITES).reduce((a,b)=>Math.hypot(a[1].x-x,a[1].z-z)<Math.hypot(b[1].x-x,b[1].z-z)?a:b)[0];return {id:i,index,x,z,district,point:groundCoordinate({x,z:z+1.4}),name:'조직 '+(i+1)};});
 for(let index=0;index<TOWN_HOUSES.length;index++)if(!TISSUES.some(t=>t.index===index))TISSUES.push({id:TISSUES.length,index,x:0,z:0,district:TOWN_HOUSES[index].district,managed:true,name:'조직 '+(index+1)});
+// Subdermal neighbourhoods persist independently of editable organ buildings.
+export const SKIN_TISSUES=WALLS.map(w=>{const x=w.x-w.nx*5.4,z=w.z-w.nz*5.4;return {id:TISSUES.length+w.id,skinWall:w.id,x,z,nx:w.nx,nz:w.nz,district:w.district,point:groundCoordinate({x:x-w.nx*1.7,z:z-w.nz*1.7}),name:w.name+' 안쪽 조직'};});
+TISSUES.push(...SKIN_TISSUES);
 export const INVESTMENTS={barrier:{name:'장벽 보강',cost:26},sensor:{name:'감지 초소',cost:24},supply:{name:'보급 확장',cost:28},production:{name:'생산칸',cost:32}};
 export const supportCount=(s,id,kind)=>s.frontier?.plots[id]?.filter(p=>p===kind).length||0;
 export const wallState=(w,max=100)=>w.repair?'복구':w.hp===0?'파손':w.hp<max*.75?'손상':'정상';

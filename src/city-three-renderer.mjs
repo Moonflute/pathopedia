@@ -20,6 +20,7 @@ import {CANAL_STYLE} from './city-three-canals.mjs';
 import {loadCityBundle} from './city-three-bundle.mjs';
 import {createResponseUI} from './city-response-ui.mjs';
 import {compileVascularLayout} from './city-vascular-layout.mjs';
+import {createCityAlarms} from './city-three-alarms.mjs';
 export {createThreeLoop} from './city-three-performance.mjs';
 
 const assetRoot=new URL('../assets/city3d/',import.meta.url);
@@ -49,6 +50,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  const watching=createCellObserver();
  const labelLayer=document.createElement('div');labelLayer.className='cc-three-labels';map.append(labelLayer);
  const responseUI=createResponseUI(map,{focus,overview:reset,signal:abort.signal});
+ const alarms=createCityAlarms(map,{focus,signal:abort.signal});scene.add(alarms.root);
  const labels=Object.entries(SITES).map(([id,s])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label'+(s.detail?' cc-three-label--main':'');b.innerHTML=`<i style="background:#${s.color.toString(16)}">${{heart:'♥',lung:'O₂',gut:'▤',kidney:'≋',marrow:'✚',lymph:'Y'}[id]}</i><span>${s.label}</span><small>${s.detail?'':'연결 거점'}</small>`;b.setAttribute('aria-label',s.label+' 선택');b.addEventListener('click',()=>onSelect(id),{signal:abort.signal});labelLayer.append(b);const stage=document.createElement('em');b.append(stage);return {id,site:s,element:b};});
  const outletLabel=document.createElement('span');outletLabel.className='cc-outlet-label';outletLabel.textContent='↗ 배출구';outletLabel.hidden=true;labelLayer.append(outletLabel);
  const inspect=document.createElement('section');inspect.className='cc-three-inspect';inspect.hidden=true;inspect.setAttribute('aria-label','선택한 세포');
@@ -174,7 +176,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  function focus(point,closer=false){if(!point)return;setFollowing(false);focusTarget=new T.Vector3(point.x,0,point.z);if(closer)zoomTarget=Math.max(camera.zoom,width<761?1:1.08);dirty=true;}
  function home(s=currentRun){const p=siteAt(currentEditor?.draft||s?.layout,'heart')||SITES.heart;setFollowing(false);focusTarget=null;zoomAnchor=null;zoomTarget=null;controls.target.set(p.x,0,p.z+1);camera.position.set(p.x+17,30,p.z+32);camera.zoom=width<761?1:1.04;camera.updateProjectionMatrix();controls.update();dirty=true;}
  function reset(){focusTarget=null;setFollowing(false);controls.target.set(-1,0,1);camera.position.set(19,32,33);zoomAnchor=null;zoomTarget=fit;controls.update();dirty=true;}
- const frontLabels=Object.entries(FRONTS).map(([id,p])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label cc-front-label';b.textContent={skin:'보수 공방',airway:'O₂ · 호흡기 입구',gut:'입 · 소화기 입구'}[id];b.setAttribute('aria-label',b.textContent+' 선택');b.addEventListener('click',()=>onSelect('front:'+id),{signal:abort.signal});labelLayer.append(b);return {id,site:CITY_ENTRIES[id]?.mouth||CITY_ENTRIES[id]?.portal||p,element:b};});
+ const frontLabels=Object.entries(FRONTS).map(([id,p])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label cc-front-label';b.textContent={skin:'보수 공방',airway:'O₂ · 환기 항구',gut:'식량 부두 · 소화기'}[id];b.setAttribute('aria-label',b.textContent+' 선택');b.addEventListener('click',()=>onSelect('front:'+id),{signal:abort.signal});labelLayer.append(b);return {id,site:CITY_ENTRIES[id]?.mouth||CITY_ENTRIES[id]?.portal||p,element:b};});
  const circuitLabels=['체순환 · 심장 → 전신 → 심장','폐순환 · 심장 ⇄ 폐'].map(text=>{const e=document.createElement('span');e.className='cc-circuit-label';e.textContent=text;labelLayer.append(e);return e;});
  function updateLabels(s,options){
   const occupied=[],compact=camera.zoom<.58,top=width<761?145:125;
@@ -205,6 +207,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   if(assetCache&&(layout!==villageLayout||editId!==villageEditId))rebuild(layout,editId);
   editOverlay.update(currentEditor);if(currentEditor)village?.movePreview(currentEditor.preview||currentEditor.draft.items[currentEditor.selected]);
   actor.root.visible=!currentEditor;labelLayer.hidden=!!currentEditor;responseUI.update(s,!!currentEditor||!game.querySelector('.cc-start')?.hidden);
+  alarms.update(s,!!currentEditor||!game.querySelector('.cc-start')?.hidden);
   const now=performance.now();
   if(options.frameTime!=null&&adaptive.sample(options.frameTime,ready&&!options.paused&&!currentEditor))applyQuality();
   if(!shouldRender(now,quality.fps))return;
@@ -257,5 +260,5 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   // Keep source models until disposal: Apply rebuilds the static mesh once.
  }
  load().catch(error=>{if(disposed)return;console.error('3D village load failed',error);status.innerHTML='마을을 불러오지 못했습니다. <button type="button" data-city3d-retry>다시 열기</button> · <a href="#city">기존 도시</a>';});
- return {draw,zoom,rotate,reset,focus,home,cameraInfo,setNewAssets,setTheme,captureMotion:s=>motion.capture(s),beginLayout(){clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();village?.dispose();release(scene);assetSwitch.dispose();if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();responseUI.dispose();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;delete game.dataset.newAssets;}};
+ return {draw,zoom,rotate,reset,focus,home,cameraInfo,setNewAssets,setTheme,captureMotion:s=>motion.capture(s),beginLayout(){clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();village?.dispose();release(scene);assetSwitch.dispose();if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();responseUI.dispose();alarms.dispose();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;delete game.dataset.newAssets;}};
 }
