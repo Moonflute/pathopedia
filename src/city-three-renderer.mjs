@@ -27,7 +27,7 @@ const assetRoot=new URL('../assets/city3d/',import.meta.url);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const release=root=>{const geometries=new Set(),materials=new Set(),textures=new Set();root?.traverse(o=>{if(o.geometry)geometries.add(o.geometry);for(const m of [o.material].flat().filter(Boolean)){materials.add(m);if(m.map)textures.add(m.map);}});for(const g of geometries)g.dispose();for(const t of textures)t.dispose();for(const m of materials)m.dispose();};
 export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
- const map=canvas.parentElement,game=canvas.closest('.cc-game'),abort=new AbortController();
+ const map=canvas.parentElement,game=canvas.closest('.cc-game'),abort=new AbortController(),compactHud=matchMedia('(max-width:760px), (max-width:1100px) and (max-height:620px)');
  const status=document.createElement('div');status.className='cc-three-loading';status.setAttribute('role','status');status.textContent='작은 마을을 짓는 중…';map.append(status);
  let renderer;
  try{renderer=new T.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'low-power'});}
@@ -90,8 +90,8 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  function trackCell(cell,seconds){
   const point=motion.point(cell,watching.id);viewOffset.subVectors(camera.position,controls.target);
   // Keep the cell above the observation card and any open mobile management sheet.
-  const narrow=width<761,available=height-inset-(narrow?inspectHeight+106:80);
-  const focusY=narrow?Math.max(65,(Math.min(90,available*.4)+available)/2):height*.46;
+  const narrow=compactHud.matches,available=height-inset-(narrow?inspectHeight+62:80);
+  const focusY=narrow?Math.max(65,(Math.min(102,available*.4)+available)/2):height*.46;
   const horizontal=Math.hypot(viewOffset.x,viewOffset.z),elevation=viewOffset.y/viewOffset.length();
   const shift=(height/2-focusY)*(camera.top-camera.bottom)/(height*camera.zoom*Math.max(.2,elevation));
   followPoint.set(point.x+viewOffset.x/horizontal*shift,0,point.z+viewOffset.z/horizontal*shift);
@@ -113,7 +113,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   width=w;height=h;adaptive.resize(width,devicePixelRatio,performance.now());applyQuality();renderer.setSize(w,h,false);
   // A portrait viewport starts close to the two featured districts; zoom-out reveals all.
   const vertical=h<400?17:w<h?32:27,aspect=w/h;camera.left=-vertical*aspect/2;camera.right=vertical*aspect/2;camera.top=vertical/2;camera.bottom=-vertical/2;camera.updateProjectionMatrix();
-  fit=Math.min(w/h<1?.42:.76,w/h<1?w/h*.66:1.06)/CITY_SCALE;controls.minZoom=fit;controls.maxZoom=3.3;camera.zoom=clamp(camera.zoom,fit,3.3);camera.updateProjectionMatrix();dirty=true;
+  fit=Math.min(Math.min(w/h<1?.42:.76,w/h<1?w/h*.66:1.06)/CITY_SCALE,h<400?vertical/90:1);controls.minZoom=fit;controls.maxZoom=3.3;camera.zoom=clamp(camera.zoom,fit,3.3);camera.updateProjectionMatrix();dirty=true;
  }
  resize();controls.target.set(-3,0,-3);camera.zoom=profile.mobile?.78:.82;camera.updateProjectionMatrix();controls.update();
  function cameraInfo(){return {scale:camera.zoom,min:controls.minZoom,max:controls.maxZoom};}
@@ -179,7 +179,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  const frontLabels=Object.entries(FRONTS).map(([id,p])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label cc-front-label';b.textContent={skin:'보수 공방',airway:'O₂ · 환기 항구',gut:'식량 부두 · 소화기'}[id];b.setAttribute('aria-label',b.textContent+' 선택');b.addEventListener('click',()=>onSelect('front:'+id),{signal:abort.signal});labelLayer.append(b);return {id,site:CITY_ENTRIES[id]?.mouth||CITY_ENTRIES[id]?.portal||p,element:b};});
  const circuitLabels=['체순환 · 심장 → 전신 → 심장','폐순환 · 심장 ⇄ 폐'].map(text=>{const e=document.createElement('span');e.className='cc-circuit-label';e.textContent=text;labelLayer.append(e);return e;});
  function updateLabels(s,options){
-  const occupied=[],compact=camera.zoom<.58,top=width<761?145:125;
+  const occupied=[],compact=camera.zoom<.58,top=compactHud.matches?(height<330?60:102):125;
   if(!responseUI.root.hidden){const r=responseUI.root.getBoundingClientRect(),m=map.getBoundingClientRect();occupied.push({x:r.x-m.x,y:r.y-m.y,w:r.width,h:r.height});}
   const ordered=[...labels].sort((a,b)=>(b.id===options.selected?2:b.id==='heart'?1:0)-(a.id===options.selected?2:a.id==='heart'?1:0));
   for(const {id,element} of ordered){
@@ -218,7 +218,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   updateInspection(s,cell,now);
   if(zoomTarget!==null){const ray=new T.Raycaster(),plane=new T.Plane(new T.Vector3(0,1,0),0);let before=null;if(zoomAnchor){ray.setFromCamera(zoomAnchor,camera);before=ray.ray.intersectPlane(plane,new T.Vector3());}camera.zoom+=(zoomTarget-camera.zoom)*.24;if(Math.abs(camera.zoom-zoomTarget)<.002){camera.zoom=zoomTarget;zoomTarget=null;}camera.updateProjectionMatrix();if(before){ray.setFromCamera(zoomAnchor,camera);const after=ray.ray.intersectPlane(plane,new T.Vector3());if(after){before.sub(after);controls.target.add(before);camera.position.add(before);}}dirty=true;}
   if(focusTarget){
-   viewOffset.subVectors(camera.position,controls.target);const horizontal=Math.hypot(viewOffset.x,viewOffset.z),elevation=viewOffset.y/viewOffset.length(),focusY=Math.max(100,(130+height-inset-110)/2),shift=(height/2-focusY)*(camera.top-camera.bottom)/(height*camera.zoom*Math.max(.2,elevation));
+   viewOffset.subVectors(camera.position,controls.target);const horizontal=Math.hypot(viewOffset.x,viewOffset.z),elevation=viewOffset.y/viewOffset.length(),focusY=Math.max(80,((compactHud.matches?(height<330?60:102):130)+height-inset-(compactHud.matches?62:110))/2),shift=(height/2-focusY)*(camera.top-camera.bottom)/(height*camera.zoom*Math.max(.2,elevation));
    followPoint.set(clamp(focusTarget.x+viewOffset.x/horizontal*shift,CITY_BOUNDS.left+3,CITY_BOUNDS.right-3),0,clamp(focusTarget.z+viewOffset.z/horizontal*shift,CITY_BOUNDS.top+2,CITY_BOUNDS.bottom-2));
    moveFollowCamera(camera.position,controls.target,followPoint,(now-lastFrame)/1000);if(controls.target.distanceTo(followPoint)<.02)focusTarget=null;dirty=true;
   }

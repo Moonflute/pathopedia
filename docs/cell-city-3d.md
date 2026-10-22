@@ -416,3 +416,13 @@ Skin pathogens first attack the tissue behind their own breached wall sector. Ne
 The airway bridge leads directly to the enlarged ventilation quarter; visible wind streaks, gust rings and breathing halls track lung output. A wooden food quay replaces the literal mouth. Its boat approaches, unloads and departs on each real raw-food shipment: the courier starts after five game seconds of arrival/unloading. Kidney processing is shown along an exposed utility pipe and outfall, with flow tied to waste and kidney output. Systemic arrows are smaller, sparse and stationary.
 
 The existing Three.js MIT and Kenney/RG Poly CC0 buildings, roof vocabulary and materials are reused. There are no new downloaded assets or dependencies. Old 4/35-tissue saves append missing health entries without resetting damage, and old movement paths are reissued. New geometry and UI are checked in the browser; focused checks cover entry-sector targeting, chemotaxis, circuit continuity, obstacle clearance, transport, immune specificity, work and save migration. GitHub Pages runs the full suite and production build.
+
+## v0.66.1 — mobile observation controls
+
+![Compact mobile status and map controls](cell-city-mobile-v0.66.1.jpg)
+
+On phones, resources occupy a 34px strip and infection progress starts as one 44px disclosure. Opening it reveals the six response stages and circulation/entry shortcuts; selecting a location folds it again. Map controls, scenario actions, weather and vessel legends share the `지도·현황` panel. Only overview and this panel's trigger remain at the bottom of the canvas. Playback uses pause/resume plus a speed-cycle button; changing speed while paused keeps the simulation paused. Existing Lucide ISC icons are reused.
+
+Infection alerts show one location and an expandable count, retaining access to all eight tracked locations. Management panels hide competing map overlays. Buttons added to the mobile HUD have at least 44px touch targets; Escape closes the map panel and returns focus. Short landscape screens place the two status strips side by side and use a height-limited overview zoom.
+
+Browser checks covered 320×568, 390×844 and 844×390 layouts, two simultaneous skin exposures, alert focus, stage navigation, map zoom/rotation, playback, treatment-panel scrolling and keyboard dismissal. At 390×844 the document remains 390×844, and the default top overlays finish 96px below the map's top. The release screenshot is retained as documentation, with no temporary test files. The full tests and production build run in the GitHub Pages workflow.
