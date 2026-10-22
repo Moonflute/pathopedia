@@ -22,12 +22,13 @@ import {createResponseUI} from './city-response-ui.mjs';
 import {compileVascularLayout} from './city-vascular-layout.mjs';
 import {createCityAlarms} from './city-three-alarms.mjs';
 import {createHostResponseScene} from './city-three-host-response.mjs';
+import {createFirstPerson} from './city-first-person.mjs';
 export {createThreeLoop} from './city-three-performance.mjs';
 
 const assetRoot=new URL('../assets/city3d/',import.meta.url);
 const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const release=root=>{const geometries=new Set(),materials=new Set(),textures=new Set();root?.traverse(o=>{if(o.geometry)geometries.add(o.geometry);for(const m of [o.material].flat().filter(Boolean)){materials.add(m);if(m.map)textures.add(m.map);}});for(const g of geometries)g.dispose();for(const t of textures)t.dispose();for(const m of materials)m.dispose();};
-export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
+export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit,onPilotChange){
  const map=canvas.parentElement,game=canvas.closest('.cc-game'),abort=new AbortController(),compactHud=matchMedia('(max-width:760px), (max-width:1100px) and (max-height:620px)');
  const status=document.createElement('div');status.className='cc-three-loading';status.setAttribute('role','status');status.textContent='작은 마을을 짓는 중…';map.append(status);
  let renderer;
@@ -49,6 +50,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  let theme=readCityTheme();
  const calmSky=new T.Color(theme==='2'?CANAL_STYLE.sky:STYLE.sky),illSky=new T.Color(0xd69b91),warmSun=new T.Color(0xfff0dc),illSun=new T.Color(0xffc1b2);
  const watching=createCellObserver();
+ const pilot=createFirstPerson(canvas,{map,game,theme:()=>theme,selectedCell:()=>watching.id,onMode(mode){clearObservation();zoomTarget=null;zoomAnchor=null;focusTarget=null;controls.enabled=mode==='exit'&&!currentEditor;dirty=true;onPilotChange?.(mode);}});scene.add(pilot.root);
  const labelLayer=document.createElement('div');labelLayer.className='cc-three-labels';map.append(labelLayer);
  const responseUI=createResponseUI(map,{focus,overview:reset,signal:abort.signal});
  const alarms=createCityAlarms(map,{focus,signal:abort.signal});scene.add(alarms.root);
@@ -146,18 +148,18 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  let down=null,panStart=null;const pointers=new Map();
  const remainingPointer=()=>pointers.size===1?{...pointers.values().next().value}:null;
  canvas.addEventListener('pointerdown',e=>{
-  if(currentEditor)return;const modified=e.ctrlKey||e.metaKey||e.shiftKey;
+  if(currentEditor||pilot.busy)return;const modified=e.ctrlKey||e.metaKey||e.shiftKey;
   const point={x:e.clientX,y:e.clientY,id:e.pointerId,button:e.button,time:performance.now(),pan:e.pointerType==='touch'||e.button===0&&!modified||e.button===2&&modified};
   pointers.set(e.pointerId,point);down=remainingPointer();panStart=remainingPointer();
  },{signal:abort.signal});
  canvas.addEventListener('pointermove',e=>{
-  if(currentEditor)return;const point=pointers.get(e.pointerId);if(point){point.x=e.clientX;point.y=e.clientY;}
+  if(currentEditor||pilot.busy)return;const point=pointers.get(e.pointerId);if(point){point.x=e.clientX;point.y=e.clientY;}
   if(panStart&&panStart.id===e.pointerId&&Math.hypot(e.clientX-panStart.x,e.clientY-panStart.y)>7){
    if(panStart.pan)setFollowing(false);panStart=null;down=null;
   }
  },{signal:abort.signal});
  canvas.addEventListener('pointerup',e=>{
-  if(currentEditor)return;const tap=down&&down.id===e.pointerId&&down.button===0&&performance.now()-down.time<600;pointers.delete(e.pointerId);down=null;panStart=remainingPointer();if(!tap||!ready)return;
+  if(currentEditor||pilot.busy)return;const tap=down&&down.id===e.pointerId&&down.button===0&&performance.now()-down.time<600;pointers.delete(e.pointerId);down=null;panStart=remainingPointer();if(!tap||!ready)return;
   const rect=canvas.getBoundingClientRect(),px=e.clientX-rect.left,py=e.clientY-rect.top;
   const ray=new T.Raycaster();ray.setFromCamera(new T.Vector2(px/width*2-1,1-py/height*2),camera);
   const obstruction=village?ray.intersectObject(village.root,true).find(h=>h.object.visible&&h.object.material?.opacity!==0):null;
@@ -169,6 +171,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  },{signal:abort.signal});
  canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);down=null;panStart=remainingPointer();},{signal:abort.signal});
  canvas.addEventListener('keydown',e=>{
+  if(pilot.busy)return;
   if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','+','=','-','Home','q','e','Q','E'].includes(e.key))e.preventDefault();
   if(e.key==='Home')reset();else if(e.key==='+'||e.key==='=')zoom(.22);else if(e.key==='-')zoom(-.22);else if(e.key.toLowerCase()==='q')rotate(-1);else if(e.key.toLowerCase()==='e')rotate(1);else if(e.key==='Escape'){clearObservation();}else if(e.key.startsWith('Arrow')){setFollowing(false);const amount=1.1/camera.zoom,dx=e.key==='ArrowLeft'?-amount:e.key==='ArrowRight'?amount:0,dz=e.key==='ArrowUp'?-amount:e.key==='ArrowDown'?amount:0;camera.position.x+=dx;camera.position.z+=dz;controls.target.x+=dx;controls.target.z+=dz;dirty=true;}
  },{signal:abort.signal});
@@ -204,18 +207,20 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   if(outlet){vec.set(outlet.portal.x,1.7,outlet.portal.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;outletLabel.hidden=x<35||x>width-35||y<top||y>height-inset-60||occupied.some(r=>Math.abs(x-r.x-r.w/2)<65&&Math.abs(y-r.y)<35);if(!outletLabel.hidden)outletLabel.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;}
  }
  function draw(s,options={}){
-  if(disposed||document.hidden)return;inset=options.inset||0;currentRun=s;if(!framed){reset();framed=true;}const changedEditor=!!currentEditor!==!!options.editor;currentEditor=options.editor||null;
+  if(disposed||document.hidden)return;inset=options.inset||0;const previousRun=currentRun;currentRun=s;if(pilot.busy&&(previousRun!==s||options.editor||s.status!=='running'))pilot.exit();if(!framed){reset();framed=true;}const changedEditor=!!currentEditor!==!!options.editor;currentEditor=options.editor||null;
   if(changedEditor){clearObservation();controls.enabled=!currentEditor;editorPointers.clear();editDrag=null;}
   const layout=currentEditor?.draft||s.layout,editId=currentEditor?.selected||null;
   if(assetCache&&(layout!==villageLayout||editId!==villageEditId))rebuild(layout,editId);
   editOverlay.update(currentEditor);if(currentEditor)village?.movePreview(currentEditor.preview||currentEditor.draft.items[currentEditor.selected]);
-  actor.root.visible=!currentEditor;labelLayer.hidden=!!currentEditor;responseUI.update(s,!!currentEditor||!game.querySelector('.cc-start')?.hidden);
-  alarms.update(s,!!currentEditor||!game.querySelector('.cc-start')?.hidden);
+  actor.root.visible=!currentEditor;labelLayer.hidden=!!currentEditor||pilot.busy;responseUI.update(s,pilot.busy||!!currentEditor||!game.querySelector('.cc-start')?.hidden);
+  alarms.update(s,pilot.busy||!!currentEditor||!game.querySelector('.cc-start')?.hidden);
   const now=performance.now();
   if(options.frameTime!=null&&adaptive.sample(options.frameTime,ready&&!options.paused&&!currentEditor))applyQuality();
   if(!shouldRender(now,quality.fps))return;
   if(options.interpolation!=null)interpolation=options.interpolation;
   motion.prepare(s,interpolation,options.paused);
+  const firstPerson=pilot.active,pilotView=firstPerson?pilot.render(now):null,renderCamera=firstPerson?pilot.camera:camera;
+  if(!firstPerson){
   const cell=watching.resolve(s);
   if(followButton.getAttribute('aria-pressed')!==String(watching.following))syncFollowing();
   updateInspection(s,cell,now);
@@ -231,16 +236,17 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   camera.position.copy(controls.target).addScaledVector(viewOffset,range.distance/distance);
   if(Math.abs(camera.far-range.far)>.01){camera.far=range.far;camera.updateProjectionMatrix();}
   scene.fog.near=range.fogNear;scene.fog.far=range.fogFar;camera.updateMatrixWorld();
-  if(options.paused&&!dirty&&now-lastFrame<250)return;
-  lastFrame=now;viewMatrix.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);viewFrustum.setFromProjectionMatrix(viewMatrix);actor.draw(s,{...options,motion,canals:village?.canals,visible:actorVisible,selectedCell:watching.id,readability:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(currentEditor?{...s,layout:currentEditor.draft}:s,{...options,camera,target:controls.target});updateLabels(s,options);const site=siteAt(s.layout,options.selected);selection.visible=!!site&&!currentEditor;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
+  }else{scene.fog.near=35;scene.fog.far=100;}
+  if(options.paused&&!dirty&&!firstPerson&&now-lastFrame<250)return;
+  lastFrame=now;viewMatrix.multiplyMatrices(renderCamera.projectionMatrix,renderCamera.matrixWorldInverse);viewFrustum.setFromProjectionMatrix(viewMatrix);actor.draw(s,{...options,motion,canals:village?.canals,visible:actorVisible,hiddenCell:firstPerson?pilot.cell?.id:null,eyePosition:pilotView?.position,selectedCell:watching.id,readability:firstPerson?1:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(currentEditor?{...s,layout:currentEditor.draft}:s,{...options,camera:renderCamera,target:firstPerson?renderCamera.position:controls.target});if(!pilot.busy)updateLabels(s,options);const site=siteAt(s.layout,options.selected);selection.visible=!!site&&!currentEditor&&!pilot.busy;if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
   if(quality.shadow&&now-lastShadow>quality.shadowInterval){renderer.shadowMap.needsUpdate=true;lastShadow=now;}
   const illness=clamp(Math.max((75-cityHealth(s))/65,(s.inflammation-30)/70),0,1);scene.background.copy(calmSky).lerp(illSky,illness*.8);scene.fog.color.copy(scene.background);sun.color.copy(warmSun).lerp(illSun,illness);
-  const hideHost=!!currentEditor||!game.querySelector('.cc-start')?.hidden;hostScene.update(s,hideHost);hostScene.project(camera,width,height,inset,hideHost||labelLayer.hidden||!!game.dataset.panel);
-  renderer.render(scene,camera);if(ready&&!options.paused&&!currentEditor)adaptive.rendered(performance.now()-now);dirty=false;frames++;minCalls=Math.min(minCalls,renderer.info.render.calls);peakCalls=Math.max(peakCalls,renderer.info.render.calls);peakTriangles=Math.max(peakTriangles,renderer.info.render.triangles);
+  const hideHost=!!currentEditor||!game.querySelector('.cc-start')?.hidden;hostScene.update(s,hideHost);hostScene.project(renderCamera,width,height,inset,hideHost||labelLayer.hidden||!!game.dataset.panel);
+  renderer.render(scene,renderCamera);if(ready&&!options.paused&&!currentEditor)adaptive.rendered(performance.now()-now);dirty=false;frames++;minCalls=Math.min(minCalls,renderer.info.render.calls);peakCalls=Math.max(peakCalls,renderer.info.render.calls);peakTriangles=Math.max(peakTriangles,renderer.info.render.triangles);
   if(now-lastStats>1000){const label=game.querySelector('[data-city-performance]');if(label)label.textContent=`${options.paused?'일시정지':Math.round(frames*1000/(now-lastStats))+' fps'} · 목표 ${quality.fps} · DPR ${quality.dpr.toFixed(2)} · 그림자 ${quality.shadow||'OFF'} · ${minCalls===peakCalls?peakCalls:minCalls+'–'+peakCalls} draws · ${Math.round(peakTriangles/1000)}k tris`;lastStats=now;frames=0;minCalls=Infinity;peakCalls=0;peakTriangles=0;}
  }
  function rebuild(layout,id){const next=createVillage(assetCache,layout,id,newBundle,theme);if(village){scene.remove(village.root);village.dispose();}village=next;villageLayout=layout;villageEditId=id;scene.add(village.root);renderer.shadowMap.needsUpdate=true;adaptive.suspend(performance.now());dirty=true;}
- function setTheme(value){const next=normalizeCityTheme(value);if(next===theme)return true;const previous=theme;theme=next;try{if(assetCache)rebuild(currentEditor?.draft||currentRun?.layout,currentEditor?.selected||null);calmSky.setHex(theme==='2'?CANAL_STYLE.sky:STYLE.sky);dirty=true;return true;}catch(error){theme=previous;console.error('City theme failed',error);return false;}}
+ function setTheme(value){const next=normalizeCityTheme(value);if(next===theme)return true;const previous=theme;theme=next;try{if(assetCache)rebuild(currentEditor?.draft||currentRun?.layout,currentEditor?.selected||null);pilot.setTheme(theme);calmSky.setHex(theme==='2'?CANAL_STYLE.sky:STYLE.sky);dirty=true;return true;}catch(error){theme=previous;console.error('City theme failed',error);return false;}}
  const assetSwitch=createAssetSwitch({load:loadCityBundle,apply(bundle){newBundle=bundle;rebuild(currentEditor?.draft||currentRun?.layout,currentEditor?.selected||null);},state(state,error){
   game.dataset.newAssets=state;const note=game.querySelector('[data-city-asset-state]');if(note)note.textContent=state==='loading'?'불러오는 중…':state==='error'?'불러오기 실패 · 다시 체크':'';
   if(error)console.error('Village asset load failed',error);
@@ -264,5 +270,5 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   // Keep source models until disposal: Apply rebuilds the static mesh once.
  }
  load().catch(error=>{if(disposed)return;console.error('3D village load failed',error);status.innerHTML='마을을 불러오지 못했습니다. <button type="button" data-city3d-retry>다시 열기</button> · <a href="#city">기존 도시</a>';});
- return {draw,zoom,rotate,reset,focus,home,cameraInfo,setNewAssets,setTheme,captureMotion:s=>motion.capture(s),beginLayout(){clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();village?.dispose();release(scene);assetSwitch.dispose();if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();responseUI.dispose();alarms.dispose();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;delete game.dataset.newAssets;}};
+ return {draw,zoom,rotate,reset,focus,home,cameraInfo,setNewAssets,setTheme,openPilot(){if(ready&&!currentEditor&&currentRun)pilot.open(currentRun);},exitPilot:()=>pilot.exit(),updatePilot:(s,dt)=>pilot.tick(s,dt),captureMotion:s=>motion.capture(s),beginLayout(){pilot.exit();clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;pilot.dispose();scene.remove(pilot.root);abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();village?.dispose();release(scene);assetSwitch.dispose();if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();responseUI.dispose();alarms.dispose();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;delete game.dataset.newAssets;}};
 }

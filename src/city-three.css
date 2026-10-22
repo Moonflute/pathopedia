@@ -1,3 +1,4 @@
+@import url('./city-pilot.css');
 .cc-view-switch{font-size:10px;white-space:nowrap;color:#6a8274;text-decoration:none;border:1px solid #bfcabc;border-radius:5px;padding:4px 7px;margin-left:8px}
 .cc-three .cc-scenario{right:auto;justify-content:flex-start;max-width:calc(100% - 455px)}
 .cc-game .cc-response-case{font-size:9px;white-space:nowrap;min-height:25px;padding:3px 5px;background:#e6ecdd;border:0;border-radius:4px;color:#506b5b}

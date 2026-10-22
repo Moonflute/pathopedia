@@ -15,6 +15,7 @@ import {compileThemeLayout} from './city-theme-layout.mjs';
 import {tickResponse,validateResponse} from './city-response.mjs';
 import {ensureHostResponse,validateHostResponse} from './city-host-response.mjs';
 import {moveToInflammation} from './city-immune-traffic.mjs';
+import {pilotedCell,setPilotedCell} from './city-pilot-state.mjs';
 
 export const SAVE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
@@ -194,6 +195,40 @@ function damage(s,e,amount,from,color){
   e.hp-=amount;s.effects.push({x:from.x,y:from.y,tx:e.x,ty:e.y,color,life:s.specialists?.42:.18,kind:from.kind==='macrophage'||s.biology&&from.kind==='neutrophil'?'engulf':'shot'});
   if(e.hp<=0&&!e.dead){e.dead=true;s.stats.defeated++;s.debris.push({id:++s.serial,x:e.x,y:e.y,recordId:e.recordId});s.waste=clamp(s.waste+.5);s.inflammation=clamp(s.inflammation+.8);}
 }
+export function takeCityCell(s,id){
+ const c=s.cells.find(c=>c.id===id&&!c.lost&&['rbc','neutrophil'].includes(c.kind));
+ if(!c||s.status!=='running')return null;
+ releaseCityCell(s);releaseWorkplace(c);c.path=[];c.step=0;c.activity=null;c.dock=null;c.perfusionId=null;c.assignment=null;
+ c.transit=null;c.travelMode=null;c.trafficStage=null;c.immuneMove=null;c.extravascular=false;c.tissueSite=null;
+ setPilotedCell(s,c);return c;
+}
+export function releaseCityCell(s){
+ const c=pilotedCell(s);setPilotedCell(s,null);if(!c)return;
+ releaseWorkplace(c);c.activity=null;c.dock=null;c.perfusionId=null;c.assignment=null;c.task=CELL_JOBS[c.kind].task;
+ if(s.cells.includes(c))route(c,[point(s,c.kind==='rbc'?(c.cargo?c.target:'lung'):c.target)]);
+}
+export function pilotCellAction(s,action,id){
+ const c=pilotedCell(s);if(!c||!s.cells.includes(c)||c.lost||s.status!=='running')return {ok:false,text:'세포 조종 종료'};
+ const p=groundPoint(c),near=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b);
+ if(action==='attack'&&c.kind==='neutrophil'){
+  const e=s.enemies.find(e=>e.id===id&&!e.dead&&e.entered&&e.compartment!=='lumen'),rule=cityRule(s,'neutrophil');
+  if(!e||c.cooldown>0)return {ok:false};
+  if(!ruleReady(s,'neutrophil',near.id)||!ruleEnemy(s,'neutrophil',e))return {ok:false,text:'현재 전투 규칙에서 공격 불가'};
+  if(c.energy<3)return {ok:false,text:'에너지 부족 · 심장에서 회복'};
+  const q=groundPoint(e);if(Math.hypot(q.x-p.x,q.z-p.z)>Math.max(1.5,rule.params.range*.1))return {ok:false};
+  const organ=s.districts[near.id],depot=frontDepot(s,c),support=antibodySupport(s,e.recordId,near.id),capsule=1-(pathogenDef(e.recordId)?.capsule||0)*(1-support);
+  const amount=rule.params.damage*(s.policy==='defense'?1.3:1)*clamp(organ.oxygen/45,.3,1)*((depot?depot.food:organ.food)>0?1:.5)*(organ.supportUntil>s.time?1.15:1)*(1+support*.85+(e.c3b||0)*.8)*capsule*immuneClearance(s,near.id)*clamp(c.energy/65,.35,1);
+  damage(s,e,amount,c,JOBS.neutrophil.color);combatEffort(c);c.cooldown=rule.params.interval;beginActivity(s,c,'engulf',.4,e);c.task='직접 조종 · 감염 대응';return {ok:true,defeated:e.dead,amount};
+ }
+ if(action==='oxygen'&&c.kind==='rbc'){
+  const target=c.cargo?c.target:'lung',d=s.districts[target],q=groundPoint(point(s,target)),rule=cityRule(s,'oxygen');
+  if(id!==target||Math.hypot(p.x-q.x,p.z-q.z)>2.5)return {ok:false,text:'산소 접안 지점으로 이동'};
+  if(!ruleReady(s,'oxygen',c.cargo?target:'lung')||c.cargo&&!ruleTarget(s,'oxygen',target))return {ok:false,text:'현재 산소 운반 규칙에서 작업 불가'};
+  if(c.cargo){const amount=Math.min(c.cargo,100-d.oxygen);if(amount<.1)return {ok:false,text:'산소 충분 · 다른 목적지 선택'};d.oxygen=clamp(d.oxygen+amount);s.stats.oxygen+=amount;c.cargo=Math.max(0,c.cargo-amount);return {ok:true,delivered:amount,text:cityDistrict(s,target).short+' 산소 +'+Math.round(amount)};}
+  c.cargo=rule.params.amount*(1+(s.districts.lung.level-1)*.25)*output(s,'lung')*(s.weather.id==='dry'?.55:1);return {ok:true,loaded:c.cargo,text:'산소 적재 완료'};
+ }
+ return {ok:false};
+}
 function station(s,c,id,tag,dx,dy,dt,speed=58){
   if(c.assignment!==tag){
     const from=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b),p=point(s,id);
@@ -249,6 +284,7 @@ function specialist(s,c,dt){
 }
 function updateCell(s,c,dt,speed,data){
   c.cooldown=Math.max(0,c.cooldown-dt);c.waitReason='';c.nextTask='';
+  if(pilotedCell(s)===c)return;
   if(updateCombatCondition(s,c,dt,frontierAPI))return;
   if(s.specialists&&frontierCell(s,c,dt,frontierAPI))return;
   if(immuneCell(s,c,dt,frontierAPI))return;

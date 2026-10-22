@@ -195,11 +195,11 @@ export function createActors(profile){
   if(selected){const scale=selected===2?1.3*readability:1;put('selected',p.x,.07,p.z,scale,scale,scale,selected===2?0x438f92:0xe5b854,Math.PI/2);}
   if(selected===2)put('badge',p.x,1.15,p.z,.08*readability,.14*readability,.08*readability,0x75d1cb);
  }
- function draw(s,{selectedKind,selectedCell,readability=1,motion,visible,canals}={}){
+ function draw(s,{selectedKind,selectedCell,hiddenCell,eyePosition,readability=1,motion,visible,canals}={}){
   if(lastRun!==s||lastLayout!==s.layout){last.clear();lastRun=s;lastLayout=s.layout;}
   const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time,entries=s.layout?compileLayout(s.layout).entries:{};elevation=0;
   for(const m of Object.values(batches))m.count=0;positions.length=0;const living=new Set(),drug=DRUGS.find(d=>d.id===s.drug);
-  for(const c of s.cells.slice(0,profile.maxCells)){const p=point(c,c.id);if(visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability,canals?.isWater(p));}
+  for(const c of s.cells.slice(0,profile.maxCells)){if(c.id===hiddenCell)continue;const p=point(c,c.id);if(eyePosition&&Math.hypot(p.x-eyePosition.x,p.z-eyePosition.z)<1.1||visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability,canals?.isWater(p));}
   for(const sh of s.shipments.slice(0,profile.maxShipments)){if(sh.harbourUntil>s.time)continue;const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;elevation=sh.kind==='raw'?entryTrackHeight(entries.gut,p):0;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability,!elevation&&canals?.isWater(p));}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
    const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);elevation=!e.entered?entryTrackHeight(entries[e.front],p):0;
