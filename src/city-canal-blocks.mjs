@@ -5,7 +5,8 @@ import {CITY_ENTRIES,storedPlacement} from './city-world.mjs';
 
 const STEP=.5,key=(x,z)=>x+','+z;
 export function compileCanalBlocks(layout,network,channels,land,outlet){
- const reserved=new Set(),frontages=[],gardens=[];
+ const reserved=new Set(),frontages=[],gardens=[],tissues=[];
+ for(const points of Object.values(network.entries))for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],n=Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)*2);for(let j=0;j<=n;j++){const p={x:a.x+(b.x-a.x)*j/n,z:a.z+(b.z-a.z)*j/n};for(let x=Math.floor((p.x-1.8)/STEP);x<=Math.floor((p.x+1.8)/STEP);x++)for(let z=Math.floor((p.z-1.8)/STEP);z<=Math.floor((p.z+1.8)/STEP);z++)reserved.add(key(x,z));}}
  for(const d of layoutPlaceables(layout))if(!storedPlacement(layout.items[d.id]))for(const p of occupiedTiles(d.id,layout.items[d.id])){
   for(let x=Math.floor((p.col-.8)/STEP);x<=Math.floor((p.col+.8)/STEP);x++)for(let z=Math.floor((p.row-.8)/STEP);z<=Math.floor((p.row+.8)/STEP);z++)reserved.add(key(x,z));
  }
@@ -40,10 +41,14 @@ export function compileCanalBlocks(layout,network,channels,land,outlet){
  }
  // Quiet courts give the dense waterfront a few deliberate breaks.
  for(let z=-29;z<=30;z+=6)for(let x=-34;x<=32;x+=6){
-  const p={x:x+(Math.round(z)%2)*.5,z};if(!clear(p)||gardens.some(g=>Math.hypot(g.x-p.x,g.z-p.z)<8))continue;
+  const p={x:x+(Math.round(z)%2)*.5,z};if(gardens.length>=16||!clear(p)||gardens.some(g=>Math.hypot(g.x-p.x,g.z-p.z)<8))continue;
   const footprint=cells(p,3.5,3.5,0);if(!footprint)continue;
   footprint.forEach(k=>reserved.add(k));gardens.push({...p,variant:gardens.length,cells:footprint});
-  if(gardens.length>=16)return {frontages,gardens};
+  if(gardens.length>=16)break;
  }
- return {frontages,gardens};
+ for(let z=-41;z<=41;z+=2.2)for(let x=-41;x<=41;x+=2.2){
+  const p={x,z};if(!clear(p)||tissues.length>=320)continue;const footprint=cells(p,1.35,1.35,0);if(!footprint)continue;
+  footprint.forEach(k=>reserved.add(k));tissues.push({...p,variant:tissues.length});
+ }
+ return {frontages,gardens,tissues};
 }

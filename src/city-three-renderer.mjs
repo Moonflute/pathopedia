@@ -18,6 +18,8 @@ import {readCityAssets,createAssetSwitch} from './city-asset-preference.mjs';
 import {readCityTheme,normalizeCityTheme} from './city-theme.mjs';
 import {CANAL_STYLE} from './city-three-canals.mjs';
 import {loadCityBundle} from './city-three-bundle.mjs';
+import {createResponseUI} from './city-response-ui.mjs';
+import {compileVascularLayout} from './city-vascular-layout.mjs';
 export {createThreeLoop} from './city-three-performance.mjs';
 
 const assetRoot=new URL('../assets/city3d/',import.meta.url);
@@ -46,6 +48,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  const calmSky=new T.Color(theme==='2'?CANAL_STYLE.sky:STYLE.sky),illSky=new T.Color(0xd69b91),warmSun=new T.Color(0xfff0dc),illSun=new T.Color(0xffc1b2);
  const watching=createCellObserver();
  const labelLayer=document.createElement('div');labelLayer.className='cc-three-labels';map.append(labelLayer);
+ const responseUI=createResponseUI(map,{focus,overview:reset,signal:abort.signal});
  const labels=Object.entries(SITES).map(([id,s])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label'+(s.detail?' cc-three-label--main':'');b.innerHTML=`<i style="background:#${s.color.toString(16)}">${{heart:'♥',lung:'O₂',gut:'▤',kidney:'≋',marrow:'✚',lymph:'Y'}[id]}</i><span>${s.label}</span><small>${s.detail?'':'연결 거점'}</small>`;b.setAttribute('aria-label',s.label+' 선택');b.addEventListener('click',()=>onSelect(id),{signal:abort.signal});labelLayer.append(b);const stage=document.createElement('em');b.append(stage);return {id,site:s,element:b};});
  const outletLabel=document.createElement('span');outletLabel.className='cc-outlet-label';outletLabel.textContent='↗ 배출구';outletLabel.hidden=true;labelLayer.append(outletLabel);
  const inspect=document.createElement('section');inspect.className='cc-three-inspect';inspect.hidden=true;inspect.setAttribute('aria-label','선택한 세포');
@@ -172,8 +175,10 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  function home(s=currentRun){const p=siteAt(currentEditor?.draft||s?.layout,'heart')||SITES.heart;setFollowing(false);focusTarget=null;zoomAnchor=null;zoomTarget=null;controls.target.set(p.x,0,p.z+1);camera.position.set(p.x+17,30,p.z+32);camera.zoom=width<761?1:1.04;camera.updateProjectionMatrix();controls.update();dirty=true;}
  function reset(){focusTarget=null;setFollowing(false);controls.target.set(-1,0,1);camera.position.set(19,32,33);zoomAnchor=null;zoomTarget=fit;controls.update();dirty=true;}
  const frontLabels=Object.entries(FRONTS).map(([id,p])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label cc-front-label';b.textContent={skin:'보수 공방',airway:'O₂ · 호흡기 입구',gut:'입 · 소화기 입구'}[id];b.setAttribute('aria-label',b.textContent+' 선택');b.addEventListener('click',()=>onSelect('front:'+id),{signal:abort.signal});labelLayer.append(b);return {id,site:CITY_ENTRIES[id]?.mouth||CITY_ENTRIES[id]?.portal||p,element:b};});
+ const circuitLabels=['체순환 · 심장 → 전신 → 심장','폐순환 · 심장 ⇄ 폐'].map(text=>{const e=document.createElement('span');e.className='cc-circuit-label';e.textContent=text;labelLayer.append(e);return e;});
  function updateLabels(s,options){
   const occupied=[],compact=camera.zoom<.58,top=width<761?145:125;
+  if(!responseUI.root.hidden){const r=responseUI.root.getBoundingClientRect(),m=map.getBoundingClientRect();occupied.push({x:r.x-m.x,y:r.y-m.y,w:r.width,h:r.height});}
   const ordered=[...labels].sort((a,b)=>(b.id===options.selected?2:b.id==='heart'?1:0)-(a.id===options.selected?2:a.id==='heart'?1:0));
   for(const {id,element} of ordered){
    const site=siteAt(currentEditor?.draft||s.layout,id);vec.set(site.building[0],STYLE.labelHeight[id]||3.8,site.building[1]).project(camera);
@@ -184,20 +189,22 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
    element.classList.toggle('is-selected',options.selected===id);const bio=s.biology?.sites[id];element.dataset.infection=bio?.stage||'clear';element.querySelector('em').textContent=bio&&bio.stage!=='clear'?STAGES[bio.stage]:'';
    element.querySelector('small').textContent=options.layer==='supply'?`O₂ ${Math.round(s.districts[id].oxygen)}%`:'';
   }
-  for(const {id,site:base,element} of frontLabels){const site=id==='skin'?transformPoint(s.layout,'workshop',base):base;vec.set(site.x,id==='airway'?4.95:id==='gut'?3.35:2.3,site.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;
+  for(const {id,site:base,element} of frontLabels){const site=id==='skin'?transformPoint(s.layout,'workshop',base):base;vec.set(site.x,id==='airway'?6.6:id==='gut'?5:2.3,site.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;
    element.hidden=x<45||x>width-45||y<top||y>height-inset-60||(id==='skin'&&camera.zoom<.85)||occupied.some(r=>Math.abs(x-r.x-r.w/2)<85&&Math.abs(y-r.y)<40);
    if(!element.hidden)element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;
   }
   const outlet=village?.canals?.outlet;outletLabel.hidden=!outlet;
+  const vascular=theme==='2'&&s.layout?compileVascularLayout(s.layout):null;
+  for(let n=0;n<circuitLabels.length;n++){const e=circuitLabels[n],path=n?vascular?.pulmonary[0].points:vascular?.systemic.arterial.points,p=path?.[Math.floor(path.length*(n?.5:.45))];e.hidden=!p;if(!p)continue;vec.set(p.x,.6,p.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;e.hidden=x<90||x>width-90||y<top||y>height-inset-65||occupied.some(r=>x>r.x-85&&x<r.x+r.w+85&&y>r.y-15&&y<r.y+r.h+15);if(!e.hidden)e.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-50%)`;}
   if(outlet){vec.set(outlet.portal.x,1.7,outlet.portal.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;outletLabel.hidden=x<35||x>width-35||y<top||y>height-inset-60||occupied.some(r=>Math.abs(x-r.x-r.w/2)<65&&Math.abs(y-r.y)<35);if(!outletLabel.hidden)outletLabel.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;}
  }
  function draw(s,options={}){
-  if(disposed||document.hidden)return;inset=options.inset||0;currentRun=s;if(!framed){home(s);framed=true;}const changedEditor=!!currentEditor!==!!options.editor;currentEditor=options.editor||null;
+  if(disposed||document.hidden)return;inset=options.inset||0;currentRun=s;if(!framed){if(theme==='2')reset();else home(s);framed=true;}const changedEditor=!!currentEditor!==!!options.editor;currentEditor=options.editor||null;
   if(changedEditor){clearObservation();controls.enabled=!currentEditor;editorPointers.clear();editDrag=null;}
   const layout=currentEditor?.draft||s.layout,editId=currentEditor?.selected||null;
   if(assetCache&&(layout!==villageLayout||editId!==villageEditId))rebuild(layout,editId);
   editOverlay.update(currentEditor);if(currentEditor)village?.movePreview(currentEditor.preview||currentEditor.draft.items[currentEditor.selected]);
-  actor.root.visible=!currentEditor;labelLayer.hidden=!!currentEditor;
+  actor.root.visible=!currentEditor;labelLayer.hidden=!!currentEditor;responseUI.update(s,!!currentEditor||!game.querySelector('.cc-start')?.hidden);
   const now=performance.now();
   if(options.frameTime!=null&&adaptive.sample(options.frameTime,ready&&!options.paused&&!currentEditor))applyQuality();
   if(!shouldRender(now,quality.fps))return;
@@ -250,5 +257,5 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
   // Keep source models until disposal: Apply rebuilds the static mesh once.
  }
  load().catch(error=>{if(disposed)return;console.error('3D village load failed',error);status.innerHTML='마을을 불러오지 못했습니다. <button type="button" data-city3d-retry>다시 열기</button> · <a href="#city">기존 도시</a>';});
- return {draw,zoom,rotate,reset,focus,home,cameraInfo,setNewAssets,setTheme,captureMotion:s=>motion.capture(s),beginLayout(){clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();village?.dispose();release(scene);assetSwitch.dispose();if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;delete game.dataset.newAssets;}};
+ return {draw,zoom,rotate,reset,focus,home,cameraInfo,setNewAssets,setTheme,captureMotion:s=>motion.capture(s),beginLayout(){clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();village?.dispose();release(scene);assetSwitch.dispose();if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();responseUI.dispose();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;delete game.dataset.newAssets;}};
 }

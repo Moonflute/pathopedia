@@ -11,6 +11,8 @@ import {SITES,CITY_ROADS,INTAKE_ROAD,RIVER_PATH,COTTAGES,groundPoint} from './ci
 import {createFacilities} from './city-three-facilities.mjs';
 import {workStation} from './city-activity.mjs';
 import {bundleModel,createBundleWalls} from './city-three-bundle.mjs';
+import {createEntryTracks} from './city-entry-tracks.mjs';
+import {createTissueScene} from './city-three-tissue.mjs';
 
 // All decorative meshes are baked once by material. Only working machinery moves.
 export function createVillage(assets,layout=null,editId=null,newAssets=null,theme='1'){
@@ -104,8 +106,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
   const pts=r.points.map(p=>new T.Vector3(p.x,.08,p.z));
   const line=canal?new T.Line(new T.BufferGeometry().setFromPoints(pts),new T.LineBasicMaterial({color:r.oxygenated?0xd48d77:0x78b5d1})):new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),32,.075,4,false),new T.MeshBasicMaterial({color:r.pulmonary?0x4f9aa9:newAssets?0xc77f77:0xc89b63}));supply.add(line);
  }
- road(intake.slice(0,network?3:undefined),1.05);if(!network)road(smooth([[-12,-11],[-13,-6],[-10,-2],[-7,4],[-3,7],[3,7],[6,4],[5,0],[2,-3],[-1,-6]]),.9);
- road(network?network.entries.airway.slice(0,4):AIRWAY_PATH.map(groundPoint),1.8);
+ if(network)createEntryTracks({entries:network.entries,box,cylinder});else{road(intake,1.05);road(AIRWAY_PATH.map(groundPoint),1.8);}
  if(!layout)road(WALLS.map(w=>groundPoint(w.inside)).concat([groundPoint(WALLS[0].inside)]),.65);
  if(!layout)road([{x:-5,z:10},{x:-10,z:10},{x:WORKSHOP.x+1,z:WORKSHOP.z+.5}],.85);
  if(!layout)road([{x:19,z:-4},{x:15,z:-4},{x:11.7,z:-3.4},{x:8,z:-3}],1.2);
@@ -143,6 +144,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  // A protected respiratory portal emerges from the northern hillside.
  const {portal,screen,start:airStart}=CITY_ENTRIES.airway;
  if(!canal){const intakeHill=orb(airStart.x,-.7,airStart.z,1,0xb6bda7);intakeHill.scale.set(4.5,3.7,4);}else box(portal.x,-.12,portal.z,5,.4,3.2,CANAL_STYLE.stone);
+ const portalStart=fixed.children.length;
  if(newModel)newModel('gate',portal.x,0,portal.z,3.4,0,fixed,3.6);
  else{box(portal.x,1.2,portal.z-.25,2.6,2.4,.13,0x587a72);
   for(const x of [portal.x-1.4,portal.x+1.4])box(x,.8,portal.z,.4,1.6,.75,0xe3d3b6);
@@ -152,7 +154,6 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  box(portal.x,4.2,portal.z+.7,1.8,.88,.16,STYLE.teal);
  const oxygenO=make(new T.TorusGeometry(.27,.065,5,18),0xf2fff1,portal.x-.35,4.22,portal.z+.8);oxygenO.castShadow=false;
  for(const [dx,dy,w,h] of [[.28,.2,.34,.07],[.42,.08,.07,.27],[.28,-.04,.34,.07],[.14,-.18,.07,.27],[.28,-.31,.34,.07]])box(portal.x+dx,4.28+dy,portal.z+.81,w,h,.04,0xf2fff1);
- ribbon(network?network.entries.airway:AIRWAY_PATH.map(groundPoint),.36,0x82c9c3,.045);
  // A mouth-shaped gate frames the existing food/intestinal route; its centre is open.
  const mouth=CITY_ENTRIES.gut.mouth;
  for(const [dx,radius,tube,color] of [[.18,1.62,.23,0xcb8b83],[-.18,1.4,.15,0x8f5e59],[-1.4,1.32,.12,0xc5a68e],[-2.6,1.2,.12,0xc5a68e]]){
@@ -165,6 +166,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  const tongue=orb(mouth.x-.65,.11,mouth.z,1,0xc59083);tongue.scale.set(2.05,.1,.83);
  box(mouth.x-1.1,.13,mouth.z,.035,.025,1.1,0xa5776b);
  for(const side of [-1,1]){box(mouth.x-1.7,.32,mouth.z+side*1.75,3.6,.64,.35,0xd6c4a7);model('lantern',mouth.x+.4,.02,mouth.z+side*2.15,.85);}
+ if(network)for(const mesh of fixed.children.slice(portalStart))mesh.position.y+=1.65;
  scope('workshop');
  if(newModel){
   const shop=cottage(WORKSHOP.x,WORKSHOP.z-1,1.9,.05,true);shop.scale.x*=1.25;
@@ -230,6 +232,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  scope(null);const water=transformPoint(layout,'kidney',{x:13,z:9});const drain=[{x:riverX(water.z),z:water.z},water];ribbon(drain,.6,0xb4bcb0,.14);ribbon(drain,.38,0x91bfba,.15);
  }
  const canalScene=canal?createCanalScenery({layout,make,box,cylinder,model,mat,scope,fixed,moving,ribbon}):null;
+ const tissueScene=layout?createTissueScene(layout,canalScene?.canals.blocks.tissues):null;if(tissueScene)moving.add(tissueScene.root);
  for(const [id,g] of owners.fixed)applyTransform(g,id);for(const [id,g] of owners.moving)applyTransform(g,id);
  // Selected geometry stays separate during editing, so dragging moves it without rebuilding.
  const preview=owners.fixed.get(editId);if(preview){fixed.remove(preview);root.add(preview);}
@@ -258,7 +261,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  const sources=new Set();fixed.traverse(m=>{if(m.isMesh&&!m.userData.kenney&&!m.userData.cityAsset)sources.add(m.geometry);});for(const g of sources)g.dispose();
  return {root,districts,canals:canalScene?.canals,movePreview(a){if(preview)applyTransform(preview,editId,a);const g=owners.moving.get(editId);if(g)applyTransform(g,editId,a);},dispose(){bundleWalls?.dispose();const gs=new Set(),ms=new Set();root.traverse(m=>{if(m.isInstancedMesh)m.dispose();if(m.geometry&&!m.userData.kenney&&!m.userData.cityAsset)gs.add(m.geometry);if(m.material&&!m.userData.kenney&&!m.userData.cityAsset)ms.add(m.material);});for(const g of gs)g.dispose();for(const m of ms)if(!m.map)m.dispose();},update(s,options){
   moving.visible=true;frontier.root.visible=true;supply.visible=!options.editor&&options.layer==='supply';
-  facilities.update(s);frontier.update(s,options);bundleWalls?.update(s,options);canalScene?.update(s);
+  facilities.update(s);frontier.update(s,options);bundleWalls?.update(s,options);canalScene?.update(s);tissueScene?.update(s);
   for(const [id,d] of Object.entries(districts)){const state=s.districts[id];d.work.visible=!!state.building;d.tower.visible=state.tower>0;d.tower.scale.y=state.tower>1?1.25:1;const progress=state.building?.remaining==null?0:1-state.building.remaining/state.building.duration;d.work.userData.progress.scale.y=.3+progress*2;d.work.userData.progress.position.y=.4+d.work.userData.progress.scale.y*.11;d.level.children.forEach((m,i)=>m.visible=i<state.level-1);}
   ground.material.color.setHex(canal?CANAL_STYLE.water:s.host==='neutropenia'?0xd7c8a7:meadowColor);
  }};

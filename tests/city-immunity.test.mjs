@@ -25,12 +25,14 @@ test('an inflammatory monocyte becomes a macrophage in tissue with the same iden
 test('antigen availability alone cannot prime T cells or produce antibodies without a presenting dendritic cell',()=>{
  const s=city();s.cells=s.cells.filter(c=>!['dendritic','nk','monocyte'].includes(c.kind));challenge(s,'virus');s.antigens['IMM-VIRUS']=true;
  advance(s,38);assert.equal(s.immunity.stats.primed,0);assert.equal(s.stats.antibodyBatches,0);assert.equal(s.cells.some(c=>c.kind==='plasma'),false);
+ assert.ok(s.immunity.response.episodes.every(e=>e.seen[2]==null&&e.seen[3]==null));
 });
 
 test('viral presentation drives cognate CD4/CD8 priming, T–B help, antibody class switching and memory',()=>{
  const s=city();challenge(s,'virus');advance(s,100);
  assert.ok(s.immunity.stats.presented>0);assert.ok(s.immunity.stats.primed>0);assert.ok(s.immunity.stats.clones>0);assert.ok(s.immunity.stats.nkKills>0);assert.ok(s.immunity.stats.cd8Kills>0);
  assert.ok(s.cells.some(c=>c.kind==='plasma'&&c.licensed&&c.recordId==='IMM-VIRUS'&&c.isotype==='IgA'));assert.ok(s.cells.some(c=>c.kind==='bcell'&&c.memory));assert.ok(s.immunity.antibodies['IMM-VIRUS'].IgA>0);assert.ok(restoreCity(serializeCity(s)));
+ const stages=s.immunity.response.episodes.find(e=>e.recordId==='IMM-VIRUS').seen;assert.ok(stages[1]<=stages[2]&&stages[2]<=stages[3]);assert.ok(stages.slice(0,4).every(t=>t!=null));
 });
 
 test('NK and CD8 inspect different host-cell signals and never attack unmatched or healthy self',()=>{

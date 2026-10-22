@@ -1,5 +1,7 @@
 import {CITY_ENTRIES} from './city-world.mjs';
-import {transformPoint,compileLayout} from './city-tile-layout.mjs';
+import {transformPoint,compileLayout,placeable,tissuePresent} from './city-tile-layout.mjs';
+import {wallPieces} from './city-boundary.mjs';
+import {entryTrackHeight} from './city-entry-tracks.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {SITES,groundPoint} from './city-three-layout.mjs';
 import {WALLS,FRONTS,WORKSHOP,TISSUES} from './city-frontier-data.mjs';
@@ -31,7 +33,7 @@ export function createFrontierScene({detailedWalls=false}={}){
  function batch(id,geometry,capacity,material=surface,shadow=false){const mesh=new T.InstancedMesh(geometry,material,capacity);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;mesh.castShadow=shadow;mesh.receiveShadow=material===surface;mesh.count=0;mesh.name='frontier-'+id;root.add(mesh);batches[id]=mesh;}
  batch('box',new T.BoxGeometry(1,1,1),700,surface,true);batch('post',new T.CylinderGeometry(1,1,1,6),260,surface,true);
  batch('orb',new T.IcosahedronGeometry(1,0),180);batch('roof',new T.ConeGeometry(1,1,4),40,surface,true);
- batch('glow',new T.IcosahedronGeometry(1,0),256,unlit);batch('flame',new T.ConeGeometry(1,1,5),256,unlit);batch('smoke',new T.IcosahedronGeometry(1,0),96);
+ batch('glow',new T.IcosahedronGeometry(1,0),512,unlit);batch('flame',new T.ConeGeometry(1,1,5),720,unlit);batch('smoke',new T.IcosahedronGeometry(1,0),200);
  let owner=null,layout=null,poseLayout=null,flowRun=null,flowLayout=null,flowTime=0,flowClock=0;
  function put(id,x,y,z,sx,sy,sz,c,ry=0,rz=0){if(owner&&layout){const p=transformPoint(poseLayout,owner,{x,z});x=p.x;z=p.z;ry-=poseLayout.items[owner].rot*Math.PI/2;}const m=batches[id],i=m.count;if(i>=m.instanceMatrix.count)return;dummy.position.set(x,y,z);dummy.scale.set(sx,sy,sz);dummy.rotation.set(0,ry,rz);dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix);m.setColorAt(i,color.set(c));m.count++;}
  function worldPut(...args){const was=owner;owner=null;put(...args);owner=was;}
@@ -59,14 +61,10 @@ export function createFrontierScene({detailedWalls=false}={}){
   let fireCount=0;
   for(const [i,def] of WALLS.entries()){
    const w=f.walls[i],ratio=w.hp/wallMaximum(s,i),repair=w.repair,front=def.nx*viewX+def.nz*viewZ>Math.hypot(viewX,viewZ)*.3;
-   const height=front?.6:1.55,dx=def.b.x-def.a.x,dz=def.b.z-def.a.z,angle=-Math.atan2(dz,dx),length=Math.hypot(dx,dz),stone=repair?0xb9ccc2:ratio<.75?0xcdab91:0xdfc8ae;
-   for(let n=0;n<4;n++){
-    const q=(n+.5)/4,x=def.a.x+dx*q,z=def.a.z+dz*q;
-    // The respiratory portal is a dedicated protected entrance through the rim.
-    if(i===1&&x>CITY_ENTRIES.airway.portal.x-1.4)continue;
-    if(i===5&&n===0)continue;
-   if(w.hp===0){put('box',x,.15,z,length/5,.3,.8,0x968477,angle,.23*(n%2?1:-1));if(repair?.delivered)put('box',x,.3,z,length/4-.12,.25+(1-repair.remaining/7)*.5,.23,0xa7c9bc,angle);}
-    else if(!detailedWalls){put('box',x,height*.5,z,length/4-.1,height,.5,stone,angle);put('box',x,height+.06,z,length/4-.04,.12,.64,ratio<.75?0xb79480:0xf0e3ca,angle);if(ratio<.75&&n%2===0)put('box',x,height*.5,z+.27,.055,height*.65,.025,0x8e7568,0,.3);}
+   const height=front?.6:1.55,stone=repair?0xb9ccc2:ratio<.75?0xcdab91:0xdfc8ae;
+   for(const [n,{x,z,length,angle}] of wallPieces(def).entries()){
+    if(w.hp===0){put('box',x,.15,z,length*.8,.3,.8,0x968477,angle,.23*(n%2?1:-1));if(repair?.delivered)put('box',x,.3,z,length-.12,.25+(1-repair.remaining/7)*.5,.23,0xa7c9bc,angle);}
+    else if(!detailedWalls){put('box',x,height*.5,z,length+.03,height,.5,stone,angle);put('box',x,height+.06,z,length+.05,.12,.64,ratio<.75?0xb79480:0xf0e3ca,angle);if(ratio<.75&&n%2===0)put('box',x,height*.5,z+.27,.055,height*.65,.025,0x8e7568,0,.3);}
    }
    if(!detailedWalls)for(const p of [def.a]){put('post',p.x,height*.6,p.z,.32,height*1.2,.32,0xcfb89e);put('roof',p.x,height*1.25,p.z,.45,.3,.45,repair?0x8caf9f:0xb99581,Math.PI/4);}
    if(repair){const progress=1-repair.remaining/7;put('post',def.x-.8,1,def.z,.07,2,.07,0x977f60);put('post',def.x+.8,1,def.z,.07,2,.07,0x977f60);put('box',def.x,1.95,def.z,1.8,.12,.12,0x977f60);put('box',def.x,2.2,def.z,1.65,.13,.12,0x4d655e);if(progress>0)put('glow',def.x-(1-progress)*.8,2.2,def.z+.05,1.6*progress,.12,.12,0x83e1bd);}
@@ -91,24 +89,24 @@ export function createFrontierScene({detailedWalls=false}={}){
   // Mucus rollers and a timed cilia rake at the mouth of the respiratory channel.
   for(let i=0;i<6;i++){
    const x=CITY_ENTRIES.airway.screen.x-1.1+i*.43,swing=Math.sin(t*(f.airway.boostUntil>t?7:3)+i*.6)*.32;
-   put('post',x,.38,CITY_ENTRIES.airway.screen.z,.055,.65,.055,0xb7c7a0,0,swing);
-   if(i<Math.ceil(f.airway.mucus))put('orb',x,.22,CITY_ENTRIES.airway.screen.z-.6,.19,.12,.27,0xb9c799);
+   put('post',x,(layout?1.65:0)+.38,CITY_ENTRIES.airway.screen.z,.055,.65,.055,0xb7c7a0,0,swing);
+   if(i<Math.ceil(f.airway.mucus))put('orb',x,(layout?1.65:0)+.22,CITY_ENTRIES.airway.screen.z-.6,.19,.12,.27,0xb9c799);
   }
   const airway=layout?compileLayout(layout).entries.airway:[CITY_ENTRIES.airway.start,CITY_ENTRIES.airway.portal,CITY_ENTRIES.airway.screen,CITY_ENTRIES.airway.gate,SITES.lung];
   const molecules=8+Math.round(10*ventilation);
   for(let i=0;i<molecules;i++){
-   const q=(flowClock+i/molecules)%1,p=entryFlowPoint(airway,q),lane=(i%3-1)*.43,y=.65+Math.sin(q*Math.PI*4)*.09;
+   const q=(flowClock+i/molecules)%1,p=entryFlowPoint(airway,q),lane=(i%3-1)*.43,y=entryTrackHeight(airway,p)+.65+Math.sin(q*Math.PI*4)*.09;
    const x=p.x-p.dz*lane,z=p.z+p.dx*lane;
    for(const side of [-1,1])put('glow',x-p.dz*side*.16,y,z+p.dx*side*.16,.16,.16,.16,side===1?0x61e0dd:0xd2fff1);
    put('post',x,y,z,.04,.33,.04,0xc8f9ed,-Math.atan2(p.dx,-p.dz),Math.PI/2);
   }
   for(let i=0;i<4;i++){
    const p=entryFlowPoint(airway,(flowClock*.6+i/4)%1),tx=p.x+p.dx*.3,tz=p.z+p.dz*.3;
-   for(const side of [-1,1]){const x=p.x-p.dx*.25-p.dz*side*.28,z=p.z-p.dz*.25+p.dx*side*.28,dx=tx-x,dz=tz-z;put('post',(tx+x)/2,.2,(tz+z)/2,.045,Math.hypot(dx,dz),.045,0x67c9c5,-Math.atan2(dz,dx),Math.PI/2);}
+   for(const side of [-1,1]){const x=p.x-p.dx*.25-p.dz*side*.28,z=p.z-p.dz*.25+p.dx*side*.28,dx=tx-x,dz=tz-z;put('post',(tx+x)/2,entryTrackHeight(airway,p)+.2,(tz+z)/2,.06,Math.hypot(dx,dz),.06,0x67c9c5,-Math.atan2(dz,dx),Math.PI/2);}
   }
   const mouth=CITY_ENTRIES.gut.mouth,angle=f.gut.quarantine?0:Math.PI/2;
-  put('box',mouth.x-.6-Math.sin(angle)*1.3,.65,mouth.z+1.3-Math.cos(angle)*1.3,.12,1.1,2.6,f.gut.quarantine?0xb8b983:0xd8c49e,angle);
-  put('glow',mouth.x-.6,1.6,mouth.z+1.6,.13,.16,.13,f.gut.quarantine?0xe8bf65:0x83d6ba);
+  put('box',mouth.x-.6-Math.sin(angle)*1.3,(layout?1.65:0)+.65,mouth.z+1.3-Math.cos(angle)*1.3,.12,1.1,2.6,f.gut.quarantine?0xb8b983:0xd8c49e,angle);
+  put('glow',mouth.x-.6,(layout?1.65:0)+1.6,mouth.z+1.6,.13,.16,.13,f.gut.quarantine?0xe8bf65:0x83d6ba);
   for(const [id,site] of Object.entries(SITES)){
    owner=id;const d=s.districts[id],state=facilityState(s,id),cap=workplaceCapacity(s,id,'oxygen');
    const biology=s.biology?.sites[id];
@@ -164,13 +162,16 @@ export function createFrontierScene({detailedWalls=false}={}){
    put('box',-12.1+i*.35,.5,1.9,.28,.12,.23,item.stage==='접수'?0xd4bd83:0xa2bfa5);
    put('glow',-12.1+i*.35,.75+Math.sin(t*3+i)*.05,1.9,.07,.08,.07,0xdcc481);
   }
-  for(const [i,d] of TISSUES.entries()){
-   owner='house-'+d.index;const health=f.tissues[i].hp,organ=s.districts[d.district],bad=health<55;
+  for(const [i,tissue] of TISSUES.entries()){
+   if(!tissuePresent(s,tissue))continue;const d=tissue.managed?{...tissue,...placeable('house-'+tissue.index).origin}:tissue;
+   owner='house-'+d.index;const health=f.tissues[i].hp,organ=s.districts[d.district],bad=health<55,repair=s.cells.some(c=>c.tissueJob===i&&c.task==='조직 블록 복구');
    put('box',d.x,.7,d.z+.72,.25,.27,.04,bad?0x7f7470:organ.food<1||organ.oxygen<20?0xafa797:0xe7cf8c);
-   if(bad)fire(d.x+.4,d.z+.4,t,fireCount++,.85+(55-health)/90,1);
+   if(bad&&!repair)fire(d.x+.4,d.z+.4,t,fireCount++,.85+(55-health)/90,1);
    else if(health<85)injury(d.x,d.z+.8,t,1,.5);
    if(health<15){put('box',d.x-.6,.2,d.z+1.2,.8,.32,.45,0x62534b,0,.25);put('post',d.x+.4,.45,d.z+1.1,.11,1.2,.11,0x615047,0,.8);}
    if(health<80)put('glow',d.x,2.6,d.z,.15,.24,.15,bad?0xff8c4e:0xe8bd63);
+   if(health<95){put('box',d.x,3.1,d.z,1.55,.16,.15,0x473e3a);put('glow',d.x-(1-health/100)*.73,3.12,d.z,1.46*health/100,.13,.17,repair?0x69e5b1:0xff8662);}
+   if(repair){for(const side of [-1,1])put('post',d.x+side*.85,1.2,d.z+.9,.07,2.4,.07,0xc6ad76);put('box',d.x,2.4,d.z+.9,1.9,.12,.15,0xf0cc7b);}
   }
   for(const m of Object.values(batches)){m.instanceMatrix.clearUpdateRanges();m.instanceMatrix.addUpdateRange(0,m.count*16);m.instanceMatrix.needsUpdate=m.count>0;if(m.instanceColor){m.instanceColor.clearUpdateRanges();m.instanceColor.addUpdateRange(0,m.count*3);m.instanceColor.needsUpdate=m.count>0;}}
  }

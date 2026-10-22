@@ -198,7 +198,7 @@ export function createCityGame(data,options={}){
     else if(action==='scenario'){if(SCENARIOS[id])choice=id;}
     else if(action==='menu'){atStart=true;speed=0;save();}
     else if(action==='resume'){if(started){atStart=false;speed=0;}}
-    else if(action==='start'){run=newCity(SCENARIOS[choice].host,choice);started=true;atStart=false;speed=1;selected=is3d?'heart':'lung';selectedKind='';panel='';if(is3d)renderer?.home?.(run);biology.page=choice==='simulation'?'exposure':'medicine';restored=false;save();}
+    else if(action==='start'){run=newCity(SCENARIOS[choice].host,choice);started=true;atStart=false;speed=1;selected=is3d?'heart':'lung';selectedKind='';panel='';if(is3d){if(theme==='2')renderer?.reset();else renderer?.home?.(run);}biology.page=choice==='simulation'?'exposure':'medicine';restored=false;save();}
     else if(action==='panel')panel=panel===id?'':id;
     else if(action==='close'){const last=panel;panel='';game.querySelector(`[data-city-action="panel"][data-city-id="${last}"]`)?.focus({preventScroll:true});}
     else if(action==='city-page')cityPage=id;

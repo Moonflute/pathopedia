@@ -3,6 +3,7 @@ import {compileCanalLayout,canalFlowPoint} from './city-canal-layout.mjs';
 import {SITES,workStationPoints} from './city-three-layout.mjs';
 import {WALLS} from './city-frontier-data.mjs';
 import {output} from './city-engine.mjs';
+import {wallPieces} from './city-boundary.mjs';
 
 export const CANAL_STYLE=Object.freeze({water:0x4caaa8,deep:0x338b91,foam:0xb6e1d2,stone:0xd9c8a8,quay:0xa39983,sky:0xd7e9e5,roofs:[0xb96146,0xc57852,0xa95643,0xcd8a60],walls:[0xf0dbb4,0xe9b5a0,0xe8cc8d,0xc5d6c7,0xf1e5cc]});
 
@@ -68,11 +69,11 @@ export function createCanalScenery({layout,make,box,cylinder,model,mat,scope,fix
  // Low-oxygen blood also leaves the heart for the lungs in the pulmonary artery.
  for(const bed of canals.vascular.beds)for(const points of bed.branches)ribbon(points,bed.width,0x8bb8ab,-.145);
  for(const vessel of canals.flows){
-  ribbon(vessel.points,vessel.width,vessel.oxygenated?0xc58e7e:0x639ab6,-.14);
-  ribbon(vessel.points,.09,vessel.oxygenated?0xd99c85:0x8cc5db,-.132);
+  ribbon(vessel.points,vessel.width,vessel.oxygenated?0xd86b5a:0x508fca,-.14);
+  ribbon(vessel.points,.14,vessel.oxygenated?0xf2b095:0x9dd8ec,-.132);
  }
  // A narrow stone foundation supports the existing skin wall above the lagoon.
- for(const wall of WALLS)ribbon([wall.a,wall.b],1.3,0xb8ac90,-.035);
+ for(const wall of WALLS)for(const p of wallPieces(wall))ribbon([p.a,p.b],1.3,0xb8ac90,-.035);
  const outlet=canals.outlet;
  let discharge=null,dischargeFlow=null;
  if(outlet){
@@ -113,15 +114,15 @@ export function createCanalScenery({layout,make,box,cylinder,model,mat,scope,fix
  }
  scope(null);
  const arrow=new T.BufferGeometry();arrow.setAttribute('position',new T.Float32BufferAttribute([-.45,0,-.35,0,0,.45,.45,0,-.35,.45,0,-.35,0,0,.12,-.45,0,-.35],3));arrow.computeVertexNormals();
- const count=canals.flows.length*16,mesh=new T.InstancedMesh(arrow,new T.MeshBasicMaterial({color:0xffffff,side:T.DoubleSide}),count),dummy=new T.Object3D();
- for(let i=0;i<count;i++)mesh.setColorAt(i,new T.Color(canals.flows[Math.floor(i/16)].oxygenated?0xf7d2af:0xd2f1f9));
+ const flowSlots=canals.flows.map(f=>Math.max(8,Math.ceil(f.length/4))),count=flowSlots.reduce((a,b)=>a+b,0),mesh=new T.InstancedMesh(arrow,new T.MeshBasicMaterial({color:0xffffff,side:T.DoubleSide}),count),dummy=new T.Object3D();
+ let colorSlot=0;for(const [i,flow] of canals.flows.entries())for(let j=0;j<flowSlots[i];j++)mesh.setColorAt(colorSlot++,new T.Color(flow.oxygenated?0xffdbbd:0xc9f3ff));
  mesh.name='canal-current';mesh.frustumCulled=false;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);moving.add(mesh);
  let lastTime=null,dischargePhase=0;
  return {canals,update(s){
   if(lastTime===s.time)return;const dt=lastTime==null?0:Math.max(0,Math.min(.3,s.time-lastTime));lastTime=s.time;
-  let n=0;for(const flow of canals.flows)for(let j=0;j<16;j++){
-   const point=canalFlowPoint(flow,j/16+s.time*.9/flow.length);
-   dummy.position.set(point.x,-.115,point.z);dummy.rotation.set(0,point.angle,0);dummy.scale.set(.48,1,.6);dummy.updateMatrix();mesh.setMatrixAt(n++,dummy.matrix);
+  let n=0;for(const [i,flow] of canals.flows.entries())for(let j=0;j<flowSlots[i];j++){
+   const point=canalFlowPoint(flow,j/flowSlots[i]+s.time*2/flow.length);
+   dummy.position.set(point.x,-.08,point.z);dummy.rotation.set(0,point.angle,0);dummy.scale.set(flow.circuit==='pulmonary'?.95:1.1,1,1.35);dummy.updateMatrix();mesh.setMatrixAt(n++,dummy.matrix);
   }
   mesh.instanceMatrix.needsUpdate=true;
   if(discharge){

@@ -1,7 +1,7 @@
 import {CITY_CAPS,populationLimit,shipmentLimit,travelScale} from './city-world.mjs';
 import {cityDistricts,cityDistrict,cityRoute,intakeRoute,localPoint,createTileLayout,migrateTileLayout,applyTileLayout,validateTileLayout,compileLayout,walkingRoute,roadPoint} from './city-tile-layout.mjs';
 import {ensureFrontier,frontierCommand,deliverFrontier,frontierDestination,assignFronts,spawnAtFront,tickFrontierEnemy,tickFrontier,frontierCell,receiveAntigen,completeInvestment,frontDepot,validateFrontier} from './city-frontier.mjs';
-import {supportCount,WALLS} from './city-frontier-data.mjs';
+import {supportCount,WALLS,TISSUES} from './city-frontier-data.mjs';
 import {groundCoordinate,groundPoint,SITES} from './city-three-layout.mjs';
 import {approachWorkplace,releaseWorkplace} from './city-workplaces.mjs';
 import {DISTRICTS,JOBS,CELL_JOBS,cityJobs,cellCap,DRUGS,WAVES,ENTRANCE,SCENARIOS,districtDef} from './city-data.mjs';
@@ -11,6 +11,7 @@ import {ensureBiology,biologyCommand,tickBiology,seedInfection,combatDestination
 import {defaultCityRules,validateCityRules,cityRule,ruleReady,ruleTarget,ruleEnemy} from './city-rules.mjs';
 import {ensureImmunity,IMMUNE_ROSTER,immuneCell,tickImmunity,immuneCommand,validateImmunity,immuneClearance} from './city-immunity.mjs';
 import {vascularWalkingRoute} from './city-vascular-layout.mjs';
+import {tickResponse,validateResponse} from './city-response.mjs';
 
 export const SAVE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
@@ -38,7 +39,9 @@ function route(c,points){c.path=points.map(p=>({...p}));c.step=0;delete c.roadPa
 function move(c,speed,dt){
   const layout=movementLayouts.get(c);
   if(layout&&navigatedPaths.get(c)!==c.path){const vessel=movementVessels.get(c);c.path=vessel?vascularWalkingRoute(layout,c,c.path.slice(c.step).at(-1)):walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=vessel?2:1;navigatedPaths.set(c,c.path);}
-  let budget=speed*dt;
+  // The outer circuit is much longer than the former radial map. Transit speed
+  // compensates for that drawing scale; loading and local work retain timing.
+  let budget=speed*dt*(movementVessels.get(c)&&!c.dock?2.4:1);
   while(c.step<c.path.length){const p=c.path[c.step],d=dist(c,p);if(d>budget){if(layout){const a=groundPoint(c),b=groundPoint(p),q=groundCoordinate({x:a.x+(b.x-a.x)*budget/d,z:a.z+(b.z-a.z)*budget/d});c.x=q.x;c.y=q.y;}else{c.x+=(p.x-c.x)/d*budget;c.y+=(p.y-c.y)/d*budget;}return false;}c.x=p.x;c.y=p.y;c.step++;budget-=d;}
   return true;
 }
@@ -468,7 +471,7 @@ export function tickCity(s,dt,data,canalTransport=false){
   for(const c of s.cells){updateCell(s,c,dt,speed,data);cellAlert(s,c);}
   if(s.biology){for(const c of s.cells.filter(c=>c.lost)){s.biology.stats.losses++;s.debris.push({id:++s.serial,x:c.x,y:c.y,recordId:null,cellKind:c.kind});log(s,CELL_JOBS[c.kind].name+' · 사멸');}s.cells=s.cells.filter(c=>!c.lost);}
   s.enemies=s.enemies.filter(e=>!e.dead);s.debris=s.debris.slice(-80);
-  s.effects=s.effects.filter(e=>(e.life-=dt)>0);
+  s.effects=s.effects.filter(e=>(e.life-=dt)>0);tickResponse(s);
   const preset=SCENARIOS[s.scenario];
   if(s.scenario==='simulation')return;
   if(s.districts.heart.hp<=0||cityHealth(s)<22){s.status='lost';s.endReason='도시 기능 정지';}
@@ -522,8 +525,14 @@ export function restoreCity(raw){
     for(const key of ['signals','antibodyBatches','clots']){s.stats[key]??=0;if(!finite(s.stats[key]))return null;}
     for(const d of Object.values(s.districts))if(d.supportUntil!=null&&!finite(d.supportUntil))return null;
     for(const c of s.cells){c.age??=0;c.life??=CELL_JOBS[c.kind].life;if(!finite(c.age,2000)||!finite(c.life,2000)||c.life<=0)return null;}
-    if(s.layout&&(!validateTileLayout(s.layout)||!compileLayout(s.layout).valid)||!validateFrontier(s)||!validateBiology(s)||!validateImmunity(s))return null;
+    if(s.layout&&(!validateTileLayout(s.layout)||!compileLayout(s.layout).valid)||!validateFrontier(s)||!validateBiology(s)||!validateImmunity(s)||!validateResponse(s))return null;
     s.nextWave=s.nextWave??Infinity;s.effects=[];
+    if(s.frontier){while(s.frontier.tissues.length<TISSUES.length)s.frontier.tissues.push({hp:100});
+     if(s.frontier.rimVersion!==1){
+      for(const a of [...s.cells,...s.shipments,...s.enemies]){if(a.path?.length){a.path=a.step<a.path.length?[a.path.at(-1)]:[];a.step=0;delete a.roadPathVersion;}if(a.front&&!a.entered)a.entryStep=null;if(a.frontJob!=null&&a.frontStage==='repair'){a.frontStage='field';a.activity=null;a.path=[WALLS[a.frontJob].inside];a.step=0;}}
+      s.frontier.rimVersion=1;
+     }
+    }
     if(s.specialists&&s.layout?.version===1){const next=migrateTileLayout(s.layout);if(!next||!applyTileLayout(s,next).ok)return null;for(const e of s.enemies)if(e.front&&!e.entered){e.entryStep=null;spawnAtFront(s,e);}for(const c of s.cells)if(c.frontJob!=null&&c.frontStage==='repair'){Object.assign(c,WALLS[c.frontJob].inside);if(c.activity)Object.assign(c.activity,WALLS[c.frontJob].inside);}}
     // Old saves rejoin the streets once; current routes resume at their exact step.
     if(s.layout)for(const a of [...s.cells,...s.shipments,...s.enemies])if(a.roadPathVersion===1&&a.path)navigatedPaths.set(a,a.path);

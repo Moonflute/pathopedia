@@ -20,7 +20,7 @@ test('theme defaults to the original village and persists independently of game 
 
 test('water covers the actual navigation graph including loading bays and perimeter patrols',()=>{
  const layout=createTileLayout(),before=JSON.stringify(layout),network=compileLayout(layout),surface=compileCanalLayout(layout);
- assert.ok(surface.rows.length&&surface.edges.length);assert.equal(surface.flows.length,10);
+ assert.ok(surface.rows.length&&surface.edges.length);assert.equal(surface.flows.length,14);
  for(const points of surface.channels.map(r=>r.points))for(let i=1;i<points.length;i++){
   const a=points[i-1],b=points[i],samples=Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)*4);
   for(let j=0;j<=samples;j++){const t=samples?j/samples:0,p={x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t};assert.ok(surface.isWater(p),'land blocks route '+JSON.stringify(p));}
@@ -40,7 +40,7 @@ test('waterfront blocks leave traffic and real building expansion clear',()=>{
  const layout=createTileLayout(),expanded=addLayoutBuilding(layout,'house');assert.ok(expanded.ok);
  for(const town of [layout,expanded.layout]){
   const snapshot=JSON.stringify(town),c=compileCanalLayout(town),network=compileLayout(town);
-  assert.ok(c.blocks.frontages.length>=30);assert.ok(c.blocks.gardens.length>=3);
+  assert.ok(c.blocks.frontages.length>=15);assert.ok(c.blocks.gardens.length>=3);assert.ok(c.blocks.tissues.length>=100);
   for(const b of [...c.blocks.frontages,...c.blocks.gardens]){
    const vertical=Math.abs(Math.sin(b.angle||0))>.5,w=b.w||3.5,d=b.d||3.5,hx=(vertical?d:w)/2,hz=(vertical?w:d)/2;
    for(let x=b.x-hx;x<=b.x+hx;x+=.25)for(let z=b.z-hz;z<=b.z+hz;z+=.25){
@@ -66,7 +66,9 @@ test('organ vessels separate outward/return paths, avoid buildings and close bot
   const outward=v.navigation.route(v.centres.heart,v.centres[id]),inward=v.navigation.route(v.centres[id],v.centres.heart);
   assert.ok(outward?.length&&inward?.length);assert.notDeepEqual(outward,[...inward].reverse());
   const artery=v.vessels.find(x=>x.id==='artery-'+id),vein=v.vessels.find(x=>x.id==='vein-'+id);
-  assert.deepEqual(artery.points[0],vein.points.at(-1));assert.deepEqual(artery.points.at(-1),vein.points[0]);
+  if(id==='lung')assert.deepEqual(artery.points[0],vein.points.at(-1));
+  else {assert.ok(v.systemic.arterial.gates.some(p=>p.x===artery.points[0].x&&p.z===artery.points[0].z));assert.ok(v.systemic.venous.gates.some(p=>p.x===vein.points.at(-1).x&&p.z===vein.points.at(-1).z));}
+  assert.deepEqual(artery.points.at(-1),vein.points[0]);
  }
  for(const from of Object.values(v.centres))for(const to of Object.values(v.centres)){
   const route=vascularWalkingRoute(layout,groundCoordinate(from),groundCoordinate(to));assert.ok(route.length<=512);

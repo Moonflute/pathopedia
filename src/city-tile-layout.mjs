@@ -5,6 +5,7 @@ import {PERIMETER,WORKSHOP,FRONTS,TISSUES,WALLS} from './city-frontier-data.mjs'
 import {vascularRoute,FOOD_ROAD} from './city-map.mjs';
 import {TOWN_PLAN,TOWN_HOUSES,GROWTH_OFFSETS} from './city-town-plan.mjs';
 import {gridPath,streetNetwork,roadNavigator} from './city-grid-path.mjs';
+import {insideCity} from './city-boundary.mjs';
 
 // Grid topology is independent of organ state and rendering. A future hex grid
 // supplies its own neighbours, rotation and coordinate conversion here.
@@ -129,7 +130,7 @@ export function compileLayout(layout){
  const connections=[],roadCells=new Map();
  const port=id=>{const a=layout.items[id],q=rotateOffset({x:placeable(id).port[0],z:placeable(id).port[1]},a.rot);return {x:a.col+q.x,z:a.row+q.z};};
  const centre=id=>({x:layout.items[id].col,z:layout.items[id].row});
- const walkable=p=>tileAllowed(p.col,p.row)&&!occupied.has(key(p));
+ const walkable=p=>insideCity(p.col,p.row,1.05)&&!occupied.has(key(p));
  // A modest discount joins existing streets without creating long detours.
  const pathCache=new Map();
  const path=(a,b,reuse=false)=>{const start=SQUARE_GRID.fromWorld(a),end=SQUARE_GRID.fromWorld(b),k=key(start)+'>'+key(end)+':'+reuse;
@@ -138,8 +139,8 @@ export function compileLayout(layout){
   if(pathCache.size>=512)pathCache.delete(pathCache.keys().next().value);pathCache.set(k,result);return result;
  };
  function connect(id,from,to,kind){
-  const middle=path(from,to,kind==='walk');if(!middle){connections.push({id,kind,ok:false,points:[]});return null;}
-  for(const p of middle){const k=p.x+','+p.z;if(!roadCells.has(k))roadCells.set(k,new Set());roadCells.get(k).add(kind);}
+  const middle=kind==='entry'?gridPath(SQUARE_GRID.fromWorld(from),SQUARE_GRID.fromWorld(to),p=>insideCity(p.col,p.row,1)&&!occupied.has(key(p)),()=>1,12000):path(from,to,kind==='walk');if(!middle){connections.push({id,kind,ok:false,points:[]});return null;}
+  if(kind!=='entry')for(const p of middle){const k=p.x+','+p.z;if(!roadCells.has(k))roadCells.set(k,new Set());roadCells.get(k).add(kind);}
   const points=simplify([from,...middle,to].filter((p,i,a)=>!i||p.x!==a[i-1].x||p.z!==a[i-1].z));connections.push({id,kind,ok:true,points});return points;
  }
  const vascular={};
@@ -149,7 +150,7 @@ export function compileLayout(layout){
  }
  for(const d of layoutPlaceables(layout).filter(d=>d.kind!=='organ')){const nearest=d.kind!=='house'&&d.district?districtDef(d.district):DISTRICTS.reduce((a,b)=>Math.hypot(centre(a.id).x-centre(d.id).x,centre(a.id).z-centre(d.id).z)<Math.hypot(centre(b.id).x-centre(d.id).x,centre(b.id).z-centre(d.id).z)?a:b);connect(d.id,port(d.id),port(nearest.id),'walk');}
  const districts=DISTRICTS.map(d=>({...d,...groundCoordinate(centre(d.id))}));
- const streets=streetNetwork(connections),access=[],free=p=>freePoint(walkable,p);
+ const streets=streetNetwork(connections.filter(c=>c.kind!=='entry')),access=[],free=p=>freePoint(walkable,p);
  function pave(from,to,width=.62){
   const a=free(from),b=free(to),middle=path(a,b,true);if(!middle)return;
   for(const p of middle){const k=p.x+','+p.z;if(!roadCells.has(k))roadCells.set(k,new Set(['walk']));}
@@ -170,7 +171,7 @@ export function compileLayout(layout){
  const patrol=WALLS.map(w=>free(groundPoint(w.inside)));
  for(let i=0;i<patrol.length;i++)pave(patrol[i],patrol[(i+1)%patrol.length],.65);
  const near=patrol.reduce((a,b)=>Math.hypot(a.x-port('workshop').x,a.z-port('workshop').z)<Math.hypot(b.x-port('workshop').x,b.z-port('workshop').z)?a:b);pave(port('workshop'),near,.65);
- const entrances=Object.entries(entries).map(([id,points])=>points.slice(0,id==='airway'?4:3)),navigation=roadNavigator([...streets.runs.map(r=>r.points),...access.map(r=>r.points),...entrances]);pathCache.clear();
+ const entrances=Object.values(entries),navigation=roadNavigator([...streets.runs.map(r=>r.points),...access.map(r=>r.points)]);pathCache.clear();
  const result={connections,vascular,entries,entrances,roadCells,streets,access,navigation,occupied,walkable,path,districts,valid:connections.every(c=>c.ok),ports:Object.fromEntries(layoutPlaceables(layout).map(d=>[d.id,port(d.id)]))};compiled.set(layout,result);return result;
 }
 
@@ -206,7 +207,8 @@ export function cityRoute(s,from,to){
  return [...out,...back].map(groundCoordinate);
 }
 export const intakeRoute=s=>s?.layout?compileLayout(s.layout).entries.gut.map(groundCoordinate):FOOD_ROAD;
-export function tissueAt(s,t){const p=transformPoint(s?.layout,'house-'+t.index,t);return {...t,...p,point:localPoint(s,'house-'+t.index,{x:t.x,z:t.z+1.4})};}
+export function tissueAt(s,t){const id='house-'+t.index,base=t.managed?placeable(id).origin:t,p=transformPoint(s?.layout,id,base);return {...t,...p,point:localPoint(s,id,{x:base.x,z:base.z+1.4})};}
+export const tissuePresent=(s,t)=>!s.layout?!t.managed:!!s.layout.items['house-'+t.index]&&!storedPlacement(s.layout.items['house-'+t.index]);
 export const depotAt=(s,id)=>transformPoint(s?.layout,id==='skin'?'workshop':id==='airway'?'lung':'gut',FRONTS[id].depot);
 // Map a saved actor through its nearest facility's local frame. Transit routes
 // are reissued; resources, jobs, IDs and progress are not recreated.

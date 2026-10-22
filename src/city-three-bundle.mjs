@@ -4,6 +4,7 @@ import * as T from './vendor/three/three.module.min.js';
 import {GLTFLoader} from './vendor/three/GLTFLoader.js';
 import {WALLS} from './city-frontier-data.mjs';
 import {wallMaximum} from './city-frontier.mjs';
+import {wallPieces,WALL_ARC_STEPS} from './city-boundary.mjs';
 
 const root=new URL('../assets/city3d/bundle/',import.meta.url);
 export async function loadCityBundle(){
@@ -55,20 +56,16 @@ export function createBundleWalls(bundle){
   template.traverse(m=>{if(!m.isMesh)return;const mesh=new T.InstancedMesh(m.geometry,surface,capacity);mesh.userData.cityAsset=true;mesh.userData.structure=kind;mesh.castShadow=true;mesh.receiveShadow=true;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;root.add(mesh);const part={mesh,local:m.matrixWorld.clone()};parts.push(part);batches.push(part);});
   return {size,parts};
  }
- const walls=pool('stone-wall',WALLS.length,'wall'),towers=pool('stone-tower',4,'tower');
+ const walls=pool('stone-wall',WALLS.length*WALL_ARC_STEPS,'wall'),towers=pool('stone-tower',4,'tower');
  function put(group){for(const {mesh,local} of group.parts){matrix.multiplyMatrices(wallMatrix,local);mesh.setMatrixAt(mesh.count,matrix);mesh.setColorAt(mesh.count,color);mesh.count++;}}
  return {root,dispose(){surface.dispose();},update(s,{camera,target}={}){
   const vx=camera?camera.position.x-target.x:20,vz=camera?camera.position.z-target.z:32;
   for(const {mesh} of batches)mesh.count=0;
   for(const [i,wall] of WALLS.entries()){
    const state=s.frontier?.walls[i];if(!state||state.hp<=0)continue;
-   const dx=wall.b.x-wall.a.x,dz=wall.b.z-wall.a.z,length=Math.hypot(dx,dz),front=wall.nx*vx+wall.nz*vz>Math.hypot(vx,vz)*.3;
-   // Leave both biological entrances open in the perimeter.
-   const start=i===5?.25:0,end=i===1?Math.min(1,(CITY_ENTRIES.airway.portal.x-1.4-wall.a.x)/dx):1,cx=wall.a.x+dx*(start+end)/2,cz=wall.a.z+dz*(start+end)/2;
-   position.set(cx,.02,cz);quaternion.setFromAxisAngle(axis,-Math.atan2(dz,dx));scale.set(length*(end-start)*.99/Math.max(.01,walls.size.x),front?.6:1.7,1);
+   const front=wall.nx*vx+wall.nz*vz>Math.hypot(vx,vz)*.3;
    color.set(state.repair?0xb9ccc2:state.hp/wallMaximum(s,i)<.75?0xc9ab93:STYLE.plasterWarm);
-   wallMatrix.compose(position,quaternion,scale);
-   put(walls);
+   for(const p of wallPieces(wall)){position.set(p.x,.02,p.z);quaternion.setFromAxisAngle(axis,p.angle);scale.set(p.length*1.02/Math.max(.01,walls.size.x),front?.6:1.7,1);wallMatrix.compose(position,quaternion,scale);put(walls);}
    if(i===0||i===4||i===7||i===10){position.set(wall.a.x,.02,wall.a.z);quaternion.identity();scale.setScalar(front?1.1:2.3);wallMatrix.compose(position,quaternion,scale);put(towers);}
   }
   for(const {mesh} of batches){mesh.instanceMatrix.needsUpdate=true;if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;}

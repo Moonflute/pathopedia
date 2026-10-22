@@ -4,6 +4,7 @@ import {compileVascularLayout} from './city-vascular-layout.mjs';
 import {PERIMETER,WALLS} from './city-frontier-data.mjs';
 import {gridPath} from './city-grid-path.mjs';
 import {compileCanalBlocks} from './city-canal-blocks.mjs';
+import {wallPieces} from './city-boundary.mjs';
 
 // Main vessels, exchange beds and local service canals cut one continuous city.
 const cache=new WeakMap(),STEP=.5;
@@ -14,9 +15,9 @@ function kidneyOutlet(layout,network){
  if(storedPlacement(layout.items.kidney))return null;
  const inlet=transformPoint(layout,'kidney',{x:14.1,z:9}),start={col:Math.round(inlet.x),row:Math.round(inlet.z)},candidates=[];
  const allowed=p=>insideBank(p.col,p.row)&&(!network.occupied.has(key(p.col,p.row))||network.occupied.get(key(p.col,p.row))==='kidney');
- for(const [dx,dz] of [[1,0],[0,1],[-1,0],[0,-1]])for(const wall of WALLS){
-  const sx=wall.b.x-wall.a.x,sz=wall.b.z-wall.a.z,den=dx*sz-dz*sx;if(Math.abs(den)<1e-6)continue;
-  const ax=wall.a.x-inlet.x,az=wall.a.z-inlet.z,t=(ax*sz-az*sx)/den,u=(ax*dz-az*dx)/den;
+ for(const [dx,dz] of [[1,0],[0,1],[-1,0],[0,-1]])for(const wall of WALLS)for(const {a,b} of wallPieces(wall)){
+  const sx=b.x-a.x,sz=b.z-a.z,den=dx*sz-dz*sx;if(Math.abs(den)<1e-6)continue;
+  const ax=a.x-inlet.x,az=a.z-inlet.z,t=(ax*sz-az*sx)/den,u=(ax*dz-az*dx)/den;
   if(t<2||u<.08||u>.92||wall.id===1||wall.id===5)continue;
   const portal={x:inlet.x+dx*t,z:inlet.z+dz*t},approach={col:Math.round(portal.x-dx*1.5),row:Math.round(portal.z-dz*1.5)};
   if(!allowed(approach))continue;
@@ -37,7 +38,6 @@ export function compileCanalLayout(layout){
  const network=compileLayout(layout),vascular=compileVascularLayout(layout),channels=[
   ...network.streets.runs.map(r=>({points:r.points,width:r.level===1?1.2:.65,kind:'service'})),
   ...network.access.map(r=>({points:r.points,width:Math.max(.62,r.width*.65),kind:'service'})),
-  ...network.entrances.map(points=>({points,width:1.5,kind:'entry'})),
   ...vascular.vessels,
   ...vascular.beds.flatMap(b=>b.branches.map(points=>({points,width:b.width,kind:'capillary'})))
  ];
@@ -81,7 +81,7 @@ export function compileCanalLayout(layout){
  }
  const flows=vascular.vessels.filter(r=>r.length>0);
  const outlet=kidneyOutlet(layout,network),blocks=compileCanalBlocks(layout,network,channels,land,outlet);
- const result={channels,parcels,rows,edges,flows,vascular,outlet,blocks,isWater:p=>!land.has(key(Math.floor(p.x/STEP),Math.floor(p.z/STEP)))};
+ const result={channels,parcels,rows,edges,flows,vascular,outlet,blocks,entries:network.entries,isWater:p=>!land.has(key(Math.floor(p.x/STEP),Math.floor(p.z/STEP)))};
  cache.set(layout,result);return result;
 }
 export function canalFlowPoint(flow,progress,side=0){

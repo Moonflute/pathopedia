@@ -1,6 +1,6 @@
 import {WAVES} from './city-data.mjs';
 import {TISSUES} from './city-frontier-data.mjs';
-import {cityDistrict,tissueAt} from './city-tile-layout.mjs';
+import {cityDistrict,tissueAt,tissuePresent} from './city-tile-layout.mjs';
 
 // Fixed educational isolates reuse data/organisms.json. Rates are game units.
 const staph={routes:['skin','blood'],shape:'cluster',focus:{skin:'tissue',blood:'heart'},mechanism:'화농 · 연조직 침범',growth:.042,damage:1.05,spread:48,secondary:['heart','lung','kidney','marrow']};
@@ -26,8 +26,8 @@ export function pathogenTarget(s,e){
  const profile=pathogenDef(e.recordId),focus=profile?.focus[e.front]|| (e.front==='skin'?'tissue':e.front==='gut'?'gut':e.front==='blood'?'heart':'lung');
  if(focus==='tissue'){
   const current=e.attackTarget?.kind==='tissue'?TISSUES[e.attackTarget.id]:null;
-  const candidates=TISSUES.filter(t=>s.frontier.tissues[t.id].hp>5);
-  const tissue=current&&s.frontier.tissues[current.id].hp>5?current:candidates.reduce((best,t)=>!best||distance(tissueAt(s,t).point,e)<distance(tissueAt(s,best).point,e)?t:best,null)||current||TISSUES[0];
+  const candidates=TISSUES.filter(t=>tissuePresent(s,t)&&s.frontier.tissues[t.id].hp>5);
+  const tissue=current&&tissuePresent(s,current)&&s.frontier.tissues[current.id].hp>5?current:candidates.reduce((best,t)=>!best||distance(tissueAt(s,t).point,e)<distance(tissueAt(s,best).point,e)?t:best,null)||TISSUES.find(t=>tissuePresent(s,t))||TISSUES[0];
   const target=tissueAt(s,tissue);
   return {kind:'tissue',id:tissue.id,site:tissue.district,point:target.point};
  }

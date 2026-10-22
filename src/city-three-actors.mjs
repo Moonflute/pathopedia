@@ -4,6 +4,8 @@ import {CELL_JOBS,DRUGS} from './city-data.mjs';
 import {activeActivity,activityProgress} from './city-activity.mjs';
 import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 import {pathogenDef} from './city-pathogens.mjs';
+import {compileLayout,siteAt} from './city-tile-layout.mjs';
+import {entryTrackHeight} from './city-entry-tracks.mjs';
 
 // Shared, rigid parts: sixteen cell roles and all work effects use 16
 // batches, without skeletons, particle objects, lights or per-cell DOM.
@@ -27,7 +29,7 @@ export const CELL_STYLES=Object.freeze({
  courier:{w:.26,h:.3,y:.38,face:.43,hat:0xa48461}
 });
 export function createActors(profile){
- const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={},last=new Map(),positions=[];let lastRun=null,lastLayout=null;
+ const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={},last=new Map(),positions=[];let lastRun=null,lastLayout=null,elevation=0;
  const capacity=profile.maxCells+profile.maxShipments,standard=new T.MeshStandardMaterial({color:0xffffff,roughness:.9}),flat=new T.MeshBasicMaterial({color:0xffffff});
  const body=new T.SphereGeometry(1,profile.mobile?10:12,profile.mobile?7:8),hat=new T.SphereGeometry(1,profile.mobile?8:10,profile.mobile?5:6),small=new T.SphereGeometry(1,6,4),box=new T.BoxGeometry(1,1,1),rod=new T.CylinderGeometry(1,1,1,6),rim=new T.TorusGeometry(1,.13,4,12);
  function batch(id,geometry,limit=capacity,shadow=true,unlit=false){const m=new T.InstancedMesh(geometry,unlit?flat:standard,limit);m.name=id;m.instanceMatrix.setUsage(T.DynamicDrawUsage);m.count=0;m.frustumCulled=false;m.castShadow=shadow;m.receiveShadow=!unlit;root.add(m);batches[id]=m;}
@@ -35,10 +37,10 @@ export function createActors(profile){
  batch('box',box,capacity*5);batch('pod',small,capacity*8,false);batch('rod',rod,capacity*5,false);batch('rim',rim,capacity*3,false);batch('badge',new T.IcosahedronGeometry(1,0),capacity*7,false);
  batch('enemy',new T.IcosahedronGeometry(1,1),profile.maxEnemies*4);batch('spikes',new T.ConeGeometry(1,1,5),profile.maxEnemies*4);batch('enemyEyes',small,profile.maxEnemies*2,false);
  batch('debris',new T.IcosahedronGeometry(1,0),160,false);batch('selected',new T.TorusGeometry(.43,.035,4,18),capacity*4+profile.maxEnemies*2+160,false,true);batch('beam',rod,capacity*6+profile.maxEnemies*4,false,true);
- function put(id,x,y,z,sx,sy,sz,c,rx=0,ry=0,rz=0){const m=batches[id],n=m.count;if(n>=m.instanceMatrix.count)return;dummy.position.set(x,y,z);dummy.scale.set(sx,sy,sz);dummy.rotation.set(rx,ry,rz,'YXZ');dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,color.set(c));m.count++;}
+ function put(id,x,y,z,sx,sy,sz,c,rx=0,ry=0,rz=0){const m=batches[id],n=m.count;if(n>=m.instanceMatrix.count)return;dummy.position.set(x,y+elevation,z);dummy.scale.set(sx,sy,sz);dummy.rotation.set(rx,ry,rz,'YXZ');dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,color.set(c));m.count++;}
  const up=new T.Vector3(0,1,0),a=new T.Vector3(),b=new T.Vector3(),direction=new T.Vector3();
  function line(x,y,z,tx,ty,tz,r,c){
-  a.set(x,y,z);b.set(tx,ty,tz);direction.subVectors(b,a);const length=direction.length(),m=batches.beam,n=m.count;
+  a.set(x,y+elevation,z);b.set(tx,ty+elevation,tz);direction.subVectors(b,a);const length=direction.length(),m=batches.beam,n=m.count;
   if(length<.001||n>=m.instanceMatrix.count)return;
   dummy.position.copy(a).add(b).multiplyScalar(.5);dummy.quaternion.setFromUnitVectors(up,direction.normalize());dummy.scale.set(r,length,r);dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,color.set(c));m.count++;
  }
@@ -60,7 +62,7 @@ export function createActors(profile){
   const stride=t*(kind==='macrophage'?8:kind==='platelet'?14:11)+phase;
   const waiting=!!unit.waitReason&&!moving;
   const bob=onWater?-.12+Math.sin(t*2.2+phase)*.025:act?-beat*(hammering?.04:.018):moving?Math.abs(Math.sin(stride))*.055:Math.sin(t*(waiting?3:2)+phase)*(waiting?.025:.012);
-  const base=unit.integrity<40?'#bfb9ab':CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf?reach*.23:firing?-recoil*.1:0;
+  const base=unit.integrity<40?'#bfb9ab':kind==='rbc'?(unit.cargo>0?'#df7363':'#6697bd'):CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf?reach*.23:firing?-recoil*.1:0;
   const part=(id,x,y,z,sx,sy,sz,c,rx=0,rz=0)=>put(id,p.x+x*cs+(z+shift)*sn,y+bob,p.z-x*sn+(z+shift)*cs,sx,sy,sz,c,rx,angle,rz);
   part('body',0,look.y,0,look.w*(1+reach*.12),look.h*(1-reach*.12),look.w*.88,base);
   if(kind==='rbc'){part('rim',0,.51,0,.25,.25,.25,look.hat,Math.PI/2);part('cap',0,.485,0,.18,.035,.16,0xc65b67);}
@@ -190,12 +192,12 @@ export function createActors(profile){
  }
  function draw(s,{selectedKind,selectedCell,readability=1,motion,visible,canals}={}){
   if(lastRun!==s||lastLayout!==s.layout){last.clear();lastRun=s;lastLayout=s.layout;}
-  const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time;
+  const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time,entries=s.layout?compileLayout(s.layout).entries:{};elevation=0;
   for(const m of Object.values(batches))m.count=0;positions.length=0;const living=new Set(),drug=DRUGS.find(d=>d.id===s.drug);
   for(const c of s.cells.slice(0,profile.maxCells)){const p=point(c,c.id);if(visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability,canals?.isWater(p));}
-  for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability,canals?.isWater(p));}
+  for(const sh of s.shipments.slice(0,profile.maxShipments)){const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;elevation=sh.kind==='raw'?entryTrackHeight(entries.gut,p):0;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability,!elevation&&canals?.isWater(p));}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
-   const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);
+   const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);elevation=!e.entered?entryTrackHeight(entries[e.front],p):0;
    const target=e.action==='attack'&&e.attackX!=null?groundPoint({x:e.attackX,y:e.attackY}):null;
    const moved=prev&&Math.hypot(p.x-prev.x,p.z-prev.z)>.00001;
    const angle=moved?Math.atan2(p.x-prev.x,p.z-prev.z):target&&Math.hypot(target.x-p.x,target.z-p.z)>.001?Math.atan2(target.x-p.x,target.z-p.z):prev?.angle??0;
@@ -224,8 +226,16 @@ export function createActors(profile){
     put('badge',target.x,.3+Math.sin(q*Math.PI)*.35,target.z,.13*readability,.22*readability,.13*readability,tint);
    }
    if(e.opsonized>.08){antibody(p.x,.95,p.z,.55+e.opsonized*.25);put('selected',p.x,.09,p.z,.85,.85,.85,0xdac686,Math.PI/2);}
+   if(e.action==='attack'){put('box',p.x,1.25,p.z,.9,.1,.1,0x674c49);put('box',p.x,1.27,p.z,.9*Math.max(0,Math.min(1,e.hp/(e.maxHp||e.hp||1))),.13,.12,0xf08461);}
   }
+  elevation=0;
   if(s.immunity){
+   for(const c of s.cells.filter(c=>c.kind==='dendritic'&&c.immuneState==='migrating')){
+    const p=point(c,c.id),path=c.path?.slice(c.step,c.step+8).map(groundPoint)||[];
+    put('badge',p.x,1.4,p.z,.22,.3,.22,0xffd678);
+    for(let n=0;n<path.length;n++){const a=n?path[n-1]:p,b=path[n],q=(time*.8+n*.17)%1;put('badge',a.x+(b.x-a.x)*q,.2,a.z+(b.z-a.z)*q,.12,.09,.12,0xffd678);}
+   }
+   for(const [id,state] of Object.entries(s.immunity.sites))if(state.danger>2){const p=siteAt(s.layout,id),r=4+(time*.7)%2;put('selected',p.x,.1,p.z,r,r,r,0xee9c62,Math.PI/2);}
    for(const h of s.immunity.infected){const p=groundPoint(h);if(visible&&!visible(p))continue;const pulse=1+Math.sin(time*3+h.id)*.08;put('pod',p.x,.24,p.z,.45*pulse,.27,.4*pulse,0xb88ba6);put('rim',p.x,.52,p.z,.16,.16,.16,h.mhcI<.5?0xda9d67:0x7fc6db,Math.PI/2);put('selected',p.x,.075,p.z,1.15,1.15,1.15,0xd88b89,Math.PI/2);for(let n=0;n<3;n++)put('badge',p.x+Math.cos(n*2.1)*.2,.35,p.z+Math.sin(n*2.1)*.2,.06,.08,.06,0x9170b0);}
    for(const w of s.immunity.parasites){const p=groundPoint(w);if(visible&&!visible(p))continue;for(let n=0;n<6;n++)put('pod',p.x+(n-2.5)*.23,.16,p.z+Math.sin(time*2+n*.9)*.15,.19,.16,.17,n%2?0xd4b48b:0xb79a72);put('selected',p.x,.06,p.z,1.8,1.8,1.8,0xd8b782,Math.PI/2);}
    for(const e of s.immunity.exposures){const p=groundPoint(e);if(visible&&!visible(p))continue;for(let n=0;n<6;n++){const a=time*.7+n*Math.PI/3;put('badge',p.x+Math.cos(a)*.65,.5+Math.sin(time*2+n)*.2,p.z+Math.sin(a)*.65,.12,.13,.12,0xe3c48a);}}
