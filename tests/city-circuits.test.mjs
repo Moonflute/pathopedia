@@ -43,5 +43,7 @@ test('the response timeline waits for real antigen presentation and tissue recov
  let view=responseView(s);assert.equal(view.route,'피부');assert.equal(view.episode.seen[2],null);assert.equal(view.episode.seen[3],null);
  const episode=view.episode;s.frontier.walls[11].hp=25;s.time+=3;s.spawn=[];s.enemies=[];tickResponse(s);view=responseView(s);
  assert.equal(view.episode.closedAt,undefined);assert.equal(view.episode.seen[2],null);assert.equal(view.episode.seen[3],null);assert.ok(view.episode.seen[4]!=null);
+ assert.ok(command(s,'expose',{recordId:'SAU-002',front:'skin',wall:11,amount:6},data).ok);tickResponse(s);view=responseView(s);
+ assert.notEqual(view.stage,5);assert.equal(view.steps[4].state,'waiting');assert.equal(view.steps[4].detail,'감염 진행');s.spawn=[];s.enemies=[];
  s.frontier.walls[11].hp=100;s.time++;tickResponse(s);assert.ok(episode.closedAt);assert.equal(responseView(s).steps[3].state,'skipped');assert.ok(validateResponse(s));assert.ok(restoreCity(serializeCity(s)));
 });

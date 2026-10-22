@@ -9,6 +9,8 @@ import {createBundleWalls} from '../src/city-three-bundle.mjs';
 import {createVillage} from '../src/city-three-village.mjs';
 import {createCity,serializeCity} from '../src/city-engine.mjs';
 import {createTileLayout,applyTileLayout} from '../src/city-tile-layout.mjs';
+import {WALLS} from '../src/city-frontier-data.mjs';
+import {wallPieces} from '../src/city-boundary.mjs';
 
 test('new assets default on; the preference never writes the city save',()=>{
  const values=new Map(),storage={getItem:key=>values.get(key)??null,setItem:(k,v)=>values.set(k,v)};
@@ -77,9 +79,10 @@ test('real imported walls track breakage; switching village meshes preserves cit
  const bundle=await geometryBundle(),s=createCity('normal','steady',{workCrews:true,specialists:true});applyTileLayout(s,createTileLayout());
  const snapshot=serializeCity(s),walls=createBundleWalls(bundle);
  const panels=walls.root.children.filter(m=>m.userData.structure==='wall'),towers=walls.root.children.filter(m=>m.userData.structure==='tower');assert.ok(panels.length&&towers.length);
- walls.update(s);assert.ok(panels.every(m=>m.count===14));assert.ok(towers.every(m=>m.count===4));
- s.frontier.walls[4].hp=0;walls.update(s);assert.ok(panels.every(m=>m.count===13));assert.ok(towers.every(m=>m.count===3));
- s.frontier.walls[4].hp=100;walls.update(s);assert.ok(panels.every(m=>m.count===14));assert.ok(towers.every(m=>m.count===4));
+ const panelCount=WALLS.flatMap(wallPieces).length,brokenCount=wallPieces(WALLS[4]).length;
+ walls.update(s);assert.ok(panels.every(m=>m.count===panelCount));assert.ok(towers.every(m=>m.count===4));
+ s.frontier.walls[4].hp=0;walls.update(s);assert.ok(panels.every(m=>m.count===panelCount-brokenCount));assert.ok(towers.every(m=>m.count===3));
+ s.frontier.walls[4].hp=100;walls.update(s);assert.ok(panels.every(m=>m.count===panelCount));assert.ok(towers.every(m=>m.count===4));
  let released=0;for(const model of Object.values(bundle.models))model.traverse(m=>{if(m.geometry)m.geometry.addEventListener('dispose',()=>released++);});
  for(const enabled of [true,false,true]){
   const village=createVillage({},s.layout,'workshop',enabled?bundle:null);village.update(s,{});village.movePreview(s.layout.items.workshop);village.dispose();

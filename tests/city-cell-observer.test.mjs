@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createCity,tickCity,command} from '../src/city-engine.mjs';
 import {cellObservation,createCellObserver,moveFollowCamera} from '../src/city-cell-observer.mjs';
 import {workStation} from '../src/city-activity.mjs';
+import {CITY_BOUNDS} from '../src/city-world.mjs';
 
 const village=()=>createCity('normal','steady',{specialists:true});
 const step=s=>tickCity(s,1/30,{});
@@ -53,7 +54,7 @@ test('follow preserves the orbit offset and has the same easing at both frame ca
  assert.ok(Math.hypot(a.target.x+11,a.target.z-10)<.006);
  const position={x:20,y:32,z:33},target={x:0,y:0,z:0};
  for(let i=0;i<120;i++)moveFollowCamera(position,target,{x:999,z:-999},1/30);
- assert.equal(target.x,35);assert.equal(target.z,-34);assert.equal(moveFollowCamera(position,target,{x:999,z:-999},1/30),false);
+ assert.equal(target.x,CITY_BOUNDS.right-3);assert.equal(target.z,CITY_BOUNDS.top+2);assert.equal(moveFollowCamera(position,target,{x:999,z:-999},1/30),false);
 });
 
 test('supply couriers are selectable, show only cargo on board, and finish observation on departure',()=>{

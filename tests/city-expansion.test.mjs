@@ -5,15 +5,16 @@ import {createTileLayout,compileLayout,validateTileLayout,applyTileLayout,addLay
 import {createLayoutEditor} from '../src/city-layout-editor.mjs';
 import {populationLimit,CITY_CAPS} from '../src/city-world.mjs';
 import {PERIMETER} from '../src/city-frontier-data.mjs';
+import {CITY_RADIUS} from '../src/city-boundary.mjs';
 import {workStation} from '../src/city-activity.mjs';
 import {requestWorkplace,workplaceCapacity} from '../src/city-workplaces.mjs';
 import {createActors} from '../src/city-three-actors.mjs';
 import {qualityProfile} from '../src/city-three-layout.mjs';
 
 const town=()=>{const s=createCity('normal','simulation',{specialists:true,expanded:true});assert.ok(applyTileLayout(s,createTileLayout()).ok);return s;};
-test('fourfold town connects 54 facilities and added buildings survive editing and saving',()=>{
+test('circular town connects 54 facilities and added buildings survive editing and saving',()=>{
  const area=Math.abs(PERIMETER.reduce((n,p,i)=>{const q=PERIMETER[(i+1)%PERIMETER.length];return n+p[0]*q[1]-p[1]*q[0];},0)/2);
- assert.equal(area,1149*4);const s=town();assert.ok(s.cells.length>108&&s.cells.length<populationLimit(s));assert.equal(populationLimit(s),192);assert.equal(Object.keys(s.layout.items).length,54);
+ assert.ok(Math.abs(area/(Math.PI*CITY_RADIUS**2)-1)<.001);const s=town();assert.ok(s.cells.length>108&&s.cells.length<populationLimit(s));assert.equal(populationLimit(s),192);assert.equal(Object.keys(s.layout.items).length,54);
  const e=createLayoutEditor(s.layout);e.event('site','gut');e.event('add','depot');assert.equal(e.error,'');const id=e.selected;assert.ok(e.draft.items[id]);e.event('undo');assert.ok(!e.draft.items[id]);e.event('redo');assert.ok(e.draft.items[id]);
  assert.ok(applyTileLayout(s,e.draft).ok);assert.equal(workplaceCapacity(s,'gut','dock'),3);assert.ok(restoreCity(serializeCity(s)).layout.items[id]);
  e.event('select',id);e.event('remove');assert.ok(!e.draft.items[id]);assert.ok(compileLayout(e.draft).valid);assert.ok(s.layout.items[id],'draft does not change live town');

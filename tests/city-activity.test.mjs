@@ -62,6 +62,9 @@ test('construction waits for materials and a worker; both phagocytes engage at t
 test('work and combat remain in the same 16 bounded actor batches',()=>{
  const s=village(),actors=createActors(qualityProfile(390,3));s.antigens['SPN-105']=true;command(s,'upgrade','heart');command(s,'wave');
  Object.assign(s.cells.find(c=>c.kind==='bcell'),{kind:'plasma',licensed:true,recordId:'SPN-105',isotype:'IgG'});
+ // Exercise the combat batch even when the mucosal barrier clears the wave.
+ const fighter=s.cells.find(c=>c.kind==='macrophage');Object.assign(fighter,{x:870,y:270,cooldown:0});
+ s.enemies.push({id:++s.serial,recordId:'SPN-105',x:874,y:274,hp:100,maxHp:100,dead:false});
  const seen=new Set();let peak=0;
  for(let i=0;i<75*30;i++){
   step(s);for(const c of [...s.cells,...s.shipments]){const a=activeActivity(c,s.time);if(a)seen.add(a.kind);}
