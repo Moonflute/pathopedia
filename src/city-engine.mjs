@@ -10,7 +10,8 @@ import {workStation,beginActivity,activityProgress,activeActivity,ACTIVITY_KINDS
 import {ensureBiology,biologyCommand,tickBiology,seedInfection,combatDestination,updateCombatCondition,combatEffort,cleanLocalDebris,localInfection,antibodySupport,medicineOrder,pathogenDef,validateBiology,antigenEvidence} from './city-biology.mjs';
 import {defaultCityRules,validateCityRules,cityRule,ruleReady,ruleTarget,ruleEnemy} from './city-rules.mjs';
 import {ensureImmunity,IMMUNE_ROSTER,immuneCell,tickImmunity,immuneCommand,validateImmunity,immuneClearance} from './city-immunity.mjs';
-import {vascularWalkingRoute,compileVascularLayout} from './city-vascular-layout.mjs';
+import {vascularWalkingRoute} from './city-vascular-layout.mjs';
+import {compileThemeLayout} from './city-theme-layout.mjs';
 import {tickResponse,validateResponse} from './city-response.mjs';
 
 export const SAVE_VERSION=1;
@@ -38,7 +39,7 @@ const movementLayouts=new WeakMap(),navigatedPaths=new WeakMap(),movementVessels
 function route(c,points){c.path=points.map(p=>({...p}));c.step=0;delete c.roadPathVersion;}
 function move(c,speed,dt){
   const layout=movementLayouts.get(c);
-  if(layout&&navigatedPaths.get(c)!==c.path){const vessel=movementVessels.get(c);c.path=vessel?vascularWalkingRoute(layout,c,c.path.slice(c.step).at(-1)):walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=vessel?2:1;navigatedPaths.set(c,c.path);}
+  if(layout&&navigatedPaths.get(c)!==c.path){const vessel=movementVessels.get(c);c.path=vessel?vascularWalkingRoute(layout,c,c.path.slice(c.step).at(-1),compileThemeLayout(layout,vessel).vascular):walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=vessel?2:1;navigatedPaths.set(c,c.path);}
   // The outer circuit is much longer than the former radial map. Transit speed
   // compensates for that drawing scale; loading and local work retain timing.
   let budget=speed*dt*(movementVessels.get(c)&&!c.dock?2.4:1);
@@ -340,7 +341,7 @@ function updateOxygen(s,c,dt,speed){
     const inbound={};for(const other of s.cells)if(other.kind==='rbc'&&other.cargo)inbound[other.target]=(inbound[other.target]||0)+1;
     const best=cityDistricts(s).filter(d=>d.id!=='lung'&&ruleTarget(s,'oxygen',d.id)).sort((a,b)=>s.districts[a.id].oxygen+(inbound[a.id]||0)*30-s.districts[b.id].oxygen-(inbound[b.id]||0)*30)[0];
     c.target=best.id;c.cargo=rule.params.amount*(1+(s.districts.lung.level-1)*.25)*output(s,'lung')*(s.weather.id==='dry'?.55:1);c.task=best.short+' 산소 배송';
-    const peripheral=movementVessels.get(c)&&c.id%4===0?compileVascularLayout(s.layout).peripheral.filter(p=>p.site===c.target):[],bed=peripheral[c.id%Math.max(1,peripheral.length)];
+    const peripheral=movementVessels.get(c)&&c.id%4===0?compileThemeLayout(s.layout,movementVessels.get(c)).vascular.peripheral.filter(p=>p.site===c.target):[],bed=peripheral[c.id%Math.max(1,peripheral.length)];
     c.perfusionId=bed?.id??null;route(c,bed?[groundCoordinate(bed.point)]:[point(s,'lung'),...vascular(s,'lung',c.target)]);
   }
   c.activity=null;c.dock=null;releaseWorkplace(c);
@@ -367,7 +368,7 @@ function updateCraftsman(s,c,dt){
 function updateShipment(s,sh,dt,speed){
   if(!s.specialists){if(move(sh,speed,dt)){delivery(s,sh);return true;}return false;}
   const rule=cityRule(s,'freight');if(!rule.enabled){sh.waitReason='물류 이동 규칙 꺼짐';return false;}speed*=rule.params.speed/85;
-  if(sh.harbourUntil>s.time){sh.waitReason='화물선 하역 중';sh.task='부두 물자 수령';return false;}
+  if(sh.harbourUntil>s.time){sh.waitReason='화물 하역 중';sh.task='입구 물자 수령';return false;}
   sh.waitReason='';sh.nextTask=sh.phase==='pickup'?'물자 적재 → 배송':sh.phase==='leaving'?'운반 종료':'현장 하역';
   sh.phase||='transit';
   if(sh.phase==='leaving')return move(sh,speed,dt);
@@ -398,8 +399,9 @@ function wander(s,c,dt){
   move(c,35,dt);
 }
 export function tickCity(s,dt,data,canalTransport=false){
+  const transport=canalTransport===true?'2':canalTransport==='1'||canalTransport==='2'?canalTransport:false;
   if(s.layout)for(const actor of [...s.cells,...s.shipments,...s.enemies]){
-    const vessel=canalTransport&&(actor.kind==='rbc'||s.shipments.includes(actor)&&actor.kind!=='raw');
+    const vessel=transport&&(actor.kind==='rbc'||s.shipments.includes(actor)&&actor.kind!=='raw');
     if((movementVessels.get(actor)??false)!==vessel||actor.roadPathVersion===2&&!vessel){
       // Rejoin the selected network from the current position, without resetting
       // a job, transfer animation, cargo, or the saved city itself.

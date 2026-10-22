@@ -2,11 +2,14 @@ import * as T from './vendor/three/three.module.min.js';
 import {TISSUES,SKIN_TISSUES} from './city-frontier-data.mjs';
 import {tissueAt,tissuePresent,siteAt} from './city-tile-layout.mjs';
 import {bundleModel} from './city-three-bundle.mjs';
+import {CITY_STYLE} from './city-three-style.mjs';
+import {cityThemeObject} from './city-theme.mjs';
 
 // Living neighbourhoods share plaster cottages, tile roofs and small courts.
 // Damage belongs to the underlying tissue, not decorative building instances.
-export function createTissueScene(layout,patches=[],lungPatches=[],bundle=null){
+export function createTissueScene(layout,patches=[],lungPatches=[],bundle=null,theme='2'){
  const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),living=TISSUES.filter(t=>tissuePresent({layout},t)).map(t=>tissueAt({layout},t));
+ const meadow=cityThemeObject(theme,'tissue')==='meadow-cottage';root.userData.tissueStyle=cityThemeObject(theme,'tissue');
  const plots=living.length?patches.map(p=>({...p,size:1,tissue:living.reduce((a,b)=>Math.hypot(a.x-p.x,a.z-p.z)<Math.hypot(b.x-p.x,b.z-p.z)?a:b)})):[];
  for(const t of SKIN_TISSUES.filter(t=>tissuePresent({layout},t)).map(t=>tissueAt({layout},t)))for(const side of [-1,1])plots.push({x:t.x-t.nz*side*.75,z:t.z+t.nx*side*.75,variant:t.id+side,size:1.12,angle:Math.atan2(-t.nx,-t.nz),tissue:t});
  for(const p of lungPatches)plots.push({...p,size:2,lung:true,tissue:living.find(t=>t.district==='lung')||{district:'lung'}});
@@ -38,7 +41,7 @@ export function createTissueScene(layout,patches=[],lungPatches=[],bundle=null){
   for(const p of plots){
    const hp=s.frontier?.tissues[p.tissue?.id]?.hp??100,d=s.districts[p.lung?'lung':p.tissue.district],site=siteAt(layout,p.tissue.district),near=Math.hypot(p.x-site.x,p.z-site.z)<10;
    const health=p.lung?d.hp:Math.min(hp,near?d.hp:100),dead=health<15,injured=health<70,repair=s.cells.some(c=>c.tissueJob===p.tissue?.id&&c.task==='조직 블록 복구')||p.lung&&s.cells.some(c=>c.kind==='fibroblast'&&c.target==='lung'&&c.task==='복구 준비');
-   const h=dead?.2:p.lung?.9:1.05+(p.variant%3)*.16,wall=dead?0x756b61:injured?0xc2957a:p.lung?0xe2d7be:[0xecd8b2,0xe7c9a8,0xd4d7bb][p.variant%3],roof=dead?0x635d57:injured?0x9f6049:p.lung?0x6a9e94:[0xb5684c,0xc27f57,0xa95b45][p.variant%3];
+   const variant=(p.variant%3+3)%3,h=dead?.2:p.lung?.9:(meadow?.9:1.05)+variant*.16,wall=dead?0x756b61:injured?0xc2957a:p.lung?0xe2d7be:(meadow?[CITY_STYLE.plaster,CITY_STYLE.plasterWarm,0xe5e4cc]:[0xecd8b2,0xe7c9a8,0xd4d7bb])[variant],roof=dead?0x635d57:injured?0x9f6049:p.lung?0x6a9e94:(meadow?CITY_STYLE.roofs:[0xb5684c,0xc27f57,0xa95b45])[variant];
    put('tissue-cottages',p,0,.045,0,1.3,.09,1.3,0xc5bba2);put('tissue-cottages',p,0,.1+h/2,0,1,h,1,wall);
    put('tissue-roofs',p,0,.1+h,0,1,dead?.22:1,1,roof,0,0,dead?.13:0);
    put('tissue-cottages',p,0,.3,.51,.24,dead?.16:.43,.035,0x67796b);

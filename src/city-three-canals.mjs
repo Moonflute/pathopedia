@@ -1,5 +1,8 @@
 import * as T from './vendor/three/three.module.min.js';
-import {compileCanalLayout,canalFlowPoint} from './city-canal-layout.mjs';
+import {canalFlowPoint} from './city-canal-layout.mjs';
+import {compileThemeLayout} from './city-theme-layout.mjs';
+import {cityThemeObject} from './city-theme.mjs';
+import {CITY_STYLE} from './city-three-style.mjs';
 import {SITES,workStationPoints} from './city-three-layout.mjs';
 import {WALLS} from './city-frontier-data.mjs';
 import {output} from './city-engine.mjs';
@@ -38,24 +41,27 @@ export function canalHouse({box,make,model,mat,parent},x,z,size,index=0,angle=0,
  return g;
 }
 
-export function createCanalScenery({layout,make,box,cylinder,model,newModel=null,mat,scope,fixed,moving,ribbon}){
- const canals=compileCanalLayout(layout);if(!canals)return null;
+export function createThemeScenery({layout,theme='2',plan=compileThemeLayout(layout,theme),make,box,cylinder,model,newModel=null,cottage,mat,scope,fixed,moving,ribbon,road}){
+ if(!plan)return null;const canals=plan.source,water=theme==='2',vascular=plan.vascular;
  function geometry(quadList){const p=[],uv=[];for(const q of quadList)for(const i of [0,2,1,0,3,2]){p.push(...q[i]);uv.push(q[i][0],q[i][2]);}const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(p,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.computeVertexNormals();return g;}
- const tops=canals.rows.map(r=>[[r.x,.018,r.z],[r.x+r.w,.018,r.z],[r.x+r.w,.018,r.z+r.d],[r.x,.018,r.z+r.d]]);
+ if(water){const tops=canals.rows.map(r=>[[r.x,.018,r.z],[r.x+r.w,.018,r.z],[r.x+r.w,.018,r.z+r.d],[r.x,.018,r.z+r.d]]);
  const sides=canals.edges.map(([x,z,xx,zz])=>[[x,-.48,z],[xx,-.48,zz],[xx,.018,zz],[x,.018,z]]);
  scope(null);const top=make(geometry(tops),CANAL_STYLE.stone,0,0,0);top.castShadow=false;top.name='canal-islands';
  const banks=make(geometry(sides),CANAL_STYLE.quay,0,0,0);banks.name='canal-quays';banks.material.side=T.DoubleSide;
  const rims=canals.edges.map(([x,z,xx,zz])=>{const length=Math.hypot(xx-x,zz-z),dx=-(zz-z)/length*.11,dz=(xx-x)/length*.11;return [[x,.035,z],[xx,.035,zz],[xx+dx,.035,zz+dz],[x+dx,.035,z+dz]];});
  make(geometry(rims),0xf0dfbf,0,0,0).castShadow=false;
- // Continuous waterfront façades use the same CC0 roofs as the playable town.
- // Infill is rebuilt around real placements and never covers transport water.
+ }
+ scope(null);
+ // Identical neighbourhood anchors receive waterfront façades or cottages.
+ // Infill is rebuilt around real placements and never covers transport routes.
  for(const b of canals.blocks.frontages){
-  const g=canalHouse({box,make,model,mat,parent:fixed},b.x,b.z,1,b.variant,b.angle,b.variant%4===0?3:2);
-  g.scale.set(b.w/1.35,1.15+(b.variant%3)*.1,b.d/1.4);g.name='canal-frontage';
+  const g=cityThemeObject(theme,'frontage')==='canal-house'?canalHouse({box,make,model,mat,parent:fixed},b.x,b.z,1,b.variant,b.angle,b.variant%4===0?3:2):cottage(b.x,b.z,1,b.angle,false,fixed,b.variant);
+  g.scale.set(b.w/1.35,water?1.15+(b.variant%3)*.1:1.05+(b.variant%3)*.08,b.d/(water?1.4:1.65));g.name=water?'canal-frontage':'village-frontage';
  }
  for(const p of canals.blocks.gardens){
-  const g=new T.Group();g.position.set(p.x,0,p.z);fixed.add(g);g.name='canal-court';
-  box(0,.035,0,3.5,.06,3.5,0xe5d8bb,g);
+  const g=new T.Group();g.position.set(p.x,0,p.z);fixed.add(g);g.name=cityThemeObject(theme,'courtyard');
+  box(0,.035,0,3.5,.06,3.5,water?0xe5d8bb:CITY_STYLE.grassLight,g);
+  if(!water){box(0,.072,0,3.1,.025,.65,CITY_STYLE.road,g);box(0,.073,0,.65,.025,3.1,CITY_STYLE.road,g);}
   for(const x of [-1.6,1.6])box(x,.075,0,.1,.04,3.3,0xb8ab8e,g);
   for(const z of [-1.6,1.6])box(0,.075,z,3.3,.04,.1,0xb8ab8e,g);
   for(const [x,z] of [[-.8,-.7],[.8,.7]]){
@@ -69,18 +75,19 @@ export function createCanalScenery({layout,make,box,cylinder,model,newModel=null
   newModel?.('garden-flower',-.8,.34,-.7,.34,.3,g,.68);
   newModel?.('garden-shrub',1.12,.04,-.75,.65,0,g,.8);
   newModel?.('garden-clover',-.95,.06,.65,.16,0,g,.6);
-  newModel?.('canal-reed',1.35,.04,.8,.7,.3,g,.32);
+  newModel?.(cityThemeObject(theme,'bankPlant'),1.35,.04,.8,water?.7:.32,.3,g,water?.32:.5);
  }
  // Width and oxygen tint make the circulation legible from the overview.
  // Low-oxygen blood also leaves the heart for the lungs in the pulmonary artery.
- for(const bed of canals.vascular.beds)for(const points of bed.branches)ribbon(points,bed.width,0x8bb8ab,-.145);
- for(const vessel of canals.flows){
-  ribbon(vessel.points,vessel.width,vessel.oxygenated?0xd86b5a:0x508fca,-.14);
-  ribbon(vessel.points,.14,vessel.oxygenated?0xf2b095:0x9dd8ec,-.132);
+ for(const bed of vascular.beds)for(const points of bed.branches){if(water)ribbon(points,bed.width,0x8bb8ab,-.145);else road(points,.7);}
+ for(const vessel of vascular.vessels){
+  if(water){ribbon(vessel.points,vessel.width,vessel.oxygenated?0xd86b5a:0x508fca,-.14);
+   ribbon(vessel.points,.14,vessel.oxygenated?0xf2b095:0x9dd8ec,-.132);
+  }else road(vessel.points,vessel.width*(vessel.id.startsWith('systemic-')?1.45:1.15));
  }
  for(const path of canals.patrol)ribbon(path.points,Math.min(.8,path.width),0xc8b493,.065);
  // A narrow stone foundation supports the existing skin wall above the lagoon.
- for(const wall of WALLS)for(const p of wallPieces(wall))ribbon([p.a,p.b],1.3,0xb8ac90,-.035);
+ if(water)for(const wall of WALLS)for(const p of wallPieces(wall))ribbon([p.a,p.b],1.3,0xb8ac90,-.035);
  const outlet=canals.outlet;
  let discharge=null,dischargeFlow=null;
  if(outlet){
@@ -110,7 +117,8 @@ export function createCanalScenery({layout,make,box,cylinder,model,newModel=null
   const arch=make(new T.TorusGeometry(.6,.15,6,16,Math.PI),0xe4d2b2,0,.76,0,gate);arch.name='kidney-outlet-arch';
   const mouth=make(new T.CircleGeometry(.49,16),0x415c55,0,.51,.35,gate);mouth.material.side=T.DoubleSide;
   for(const x of [-.28,0,.28])box(x,.5,.37,.045,.74,.055,0x9d967d,gate);
-  ribbon([outlet.portal,outlet.end],.8,0x9cbcac,-.115);
+  ribbon([outlet.portal,outlet.end],.8,0x9cbcac,water?-.115:.025);
+  if(cityThemeObject(theme,'drainage')==='filter-pond')for(const [r,y,color] of [[1.7,.02,CITY_STYLE.stone],[1.4,.024,CITY_STYLE.water]]){const pond=make(new T.CircleGeometry(r,24),color,outlet.end.x,y,outlet.end.z);pond.rotation.x=-Math.PI/2;pond.scale.x=1.35;pond.castShadow=false;}
   discharge=new T.InstancedMesh(new T.IcosahedronGeometry(1,0),new T.MeshBasicMaterial({color:0xe0ce9a}),24);discharge.name='kidney-discharge-flow';discharge.frustumCulled=false;discharge.instanceMatrix.setUsage(T.DynamicDrawUsage);moving.add(discharge);
  }
  for(const [id] of Object.entries(SITES)){
@@ -120,20 +128,20 @@ export function createCanalScenery({layout,make,box,cylinder,model,newModel=null
    box(p.x,.035,p.z,.68,.09,.6,0xb29468);
    for(const side of [-1,1]){
     cylinder(p.x+side*.39,.21,p.z,.065,.085,.73,0xf0dcc0);
-    cylinder(p.x+side*.39,.24,p.z,.069,.069,.12,id==='lung'?0x699d9c:0xb96550);
-    cylinder(p.x+side*.39,.48,p.z,.069,.069,.10,id==='lung'?0x699d9c:0xb96550);
+    if(water){cylinder(p.x+side*.39,.24,p.z,.069,.069,.12,id==='lung'?0x699d9c:0xb96550);
+     cylinder(p.x+side*.39,.48,p.z,.069,.069,.10,id==='lung'?0x699d9c:0xb96550);}
    }
   }
  }
  scope(null);
  const arrow=new T.BufferGeometry();arrow.setAttribute('position',new T.Float32BufferAttribute([-.45,0,-.35,0,0,.45,.45,0,-.35,.45,0,-.35,0,0,.12,-.45,0,-.35],3));arrow.computeVertexNormals();
- const flowSlots=canals.flows.map(f=>Math.max(1,Math.ceil(f.length/12))),count=flowSlots.reduce((a,b)=>a+b,0),mesh=new T.InstancedMesh(arrow,new T.MeshBasicMaterial({color:0xffffff,side:T.DoubleSide}),count),dummy=new T.Object3D();
- let slot=0;for(const [i,flow] of canals.flows.entries())for(let j=0;j<flowSlots[i];j++){
-  const point=canalFlowPoint(flow,(j+.5)/flowSlots[i]);dummy.position.set(point.x,-.08,point.z);dummy.rotation.set(0,point.angle,0);dummy.scale.set(.58,1,.8);dummy.updateMatrix();mesh.setMatrixAt(slot,dummy.matrix);mesh.setColorAt(slot++,new T.Color(flow.oxygenated?0xf4b29c:0xa8d6e9));
+ const flowSlots=vascular.vessels.map(f=>Math.max(1,Math.ceil(f.length/12))),count=flowSlots.reduce((a,b)=>a+b,0),mesh=new T.InstancedMesh(arrow,new T.MeshBasicMaterial({color:0xffffff,side:T.DoubleSide}),count),dummy=new T.Object3D();
+ let slot=0;for(const [i,flow] of vascular.vessels.entries())for(let j=0;j<flowSlots[i];j++){
+  const point=canalFlowPoint(flow,(j+.5)/flowSlots[i]);dummy.position.set(point.x,water?-.08:.045,point.z);dummy.rotation.set(0,point.angle,0);dummy.scale.set(.58,1,.8);dummy.updateMatrix();mesh.setMatrixAt(slot,dummy.matrix);mesh.setColorAt(slot++,new T.Color(water?(flow.oxygenated?0xf4b29c:0xa8d6e9):0xf1e6cc));
  }
- mesh.name='canal-current';mesh.frustumCulled=false;moving.add(mesh);
+ mesh.name=water?'canal-current':'avenue-directions';mesh.frustumCulled=false;moving.add(mesh);
  let lastTime=null,dischargePhase=0;
- return {canals,update(s){
+ return {canals:water?canals:null,outlet:plan.outlet,update(s){
   if(lastTime===s.time)return;const dt=lastTime==null?0:Math.max(0,Math.min(.3,s.time-lastTime));lastTime=s.time;
   if(discharge){
    const rate=output(s,'kidney'),working=rate>0&&(s.waste>.01||(s.frontier?.waste.stock||0)>.01);

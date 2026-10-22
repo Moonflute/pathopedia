@@ -63,7 +63,7 @@ export function createCityGame(data,options={}){
         </aside></div>
       <footer class="cc-command-bar"><div class="cc-status"><i></i><span data-city-save>자동 저장</span><small data-city-last-log></small></div><nav class="cc-dock" aria-label="도시 관리 메뉴">${[['district','▦','구역'],['workers','✦','세포'],...(is3d?[['frontier','⬡','방어']]:[]),['armory','⚑',is3d?'치료':'장비'],['city','☷','운영']].map(([id,glyph,name])=>button('panel',`<span>${glyph}</span><strong>${name}</strong>`,`data-city-id="${id}" aria-label="${name} 관리" aria-controls="city-management" aria-expanded="${panel===id}"`)).join('')}</nav><span class="cc-view-label">${is3d?'LIVING CITY <b>3D VILLAGE</b>':'BODY DISTRICT 01 <b>2.5D</b>'}</span></footer>${startScreen()}</section>`;
   }
-  function themePicker(){return `<fieldset class="cc-theme-picker"><legend>테마</legend><div>${CITY_THEMES.map(t=>button('theme',`<span class="cc-theme-preview cc-theme-preview--${t.id}" aria-hidden="true"></span><strong>테마 ${t.id}</strong><small>${t.name}</small>`,`data-city-id="${t.id}" aria-pressed="${theme===t.id}"`)).join('')}</div></fieldset>`;}
+  function themePicker(){return `<fieldset class="cc-theme-picker"><legend>도시 테마</legend><div>${CITY_THEMES.map(t=>button('theme',`<span class="cc-theme-preview cc-theme-preview--${t.id}" aria-hidden="true"></span><strong>테마 ${t.id}</strong><small>${t.name}</small>`,`data-city-id="${t.id}" aria-pressed="${theme===t.id}"`)).join('')}</div></fieldset>`;}
   function startScreen(){return `<section class="cc-start" aria-label="시나리오 선택">
     <div class="cc-start-heading"><span>CELL CITY / ${is3d?'3D VILLAGE':'PROTOTYPE'}</span><h2>${is3d?'작은 세포들의 마을':'작은 세포, 하나의 도시'}</h2><p>${is3d?'여섯 구역 · 열여섯 세포 역할':'오늘의 도시를 선택하세요'}</p></div>
     <div class="cc-scenario-cards">${Object.entries(SCENARIOS).filter(([,p])=>!p.only3d||is3d).map(([id,p])=>button('scenario',`<span class="cc-scenario-art cc-scenario-art--${p.terrain}"><b>${p.symbol}</b><i></i></span><span class="cc-scenario-copy"><small>${p.tag}</small><strong>${p.name}</strong><span>${p.goal}</span><em>${p.detail}</em></span>`,`data-city-id="${id}" aria-pressed="${choice===id}"`)).join('')}</div>
@@ -199,7 +199,7 @@ export function createCityGame(data,options={}){
     else if(action==='scenario'){if(SCENARIOS[id])choice=id;}
     else if(action==='menu'){atStart=true;speed=0;save();}
     else if(action==='resume'){if(started){atStart=false;speed=0;}}
-    else if(action==='start'){run=newCity(SCENARIOS[choice].host,choice);started=true;atStart=false;speed=1;selected=is3d?'heart':'lung';selectedKind='';panel='';if(is3d){if(theme==='2')renderer?.reset();else renderer?.home?.(run);}biology.page=choice==='simulation'?'exposure':'medicine';restored=false;save();}
+    else if(action==='start'){run=newCity(SCENARIOS[choice].host,choice);started=true;atStart=false;speed=1;selected=is3d?'heart':'lung';selectedKind='';panel='';if(is3d)renderer?.reset();biology.page=choice==='simulation'?'exposure':'medicine';restored=false;save();}
     else if(action==='panel')panel=panel===id?'':id;
     else if(action==='close'){const last=panel;panel='';game.querySelector(`[data-city-action="panel"][data-city-id="${last}"]`)?.focus({preventScroll:true});}
     else if(action==='city-page')cityPage=id;
@@ -261,7 +261,7 @@ export function createCityGame(data,options={}){
     game.addEventListener('click',e=>{if(e.target.closest('[data-card-open]')){speed=0;save();}},{signal:abort.signal});
     const callbacks={update(dt){
       if(!active||document.hidden)return;
-      if(!editor&&!atStart&&run.status==='running'&&speed>0){renderer?.captureMotion?.(run);for(let n=0;n<speed;n++)tickCity(run,dt,data,is3d&&theme==='2');}
+      if(!editor&&!atStart&&run.status==='running'&&speed>0){renderer?.captureMotion?.(run);for(let n=0;n<speed;n++)tickCity(run,dt,data,is3d?theme:false);}
       hud+=dt;saveClock+=dt;if(hud>.4){hud=0;update();}if(saveClock>5){saveClock=0;save();}
     },render:paint};
     loop=options.loop?options.loop(callbacks):GameLoop({context:canvas.getContext('2d'),clearCanvas:false,blur:true,...callbacks});

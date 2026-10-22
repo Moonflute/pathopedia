@@ -426,3 +426,27 @@ On phones, resources occupy a 34px strip and infection progress starts as one 44
 Infection alerts show one location and an expandable count, retaining access to all eight tracked locations. Management panels hide competing map overlays. Buttons added to the mobile HUD have at least 44px touch targets; Escape closes the map panel and returns focus. Short landscape screens place the two status strips side by side and use a height-limited overview zoom.
 
 Browser checks covered 320×568, 390×844 and 844×390 layouts, two simultaneous skin exposures, alert focus, stage navigation, map zoom/rotation, playback, treatment-panel scrolling and keyboard dismissal. At 390×844 the document remains 390×844, and the default top overlays finish 96px below the map's top. The release screenshot is retained as documentation, with no temporary test files. The full tests and production build run in the GitHub Pages workflow.
+
+## 같은 저장 배치의 두 테마 (2026-10-23)
+
+테마 2의 현재 저장 배치와 주변 객체 배치를 두 테마의 공통 기준으로 사용한다. `city-theme-layout.mjs`는 기존 수로 도시에서 주택·마당·조직 주택·폐 작업 구역·입구·신장 배출구의 위치를 가져온다. 테마를 바꿔도 같은 배치 객체를 참조하며 저장 좌표나 자원, 시설 상태를 다시 생성하지 않는다. 설정의 **도시 테마**에서 표현을 선택한다.
+
+| 역할 | 테마 1: 평원 마을 | 테마 2: 수로 마을 |
+| --- | --- | --- |
+| 주 순환로 | 정사각형 대로, 직선 연결로 | 원형 주 혈관, 동맥·정맥 수로 |
+| 주변 주거 블록 | 낮은 회벽 주택, 여러 지붕색 | 베네치아풍 연립 주택, 창 덧문 |
+| 공용 마당 | 잔디 마당과 십자 보행로 | 돌 광장과 수변 화단 |
+| 조직·폐 작업 주택 | 평원 색상의 낮은 주택 | 수로 도시 색상의 주택 |
+| 식량 입구 | 보급 마당과 화물 마차 | 부두와 화물선 |
+| 물가 식생 | 꽃과 정원 식재 | 갈대와 수변 식재 |
+| 신장 배출 시설 | 배관과 정화 연못 | 배관과 석조 배출구 |
+
+객체 대응표는 `city-theme.mjs`의 `CITY_THEME_OBJECTS`에 둔다. 기능성 장기와 보급·수리 장치는 같은 역할과 위치를 유지한다. 평원 대로는 저장 건물뿐 아니라 공통 주변 건물과 조직 주택도 피해서 계산한다. 두 테마 모두 대응하는 길로 적혈구와 내부 운송원이 이동하며, 테마 전환 시 현재 위치에서 길을 다시 찾아 합류한다. 세포 ID, 화물, 작업 및 산소 전달 의미는 유지한다. 기존 2D 이동 방식과 저장 키는 유지한다.
+
+관련 테마·에셋·배치 회귀 검사 24개가 통과했다. 구형 배치에서 확장된 도시의 사각 도로도 주변 건물을 관통하지 않는지 추가 확인했다. 브라우저에서 같은 저장 도시를 테마 2 → 1 → 2로 전환하며 시각적으로 비교했고, 재진입 후 테마 선택과 진행 상태가 유지됨을 확인했다. 390×844 설정 화면의 문서 폭과 스크롤 폭은 모두 390px이다. 개발 PC의 평원 도시 가동 화면에서 60fps를 관찰했다(180–199 draws, 최대 358k triangles, DPR 1, 1024 그림자). 실제 모바일 기기 성능 보장은 아니다. 로컬 빌드는 실행하지 않았다.
+
+최종 비교 화면 두 장을 보관한다. 같은 시각(14:52), 자원과 카메라에서 촬영했다. 기존 Three.js 및 Kenney·RG Poly 에셋을 재사용했으며 새 모델·텍스처·의존성이나 임시 검증 폴더는 추가하지 않았다.
+
+![공통 배치: 평원 마을과 사각 대로](city-redesign/18-shared-layout-plain.jpg)
+
+![공통 배치: 수로 마을과 원형 혈관](city-redesign/18-shared-layout-canals.jpg)

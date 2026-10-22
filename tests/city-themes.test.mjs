@@ -9,6 +9,7 @@ import {compileVascularLayout,vascularWalkingRoute} from '../src/city-vascular-l
 import {createVillage} from '../src/city-three-village.mjs';
 import {createActors} from '../src/city-three-actors.mjs';
 import {qualityProfile,groundPoint,groundCoordinate} from '../src/city-three-layout.mjs';
+import {compileThemeLayout} from '../src/city-theme-layout.mjs';
 
 test('theme defaults to the original village and persists independently of game saves',()=>{
  const values=new Map([['pathopedia:cell-city:3d:v1','existing game']]),storage={getItem:k=>values.get(k),setItem:(k,v)=>values.set(k,v)};
@@ -103,4 +104,40 @@ test('switching village → canals → village preserves live state and restores
   v.dispose();
  }
  for(const mesh of actors.root.children){mesh.dispose();mesh.geometry.dispose();mesh.material.dispose();}
+});
+
+test('both presentations keep the saved canal town and all scenery anchors',()=>{
+ const original=createTileLayout(),added=addLayoutBuilding(original,'house','heart');assert.ok(added.ok);
+ for(const layout of [original,added.layout]){
+  const saved=JSON.stringify(layout),water=compileThemeLayout(layout,'2'),plain=compileThemeLayout(layout,'1');
+  assert.equal(plain.blocks,water.blocks);assert.equal(plain.outlet,water.outlet);assert.equal(plain.entries,water.entries);
+  assert.deepEqual(plain.objects.map(o=>o.role),water.objects.map(o=>o.role));
+  assert.equal(plain.objects.find(o=>o.role==='freight').model,'supply-wagon');
+  assert.equal(water.objects.find(o=>o.role==='freight').model,'harbour-boat');
+  assert.equal(JSON.stringify(layout),saved);assert.equal(compileThemeLayout(layout,'1'),plain);
+ }
+});
+
+test('plain boulevards form square circuits and yield to the shared town buildings',()=>{
+ const layout=createTileLayout(),plain=compileThemeLayout(layout,'1'),water=compileThemeLayout(layout,'2'),occupied=compileLayout(layout).occupied;
+ const ring=plain.vascular.systemic.arterial;
+ assert.ok(Math.abs(ring.gates[9].x+ring.gates[9].z)<1e-6,'upper-right corner is square');
+ assert.ok(Math.abs(water.vascular.systemic.arterial.gates[9].x-ring.gates[9].x)>4,'canal circuit retains its circle');
+ let aligned=0,total=0;
+ for(let i=1;i<ring.points.length;i++){const a=ring.points[i-1],b=ring.points[i],length=Math.hypot(b.x-a.x,b.z-a.z);total+=length;if(Math.abs(a.x-b.x)<1e-6||Math.abs(a.z-b.z)<1e-6)aligned+=length;}
+ assert.ok(aligned/total>.9,'boulevard mostly follows the rectangular grid');
+ for(const vessel of plain.vascular.vessels)for(let i=1;i<vessel.points.length;i++){
+  const a=vessel.points[i-1],b=vessel.points[i],n=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)*8));
+  for(let j=0;j<=n;j++){const key=Math.round(a.x+(b.x-a.x)*j/n)+','+Math.round(a.z+(b.z-a.z)*j/n);assert.ok(!occupied.has(key)&&!plain.obstacles.has(key),vessel.id+' crosses the shared town');}
+ }
+ for(const id of ['lung','gut','kidney','marrow','lymph'])assert.ok(plain.vascular.navigation.route(plain.vascular.centres.heart,plain.vascular.centres[id])?.length);
+});
+
+test('changing circular canals to square roads keeps transport cargo and saved placements',()=>{
+ let s=createCity('normal','simulation',{specialists:true,workCrews:true,expanded:true});applyTileLayout(s,createTileLayout());
+ const cityLayout=JSON.stringify(s.layout),c=s.cells.find(c=>c.kind==='rbc'),centre=compileThemeLayout(s.layout,'2').vascular.centres;
+ s.cells=[c];Object.assign(c,groundCoordinate(centre.lung),{cargo:12,target:'kidney',dock:null,path:cityRoute(s,'lung','kidney'),step:0});
+ for(const theme of ['2','1','2','1']){const before={x:c.x,y:c.y,cargo:c.cargo};tickCity(s,.01,null,theme);assert.equal(c.id,s.cells[0].id);assert.equal(c.cargo,before.cargo);assert.ok(Math.hypot(c.x-before.x,c.y-before.y)<4,'switch must not teleport');assert.equal(JSON.stringify(s.layout),cityLayout);}
+ for(let n=0;n<480;n++)tickCity(s,.25,null,'1');assert.ok(s.stats.oxygen>=12,'the square circuit completes delivery');
+ const saved=serializeCity(s);s=restoreCity(saved);assert.ok(s);assert.equal(serializeCity(s),saved);
 });

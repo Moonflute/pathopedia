@@ -4,12 +4,17 @@ import {compileLayout} from './city-tile-layout.mjs';
 import {entryFlowPoint} from './city-three-frontier.mjs';
 import {entryTrackHeight} from './city-entry-tracks.mjs';
 import {output} from './city-engine.mjs';
+import {cityThemeObject} from './city-theme.mjs';
+import {CITY_STYLE} from './city-three-style.mjs';
 
 // Maritime food intake and a wind-driven respiratory inlet use the same city
 // materials. Cargo unloading is driven by the real raw-supply shipment clock.
-export function createCityPorts({layout,make,box,cylinder,model,newModel=null,fixed,moving}){
+export function createCityPorts({layout,theme='2',make,box,cylinder,model,newModel=null,fixed,moving,road=()=>{}}){
  const mouth=CITY_ENTRIES.gut.mouth,wood=0xad8860,ivory=0xe9d7b6,teal=0x628f84;
+ const water=cityThemeObject(theme,'landing')==='quay';
  const pier=new T.Group();pier.position.set(mouth.x,0,mouth.z);fixed.add(pier);
+ pier.name=cityThemeObject(theme,'landing');
+ if(!water){box(2.7,.02,.7,7,.08,7.3,CITY_STYLE.plaza,pier);road([{x:mouth.x+19,z:mouth.z+3.5},{x:mouth.x+3.1,z:mouth.z+3.5},{x:mouth.x+1.6,z:mouth.z}],2.2);}
  box(2,.12,0,5,.32,3.1,wood,pier);box(2.7,.12,2,3.6,.32,1.1,wood,pier);
  for(let x=0;x<4.6;x+=.35)box(x,.3,0,.055,.025,3.05,0xd4b88c,pier);
  for(const x of [0,1.8,4.3])for(const z of [-1.3,1.3]){cylinder(x,.18,z,.1,.13,1,0x796e58,pier);cylinder(x,.72,z,.17,.17,.12,ivory,pier);}
@@ -20,13 +25,18 @@ export function createCityPorts({layout,make,box,cylinder,model,newModel=null,fi
  newModel?.('supply-barrel',-.6,.3,.55,.75,0,pier,.65);
  newModel?.('hay-bale',2.7,.3,-.6,.55,0,pier,.8);
  model('lantern',mouth.x-.8,.02,mouth.z+2,.85);
- const ship=new T.Group();moving.add(ship);ship.name='food-cargo-ship';
- const boat=newModel?.('harbour-boat',0,-.2,0,.95,0,ship,4.9);
+ const ship=new T.Group();moving.add(ship);ship.name=cityThemeObject(theme,'freight');
+ if(water){const boat=newModel?.('harbour-boat',0,-.2,0,.95,0,ship,4.9);
  if(boat){if(boat.userData.size.z>boat.userData.size.x)boat.rotation.y=Math.PI/2;newModel('harbour-anchor',-1.5,.1,.65,.48,.2,ship,.35);}
  else{const hull=make(new T.SphereGeometry(1,10,6),0x675c4c,0,.04,0,ship);hull.scale.set(2.6,.42,.88);box(0,.32,0,4.4,.12,1.35,0xc09e6d,ship);}
  box(-1.4,.7,0,.9,.8,1,ivory,ship);box(-1.4,1.15,0,1.1,.13,1.2,teal,ship);box(-1.4,.8,.51,.52,.24,.03,0x649c9b,ship);
  cylinder(-1.8,1.5,0,.06,.07,1.6,wood,ship);box(-1.5,2.1,0,.6,.35,.035,0xe3bb72,ship);
- for(let n=0;n<3;n++)if(!newModel?.('supply-bags',n*.7,.38,0,.5,n*.5,ship,.65)){box(n*.7,.65,0,.6,.55,.75,0xcba575,ship);box(n*.7,.65,0,.07,.57,.78,ivory,ship);}
+ }else{
+  box(0,.57,0,3.5,.2,1.45,wood,ship);for(const z of [-.75,.75])box(0,.9,z,3.6,.5,.09,ivory,ship);
+  for(const x of [-1.15,1.15])for(const z of [-.87,.87]){const wheel=make(new T.TorusGeometry(.34,.085,5,12),CITY_STYLE.timber,x,.35,z,ship);box(x,.35,z,.09,.09,.12,ivory,ship);wheel.name='wagon-wheel';}
+  box(-1.45,1,0,.55,.15,1.35,teal,ship);
+ }
+ for(let n=0;n<3;n++)if(!newModel?.('supply-bags',n*.7,water?.38:.72,0,.5,n*.5,ship,.65)){box(n*.7,water?.65:1,0,.6,.55,.75,0xcba575,ship);box(n*.7,water?.65:1,0,.07,.57,.78,ivory,ship);}
  const cargo=new T.Group();moving.add(cargo);cargo.name='harbour-unloading';if(!newModel?.('supply-bags',0,0,0,.6,0,cargo,.65))box(0,.3,0,.65,.6,.65,0xd9b777,cargo);
  const wake=new T.Mesh(new T.TorusGeometry(1,.035,4,24),new T.MeshBasicMaterial({color:0xd6ece0,transparent:true,opacity:.65,depthWrite:false}));wake.rotation.x=Math.PI/2;moving.add(wake);
  const wind=new T.InstancedMesh(new T.BoxGeometry(1,1,1),new T.MeshBasicMaterial({color:0xf0fff5,transparent:true,opacity:.75,depthWrite:false}),36);
@@ -45,9 +55,9 @@ export function createCityPorts({layout,make,box,cylinder,model,newModel=null,fi
    wind.instanceMatrix.needsUpdate=gusts.instanceMatrix.needsUpdate=true;
   }
   const shipment=s.shipments.filter(sh=>sh.kind==='raw'&&sh.harbourAt!=null&&s.time-sh.harbourAt<8).sort((a,b)=>b.harbourAt-a.harbourAt)[0];
-  ship.visible=cargo.visible=wake.visible=!!shipment;if(!shipment)return;
+  ship.visible=cargo.visible=!!shipment;wake.visible=water&&!!shipment;if(!shipment)return;
   const age=s.time-shipment.harbourAt,offset=age<3?(1-age/3)*10:age<5?0:(age-5)/3*10;
-  ship.position.set(mouth.x+3.1+offset,.02+Math.sin(s.time*1.7)*.035,mouth.z+3.5);ship.rotation.y=age<5?Math.PI:0;
+  ship.position.set(mouth.x+3.1+offset,.02+(water?Math.sin(s.time*1.7)*.035:0),mouth.z+3.5);ship.rotation.y=age<5?Math.PI:0;
   wake.position.set(ship.position.x,0,ship.position.z);wake.scale.set(3.1,.95,1);cargo.visible=age>=3&&age<5;
   if(cargo.visible){const q=(age-3)/2;cargo.position.set(mouth.x+3.1-q*.7,.8+Math.sin(q*Math.PI)*1.8,mouth.z+3.5-q*3.5);}
  }};

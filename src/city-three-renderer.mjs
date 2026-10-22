@@ -176,7 +176,8 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
  function focus(point,closer=false){if(!point)return;setFollowing(false);focusTarget=new T.Vector3(point.x,0,point.z);if(closer)zoomTarget=Math.max(camera.zoom,width<761?1:1.08);dirty=true;}
  function home(s=currentRun){const p=siteAt(currentEditor?.draft||s?.layout,'heart')||SITES.heart;setFollowing(false);focusTarget=null;zoomAnchor=null;zoomTarget=null;controls.target.set(p.x,0,p.z+1);camera.position.set(p.x+17,30,p.z+32);camera.zoom=width<761?1:1.04;camera.updateProjectionMatrix();controls.update();dirty=true;}
  function reset(){focusTarget=null;setFollowing(false);controls.target.set(-1,0,1);camera.position.set(19,32,33);zoomAnchor=null;zoomTarget=fit;controls.update();dirty=true;}
- const frontLabels=Object.entries(FRONTS).map(([id,p])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label cc-front-label';b.textContent={skin:'보수 공방',airway:'O₂ · 환기 항구',gut:'식량 부두 · 소화기'}[id];b.setAttribute('aria-label',b.textContent+' 선택');b.addEventListener('click',()=>onSelect('front:'+id),{signal:abort.signal});labelLayer.append(b);return {id,site:CITY_ENTRIES[id]?.mouth||CITY_ENTRIES[id]?.portal||p,element:b};});
+ const frontText=id=>({skin:'보수 공방',airway:theme==='2'?'O₂ · 환기 항구':'O₂ · 환기 관문',gut:theme==='2'?'식량 부두 · 소화기':'식량 보급소 · 소화기'}[id]);
+ const frontLabels=Object.entries(FRONTS).map(([id,p])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label cc-front-label';b.textContent=frontText(id);b.setAttribute('aria-label',b.textContent+' 선택');b.addEventListener('click',()=>onSelect('front:'+id),{signal:abort.signal});labelLayer.append(b);return {id,site:CITY_ENTRIES[id]?.mouth||CITY_ENTRIES[id]?.portal||p,element:b};});
  const circuitLabels=['체순환 · 심장 → 전신 → 심장','폐순환 · 심장 ⇄ 폐'].map(text=>{const e=document.createElement('span');e.className='cc-circuit-label';e.textContent=text;labelLayer.append(e);return e;});
  function updateLabels(s,options){
   const occupied=[],compact=camera.zoom<.58,top=compactHud.matches?(height<330?60:102):125;
@@ -191,17 +192,17 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit){
    element.classList.toggle('is-selected',options.selected===id);const bio=s.biology?.sites[id];element.dataset.infection=bio?.stage||'clear';element.querySelector('em').textContent=bio&&bio.stage!=='clear'?STAGES[bio.stage]:'';
    element.querySelector('small').textContent=options.layer==='supply'?`O₂ ${Math.round(s.districts[id].oxygen)}%`:'';
   }
-  for(const {id,site:base,element} of frontLabels){const site=id==='skin'?transformPoint(s.layout,'workshop',base):base;vec.set(site.x,id==='airway'?6.6:id==='gut'?5:2.3,site.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;
+  for(const {id,site:base,element} of frontLabels){if(element.dataset.theme!==theme){element.textContent=frontText(id);element.setAttribute('aria-label',element.textContent+' 선택');element.dataset.theme=theme;}const site=id==='skin'?transformPoint(s.layout,'workshop',base):base;vec.set(site.x,id==='airway'?6.6:id==='gut'?5:2.3,site.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;
    element.hidden=x<45||x>width-45||y<top||y>height-inset-60||(id==='skin'&&camera.zoom<.85)||occupied.some(r=>Math.abs(x-r.x-r.w/2)<85&&Math.abs(y-r.y)<40);
    if(!element.hidden)element.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;
   }
-  const outlet=village?.canals?.outlet;outletLabel.hidden=!outlet;
+  const outlet=village?.outlet;outletLabel.hidden=!outlet;if(outletLabel.dataset.theme!==theme){outletLabel.textContent=theme==='2'?'↗ 배출구':'↗ 정화 연못';outletLabel.dataset.theme=theme;}
   const vascular=theme==='2'&&s.layout?compileVascularLayout(s.layout):null;
   for(let n=0;n<circuitLabels.length;n++){const e=circuitLabels[n],path=n?vascular?.pulmonary[0].points:vascular?.systemic.arterial.points,p=path?.[Math.floor(path.length*(n?.5:.45))];e.hidden=!p;if(!p)continue;vec.set(p.x,.6,p.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;e.hidden=x<90||x>width-90||y<top||y>height-inset-65||occupied.some(r=>x>r.x-85&&x<r.x+r.w+85&&y>r.y-15&&y<r.y+r.h+15);if(!e.hidden)e.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-50%)`;}
   if(outlet){vec.set(outlet.portal.x,1.7,outlet.portal.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;outletLabel.hidden=x<35||x>width-35||y<top||y>height-inset-60||occupied.some(r=>Math.abs(x-r.x-r.w/2)<65&&Math.abs(y-r.y)<35);if(!outletLabel.hidden)outletLabel.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;}
  }
  function draw(s,options={}){
-  if(disposed||document.hidden)return;inset=options.inset||0;currentRun=s;if(!framed){if(theme==='2')reset();else home(s);framed=true;}const changedEditor=!!currentEditor!==!!options.editor;currentEditor=options.editor||null;
+  if(disposed||document.hidden)return;inset=options.inset||0;currentRun=s;if(!framed){reset();framed=true;}const changedEditor=!!currentEditor!==!!options.editor;currentEditor=options.editor||null;
   if(changedEditor){clearObservation();controls.enabled=!currentEditor;editorPointers.clear();editDrag=null;}
   const layout=currentEditor?.draft||s.layout,editId=currentEditor?.selected||null;
   if(assetCache&&(layout!==villageLayout||editId!==villageEditId))rebuild(layout,editId);
