@@ -1,12 +1,75 @@
 # Cell City 에셋 활용 가이드
 
-v0.67.0 · 2026년 10월 22일. 보유한 팩에서 지금 쓸 리소스와 후속 작업의 후보를 찾는 기준이다. 현재 원형 혈관 수로 도시의 외벽·지붕·기관 표식은 유지하고, 항구·보급·정원·조직 복구를 소품으로 보강한다.
+구현 기준: v0.68.0 · 문서 갱신: 2026년 10월 23일.
 
-## 외관과 배치 기준
+도시 구조·외관·에셋을 변경할 때 먼저 읽는 작업 문서다. 보유 원본에서 무엇을 고르고, 어느 코드에 연결하며, 어떤 외관·용량·시뮬레이션 조건을 지켜야 하는지 기록한다. 개별 모델의 정확한 경로·바이트·체크섬·라이선스는 [`sources.json`](../assets/city3d/bundle/sources.json), 실제 표시 조건은 아래 연결 코드가 기준이다. 구현과 문서가 달라지면 함께 갱신한다.
+
+## 작업 시작 순서
+
+1. 아래 작업별 표에서 현재 쓸 수 있는 모델과 수정할 파일을 찾는다. 이미 추출된 모델을 먼저 재사용하고, 부족하면 보유 팩에서 후보를 고른다.
+2. 테마 2의 저장 배치와 공통 주변 객체를 기준으로 테마 1·2의 대응을 정한다. 신규 에셋 ON·OFF도 확인하며, 공통 좌표와 테마별 경로 형태·외형을 구분한다.
+3. 모델의 재질·이미지 참조·크기·삼각형 수와 반복 배치 개수를 확인한다. ZIP 용량으로 웹 다운로드나 GPU 메모리를 판단하지 않는다.
+4. 기존 토지 경계와 실제 입항·손상·복구 상태에 연결하고, 아래 용량·병합·인스턴스 기준을 지킨다.
+5. 필요한 범위만 확인하고, 선택 목록·출처·적용 위치·예산 변경을 이 문서에 반영한다. 배포하는 작업이면 AGENTS.md의 버전·GitHub 배포 확인 규칙도 따른다.
+
+## 현재 화면과 유지할 동작
+
+| 항목 | 현재 동작 / 변경 시 지킬 점 |
+| --- | --- |
+| 테마 1 | 설정 → 도시 테마 → ‘평원 마을 · 격자 대로’. 새 환경의 기본 선택. 테마 2와 같은 건물·주변 객체 위치에 낮은 회벽 주택, 잔디 마당과 정사각형 대로를 표시한다. |
+| 테마 2 | 설정 → 도시 테마 → ‘수로 마을 · 원형 혈관’. 같은 배치에 베네치아풍 주택·돌 광장·부두와 원형 동맥·정맥 수로를 표시한다. |
+| 테마 전환 | 현재 테마 2의 저장 배치와 주변 객체의 공통 위치를 사용한다. 진행 시간·자원·감염·세포 ID·화물을 초기화하지 않는다. 적혈구와 내부 운송원은 현재 위치에서 선택한 테마의 길로 합류한다. |
+| 신규 에셋 적용 | 설정의 체크박스. 새 환경은 기본 ON, 사용자가 저장한 OFF는 유지한다. 테마 선택과 별개이며 기존 24종과 추가 19종을 포함한 선택 묶음 전체에 적용된다. |
+| 로딩과 캐시 | ON이면 manifest의 모델 전체를 3개씩 병렬 로드한다. 최초 OFF에서는 요청을 시작하지 않는다. 로딩 중 OFF로 바꿔도 늦게 도착한 결과를 화면에 적용하지 않는다. 이미 받은 묶음은 재체크용으로 캐시하므로 OFF가 즉시 메모리 해제를 뜻하지는 않는다. |
+| 기본 도형 | OFF 또는 모델을 쓸 수 없는 경우의 기존 표현을 유지한다. 체크 전환은 도시 저장·시뮬레이션을 바꾸지 않는다. |
+
+체크 OFF/ON 비교는 ‘선택 묶음 전체 미적용/적용’ 비교다. v0.66.1과 v0.67.0의 차이만 보여주는 비교로 표기하지 않는다. 새로 추가한 19종은 도시 전체 실루엣 교체보다 항구·보급·정원·조직 복구의 세부 표현을 보강한다.
+
+## 공통 배치와 테마별 객체 대응
+
+`city-theme-layout.mjs`의 `compileThemeLayout`이 두 테마의 공통 진입점이다. `compileCanalLayout`에서 기존 수로 도시의 주변 주택, 마당, 조직 주택, 폐 작업 구역, 입구와 신장 배출구 위치를 가져온다. 두 테마는 같은 `blocks`, `entries`, `outlet`을 참조한다. 테마별로 새 도시나 별도 저장 배치를 만들지 않는다.
+
+| 역할 키 | 테마 1: 평원 | 테마 2: 수로 | 에셋·연결 위치 |
+| --- | --- | --- | --- |
+| `frontage` | `cottage`: 낮은 회벽 주택, 여러 지붕색 | `canal-house`: 창 덧문·발코니가 있는 수변 연립 주택 | 기존 Kenney 지붕·굴뚝과 기본 도형. `city-three-canals.mjs`, `city-three-village.mjs` |
+| `courtyard` | `village-green`: 잔디 마당과 십자 보행로 | `stone-court`: 돌 광장과 수변 화단 | 같은 정원 부지에 `garden-tree`, `garden-tree-small`, `garden-bench`, `garden-shrub` 등 재사용 |
+| `tissue` | `meadow-cottage`: 평원 색상의 낮은 주택 | `lagoon-townhouse`: 수로 도시 색상의 주택 | 같은 조직·폐 작업 부지에 기존 인스턴스 풀 사용. HP·화재·잔해·비계는 실제 상태와 연결. `city-three-tissue.mjs` |
+| `landing` | `supply-yard`: 보급 마당과 하역 설비 | `quay`: 부두와 하역 설비 | 같은 소화기 입구에 `harbour-crane`, 자루·바구니·통·건초 재사용. `city-three-ports.mjs` |
+| `freight` | `supply-wagon`: 코드 도형으로 만든 화물 마차 | `harbour-boat`: 배와 `harbour-anchor` | 같은 원료 배송의 입고·하역·출고 시계 사용. 적재물 `supply-bags` 공유 |
+| `bankPlant` | `garden-flower`: 꽃·정원 식재 | `canal-reed`: 갈대·수변 식재 | 공통 정원의 같은 가장자리. 기존 GLB 재사용 |
+| `drainage` | `filter-pond`: 배관과 정화 연못 | `lagoon-culvert`: 배관과 석조 배출구 | 같은 신장 배출 경로·성벽 밖 출구에 기본 도형 사용. 실제 노폐물 처리 상태와 연결 |
+
+대응 이름은 `city-theme.mjs`의 `CITY_THEME_OBJECTS`와 `cityThemeObject`에 정의한다. 표의 `cottage`·`supply-wagon` 같은 이름은 장면 생성 방식이며 새 GLB 파일명이 아니다. 기능성 장기·창고·생산·보수 시설은 같은 ID·역할·저장 좌표를 유지한다.
+
+테마 1의 큰길은 `compileVascularLayout(layout, 'square', obstacles)`에서 직각 위주로 계산한다. 공통 주변 건물과 조직 주택까지 장애물로 취급해 관통을 피한다. 테마 2는 기존 원형 수로망을 사용한다. 각 네트워크의 일방향 순환, 장기·작업 지점과 전달 관계는 유지하며 별도 입구 데크를 혈관에 연결하지 않는다. 배치 편집 후에는 수정된 공통 배치를 기준으로 다시 계산한다.
+
+테마별 변경으로 GLB·이미지·manifest를 추가하거나 재추출하지 않았다. 테마 1에서도 공통 주변 주택과 정원이 표시되므로 표시 메시 수는 이전 테마 1보다 늘 수 있다. 고유 에셋 다운로드·텍스처 예산과 장면의 draw·tris는 별도로 본다.
+
+## 작업별 리소스 선택과 연결
+
+| 하려는 작업 | 우선 재사용할 런타임 모델 | 적용 위치·조건 / 연결 코드 | 아직 미적용인 후속 후보 |
+| --- | --- | --- | --- |
+| 식량 입구·하역 설비 | `harbour-crane`, `supply-bags`, `supply-basket`, `supply-barrel`, `hay-bale` | 테마 1은 보급 마당, 테마 2는 같은 위치의 부두. 하역 설비와 적재물은 정적 배치. `city-three-ports.mjs` | Food Extended의 식품, Pirate Island의 상자·로프 |
+| 식량 수송·하역 연출 | 테마 1은 코드 도형 마차, 테마 2는 `harbour-boat`·`harbour-anchor`. `supply-bags` 공유 | 실제 원료 shipment가 생성된 뒤 8초 미만 동안 표시. 하역물은 3초 이상 5초 미만에 표시. 일시정지 시점에 따라 마차·배가 없을 수 있다. `city-three-ports.mjs` | 더 큰 배는 부두 폭·가림·삼각형 수를 먼저 검토 |
+| 보수 공방·자재 | `repair-scaffold`, `repair-ladder`, `repair-planks`, 기존 `logs`, `crate`, `table`, `hammer`, `bucket` | 피부 보수 공방의 고정 소품. 조직 복구 중에만 나오는 비계와 구분한다. `city-three-village.mjs` | Medieval의 추가 도구, Old Town의 소형 자재 |
+| 정원·마을 조경 | `garden-tree`, `garden-tree-small`, `garden-shrub`, `garden-flower`, `garden-clover`, `canal-reed`, `garden-bench` | 테마 2에서 가져온 공통 정원 부지. 평원은 잔디·꽃, 수로는 석조·갈대로 대응. 나무 2종은 평원 외곽 조경에도 사용. `city-three-canals.mjs`, `city-three-village.mjs` | Cute Park·Nature Extended의 꽃·풀·작은 조경 |
+| 파괴·잔해·복구 | `rubble-rock`, `rubble-stone`, `repair-scaffold` | 실제 조직/기관 건강이 15 미만인 주택에 잔해, 실제 복구 작업 중에 비계. 기존 불·연기·복구 표시와 함께 사용. `city-three-tissue.mjs` | 파손 석벽·울타리, 작은 돌. 별도 가짜 손상 상태를 만들지 않는다. |
+| 민가·창고·장기 시설 | 기존 `house-a`, `house-b`, `hall`, `workshop`, `tower`, `market`, `tank`, `silo`, `station`, `jar` | 테마별 건물·시설 표현을 먼저 확인. 테마 2는 일부 수입 건물 대신 기존 수로식 건물을 사용한다. `city-three-village.mjs`, `city-three-facilities.mjs` | 기존 팩의 작은 창고·선반·병·식품. 대형 Old Town 주택 일괄 교체는 후순위 |
+| 성벽·방어·병원체 전투 | 기존 `stone-wall`, `stone-tower`, `palisade`, `gate` | 기존 장벽 HP·파손·수리와 연결. 세포·병원체 실루엣, 사격·작업 지점을 가리지 않는다. `city-three-bundle.mjs`, `city-three-frontier.mjs` | Medieval의 방패·활·검·도끼, Cute Dungeon의 문·횃불·석재 부품 |
+| 입구 데크·다리·경계 | 기존 부두·입구의 코드 생성 도형과 선택 묶음 소품 | `city-entry-tracks.mjs`, `city-tile-layout.mjs`, `city-three-ports.mjs`. 이동 경로·단차·토지 점유를 먼저 확인한다. | Backroad Bridges·Roadside Fences. 장식용 다리를 혈관의 새 이동 경로로 연결하지 않는다. |
+
+후속 후보는 보유 원본에서 검토할 수 있다는 뜻이다. 아직 웹용 추출·재질 정리·화면 적용을 마친 모델로 취급하지 않는다. 파일명만 비슷한 모델을 임의로 같은 리소스로 교체하지 않는다.
+
+## 외관과 도시 배치 기준
 
 밝은 크림색 외벽, 적갈색 기와, 청록 설비, 채도가 낮은 목재·녹색과 무광 표면을 맞춘다. 세포·병원체·장기 색상은 기능 식별에 사용한다. 사람 캐릭터와 실사풍 건물로 세포를 교체하지 않는다.
 
 주택의 손상·화재·복구는 실제 조직 상태에 연결한다. 혈관, 서비스 지점, 피부 조직, 호흡기 착지점, 신장 배출구와 감염 경보의 공간을 비워 둔다. 새로운 통로를 장식 목적으로 혈관에 연결하지 않는다. 정원 소품은 이미 확보한 정원 부지 안에 둔다.
+
+- 작은 소품은 기존 건물·목재·설비 색에 맞춰 재질을 공유한다. 바구니·배·나무를 넣기 위해 도시 전체의 색감이나 축척을 바꾸지 않는다.
+- 땅·건물·부두의 점유 범위가 바뀌면 렌더러만 옮기지 말고 저장 배치, 혈관·보행 경로, 서비스 지점과 입구 단차도 확인한다. 고정 좌표 대신 기존 배치 변환·토지 경계를 사용한다.
+- 카툰 마을과 병원체 전투가 함께 읽혀야 한다. 장비·불·잔해는 역할과 실제 상태를 보여주는 데 사용하고, 선택 표식·경보·작업자의 동작을 가리지 않는다.
+- Godot/Unity의 바람·물·하늘 셰이더와 데모 씬은 복사하지 않는다. 현재 Three.js 재질과 기존 연출을 우선 사용한다.
 
 ## 보유 팩에서 찾을 리소스
 
@@ -31,31 +94,46 @@ v0.67.0 · 2026년 10월 22일. 보유한 팩에서 지금 쓸 리소스와 후�
 
 같은 `EmaceRoadSideTales_Texture_01A.png` 이름이라도 울타리와 다리 팩의 파일 내용은 다르다. 반대로 Farm·Kitchen·Food·Nature Extended의 공통 아틀라스는 내용 해시로 공유한다. NatureForge 원본 ZIP에는 별도 보관한 Old Town ZIP과 동일한 파일도 중첩돼 있다. 보관 원본과 중복본은 추출 스크립트가 변경하거나 삭제하지 않는다.
 
-## v0.67.0에 추가한 모델
+## 이미 추출된 런타임 모델
+
+선택 묶음에 포함된 것과 특정 테마·시점에 실제 보이는 것은 다르다. 아래 키는 `bundleModel`/`newModel`로 재사용하며 `models/*.glb`를 장면마다 별도 로더로 중복 로드하지 않는다.
+
+### 기존 24종
+
+| 용도 | 런타임 이름 | 원본 팩 |
+| --- | --- | --- |
+| 건물·시장 6종 | `house-a`, `house-b`, `hall`, `workshop`, `tower`, `market` | Medieval Megapack |
+| 방벽·문 4종 | `stone-wall`, `stone-tower`, `palisade`, `gate` | Medieval Megapack |
+| 공방·보급·가구 7종 | `crate`, `logs`, `hammer`, `bucket`, `bench`, `table`, `cart` | Medieval Megapack |
+| 조경 3종 | `tree-cube`, `tree-round`, `bush` | Cute Park |
+| 작업대·병 2종 | `station`, `jar` | Kitchen Restaurant |
+| 탱크·사일로 2종 | `tank`, `silo` | FarmLand |
+
+### v0.67.0 추가 19종
 
 삼각형은 파일 내 메시 합계, KB는 1,000바이트 기준이다. 재질·물리 보조 메시 때문에 실제 장면의 표시량과 차이가 있을 수 있다. 반복 배치량과 화면에 보이는 영역에 따라 프레임 부하는 달라진다.
 
 | 런타임 이름 | 출처 팩 | 삼각형 | 모델 KB | 사용 위치 |
 | --- | --- | ---: | ---: | --- |
-| `harbour-crane` | old-town | 58 | 5.0 | 식량 부두 하역 설비 |
+| `harbour-crane` | old-town | 58 | 5.0 | 평원 보급 마당·수로 부두의 하역 설비 |
 | `repair-scaffold` | old-town | 126 | 13.5 | 보수 공방, 실제 조직 복구 |
 | `repair-planks` | old-town | 204 | 15.4 | 보수 공방 자재 |
 | `repair-ladder` | old-town | 132 | 10.3 | 보수 공방 |
-| `supply-bags` | old-town | 166 | 15.5 | 부두, 식량선 적재와 하역 |
-| `supply-basket` | old-town | 1440 | 133.2 | 부두 식량 |
-| `supply-barrel` | old-town | 512 | 30.8 | 부두 저장물 |
+| `supply-bags` | old-town | 166 | 15.5 | 보급 마당·부두, 마차·식량선 적재와 하역 |
+| `supply-basket` | old-town | 1440 | 133.2 | 보급 마당·부두 식량 |
+| `supply-barrel` | old-town | 512 | 30.8 | 보급 마당·부두 저장물 |
 | `harbour-boat` | pirate-island | 406 | 27.3 | 실제 원료 입항 시 식량선 |
 | `harbour-anchor` | pirate-island | 436 | 32.5 | 식량선 장식 |
-| `garden-tree` | terratoon | 196 | 22.7 | 수로 정원과 마을 조경 |
-| `garden-tree-small` | terratoon | 102 | 11.8 | 수로 정원과 마을 조경 |
-| `garden-shrub` | terratoon | 114 | 13.0 | 수로 정원 |
+| `garden-tree` | terratoon | 196 | 22.7 | 공통 정원과 평원 외곽 조경 |
+| `garden-tree-small` | terratoon | 102 | 11.8 | 공통 정원과 평원 외곽 조경 |
+| `garden-shrub` | terratoon | 114 | 13.0 | 공통 정원 |
 | `rubble-rock` | rocks-and-stone | 72 | 11.3 | 실제 조직 파괴 현장 |
 | `rubble-stone` | rocks-and-stone | 466 | 41.8 | 실제 조직 파괴 현장 |
-| `garden-flower` | nature-extended | 592 | 50.9 | 수로 정원 화분 |
-| `garden-clover` | nature-extended | 44 | 5.4 | 수로 정원 지피 식물 |
+| `garden-flower` | nature-extended | 592 | 50.9 | 공통 정원 화분, 평원 정원 가장자리 |
+| `garden-clover` | nature-extended | 44 | 5.4 | 공통 정원 지피 식물 |
 | `canal-reed` | nature-extended | 36 | 3.9 | 수로 정원 가장자리 |
-| `hay-bale` | natureforge | 619 | 86.3 | 부두 적재물 |
-| `garden-bench` | natureforge | 292 | 46.9 | 수로 정원 벤치 |
+| `hay-bale` | natureforge | 619 | 86.3 | 보급 마당·부두 적재물 |
+| `garden-bench` | natureforge | 292 | 46.9 | 공통 정원 벤치 |
 
 ### 원본 파일 경로
 
@@ -83,14 +161,26 @@ v0.67.0 · 2026년 10월 22일. 보유한 팩에서 지금 쓸 리소스와 후�
 
 ## 용량과 렌더링 기준
 
-현재 선택 묶음은 **43개 모델·7개 이미지·4,864,667바이트**다. 기존 3,587,172바이트에서 약 1.28MB 늘었다. manifest·라이선스·코드·기존 Three.js/Kenney 파일은 이 모델·이미지 합계와 별도다.
+현재 선택 묶음은 10개 팩에서 고른 **43개 모델·7개 이미지·4,864,667바이트**다. 기존 3,587,172바이트에서 약 1.28MB 늘었다. manifest·라이선스·코드·기존 Three.js/Kenney 파일은 이 모델·이미지 합계와 별도다. 보유 원본 ZIP 전체 크기나 사이트 전체 배포 크기와 혼동하지 않는다.
+
+| 항목 | 현재 기준 | 추가·확장 작업에서 확인할 것 |
+| --- | --- | --- |
+| 모델+이미지 파일 합계 | 5,000,000바이트 미만 | 현재 여유 **135,333바이트(약 135KB)**. 새 아틀라스나 큰 모델을 추가하기 전에 기존 리소스 재사용·교체·축소를 검토한다. |
+| 공유 이미지 | 7개, 각 변 1080 이하 | `tests/city-assets.test.mjs`에도 수·크기 제한이 있다. 예산 변경은 근거와 새 상주량을 문서·검증 기준에 함께 반영한다. |
+| 추가 소품의 삼각형 | v0.67.0 추가 19종은 파일당 2,000 미만 | 모델 하나의 수치와 화면상 반복 개수를 함께 본다. 기존 `hall` 6,641, `house-a` 3,657, `cart` 2,828 등은 같은 소품 수준으로 무제한 반복하지 않는다. |
+| 텍스처 메모리 | 선택 묶음 약 27.28MiB, Kenney 포함 약 28.61MiB | RGBA8·전체 밉맵 가정의 추정치. 메시·렌더 타깃·그림자·브라우저 RAM은 별도다. PNG가 작아져도 픽셀 수가 같으면 이 추정치는 줄지 않는다. |
+| 동적 소품 | 비계 8개, 바위 12개, 돌무더기 8개 | 조직 수와 무관한 인스턴스 풀. 기존 조직 갱신 간격 0.18 게임 초를 사용한다. |
+
+v0.68.0의 두 테마 호환에서도 **43개 모델·7개 이미지·4,864,667바이트**를 유지한다. 평원의 마차·연못·지붕 변형은 기존 도형과 메시를 재사용하므로 새 모델·이미지 다운로드가 없다. 테마 1에서 배를 표시하지 않아도 ON 상태의 로더는 같은 manifest 전체를 받으므로 테마 변경만으로 고유 텍스처 상주량이 줄어드는 것은 아니다.
+
+현재 로더는 화면에 보이지 않는 모델도 manifest에 있으면 받는다. ‘추후 사용할 수도 있음’만을 이유로 런타임 목록을 늘리지 않는다. 도시 규모·반복 배치 개수의 확대와 고유 모델·이미지 종류의 추가는 별도로 평가한다.
 
 - 이미지의 내용 해시를 사용해 중복을 제거한다. Pirate 아틀라스는 픽셀을 바꾸지 않고 PNG 데이터 압축만 개선해 4,202,618바이트에서 538,774바이트로 줄였다.
 - NatureForge의 벤치·건초는 UV 색상표를 선형 RGB 정점색으로 변환했다. 세밀한 이미지 무늬 대신 카툰 색면을 사용하며 2048² 텍스처는 배포하지 않는다.
-- 선택 묶음의 텍스처 메모리는 RGBA8·전체 밉맵 가정에서 약 **27.28MiB**, 기존 Kenney의 512² 이미지까지 합치면 약 **28.61MiB**다. 메시·렌더 타깃·그림자·브라우저 메모리는 별도다.
-- 선택 묶음은 모델·이미지 5MB 미만, 이미지 한 변 1080 이하를 현재 예산으로 사용한다. 이 예산을 늘릴 때는 사용 위치와 새 이미지 상주량을 함께 검토한다.
 - 고정 소품은 기존 16단위 지역별 재질 병합에 포함한다. 개별 가로등 광원과 신규 실시간 그림자 광원을 추가하지 않는다.
-- 조직 복구 비계는 최대 8개, 바위 잔해는 최대 12개와 8개의 인스턴스 풀로 제한한다. 기존 조직 갱신 간격 0.18초를 사용하며 새 AI·경로탐색을 추가하지 않는다.
+- 병합 시 정점색·UV를 보존한다. NatureForge처럼 정점색으로 바꾼 모델은 색 속성을 지우면 외관이 깨진다.
+- 복제·인스턴싱한 모델의 원본 geometry·material은 공유 캐시 소유다. 장면 재생성 때 공유 원본을 임의로 dispose하지 않는다.
+- 장식 수만 늘리기 위해 새 AI·경로탐색·물리 시뮬레이션을 추가하지 않는다. 반복 애니메이션은 기존 갱신 루프와 실제 상태를 사용한다.
 - 실제 추가 후의 FPS·draw·tris는 환경 설정의 성능 표시로 확인한다. 위 파일·메모리 예산이 모든 기기의 FPS를 보장하지는 않는다.
 
 ## 코드에서 연결할 위치
@@ -101,21 +191,50 @@ v0.67.0 · 2026년 10월 22일. 보유한 팩에서 지금 쓸 리소스와 후�
 | 선택 모델·이미지·팩·라이선스 목록 | `assets/city3d/bundle/sources.json` |
 | 텍스처·재질 공유, 크기 정규화 | `src/city-three-bundle.mjs` |
 | 체크박스 기본값·저장·로딩 중 해제 처리 | `src/city-asset-preference.mjs`, `src/city-ui.mjs` |
+| 테마 목록·객체 대응표·선택 저장 | `src/city-theme.mjs` |
+| 테마 2 기준의 공통 배치·주변 객체·테마별 경로 | `src/city-theme-layout.mjs`, `src/city-canal-blocks.mjs` |
+| 테마별 장면 재생성·카메라·입구 이름표 | `src/city-three-renderer.mjs` |
 | 정적 배치와 정점색 보존, 마을 공방 | `src/city-three-village.mjs` |
-| 실제 원료 입항·하역과 배 | `src/city-three-ports.mjs` |
-| 수로 정원과 기존 토지 경계 | `src/city-three-canals.mjs`, `src/city-canal-blocks.mjs` |
+| 장기별 설비와 작업 동작 | `src/city-three-facilities.mjs`, `src/city-three-actors.mjs` |
+| 실제 원료 입고·하역과 마차·배 | `src/city-three-ports.mjs` |
+| 공통 주변 주택·정원과 평원·수로 표현 | `src/city-three-canals.mjs`, `src/city-canal-blocks.mjs` |
 | 실제 조직 HP·복구에 연결한 소품 | `src/city-three-tissue.mjs` |
+| 성벽 HP·입구·방어선 표시 | `src/city-three-bundle.mjs`, `src/city-three-frontier.mjs` |
+| 저장 배치·점유·작업 위치·입구 단차 | `src/city-tile-layout.mjs`, `src/city-three-layout.mjs`, `src/city-entry-tracks.mjs` |
+| 혈관·수로·토지와 도시 경계 | `src/city-vascular-layout.mjs`, `src/city-canal-layout.mjs`, `src/city-world.mjs`, `src/city-boundary.mjs` |
+| 카메라·품질 자동 조절·성능 표시 | `src/city-three-renderer.mjs`, `src/city-three-performance.mjs` |
+| 에셋 무결성·예산·체크 전환·정원·잔해 검증 | `tests/city-assets.test.mjs` |
+| 공통 배치·사각 대로·전환 중 화물·저장 검증 | `tests/city-themes.test.mjs` |
 
-신규 에셋 적용 체크는 새 환경에서 기본 ON이다. 사용자가 OFF로 저장한 선택은 존중한다. OFF일 때 신규 묶음의 요청을 시작하지 않으며 이미 로드한 묶음은 재체크를 위해 캐시한다. 체크 전환은 도시 저장·시뮬레이션 상태를 바꾸지 않는다. 원본의 바람·물·하늘 Godot/Unity 셰이더와 데모 씬은 웹 런타임으로 복사하지 않는다.
+실제 배치 크기는 `bundleModel(bundle, name, height, maxWidth)`로 제한한다. 원본의 단위·방향·바닥 높이가 팩마다 다르므로 ZIP 안의 기본 크기로 바로 놓지 않는다. 테마 2의 건물 치환과 `cart` 생략은 `city-three-village.mjs`의 `newModel`에서 처리한다.
 
-## 재추출과 출처
+묶음의 `cart`는 작업장 소품이다. 테마 1의 원료 화물 마차는 `city-three-ports.mjs`의 별도 도형 생성물이며, 이를 테마 2에서 숨기는 `cart` 키와 혼동하지 않는다. 테마 1의 꽃과 테마 2의 갈대처럼 역할 대응을 바꾸면 대응표·연결 코드·이 문서의 세 항목을 함께 맞춘다.
 
-프로젝트 루트에서 `python -B scripts/import-city-assets.py`를 실행한다. Python 3와 Pillow가 필요하다. 이 명령은 보관 ZIP을 읽어 선택한 산출물과 manifest만 갱신한다. 새 소품은 `scripts/city_asset_exports.py`의 팩·모델 목록에 추가하고 화면 배치와 함께 검토한다.
+## 추가·교체 작업 절차
+
+1. 보유 팩 표에서 원본을 고르고 ZIP 내부의 정확한 모델·이미지·라이선스 경로를 확인한다. glTF는 BIN과 이미지 참조도 함께 확인한다. 같은 파일명이라고 이미지가 같다고 가정하지 않는다.
+2. 원본 선택 목록을 수정한다. 기존 Medieval·Cute Park·Kitchen·Farm은 `scripts/import-city-assets.py`의 `PACKS`, 추가 6개 팩은 `scripts/city_asset_exports.py`의 `PACKS`에 있다. 출처와 라이선스도 함께 기록한다.
+3. 프로젝트 루트에서 `python -B scripts/import-city-assets.py`를 실행한다. Python 3와 Pillow가 필요하다. 원본 ZIP은 읽기만 하며 선택한 GLB·공유 이미지·manifest를 생성/갱신한다. 출력 GLB를 직접 고쳐 재추출 시 사라지는 변경을 만들지 않는다.
+4. 해당 장면 코드에서 런타임 키로 연결한다. 크기·회전·점유 범위·표시 조건·OFF 시 기본 표현·캐시 자원 소유를 함께 맞춘다.
+5. 변경한 범위를 확인한다. 새 모델을 추가/교체했다면 `node --test tests/city-assets.test.mjs`를 한 번 실행하고 실패 원인만 수정한다. 배치·연출이 바뀌면 관련 테마·ON/OFF와 실제 상태를 화면에서 확인한다. 문서만 수정한 경우 게임 테스트·빌드를 돌리지 않는다.
+6. 이 문서의 현재 사용 목록·수치·적용 위치·후속 후보 상태를 갱신한다. 새 원본 파일명이나 팩이 추가되면 보유 팩 표도 수정한다. 원본·중복 ZIP·작업 산출물 정리는 AGENTS.md의 허락 규칙을 따른다.
+
+화면 확인 시 식량선은 실제 입항·하역 중인지, 잔해는 조직 손상 상태인지, 복구 비계는 복구 작업 중인지 먼저 확인한다. 건강하고 일시정지된 도시에서 조건부 모델이 안 보이는 것을 로딩 실패로 단정하지 않는다. 확대·전체 보기 모두에서 가림과 길막을 살피고, 부하를 기록할 때는 테마·배율·재생 상태·DPR·그림자 설정을 함께 남긴다.
+
+## 출처와 라이선스
 
 RG Poly 모델은 CC0 1.0, EmacEArt 모델은 각 원본의 EmacEArt Asset License를 사용한다. 혼합 묶음 전체를 CC0로 표기하지 않는다. 모델별 저작자·라이선스·원본 판매 페이지는 `sources.json`, 동봉 라이선스와 Old Town 출처 요약은 `assets/city3d/bundle/licenses/`에 기록한다. 게임에 필요한 가공 리소스만 배포하고 원본 팩 자체를 재배포하지 않는다.
 
-이전 작업 기록은 [v0.57부터 v0.59 에셋 계획](cell-city-asset-plan.md)에 남아 있다.
+이전 작업 기록은 [v0.57부터 v0.59 에셋 계획](cell-city-asset-plan.md)에 남아 있다. 옛 배치·개수·예산을 현재 기준으로 복사하지 않는다. 전체 도시 구조는 [Cell City 3D 구현 문서](cell-city-3d.md)를 함께 참고한다.
 
 ## 화면 예시
+
+같은 저장 도시·14:52·같은 자원과 카메라에서 촬영한 공통 배치 호환 기능의 비교 화면이다. [테마 호환 구현·검증 기록](cell-city-3d.md#같은-저장-배치의-두-테마-2026-10-23)에서 동작 조건을 확인할 수 있다.
+
+![테마 1: 공통 배치의 평원 마을·사각 대로](city-redesign/18-shared-layout-plain.jpg)
+
+![테마 2: 공통 배치의 수로 마을·원형 혈관](city-redesign/18-shared-layout-canals.jpg)
+
+아래는 v0.67.0 당시 식량 부두와 신규 에셋 설정의 기록이다.
 
 ![v0.67.0 식량 부두와 신규 에셋 적용 설정](cell-city-v0.67.0.png)
