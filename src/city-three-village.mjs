@@ -40,7 +40,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  const model=(name,x,y,z,size=1,angle=0,parent=fixed)=>{
   const proto=assets[name];if(!proto)return null;const g=proto.clone(true);g.position.set(x,y,z);g.rotation.y=angle;g.scale.setScalar(size);staticParent(parent).add(g);return g;
  };
- const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{if(canal&&name==='cart')return null;if(canal&&['house-a','house-b','hall','workshop','tower'].includes(name)){const g=cottage(x,z,Math.min(height/2.25,maxWidth/1.5),angle,true);g.position.y=y;return g;}const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;if(name==='gate')g.traverse(m=>{if(m.isMesh)m.material=mat(STYLE.plaster);});g.name='bundle-'+name;root.userData.bundleModels[name]=(root.userData.bundleModels[name]||0)+1;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
+ const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{if(canal&&name==='cart')return null;if(canal&&['house-a','house-b','hall','workshop','tower'].includes(name)){const g=cottage(x,z,Math.min(height/2.25,maxWidth/1.5),angle,true);g.position.y=y;return g;}const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;if(name==='gate'||name==='harbour-crane')g.traverse(m=>{if(m.isMesh)m.material=mat(name==='gate'?STYLE.plaster:STYLE.timber);});g.name='bundle-'+name;root.userData.bundleModels[name]=(root.userData.bundleModels[name]||0)+1;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
  const disc=(x,z,r,c,y=.012)=>{const m=make(new T.CircleGeometry(r,32),c,x,y,z);m.rotation.x=-Math.PI/2;m.castShadow=false;return m;};
  function ribbon(points,width,color,height=.025){
   if(points.length<2)return;
@@ -55,6 +55,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  const roofColors=STYLE.roofs;
  function leaf(x,y,z,r,color,parent){const m=orb(x,y,z,r,color,parent);m.scale.y=.78;return m;}
  function gardenTree(x,z,height=2.5,variant=0,parent=fixed){
+  if(newModel){const tree=newModel(variant%2?'garden-tree-small':'garden-tree',x,0,z,height,variant*.7,parent,height*.8);if(tree)return tree;}
   const trunk=0x76654c,green=STYLE.foliage[variant%3];
   cylinder(x,height*.37,z,.075,.13,height*.74,trunk,parent);
   leaf(x,height*.72,z,height*.31,green,parent);
@@ -156,7 +157,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  const oxygenO=make(new T.TorusGeometry(.27,.065,5,18),0xf2fff1,portal.x-.35,4.22,portal.z+.8);oxygenO.castShadow=false;
  for(const [dx,dy,w,h] of [[.28,.2,.34,.07],[.42,.08,.07,.27],[.28,-.04,.34,.07],[.14,-.18,.07,.27],[.28,-.31,.34,.07]])box(portal.x+dx,4.28+dy,portal.z+.81,w,h,.04,0xf2fff1);
  if(network)for(const mesh of fixed.children.slice(portalStart))mesh.position.y+=1.65;
- const portsScene=createCityPorts({layout,make,box,cylinder,model,fixed,moving});
+ const portsScene=createCityPorts({layout,make,box,cylinder,model,newModel,fixed,moving});
  scope('workshop');
  if(newModel){
   const shop=cottage(WORKSHOP.x,WORKSHOP.z-1,1.9,.05,true);shop.scale.x*=1.25;
@@ -167,6 +168,9 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
   newModel('bucket',WORKSHOP.x-.7,.03,WORKSHOP.z+1.1,.45,0,fixed,.5);
   newModel('cart',WORKSHOP.x+1.9,.03,WORKSHOP.z+2,.8,.4,fixed,1.5);
   newModel('palisade',WORKSHOP.x-1.9,.02,WORKSHOP.z+1.1,.9,Math.PI/2,fixed,2.4);
+  newModel('repair-scaffold',WORKSHOP.x-1.15,.02,WORKSHOP.z-.6,1.35,Math.PI/2,fixed,1.45);
+  newModel('repair-ladder',WORKSHOP.x-.9,.02,WORKSHOP.z-1.4,1.35,.15,fixed,.5);
+  newModel('repair-planks',WORKSHOP.x+1.3,.02,WORKSHOP.z+1.6,.3,.4,fixed,1.05);
  }else{cottage(WORKSHOP.x,WORKSHOP.z-1,1.7,.05,true);box(WORKSHOP.x+1.1,.35,WORKSHOP.z+.5,.7,.7,.65,0xb9a078);}
  model('banner-red',WORKSHOP.x+.9,.8,WORKSHOP.z-1,.8);
  if(newModel){scope('heart');newModel('bench',-2,.04,3.6,.65,.15,fixed,1.5);}
@@ -221,21 +225,30 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  }
  scope(null);const water=transformPoint(layout,'kidney',{x:13,z:9});const drain=[{x:riverX(water.z),z:water.z},water];ribbon(drain,.6,0xb4bcb0,.14);ribbon(drain,.38,0x91bfba,.15);
  }
- const canalScene=canal?createCanalScenery({layout,make,box,cylinder,model,mat,scope,fixed,moving,ribbon}):null;
- const tissueScene=layout?createTissueScene(layout,canalScene?.canals.blocks.tissues,canalScene?.canals.blocks.lung):null;if(tissueScene)moving.add(tissueScene.root);
+ const canalScene=canal?createCanalScenery({layout,make,box,cylinder,model,newModel,mat,scope,fixed,moving,ribbon}):null;
+ const tissueScene=layout?createTissueScene(layout,canalScene?.canals.blocks.tissues,canalScene?.canals.blocks.lung,newAssets):null;if(tissueScene)moving.add(tissueScene.root);
  for(const [id,g] of owners.fixed)applyTransform(g,id);for(const [id,g] of owners.moving)applyTransform(g,id);
  // Selected geometry stays separate during editing, so dragging moves it without rebuilding.
  const preview=owners.fixed.get(editId);if(preview){fixed.remove(preview);root.add(preview);}
  // Merge static geometry, including the imported modular buildings, by material.
  fixed.updateMatrixWorld(true);const batches=new Map(),vertexMaterial=new T.MeshStandardMaterial({vertexColors:true,roughness:STYLE.roughness});
+ function prepareGeometry(g,original,colored){
+  const source=original.vertexColors?g.getAttribute('color'):null;
+  for(const k of Object.keys(g.attributes))if(!['position','normal','uv'].includes(k))g.deleteAttribute(k);
+  if(!g.attributes.normal)g.computeVertexNormals();
+  if(!g.attributes.uv)g.setAttribute('uv',new T.Float32BufferAttribute(new Float32Array(g.attributes.position.count*2),2));
+  if(colored||source){
+   const colors=new Float32Array(g.attributes.position.count*3),c=colored?original.color:{r:1,g:1,b:1};
+   for(let i=0;i<g.attributes.position.count;i++){colors[i*3]=(source?source.getX(i):1)*c.r;colors[i*3+1]=(source?source.getY(i):1)*c.g;colors[i*3+2]=(source?source.getZ(i):1)*c.b;}
+   g.setAttribute('color',new T.Float32BufferAttribute(colors,3));
+  }
+  g.clearGroups();return g;
+ }
  fixed.traverse(m=>{
   if(!m.isMesh||Array.isArray(m.material))return;let ancestor=m;while(ancestor){if(!ancestor.visible)return;ancestor=ancestor.parent;}
   const original=m.material,colored=!original.map&&m!==ground,material=colored?vertexMaterial:original;
   const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();g.applyMatrix4(m.matrixWorld);g.computeBoundingBox();const centre=g.boundingBox.getCenter(new T.Vector3()),region=m===ground?'ground':Math.floor(centre.x/16)+','+Math.floor(centre.z/16),key=material.uuid+':'+m.castShadow+':'+region;
-  for(const k of Object.keys(g.attributes))if(!['position','normal','uv'].includes(k))g.deleteAttribute(k);
-  if(!g.attributes.uv)g.setAttribute('uv',new T.Float32BufferAttribute(new Float32Array(g.attributes.position.count*2),2));
-  if(colored){const colors=new Float32Array(g.attributes.position.count*3),c=original.color;for(let i=0;i<colors.length;i+=3){colors[i]=c.r;colors[i+1]=c.g;colors[i+2]=c.b;}g.setAttribute('color',new T.Float32BufferAttribute(colors,3));}
-  g.clearGroups();if(!batches.has(key))batches.set(key,{material,shadow:m.castShadow,geometries:[]});batches.get(key).geometries.push(g);
+  prepareGeometry(g,original,colored);if(!batches.has(key))batches.set(key,{material,shadow:m.castShadow,geometries:[]});batches.get(key).geometries.push(g);
  });
  root.remove(fixed);const baked=new T.Group();root.add(baked);
  for(const b of batches.values()){const geo=mergeGeometries(b.geometries),mesh=new T.Mesh(geo,b.material);mesh.castShadow=b.shadow;mesh.receiveShadow=true;geo.computeBoundingSphere();mesh.name='town-region';baked.add(mesh);for(const g of b.geometries)g.dispose();}
@@ -243,8 +256,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  // move during a drag, rather than dozens of imported wall pieces and tiles.
  if(preview){const visible=preview.visible;preview.visible=true;preview.updateMatrixWorld(true);const inverse=preview.matrixWorld.clone().invert(),parts=new Map(),discard=new Set();
   preview.traverse(m=>{if(!m.isMesh||Array.isArray(m.material))return;const original=m.material,colored=!original.map,material=colored?vertexMaterial:original,key=material.uuid+':'+m.castShadow;
-   const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();g.applyMatrix4(m.matrixWorld).applyMatrix4(inverse);for(const k of Object.keys(g.attributes))if(!['position','normal','uv'].includes(k))g.deleteAttribute(k);if(!g.attributes.uv)g.setAttribute('uv',new T.Float32BufferAttribute(new Float32Array(g.attributes.position.count*2),2));
-   if(colored){const colors=new Float32Array(g.attributes.position.count*3);for(let i=0;i<colors.length;i+=3){colors[i]=original.color.r;colors[i+1]=original.color.g;colors[i+2]=original.color.b;}g.setAttribute('color',new T.Float32BufferAttribute(colors,3));}g.clearGroups();if(!parts.has(key))parts.set(key,{material,shadow:m.castShadow,geometries:[]});parts.get(key).geometries.push(g);if(!m.userData.kenney&&!m.userData.cityAsset)discard.add(m.geometry);
+   const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();g.applyMatrix4(m.matrixWorld).applyMatrix4(inverse);prepareGeometry(g,original,colored);if(!parts.has(key))parts.set(key,{material,shadow:m.castShadow,geometries:[]});parts.get(key).geometries.push(g);if(!m.userData.kenney&&!m.userData.cityAsset)discard.add(m.geometry);
   });preview.clear();for(const p of parts.values()){const g=mergeGeometries(p.geometries),m=new T.Mesh(g,p.material);m.castShadow=p.shadow;m.receiveShadow=true;preview.add(m);for(const part of p.geometries)part.dispose();}for(const g of discard)g.dispose();preview.visible=visible;
  }
  const retainedMaterials=new Set();root.traverse(m=>{if(m.material)retainedMaterials.add(m.material);});for(const m of materials.values())if(!retainedMaterials.has(m))m.dispose();

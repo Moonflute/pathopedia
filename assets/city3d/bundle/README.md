@@ -1,25 +1,21 @@
 # Cell City selected bundle assets
 
-24 models by RG Poly, selected from the user's purchased Creator Bundle: Volume 1.
-License: [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/).
-The creator's product pages were checked on 2026-10-21:
+43 selected models by RG Poly and EmacEArt from the purchased Creator Bundle.
+Per-model source, checksums and licenses are recorded in `sources.json`.
+RG Poly: CC0-1.0. EmacEArt: LicenseRef-EmacEArt, accompanying terms in `licenses/`.
+The whole mixed collection must not be labelled CC0.
 
-- [Medieval Megapack](https://rg-poly.itch.io/medieval-megapack-low-poly): 17 house, hall, workshop, market, supply and fortification models.
-- [Cute Park](https://rg-poly.itch.io/cute-park-pack): 3 tree/bush models.
-- [Kitchen/Restaurant](https://rg-poly.itch.io/kitchenrestaurant-megapack): 2 workbench/jar models.
-- [FarmLand](https://rg-poly.itch.io/farmland): 2 tank/silo models.
+See [Cell City asset guide](../../../docs/cell-city-assets.md) for the source library,
+active model inventory, placement rules, deferred candidates and resource budgets.
 
-`sources.json` records each original ZIP/internal path, checksum, triangle count
-and runtime dependency. Original accompanying text files are in `licenses/`.
-The Cute Park archive's original license text has the title “Cute Dungeon
-Megapack”; its contents are retained verbatim, and the Cute Park product page
-also lists CC0 1.0.
+Reproduce from the repository root with `python -B scripts/import-city-assets.py`
+(Python 3 and Pillow). The original ZIP library is read without alteration.
+Shared PNGs are deduplicated; the Pirate atlas is losslessly recompressed.
+NatureForge's two small props use sampled vertex colours instead of their 2K map.
+Godot-only materials of the selected Pirate/TerraToon models are assigned to shared
+atlases. Their wind-weight vertex colours are omitted from surface shading.
 
-Reproduce with `python scripts/import-city-assets.py` from the repository root.
-This reads local `cell-city-assets/` ZIPs without importing their full contents.
-Embedded images become external PNGs deduplicated by checksum; geometry, UVs
-and image pixels are preserved. Roughness/metalness are normalized for Cell City.
-
-The selected models and three shared 1024×1024 PNGs total 3,587,172 bytes.
-The PNGs require about 16 MiB of texture memory with RGBA8 and full mipmaps.
-New model requests start only when the “신규 에셋 적용” checkbox is checked.
+Models and 7 images total 4,864,667 bytes.
+RGBA8 textures with full mipmaps are about 27.28 MiB, excluding Kenney,
+geometry, render targets and shadows. This is a memory estimate, not an FPS claim.
+Requests start only with the 신규 에셋 적용 checkbox enabled; it defaults on.

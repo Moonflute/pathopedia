@@ -11,6 +11,7 @@ import {createCity,serializeCity} from '../src/city-engine.mjs';
 import {createTileLayout,applyTileLayout} from '../src/city-tile-layout.mjs';
 import {WALLS} from '../src/city-frontier-data.mjs';
 import {wallPieces} from '../src/city-boundary.mjs';
+import {createTissueScene} from '../src/city-three-tissue.mjs';
 
 test('new assets default on; the preference never writes the city save',()=>{
  const values=new Map(),storage={getItem:key=>values.get(key)??null,setItem:(k,v)=>values.set(k,v)};
@@ -41,20 +42,42 @@ test('load failure can retry and a closed view releases an in-flight bundle',asy
 
 const root=new URL('../assets/city3d/bundle/',import.meta.url),manifest=JSON.parse(readFileSync(new URL('sources.json',root)));
 const decode=b=>JSON.parse(b.subarray(20,20+b.readUInt32LE(12)));
-test('the reviewed subset has complete local references and three shared 1K atlases',()=>{
- assert.equal(manifest.license,'CC0-1.0');assert.equal(Object.keys(manifest.models).length,24);assert.equal(Object.keys(manifest.textures).length,3);
+test('the reviewed subset keeps complete references, provenance and a bounded download',()=>{
+ assert.match(manifest.license,/CC0-1.0/);assert.match(manifest.license,/LicenseRef-EmacEArt/);
+ assert.ok(Object.keys(manifest.textures).length<=7);
+ assert.deepEqual(new Set(Object.values(manifest.models).map(m=>m.pack).filter(Boolean)),new Set(['old-town','pirate-island','terratoon','rocks-and-stone','nature-extended','natureforge']));
  let bytes=0;
  for(const item of [...Object.values(manifest.models),...Object.entries(manifest.textures).map(([path,v])=>({...v,path}))]){
   const b=readFileSync(new URL(item.path,root));bytes+=b.length;
   assert.equal(b.length,item.bytes);assert.equal(createHash('sha256').update(b).digest('hex'),item.sha256);
  }
- assert.equal(bytes,manifest.totalBytes);assert.ok(bytes<3_700_000);
- for(const t of Object.values(manifest.textures))assert.ok(t.width<=1024&&t.height<=1024);
+ assert.equal(bytes,manifest.totalBytes);assert.ok(bytes<5_000_000);
+ for(const t of Object.values(manifest.textures))assert.ok(t.width<=1080&&t.height<=1080);
  for(const entry of Object.values(manifest.models)){
+  assert.ok(['CC0-1.0','LicenseRef-EmacEArt'].includes(entry.license));
+  if(entry.pack)assert.ok(entry.triangles<2000);
   const url=new URL(entry.path,root),b=readFileSync(url),doc=decode(b);assert.equal(b.readUInt32LE(8),b.length);
   for(const image of doc.images){assert.equal(image.bufferView,undefined);assert.ok(existsSync(new URL(image.uri,url)));}
   for(const view of doc.bufferViews)assert.ok((view.byteOffset||0)+view.byteLength<=doc.buffers[0].byteLength);
  }
+});
+
+test('canal props respect the asset switch and tissue debris stays bounded by real damage',async()=>{
+ const bundle=await geometryBundle(),s=createCity('normal','steady',{workCrews:true,specialists:true});applyTileLayout(s,createTileLayout());
+ const snapshot=serializeCity(s);
+ for(const enabled of [true,false]){
+  const village=createVillage({},s.layout,null,enabled?bundle:null,'2');village.update(s,{});
+  const used=village.root.userData.bundleModels;
+  if(enabled){assert.equal(used['harbour-boat'],1);assert.equal(used['harbour-crane'],1);assert.ok(used['repair-scaffold']>0);assert.ok(used['garden-tree']>0);assert.ok(used['garden-bench']>0);}
+  else assert.deepEqual(used,{});
+  village.dispose();
+ }
+ assert.equal(serializeCity(s),snapshot);
+ const tissue=createTissueScene(s.layout,[],[],bundle),debris=tissue.root.children.filter(m=>m.name==='tissue-rubble-rock'||m.name==='tissue-rubble-stone');
+ tissue.update(s);assert.ok(debris.length>=2);assert.ok(debris.every(m=>m.count===0));
+ for(const t of Object.values(s.frontier.tissues))t.hp=0;s.time+=.2;tissue.update(s);
+ assert.ok(debris.some(m=>m.count>0));assert.ok(debris.every(m=>m.count<=12));
+ for(const m of tissue.root.children)if(m.isInstancedMesh)m.dispose();
 });
 
 async function geometryBundle(){

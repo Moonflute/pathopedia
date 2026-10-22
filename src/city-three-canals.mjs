@@ -38,7 +38,7 @@ export function canalHouse({box,make,model,mat,parent},x,z,size,index=0,angle=0,
  return g;
 }
 
-export function createCanalScenery({layout,make,box,cylinder,model,mat,scope,fixed,moving,ribbon}){
+export function createCanalScenery({layout,make,box,cylinder,model,newModel=null,mat,scope,fixed,moving,ribbon}){
  const canals=compileCanalLayout(layout);if(!canals)return null;
  function geometry(quadList){const p=[],uv=[];for(const q of quadList)for(const i of [0,2,1,0,3,2]){p.push(...q[i]);uv.push(q[i][0],q[i][2]);}const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(p,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.computeVertexNormals();return g;}
  const tops=canals.rows.map(r=>[[r.x,.018,r.z],[r.x+r.w,.018,r.z],[r.x+r.w,.018,r.z+r.d],[r.x,.018,r.z+r.d]]);
@@ -60,10 +60,16 @@ export function createCanalScenery({layout,make,box,cylinder,model,mat,scope,fix
   for(const z of [-1.6,1.6])box(0,.075,z,3.3,.04,.1,0xb8ab8e,g);
   for(const [x,z] of [[-.8,-.7],[.8,.7]]){
    box(x,.16,z,.85,.28,.85,0xc5b28c,g);box(x,.31,z,.7,.025,.7,0x87966d,g);
-   cylinder(x,.82,z,.05,.08,1.1,0x877056,g);
-   for(let i=0;i<3;i++)make(new T.ConeGeometry(.48-i*.1,.95,7),[0x6f8b69,0x839b77,0x91a582][i],x,1.05+i*.53,z,g);
+   if(!newModel?.(x<0?'garden-tree':'garden-tree-small',x,.33,z,2.1,x, g,1.25)){
+    cylinder(x,.82,z,.05,.08,1.1,0x877056,g);
+    for(let i=0;i<3;i++)make(new T.ConeGeometry(.48-i*.1,.95,7),[0x6f8b69,0x839b77,0x91a582][i],x,1.05+i*.53,z,g);
+   }
   }
-  for(const z of [-1.25,1.25]){box(0,.27,z,1.25,.12,.32,0x9b8060,g);for(const x of [-.45,.45])box(x,.13,z,.11,.24,.24,0xb4a386,g);}
+  for(const z of [-1.25,1.25])if(!newModel?.('garden-bench',0,.04,z,.57,z<0?Math.PI:0,g,1.35)){box(0,.27,z,1.25,.12,.32,0x9b8060,g);for(const x of [-.45,.45])box(x,.13,z,.11,.24,.24,0xb4a386,g);}
+  newModel?.('garden-flower',-.8,.34,-.7,.34,.3,g,.68);
+  newModel?.('garden-shrub',1.12,.04,-.75,.65,0,g,.8);
+  newModel?.('garden-clover',-.95,.06,.65,.16,0,g,.6);
+  newModel?.('canal-reed',1.35,.04,.8,.7,.3,g,.32);
  }
  // Width and oxygen tint make the circulation legible from the overview.
  // Low-oxygen blood also leaves the heart for the lungs in the pulmonary artery.

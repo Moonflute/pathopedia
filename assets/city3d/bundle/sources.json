@@ -1,7 +1,7 @@
 {
-  "author": "RG Poly",
-  "license": "CC0-1.0",
-  "page": "https://rg-poly.itch.io/",
+  "author": "RG Poly; EmacEArt",
+  "license": "CC0-1.0; LicenseRef-EmacEArt",
+  "page": "https://itch.io/b/3905/creator-bundle-volume-1",
   "models": {
     "crate": {
       "path": "models/crate.glb",
@@ -9,7 +9,9 @@
       "source": "MedievalMegapack_Godot/Models/Other/Box_1_A.glb",
       "bytes": 31464,
       "sha256": "e04cd9ec5d082f9ad3d52c71593380fd0dc5eb2629943123f4e72433924e3a54",
-      "triangles": 316
+      "triangles": 316,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "logs": {
       "path": "models/logs.glb",
@@ -17,7 +19,9 @@
       "source": "MedievalMegapack_Godot/Models/Other/CutedWood_1_A.glb",
       "bytes": 17224,
       "sha256": "da4da9b3f6426ad10ab8721362f81cdc1ded7d06e24a96cafc6dba5e2f3cefcc",
-      "triangles": 284
+      "triangles": 284,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "hammer": {
       "path": "models/hammer.glb",
@@ -25,7 +29,9 @@
       "source": "MedievalMegapack_Godot/Models/Tools/Hammer_1_A.glb",
       "bytes": 14308,
       "sha256": "f29368fa78ca34a00d0758b4812a975f2f9925e9c4de7f30fbd3cc55d4acdbd2",
-      "triangles": 240
+      "triangles": 240,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "bucket": {
       "path": "models/bucket.glb",
@@ -33,7 +39,9 @@
       "source": "MedievalMegapack_Godot/Models/Tools/Bucket_2_A.glb",
       "bytes": 25756,
       "sha256": "cad8a60564b9694bea798577a0c2ac591f4a9c1173c9d237025ea2d2d5086a62",
-      "triangles": 446
+      "triangles": 446,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "bench": {
       "path": "models/bench.glb",
@@ -41,7 +49,9 @@
       "source": "MedievalMegapack_Godot/Models/Other/Bench_1_A.glb",
       "bytes": 16728,
       "sha256": "8d64cd07d10e877604264f3a23a8f515cd8eae91d4e6d2852dea990608c2ad4a",
-      "triangles": 249
+      "triangles": 249,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "table": {
       "path": "models/table.glb",
@@ -49,7 +59,9 @@
       "source": "MedievalMegapack_Godot/Models/Other/Table_1_A.glb",
       "bytes": 22436,
       "sha256": "2f3538e3eef3e61a5c1441567185aacda064e6c45e3de26528eb76400e065225",
-      "triangles": 360
+      "triangles": 360,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "palisade": {
       "path": "models/palisade.glb",
@@ -57,7 +69,9 @@
       "source": "MedievalMegapack_Godot/Models/Palisade/Palisade_A_2_2.glb",
       "bytes": 22188,
       "sha256": "a563849f5d15e9b2466e8940b102fbb4783c043eacb92b92adeb7a713b1a8c5d",
-      "triangles": 402
+      "triangles": 402,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "gate": {
       "path": "models/gate.glb",
@@ -65,7 +79,9 @@
       "source": "MedievalMegapack_Godot/Models/Buildings/Castle_Gate.glb",
       "bytes": 29160,
       "sha256": "bfb3068b7e9c094d794cb35db8a18c73c45bcf612550f5b996a9b1622e706b66",
-      "triangles": 488
+      "triangles": 488,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "workshop": {
       "path": "models/workshop.glb",
@@ -73,7 +89,9 @@
       "source": "MedievalMegapack_Godot/Models/Buildings/BarnWood_1_A.glb",
       "bytes": 98120,
       "sha256": "01199516d3a51d3270632ab0a798c56c5d59916368ea073a0c96ed82ad94f22b",
-      "triangles": 1532
+      "triangles": 1532,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "cart": {
       "path": "models/cart.glb",
@@ -81,7 +99,9 @@
       "source": "MedievalMegapack_Godot/Models/Other/Cart_1_A.glb",
       "bytes": 144184,
       "sha256": "542d40968933e6e48353701f37197660c2234ba4207da9ea2148e58b85957748",
-      "triangles": 2828
+      "triangles": 2828,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "house-a": {
       "path": "models/house-a.glb",
@@ -89,7 +109,9 @@
       "source": "MedievalMegapack_Godot/Models/Buildings/Building_1_2_A.glb",
       "bytes": 216980,
       "sha256": "a799d5403a9c119229c2c8f045957c4f531e6ab7e55ff6b30624fd8c360002dc",
-      "triangles": 3657
+      "triangles": 3657,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "house-b": {
       "path": "models/house-b.glb",
@@ -97,7 +119,9 @@
       "source": "MedievalMegapack_Godot/Models/Buildings/Barn_2_A.glb",
       "bytes": 110584,
       "sha256": "b07f48c5dc0efdec127baa85098217978e256f69022c371a06b2be1b61d9c512",
-      "triangles": 1674
+      "triangles": 1674,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "hall": {
       "path": "models/hall.glb",
@@ -105,7 +129,9 @@
       "source": "MedievalMegapack_Godot/Models/Buildings/Buidling_4_2_A.glb",
       "bytes": 362180,
       "sha256": "02ba13380f7e096b5c836c877c1ffdfd7368505eda88e827d4aa91a716150639",
-      "triangles": 6641
+      "triangles": 6641,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "tower": {
       "path": "models/tower.glb",
@@ -113,7 +139,9 @@
       "source": "MedievalMegapack_Godot/Models/Buildings/Tower_2_A.glb",
       "bytes": 133948,
       "sha256": "a7a340890d7d6805928008c6abd26fad86431442dd7fda022ac072efc8728aed",
-      "triangles": 1984
+      "triangles": 1984,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "stone-wall": {
       "path": "models/stone-wall.glb",
@@ -121,7 +149,9 @@
       "source": "MedievalMegapack_Godot/Models/Buildings/Castle_Wall.glb",
       "bytes": 50172,
       "sha256": "8270cf96c54b871a5f6290fccaf03cbea60fb47d8e3a9ae928fb1a4a12975062",
-      "triangles": 568
+      "triangles": 568,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "stone-tower": {
       "path": "models/stone-tower.glb",
@@ -129,7 +159,9 @@
       "source": "MedievalMegapack_Godot/Models/Buildings/Castle_Tower.glb",
       "bytes": 115132,
       "sha256": "e12f0d59afcbecbe525283a28ee15be538ccc3fce079d45f99de52292fcf6ef7",
-      "triangles": 1234
+      "triangles": 1234,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "market": {
       "path": "models/market.glb",
@@ -137,7 +169,9 @@
       "source": "MedievalMegapack_Godot/Models/Buildings/StallWooden_1_A.glb",
       "bytes": 130936,
       "sha256": "323d493119eaacfd1831c317b5ff414e2fd7a635221ec54f08460cda2848bd4b",
-      "triangles": 2617
+      "triangles": 2617,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "tree-cube": {
       "path": "models/tree-cube.glb",
@@ -145,7 +179,9 @@
       "source": "Cute Park/gLTF/TreeCube_1_2.glb",
       "bytes": 7084,
       "sha256": "6266b01a6065ac364f26bb1c435275460d4e1e08ec8f25495cf48eb1df679997",
-      "triangles": 132
+      "triangles": 132,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "tree-round": {
       "path": "models/tree-round.glb",
@@ -153,7 +189,9 @@
       "source": "Cute Park/gLTF/Tree_2_1.glb",
       "bytes": 9028,
       "sha256": "2c03d2e4353a9b8fcda5b3dca8fc8da53bca5ae6532a733e95df1c92c68f5104",
-      "triangles": 244
+      "triangles": 244,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "bush": {
       "path": "models/bush.glb",
@@ -161,7 +199,9 @@
       "source": "Cute Park/gLTF/Bush_1_1.glb",
       "bytes": 13668,
       "sha256": "d029f197bf6dbfeb6c13e797fa0c8fa7bc52b41e296abe18b891c9545ae5099e",
-      "triangles": 376
+      "triangles": 376,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "station": {
       "path": "models/station.glb",
@@ -169,7 +209,9 @@
       "source": "Restaurant_Godot/Models/Furniture/StationTable_1_A.glb",
       "bytes": 15316,
       "sha256": "e5eb3ba9016f57fe2ffb4da24771106f6305e1ab324f1d20085c64b342f6e337",
-      "triangles": 252
+      "triangles": 252,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "jar": {
       "path": "models/jar.glb",
@@ -177,7 +219,9 @@
       "source": "Restaurant_Godot/Models/Food/Jar_1_A.glb",
       "bytes": 12140,
       "sha256": "7e3719ef2c7555bbcee83488c3078d683a7d864cf256d42f3ac0c6baf0ff012f",
-      "triangles": 234
+      "triangles": 234,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "tank": {
       "path": "models/tank.glb",
@@ -185,7 +229,9 @@
       "source": "Farm Pack/Models/Buildings/SM_MilkTank_1_B.glb",
       "bytes": 18440,
       "sha256": "33135bf7540d3e147c6078c5cd093adb81d60fddaf66b2cb2f6ea25f5aedee83",
-      "triangles": 446
+      "triangles": 446,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
     },
     "silo": {
       "path": "models/silo.glb",
@@ -193,7 +239,256 @@
       "source": "Farm Pack/Models/Buildings/SM_Silos_1_D.glb",
       "bytes": 105176,
       "sha256": "59e1c6c9c14ff35877582e0b9101ae5ef0b702fc2ca1117011811d49dd38bb21",
-      "triangles": 2508
+      "triangles": 2508,
+      "author": "RG Poly",
+      "license": "CC0-1.0"
+    },
+    "harbour-crane": {
+      "path": "models/harbour-crane.glb",
+      "archive": "old town Glb.zip",
+      "source": "EA_crane_01a.glb",
+      "pack": "old-town",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/old-town-environment-courtyards",
+      "bytes": 4976,
+      "sha256": "5e4a4bd7d4848de783261c5fb0eb58b21ca7f154f4fe3ff3369a156f430465cb",
+      "triangles": 58,
+      "textureMode": "shared-atlas"
+    },
+    "repair-scaffold": {
+      "path": "models/repair-scaffold.glb",
+      "archive": "old town Glb.zip",
+      "source": "EA_scaffolding_l_small_01a.glb",
+      "pack": "old-town",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/old-town-environment-courtyards",
+      "bytes": 13492,
+      "sha256": "16f612476a7bd86561dff83bafc6655ebec68dbdee3cbd84a6fd9c4e5f9ed6c5",
+      "triangles": 126,
+      "textureMode": "shared-atlas"
+    },
+    "repair-planks": {
+      "path": "models/repair-planks.glb",
+      "archive": "old town Glb.zip",
+      "source": "EA_Planks_01a.glb",
+      "pack": "old-town",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/old-town-environment-courtyards",
+      "bytes": 15352,
+      "sha256": "41c413c8475be7544cdb673683b25b3f0d8df026eee6f08f7be81a3a02312cdd",
+      "triangles": 204,
+      "textureMode": "shared-atlas"
+    },
+    "repair-ladder": {
+      "path": "models/repair-ladder.glb",
+      "archive": "old town Glb.zip",
+      "source": "EA_ladder_small_01a.glb",
+      "pack": "old-town",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/old-town-environment-courtyards",
+      "bytes": 10300,
+      "sha256": "ca5f7bbbbf58028d7cdb463aae7a7ea000ba521e1651a78f44727469254ed822",
+      "triangles": 132,
+      "textureMode": "shared-atlas"
+    },
+    "supply-bags": {
+      "path": "models/supply-bags.glb",
+      "archive": "old town Glb.zip",
+      "source": "EA_bags_01b.glb",
+      "pack": "old-town",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/old-town-environment-courtyards",
+      "bytes": 15504,
+      "sha256": "8e46b9b1fe81a1057b060759489f28548367cf4e4c352f6b309a8a3b7f3cb1ec",
+      "triangles": 166,
+      "textureMode": "shared-atlas"
+    },
+    "supply-basket": {
+      "path": "models/supply-basket.glb",
+      "archive": "old town Glb.zip",
+      "source": "EA_Basket_apple_01a.glb",
+      "pack": "old-town",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/old-town-environment-courtyards",
+      "bytes": 133236,
+      "sha256": "60e0072b3dceca5e89ef02a562102c9e42c62901fba0025c66e01bd3a0cf4f44",
+      "triangles": 1440,
+      "textureMode": "shared-atlas"
+    },
+    "supply-barrel": {
+      "path": "models/supply-barrel.glb",
+      "archive": "old town Glb.zip",
+      "source": "EA_Barrel_01a.glb",
+      "pack": "old-town",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/old-town-environment-courtyards",
+      "bytes": 30780,
+      "sha256": "1f03de1defa00e541455613b0d909f2e1d53d10cdb0cb68857559d7c9a063c64",
+      "triangles": 512,
+      "textureMode": "shared-atlas"
+    },
+    "harbour-boat": {
+      "path": "models/harbour-boat.glb",
+      "archive": "PirateIsland_Godot.zip",
+      "source": "PirateIsland/Models/Ships/SM_Boat_A.glb",
+      "pack": "pirate-island",
+      "author": "RG Poly",
+      "license": "CC0-1.0",
+      "page": "https://rg-poly.itch.io/pirate-island",
+      "bytes": 27324,
+      "sha256": "c95927e1b302614a0e8c56a16aff02c4a133b5005820e0952789087130bd7e73",
+      "triangles": 406,
+      "textureMode": "shared-atlas"
+    },
+    "harbour-anchor": {
+      "path": "models/harbour-anchor.glb",
+      "archive": "PirateIsland_Godot.zip",
+      "source": "PirateIsland/Models/Ships/SM_Anchor_A.glb",
+      "pack": "pirate-island",
+      "author": "RG Poly",
+      "license": "CC0-1.0",
+      "page": "https://rg-poly.itch.io/pirate-island",
+      "bytes": 32516,
+      "sha256": "8991a5a22bb55a0e483d5f987cd052ea425d59f38d11c2feb97d54fb2c76abd0",
+      "triangles": 436,
+      "textureMode": "shared-atlas"
+    },
+    "garden-tree": {
+      "path": "models/garden-tree.glb",
+      "archive": "terratoon-stylized-tree-pack-low-poly-forest-foliage-godot.zip",
+      "source": "TerraToonStylizedTreePack/Meshes/EA02_Env_Tree_01a.glb",
+      "pack": "terratoon",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/terratoon-stylized-tree-pack-low-poly-forest-foliage",
+      "bytes": 22736,
+      "sha256": "a7550ff3cd1ff08962b048829b0bc20a0bbb4afcaf90366243a855a4d60e2084",
+      "triangles": 196,
+      "textureMode": "shared-atlas"
+    },
+    "garden-tree-small": {
+      "path": "models/garden-tree-small.glb",
+      "archive": "terratoon-stylized-tree-pack-low-poly-forest-foliage-godot.zip",
+      "source": "TerraToonStylizedTreePack/Meshes/EA02_Env_Tree_01d.glb",
+      "pack": "terratoon",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/terratoon-stylized-tree-pack-low-poly-forest-foliage",
+      "bytes": 11848,
+      "sha256": "a0cb9704c3378b952e26bec3951c36a4bc4391d9250f2753c6d638aea4979432",
+      "triangles": 102,
+      "textureMode": "shared-atlas"
+    },
+    "garden-shrub": {
+      "path": "models/garden-shrub.glb",
+      "archive": "terratoon-stylized-tree-pack-low-poly-forest-foliage-godot.zip",
+      "source": "TerraToonStylizedTreePack/Meshes/EA02_Env_TreeCrown_01.glb",
+      "pack": "terratoon",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/terratoon-stylized-tree-pack-low-poly-forest-foliage",
+      "bytes": 13044,
+      "sha256": "3ddba6dd31ca6eb428482ed0d7fd47638383db342b7c9575be5bd7d04f6047ce",
+      "triangles": 114,
+      "textureMode": "shared-atlas"
+    },
+    "rubble-rock": {
+      "path": "models/rubble-rock.glb",
+      "archive": "Glb.zip",
+      "source": "Glb/EA01_Env_Rock_01a.glb",
+      "pack": "rocks-and-stone",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/l100-rocks-stones-and-clifs",
+      "bytes": 11332,
+      "sha256": "06332a74c1ff36b11e93cb7c8955c540df155a9197b0b6ba3624e433134b2d0b",
+      "triangles": 72,
+      "textureMode": "shared-atlas"
+    },
+    "rubble-stone": {
+      "path": "models/rubble-stone.glb",
+      "archive": "Glb.zip",
+      "source": "Glb/EA01_Env_Stone_Cobble_06.glb",
+      "pack": "rocks-and-stone",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/l100-rocks-stones-and-clifs",
+      "bytes": 41792,
+      "sha256": "3d7aae8acc923fa0888a6275e8841b6a9ad7031343975c4a98b5de6ad8ae9851",
+      "triangles": 466,
+      "textureMode": "shared-atlas"
+    },
+    "garden-flower": {
+      "path": "models/garden-flower.glb",
+      "archive": "Low Poly Nature_Godot.zip",
+      "source": "low-poly-nature--extended/LowPolyNature_Godot/Models/Flowers/Flower_1_1_A.glb",
+      "pack": "nature-extended",
+      "author": "RG Poly",
+      "license": "CC0-1.0",
+      "page": "https://rg-poly.itch.io/nature-megapack-low-poly-refreshed-unity-urp",
+      "bytes": 50852,
+      "sha256": "4b572a2386d6d2b7f37efef1bd94633c16ac2520d9b4c48c867fc29f01dcbb5a",
+      "triangles": 592,
+      "textureMode": "shared-atlas"
+    },
+    "garden-clover": {
+      "path": "models/garden-clover.glb",
+      "archive": "Low Poly Nature_Godot.zip",
+      "source": "low-poly-nature--extended/LowPolyNature_Godot/Models/Flowers/Clover_1_1_A.glb",
+      "pack": "nature-extended",
+      "author": "RG Poly",
+      "license": "CC0-1.0",
+      "page": "https://rg-poly.itch.io/nature-megapack-low-poly-refreshed-unity-urp",
+      "bytes": 5376,
+      "sha256": "63feba1fb18b482e3d4451c1ebc18acac76a9db8a18f76046f305e2c6a9ddf12",
+      "triangles": 44,
+      "textureMode": "shared-atlas"
+    },
+    "canal-reed": {
+      "path": "models/canal-reed.glb",
+      "archive": "Low Poly Nature_Godot.zip",
+      "source": "low-poly-nature--extended/LowPolyNature_Godot/Models/Farm Plants/Reed_Single.glb",
+      "pack": "nature-extended",
+      "author": "RG Poly",
+      "license": "CC0-1.0",
+      "page": "https://rg-poly.itch.io/nature-megapack-low-poly-refreshed-unity-urp",
+      "bytes": 3908,
+      "sha256": "deee68f2a728062e002f92ebf3f900a5473dbeaa658ca3820ddb921d8cc742e5",
+      "triangles": 36,
+      "textureMode": "shared-atlas"
+    },
+    "hay-bale": {
+      "path": "models/hay-bale.glb",
+      "archive": "NatureForge 3.0 - Godot 4 project (Godot 4.7+).zip",
+      "source": "NatureForgeStylizedMeadowFarmKit/Meshes/EA_M_HayBale_Dry_01a_PRE.gltf",
+      "pack": "natureforge",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/poly-meadows",
+      "bytes": 86332,
+      "sha256": "5c886aaecd2c84a0ed50d785933a02d3e59ef1b36d939588f49178b8166d33e6",
+      "triangles": 619,
+      "textureMode": "vertex-colours"
+    },
+    "garden-bench": {
+      "path": "models/garden-bench.glb",
+      "archive": "NatureForge 3.0 - Godot 4 project (Godot 4.7+).zip",
+      "source": "NatureForgeStylizedMeadowFarmKit/Meshes/EA_M_Furniture_Bench_Wooden_01_PRE.gltf",
+      "pack": "natureforge",
+      "author": "EmacEArt",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/poly-meadows",
+      "bytes": 46936,
+      "sha256": "f3d1ca50bdbf471b48e9bfc06e2686096b2b79eda8f3a1ce44708422aa71a23c",
+      "triangles": 292,
+      "textureMode": "vertex-colours"
     }
   },
   "textures": {
@@ -214,6 +509,30 @@
       "bytes": 554524,
       "width": 1024,
       "height": 1024
+    },
+    "textures/145a6295c06f7029.png": {
+      "sha256": "145a6295c06f7029551bd78a29da07c860d4d5aadb0bef2bd96e240e099094a9",
+      "bytes": 155374,
+      "width": 1080,
+      "height": 1080
+    },
+    "textures/58665746f27bcd0d.png": {
+      "sha256": "58665746f27bcd0ddb7685fc3c4fddae01e5f7540640edb570fcb7bc8e2287f0",
+      "bytes": 538774,
+      "width": 1024,
+      "height": 1024
+    },
+    "textures/bb7dd3a18c9abb0d.png": {
+      "sha256": "bb7dd3a18c9abb0d338eb539262b008da3b912fec6b7280d0228bf709e6cd473",
+      "bytes": 3908,
+      "width": 32,
+      "height": 32
+    },
+    "textures/366b171ce41bef8b.png": {
+      "sha256": "366b171ce41bef8bffd79ebf1be08b4ccb755b7be8d464b00c77d99a61da3136",
+      "bytes": 1803,
+      "width": 32,
+      "height": 32
     }
   },
   "archives": {
@@ -228,7 +547,43 @@
     },
     "Farm Pack Godot.zip": {
       "sha256": "57f2875777d9621af9f525194ec70a3fc21a75d766ee03c99f3ce8f431b3b1db"
+    },
+    "old town Glb.zip": {
+      "sha256": "7fc6f523aa0ef1eb431ea1ad611009901c1bb660e99e38467d97bc0485c2c387",
+      "pack": "old-town",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/old-town-environment-courtyards"
+    },
+    "PirateIsland_Godot.zip": {
+      "sha256": "2b2aac629ba19eee9047bdc801f734af6c5cb3437836717a05a0660598b344df",
+      "pack": "pirate-island",
+      "license": "CC0-1.0",
+      "page": "https://rg-poly.itch.io/pirate-island"
+    },
+    "terratoon-stylized-tree-pack-low-poly-forest-foliage-godot.zip": {
+      "sha256": "3cd33adb5dcb5bc3d76b41014bccee55ac5429d940db5639582eab1145aa471c",
+      "pack": "terratoon",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/terratoon-stylized-tree-pack-low-poly-forest-foliage"
+    },
+    "Glb.zip": {
+      "sha256": "ba14ce6989e948d6ccde53f979ef625f0308f48c22dce09364f13fe572d79e51",
+      "pack": "rocks-and-stone",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/l100-rocks-stones-and-clifs"
+    },
+    "Low Poly Nature_Godot.zip": {
+      "sha256": "9cb2ce54289876c24806cc50da1991866c934727faf289a47078456e4bc18bbb",
+      "pack": "nature-extended",
+      "license": "CC0-1.0",
+      "page": "https://rg-poly.itch.io/nature-megapack-low-poly-refreshed-unity-urp"
+    },
+    "NatureForge 3.0 - Godot 4 project (Godot 4.7+).zip": {
+      "sha256": "3dcd070eae40557789f1481228de1b52b0f4ea9064830ebba5f01c2dc59052d6",
+      "pack": "natureforge",
+      "license": "LicenseRef-EmacEArt",
+      "page": "https://emaceart.itch.io/poly-meadows"
     }
   },
-  "totalBytes": 3587172
+  "totalBytes": 4864667
 }

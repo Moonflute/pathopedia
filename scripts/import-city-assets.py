@@ -1,4 +1,4 @@
-"""Export the small, reviewed CC0 subset; never ship the source ZIP library.
+"""Export the reviewed game subset; never ship the source ZIP library.
 
 Run from the repository root with Python 3. Reads archives in cell-city-assets/.
 Externalizes embedded atlas images and deduplicates by SHA256, without changing
@@ -10,6 +10,7 @@ import posixpath
 import struct
 import zipfile
 from pathlib import Path
+from city_asset_exports import export_additions, file_sha
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'assets/city3d/bundle'
@@ -81,7 +82,7 @@ def export():
     for zip_name, prefix, models in PACKS:
         archive = ROOT / 'cell-city-assets' / zip_name
         with zipfile.ZipFile(archive) as z:
-            manifest['archives'][zip_name] = {'sha256': sha(archive.read_bytes())}
+            manifest['archives'][zip_name] = {'sha256': file_sha(archive)}
             for source in z.namelist():
                 if source.lower().endswith('.txt'):
                     license_name = f'{archive.stem}-{Path(source).name}'
@@ -150,7 +151,14 @@ def export():
                                 for mesh in doc['meshes'] for p in mesh['primitives'])
                 manifest['models'][name] = {'path': path, 'archive': zip_name,
                                             'source': source, 'bytes': len(result),
-                                            'sha256': sha(result), 'triangles': triangles}
+                                            'sha256': sha(result), 'triangles': triangles,
+                                            'author': 'RG Poly', 'license': 'CC0-1.0'}
+    additions = export_additions(OUT, decode, encode, sha)
+    for kind in ['models', 'textures', 'archives']:
+        manifest[kind].update(additions[kind])
+    manifest['author'] = 'RG Poly; EmacEArt'
+    manifest['license'] = 'CC0-1.0; LicenseRef-EmacEArt'
+    manifest['page'] = 'https://itch.io/b/3905/creator-bundle-volume-1'
     manifest['totalBytes'] = (sum(m['bytes'] for m in manifest['models'].values())
                               + sum(t['bytes'] for t in manifest['textures'].values()))
     (OUT / 'sources.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
