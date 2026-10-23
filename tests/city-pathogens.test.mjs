@@ -61,7 +61,7 @@ test('toxin-only gut damage, epithelial invasion, and low oxygen necrosis differ
  for(const [s,recordId] of [[toxin,'CDF-121'],[invasive,'GNX-221']])tickFrontierEnemy(s,{recordId,front:'gut',entered:true,...cityDistrict(s,'gut')},1,api);
  assert.equal(toxin.districts.gut.hp,100);assert.ok(invasive.districts.gut.hp<100);
  const damage=[];
- for(const oxygen of [85,15]){const s=city(),t=TISSUES[0];s.districts[t.district].oxygen=oxygen;tickFrontierEnemy(s,{recordId:'CPE-122',front:'skin',wall:11,entered:true,attackTarget:{kind:'tissue',id:0},...t.point},1,api);damage.push(100-s.frontier.tissues[0].hp);}
+ for(const oxygen of [85,15]){const s=city(),t=SKIN_TISSUES[11];s.districts[t.district].oxygen=oxygen;tickFrontierEnemy(s,{recordId:'CPE-122',front:'skin',wall:11,entered:true,attackTarget:{kind:'tissue',id:t.id},...tissueAt(s,t).point},1,api);damage.push(100-s.frontier.tissues[t.id].hp);}
  assert.ok(damage[1]>damage[0]);
  assert.equal(spreadDestination(toxin,pathogenDef('CDF-121'),'gut'),null);
  assert.equal(spreadDestination(toxin,pathogenDef('KPN-011'),'blood'),'lung');
