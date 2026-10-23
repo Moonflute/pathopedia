@@ -4,20 +4,21 @@ import {groundPoint} from './city-three-layout.mjs';
 import {TISSUES,WALLS,supportCount} from './city-frontier-data.mjs';
 import {ruleTarget} from './city-rules.mjs';
 import {pathogenDef} from './city-pathogens.mjs';
+import {pilotSite,pilotFieldSite} from './city-pilot-sites.mjs';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 export const pilotHostile=e=>!e.dead&&e.entered&&e.compartment!=='lumen';
 export const pilotFoodCapacity=(s,id)=>40+supportCount(s,id,'supply')*8;
 export function pilotJobs(s,tool){
  const inventory=pilotInventory(s),districts=cityDistricts(s);
- const organ=(id,label,action=tool)=>({id,...siteAt(s.layout,id),site:id,name:districts.find(d=>d.id===id).short+' · '+label,action});
+ const organ=(id,label,action=tool)=>{const station=pilotSite(s,id,tool);return {id,...(station?.approach||siteAt(s.layout,id)),target:station?.target,station:station?.key,site:id,name:districts.find(d=>d.id===id).short+' · '+label,action};};
  const enemy=e=>({id:'enemy:'+e.id,...groundPoint(e),enemy:e,name:pathogenDef(e.recordId)?.name||'병원체',action:tool});
  if(tool==='engulf')return s.enemies.filter(pilotHostile).map(enemy);
  if(tool==='oxygen')return inventory.oxygen?districts.filter(d=>d.id!=='lung'&&ruleTarget(s,'oxygen',d.id)&&s.districts[d.id].oxygen<99.9).map(d=>organ(d.id,'산소 하역')):[organ('lung','산소 적재')];
  if(tool==='nutrient')return inventory.nutrient?districts.filter(d=>d.id!=='gut'&&s.districts[d.id].food<pilotFoodCapacity(s,d.id)-.1).map(d=>organ(d.id,'영양 하역')):[organ('gut','영양 적재')];
  if(tool==='repair')return [
   ...districts.filter(d=>s.districts[d.id].hp<99.9).map(d=>({...organ(d.id,'장기 복구'),entity:s.districts[d.id]})),
-  ...TISSUES.filter(t=>s.frontier?.tissues[t.id]?.hp<99.9&&tissuePresent(s,t)).map(t=>({id:'tissue:'+t.id,...groundPoint(tissueAt(s,t).point),site:t.district,name:t.name+' · 복구',entity:s.frontier.tissues[t.id],action:tool}))
+  ...TISSUES.filter(t=>s.frontier?.tissues[t.id]?.hp<99.9&&tissuePresent(s,t)).map(t=>({id:'tissue:'+t.id,...pilotFieldSite(s,groundPoint(tissueAt(s,t).point)),site:t.district,name:t.name+' · 복구',entity:s.frontier.tissues[t.id],action:tool}))
  ];
  if(tool==='cleanup')return inventory.debris>=6?[organ('kidney','잔해 하역')]:[...s.debris.map(d=>({id:'debris:'+d.id,...groundPoint(d),debris:d,name:'잔해 수거',action:tool})),...(inventory.debris?[organ('kidney','잔해 하역')]:[])];
  if(tool==='patch'){

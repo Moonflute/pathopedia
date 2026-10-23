@@ -8,12 +8,14 @@ import {createCityPilot} from '../src/city-pilot.mjs';
 import {pilotWorld} from '../src/city-pilot-world.mjs';
 import {pilotedCell,pilotInventory,PILOT_TOOLS} from '../src/city-pilot-state.mjs';
 import {pilotJobs} from '../src/city-pilot-tasks.mjs';
+import {pilotSites} from '../src/city-pilot-sites.mjs';
 import {WALLS,TISSUES} from '../src/city-frontier-data.mjs';
 const data=JSON.parse(fs.readFileSync(new URL('../data/organisms.json',import.meta.url)));
 const city=()=>{const s=createCity('normal','simulation',{specialists:true,expanded:true});applyTileLayout(s,createTileLayout());return s;};
 const d=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 function hold(p,seconds){for(let t=0;t<seconds;t+=.05){p.run.time+=.05;p.step(.05,{use:true});}}
 function face(p,point){for(let i=0;i<16;i++){const v=p.view(),angle=Math.atan2(point.x-v.position.x,-(point.z-v.position.z)),delta=Math.atan2(Math.sin(angle-v.yaw),Math.cos(angle-v.yaw));if(Math.abs(delta)<.001)return;p.look(delta/.0025,0);}}
+function aim(p,point,height=.5){face(p,point);for(let i=0;i<5;i++){const v=p.view(),pitch=Math.atan2(height-v.eye,d(v.position,point));if(Math.abs(pitch-v.pitch)<.001)return;p.look(0,(v.pitch-pitch)/.0025);}}
 function travel(p,goal){
  for(const point of p.world.route(p.view().position,goal,'neutrophil')){
   let steps=0;while(d(p.view().position,point)>.09&&steps++<1800){face(p,point);p.run.time+=.02;p.step(.02,{forward:Math.min(1,d(p.view().position,point)*2)});}
@@ -47,9 +49,9 @@ for(const theme of ['2','1']){
  });
  test('theme '+theme+': same neutrophil carries oxygen, switches tools, walks and unloads once',()=>{
   const s=city(),p=createCityPilot(),c=s.cells.find(c=>c.kind==='neutrophil');s.cells=[c];Object.assign(c,groundCoordinate(siteAt(s.layout,'lung')));const originalCargo=c.cargo;s.districts.heart.oxygen=20;
-  assert.ok(p.start(s,{preferred:c.id,theme}));p.equip('oxygen');p.chooseDestination('heart');hold(p,1);const cargo=pilotInventory(s).oxygen;assert.ok(cargo>0);
+  assert.ok(p.start(s,{preferred:c.id,theme}));p.equip('oxygen');p.chooseDestination('heart');aim(p,p.objective().target,.72);hold(p,1);const cargo=pilotInventory(s).oxygen;assert.ok(cargo>0);
   const position=p.view().position;p.equip('engulf');assert.equal(p.cell,c);assert.deepEqual(p.view().position,position);assert.equal(pilotInventory(s).oxygen,cargo);assert.equal(c.cargo,originalCargo);
-  p.equip('oxygen');travel(p,siteAt(s.layout,'heart'));const before=s.stats.oxygen;hold(p,1);assert.equal(pilotInventory(s).oxygen,0);assert.equal(s.districts.heart.oxygen,20+cargo);assert.equal(s.stats.oxygen,before+cargo);
+  p.equip('oxygen');travel(p,pilotJobs(s,'oxygen').find(j=>j.id==='heart'));aim(p,p.objective().target,.72);const before=s.stats.oxygen;hold(p,1);assert.equal(pilotInventory(s).oxygen,0);assert.equal(s.districts.heart.oxygen,20+cargo);assert.equal(s.stats.oxygen,before+cargo);
   for(let i=0;i<30;i++)p.step(.05,{use:true});assert.equal(s.stats.oxygen,before+cargo);assert.equal(p.view().deliveries,1);assert.ok(restoreCity(serializeCity(s)));p.stop();
  });
 }
@@ -84,7 +86,7 @@ test('nine tools wrap, Q restores the previous tool, and held use cannot spill i
  for(const tool of PILOT_TOOLS){p.equip(tool.id);assert.equal(p.cell,c);assert.equal(c.kind,kind);}
  p.cycle();assert.equal(p.view().tool.id,'engulf');p.cycle(-1);assert.equal(p.view().tool.id,'scanner');p.previous();assert.equal(p.view().tool.id,'engulf');p.previous();assert.equal(p.view().tool.id,'scanner');
  Object.assign(c,groundCoordinate(siteAt(s.layout,'heart')));p.resetMotion();p.equip('engulf');p.step(.05,{use:true});s.districts.heart.hp=50;
- p.equip('repair');hold(p,2);assert.equal(s.districts.heart.hp,50);p.step(.05);hold(p,1.3);assert.equal(s.districts.heart.hp,58);p.stop();
+ p.equip('repair');aim(p,pilotJobs(s,'repair').find(j=>j.id==='heart').target);hold(p,2);assert.equal(s.districts.heart.hp,50);p.step(.05);hold(p,1.3);assert.equal(s.districts.heart.hp,58);p.stop();
 });
 for(const theme of ['2','1'])test('theme '+theme+': supply, repairs, cleanup, patching, antigen and support affect the real city',()=>{
  const s=city(),p=createCityPilot();assert.ok(p.start(s,{theme}));const i=pilotInventory(s),c=p.cell;
@@ -110,4 +112,28 @@ test('unaffordable or remote jobs cannot grant free resources; old inventory sav
  assert.equal(pilotCellAction(s,'repair','heart').ok,false);assert.equal(s.districts.heart.hp,40);
  p.equip('nutrient');assert.equal(pilotCellAction(s,'nutrient','gut').ok,false);assert.equal(pilotInventory(s).nutrient,0);
  const bad=JSON.parse(serializeCity(s));bad.pilotInventory.debris=7;assert.equal(restoreCity(JSON.stringify(bad)),null);p.stop();
+});
+
+for(const theme of ['2','1'])test('theme '+theme+': workstations have reachable approaches; aimed work stops when looking away',()=>{
+ const s=city(),p=createCityPilot(),sites=pilotSites(s),lung=sites.find(x=>x.key==='oxygen:lung');assert.equal(sites.length,13);
+ assert.ok(p.start(s,{theme,spawn:lung.approach}));
+ for(const site of sites){assert.ok(p.world.canStand(site.approach),site.key);assert.ok(p.world.route(lung.approach,site.approach,'neutrophil').length,site.key+' reachable');}
+ aim(p,lung.target,lung.height);assert.equal(p.view().interaction.key,lung.key);const original=p.cell;assert.ok(p.matchTool());assert.equal(p.view().tool.id,'oxygen');assert.equal(p.cell,original);
+ const away={x:p.view().position.x,z:p.view().position.z+2};aim(p,away);hold(p,1);assert.equal(pilotInventory(s).oxygen,0,'proximity alone cannot load');p.step(.05);
+ aim(p,lung.target,lung.height);hold(p,.3);assert.ok(p.view().progress>0);aim(p,away);hold(p,.2);assert.equal(p.view().progress,0);assert.equal(pilotInventory(s).oxygen,0);
+ p.step(.05);aim(p,lung.target,lung.height);hold(p,1);assert.ok(pilotInventory(s).oxygen>0);assert.equal(p.view().workPulse.key,lung.key);assert.ok(restoreCity(serializeCity(s)));p.stop();
+});
+
+test('aim chooses the intended debris; held use cannot sweep into a second object',()=>{
+ const s=city(),p=createCityPilot(),w=pilotWorld(s.layout,'2');
+ const origin=w.safe(siteAt(s.layout,'heart'),'neutrophil',q=>[-.65,.65].every(x=>w.canStand({x:q.x+x,z:q.z-1.2})&&w.clear(q,{x:q.x+x,z:q.z-1.2})));assert.ok(origin);p.start(s,{spawn:origin});p.equip('cleanup');
+ const targets=[{x:origin.x-.65,z:origin.z-1.2},{x:origin.x+.65,z:origin.z-1.2}];s.debris=targets.map((point,n)=>({id:++s.serial,...groundCoordinate(point),recordId:n?'SAU-001':'KPN-001'}));const [left,right]=s.debris;
+ aim(p,targets[1],.12);assert.equal(p.view().interaction.key,'debris:'+right.id);hold(p,.7);assert.deepEqual(s.debris,[left]);assert.equal(pilotInventory(s).debris,1);
+ aim(p,targets[0],.12);hold(p,1);assert.deepEqual(s.debris,[left]);p.step(.05);hold(p,.7);assert.equal(s.debris.length,0);assert.equal(pilotInventory(s).debris,2);p.stop();
+});
+
+test('a repair interaction across a building cannot consume materials or restore HP',()=>{
+ const s=city(),p=createCityPilot();s.frontier.tissues[0].hp=50;p.start(s);p.equip('repair');const job=pilotJobs(s,'repair').find(j=>j.id==='tissue:0');
+ let blocked=null;for(let n=0;n<48;n++){const q={x:job.x+Math.cos(n*Math.PI/24)*2.3,z:job.z+Math.sin(n*Math.PI/24)*2.3};if(p.world.canStand(q)&&!p.world.clear(q,job)){blocked=q;break;}}
+ assert.ok(blocked,'fixture has another side separated by a structure');Object.assign(p.cell,groundCoordinate(blocked));p.resetMotion();const materials=s.resources.materials;assert.equal(pilotCellAction(s,'repair',job.id).ok,false);assert.equal(s.frontier.tissues[0].hp,50);assert.equal(s.resources.materials,materials);p.stop();
 });

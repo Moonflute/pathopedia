@@ -5,6 +5,7 @@ import {cityRule,ruleReady,ruleTarget} from './city-rules.mjs';
 import {cleanLocalDebris} from './city-biology.mjs';
 import {receiveAntigen} from './city-frontier.mjs';
 import {beginActivity} from './city-activity.mjs';
+import {pilotWorld} from './city-pilot-world.mjs';
 
 // All tools operate on the same city objects used by autonomous workers.
 export function pilotWork(s,c,action,id,api){
@@ -13,6 +14,7 @@ export function pilotWork(s,c,action,id,api){
  if((timers[action]||0)>s.time)return {ok:false};
  const job=pilotJobs(s,action).find(j=>j.id===id),p=groundPoint(c);
  if(!job||Math.hypot(p.x-job.x,p.z-job.z)>def.range)return {ok:false,text:'작업 대상 가까이 이동'};
+ if(!pilotWorld(s.layout,'2').clear(p,job))return {ok:false,text:'장애물 옆으로 이동'};
  let result,kind='collect';
  if(action==='oxygen'){
   const target=job.site,d=s.districts[target],rule=cityRule(s,'oxygen');
@@ -53,6 +55,6 @@ export function pilotWork(s,c,action,id,api){
  }
  if(!result)return {ok:false};
  timers[action]=s.time+def.interval;
- if(action!=='scanner')beginActivity(s,c,kind,Math.max(.4,def.duration),groundCoordinate(job),job.site||null);
+ if(action!=='scanner')beginActivity(s,c,kind,Math.max(.4,def.duration),groundCoordinate(job.target||job),job.site||null);
  return {ok:true,...result};
 }
