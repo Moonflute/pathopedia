@@ -5,7 +5,8 @@ import {gridPath,roadNavigator} from './city-grid-path.mjs';
 import {insideCity,rimPoint} from './city-boundary.mjs';
 import {SKIN_TISSUES} from './city-frontier-data.mjs';
 import {homeSites} from './city-homeostasis-data.mjs';
-export const SYSTEMIC_RADII=Object.freeze({artery:31,vein:28.6});
+export const SYSTEMIC_RADII=Object.freeze({artery:41,vein:38.6});
+const SQUARE_RADII=Object.freeze({artery:31,vein:28.6});
 
 // Two directed trunks share each corridor: outward arteries and returning veins.
 // They meet only at the heart and local exchange beds. Pulmonary circulation has
@@ -43,6 +44,9 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  const network=compileLayout(layout),centres=Object.fromEntries(network.districts.map(d=>[d.id,groundPoint(d)])),heart=centres.heart,annex=homeSites(layout);
  for(const o of annex)centres[o.id]={x:o.x,z:o.z};
  const square=shape==='square',occupied=obstacles?{has:k=>network.occupied.has(k)||obstacles.has(k)}:network.occupied,streets={occupied};
+ // The square already reaches the outer neighbourhoods at its corners. Expand
+ // the circular trunks and derive every branch junction from that same pair.
+ const radii=square?SQUARE_RADII:SYSTEMIC_RADII,branchRadius=(radii.artery+radii.vein)/2;
  const ringPoint=(angle,radius)=>{const p=rimPoint(angle,radius);if(!square)return p;const scale=radius*.94/Math.max(Math.abs(p.x),Math.abs(p.z));return {x:p.x*scale,z:p.z*scale};};
  const vessels=[],beds=[],lines=[];
  const allowed=p=>insideCity(p.col,p.row,1.6)&&!occupied.has(p.col+','+p.row);
@@ -58,15 +62,15 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  }
  // Blood exits the heart, traverses the selected supply circuit, exchanges in a
  // tissue bed, then continues clockwise on the return ring to the heart.
- const arterial=ring(SYSTEMIC_RADII.artery),venous=ring(SYSTEMIC_RADII.vein);
+ const arterial=ring(radii.artery),venous=ring(radii.vein);
  add('systemic-arterial-ring','artery',arterial.points,1.65,'body');
  add('systemic-venous-ring','vein',venous.points,1.5,'body');
- const stem=link(heart,safe(ringPoint(0,29.8)));
+ const stem=link(heart,safe(ringPoint(0,branchRadius)));
  add('aorta','artery',[...lane(stem,1,streets).slice(0,-1),arterial.gates[18]],1.2,'body');
  add('vena-cava','vein',[venous.gates[18],...lane(stem,-1,streets).slice(0,-1).reverse()],1.2,'body');
  for(const id of ['gut','kidney','marrow','lymph',...annex.map(o=>o.id)]){
   const p=centres[id],angle=(Math.atan2(p.z,p.x)+Math.PI/2+Math.PI*2)%(Math.PI*2),n=Math.round(angle/Math.PI*36)%72;
-  const base=link(p,safe(ringPoint(-Math.PI/2+n*Math.PI/36,29.8)));
+  const base=link(p,safe(ringPoint(-Math.PI/2+n*Math.PI/36,branchRadius)));
   add('artery-'+id,'artery',[arterial.gates[n],...lane(base,1,streets).slice(0,-1).reverse()],.95,id);
   if(id==='gut'||id==='spleen'){
    const portal=add('vein-'+id,'vein',link(p,centres.liver),.8,id,'portal');portal.portal=true;
@@ -81,7 +85,7 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  for(const t of SKIN_TISSUES){
   if(!tissuePresent({layout},t))continue;
   const p=safe(groundPoint(tissueAt({layout},t).point)),angle=(Math.atan2(p.z,p.x)+Math.PI/2+Math.PI*2)%(Math.PI*2),n=Math.round(angle/Math.PI*36)%72;
-  const base=link(p,safe(ringPoint(-Math.PI/2+n*Math.PI/36,29.8)));
+  const base=link(p,safe(ringPoint(-Math.PI/2+n*Math.PI/36,branchRadius)));
   add('artery-skin-'+t.skinWall,'artery',[arterial.gates[n],...lane(base,1,streets).slice(0,-1).reverse()],.65,'skin');
   add('vein-skin-'+t.skinWall,'vein',[...lane(base,-1,streets).slice(0,-1),venous.gates[n]],.58,'skin');
   peripheral.push({id:t.id,site:t.district,point:p});

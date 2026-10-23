@@ -122,7 +122,7 @@ test('plain boulevards form square circuits and yield to the shared town buildin
  const layout=createTileLayout(),plain=compileThemeLayout(layout,'1'),water=compileThemeLayout(layout,'2'),occupied=compileLayout(layout).occupied;
  const ring=plain.vascular.systemic.arterial;
  assert.ok(Math.abs(ring.gates[9].x+ring.gates[9].z)<1e-6,'upper-right corner is square');
- assert.ok(Math.abs(water.vascular.systemic.arterial.gates[9].x-ring.gates[9].x)>4,'canal circuit retains its circle');
+ assert.ok(Math.abs(water.vascular.systemic.arterial.gates[0].z-ring.gates[0].z)>4,'canal circuit retains its circle between the square corners');
  let aligned=0,total=0;
  for(let i=1;i<ring.points.length;i++){const a=ring.points[i-1],b=ring.points[i],length=Math.hypot(b.x-a.x,b.z-a.z);total+=length;if(Math.abs(a.x-b.x)<1e-6||Math.abs(a.z-b.z)<1e-6)aligned+=length;}
  assert.ok(aligned/total>.9,'boulevard mostly follows the rectangular grid');
