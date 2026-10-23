@@ -81,12 +81,12 @@ export function createCityPilot(){
    if(use&&cell.cooldown<=0){const e=target();if(e){const result=pilotCellAction(run,'attack',e.id);if(result.ok){shots++;hitUntil=run.time+.2;say(result.defeated?'병원체 제거':'명중');}else say(result.text);}else if(!previousAction)say('조준점을 맞추고 가까이 접근');}
   }else{
    const goal=objective(),def=pilotTool(inventory.tool),at=distance(p,goal)<=def.range,ready=(pilotCooldowns(run)[def.id]||0)<=run.time;
-   const mobileWork=['cleanup','antigen','signal','scanner'].includes(def.id),acting=use&&at&&!goal.idle&&ready&&(mobileWork||Math.hypot(vx,vz)<.25&&jumpHeight===0)&&world.clear(p,goal);
+   const visible=at&&world.clear(p,goal),mobileWork=['cleanup','antigen','signal','scanner'].includes(def.id),acting=use&&at&&!goal.idle&&ready&&(mobileWork||Math.hypot(vx,vz)<.25&&jumpHeight===0)&&visible;
    if(workKey!==goal.id){progress=0;workKey=goal.id;}
    if(acting){progress+=dt;if(progress>= (def.id==='oxygen'?cityRule(run,'oxygen').params.duration:def.duration)){
     const result=pilotCellAction(run,def.id,goal.id);progress=0;say(result.text);
     if(result.ok){actions++;hitUntil=run.time+.16;if(result.scan){scan=result.scan;scanUntil=run.time+4;}if(result.delivered){deliveries++;if(def.id==='oxygen')oxygen+=result.delivered;}if(def.id==='oxygen'&&!inventory.oxygen)inventory.target=destination();guideTime=-Infinity;}
-   }}else{progress=0;if(use&&!previousAction)say(goal.idle?goal.name:!ready?'도구 재사용 대기':at?'멈춰서 작업':'작업 대상 가까이 이동');}
+   }}else{progress=0;if(use&&!previousAction)say(goal.idle?goal.name:!ready?'도구 재사용 대기':!at?'작업 대상 가까이 이동':!visible?'장애물 옆으로 이동':'멈춰서 작업');}
   }
   previousAction=rawUse;cell.task='직접 조종 · '+pilotTool(inventory.tool).short;
   const goal=objective();if(goal.id!==guideKey||run.time-guideTime>2){guideTime=run.time;guideKey=goal.id;guide=world.route(p,goal,'neutrophil');}
