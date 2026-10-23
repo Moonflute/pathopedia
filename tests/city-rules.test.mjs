@@ -14,7 +14,7 @@ function until(s,condition,seconds=30){for(let i=0;i<seconds*30;i++){step(s);if(
 
 test('legacy maps migrate without losing notes; executable drafts round-trip and undo',()=>{
  const d=createCityInfoDocument();assert.deepEqual(compileRuleGraph(d).config,defaultCityRules());
- const old=structuredClone(d);old.schema=1;old.nodes=old.nodes.filter(n=>!n.rule);old.views=old.views.filter(v=>!isRuleView(v)&&!['innate','type2'].includes(v.id));old.nodes[0].label='사용자 설명';old.views[0].positions.lung.x=145;
+ const old=structuredClone(d);old.schema=1;old.nodes=old.nodes.filter(n=>!n.rule&&!n.id.startsWith('home-')&&n.id!=='homeostasis');old.views=old.views.filter(v=>!isRuleView(v)&&!['innate','type2','homeostasis'].includes(v.id));old.nodes[0].label='사용자 설명';old.views[0].positions.lung.x=145;
  const migrated=parseCityInfo(JSON.stringify(old));assert.equal(migrated.nodes[0].label,'사용자 설명');assert.equal(migrated.views[0].positions.lung.x,145);assert.equal(compileRuleGraph(migrated).ok,true);
  const e=createInfoEditor(migrated);e.change(d=>{setRuleTarget(d,'exec-oxygen','kidney');d.nodes.find(n=>n.rule?.op==='oxygen').rule.params.amount=12;});
  const c=compileRuleGraph(e.document);assert.equal(c.config.entries.oxygen.target,'kidney');assert.equal(c.config.entries.oxygen.params.amount,12);assert.deepEqual(parseCityInfo(JSON.stringify(e.document)),e.document);e.undo();assert.equal(compileRuleGraph(e.document).config.entries.oxygen.target,'organs');

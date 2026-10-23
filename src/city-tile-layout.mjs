@@ -6,6 +6,7 @@ import {vascularRoute,FOOD_ROAD} from './city-map.mjs';
 import {TOWN_PLAN,TOWN_HOUSES,GROWTH_OFFSETS} from './city-town-plan.mjs';
 import {gridPath,streetNetwork,roadNavigator} from './city-grid-path.mjs';
 import {insideCity} from './city-boundary.mjs';
+import {homeSites,homeFootprint} from './city-homeostasis-data.mjs';
 
 // Grid topology is independent of organ state and rendering. A future hex grid
 // supplies its own neighbours, rotation and coordinate conversion here.
@@ -127,6 +128,7 @@ function simplify(points){return points.filter((p,i)=>{if(!i||i===points.length-
 export function compileLayout(layout){
  if(compiled.has(layout))return compiled.get(layout);
  const occupied=new Map();for(const [id,a] of Object.entries(layout.items)){const d=placeable(id);for(const c of occupiedTiles(id,a)){const q=rotateOffset({x:c.col-a.col,z:c.row-a.row},-a.rot),r=d.solid;if(!r||q.x>=r[0]&&q.x<=r[2]&&q.z>=r[1]&&q.z<=r[3])occupied.set(key(c),id);}}
+ for(const o of homeSites(layout)){const f=homeFootprint(o);for(let x=Math.ceil(f.left);x<=Math.floor(f.right);x++)for(let z=Math.ceil(f.top);z<=Math.floor(f.bottom);z++)occupied.set(x+','+z,'home:'+o.id);}
  for(const t of skinTissuesAt(layout).values())for(let x=Math.round(t.x)-1;x<=Math.round(t.x)+1;x++)for(let z=Math.round(t.z)-1;z<=Math.round(t.z)+1;z++)occupied.set(x+','+z,'skin-tissue-'+t.id);
  const connections=[],roadCells=new Map();
  const port=id=>{const a=layout.items[id],q=rotateOffset({x:placeable(id).port[0],z:placeable(id).port[1]},a.rot);return {x:a.col+q.x,z:a.row+q.z};};

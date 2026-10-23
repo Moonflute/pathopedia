@@ -1,0 +1,17 @@
+import {HOME_LOOPS,HOME_PHASES,HOME_ACTIONS,HOME_ORGANS} from './city-homeostasis-data.mjs';
+import {ensureHomeostasis} from './city-homeostasis.mjs';
+const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const button=(action,id,label,extra='')=>`<button type="button" data-city-action="${action}" data-city-id="${id}" ${extra}>${label}</button>`;
+const actions={glucose:['meal','fast','exercise','rest'],water:['drink','dehydrate','salt','neutral'],respiration:['exercise','rest'],temperature:['heat','cold','neutral'],digestion:['meal','fast'],thyroid:[],calcium:['lowcalcium','calcium'],recycling:['aging']};
+const names={heart:'심장',lung:'폐',gut:'장',kidney:'신장',marrow:'골수',...Object.fromEntries(HOME_ORGANS.map(o=>[o.id,o.name]))};
+export function homeostasisPanel(s,selected='glucose'){
+ ensureHomeostasis(s);const loop=HOME_LOOPS.find(l=>l.id===selected)||HOME_LOOPS[0];
+ return `<div class="cc-homeostasis"><nav class="cc-home-loops" aria-label="항상성 과정">${HOME_LOOPS.map(l=>button('home-loop',l.id,l.name,`aria-pressed="${loop.id===l.id}"`)).join('')}</nav><div class="cc-home-actions">${actions[loop.id].map(id=>button('home-action',id,HOME_ACTIONS[id])).join('')}${loop.id==='thyroid'?button('home-function','thyroid','갑상선 가동 40% ↔ 100%'):''}</div><div data-city-home-readout></div><small class="cc-home-caption">시간·수치: 교육용 압축 모델</small></div>`;
+}
+export function homeostasisReadout(s,selected='glucose'){
+ const h=ensureHomeostasis(s);if(!h)return '';const l=HOME_LOOPS.find(l=>l.id===selected)||HOME_LOOPS[0],q=h.loops[l.id];
+ const sets={glucose:[['혈당',h.glucose,0],['간 저장',h.glycogen,0],['지방 저장',h.fat,0],['인슐린',h.effectors.insulin,2],['글루카곤',h.effectors.glucagon,2]],water:[['수분',h.water,1,'%'],['Na',h.sodium,1],['K',h.potassium,2],['소변량',h.urine*100,1],['농축',h.urineConcentration,1,'×'],['혈압 지수',h.pressure,0]],respiration:[['CO₂',h.co2,1],['pH',h.ph,2],['환기',h.ventilation,2,'×'],['심박',h.pulse,0],['신장 완충',h.bicarbonate,1]],temperature:[['체온',h.temperature,2,'°'],['기온',h.ambient,0,'°'],['땀',h.sweat,2],['떨림',h.shiver,2],['피부 혈류',h.skinFlow,1,'×']],digestion:[['소화 대기',h.digestive.meal,0],['담즙 저장',h.digestive.bileStore,0],['효소 가동',h.digestive.enzymes*100,0,'%'],['흡수 누적',h.digestive.absorbed,0],['요소',h.urea,1]],thyroid:[['TSH',h.effectors.tsh,2],['갑상선호르몬',h.thyroid,2],['대사',h.metabolism,2,'×'],['가동',h.organs.thyroid.function*100,0,'%']],calcium:[['혈중 칼슘',h.calcium,2],['PTH',h.effectors.pth,2],['뼈 저장',h.boneMineral,1]],recycling:[['회수',h.recycling.retired,0],['간 처리',h.recycling.processed,0],['철 재고',h.iron,0],['조혈 시작',h.recycling.born,0]]};
+ const phases=['sensing','signaling','acting','recovering'],active=phases.indexOf(q.phase);
+ const events=h.events.filter(e=>e.loop===l.id).slice(0,2);
+ return `<div class="cc-home-state"><strong>${HOME_PHASES[q.phase]}</strong><span>회복 ${q.cycles}회</span></div><ol class="cc-home-steps" aria-label="현재 ${HOME_PHASES[q.phase]}">${phases.map((p,i)=>`<li class="${i===active?'is-current':i<active?'is-done':''}" ${i===active?'aria-current="step"':''}>${HOME_PHASES[p]}</li>`).join('')}</ol><dl class="cc-home-values">${sets[l.id].map(([name,n,d,unit=''])=>`<div><dt>${name}</dt><dd>${n.toFixed(d)}${unit}</dd></div>`).join('')}</dl><div class="cc-home-sites">${l.sites.map(id=>button('home-focus',id,names[id])).join('')}</div><div class="cc-home-events" aria-live="off">${events.map(e=>`<span>${Math.floor(e.at)}s · ${escape(e.text)}</span>`).join('')}</div>`;
+}

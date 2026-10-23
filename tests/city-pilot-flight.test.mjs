@@ -7,6 +7,7 @@ import {createTileLayout,applyTileLayout} from '../src/city-tile-layout.mjs';
 import {createCityPilot} from '../src/city-pilot.mjs';
 import {pilotWorld} from '../src/city-pilot-world.mjs';
 import {pilotInventory,setPilotPose} from '../src/city-pilot-state.mjs';
+import {CITY_RADIUS} from '../src/city-boundary.mjs';
 import {groundCoordinate,groundPoint} from '../src/city-three-layout.mjs';
 
 function scene(boxes=[]){const root=new Group();for(const [x,y,z,w,h,d] of boxes){const m=new Mesh(new BoxGeometry(w,h,d),new MeshBasicMaterial());m.position.set(x,y,z);root.add(m);}return createPilotSurface(root);}
@@ -20,7 +21,7 @@ test('surface capsule slides beside actual walls, passes low paving, stops below
  const curb={x:-5,y:0,z:0};world.moveBody(curb,{x:2,y:-.05,z:0});assert.ok(curb.x>-3.1,'small curbs do not pin the feet');
  const up={x:0,y:0,z:0};const ceiling=world.moveBody(up,{x:0,y:5,z:0});assert.ok(ceiling.ceiling);assert.ok(up.y<2.3,'cannot tunnel through a ceiling');
  const roof={x:6,y:4,z:0};assert.ok(world.moveBody(roof,{x:0,y:-5,z:0}).grounded);assert.ok(roof.y>1.7&&roof.y<2.1);
- const rim={x:42.5,y:0,z:0};world.moveBody(rim,{x:4,y:-.05,z:2});assert.ok(Math.hypot(rim.x,rim.z)<42.7,'step assist cannot escape the city boundary');
+ const rim={x:CITY_RADIUS-1.5,y:0,z:0};world.moveBody(rim,{x:4,y:-.05,z:2});assert.ok(Math.hypot(rim.x,rim.z)<CITY_RADIUS-1.3,'step assist cannot escape the city boundary');
  assert.equal(world.clear({x:1,y:1,z:0},{x:3,y:1,z:0}),false);assert.equal(world.clear({x:1,y:4,z:0},{x:3,y:4,z:0}),true);
 });
 

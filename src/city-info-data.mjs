@@ -1,3 +1,4 @@
+import {HOME_LOOPS} from './city-homeostasis-data.mjs';
 import {setRuleGraph} from './city-info-rules.mjs';
 // This is a map of the implemented 3D game, not a complete model of human physiology.
 // Keep each explanation tied to its implementing function; don't mix planned features in.
@@ -83,8 +84,20 @@ const view=(id,name,caption,rows,links)=>({id,name,caption,
   positions:Object.fromEntries(rows.flatMap((row,y)=>row.flatMap((id,x)=>id?[[id,{x:60+x*310,y:70+y*178}]]:[]))),
   edges:links.map(([from,to,label,kind='supply'],i)=>({id:id+'-'+i,from,to,label,kind}))
 });
+const homeDetails={
+ glucose:['췌장 → 간·근육·지방','식후 인슐린이 저장·소비를 높이고 공복의 글루카곤이 간 저장분을 방출한다.'],
+ water:['뇌·부신 → 신장','탈수·Na 농도를 감지한 ADH와 알도스테론이 도착하면 소변량·농축·Na/K 처리가 변한다.'],
+ respiration:['활동 → CO₂ → 환기·완충','운동은 CO₂·산소 요구량을 높인다. 호흡 신호와 느린 신장 완충이 pH를 되돌린다.'],
+ temperature:['기온 → 감지 → 땀·떨림','더위는 피부 혈류·발한을, 추위는 혈류 감소·떨림을 유도하며 물과 에너지를 소비한다.'],
+ digestion:['입항 → 효소·담즙 → 간문맥','식재료는 장에 하역된다. 췌장 효소·간 담즙은 별도 관을 지나고 흡수 영양은 간문맥으로 간에 도착한다.'],
+ thyroid:['뇌하수체 TSH ↔ 갑상선','갑상선 가동 저하로 호르몬이 줄면 TSH가 올라간다. 대사율은 산소·에너지·열 생산에 영향을 준다.'],
+ calcium:['부갑상선 PTH → 뼈·신장','혈중 칼슘 저하에 PTH가 반응해 뼈 저장분과 신장 보존을 사용한다. 뼈 저장량은 실제로 감소한다.'],
+ recycling:['비장 → 간 → 골수','노화 적혈구가 비장에 도착해야 제거된다. 간에서 회수한 철이 골수까지 도착하고 영양·생산칸이 확보돼야 새 적혈구를 만든다.']
+};
+for(const l of HOME_LOOPS)nodes.push(n('home-'+l.id,l.name,'rule',...homeDetails[l.id],'city-homeostasis.mjs · tickHomeostasis / city-engine.mjs · updateHomeOxygen'));
+nodes.push(n('homeostasis','항상성 조절','rule','감지 → 신호 → 반응 → 회복','8개 되먹임 과정. 운영 패널에서 자극을 선택하고 장기·이동 중 신호·저장량·회복 단계를 관찰한다. 시간과 수치는 교육용 압축 모델이다.','city-homeostasis.mjs · tickHomeostasis'));
 const views=[
-  view('overview','전체 구조','여섯 장기 구역이 공급·방어·정비로 연결된다.',[
+  view('overview','전체 구조','중심 장기와 바깥 조직이 순환·면역·항상성으로 연결된다.',[
     ['lung','heart','kidney'],['gut','organs','lymph'],['marrow','fibroblast','pathogens']
   ],[
     ['lung','heart','적혈구·폐순환'],['heart','organs','산소·물류 순환'],['gut','organs','영양 배송'],['marrow','fibroblast','충원'],['fibroblast','organs','건설·복구'],['lymph','organs','항체·지원 신호','defend'],['kidney','organs','정화로 가동 유지','defend'],['pathogens','organs','정착·손상','damage'],['gut','marrow','충원 물자']
@@ -135,6 +148,7 @@ const views=[
     ['food','marrow','충원 비용'],['marrow','roster','생산칸 → 출동'],['roster','lifecycle','수명 ON일 때','signal'],['lifecycle','marrow','지역 영양으로 보충'],['orders','roster','역할·목적지 우선순위','signal'],['plots','sensor','감지 투자'],['plots','organs','장벽·보급·생산 투자','signal'],['sensor','health','경고 → 현장 대응','signal'],['weather','health','공급·소모·충원 변화','signal'],['isolation','organs','가동률 감소','damage'],['layout','organs','출입구·도로 재연결','signal'],['organs','health','건강·시나리오 평가','signal']
   ])
 ];
+views.push(view('homeostasis','항상성','감지 → 신호 도착 → 반응 → 회복',[['home-glucose','home-water','home-respiration'],['home-temperature','homeostasis','home-digestion'],['home-thyroid','home-calcium','home-recycling']],HOME_LOOPS.map(l=>['homeostasis','home-'+l.id,homeDetails[l.id][0],'signal'])));
 export function createCityInfoDocument(){
-  return setRuleGraph({schema:3,basis:'Cell City 3D · 현재 구현',nodes:structuredClone(nodes),views:structuredClone(views)});
+  return setRuleGraph({schema:4,basis:'Cell City 3D · 현재 구현',nodes:structuredClone(nodes),views:structuredClone(views)});
 }

@@ -4,6 +4,7 @@ import {CITY_CAPS} from './city-world.mjs';
 import {gridPath,roadNavigator} from './city-grid-path.mjs';
 import {insideCity,rimPoint} from './city-boundary.mjs';
 import {SKIN_TISSUES} from './city-frontier-data.mjs';
+import {homeSites} from './city-homeostasis-data.mjs';
 export const SYSTEMIC_RADII=Object.freeze({artery:31,vein:28.6});
 
 // Two directed trunks share each corridor: outward arteries and returning veins.
@@ -39,7 +40,8 @@ function lane(points,side,network){
 }
 export function compileVascularLayout(layout,shape='round',obstacles=null){
  if(!layout)return null;let variants=cache.get(layout);if(!variants){variants=new Map();cache.set(layout,variants);}const variant=obstacles||shape;if(variants.has(variant))return variants.get(variant);
- const network=compileLayout(layout),centres=Object.fromEntries(network.districts.map(d=>[d.id,groundPoint(d)])),heart=centres.heart;
+ const network=compileLayout(layout),centres=Object.fromEntries(network.districts.map(d=>[d.id,groundPoint(d)])),heart=centres.heart,annex=homeSites(layout);
+ for(const o of annex)centres[o.id]={x:o.x,z:o.z};
  const square=shape==='square',occupied=obstacles?{has:k=>network.occupied.has(k)||obstacles.has(k)}:network.occupied,streets={occupied};
  const ringPoint=(angle,radius)=>{const p=rimPoint(angle,radius);if(!square)return p;const scale=radius*.94/Math.max(Math.abs(p.x),Math.abs(p.z));return {x:p.x*scale,z:p.z*scale};};
  const vessels=[],beds=[],lines=[];
@@ -62,11 +64,13 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  const stem=link(heart,safe(ringPoint(0,29.8)));
  add('aorta','artery',[...lane(stem,1,streets).slice(0,-1),arterial.gates[18]],1.2,'body');
  add('vena-cava','vein',[venous.gates[18],...lane(stem,-1,streets).slice(0,-1).reverse()],1.2,'body');
- for(const id of ['gut','kidney','marrow','lymph']){
+ for(const id of ['gut','kidney','marrow','lymph',...annex.map(o=>o.id)]){
   const p=centres[id],angle=(Math.atan2(p.z,p.x)+Math.PI/2+Math.PI*2)%(Math.PI*2),n=Math.round(angle/Math.PI*36)%72;
   const base=link(p,safe(ringPoint(-Math.PI/2+n*Math.PI/36,29.8)));
   add('artery-'+id,'artery',[arterial.gates[n],...lane(base,1,streets).slice(0,-1).reverse()],.95,id);
-  add('vein-'+id,'vein',[...lane(base,-1,streets).slice(0,-1),venous.gates[n]],.95,id);
+  if(id==='gut'||id==='spleen'){
+   const portal=add('vein-'+id,'vein',link(p,centres.liver),.8,id,'portal');portal.portal=true;
+  }else add('vein-'+id,'vein',[...lane(base,-1,streets).slice(0,-1),venous.gates[n]],.95,id);
  }
  const systemic=new Set();for(const v of vessels)for(const p of v.points)systemic.add(key(p));
  const lung=centres.lung,pulmonary=gridPath({col:Math.round(heart.x),row:Math.round(heart.z)},{col:Math.round(lung.x),row:Math.round(lung.z)},allowed,p=>systemic.has(p.col+','+p.row)?8:1,12000);
@@ -84,6 +88,7 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  }
  for(const [id,centre] of Object.entries(centres)){
   const branches=[];
+  if(annex.some(o=>o.id===id)){beds.push({id,centre,branches:[],width:.62});continue;}
   for(const role of ['oxygen','dock'])for(let slot=0;slot<(role==='oxygen'?CITY_CAPS.workSlots:1+CITY_CAPS.extensions);slot++){
    const owner=stationOwner(layout,id,role,slot),bay=workStationPoints(id,role,slot,owner!==id?placeable(owner).origin:null),stand=transformPoint(layout,owner,bay.stand);
    const points=simplify([centre,...walkingRoute(layout,groundCoordinate(centre),[groundCoordinate(stand)]).map(groundPoint)]);
@@ -97,7 +102,8 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  for(const v of vessels){
   if(v.id==='systemic-arterial-ring'||v.id==='systemic-venous-ring'){const ring=v.kind==='artery'?arterial:venous;v.junctions=ring.gates.map(point=>({point,id:gateId(v.kind,point)}));continue;}
   const first=v.points[0],last=v.points.at(-1),out=v.kind==='artery';
-  if(v.circuit==='pulmonary')v.junctions=[{point:first,id:'exchange:'+(out?'heart':'lung')},{point:last,id:'exchange:'+(out?'lung':'heart')}];
+  if(v.portal)v.junctions=[{point:first,id:'exchange:'+v.site},{point:last,id:'exchange:liver'}];
+  else if(v.circuit==='pulmonary')v.junctions=[{point:first,id:'exchange:'+(out?'heart':'lung')},{point:last,id:'exchange:'+(out?'lung':'heart')}];
   else if(v.id==='aorta'||v.id==='vena-cava')v.junctions=[{point:out?first:last,id:'exchange:heart'},{point:out?last:first,id:gateId(v.kind,out?last:first)}];
   else {const id=v.site==='skin'?'skin-'+v.id.split('-').at(-1):v.site;v.junctions=[{point:out?first:last,id:gateId(v.kind,out?first:last)},{point:out?last:first,id:'exchange:'+id}];}
  }

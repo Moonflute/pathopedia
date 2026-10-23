@@ -1,6 +1,7 @@
 import {compileLayout,siteAt} from './city-tile-layout.mjs';
 import {compileThemeLayout} from './city-theme-layout.mjs';
-import {insideCity} from './city-boundary.mjs';
+import {combinePilotSurfaces} from './city-pilot-physics.mjs';
+import {insideCity,CITY_RADIUS} from './city-boundary.mjs';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 export function segmentDistance(p,a,b){const x=b.x-a.x,z=b.z-a.z,l=x*x+z*z,q=l?Math.max(0,Math.min(1,((p.x-a.x)*x+(p.z-a.z)*z)/l)):0;return Math.hypot(p.x-a.x-x*q,p.z-a.z-z*q);}
@@ -14,7 +15,7 @@ export function pilotWorld(layout,theme){
  }
  const corridors=[...town.vascular.vessels,...network.access,...network.streets.runs].flatMap(v=>v.points.slice(1).map((b,i)=>({a:v.points[i],b,r:Math.max(.5,(v.width||.9)/2)}))),lanes=new Set();
  if(theme==='1')for(const v of corridors)for(let x=Math.ceil((Math.min(v.a.x,v.b.x)-v.r)*4);x<=Math.floor((Math.max(v.a.x,v.b.x)+v.r)*4);x++)for(let z=Math.ceil((Math.min(v.a.z,v.b.z)-v.r)*4);z<=Math.floor((Math.max(v.a.z,v.b.z)+v.r)*4);z++)if(segmentDistance({x:x/4,z:z/4},v.a,v.b)<v.r)lanes.add(x+','+z);
- let surface=null,revision=0;
+ let surface=null,baseSurface=null,annexSurface=null,revision=0;
  const solid=p=>surface?surface.blocked(p):network.occupied.has(Math.round(p.x)+','+Math.round(p.z))||decor.has(Math.floor(p.x*2)+','+Math.floor(p.z*2));
  function canStand(p,kind='neutrophil'){
   if(!p||!Number.isFinite(p.x)||!Number.isFinite(p.z)||!insideCity(p.x,p.z,1.3))return false;
@@ -30,7 +31,7 @@ export function pilotWorld(layout,theme){
   const steps=Math.max(1,Math.ceil(Math.hypot(delta.x,delta.y,delta.z)/.07));let grounded=false,ceiling=false;
   for(let i=0;i<steps;i++){
    const before={...p};p.x+=delta.x/steps;p.z+=delta.z/steps;p.y+=delta.y/steps;
-   if(!insideCity(p.x,p.z,1.3)){const radius=Math.hypot(before.x,before.z),next=Math.hypot(p.x,p.z),limit=Math.max(radius,42.65);p.x*=Math.min(1,limit/next);p.z*=Math.min(1,limit/next);}
+   if(!insideCity(p.x,p.z,1.3)){const radius=Math.hypot(before.x,before.z),next=Math.hypot(p.x,p.z),limit=Math.max(radius,(CITY_RADIUS-1.35));p.x*=Math.min(1,limit/next);p.z*=Math.min(1,limit/next);}
    if(surface){
     for(let n=0;n<4;n++){const hit=surface.resolve(p,height);if(!hit)break;if(hit.y>.35&&delta.y<=0)grounded=true;if(hit.y<-.35&&delta.y>0)ceiling=true;}
     const wanted={x:before.x+delta.x/steps,z:before.z+delta.z/steps};
@@ -41,7 +42,7 @@ export function pilotWorld(layout,theme){
     }
    }
    else if(p.y<3&&!canStand(p)){const x={x:p.x,z:before.z};if(canStand(x)){p.z=before.z;}else{p.x=before.x;if(!canStand(p))p.z=before.z;}if(before.y>=3){p.y=3;grounded=true;}}
-   if(!insideCity(p.x,p.z,1.3)){const scale=42.65/Math.hypot(p.x,p.z);p.x*=scale;p.z*=scale;}
+   if(!insideCity(p.x,p.z,1.3)){const scale=(CITY_RADIUS-1.35)/Math.hypot(p.x,p.z);p.x*=scale;p.z*=scale;}
    if(p.y<=.001){p.y=0;grounded=true;}if(p.y>=14){p.y=14;ceiling=true;}
   }
   return {grounded,ceiling};
@@ -65,5 +66,5 @@ export function pilotWorld(layout,theme){
   // Keep corner waypoints; the same collision map is used by the input mover.
   return points.filter((p,i)=>!i||i===points.length-1||(p.x-points[i-1].x)*(points[i+1].z-p.z)!==(p.z-points[i-1].z)*(points[i+1].x-p.x));
  }
- const result={canStand,safe,move,moveBody,fitsBody,clear,route,stations,town,get revision(){return revision;},setSurface(value){surface=value;revision++;passable.clear();}};variants.set(theme,result);return result;
+ const result={canStand,safe,move,moveBody,fitsBody,clear,route,stations,town,get revision(){return revision;},setSurface(value){baseSurface=value;surface=combinePilotSurfaces(baseSurface,annexSurface);revision++;passable.clear();},setAnnexSurface(value){annexSurface=value;surface=combinePilotSurfaces(baseSurface,annexSurface);revision++;passable.clear();}};variants.set(theme,result);return result;
 }

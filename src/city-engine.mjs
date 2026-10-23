@@ -19,6 +19,9 @@ import {pilotedCell,setPilotedCell,pilotInventory,validatePilotInventory,pilotPo
 import {pilotWork} from './city-pilot-work.mjs';
 import {pilotRepulse,pilotPull,pilotStaggered} from './city-pilot-gadgets.mjs';
 import {pilotWorld} from './city-pilot-world.mjs';
+import {ensureHomeostasis,homeostasisCommand,tickHomeostasis,homeFoodFactor,homeMealArrival,homeDigestion,homeostasisOutput,recycleHomeRbc,validateHomeostasis} from './city-homeostasis.mjs';
+import {HOME_ORGANS,homeOrgan} from './city-homeostasis-data.mjs';
+import {homePoint,homeTransferPath} from './city-homeostasis-paths.mjs';
 
 export const SAVE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
@@ -31,7 +34,7 @@ export const upgradeCost=(s,id)=>22+s.districts[id].level*16;
 export const counts=(s,kind)=>s.cells.filter(c=>c.kind===kind).length;
 export const output=(s,id)=>{
   const d=s.districts[id];
-  return clamp(d.hp/100,.12,1)*clamp(d.oxygen/45,.25,1)*(d.food>0?1:.3)*(s.biology?.sites[id].isolated?.65:1)*clamp((s.physiology?.blood.perfusion??100)/100,.25,1);
+  return clamp(d.hp/100,.12,1)*clamp(d.oxygen/45,.25,1)*(d.food>0?1:.3)*(s.biology?.sites[id].isolated?.65:1)*clamp((s.physiology?.blood.perfusion??100)/100,.25,1)*homeostasisOutput(s,id);
 };
 function log(s,text){s.log.unshift({time:Math.floor(s.time),text});s.log.length=Math.min(s.log.length,s.specialists?24:6);}
 const frontierAPI={route,move,log,shipment,output,damage,cell,seed:seedInfection};
@@ -134,6 +137,7 @@ function shipment(s,kind,to,amount,extra={}){
 }
 export function command(s,action,id,data){
   if(s.status!=='running'&&action!=='continue')return {ok:false,text:'도시를 다시 시작해 주세요.'};
+  const home=homeostasisCommand(s,action,id);if(home)return home;
   const immune=immuneCommand(s,action,id,frontierAPI);if(immune)return immune;
   const bio=biologyCommand(s,action,id,data,frontierAPI);if(bio)return bio;
   if(s.specialists&&s.shipments.length>=shipmentLimit(s)&&['upgrade','repair','tower','recruit'].includes(action))return {ok:false,text:'물류 대기열 포화'};
@@ -186,7 +190,7 @@ function startWave(s){
 function delivery(s,sh){
   if(deliverFrontier(s,sh))return;
   const d=s.districts[sh.to];
-  if(sh.kind==='raw')s.rawFood=Math.min(80,s.rawFood+sh.amount);
+  if(sh.kind==='raw'){s.rawFood=Math.min(80,s.rawFood+sh.amount);homeMealArrival(s,sh.amount,sh.homeMeal||0);}
   if(sh.kind==='food')d.food=Math.min(40+supportCount(s,sh.to,'supply')*8,d.food+sh.amount);
   if(sh.kind==='drug'){d.ammo[sh.drugId]=Math.min(200,d.ammo[sh.drugId]+sh.amount);if(s.biology)s.biology.stats.medicine+=sh.amount;}
   if(sh.kind==='materials'&&d.building)d.building.remaining=d.building.duration;
@@ -364,7 +368,20 @@ function cellAlert(s,c){
  if(signal&&(c.alertKind!==signal||c.alertUntil==null||s.time>=c.alertUntil+2)){c.alertKind=signal;c.alertUntil=s.time+3.2;}
  if(!signal&&s.time>=(c.alertUntil||0))c.alertKind=null;
 }
+function updateHomeOxygen(s,c,dt,speed){
+ const h=s.homeostasis;if(!h)return false;
+ if(c.age>=c.life&&!c.recycling){releaseWorkplace(c);c.activity=null;c.dock=null;c.recycling=true;c.homeSite='spleen';c.homeUntil=0;route(c,[groundCoordinate(homePoint(s.layout,'spleen'))]);}
+ if(!c.homeSite)return false;
+ c.task=c.recycling?'비장으로 이동 · 노화 적혈구':homeOrgan(c.homeSite).name+' 산소 운반';
+ if(!move(c,speed*1.1,dt))return true;
+ if(!c.homeUntil)c.homeUntil=s.time+1.2;
+ c.task=c.recycling?'비장 · 적혈구 회수':'모세혈관 · 산소 교환';if(s.time<c.homeUntil)return true;
+ if(c.recycling){recycleHomeRbc(s);s.stats.retired++;c.recycled=true;return true;}
+ h.organs[c.homeSite].oxygen=clamp(h.organs[c.homeSite].oxygen+c.cargo);s.stats.oxygen+=c.cargo;
+ c.homeSite=null;c.homeUntil=0;c.cargo=0;c.co2Cargo=1;c.task='CO₂ 회수 · 폐로 복귀';route(c,[point(s,'lung')]);return true;
+}
 function updateOxygen(s,c,dt,speed){
+  if(updateHomeOxygen(s,c,dt,speed))return;
   const rule=cityRule(s,'oxygen');
   if(!c.cargo&&!ruleReady(s,'oxygen','lung')){releaseWorkplace(c);c.activity=null;c.dock=null;c.task='산소 운반 대기';c.waitReason=rule.enabled?'규칙의 최소 산소 미달':'산소 운반 규칙 꺼짐';return;}
   if(!c.dock&&!move(c,speed*1.1,dt))return;
@@ -378,7 +395,12 @@ function updateOxygen(s,c,dt,speed){
   else{
     const inbound={};for(const other of s.cells)if(other.kind==='rbc'&&other.cargo)inbound[other.target]=(inbound[other.target]||0)+1;
     const best=cityDistricts(s).filter(d=>d.id!=='lung'&&ruleTarget(s,'oxygen',d.id)).sort((a,b)=>s.districts[a.id].oxygen+(inbound[a.id]||0)*30-s.districts[b.id].oxygen-(inbound[b.id]||0)*30)[0];
-    c.target=best.id;c.cargo=rule.params.amount*(1+(s.districts.lung.level-1)*.25)*output(s,'lung')*(s.weather.id==='dry'?.55:1);c.task=best.short+' 산소 배송';
+    c.target=best.id;c.cargo=rule.params.amount*(1+(s.districts.lung.level-1)*.25)*output(s,'lung')*(s.weather.id==='dry'?.55:1);c.co2Cargo=0;c.task=best.short+' 산소 배송';
+    if(s.homeostasis&&c.id%3===0){
+     const incoming=Object.fromEntries(HOME_ORGANS.map(o=>[o.id,s.cells.filter(a=>a.homeSite===o.id&&!a.recycling).length]));
+     const dest=[...HOME_ORGANS].sort((a,b)=>s.homeostasis.organs[a.id].oxygen+incoming[a.id]*35-s.homeostasis.organs[b.id].oxygen-incoming[b.id]*35)[0];
+     if(s.homeostasis.organs[dest.id].oxygen<88){c.homeSite=dest.id;c.homeUntil=0;c.target=dest.host;releaseWorkplace(c);c.activity=null;c.dock=null;c.perfusionId=null;route(c,[groundCoordinate(homePoint(s.layout,dest.id))]);return;}
+    }
     const peripheral=movementVessels.get(c)&&c.id%4===0?compileThemeLayout(s.layout,movementVessels.get(c)).vascular.peripheral.filter(p=>p.site===c.target):[],bed=peripheral[c.id%Math.max(1,peripheral.length)];
     c.perfusionId=bed?.id??null;route(c,bed?[groundCoordinate(bed.point)]:[point(s,'lung'),...vascular(s,'lung',c.target)]);
   }
@@ -438,7 +460,7 @@ function wander(s,c,dt){
 export function tickCity(s,dt,data,canalTransport=false){
   const transport=canalTransport===true?'2':canalTransport==='1'||canalTransport==='2'?canalTransport:false;
   const previousTransport=s.transportTheme;
-  if(s.specialists){ensureHostResponse(s);s.transportTheme=transport||s.transportTheme||'2';}
+  if(s.specialists){ensureHostResponse(s);ensureHomeostasis(s);s.transportTheme=transport||s.transportTheme||'2';}
   if(s.layout)for(const actor of [...s.cells,...s.shipments,...s.enemies]){
     const vessel=transport&&(actor.kind==='rbc'||s.shipments.includes(actor)&&actor.kind!=='raw')?transport:false;
     const restoredVessel=actor.roadPathVersion===2&&previousTransport===transport?transport:false;
@@ -467,16 +489,18 @@ export function tickCity(s,dt,data,canalTransport=false){
   if(s.frontier)tickFrontier(s,dt,frontierAPI);
   tickBiology(s,dt,data,frontierAPI);
   tickImmunity(s,dt,frontierAPI);
+  tickHomeostasis(s,dt,{pathLength:p=>homeTransferPath(s.layout,s.transportTheme,p.from,p.to,p.kind).length,recruit(){if(s.recruits.length>=6||s.cells.length+s.recruits.length>=populationLimit(s)||counts(s,'rbc')+s.recruits.filter(r=>r.kind==='rbc').length>=cellCap(s,'rbc'))return false;s.recruits.push({id:++s.serial,kind:'rbc',remaining:16,automatic:true});return true;}});
   const fever=s.weather.id==='fever',speed=travelScale(s)*(85+(s.districts.heart.level-1)*19)*output(s,'heart')*clamp(1-s.waste/180,.4,1);
-  s.intakeClock-=dt;if(s.intakeClock<=0){if(!s.specialists||s.shipments.length<shipmentLimit(s))s.shipments.push({id:++s.serial,kind:'raw',from:'outside',to:'gut',amount:16+s.districts.gut.level*6,...intakeRoute(s)[0],path:intakeRoute(s).map(p=>({...p})),step:0,...(s.layout?{harbourAt:s.time,harbourUntil:s.time+5}:{})});s.intakeClock=8;}
-  const processed=ruleReady(s,'food','gut')?Math.min(s.rawFood,dt*cityRule(s,'food').params.rate*(1+.35*(s.districts.gut.level-1))*output(s,'gut')*(s.frontier?.gut.quarantine?.55:1)):0;
+  s.intakeClock-=dt;if(s.intakeClock<=0&&!(s.homeostasis?.fastUntil>s.time)){if(!s.specialists||s.shipments.length<shipmentLimit(s)){const homeMeal=s.homeostasis?.pendingMeal||0;s.shipments.push({id:++s.serial,kind:'raw',from:'outside',to:'gut',amount:16+s.districts.gut.level*6+homeMeal,homeMeal,...intakeRoute(s)[0],path:intakeRoute(s).map(p=>({...p})),step:0,...(s.layout?{harbourAt:s.time,harbourUntil:s.time+5}:{})});if(s.homeostasis)s.homeostasis.pendingMeal=0;}s.intakeClock=8;}
+  const processed=ruleReady(s,'food','gut')?Math.min(s.rawFood,dt*cityRule(s,'food').params.rate*(1+.35*(s.districts.gut.level-1))*output(s,'gut')*(s.frontier?.gut.quarantine?.55:1)*homeFoodFactor(s)):0;
   s.rawFood-=processed;s.resources.food=Math.min(400,s.resources.food+processed);
+  homeDigestion(s,processed,dt);
   s.waste=clamp(s.waste+dt*(.24+(fever?.2:0)+s.enemies.length*.012-.36*(1+.45*(s.districts.kidney.level-1))*output(s,'kidney')));
   s.inflammation=clamp(s.inflammation-dt*.12);
   s.barrier=clamp(s.barrier+dt*.35*s.districts.lung.level);
   for(const def of cityDistricts(s)){
     const d=s.districts[def.id];
-    d.oxygen=clamp(d.oxygen+dt*(def.id==='lung'?10:-1.35-(fever?.55:0)));
+    d.oxygen=clamp(d.oxygen+dt*(def.id==='lung'?10*(s.homeostasis?.ventilation||1):(-1.35-(fever?.55:0))*(s.homeostasis?.metabolism||1)*(1+(s.homeostasis?.exercise||0)*.22)));
     d.food=Math.max(0,d.food-dt*.12);
     const stress=(d.oxygen<15?.7:0)+(d.food<=0?.25:0)+(s.waste>65?.35:0)+(s.inflammation>65?.3:0);
     d.hp=clamp(d.hp+dt*(stress?-stress:d.hp>0?.025:0));
@@ -499,10 +523,10 @@ export function tickCity(s,dt,data,canalTransport=false){
   s.shipments=s.shipments.filter(sh=>!updateShipment(s,sh,dt,speed));
   for(const r of [...s.recruits])if(r.remaining!=null&&ruleReady(s,'recruit','marrow')){r.remaining-=dt*output(s,'marrow')*cityRule(s,'recruit').params.speed;if(r.remaining<=0){const lymphoid=s.immunity&&['helperT','cd8','treg','bcell'].includes(r.kind),spawn=lymphoid?point(s,'lymph'):s.specialists?workStation('marrow','spawn',r.bay||0,s.layout).stand:{x:279,y:583};const born=cell(s,r.kind,spawn.x,spawn.y);born.bornAt=s.time;if(r.kind==='mast')born.mastPrecursor=true;s.stats.born++;s.recruits=s.recruits.filter(x=>x.id!==r.id);log(s,CELL_JOBS[r.kind].name+(lymphoid?' · 성숙 세포 합류':' · 골수 계열 합류'));}}
   if(s.lifecycle){
-    for(const c of s.cells)c.age+=dt;
-    const retired=s.cells.filter(c=>c.age>=c.life);
+    for(const c of s.cells)c.age=s.homeostasis&&c.kind==='rbc'?Math.min(c.life,c.age+dt):c.age+dt;
+    const retired=s.cells.filter(c=>c.age>=c.life&&!(s.homeostasis&&c.kind==='rbc'));
     for(const c of retired){const kind=s.immunity?({plasma:'bcell',macrophage:'monocyte'}[c.kind]||c.kind):c.kind;s.turnover[kind]=(s.turnover[kind]||0)+1;s.stats.retired++;}
-    if(retired.length){s.cells=s.cells.filter(c=>c.age<c.life);log(s,retired.length+'개 세포 수명 종료 · 골수 보충 대기');}
+    if(retired.length){s.cells=s.cells.filter(c=>c.age<c.life||s.homeostasis&&c.kind==='rbc');log(s,retired.length+'개 세포 수명 종료 · 골수 보충 대기');}
     if(s.recruits.length<3)for(const [kind,count] of Object.entries(s.turnover))if(count>0){
       if(counts(s,kind)+s.recruits.filter(r=>r.kind===kind).length>=cellCap(s,kind)){s.turnover[kind]=0;continue;}
       if(s.specialists&&s.cells.length+s.recruits.length>=populationLimit(s))break;
@@ -525,6 +549,7 @@ export function tickCity(s,dt,data,canalTransport=false){
     if(e.hp<=0&&!e.dead)damage(s,e,0,e,'#c6df9c');
   }
   for(const c of s.cells){updateCell(s,c,dt,speed,data);cellAlert(s,c);}
+  if(s.homeostasis)s.cells=s.cells.filter(c=>!c.recycled);
   if(s.biology){for(const c of s.cells.filter(c=>c.lost)){s.biology.stats.losses++;s.debris.push({id:++s.serial,x:c.x,y:c.y,recordId:null,cellKind:c.kind});log(s,CELL_JOBS[c.kind].name+' · 사멸');}s.cells=s.cells.filter(c=>!c.lost);}
   s.enemies=s.enemies.filter(e=>!e.dead);
   // Keep dead epithelial remains available for cleanup even after a large battle.
@@ -601,7 +626,8 @@ export function restoreCity(raw){
     // Old saves rejoin the streets once; current routes resume at their exact step.
     if(s.layout)for(const a of [...s.cells,...s.shipments,...s.enemies])if(a.roadPathVersion===1&&a.path)navigatedPaths.set(a,a.path);
     if(s.specialists&&!s.immunity)upgradeImmuneRoster(s);
-    if(s.specialists)ensureHostResponse(s);
+    if(!validateHomeostasis(s)||s.cells.some(c=>c.homeSite!=null&&!homeOrgan(c.homeSite)||c.homeUntil!=null&&!finite(c.homeUntil)||c.recycling!=null&&typeof c.recycling!=='boolean'))return null;
+    if(s.specialists){ensureHostResponse(s);ensureHomeostasis(s);}
     return s;
   }catch{return null;}
 }

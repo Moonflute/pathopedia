@@ -1,5 +1,5 @@
 // Fourteen persistent skin sectors, each rendered as eight short curved pieces.
-export const CITY_RADIUS=44;
+export const CITY_RADIUS=58;
 export const WALL_SECTORS=14;
 export const WALL_ARC_STEPS=8;
 const step=Math.PI*2/WALL_SECTORS;

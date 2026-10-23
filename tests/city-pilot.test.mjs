@@ -9,6 +9,7 @@ import {pilotWorld} from '../src/city-pilot-world.mjs';
 import {pilotedCell,pilotInventory,PILOT_TOOLS} from '../src/city-pilot-state.mjs';
 import {pilotJobs} from '../src/city-pilot-tasks.mjs';
 import {pilotSites} from '../src/city-pilot-sites.mjs';
+import {CITY_RADIUS} from '../src/city-boundary.mjs';
 import {WALLS,TISSUES} from '../src/city-frontier-data.mjs';
 const data=JSON.parse(fs.readFileSync(new URL('../data/organisms.json',import.meta.url)));
 const city=()=>{const s=createCity('normal','simulation',{specialists:true,expanded:true});applyTileLayout(s,createTileLayout());return s;};
@@ -31,7 +32,7 @@ for(const theme of ['2','1']){
  });
  test('theme '+theme+': blocked and invalid spawn points cannot take over or move a cell',()=>{
   const s=city(),p=createCityPilot(),[key]=compileLayout(s.layout).occupied.keys(),[x,z]=key.split(',').map(Number),before=serializeCity(s);
-  for(const spawn of [{x,z},{x:45,z:0},{x:NaN,z:0},{x:0,z:Infinity},{}]){assert.equal(p.start(s,{theme,spawn}),false);assert.equal(p.active,false);assert.equal(pilotedCell(s),null);assert.equal(serializeCity(s),before);}
+  for(const spawn of [{x,z},{x:CITY_RADIUS+1,z:0},{x:NaN,z:0},{x:0,z:Infinity},{}]){assert.equal(p.start(s,{theme,spawn}),false);assert.equal(p.active,false);assert.equal(pilotedCell(s),null);assert.equal(serializeCity(s),before);}
   assert.ok(p.start(s,{theme}));const cell=p.cell,position=p.view().position;assert.equal(p.start(s,{theme,spawn:{x,z}}),false);assert.equal(p.cell,cell);assert.deepEqual(p.view().position,position);p.stop();
  });
  test('theme '+theme+': one explorer owns an existing cell and returns it to AI',()=>{
@@ -45,7 +46,7 @@ for(const theme of ['2','1']){
   for(const id of ['heart','gut','kidney','marrow','lymph']){const goal=siteAt(s.layout,id),path=world.route(lung,goal,'neutrophil');assert.ok(path.length>1,id+' reachable');assert.ok(d(path.at(-1),goal)<1);
    for(let i=1;i<path.length;i++){const a=path[i-1],b=path[i],n=Math.ceil(d(a,b)*8);for(let j=0;j<=n;j++)assert.ok(world.canStand({x:a.x+(b.x-a.x)*j/n,z:a.z+(b.z-a.z)*j/n}),id+' path blocked');}
   }
-  const [key]=compileLayout(s.layout).occupied.keys(),[x,z]=key.split(',').map(Number);assert.equal(world.canStand({x,z}),false);assert.equal(world.canStand({x:45,z:0}),false);
+  const [key]=compileLayout(s.layout).occupied.keys(),[x,z]=key.split(',').map(Number);assert.equal(world.canStand({x,z}),false);assert.equal(world.canStand({x:CITY_RADIUS+1,z:0}),false);
  });
  test('theme '+theme+': same neutrophil carries oxygen, switches tools, walks and unloads once',()=>{
   const s=city(),p=createCityPilot(),c=s.cells.find(c=>c.kind==='neutrophil');s.cells=[c];Object.assign(c,groundCoordinate(siteAt(s.layout,'lung')));const originalCargo=c.cargo;s.districts.heart.oxygen=20;

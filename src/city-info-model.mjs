@@ -8,13 +8,13 @@ export function parseCityInfo(raw){
   try{
     if(typeof raw!=='string'||raw.length>INFO_LIMITS.bytes||new TextEncoder().encode(raw).byteLength>INFO_LIMITS.bytes)return null;
     const d=JSON.parse(raw),ids=new Set(),viewIDs=new Set();
-    if(![1,2,3].includes(d?.schema)||!textOK(d.basis,100)||!Array.isArray(d.nodes)||!d.nodes.length||d.nodes.length>INFO_LIMITS.nodes||!Array.isArray(d.views)||d.views.length!==({1:8,2:12,3:14}[d.schema]))return null;
+    if(![1,2,3,4].includes(d?.schema)||!textOK(d.basis,100)||!Array.isArray(d.nodes)||!d.nodes.length||d.nodes.length>INFO_LIMITS.nodes||!Array.isArray(d.views)||d.views.length!==({1:8,2:12,3:14,4:15}[d.schema]))return null;
     for(const n of d.nodes){
       if(!n||!idOK(n.id)||ids.has(n.id)||!Object.hasOwn(INFO_KINDS,n.kind)||!textOK(n.label,48)||!n.label.trim()||!textOK(n.summary,90)||!textOK(n.detail,1600)||!textOK(n.source,160))return null;
       if(n.rule&&(!idOK(n.rule.op)||typeof n.rule.enabled!=='boolean'||!n.rule.params||Array.isArray(n.rule.params)||Object.keys(n.rule.params).length>24||Object.entries(n.rule.params).some(([k,v])=>!idOK(k)||!Number.isFinite(v)||Math.abs(v)>1e6)))return null;
       ids.add(n.id);
     }
-    const defaults=createCityInfoDocument(),expected=new Set(defaults.views.filter(v=>(d.schema!==1||!v.id.startsWith('rules-'))&&(d.schema===3||!['innate','type2'].includes(v.id))).map(v=>v.id));
+    const defaults=createCityInfoDocument(),expected=new Set(defaults.views.filter(v=>(d.schema!==1||!v.id.startsWith('rules-'))&&(d.schema>=3||!['innate','type2'].includes(v.id))&&(d.schema>=4||v.id!=='homeostasis')).map(v=>v.id));
     for(const v of d.views){
       if(!v||!expected.has(v.id)||viewIDs.has(v.id)||!textOK(v.name,40)||!textOK(v.caption,200)||!v.positions||typeof v.positions!=='object'||Array.isArray(v.positions)||!Array.isArray(v.edges)||v.edges.length>INFO_LIMITS.edges)return null;
       viewIDs.add(v.id);const edges=new Set();
@@ -33,6 +33,11 @@ export function parseCityInfo(raw){
       for(const n of defaults.nodes)if(wanted.has(n.id)&&!clean.nodes.some(x=>x.id===n.id))clean.nodes.push(structuredClone(n));
       clean.schema=3;
     }else clean.schema=3;
+    if(d.schema<4){
+      clean.views.push(structuredClone(defaults.views.find(v=>v.id==='homeostasis')));
+      for(const n of defaults.nodes.filter(n=>n.id==='homeostasis'||n.id.startsWith('home-')))if(!clean.nodes.some(x=>x.id===n.id))clean.nodes.push(structuredClone(n));
+    }
+    clean.schema=4;
     return clean;
   }catch{return null;}
 }
