@@ -3,12 +3,12 @@ export const HOME_ORGANS=Object.freeze([
  {id:'brain',name:'시상하부·뇌하수체',label:'조절 회관',x:-23,z:-43,color:'#9f9bc7',host:'lymph',model:'hall',loop:'temperature'},
  {id:'thyroid',name:'갑상선·부갑상선',label:'대사 공방',x:10,z:-45,color:'#d9a57c',host:'lung',model:'workshop',loop:'thyroid'},
  {id:'pancreas',name:'췌장',label:'혈당 조절소',x:35,z:-28,color:'#deb875',host:'gut',model:'workshop',loop:'glucose'},
- {id:'liver',name:'간·담낭',label:'중앙 영양창고',x:44,z:7,color:'#b98170',host:'gut',model:'market',loop:'digestion'},
+ {id:'liver',name:'간·담낭',label:'중앙 영양창고',x:44,z:7,color:'#b98170',host:'gut',model:'house-b',loop:'digestion'},
  {id:'spleen',name:'비장',label:'적혈구 재활용소',x:-44,z:12,color:'#b887a5',host:'marrow',model:'workshop',loop:'recycling'},
- {id:'bone',name:'뼈',label:'광물 공방',x:-24,z:41,color:'#c8bea2',host:'marrow',model:'station',loop:'calcium'},
- {id:'adrenal',name:'부신',label:'염분 조절소',x:17,z:44,color:'#c4ad7b',host:'kidney',model:'house-b',loop:'water'},
+ {id:'bone',name:'뼈',label:'광물 공방',x:-24,z:41,color:'#c8bea2',host:'marrow',model:'house-b',loop:'calcium'},
+ {id:'adrenal',name:'부신',label:'염분 조절소',x:17,z:44,color:'#c4ad7b',host:'kidney',model:'house-a',loop:'water'},
  {id:'muscle',name:'근육 조직',label:'활동 공방',x:36,z:31,color:'#c68e82',host:'heart',model:'workshop',loop:'respiration'},
- {id:'fat',name:'지방 조직',label:'에너지 저장고',x:0,z:46,color:'#d3bf79',host:'gut',model:'house-a',loop:'glucose'}
+ {id:'fat',name:'지방 조직',label:'에너지 저장고',x:0,z:46,color:'#d3bf79',host:'gut',model:'house-b',loop:'glucose'}
 ]);
 export const homeOrgan=id=>HOME_ORGANS.find(o=>o.id===id);
 export const HOME_LOOPS=Object.freeze([

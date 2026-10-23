@@ -7,21 +7,23 @@ import {SITES,workStationPoints} from './city-three-layout.mjs';
 import {WALLS} from './city-frontier-data.mjs';
 import {output} from './city-engine.mjs';
 import {wallPieces} from './city-boundary.mjs';
+import {createNeighbourhoodCourts} from './city-three-neighbourhoods.mjs';
+import {houseDesign,houseRoofGeometry} from './city-three-housing.mjs';
 
 export const CANAL_STYLE=Object.freeze({water:0x4caaa8,deep:0x338b91,foam:0xb6e1d2,stone:0xd9c8a8,quay:0xa39983,sky:0xd7e9e5,roofs:[0xb96146,0xc57852,0xa95643,0xcd8a60],walls:[0xf0dbb4,0xe9b5a0,0xe8cc8d,0xc5d6c7,0xf1e5cc]});
 
 // Reuse the existing CC0 roof and chimney meshes; façades and mooring posts
 // are low-poly geometry baked with the other village scenery.
 export function canalHouse({box,make,model,mat,parent},x,z,size,index=0,angle=0,floors=2){
- const g=new T.Group();g.position.set(x,0,z);g.rotation.y=angle;g.scale.setScalar(size);parent.add(g);
- const height=floors===3?2.85:index%3===1?2.05:1.68,roof=CANAL_STYLE.roofs[index%4],wall=CANAL_STYLE.walls[index%5],ivory=0xf5e4c5,shutter=0x4e7974;
+ const design=houseDesign('2',index),building=new T.Group(),g=new T.Group();building.position.set(x,0,z);building.rotation.y=angle;building.scale.setScalar(size);parent.add(building);building.add(g);g.scale.set(design.width/1.08,1,design.depth);
+ const height=Math.max(floors===3?2.55:0,design.height*1.4+.12),roof=CANAL_STYLE.roofs[index%4],wall=CANAL_STYLE.walls[index%5],ivory=0xf5e4c5,shutter=0x4e7974;
  box(0,.04,0,1.35,.16,1.23,0xa29d8b,g);box(0,height/2+.12,0,1.24,height,1.12,wall,g);
  for(const y of [.19,.99,height+.12])box(0,y,0,1.32,.08,1.2,ivory,g);
  for(const px of [-.59,.59])box(px,height/2+.14,.58,.07,height,.08,ivory,g);
- const r=model('roof-gable',0,height+.19,0,1.31,0,g);
+ const r=design.feature==='terrace'?null:model(design.roof==='hip'?'roof-point':'roof-gable',0,height+.19,0,1.31,design.turn*Math.PI/2,g);
  if(r)r.traverse(m=>{if(m.isMesh)m.material=mat(roof);});
- else{const m=make(new T.ConeGeometry(.98,.6,4),roof,0,height+.48,0,g);m.rotation.y=Math.PI/4;}
- model('chimney',-.38,height+.45,-.23,.55,0,g);
+ else{const m=make(houseRoofGeometry(design.roof),roof,0,height+.19,0,g);m.scale.set(1.4,design.rise,1.3);m.rotation.y=design.turn*Math.PI/2;}
+ if(design.feature!=='terrace')model('chimney',-.38,height+.45,-.23,.55,0,g);
  const arch=new T.Shape();arch.moveTo(-.14,0);arch.lineTo(-.14,.25);arch.absarc(0,.25,.14,Math.PI,0,true);arch.lineTo(.14,0);arch.closePath();
  function window(px,py,pz,angle=0){
   const f=new T.Group();f.position.set(px,py,pz);f.rotation.y=angle;g.add(f);
@@ -30,15 +32,23 @@ export function canalHouse({box,make,model,mat,parent},x,z,size,index=0,angle=0,
   for(const s of [-1,1]){box(s*.21,.17,.02,.095,.34,.035,shutter,f);for(const y of [.09,.19,.29])box(s*.21,y,.045,.09,.017,.025,0x71948a,f);}
   box(0,.16,.04,.025,.29,.02,ivory,f);box(0,-.04,.06,.43,.055,.16,ivory,f);
  }
- for(const py of floors===3?[.51,1.43,2.35]:[.51,height-.5]){
+ for(const py of height>2.4?[.51,1.43,height-.5]:[.51,height-.5]){
   for(const px of [-.31,.31]){window(px,py,.577);window(px,py,-.577,Math.PI);}
   window(.635,py,-.05,Math.PI/2);window(-.635,py,-.05,-Math.PI/2);
  }
  box(0,.39,.583,.27,.52,.04,0x677b69,g);box(0,.67,.61,.36,.06,.12,ivory,g);
- if(index%3!==0){box(0,1.02,.76,.92,.08,.38,ivory,g);box(0,1.29,.92,.94,.035,.035,shutter,g);for(let n=0;n<5;n++)box(-.42+n*.21,1.16,.92,.025,.26,.025,shutter,g);}
- if(index%4===0){const awning=box(0,.91,.82,.95,.055,.45,0xc39168,g);awning.rotation.x=.2;for(const px of [-.33,0,.33])box(px,.93,.83,.12,.045,.46,ivory,g);}
- for(const px of [-.78,.78]){box(px,.24,1.12,.09,.88,.09,ivory,g);for(const y of [.12,.34,.56])box(px,y,1.12,.095,.09,.095,0xab5d4d,g);}
- return g;
+ if(design.feature==='balcony'||design.feature==='loggia'){const y=height-.7;box(0,y,.76,.92,.08,.38,ivory,g);box(0,y+.27,.92,.94,.035,.035,shutter,g);for(let n=0;n<5;n++)box(-.42+n*.21,y+.14,.92,.025,.26,.025,shutter,g);
+  if(design.feature==='loggia'){for(const px of [-.42,0,.42])box(px,y+.37,.91,.065,.74,.065,ivory,g);box(0,y+.76,.77,1.04,.08,.4,ivory,g);}
+ }
+ if(design.feature==='shop'){const awning=box(0,.91,.82,.95,.055,.45,0xc39168,g);awning.rotation.x=.2;for(const px of [-.33,0,.33])box(px,.93,.83,.12,.045,.46,ivory,g);box(.48,.7,.64,.22,.32,.05,shutter,g);}
+ if(design.feature==='terrace'){
+  const y=height+.42;box(0,y,0,1.02,.08,.92,0x8c785c,g);
+  for(const px of [-.46,.46])for(const pz of [-.4,.4])box(px,y+.37,pz,.05,.74,.05,0x8c785c,g);
+  for(const pz of [-.4,.4]){box(0,y+.26,pz,.98,.045,.04,shutter,g);box(0,y+.74,pz,1.08,.07,.05,0x8c785c,g);}
+  for(const px of [-.36,0,.36])box(px,y+.78,0,.18,.045,1.04,ivory,g);
+ }
+ if(design.feature==='balcony'||design.feature==='shop')for(const px of [-.65,.65]){box(px,.24,1.05,.09,.88,.09,ivory,g);for(const y of [.12,.34,.56])box(px,y,1.05,.095,.09,.095,0xab5d4d,g);}
+ return building;
 }
 
 export function createThemeScenery({layout,theme='2',plan=compileThemeLayout(layout,theme),make,box,cylinder,model,newModel=null,cottage,mat,scope,fixed,moving,ribbon,road}){
@@ -55,28 +65,10 @@ export function createThemeScenery({layout,theme='2',plan=compileThemeLayout(lay
  // Identical neighbourhood anchors receive waterfront façades or cottages.
  // Infill is rebuilt around real placements and never covers transport routes.
  for(const b of canals.blocks.frontages){
-  const g=cityThemeObject(theme,'frontage')==='canal-house'?canalHouse({box,make,model,mat,parent:fixed},b.x,b.z,1,b.variant,b.angle,b.variant%4===0?3:2):cottage(b.x,b.z,1,b.angle,false,fixed,b.variant);
+  const g=cityThemeObject(theme,'frontage')==='canal-house'?canalHouse({box,make,model,mat,parent:fixed},b.x,b.z,1,b.variant,b.angle,b.variant%4===0?3:2):cottage(b.x,b.z,1,b.angle,false,fixed,b.variant,b.district);
   g.scale.set(b.w/1.35,water?1.15+(b.variant%3)*.1:1.05+(b.variant%3)*.08,b.d/(water?1.4:1.65));g.name=water?'canal-frontage':'village-frontage';
  }
- for(const p of canals.blocks.gardens){
-  const g=new T.Group();g.position.set(p.x,0,p.z);fixed.add(g);g.name=cityThemeObject(theme,'courtyard');
-  box(0,.035,0,3.5,.06,3.5,water?0xe5d8bb:CITY_STYLE.grassLight,g);
-  if(!water){box(0,.072,0,3.1,.025,.65,CITY_STYLE.road,g);box(0,.073,0,.65,.025,3.1,CITY_STYLE.road,g);}
-  for(const x of [-1.6,1.6])box(x,.075,0,.1,.04,3.3,0xb8ab8e,g);
-  for(const z of [-1.6,1.6])box(0,.075,z,3.3,.04,.1,0xb8ab8e,g);
-  for(const [x,z] of [[-.8,-.7],[.8,.7]]){
-   box(x,.16,z,.85,.28,.85,0xc5b28c,g);box(x,.31,z,.7,.025,.7,0x87966d,g);
-   if(!newModel?.(x<0?'garden-tree':'garden-tree-small',x,.33,z,2.1,x, g,1.25)){
-    cylinder(x,.82,z,.05,.08,1.1,0x877056,g);
-    for(let i=0;i<3;i++)make(new T.ConeGeometry(.48-i*.1,.95,7),[0x6f8b69,0x839b77,0x91a582][i],x,1.05+i*.53,z,g);
-   }
-  }
-  for(const z of [-1.25,1.25])if(!newModel?.('garden-bench',0,.04,z,.57,z<0?Math.PI:0,g,1.35)){box(0,.27,z,1.25,.12,.32,0x9b8060,g);for(const x of [-.45,.45])box(x,.13,z,.11,.24,.24,0xb4a386,g);}
-  newModel?.('garden-flower',-.8,.34,-.7,.34,.3,g,.68);
-  newModel?.('garden-shrub',1.12,.04,-.75,.65,0,g,.8);
-  newModel?.('garden-clover',-.95,.06,.65,.16,0,g,.6);
-  newModel?.(cityThemeObject(theme,'bankPlant'),1.35,.04,.8,water?.7:.32,.3,g,water?.32:.5);
- }
+ createNeighbourhoodCourts({blocks:canals.blocks,theme,box,make,cylinder,newModel,fixed,ribbon});
  // Width and oxygen tint make the circulation legible from the overview.
  // Low-oxygen blood also leaves the heart for the lungs in the pulmonary artery.
  for(const bed of vascular.beds)for(const points of bed.branches){if(water)ribbon(points,bed.width,0x8bb8ab,-.145);else road(points,.7);}

@@ -1,4 +1,4 @@
-import {CITY_STYLE as BASE_STYLE} from './city-three-style.mjs';
+import {CITY_STYLE as BASE_STYLE,NEIGHBOURHOOD_ROOFS} from './city-three-style.mjs';
 import {CANAL_STYLE,canalHouse,createThemeScenery} from './city-three-canals.mjs';
 import {compileThemeLayout} from './city-theme-layout.mjs';
 import {CITY_BOUNDS,CITY_ENTRIES,CITY_SCALE,LANDSCAPE_RADIUS,storedPlacement} from './city-world.mjs';
@@ -16,6 +16,7 @@ import {bundleModel,createBundleWalls} from './city-three-bundle.mjs';
 import {createEntryTracks} from './city-entry-tracks.mjs';
 import {createTissueScene} from './city-three-tissue.mjs';
 import {createCityPorts} from './city-three-ports.mjs';
+import {houseDesign,houseRoofGeometry} from './city-three-housing.mjs';
 
 // All decorative meshes are baked once by material. Only working machinery moves.
 export function createVillage(assets,layout=null,editId=null,newAssets=null,theme='1'){
@@ -43,7 +44,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  const model=(name,x,y,z,size=1,angle=0,parent=fixed)=>{
   const proto=assets[name];if(!proto)return null;const g=proto.clone(true);g.position.set(x,y,z);g.rotation.y=angle;g.scale.setScalar(size);staticParent(parent).add(g);return g;
  };
- const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{if(canal&&name==='cart')return null;if(canal&&['house-a','house-b','hall','workshop','tower'].includes(name)){const g=cottage(x,z,Math.min(height/2.25,maxWidth/1.5),angle,true);g.position.y=y;return g;}const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;if(name==='gate'||name==='harbour-crane')g.traverse(m=>{if(m.isMesh)m.material=mat(name==='gate'?STYLE.plaster:STYLE.timber);});g.name='bundle-'+name;root.userData.bundleModels[name]=(root.userData.bundleModels[name]||0)+1;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
+ const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{if(canal&&name==='cart')return null;if(canal&&['house-a','house-b','hall','workshop','tower'].includes(name)){const g=cottage(x,z,Math.min(height/2.25,maxWidth/1.5),angle,true);g.position.y=y;return g;}const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;if(name==='gate'||name==='harbour-crane')g.traverse(m=>{if(m.isMesh)m.material=mat(name==='gate'?STYLE.plaster:STYLE.timber);});if(name==='tree-round'||name==='tree-cube')g.traverse(m=>{if(!m.isMesh)return;if(!m.geometry.boundingBox)m.geometry.computeBoundingBox();m.material=mat(m.geometry.boundingBox.min.y>.4?STYLE.foliage[name==='tree-round'?0:1]:STYLE.timber);});g.name='bundle-'+name;root.userData.bundleModels[name]=(root.userData.bundleModels[name]||0)+1;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
  const disc=(x,z,r,c,y=.012)=>{const m=make(new T.CircleGeometry(r,32),c,x,y,z);m.rotation.x=-Math.PI/2;m.castShadow=false;return m;};
  function ribbon(points,width,color,height=.025){
   if(points.length<2)return;
@@ -58,27 +59,28 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  const roofColors=STYLE.roofs;
  function leaf(x,y,z,r,color,parent){const m=orb(x,y,z,r,color,parent);m.scale.y=.78;return m;}
  function gardenTree(x,z,height=2.5,variant=0,parent=fixed){
-  if(newModel){const tree=newModel(variant%2?'garden-tree-small':'garden-tree',x,0,z,height,variant*.7,parent,height*.8);if(tree)return tree;}
+  if(newModel){const tree=newModel(variant%2?'tree-cube':'tree-round',x,0,z,height,variant*.7,parent,height*.8);if(tree)return tree;}
   const trunk=0x76654c,green=STYLE.foliage[variant%3];
   cylinder(x,height*.37,z,.075,.13,height*.74,trunk,parent);
   leaf(x,height*.72,z,height*.31,green,parent);
   leaf(x-height*.16,height*.65,z+height*.08,height*.22,0x8aa27b,parent);
   leaf(x+height*.14,height*.86,z-height*.03,height*.24,green,parent);
  }
- function cottage(x,z,size=1.5,angle=0,large=false,parent=group('fixed'),variant){
+ function cottage(x,z,size=1.5,angle=0,large=false,parent=group('fixed'),variant,district){
   const index=variant??(owner?.startsWith('house-')?Number(owner.slice(6)):Object.keys(SITES).indexOf(placeable(owner)?.district||owner)+6);
-  if(canal)return canalHouse({box,make,model,mat,parent:group('fixed')},x,z,size,Math.max(0,index),angle);
-  const roofColor=roofColors[(index+roofColors.length)%roofColors.length],tall=index%4===1,height=tall?STYLE.houseUpperHeight:STYLE.houseHeight;
-  const g=new T.Group();g.position.set(x,0,z);g.rotation.y=angle;g.scale.setScalar(size);parent.add(g);
+  if(canal)return canalHouse({box,make,model,mat,parent},x,z,size,Math.max(0,index),angle);
+  const palette=NEIGHBOURHOOD_ROOFS[district||placeable(owner)?.district||owner]||roofColors;
+  const design=houseDesign('1',index),roofColor=palette[(index+palette.length)%palette.length],height=design.height,tall=height>1.25;
+  const building=new T.Group(),g=new T.Group();building.position.set(x,0,z);building.rotation.y=angle;building.scale.setScalar(size);parent.add(building);building.add(g);g.scale.set(design.width/1.08,1,design.depth);
   // Compact plaster cottages share the existing CC0 roofs and chimneys.
   box(0,.075,0,1.2,.15,1.16,0x9a9a85,g);
   box(0,.16+height/2,0,1.08,height,1.02,index%3===0?STYLE.plasterWarm:STYLE.plaster,g);
   box(0,.24,0,1.13,.12,1.07,STYLE.trim,g);
   for(const px of [-.51,.51])for(const pz of [-.49,.49])box(px,.16+height/2,pz,.07,height,.07,STYLE.timber,g);
   box(0,height+.14,0,1.14,.09,1.08,STYLE.timber,g);
-  const roof=model(large||index%3?'roof-gable':'roof-point',0,height+.17,0,1.13,0,g);
+  const roof=design.roof==='shed'?null:model(design.roof==='hip'?'roof-point':'roof-gable',0,height+.17,0,1.13,design.turn*Math.PI/2,g);
   if(roof)roof.traverse(m=>{if(m.isMesh)m.material=mat(roofColor);});
-  else{const m=make(new T.ConeGeometry(.91,.66,4),roofColor,0,height+.48,0,g);m.rotation.y=Math.PI/4;}
+  else{const m=make(houseRoofGeometry(design.roof),roofColor,0,height+.17,0,g);m.scale.set(1.28,design.rise,1.22);m.rotation.y=design.turn*Math.PI/2;}
   model('chimney',-.27,height+.4,-.19,.58,0,g);
   box(0,.53,.527,.27,.66,.045,0x6c7062,g);box(0,.9,.56,.38,.08,.13,roofColor,g);
   box(.1,.51,.558,.035,.035,.025,0xd1af65,g);
@@ -89,12 +91,16 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
   }
   window(-.32,.75,.535);window(.32,.75,.535);window(.555,.77,0,true);
   box(0,.78,-.54,.35,.36,.06,STYLE.trim,g);box(0,.78,-.579,.27,.27,.025,STYLE.glass,g);
-  if(index%3===2){box(0,.99,.68,.79,.07,.4,roofColor,g);for(const px of [-.34,.34])box(px,.55,.82,.04,.9,.04,STYLE.timber,g);}
+  if(design.feature==='porch'){box(0,.94,.68,.79,.07,.4,roofColor,g);for(const px of [-.34,.34])box(px,.51,.82,.04,.8,.04,STYLE.timber,g);}
+  if(design.feature==='shop'){box(-.12,.8,.57,.66,.07,.18,STYLE.timber,g);box(-.12,.68,.58,.56,.27,.05,STYLE.glass,g);const awning=box(0,1.01,.68,.94,.06,.34,STYLE.sage,g);awning.rotation.x=.18;box(.42,.61,.64,.2,.32,.04,STYLE.timber,g);}
+  if(design.feature==='dormer'){box(-.17,height+.38,.1,.46,.38,.46,STYLE.plaster,g);window(-.17,height+.4,.345);const r=make(houseRoofGeometry('gable'),roofColor,-.17,height+.57,.1,g);r.scale.set(.58,.26,.57);}
+  if(design.feature==='shutters')for(const px of [-.32,.32])for(const side of [-1,1])box(px+side*.2,.75,.59,.09,.32,.045,STYLE.sage,g);
+  if(design.feature==='timber')for(const side of [-1,1]){const brace=box(side*.26,1.27,.55,.05,.45,.04,STYLE.timber,g);brace.rotation.z=side*.7;}
   if(tall){box(0,1.08,0,1.14,.075,1.08,0x9b8261,g);window(0,1.35,.535);window(.555,1.35,0,true);}
   for(let n=0;n<3;n++)box(0,.055,.72+n*.15,.34,.055,.13,0xe0d4b9,g);
   box(-.38,.19,.66,.29,.16,.18,0xb39172,g);
   for(let n=0;n<3;n++)leaf(-.47+n*.09,.31,.66,.09,n===1?0xc58c7e:0x819369,g);
-  return g;
+  return building;
  }
  // Ground extends into the landscape: no floating square board or map edge.
  const meadowColor=canal?CANAL_STYLE.water:STYLE.meadow,ground=disc(0,0,LANDSCAPE_RADIUS,meadowColor,canal?-.16:-.035);ground.name=canal?'lagoon':'meadow';
@@ -268,7 +274,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  return {root,districts,canals:scenery?.canals,outlet:scenery?.outlet,movePreview(a){if(preview)applyTransform(preview,editId,a);const g=owners.moving.get(editId);if(g)applyTransform(g,editId,a);},dispose(){bundleWalls?.dispose();const gs=new Set(),ms=new Set();root.traverse(m=>{if(m.isInstancedMesh)m.dispose();if(m.geometry&&!m.userData.kenney&&!m.userData.cityAsset)gs.add(m.geometry);if(m.material&&!m.userData.kenney&&!m.userData.cityAsset)ms.add(m.material);});for(const g of gs)g.dispose();for(const m of ms)if(!m.map)m.dispose();},update(s,options){
   moving.visible=true;frontier.root.visible=true;supply.visible=!options.editor&&options.layer==='supply';portsScene.update(s);
   facilities.update(s);frontier.update(s,options);bundleWalls?.update(s,options);scenery?.update(s);tissueScene?.update(s);
-  if(pilotSurface&&tissueSurfaceVersion!==(tissueScene?.collisionVersion??0)){tissueSurfaceVersion=tissueScene?.collisionVersion??0;const tissues=tissueScene?createPilotSurface(tissueScene.root,m=>m.name==='tissue-cottages'||m.name==='tissue-roofs'):null;pilotWorld(layout,theme).setSurface(combinePilotSurfaces(pilotSurface,tissues));}
+  if(pilotSurface&&tissueSurfaceVersion!==(tissueScene?.collisionVersion??0)){tissueSurfaceVersion=tissueScene?.collisionVersion??0;const tissues=tissueScene?createPilotSurface(tissueScene.root,m=>m.name==='tissue-cottages'||m.name.startsWith('tissue-roofs-')):null;pilotWorld(layout,theme).setSurface(combinePilotSurfaces(pilotSurface,tissues));}
   for(const [id,d] of Object.entries(districts)){const state=s.districts[id];d.work.visible=!!state.building;d.tower.visible=state.tower>0;d.tower.scale.y=state.tower>1?1.25:1;const progress=state.building?.remaining==null?0:1-state.building.remaining/state.building.duration;d.work.userData.progress.scale.y=.3+progress*2;d.work.userData.progress.position.y=.4+d.work.userData.progress.scale.y*.11;d.level.children.forEach((m,i)=>m.visible=i<state.level-1);}
   ground.material.color.setHex(canal?CANAL_STYLE.water:s.host==='neutropenia'?0xd7c8a7:meadowColor);
  }};

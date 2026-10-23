@@ -1,5 +1,6 @@
 import * as T from './vendor/three/three.module.min.js';
-import {bundleModel} from './city-three-bundle.mjs';
+import {createHomeostasisAssets} from './city-homeostasis-assets.mjs';
+import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 import {HOME_LOOPS,HOME_SIGNALS,HOME_PHASES,homeSites} from './city-homeostasis-data.mjs';
 import {homePoint,homePacketPosition,homeTransferPath} from './city-homeostasis-paths.mjs';
 import {WALLS} from './city-frontier-data.mjs';
@@ -14,13 +15,13 @@ export function createHomeostasisScene({layout,theme='1',bundle=null,map=null,on
  pool('work',new T.BoxGeometry(1,1,1),160);pool('packets',new T.IcosahedronGeometry(1,0),160,dynamic,bright);pool('signals',new T.CylinderGeometry(1,1,1,5),2400,dynamic,soft);pool('rings',new T.TorusGeometry(1,.06,4,24),72,dynamic,soft);pool('vapour',new T.IcosahedronGeometry(1,1),72,dynamic,soft);
  function put(id,x,y,z,sx,sy,sz,tint,rx=0,ry=0){const m=pools[id],i=m.count;if(i>=m.instanceMatrix.count)return;dummy.position.set(x,y,z);dummy.rotation.set(rx,ry,0);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix);m.setColorAt(i,color.set(tint));m.count++;}
  function line(a,b,y,width,tint){const m=pools.signals,i=m.count;if(i>=m.instanceMatrix.count)return;delta.set(b.x-a.x,0,b.z-a.z);if(delta.length()<.01)return;dummy.position.set((a.x+b.x)/2,y,(a.z+b.z)/2);dummy.quaternion.setFromUnitVectors(up,delta.clone().normalize());dummy.scale.set(width,delta.length(),width);dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix);m.setColorAt(i,color.set(tint));m.count++;}
+ const assets=createHomeostasisAssets(sites,bundle);buildings.add(assets.root);
  for(const o of sites){
   put('masonry',o.x,.06,o.z-3.4,6.6,.12,5.2,theme==='2'?0xd9c8aa:0xd8d7bb);
-  const model=bundleModel(bundle,o.model,o.id==='brain'?3.9:3.1,4.8);
-  if(model){model.position.set(o.x,.12,o.z-3.5);buildings.add(model);}
-  else{put('masonry',o.x,1.2,o.z-3.5,3.9,2.2,3,0xe6d5b9);put('roofs',o.x,2.9,o.z-3.5,3.05,1.35,2.4,o.color,0,Math.PI/4);for(const x of [-1.1,1.1])put('masonry',o.x+x,1.35,o.z-1.97,.5,.65,.06,0x6c8e89);put('masonry',o.x,.7,o.z-1.94,.68,1.25,.08,0x987a5b);}
+  if(!assets.hasBody(o.id)){put('masonry',o.x,1.2,o.z-3.5,3.9,2.2,3,STYLE.plaster);put('roofs',o.x,2.9,o.z-3.5,3.05,1.35,2.4,theme==='2'?0xb5684c:o.color,0,Math.PI/4);for(const x of [-1.1,1.1])put('masonry',o.x+x,1.35,o.z-1.97,.5,.65,.06,STYLE.glass);put('masonry',o.x,.7,o.z-1.94,.68,1.25,.08,STYLE.timber);}
   // Low courtyard fittings identify each working neighbourhood at human scale.
-  put('masonry',o.x-2.5,.48,o.z-1.7,.75,.85,.85,o.color);put('masonry',o.x+2.5,.45,o.z-1.7,.75,.8,.85,0xa9bd94);
+  put('masonry',o.x-3.05,.36,o.z-1.7,.2,.6,.2,STYLE.timber);put('masonry',o.x-3.05,.8,o.z-1.7,.55,.4,.1,o.color);
+  put('masonry',o.x+3.05,.2,o.z-1.8,.45,.3,.45,STYLE.sage);
   put('masonry',o.x,.07,o.z-.9,1.1,.14,1.6,0xc5b998);
   if(map){const b=document.createElement('button');b.type='button';b.className='cc-home-marker';b.style.setProperty('--home-color',o.color);b.setAttribute('aria-label',o.name+' 항상성 관찰');b.addEventListener('click',()=>onSelect('home:'+o.id));b.hidden=true;map.append(b);tags.push({o,b});}
  }
@@ -68,5 +69,5 @@ export function createHomeostasisScene({layout,theme='1',bundle=null,map=null,on
    b.hidden=false;b.classList.toggle('is-active',!!loop?.sites.includes(o.id));b.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;
    const phase=h.loops[loop?.sites.includes(o.id)?loop.id:o.loop].phase,text=o.name+'<small>'+HOME_PHASES[phase]+' · O₂ '+Math.round(h.organs[o.id].oxygen)+'%</small>';if(b.innerHTML!==text)b.innerHTML=text;occupied.push({x,y});shown++;
   }
- },dispose(){for(const {b} of tags)b.remove();for(const m of Object.values(pools))m.dispose();for(const g of geometries)g.dispose();for(const m of materials)m.dispose();root.removeFromParent();}};
+ },dispose(){for(const {b} of tags)b.remove();assets.dispose();for(const m of Object.values(pools))m.dispose();for(const g of geometries)g.dispose();for(const m of materials)m.dispose();root.removeFromParent();}};
 }

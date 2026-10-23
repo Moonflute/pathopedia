@@ -10,6 +10,7 @@ import {createVillage} from '../src/city-three-village.mjs';
 import {createActors} from '../src/city-three-actors.mjs';
 import {qualityProfile,groundPoint,groundCoordinate} from '../src/city-three-layout.mjs';
 import {compileThemeLayout} from '../src/city-theme-layout.mjs';
+import {pilotWorld} from '../src/city-pilot-world.mjs';
 
 test('theme defaults to the original village and persists independently of game saves',()=>{
  const values=new Map([['pathopedia:cell-city:3d:v1','existing game']]),storage={getItem:k=>values.get(k),setItem:(k,v)=>values.set(k,v)};
@@ -41,7 +42,7 @@ test('waterfront blocks leave traffic and real building expansion clear',()=>{
  const layout=createTileLayout(),expanded=addLayoutBuilding(layout,'house');assert.ok(expanded.ok);
  for(const town of [layout,expanded.layout]){
   const snapshot=JSON.stringify(town),c=compileCanalLayout(town),network=compileLayout(town);
-  assert.ok(c.blocks.frontages.length>=8);assert.ok(c.blocks.gardens.length>=2);assert.ok(c.blocks.tissues.length>=100);assert.ok(c.blocks.lung.length>=3);
+  assert.ok(c.blocks.frontages.length>=4);assert.ok(c.blocks.gardens.length>=6);assert.ok(c.blocks.tissues.length>=80);assert.ok(c.blocks.lung.length>=3);
   for(const b of [...c.blocks.frontages,...c.blocks.gardens]){
    const vertical=Math.abs(Math.sin(b.angle||0))>.5,w=b.w||3.5,d=b.d||3.5,hx=(vertical?d:w)/2,hz=(vertical?w:d)/2;
    for(let x=b.x-hx;x<=b.x+hx;x+=.25)for(let z=b.z-hz;z<=b.z+hz;z+=.25){
@@ -51,6 +52,27 @@ test('waterfront blocks leave traffic and real building expansion clear',()=>{
    }
   }
   assert.equal(JSON.stringify(town),snapshot);
+ }
+});
+
+test('district courts and shared lanes stay dry, open and stable after expansion',()=>{
+ const base=createTileLayout(),expanded=addLayoutBuilding(base,'house','heart');assert.ok(expanded.ok);
+ for(const layout of [base,expanded.layout]){
+  const source=JSON.stringify(layout),town=compileCanalLayout(layout),network=compileLayout(layout),b=town.blocks;
+  assert.deepEqual(b.gardens.filter(p=>!['orchard','grove'].includes(p.kind)).map(p=>p.kind),['market','wind','harvest','water','workshop','cloister']);
+  assert.ok(b.walks.some(p=>p.kind==='promenade'));assert.ok(b.walks.some(p=>!p.kind));
+  assert.ok(b.tissues.some(p=>p.angle===Math.PI),'opposite homes face the shared lane');
+  const buildings=new Set(b.frontages.flatMap(p=>p.cells));
+  for(const walk of b.walks)for(let i=1;i<walk.points.length;i++){
+   const a=walk.points[i-1],c=walk.points[i],steps=Math.ceil(Math.hypot(c.x-a.x,c.z-a.z)*8);
+   for(let n=0;n<=steps;n++){
+    const p={x:a.x+(c.x-a.x)*n/steps,z:a.z+(c.z-a.z)*n/steps};
+    assert.equal(town.isWater(p),false,'no decorative bridge across a blood channel');
+    assert.equal(network.occupied.has(Math.round(p.x)+','+Math.round(p.z)),false,'keep playable footprints clear');
+    assert.equal(buildings.has(Math.floor(p.x*2)+','+Math.floor(p.z*2)),false,'front door approach stays outside houses');
+   }
+  }
+  assert.equal(JSON.stringify(layout),source);
  }
 });
 
@@ -97,6 +119,10 @@ test('switching village → canals → village preserves live state and restores
  for(const theme of ['1','2','1']){
   const v=createVillage({},s.layout,null,null,theme);v.update(s,{});actors.draw(s,{canals:v.canals});
   assert.equal(v.root.userData.theme,theme);assert.equal(serializeCity(s),before);
+  const world=pilotWorld(s.layout,theme);
+  for(const court of v.root.userData.themePlan.blocks.gardens.filter(p=>p.kind!=='grove')){
+   for(const [dx,dz] of [[0,0],[-court.w/2+.3,0],[court.w/2-.3,0],[0,-court.d/2+.3],[0,court.d/2-.3]])assert.ok(world.canStand({x:court.x+dx,z:court.z+dz}),'public court cross stays walkable');
+  }
   const feet=actors.root.children.find(m=>m.name==='feet');
   const expected=theme==='2'?s.cells.filter(c=>!v.canals.isWater(groundPoint(c))).length*2:s.cells.length*2;
   assert.equal(feet.count,expected);assert.equal(actors.root.children.length,16);

@@ -13,3 +13,10 @@ export const CITY_STYLE=Object.freeze({
  activity:Object.freeze({build:0xd6a451,repair:0x69a59a,fabricate:0xd1aa65,produce:0x75b5a7,collect:0xa596ad,patch:0xd6b77b,present:0x9abe75,prime:0x80baca,differentiate:0xb9a2cc,degranulate:0xdf9c95,cytotoxic:0x9a9bc9,regulate:0x7ecbb0,net:0xeee4b7}),
  mainRoad:1.5,alley:.72,curb:.22
 });
+
+// Coherent roof families let the six neighbourhoods read at overview scale.
+export const NEIGHBOURHOOD_ROOFS=Object.freeze({
+ heart:[0xad6658,0xc17c69,0xa36454],lung:[0x547c82,0x719b9d,0x638c8f],
+ gut:[0xb28f56,0xc6a66f,0xa78658],kidney:[0x7d758b,0x9b90a8,0x807c96],
+ marrow:[0xa56b83,0xbc8c9e,0x956c83],lymph:[0x75886b,0x94a481,0x7f956e]
+});

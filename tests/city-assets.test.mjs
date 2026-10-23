@@ -68,7 +68,7 @@ test('canal props respect the asset switch and tissue debris stays bounded by re
  for(const enabled of [true,false]){
   const village=createVillage({},s.layout,null,enabled?bundle:null,'2');village.update(s,{});
   const used=village.root.userData.bundleModels;
-  if(enabled){assert.equal(used['harbour-boat'],1);assert.equal(used['harbour-crane'],1);assert.ok(used['repair-scaffold']>0);assert.ok(used['garden-tree']>0);assert.ok(used['garden-bench']>0);}
+  if(enabled){assert.equal(used['harbour-boat'],1);assert.equal(used['harbour-crane'],1);assert.ok(used['repair-scaffold']>0);assert.ok(used['tree-round']>0);assert.ok(used['tree-cube']>0);assert.ok(used['garden-bench']>0);}
   else assert.deepEqual(used,{});
   village.dispose();
  }
