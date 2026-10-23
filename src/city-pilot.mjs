@@ -1,28 +1,25 @@
 import {takeCityCell,releaseCityCell,pilotCellAction} from './city-engine.mjs';
-import {pilotedCell,pilotInventory,PILOT_TOOLS} from './city-pilot-state.mjs';
+import {pilotedCell,pilotInventory,pilotTool,pilotCooldowns,PILOT_TOOLS} from './city-pilot-state.mjs';
+import {pilotObjective,pilotHostile,pilotJobs} from './city-pilot-tasks.mjs';
 import {pilotWorld} from './city-pilot-world.mjs';
 import {groundPoint,groundCoordinate} from './city-three-layout.mjs';
 import {cityDistricts,siteAt} from './city-tile-layout.mjs';
 import {cityRule,ruleTarget} from './city-rules.mjs';
-import {pathogenDef} from './city-pathogens.mjs';
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z),mix=(a,b,t)=>a+(b-a)*t;
-const hostile=e=>!e.dead&&e.entered&&e.compartment!=='lumen';
+const hostile=pilotHostile;
 export function createCityPilot(){
  let run=null,cell=null,world=null,inventory=null,theme='2',yaw=0,pitch=0,progress=0,previousAction=false;
  let notice='',noticeUntil=0,shots=0,deliveries=0,oxygen=0,hitUntil=0,hurtUntil=0,guide=[],guideTime=-Infinity,guideKey='';
  let vx=0,vz=0,jumpHeight=0,jumpVelocity=0,jumpHeld=false,crouch=0,sprinting=false,scoped=false,previousPosition=null,previousEye=.58;
+ let previousTool='oxygen',actionBlocked=false,workKey='',actions=0,scan=null,scanUntil=0;
  const position=()=>cell?groundPoint(cell):null;
  const eye=()=>((theme==='2'&&world.town.source.isWater(position())) ? .48 : .58)-crouch*.24+jumpHeight;
  function destination(){return cityDistricts(run).filter(d=>d.id!=='lung'&&ruleTarget(run,'oxygen',d.id)).sort((a,b)=>run.districts[a.id].oxygen-run.districts[b.id].oxygen)[0]?.id||'heart';}
  function objective(){
   if(!cell)return null;
-  if(inventory.tool==='oxygen'){
-   const id=inventory.oxygen?inventory.target:'lung';
-   return {id,...siteAt(run.layout,id),name:id==='lung'?'폐 · 산소 충전':cityDistricts(run).find(d=>d.id===id).short+' · 산소 배송'};
-  }
-  const p=position(),e=run.enemies.filter(hostile).sort((a,b)=>distance(p,groundPoint(a))-distance(p,groundPoint(b)))[0];
-  return e?{id:'enemy'+e.id,...groundPoint(e),name:pathogenDef(e.recordId)?.name||'병원체',enemy:e}:{id:'heart',...siteAt(run.layout,'heart'),name:'감염 없음 · 도시 순찰'};
+  if(inventory.tool==='scanner'){const aimed=target(8);if(aimed)return pilotJobs(run,'scanner').find(j=>j.enemy===aimed);}
+  return pilotObjective(run,inventory.tool,position());
  }
  function say(text){if(text){notice=text;noticeUntil=run.time+3;}}
  function resetMotion(){vx=vz=0;jumpHeld=false;sprinting=scoped=false;previousPosition=position();if(cell)previousEye=eye();}
@@ -37,7 +34,7 @@ export function createCityPilot(){
   }
   if(!cell)return false;
   run=s;inventory=pilotInventory(s);cell.energy??=100;cell.integrity??=100;cell.recovering=false;
-  shots=deliveries=oxygen=0;progress=0;guideTime=-Infinity;guideKey='';guide=[];previousAction=false;pitch=-.04;notice='';jumpHeight=jumpVelocity=crouch=0;resetMotion();
+  shots=deliveries=oxygen=actions=0;scan=null;scanUntil=0;previousTool=inventory.tool==='engulf'?'oxygen':'engulf';actionBlocked=false;workKey='';progress=0;guideTime=-Infinity;guideKey='';guide=[];previousAction=false;pitch=-.04;notice='';jumpHeight=jumpVelocity=crouch=0;resetMotion();
   const p=position(),goal=objective();guide=world.route(p,goal,'neutrophil');guideKey=goal.id;guideTime=run.time;
   const target=guide.find(q=>distance(p,q)>.6)||goal;yaw=Math.atan2(target.x-p.x,-(target.z-p.z));return true;
  }
@@ -52,10 +49,12 @@ export function createCityPilot(){
   }return best;
  }
  function equip(id){
-  if(!cell||!PILOT_TOOLS.some(t=>t.id===id))return false;
-  inventory.tool=id;progress=0;previousAction=false;guideTime=-Infinity;say(PILOT_TOOLS.find(t=>t.id===id).name);return true;
+  if(!cell||id===inventory.tool||!PILOT_TOOLS.some(t=>t.id===id))return false;
+  previousTool=inventory.tool;inventory.tool=id;actionBlocked=previousAction;progress=0;workKey='';scan=null;scoped=false;guideTime=-Infinity;say(pilotTool(id).name);return true;
  }
- function cycle(direction=1){if(!inventory)return;const i=PILOT_TOOLS.findIndex(t=>t.id===inventory.tool);equip(PILOT_TOOLS[(i+direction+PILOT_TOOLS.length)%PILOT_TOOLS.length].id);}
+ function cycle(direction=1){if(!inventory)return false;const i=PILOT_TOOLS.findIndex(t=>t.id===inventory.tool);return equip(PILOT_TOOLS[(i+(direction<0?-1:1)+PILOT_TOOLS.length)%PILOT_TOOLS.length].id);}
+ function previous(){return equip(previousTool);}
+ function nextDestination(){if(!cell)return;const destinations=pilotJobs(run,inventory.tool).filter(j=>j.site&&j.id!=='lung'&&j.id!=='gut');if(destinations.length){const current=destinations.findIndex(j=>j.id===inventory.target);chooseDestination(destinations[(current+1)%destinations.length].id);say('목적지 · '+objective().name);}}
  function chooseDestination(id){if(!cell||id==='lung'||!run.districts[id]||!ruleTarget(run,'oxygen',id))return;inventory.target=id;progress=0;guideTime=-Infinity;}
  function step(dt,input={}){
   if(!cell)return;
@@ -77,22 +76,26 @@ export function createCityPilot(){
   const heart=siteAt(run.layout,'heart'),recover=distance(p,heart)<2.5&&run.districts.heart.oxygen>=20&&run.districts.heart.food>0&&!hazards;
   cell.energy=clamp(cell.energy+dt*(sprinting?-3:recover?5:1.5),0,100);if(recover)cell.integrity=clamp(cell.integrity+dt*3,0,100);
   if(cell.integrity<=0){cell.lost=true;stop();return;}
-  const use=!!(input.use||input.fire||input.interact);
+  const rawUse=!!(input.use||input.fire||input.interact);if(!rawUse)actionBlocked=false;const use=rawUse&&!actionBlocked;
   if(inventory.tool==='engulf'){
    if(use&&cell.cooldown<=0){const e=target();if(e){const result=pilotCellAction(run,'attack',e.id);if(result.ok){shots++;hitUntil=run.time+.2;say(result.defeated?'병원체 제거':'명중');}else say(result.text);}else if(!previousAction)say('조준점을 맞추고 가까이 접근');}
   }else{
-   const goal=objective(),at=distance(p,goal)<2.5,acting=use&&at&&Math.hypot(vx,vz)<.25&&jumpHeight===0;
-   if(acting){progress+=dt;if(progress>=cityRule(run,'oxygen').params.duration){const result=pilotCellAction(run,'oxygen',goal.id);progress=0;say(result.text);if(result.ok){if(result.delivered){deliveries++;oxygen+=result.delivered;}if(!inventory.oxygen)inventory.target=destination();guideTime=-Infinity;}}}
-   else{progress=0;if(use&&!previousAction)say(at?'멈춰서 작업':'목적지 접안 지점으로 이동');}
+   const goal=objective(),def=pilotTool(inventory.tool),at=distance(p,goal)<=def.range,ready=(pilotCooldowns(run)[def.id]||0)<=run.time;
+   const mobileWork=['cleanup','antigen','signal','scanner'].includes(def.id),acting=use&&at&&!goal.idle&&ready&&(mobileWork||Math.hypot(vx,vz)<.25&&jumpHeight===0)&&world.clear(p,goal);
+   if(workKey!==goal.id){progress=0;workKey=goal.id;}
+   if(acting){progress+=dt;if(progress>= (def.id==='oxygen'?cityRule(run,'oxygen').params.duration:def.duration)){
+    const result=pilotCellAction(run,def.id,goal.id);progress=0;say(result.text);
+    if(result.ok){actions++;hitUntil=run.time+.16;if(result.scan){scan=result.scan;scanUntil=run.time+4;}if(result.delivered){deliveries++;if(def.id==='oxygen')oxygen+=result.delivered;}if(def.id==='oxygen'&&!inventory.oxygen)inventory.target=destination();guideTime=-Infinity;}
+   }}else{progress=0;if(use&&!previousAction)say(goal.idle?goal.name:!ready?'도구 재사용 대기':at?'멈춰서 작업':'작업 대상 가까이 이동');}
   }
-  previousAction=use;cell.task='직접 조종 · '+(inventory.tool==='oxygen'?'산소 운반':'감염 대응');
+  previousAction=rawUse;cell.task='직접 조종 · '+pilotTool(inventory.tool).short;
   const goal=objective();if(goal.id!==guideKey||run.time-guideTime>2){guideTime=run.time;guideKey=goal.id;guide=world.route(p,goal,'neutrophil');}
  }
  function view(alpha=1){
-  if(!cell)return null;const actual=position(),goal=objective(),aim=target(scoped?18:undefined);let next=goal;
+  if(!cell)return null;const actual=position(),goal=objective(),def=pilotTool(inventory.tool),aim=target(scoped||def.id==='scanner'?18:undefined);let next=goal;
   if(guide.length){let closest=0;for(let i=1;i<guide.length;i++)if(distance(actual,guide[i])<distance(actual,guide[closest]))closest=i;guide=guide.slice(closest);next=guide.find(q=>distance(actual,q)>1.1)||goal;}
   const t=clamp(alpha,0,1),p=previousPosition?{x:mix(previousPosition.x,actual.x,t),z:mix(previousPosition.z,actual.z,t)}:actual;
-  return {cell,inventory,position:p,eye:mix(previousEye,eye(),t),goal,next,guide,yaw,pitch,aim,theme,progress:progress/cityRule(run,'oxygen').params.duration,notice:run.time<noticeUntil?notice:'',shots,deliveries,oxygen,hit:run.time<hitUntil,hurt:run.time<hurtUntil,distance:distance(actual,goal),sprinting,crouching:crouch>.5,scoped,airborne:jumpHeight>0,speed:Math.hypot(vx,vz),water:theme==='2'&&world.town.source.isWater(actual)};
+  return {cell,inventory,tool:def,position:p,eye:mix(previousEye,eye(),t),goal,next,guide,yaw,pitch,aim,theme,progress:progress/(def.id==='oxygen'?cityRule(run,'oxygen').params.duration:def.duration||1),notice:run.time<noticeUntil?notice:'',shots,deliveries,oxygen,actions,scan:run.time<scanUntil?scan:null,cooldown:Math.max(0,(pilotCooldowns(run)[def.id]||0)-run.time),hit:run.time<hitUntil,hurt:run.time<hurtUntil,distance:distance(actual,goal),sprinting,crouching:crouch>.5,scoped,airborne:jumpHeight>0,speed:Math.hypot(vx,vz),water:theme==='2'&&world.town.source.isWater(actual)};
  }
- return {start,stop,step,view,objective,equip,cycle,setTheme,chooseDestination,resetMotion,get active(){return !!cell;},get cell(){return cell;},get run(){return run;},get world(){return world;},look(dx,dy){const sensitivity=scoped?.00125:.0025;yaw+=clamp(dx,-180,180)*sensitivity;pitch=clamp(pitch-clamp(dy,-180,180)*sensitivity,-1.2,1.2);}};
+ return {start,stop,step,view,objective,equip,cycle,previous,nextDestination,setTheme,chooseDestination,resetMotion,get active(){return !!cell;},get cell(){return cell;},get run(){return run;},get world(){return world;},look(dx,dy){const sensitivity=scoped?.00125:.0025;yaw+=clamp(dx,-180,180)*sensitivity;pitch=clamp(pitch-clamp(dy,-180,180)*sensitivity,-1.2,1.2);}};
 }

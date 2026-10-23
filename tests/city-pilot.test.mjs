@@ -1,19 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createCity,tickCity,serializeCity,restoreCity} from '../src/city-engine.mjs';
+import {createCity,tickCity,serializeCity,restoreCity,pilotCellAction} from '../src/city-engine.mjs';
 import {applyTileLayout,createTileLayout,siteAt,compileLayout} from '../src/city-tile-layout.mjs';
 import {groundCoordinate,groundPoint} from '../src/city-three-layout.mjs';
 import {createCityPilot} from '../src/city-pilot.mjs';
 import {pilotWorld} from '../src/city-pilot-world.mjs';
-import {pilotedCell,pilotInventory} from '../src/city-pilot-state.mjs';
+import {pilotedCell,pilotInventory,PILOT_TOOLS} from '../src/city-pilot-state.mjs';
+import {pilotJobs} from '../src/city-pilot-tasks.mjs';
+import {WALLS,TISSUES} from '../src/city-frontier-data.mjs';
 const data=JSON.parse(fs.readFileSync(new URL('../data/organisms.json',import.meta.url)));
 const city=()=>{const s=createCity('normal','simulation',{specialists:true,expanded:true});applyTileLayout(s,createTileLayout());return s;};
 const d=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
+function hold(p,seconds){for(let t=0;t<seconds;t+=.05){p.run.time+=.05;p.step(.05,{use:true});}}
 function face(p,point){for(let i=0;i<16;i++){const v=p.view(),angle=Math.atan2(point.x-v.position.x,-(point.z-v.position.z)),delta=Math.atan2(Math.sin(angle-v.yaw),Math.cos(angle-v.yaw));if(Math.abs(delta)<.001)return;p.look(delta/.0025,0);}}
 function travel(p,goal){
  for(const point of p.world.route(p.view().position,goal,'neutrophil')){
-  let steps=0;while(d(p.view().position,point)>.09&&steps++<1800){face(p,point);p.step(.02,{forward:Math.min(1,d(p.view().position,point)*2)});}
+  let steps=0;while(d(p.view().position,point)>.09&&steps++<1800){face(p,point);p.run.time+=.02;p.step(.02,{forward:Math.min(1,d(p.view().position,point)*2)});}
   assert.ok(steps<1800,'manual movement reaches a route corner');for(let i=0;i<20;i++)p.step(.02);
  }
 }
@@ -33,9 +36,9 @@ for(const theme of ['2','1']){
  });
  test('theme '+theme+': same neutrophil carries oxygen, switches tools, walks and unloads once',()=>{
   const s=city(),p=createCityPilot(),c=s.cells.find(c=>c.kind==='neutrophil');s.cells=[c];Object.assign(c,groundCoordinate(siteAt(s.layout,'lung')));const originalCargo=c.cargo;s.districts.heart.oxygen=20;
-  assert.ok(p.start(s,{preferred:c.id,theme}));p.equip('oxygen');p.chooseDestination('heart');for(let i=0;i<20;i++)p.step(.05,{use:true});const cargo=pilotInventory(s).oxygen;assert.ok(cargo>0);
+  assert.ok(p.start(s,{preferred:c.id,theme}));p.equip('oxygen');p.chooseDestination('heart');hold(p,1);const cargo=pilotInventory(s).oxygen;assert.ok(cargo>0);
   const position=p.view().position;p.equip('engulf');assert.equal(p.cell,c);assert.deepEqual(p.view().position,position);assert.equal(pilotInventory(s).oxygen,cargo);assert.equal(c.cargo,originalCargo);
-  p.equip('oxygen');travel(p,siteAt(s.layout,'heart'));const before=s.stats.oxygen;for(let i=0;i<20;i++)p.step(.05,{use:true});assert.equal(pilotInventory(s).oxygen,0);assert.equal(s.districts.heart.oxygen,20+cargo);assert.equal(s.stats.oxygen,before+cargo);
+  p.equip('oxygen');travel(p,siteAt(s.layout,'heart'));const before=s.stats.oxygen;hold(p,1);assert.equal(pilotInventory(s).oxygen,0);assert.equal(s.districts.heart.oxygen,20+cargo);assert.equal(s.stats.oxygen,before+cargo);
   for(let i=0;i<30;i++)p.step(.05,{use:true});assert.equal(s.stats.oxygen,before+cargo);assert.equal(p.view().deliveries,1);assert.ok(restoreCity(serializeCity(s)));p.stop();
  });
 }
@@ -61,7 +64,39 @@ test('jump raises the camera, lands once while held, and works again after relea
 });
 test('inventory survives saving, reentry and theme changes; missing cells safely release control',()=>{
  const s=city(),p=createCityPilot();assert.ok(p.start(s));const c=p.cell;p.equip('oxygen');pilotInventory(s).oxygen=12;p.chooseDestination('kidney');p.setTheme('1');assert.equal(p.cell,c);assert.ok(p.world.canStand(p.view().position));p.stop();
- const restored=restoreCity(serializeCity(s));assert.deepEqual(pilotInventory(restored),{tool:'oxygen',oxygen:12,target:'kidney'});assert.ok(p.start(restored,{theme:'1'}));assert.equal(p.view().inventory.oxygen,12);
+ const restored=restoreCity(serializeCity(s));assert.deepEqual(pilotInventory(restored),{tool:'oxygen',oxygen:12,target:'kidney',nutrient:0,debris:0,antigen:null});assert.ok(p.start(restored,{theme:'1'}));assert.equal(p.view().inventory.oxygen,12);
  restored.cells=restored.cells.filter(x=>x!==p.cell);p.step(.05,{forward:1});assert.equal(p.active,false);assert.equal(pilotedCell(restored),null);
  const bad=JSON.parse(serializeCity(s));bad.pilotInventory.oxygen=-1;assert.equal(restoreCity(JSON.stringify(bad)),null);
+});
+test('nine tools wrap, Q restores the previous tool, and held use cannot spill into a new tool',()=>{
+ const s=city(),p=createCityPilot();assert.ok(p.start(s));const c=p.cell,kind=c.kind;
+ for(const tool of PILOT_TOOLS){p.equip(tool.id);assert.equal(p.cell,c);assert.equal(c.kind,kind);}
+ p.cycle();assert.equal(p.view().tool.id,'engulf');p.cycle(-1);assert.equal(p.view().tool.id,'scanner');p.previous();assert.equal(p.view().tool.id,'engulf');p.previous();assert.equal(p.view().tool.id,'scanner');
+ Object.assign(c,groundCoordinate(siteAt(s.layout,'heart')));p.resetMotion();p.equip('engulf');p.step(.05,{use:true});s.districts.heart.hp=50;
+ p.equip('repair');hold(p,2);assert.equal(s.districts.heart.hp,50);p.step(.05);hold(p,1.3);assert.equal(s.districts.heart.hp,58);p.stop();
+});
+for(const theme of ['2','1'])test('theme '+theme+': supply, repairs, cleanup, patching, antigen and support affect the real city',()=>{
+ const s=city(),p=createCityPilot();assert.ok(p.start(s,{theme}));const i=pilotInventory(s),c=p.cell;
+ const act=(tool,id)=>{p.equip(tool);const job=pilotJobs(s,tool).find(j=>j.id===id);assert.ok(job,tool+' target');Object.assign(c,groundCoordinate(job));p.resetMotion();s.time+=7;return pilotCellAction(s,tool,id);};
+ const food=s.resources.food;assert.ok(act('nutrient','gut').ok);assert.equal(s.resources.food,food-20);assert.equal(i.nutrient,20);
+ s.districts.heart.food=38;assert.ok(act('nutrient','heart').ok);assert.equal(i.nutrient,18);assert.equal(s.districts.heart.food,40);
+ s.districts.heart.hp=96;const materials=s.resources.materials;assert.ok(act('repair','heart').ok);assert.equal(s.districts.heart.hp,100);assert.equal(s.resources.materials,materials-1);
+ s.frontier.tissues[0].hp=40;assert.ok(act('repair','tissue:'+TISSUES[0].id).ok);assert.equal(s.frontier.tissues[0].hp,48);
+ s.debris=[{id:++s.serial,...groundCoordinate(siteAt(s.layout,'heart')),recordId:'SAU-001'}];const debris=s.debris[0],waste=s.waste;
+ assert.ok(act('cleanup','debris:'+debris.id).ok);assert.equal(s.debris.length,0);assert.equal(i.debris,1);assert.equal(s.waste,waste,'kidney handles waste after unloading');
+ assert.equal(pilotCellAction(s,'cleanup','debris:'+debris.id).ok,false);assert.ok(act('cleanup','kidney').ok);assert.equal(i.debris,0);assert.equal(s.frontier.waste.stock,1);
+ s.frontier.walls[0].hp=0;assert.ok(act('patch','wall:'+WALLS[0].id).ok);assert.equal(s.frontier.walls[0].hp,12);act('patch','wall:'+WALLS[0].id);act('patch','wall:'+WALLS[0].id);assert.equal(s.frontier.walls[0].hp,25);
+ s.debris=[{id:++s.serial,...groundCoordinate(siteAt(s.layout,'heart')),recordId:'SAU-001'}];assert.ok(act('antigen','debris:'+s.debris[0].id).ok);assert.equal(i.antigen,'SAU-001');assert.ok(act('antigen','lymph').ok);assert.equal(i.antigen,null);assert.equal(s.frontier.inbox.filter(x=>x.recordId==='SAU-001').length,1);
+ assert.equal(pilotJobs(s,'antigen').length,0,'no duplicate antigen collection');
+ const energy=c.energy;assert.ok(act('signal','heart').ok);assert.equal(c.energy,energy-10);assert.equal(s.rally,'heart');assert.equal(s.districts.heart.supportUntil,s.time+15);
+ p.equip('repair');p.equip('signal');assert.equal(pilotCellAction(s,'signal','heart').ok,false,'switching cannot reset the support cooldown');
+ const state=JSON.stringify({districts:s.districts,resources:s.resources});const result=act('scanner','heart');assert.ok(result.ok);assert.match(result.text,/HP 100/);assert.equal(JSON.stringify({districts:s.districts,resources:s.resources}),state);
+ assert.ok(restoreCity(serializeCity(s)),'all tool state is saveable');p.stop();
+});
+test('unaffordable or remote jobs cannot grant free resources; old inventory saves migrate',()=>{
+ const s=city();s.pilotInventory={tool:'oxygen',oxygen:7,target:'heart'};assert.ok(restoreCity(serializeCity(s)));
+ const p=createCityPilot();p.start(s);s.districts.heart.hp=40;s.resources.materials=0;p.equip('repair');Object.assign(p.cell,groundCoordinate(siteAt(s.layout,'heart')));
+ assert.equal(pilotCellAction(s,'repair','heart').ok,false);assert.equal(s.districts.heart.hp,40);
+ p.equip('nutrient');assert.equal(pilotCellAction(s,'nutrient','gut').ok,false);assert.equal(pilotInventory(s).nutrient,0);
+ const bad=JSON.parse(serializeCity(s));bad.pilotInventory.debris=7;assert.equal(restoreCity(JSON.stringify(bad)),null);p.stop();
 });

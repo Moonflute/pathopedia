@@ -16,6 +16,7 @@ import {tickResponse,validateResponse} from './city-response.mjs';
 import {ensureHostResponse,validateHostResponse} from './city-host-response.mjs';
 import {moveToInflammation} from './city-immune-traffic.mjs';
 import {pilotedCell,setPilotedCell,pilotInventory,validatePilotInventory} from './city-pilot-state.mjs';
+import {pilotWork} from './city-pilot-work.mjs';
 
 export const SAVE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
@@ -220,14 +221,7 @@ export function pilotCellAction(s,action,id){
   const amount=rule.params.damage*(s.policy==='defense'?1.3:1)*clamp(organ.oxygen/45,.3,1)*((depot?depot.food:organ.food)>0?1:.5)*(organ.supportUntil>s.time?1.15:1)*(1+support*.85+(e.c3b||0)*.8)*capsule*immuneClearance(s,near.id)*clamp(c.energy/65,.35,1);
   damage(s,e,amount,c,JOBS.neutrophil.color);combatEffort(c);c.cooldown=rule.params.interval;beginActivity(s,c,'engulf',.4,e);c.task='직접 조종 · 감염 대응';return {ok:true,defeated:e.dead,amount};
  }
- if(action==='oxygen'&&inventory.tool==='oxygen'){
-  const target=inventory.oxygen?inventory.target:'lung',d=s.districts[target],q=groundPoint(point(s,target)),rule=cityRule(s,'oxygen');
-  if(id!==target||Math.hypot(p.x-q.x,p.z-q.z)>2.5)return {ok:false,text:'산소 접안 지점으로 이동'};
-  if(!ruleReady(s,'oxygen',inventory.oxygen?target:'lung')||inventory.oxygen&&!ruleTarget(s,'oxygen',target))return {ok:false,text:'현재 산소 운반 규칙에서 작업 불가'};
-  if(inventory.oxygen){const amount=Math.min(inventory.oxygen,100-d.oxygen);if(amount<.1)return {ok:false,text:'산소 충분 · 다른 목적지 선택'};d.oxygen=clamp(d.oxygen+amount);s.stats.oxygen+=amount;inventory.oxygen=Math.max(0,inventory.oxygen-amount);return {ok:true,delivered:amount,text:cityDistrict(s,target).short+' 산소 +'+Math.round(amount)};}
-  inventory.oxygen=rule.params.amount*(1+(s.districts.lung.level-1)*.25)*output(s,'lung')*(s.weather.id==='dry'?.55:1);return {ok:true,loaded:inventory.oxygen,text:'산소 적재 완료'};
- }
- return {ok:false};
+ return pilotWork(s,c,action,id,frontierAPI);
 }
 function station(s,c,id,tag,dx,dy,dt,speed=58){
   if(c.assignment!==tag){
