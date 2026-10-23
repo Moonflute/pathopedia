@@ -219,7 +219,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit,on
   if(!shouldRender(now,quality.fps))return;
   if(options.interpolation!=null)interpolation=options.interpolation;
   motion.prepare(s,interpolation,options.paused);
-  const firstPerson=pilot.active,pilotView=firstPerson?pilot.render(now):null,renderCamera=firstPerson?pilot.camera:camera;
+  const firstPerson=pilot.active,pilotView=firstPerson?pilot.render(now,options.paused?1:interpolation):null,renderCamera=firstPerson?pilot.camera:camera;
   if(!firstPerson){
   const cell=watching.resolve(s);
   if(followButton.getAttribute('aria-pressed')!==String(watching.following))syncFollowing();
