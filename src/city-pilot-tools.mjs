@@ -16,14 +16,21 @@ const paths={
 export const pilotToolIcon=id=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="${paths[id]||paths.engulf}"/></svg>`;
 
 export function createPilotTools(){
- const root=new T.Group(),groups=new Map(),materials=new Map();
+ const root=new T.Group(),scene=new T.Scene(),camera=new T.PerspectiveCamera(50,1,.01,4),groups=new Map(),materials=new Map();scene.add(root);
+ scene.add(new T.HemisphereLight(0xf4fffa,0x546b64,2.4));const light=new T.DirectionalLight(0xfff0cf,3);light.position.set(-2,3,4);scene.add(light);
  const geometry={box:new T.BoxGeometry(1,1,1),sphere:new T.SphereGeometry(1,10,7),tube:new T.CylinderGeometry(1,1,1,10),ring:new T.TorusGeometry(1,.19,5,12)};
- const material=color=>{if(!materials.has(color))materials.set(color,new T.MeshBasicMaterial({color,depthTest:false}));return materials.get(color);};
- const add=(group,shape,color,pos,size,rot=0)=>{const mesh=new T.Mesh(geometry[shape],material(color));mesh.position.set(...pos);mesh.scale.set(...size);mesh.rotation.z=rot;mesh.renderOrder=21+group.children.length;group.add(mesh);return mesh;};
+ const material=color=>{if(!materials.has(color))materials.set(color,new T.MeshStandardMaterial({color,roughness:.62,metalness:.12}));return materials.get(color);};
+ const add=(group,shape,color,pos,size,rot=0)=>{const mesh=new T.Mesh(geometry[shape],material(color));mesh.position.set(...pos);mesh.scale.set(...size);mesh.rotation.z=rot;group.add(mesh);return mesh;};
  const metal=0x657b7c,dark=0x294e46,cream=0xffebbe;
+ const hand=new T.Group();root.add(hand);
+ add(hand,'box',dark,[.14,-.29,.14],[.12,.34,.13],.32);
+ add(hand,'box',0x5d9183,[.09,-.17,.10],[.14,.10,.14],.32);
+ add(hand,'box',cream,[.075,-.13,.09],[.13,.035,.135],.32);
+ add(hand,'sphere',0xe8c99c,[.045,-.075,.075],[.065,.075,.055]);
+ add(hand,'sphere',cream,[-.018,-.047,.082],[.03,.055,.027],-.6);
+ for(let i=0;i<3;i++)add(hand,'sphere',cream,[.015,-.04-i*.026,.106],[.05,.016,.025],.1);
  for(const def of PILOT_TOOLS){
-  const g=new T.Group(),color=def.color;g.position.set(.25,-.24,-.5);g.scale.setScalar(.72);g.rotation.set(-.1,-.18,-.12);groups.set(def.id,g);root.add(g);
-  add(g,'sphere',cream,[0,-.07,.035],[.055,.065,.07]);
+  const g=new T.Group(),color=def.color;g.visible=false;groups.set(def.id,g);root.add(g);
   if(def.id==='engulf'){
    add(g,'sphere',color,[0,.015,0],[.085,.08,.09]);
    for(let i=0;i<4;i++)add(g,'sphere',cream,[(i-1.5)*.04,.08,-.025],[.025,.045,.036]);
@@ -57,11 +64,15 @@ export function createPilotTools(){
    add(g,'box',metal,[0,-.085,0],[.06,.09,.05]);
   }
  }
- let last='',changedAt=0;
- return {root,update(v,now,aspect=1){
-  if(last!==v.tool.id){last=v.tool.id;changedAt=now;for(const [id,g] of groups)g.visible=id===last;}
-  const walk=Math.min(1,v.speed/4.2),phase=now*.009;
-  root.position.set((aspect<.75?-.25:0)+Math.sin(phase)*.004*walk,-Math.sin(Math.min(1,(now-changedAt)/180)*Math.PI)*.07+Math.cos(phase*2)*.003*walk,v.hit?.045:0);
-  groups.get(last).rotation.x=-.1+(v.progress?Math.sin(now*.018)*.08:0);
- },dispose(){for(const g of Object.values(geometry))g.dispose();for(const m of materials.values())m.dispose();}};
+ let last='',changedAt=0,lastTime=0,clock=0,punchAt=-Infinity,wasUsing=false;
+ return {root,update(v,now,aspect=1,paused=false,height=720){
+  const dt=lastTime?Math.min(.05,Math.max(0,(now-lastTime)/1000)):0;lastTime=now;if(!paused)clock+=dt*1000;
+  if(last!==v.tool.id){last=v.tool.id;changedAt=clock;punchAt=-Infinity;wasUsing=false;for(const [id,g] of groups)g.visible=id===last;}
+  if(!paused&&v.using&&(!wasUsing||last==='engulf'&&clock-punchAt>460))punchAt=clock;wasUsing=v.using;
+  const walk=paused?0:Math.min(1,v.speed/4.2),phase=clock*.009,portrait=aspect<.8,short=height<520,halfY=Math.tan(25*Math.PI/180)*.8;
+  const punch=Math.sin(Math.min(1,(clock-punchAt)/280)*Math.PI),swap=Math.sin(Math.min(1,(clock-changedAt)/200)*Math.PI);
+  camera.aspect=aspect;camera.updateProjectionMatrix();root.scale.setScalar(portrait?.8:short?1.12:1.2);
+  root.position.set(halfY*aspect*(portrait?.43:short?.50:.64)+Math.sin(phase)*.009*walk, -halfY*(portrait?.28:short?.47:.58)-swap*.12+Math.cos(phase*2)*.006*walk, -.8-punch*(last==='engulf'?.12:.025));
+  root.rotation.set(-.1-punch*.22+(v.progress?Math.sin(clock*.018)*.06:0),-.22,-.12+Math.sin(phase)*.025*walk);
+ },render(renderer){const autoClear=renderer.autoClear;renderer.autoClear=false;renderer.clearDepth();renderer.render(scene,camera);renderer.autoClear=autoClear;},dispose(){for(const g of Object.values(geometry))g.dispose();for(const m of materials.values())m.dispose();}};
 }

@@ -1,5 +1,6 @@
 import * as T from './vendor/three/three.module.min.js';
 import {createCityPilot} from './city-pilot.mjs';
+import {pilotWorld} from './city-pilot-world.mjs';
 import {PILOT_TOOLS} from './city-pilot-state.mjs';
 import {pilotStock} from './city-pilot-tasks.mjs';
 import {createPilotTools,pilotToolIcon} from './city-pilot-tools.mjs';
@@ -21,13 +22,16 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
  <div class="cc-pilot-keys">휠 / 1–9 도구 · Q 직전 도구 · WASD 이동 · Shift 달리기 · Space 점프 · Ctrl 앉기 · Esc 메뉴</div>
  <div class="cc-pilot-paused" hidden><div><button type="button" data-pilot-resume>▶ 계속하기</button><button type="button" data-pilot-exit>도시로 ↗</button></div></div>
  <div class="cc-pilot-error" hidden><p>조종할 세포를 충원해 주세요</p><button type="button" data-pilot-exit>도시로 ↗</button></div>`;
- map.append(hud);
+ const placement=document.createElement('section');placement.className='cc-pilot-placement';placement.hidden=true;placement.setAttribute('aria-label','1인칭 시작 위치 선택');
+ placement.innerHTML='<div><strong>어디서 시작할까요?</strong><span role="status">길이나 수로를 클릭하세요</span></div><button type="button" aria-label="시작 위치 선택 취소">취소 <kbd>Esc</kbd></button>';
+ map.append(hud,placement);
  const q=s=>hud.querySelector(s),fields=Object.fromEntries(['name','motion','goal','distance','bearing','target','target-health','feedback','transfer','action-hint','health','energy','cargo','score','destination','selected','ready'].map(id=>[id,q('[data-pilot-'+id+']')]));
  const keys=new Set(),pointers=new Map(),touch={forward:0,strafe:0,use:false,jump:false,scope:false,sprint:false,crouch:false};
  const overviewLabel=canvas.getAttribute('aria-label');let mouseUse=false,mouseScope=false,jumpQueued=false,crouchToggle=false,menu='',failed=false,run=null,hadLock=false,lastHud=-Infinity,lastRender=0,lastTool='',theme='2',fallback=false;
+ let choosing=false,spawnPreview=null,spawnWorld=null,preferred=null;
  const guideMaterial=new T.MeshBasicMaterial({color:0xa9f2dc,depthTest:true}),guide=new T.InstancedMesh(new T.SphereGeometry(.07,5,4),guideMaterial,100),dummy=new T.Object3D();guide.frustumCulled=false;root.add(guide);
  const beacon=new T.Mesh(new T.TorusGeometry(.55,.045,5,28),guideMaterial);beacon.rotation.x=-Math.PI/2;root.add(beacon);
- const heldTools=createPilotTools();camera.add(heldTools.root);root.add(camera);
+ const heldTools=createPilotTools();root.add(camera);
  const touchUI=()=>matchMedia('(pointer:coarse), (max-width:760px), (max-height:520px)').matches;
  const on=(el,event,fn,options={})=>el.addEventListener(event,fn,{...options,signal});
  function clearInput(){keys.clear();pointers.clear();Object.assign(touch,{forward:0,strafe:0,use:false,jump:false,scope:false,sprint:false,crouch:false});mouseUse=mouseScope=jumpQueued=crouchToggle=false;q('.cc-pilot-stick i').style.transform='';model.resetMotion();for(const b of hud.querySelectorAll('[data-pilot-toggle]'))b.setAttribute('aria-pressed','false');}
@@ -43,14 +47,21 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
  }
  function resume(){if(!model.active)return;menu='';clearInput();syncMenu();onMode('resume');canvas.focus({preventScroll:true});lock();}
  function exit(){
-  const wasOpen=model.active||failed;model.stop();failed=false;menu='';clearInput();root.visible=false;hud.hidden=true;delete game.dataset.pilot;unlock();canvas.setAttribute('aria-label',overviewLabel);if(wasOpen)onMode('exit');canvas.focus({preventScroll:true});
+  const wasOpen=model.active||failed||choosing;choosing=false;spawnPreview=null;spawnWorld=null;placement.hidden=true;model.stop();failed=false;menu='';clearInput();root.visible=false;hud.hidden=true;delete game.dataset.pilot;unlock();canvas.setAttribute('aria-label',overviewLabel);if(wasOpen)onMode('exit');canvas.focus({preventScroll:true});
  }
  function open(s){
-  if(model.active||failed||s.status!=='running')return;
-  run=s;theme=readTheme();const preferred=selectedCell();onMode('choose');hud.hidden=false;menu='';syncMenu();
-  failed=!model.start(s,{preferred,theme});q('.cc-pilot-error').hidden=!failed;game.dataset.pilot='explorer';if(failed)return;
+  if(model.active||failed||choosing||!s.layout||s.status!=='running')return;
+  run=s;theme=readTheme();preferred=selectedCell();spawnWorld=pilotWorld(s.layout,theme);choosing=true;spawnPreview=null;menu='';clearInput();syncMenu();
+  placement.hidden=false;placement.dataset.invalid='false';placement.querySelector('[role="status"]').textContent=touchUI()?'길이나 수로를 터치하세요':'길이나 수로를 클릭하세요';game.dataset.pilot='choose';canvas.setAttribute('aria-label','1인칭 시작 위치 선택. 지도 이동·확대 후 길이나 수로를 클릭하세요. Escape 취소.');onMode('choose');canvas.focus({preventScroll:true});
+ }
+ function previewSpawn(point){if(!choosing)return;spawnPreview=point?{x:point.x,z:point.z,valid:spawnWorld.canStand(point)}:null;}
+ function chooseSpawn(point){
+  if(!choosing)return;previewSpawn(point);
+  if(!spawnPreview?.valid){placement.dataset.invalid='true';placement.querySelector('[role="status"]').textContent='빈 길이나 수로를 선택하세요';return;}
+  failed=!model.start(run,{preferred,theme,spawn:spawnPreview});choosing=false;spawnPreview=null;spawnWorld=null;placement.hidden=true;hud.hidden=false;q('.cc-pilot-error').hidden=!failed;game.dataset.pilot='explorer';if(failed)return;
   root.visible=true;lastHud=-Infinity;lastTool='';lastRender=0;canvas.setAttribute('aria-label','세포 1인칭. WASD 이동, 마우스 시점, 휠 또는 1–9 도구 전환, Q 직전 도구, 클릭 또는 E 사용, Space 점프, Shift 달리기, Ctrl 앉기, Escape 메뉴.');onMode('start');canvas.focus({preventScroll:true});render(performance.now(),1);lock();
  }
+ on(placement.querySelector('button'),'click',exit);
  function switched(changed){if(!changed)return;touch.scope=mouseScope=false;lastTool='';lastHud=-Infinity;render(performance.now(),1);}
  function equip(id){switched(model.equip(id));}
  let swipe=null,swipeSuppressUntil=0;
@@ -65,6 +76,7 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
   else if(b.dataset.pilotToggle){const kind=b.dataset.pilotToggle;touch[kind]=!touch[kind];b.setAttribute('aria-pressed',String(touch[kind]));}
  });
  on(window,'keydown',e=>{
+  if(choosing){if(e.code==='Escape'){e.preventDefault();e.stopImmediatePropagation();exit();}return;}
   if(!model.active&&!failed)return;
   if(e.code==='Escape'){e.preventDefault();e.stopImmediatePropagation();if(failed)exit();else menu?resume():pause();return;}
   if(failed)return;
@@ -121,7 +133,7 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
   const v=model.view(menu?1:alpha);if(!v)return null;
   const dt=lastRender?Math.min(.05,(now-lastRender)/1000):.05;lastRender=now;
   const aspect=Math.max(.1,map.clientWidth/map.clientHeight),base=Math.min(110,2*Math.atan(Math.tan(37*Math.PI/180)/Math.min(1,aspect))*180/Math.PI),fov=base+(v.scoped?-13:v.sprinting?4:0);
-  camera.aspect=aspect;camera.fov+=(fov-camera.fov)*(1-Math.exp(-12*dt));camera.updateProjectionMatrix();camera.position.set(v.position.x,v.eye,v.position.z);camera.rotation.set(v.pitch,-v.yaw,0);camera.updateMatrixWorld();heldTools.update(v,now,aspect);
+  camera.aspect=aspect;camera.fov+=(fov-camera.fov)*(1-Math.exp(-12*dt));camera.updateProjectionMatrix();camera.position.set(v.position.x,v.eye,v.position.z);camera.rotation.set(v.pitch,-v.yaw,0);camera.updateMatrixWorld();heldTools.update(v,now,aspect,menu==='pause',map.clientHeight);
   beacon.visible=!v.goal.idle;beacon.position.set(v.goal.x,.15,v.goal.z);guide.count=0;let length=0,previous=v.position;
   for(const next of v.guide){const d=Math.hypot(next.x-previous.x,next.z-previous.z);if(length>14)break;for(let i=.6;i<d&&guide.count<100;i+=.6){if(length+i>14)break;dummy.position.set(previous.x+(next.x-previous.x)*i/d,.13,previous.z+(next.z-previous.z)*i/d);dummy.updateMatrix();guide.setMatrixAt(guide.count++,dummy.matrix);}length+=d;previous=next;}guide.instanceMatrix.needsUpdate=true;
   hud.dataset.hit=String(v.hit);hud.dataset.hurt=String(v.hurt);hud.dataset.scoped=String(v.scoped);fields.transfer.value=v.progress;
@@ -137,5 +149,5 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
   for(const el of hud.querySelectorAll('[data-pilot-stock]'))el.textContent=pilotStock(run,el.dataset.pilotStock);
   minimap(v);return v;
  }
- return {camera,root,open,exit,tick,render,get active(){return model.active;},get busy(){return model.active||failed;},get cell(){return model.cell;},setTheme(value){theme=value;model.setTheme(value);clearInput();if(!model.active&&!failed&&!hud.hidden){failed=true;exit();}},dispose(){model.stop();abort.abort();unlock();guide.geometry.dispose();guideMaterial.dispose();beacon.geometry.dispose();heldTools.dispose();hud.remove();delete game.dataset.pilot;}};
+ return {camera,root,open,exit,tick,render,previewSpawn,chooseSpawn,renderHands:renderer=>heldTools.render(renderer),get choosing(){return choosing;},get spawnPreview(){return spawnPreview;},get active(){return model.active;},get busy(){return model.active||failed||choosing;},get cell(){return model.cell;},setTheme(value){if(choosing)exit();theme=value;model.setTheme(value);clearInput();if(!model.active&&!failed&&!hud.hidden){failed=true;exit();}},dispose(){model.stop();abort.abort();unlock();guide.geometry.dispose();guideMaterial.dispose();beacon.geometry.dispose();heldTools.dispose();hud.remove();placement.remove();delete game.dataset.pilot;}};
 }

@@ -21,6 +21,17 @@ function travel(p,goal){
  }
 }
 for(const theme of ['2','1']){
+ test('theme '+theme+': chosen spawn is exact and preserves the cell and its carried supplies',()=>{
+  const s=city(),p=createCityPilot(),c=s.cells.find(c=>c.kind==='rbc'),world=pilotWorld(s.layout,theme),spawn=world.safe(siteAt(s.layout,'lung'),'neutrophil');
+  const kind=c.kind,cargo=structuredClone(c.cargo),count=s.cells.length;pilotInventory(s).oxygen=12;
+  assert.ok(p.start(s,{theme,preferred:c.id,spawn}));assert.equal(p.cell,c);assert.ok(d(p.view().position,spawn)<1e-9);assert.ok(d(groundPoint(c),spawn)<1e-9);
+  assert.equal(s.cells.length,count);assert.equal(c.kind,kind);assert.deepEqual(c.cargo,cargo);assert.equal(p.view().inventory.oxygen,12);p.stop();assert.equal(pilotedCell(s),null);
+ });
+ test('theme '+theme+': blocked and invalid spawn points cannot take over or move a cell',()=>{
+  const s=city(),p=createCityPilot(),[key]=compileLayout(s.layout).occupied.keys(),[x,z]=key.split(',').map(Number),before=serializeCity(s);
+  for(const spawn of [{x,z},{x:45,z:0},{x:NaN,z:0},{x:0,z:Infinity},{}]){assert.equal(p.start(s,{theme,spawn}),false);assert.equal(p.active,false);assert.equal(pilotedCell(s),null);assert.equal(serializeCity(s),before);}
+  assert.ok(p.start(s,{theme}));const cell=p.cell,position=p.view().position;assert.equal(p.start(s,{theme,spawn:{x,z}}),false);assert.equal(p.cell,cell);assert.deepEqual(p.view().position,position);p.stop();
+ });
  test('theme '+theme+': one explorer owns an existing cell and returns it to AI',()=>{
   const s=city(),p=createCityPilot(),count=s.cells.length;assert.ok(p.start(s,{theme}));const c=p.cell,origin=groundPoint(c);tickCity(s,.05,data,theme);
   assert.ok(d(groundPoint(c),origin)<1e-6);assert.equal(s.cells.length,count);assert.equal(pilotedCell(s),c);

@@ -23,13 +23,14 @@ export function createCityPilot(){
  }
  function say(text){if(text){notice=text;noticeUntil=run.time+3;}}
  function resetMotion(){vx=vz=0;jumpHeld=false;sprinting=scoped=false;previousPosition=position();if(cell)previousEye=eye();}
- function start(s,{preferred=null,theme:selectedTheme='2'}={}){
+ function start(s,{preferred=null,theme:selectedTheme='2',spawn=null}={}){
   if(!s.layout||s.status!=='running')return false;
-  stop();theme=selectedTheme;world=pilotWorld(s.layout,theme);
-  const anchor=siteAt(s.layout,'heart'),available=s.cells.filter(c=>['neutrophil','rbc'].includes(c.kind)&&!c.lost&&(c.integrity??100)>0);
+  const nextWorld=pilotWorld(s.layout,selectedTheme);if(spawn!==null&&!nextWorld.canStand(spawn))return false;
+  stop();theme=selectedTheme;world=nextWorld;
+  const anchor=spawn||siteAt(s.layout,'heart'),available=s.cells.filter(c=>['neutrophil','rbc'].includes(c.kind)&&!c.lost&&(c.integrity??100)>0);
   available.sort((a,b)=>Number(b.id===preferred)-Number(a.id===preferred)||Number(b.kind==='neutrophil')-Number(a.kind==='neutrophil')||distance(groundPoint(a),anchor)-distance(groundPoint(b),anchor));
   for(const candidate of available){
-   const origin=groundPoint(candidate),p=world.safe(origin,'neutrophil',q=>distance(q,origin)<2.5&&s.cells.every(other=>other===candidate||distance(q,groundPoint(other))>1.1))||world.safe(origin,'neutrophil');
+   const origin=groundPoint(candidate),p=spawn||world.safe(origin,'neutrophil',q=>distance(q,origin)<2.5&&s.cells.every(other=>other===candidate||distance(q,groundPoint(other))>1.1))||world.safe(origin,'neutrophil');
    if(!p)continue;cell=takeCityCell(s,candidate.id);if(!cell)continue;Object.assign(cell,groundCoordinate(p));break;
   }
   if(!cell)return false;
@@ -95,7 +96,7 @@ export function createCityPilot(){
   if(!cell)return null;const actual=position(),goal=objective(),def=pilotTool(inventory.tool),aim=target(scoped||def.id==='scanner'?18:undefined);let next=goal;
   if(guide.length){let closest=0;for(let i=1;i<guide.length;i++)if(distance(actual,guide[i])<distance(actual,guide[closest]))closest=i;guide=guide.slice(closest);next=guide.find(q=>distance(actual,q)>1.1)||goal;}
   const t=clamp(alpha,0,1),p=previousPosition?{x:mix(previousPosition.x,actual.x,t),z:mix(previousPosition.z,actual.z,t)}:actual;
-  return {cell,inventory,tool:def,position:p,eye:mix(previousEye,eye(),t),goal,next,guide,yaw,pitch,aim,theme,progress:progress/(def.id==='oxygen'?cityRule(run,'oxygen').params.duration:def.duration||1),notice:run.time<noticeUntil?notice:'',shots,deliveries,oxygen,actions,scan:run.time<scanUntil?scan:null,cooldown:Math.max(0,(pilotCooldowns(run)[def.id]||0)-run.time),hit:run.time<hitUntil,hurt:run.time<hurtUntil,distance:distance(actual,goal),sprinting,crouching:crouch>.5,scoped,airborne:jumpHeight>0,speed:Math.hypot(vx,vz),water:theme==='2'&&world.town.source.isWater(actual)};
+  return {cell,inventory,tool:def,position:p,eye:mix(previousEye,eye(),t),goal,next,guide,yaw,pitch,aim,theme,using:previousAction&&!actionBlocked,progress:progress/(def.id==='oxygen'?cityRule(run,'oxygen').params.duration:def.duration||1),notice:run.time<noticeUntil?notice:'',shots,deliveries,oxygen,actions,scan:run.time<scanUntil?scan:null,cooldown:Math.max(0,(pilotCooldowns(run)[def.id]||0)-run.time),hit:run.time<hitUntil,hurt:run.time<hurtUntil,distance:distance(actual,goal),sprinting,crouching:crouch>.5,scoped,airborne:jumpHeight>0,speed:Math.hypot(vx,vz),water:theme==='2'&&world.town.source.isWater(actual)};
  }
  return {start,stop,step,view,objective,equip,cycle,previous,nextDestination,setTheme,chooseDestination,resetMotion,get active(){return !!cell;},get cell(){return cell;},get run(){return run;},get world(){return world;},look(dx,dy){const sensitivity=scoped?.00125:.0025;yaw+=clamp(dx,-180,180)*sensitivity;pitch=clamp(pitch-clamp(dy,-180,180)*sensitivity,-1.2,1.2);}};
 }

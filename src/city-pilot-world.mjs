@@ -16,7 +16,7 @@ export function pilotWorld(layout,theme){
  if(theme==='1')for(const v of corridors)for(let x=Math.ceil((Math.min(v.a.x,v.b.x)-v.r)*4);x<=Math.floor((Math.max(v.a.x,v.b.x)+v.r)*4);x++)for(let z=Math.ceil((Math.min(v.a.z,v.b.z)-v.r)*4);z<=Math.floor((Math.max(v.a.z,v.b.z)+v.r)*4);z++)if(segmentDistance({x:x/4,z:z/4},v.a,v.b)<v.r)lanes.add(x+','+z);
  const solid=p=>network.occupied.has(Math.round(p.x)+','+Math.round(p.z))||decor.has(Math.floor(p.x*2)+','+Math.floor(p.z*2));
  function canStand(p,kind='neutrophil'){
-  if(!insideCity(p.x,p.z,1.3))return false;
+  if(!p||!Number.isFinite(p.x)||!Number.isFinite(p.z)||!insideCity(p.x,p.z,1.3))return false;
   const r=kind==='rbc'?.12:.18;
   if([[0,0],[-r,-r],[r,-r],[-r,r],[r,r]].some(([x,z])=>solid({x:p.x+x,z:p.z+z})))return false;
   if(kind!=='rbc'||stations.some(s=>distance(s,p)<2.5))return true;
