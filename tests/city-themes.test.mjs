@@ -21,7 +21,7 @@ test('theme defaults to the original village and persists independently of game 
 
 test('water covers the blood network while the skin patrol keeps a separate dry route',()=>{
  const layout=createTileLayout(),before=JSON.stringify(layout),network=compileLayout(layout),surface=compileCanalLayout(layout);
- assert.ok(surface.rows.length&&surface.edges.length);assert.equal(surface.flows.length,42);assert.ok(surface.patrol.length>=14);assert.ok(surface.patrol.every(r=>!surface.channels.includes(r)));
+ assert.ok(surface.rows.length&&surface.edges.length);assert.equal(surface.flows.length,compileVascularLayout(layout).vessels.length);assert.ok(surface.patrol.length>=14);assert.ok(surface.patrol.every(r=>!surface.channels.includes(r)));
  for(const points of surface.channels.map(r=>r.points))for(let i=1;i<points.length;i++){
   const a=points[i-1],b=points[i],samples=Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)*4);
   for(let j=0;j<=samples;j++){const t=samples?j/samples:0,p={x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t};assert.ok(surface.isWater(p),'land blocks route '+JSON.stringify(p));}
@@ -68,7 +68,7 @@ test('organ vessels separate outward/return paths, avoid buildings and close bot
   assert.ok(outward?.length&&inward?.length);assert.notDeepEqual(outward,[...inward].reverse());
   const artery=v.vessels.find(x=>x.id==='artery-'+id),vein=v.vessels.find(x=>x.id==='vein-'+id);
   if(id==='lung')assert.deepEqual(artery.points[0],vein.points.at(-1));
-  else {assert.ok(v.systemic.arterial.gates.some(p=>p.x===artery.points[0].x&&p.z===artery.points[0].z));assert.ok(v.systemic.venous.gates.some(p=>p.x===vein.points.at(-1).x&&p.z===vein.points.at(-1).z));}
+  else {assert.ok(v.systemic.arterial.gates.some(p=>p.x===artery.points[0].x&&p.z===artery.points[0].z));if(id==='gut')assert.deepEqual(vein.points.at(-1),v.centres.liver);else assert.ok(v.systemic.venous.gates.some(p=>p.x===vein.points.at(-1).x&&p.z===vein.points.at(-1).z));}
   assert.deepEqual(artery.points.at(-1),vein.points[0]);
  }
  for(const from of Object.values(v.centres))for(const to of Object.values(v.centres)){

@@ -30,7 +30,9 @@ test('antigen availability alone cannot prime T cells or produce antibodies with
 });
 
 test('viral presentation drives cognate CD4/CD8 priming, T–B help, antibody class switching and memory',()=>{
- const s=city();challenge(s,'virus');advance(s,100);
+ const s=city();challenge(s,'virus');
+ // Allow travel through the expanded airway, lymph node and return circuit.
+ for(let elapsed=0;elapsed<180&&!(s.immunity.stats.cd8Kills>0&&s.immunity.antibodies['IMM-VIRUS']?.IgA>0&&s.cells.some(c=>c.kind==='bcell'&&c.memory));elapsed+=5)advance(s,5);
  assert.ok(s.immunity.stats.presented>0);assert.ok(s.immunity.stats.primed>0);assert.ok(s.immunity.stats.clones>0);assert.ok(s.immunity.stats.nkKills>0);assert.ok(s.immunity.stats.cd8Kills>0);
  assert.ok(s.cells.some(c=>c.kind==='plasma'&&c.licensed&&c.recordId==='IMM-VIRUS'&&c.isotype==='IgA'));assert.ok(s.cells.some(c=>c.kind==='bcell'&&c.memory));assert.ok(s.immunity.antibodies['IMM-VIRUS'].IgA>0);assert.ok(restoreCity(serializeCity(s)));
  const stages=s.immunity.response.episodes.find(e=>e.recordId==='IMM-VIRUS').seen;assert.ok(stages[1]<=stages[2]&&stages[2]<=stages[3]);assert.ok(stages.slice(0,4).every(t=>t!=null));

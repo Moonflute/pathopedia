@@ -25,7 +25,7 @@ const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export function pathogenTarget(s,e){
  const profile=pathogenDef(e.recordId),focus=profile?.focus[e.front]|| (e.front==='skin'?'tissue':e.front==='gut'?'gut':e.front==='blood'?'heart':'lung');
  if(focus==='tissue'){
-  const entry=e.front==='skin'&&s.layout?SKIN_TISSUES[e.wall]:null;
+  const entry=e.front==='skin'?SKIN_TISSUES[e.wall]:null;
   if(entry&&tissuePresent(s,entry)&&s.frontier.tissues[entry.id]?.hp>5)return {kind:'tissue',id:entry.id,site:entry.district,point:tissueAt(s,entry).point};
   const current=e.attackTarget?.kind==='tissue'?TISSUES[e.attackTarget.id]:null;
   const candidates=TISSUES.filter(t=>tissuePresent(s,t)&&s.frontier.tissues[t.id].hp>5);

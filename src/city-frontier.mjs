@@ -13,6 +13,7 @@ import {pathogenTarget,validatePathogenTarget} from './city-pathogens.mjs';
 
 const clamp=(n,hi=100)=>Math.max(0,Math.min(hi,n));
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const ciliarySpeed=Math.max(65,distance(AIRWAY_PATH[2],AIRWAY_PATH[0])/10);
 const point=(s,id)=>{const d=cityDistrict(s,id);return {x:d.x,y:d.y};};
 const shop=s=>localPoint(s,'workshop',{x:WORKSHOP.x+1.1,z:WORKSHOP.z+.5});
 export function ensureFrontier(s){
@@ -132,7 +133,7 @@ export function tickFrontierEnemy(s,e,dt,api){
  }
  if(e.front==='airway'&&!e.entered){
   e.action=e.expelled?'expelled':e.caughtUntil?'trapped':'approach';
-  if(e.expelled){if(walk(e,AIRWAY_PATH[0],65,dt)){f.airway.cleared++;api.damage(s,e,e.hp,e,'#9bc9bb');}return true;}
+  if(e.expelled){if(walk(e,AIRWAY_PATH[0],ciliarySpeed,dt)){f.airway.cleared++;api.damage(s,e,e.hp,e,'#9bc9bb');}return true;}
   if(e.caughtUntil){if(s.time>=e.caughtUntil){e.expelled=true;e.caughtUntil=null;}return true;}
   if(!e.screened){if(!walk(e,AIRWAY_PATH[2],24,dt))return true;e.screened=true;
    const cap=Math.max(1,Math.floor((3+s.districts.lung.level)*s.barrier/100*(s.weather.id==='dry'?.5:1)));

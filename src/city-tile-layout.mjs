@@ -7,6 +7,7 @@ import {TOWN_PLAN,TOWN_HOUSES,GROWTH_OFFSETS} from './city-town-plan.mjs';
 import {gridPath,streetNetwork,roadNavigator} from './city-grid-path.mjs';
 import {insideCity} from './city-boundary.mjs';
 import {homeSites,homeFootprint} from './city-homeostasis-data.mjs';
+import {ensureHomeostasis} from './city-homeostasis.mjs';
 
 // Grid topology is independent of organ state and rendering. A future hex grid
 // supplies its own neighbours, rotation and coordinate conversion here.
@@ -179,6 +180,7 @@ export function compileLayout(layout){
  for(let i=0;i<patrol.length;i++)pave(patrol[i],patrol[(i+1)%patrol.length],.65,'patrol');
  for(const t of skinTissuesAt(layout).values()){pave(patrol[t.skinWall],groundPoint(t.point),.8,'patrol');pave(port(t.district),groundPoint(t.point),.65,'patrol');}
  const near=patrol.reduce((a,b)=>Math.hypot(a.x-port('workshop').x,a.z-port('workshop').z)<Math.hypot(b.x-port('workshop').x,b.z-port('workshop').z)?a:b);pave(port('workshop'),near,.65,'patrol');
+ for(const o of homeSites(layout))pave(centre(o.host),o,.85,'service');
  const entrances=Object.values(entries),navigation=roadNavigator([...streets.runs.map(r=>r.points),...access.map(r=>r.points)]);pathCache.clear();
  const result={connections,vascular,entries,entrances,roadCells,streets,access,navigation,occupied,walkable,path,districts,valid:connections.every(c=>c.ok),ports:Object.fromEntries(layoutPlaceables(layout).map(d=>[d.id,port(d.id)]))};compiled.set(layout,result);return result;
 }
@@ -215,9 +217,9 @@ export function cityRoute(s,from,to){
  return [...out,...back].map(groundCoordinate);
 }
 export const intakeRoute=s=>s?.layout?compileLayout(s.layout).entries.gut.map(groundCoordinate):FOOD_ROAD;
-const skinCache=new WeakMap();
+const skinCache=new WeakMap(),unplacedSkin=new Map(SKIN_TISSUES.map(t=>[t.id,t]));
 function skinTissuesAt(layout){
- if(!layout)return new Map();if(skinCache.has(layout))return skinCache.get(layout);
+ if(!layout)return unplacedSkin;if(skinCache.has(layout))return skinCache.get(layout);
  const occupied=new Set(layoutPlaceables(layout).flatMap(d=>occupiedTiles(d.id,layout.items[d.id])).map(p=>p.col+','+p.row)),result=new Map();
  const corridors=[[CITY_ENTRIES.airway.portal,CITY_ENTRIES.airway.screen,transformPoint(layout,'lung',{x:SITES.lung.x,z:SITES.lung.z-7.5})],[CITY_ENTRIES.gut.start,CITY_ENTRIES.gut.portal,CITY_ENTRIES.gut.gate]];
  const corridorClear=p=>corridors.every(points=>points.slice(1).every((b,i)=>{const a=points[i],dx=b.x-a.x,dz=b.z-a.z,t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.z-a.z)*dz)/(dx*dx+dz*dz||1)));return Math.hypot(p.x-a.x-dx*t,p.z-a.z-dz*t)>3.4;}));
@@ -253,7 +255,7 @@ export function applyTileLayout(s,next){
   for(const v of s.physiology.virions){if(v.entered){Object.assign(v,mapped(v,v.site));v.path=v.path.slice(v.step).map(p=>mapped(p,v.site));v.step=0;}else{v.path=[];v.step=0;const front=v.front,ep=s.physiology.epithelium.find(e=>e.id===v.targetId),points=front==='skin'?[WALLS[v.wall].outside,WALLS[v.wall].inside]:compileLayout(next).entries[front].map(groundCoordinate);Object.assign(v,points[0]);v.path=[...points.slice(1),{x:ep.x,y:ep.y}];}}
   for(const packet of s.physiology.lymphPackets){Object.assign(packet,mapped(packet,packet.site));packet.path=[];packet.step=0;packet.reroute=true;}
  }
- s.layout=cloneLayout(next);s.effects=[];
+ s.layout=cloneLayout(next);s.effects=[];ensureHomeostasis(s);
  if(s.time===0)for(const c of s.cells)if(!c.activity)Object.assign(c,groundCoordinate(roadPoint(s.layout,groundPoint(c))));
  for(const c of s.cells){if(c.kind==='rbc'){c.path=cityRoute(s,cityDistricts(s).reduce((a,b)=>Math.hypot(c.x-a.x,c.y-a.y)<Math.hypot(c.x-b.x,c.y-b.y)?a:b).id,c.cargo?c.target:'lung');c.step=0;}if(c.frontJob!=null){c.path=c.frontStage==='shop'?[localPoint(s,'workshop',{x:WORKSHOP.x+1.1,z:WORKSHOP.z+.5})]:c.frontStage==='field'?[WALLS[c.frontJob].inside]:[];c.step=0;}if(c.patchWall!=null){c.path=[WALLS[c.patchWall].inside];c.step=0;}if(c.tissueJob!=null){c.path=[tissueAt(s,TISSUES[c.tissueJob]).point];c.step=0;}}
  for(const sh of s.shipments){const from=cityDistricts(s).reduce((a,b)=>Math.hypot(sh.x-a.x,sh.y-a.y)<Math.hypot(sh.x-b.x,sh.y-b.y)?a:b);sh.path=sh.kind==='raw'&&sh.phase!=='leaving'?intakeRoute(s):cityRoute(s,from.id,sh.phase==='pickup'?'gut':sh.to);sh.step=0;}
