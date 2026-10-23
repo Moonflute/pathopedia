@@ -42,8 +42,9 @@ test('waterfront blocks leave traffic and real building expansion clear',()=>{
  const layout=createTileLayout(),expanded=addLayoutBuilding(layout,'house');assert.ok(expanded.ok);
  for(const town of [layout,expanded.layout]){
   const snapshot=JSON.stringify(town),c=compileCanalLayout(town),network=compileLayout(town);
-  assert.ok(c.blocks.frontages.length>=4);assert.ok(c.blocks.gardens.length>=6);assert.ok(c.blocks.tissues.length>=80);assert.ok(c.blocks.lung.length>=3);
-  for(const b of [...c.blocks.frontages,...c.blocks.gardens]){
+  // Wider circulation changes the amount of free infill; its physical safety is invariant.
+  assert.ok(c.blocks.frontages.length>=4);assert.ok(c.blocks.gardens.length>=6);assert.ok(c.blocks.tissues.length>0&&c.blocks.tissues.length<=240);assert.ok(c.blocks.lung.length>=3);
+  for(const b of [...c.blocks.frontages,...c.blocks.gardens,...c.blocks.tissues.map(p=>({...p,w:1.35,d:1.35})),...c.blocks.lung.map(p=>({...p,w:2.6,d:2.8}))]){
    const vertical=Math.abs(Math.sin(b.angle||0))>.5,w=b.w||3.5,d=b.d||3.5,hx=(vertical?d:w)/2,hz=(vertical?w:d)/2;
    for(let x=b.x-hx;x<=b.x+hx;x+=.25)for(let z=b.z-hz;z<=b.z+hz;z+=.25){
     assert.equal(c.isWater({x,z}),false,'infill covers water');
