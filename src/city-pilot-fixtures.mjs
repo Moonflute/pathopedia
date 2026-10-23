@@ -33,7 +33,7 @@ export function createPilotFixtures(){
   outline.visible=!!focus;meter.visible=!!focus&&v.progress>0;
   if(focus){outline.position.set(focus.target.x,focus.height,focus.target.z);outline.scale.setScalar(focus.radius*2.1);outlineMaterial.color.setHex(focus.matching&&focus.near?0xa4f5cb:0xffd589);meter.position.set(focus.target.x-.35+v.progress*.35,focus.height+focus.radius+.18,focus.target.z);meter.scale.x=.7*v.progress;}
   particles.count=0;const pulse=v.workPulse;
-  if(pulse){particleMaterial.color.setHex(pilotTool(pulse.tool).color);for(let i=0;i<12;i++){const t=(pulse.progress+i*.045)%1,q=pulse.loading?1-t:t;dummy.position.set(pulse.from.x+(pulse.target.x-pulse.from.x)*q,.5+(pulse.height-.5)*q+Math.sin(t*Math.PI)*.22,pulse.from.z+(pulse.target.z-pulse.from.z)*q);dummy.scale.setScalar(Math.sin(t*Math.PI)*(1-pulse.progress));dummy.updateMatrix();particles.setMatrixAt(particles.count++,dummy.matrix);}particles.instanceMatrix.needsUpdate=true;}
+  if(pulse){particleMaterial.color.setHex(pilotTool(pulse.tool).color);for(let i=0;i<12;i++){const t=(pulse.progress+i*.045)%1,q=pulse.loading?1-t:t,y=pulse.from.y??.5;dummy.position.set(pulse.from.x+(pulse.target.x-pulse.from.x)*q,y+(pulse.height-y)*q+Math.sin(t*Math.PI)*.22,pulse.from.z+(pulse.target.z-pulse.from.z)*q);dummy.scale.setScalar(Math.sin(t*Math.PI)*(1-pulse.progress));dummy.updateMatrix();particles.setMatrixAt(particles.count++,dummy.matrix);}particles.instanceMatrix.needsUpdate=true;}
  }
  return {root,update,dispose(){box.dispose();ring.dispose();sphere.dispose();edges.dispose();outlineMaterial.dispose();particleMaterial.dispose();for(const m of materials.values())m.dispose();for(const m of icons.values()){m.map.dispose();m.dispose();}root.clear();}};
 }

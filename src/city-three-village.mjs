@@ -6,6 +6,8 @@ import {layoutPlaceables,placeable,transformPoint,compileLayout,occupiedTiles,ri
 import {createFrontierScene} from './city-three-frontier.mjs';
 import {WALLS,WORKSHOP,AIRWAY_PATH} from './city-frontier-data.mjs';
 import * as T from './vendor/three/three.module.min.js';
+import {createPilotSurface,combinePilotSurfaces} from './city-pilot-physics.mjs';
+import {pilotWorld} from './city-pilot-world.mjs';
 import {mergeGeometries} from './vendor/three/BufferGeometryUtils.js';
 import {SITES,CITY_ROADS,INTAKE_ROAD,RIVER_PATH,COTTAGES,groundPoint} from './city-three-layout.mjs';
 import {createFacilities} from './city-three-facilities.mjs';
@@ -232,7 +234,8 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  // Selected geometry stays separate during editing, so dragging moves it without rebuilding.
  const preview=owners.fixed.get(editId);if(preview){fixed.remove(preview);root.add(preview);}
  // Merge static geometry, including the imported modular buildings, by material.
- fixed.updateMatrixWorld(true);const batches=new Map(),vertexMaterial=new T.MeshStandardMaterial({vertexColors:true,roughness:STYLE.roughness});
+ fixed.updateMatrixWorld(true);const pilotSurface=layout&&!editId?createPilotSurface(fixed):null;let tissueSurfaceVersion=-1;
+ const batches=new Map(),vertexMaterial=new T.MeshStandardMaterial({vertexColors:true,roughness:STYLE.roughness});
  function prepareGeometry(g,original,colored){
   const source=original.vertexColors?g.getAttribute('color'):null;
   for(const k of Object.keys(g.attributes))if(!['position','normal','uv'].includes(k))g.deleteAttribute(k);
@@ -265,6 +268,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  return {root,districts,canals:scenery?.canals,outlet:scenery?.outlet,movePreview(a){if(preview)applyTransform(preview,editId,a);const g=owners.moving.get(editId);if(g)applyTransform(g,editId,a);},dispose(){bundleWalls?.dispose();const gs=new Set(),ms=new Set();root.traverse(m=>{if(m.isInstancedMesh)m.dispose();if(m.geometry&&!m.userData.kenney&&!m.userData.cityAsset)gs.add(m.geometry);if(m.material&&!m.userData.kenney&&!m.userData.cityAsset)ms.add(m.material);});for(const g of gs)g.dispose();for(const m of ms)if(!m.map)m.dispose();},update(s,options){
   moving.visible=true;frontier.root.visible=true;supply.visible=!options.editor&&options.layer==='supply';portsScene.update(s);
   facilities.update(s);frontier.update(s,options);bundleWalls?.update(s,options);scenery?.update(s);tissueScene?.update(s);
+  if(pilotSurface&&tissueSurfaceVersion!==(tissueScene?.collisionVersion??0)){tissueSurfaceVersion=tissueScene?.collisionVersion??0;const tissues=tissueScene?createPilotSurface(tissueScene.root,m=>m.name==='tissue-cottages'||m.name==='tissue-roofs'):null;pilotWorld(layout,theme).setSurface(combinePilotSurfaces(pilotSurface,tissues));}
   for(const [id,d] of Object.entries(districts)){const state=s.districts[id];d.work.visible=!!state.building;d.tower.visible=state.tower>0;d.tower.scale.y=state.tower>1?1.25:1;const progress=state.building?.remaining==null?0:1-state.building.remaining/state.building.duration;d.work.userData.progress.scale.y=.3+progress*2;d.work.userData.progress.position.y=.4+d.work.userData.progress.scale.y*.11;d.level.children.forEach((m,i)=>m.visible=i<state.level-1);}
   ground.material.color.setHex(canal?CANAL_STYLE.water:s.host==='neutropenia'?0xd7c8a7:meadowColor);
  }};

@@ -35,14 +35,14 @@ export function createTissueScene(layout,patches=[],lungPatches=[],bundle=null,t
  function put(id,p,x,y,z,w,h,d,tint,rx=0,ry=0,rz=0){const m=batches[id],i=m.count;if(i>=m.instanceMatrix.count)return;const angle=p.angle||0,cs=Math.cos(angle),sn=Math.sin(angle),size=p.size;
   dummy.position.set(p.x+(x*cs+z*sn)*size,y*size,p.z+(-x*sn+z*cs)*size);dummy.rotation.set(rx,angle+ry,rz);dummy.scale.set(w*size,h*size,d*size);dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix);m.setColorAt(i,color.setHex(tint));m.count++;
  }
- let last=-Infinity;
- return {root,update(s){
+ let last=-Infinity,collisionKey='',collisionVersion=0;
+ return {root,get collisionVersion(){return collisionVersion;},update(s){
   if(Math.abs(s.time-last)<.18)return;last=s.time;for(const m of Object.values(batches))m.count=0;for(const pool of props)pool.count=0;
-  for(const p of plots){
+  let nextCollisionKey='';for(const p of plots){
    const hp=s.frontier?.tissues[p.tissue?.id]?.hp??100,d=s.districts[p.lung?'lung':p.tissue.district],site=siteAt(layout,p.tissue.district),near=Math.hypot(p.x-site.x,p.z-site.z)<10;
    const health=p.lung?d.hp:Math.min(hp,near?d.hp:100),dead=health<15,injured=health<70,repair=s.cells.some(c=>c.tissueJob===p.tissue?.id&&c.task==='조직 블록 복구')||p.lung&&s.cells.some(c=>c.kind==='fibroblast'&&c.target==='lung'&&c.task==='복구 준비');
    const variant=(p.variant%3+3)%3,h=dead?.2:p.lung?.9:(meadow?.9:1.05)+variant*.16,wall=dead?0x756b61:injured?0xc2957a:p.lung?0xe2d7be:(meadow?[CITY_STYLE.plaster,CITY_STYLE.plasterWarm,0xe5e4cc]:[0xecd8b2,0xe7c9a8,0xd4d7bb])[variant],roof=dead?0x635d57:injured?0x9f6049:p.lung?0x6a9e94:(meadow?CITY_STYLE.roofs:[0xb5684c,0xc27f57,0xa95b45])[variant];
-   put('tissue-cottages',p,0,.045,0,1.3,.09,1.3,0xc5bba2);put('tissue-cottages',p,0,.1+h/2,0,1,h,1,wall);
+   nextCollisionKey+=dead?'0':'1';put('tissue-cottages',p,0,.045,0,1.3,.09,1.3,0xc5bba2);put('tissue-cottages',p,0,.1+h/2,0,1,h,1,wall);
    put('tissue-roofs',p,0,.1+h,0,1,dead?.22:1,1,roof,0,0,dead?.13:0);
    put('tissue-cottages',p,0,.3,.51,.24,dead?.16:.43,.035,0x67796b);
    for(const side of [-1,1]){put('tissue-cottages',p,side*.3,h*.66,.515,.21,.25,.035,injured?0xe49b62:0x6f9e9b);put('tissue-cottages',p,side*.3,h*.66+.15,.53,.28,.035,.055,0xf5e5c5);put('tissue-cottages',p,side*.515,h*.62,0,.035,.27,.32,injured?0xb7684c:0x76a4a1);}
@@ -53,7 +53,7 @@ export function createTissueScene(layout,patches=[],lungPatches=[],bundle=null,t
    if(repair)putProp(scaffolds,p,.6,0);
    if(dead){putProp(rubble,p,-.35,.65);putProp(stones,p,.45,.6);}
   }
-  for(const m of Object.values(batches)){m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;}
+  if(nextCollisionKey!==collisionKey){collisionKey=nextCollisionKey;collisionVersion++;}for(const m of Object.values(batches)){m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;}
   for(const pool of props)for(const {mesh} of pool.parts){mesh.count=pool.count;mesh.instanceMatrix.needsUpdate=true;}
  }};
 }

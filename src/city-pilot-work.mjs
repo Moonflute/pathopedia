@@ -1,4 +1,4 @@
-import {pilotInventory,pilotTool,pilotCooldowns} from './city-pilot-state.mjs';
+import {pilotInventory,pilotTool,pilotCooldowns,pilotPose} from './city-pilot-state.mjs';
 import {pilotJobs,pilotFoodCapacity} from './city-pilot-tasks.mjs';
 import {groundPoint,groundCoordinate} from './city-three-layout.mjs';
 import {cityRule,ruleReady,ruleTarget} from './city-rules.mjs';
@@ -12,9 +12,11 @@ export function pilotWork(s,c,action,id,api){
  const i=pilotInventory(s),def=pilotTool(action),timers=pilotCooldowns(s);
  if(action!==i.tool||action==='engulf')return {ok:false};
  if((timers[action]||0)>s.time)return {ok:false};
- const job=pilotJobs(s,action).find(j=>j.id===id),p=groundPoint(c);
- if(!job||Math.hypot(p.x-job.x,p.z-job.z)>def.range)return {ok:false,text:'작업 대상 가까이 이동'};
- if(!pilotWorld(s.layout,'2').clear(p,job))return {ok:false,text:'장애물 옆으로 이동'};
+ const job=pilotJobs(s,action).find(j=>j.id===id),pose=pilotPose(s),p={...groundPoint(c),y:pose.eye};
+ const height=job?.enemy?.43:job?.debris?.12:.5,range=action==='tractor'&&job?.site?2.5:def.range;
+ if(!job||Math.hypot(p.x-job.x,p.z-job.z,pose.eye-height)>range)return {ok:false,text:'작업 대상 가까이 이동'};
+ if(action==='tractor'&&job.debris&&Math.hypot(p.x-job.x,p.z-job.z)>1.1)return {ok:false};
+ if(!pilotWorld(s.layout,pose.theme).clear(p,{...job,y:height}))return {ok:false,text:'장애물 옆으로 이동'};
  let result,kind='collect';
  if(action==='oxygen'){
   const target=job.site,d=s.districts[target],rule=cityRule(s,'oxygen');
@@ -29,7 +31,7 @@ export function pilotWork(s,c,action,id,api){
   if(s.resources.materials<cost)return {ok:false,text:'재료 부족'};
   if(c.energy<2)return {ok:false,text:'에너지 부족 · 심장에서 회복'};
   s.resources.materials-=cost;c.energy-=2;job.entity.hp+=amount;kind='repair';result={amount,text:'복구 +'+Math.round(amount)+' · 재료 −'+cost};
- }else if(action==='cleanup'){
+ }else if(action==='cleanup'||action==='tractor'){
   if(job.site==='kidney'){
    const amount=Math.min(i.debris,Math.floor(24-(s.frontier?.waste.stock||0)));if(amount<1)return {ok:false,text:'집하장 처리 대기'};
    if(s.frontier)s.frontier.waste.stock+=amount;else{s.waste=Math.max(0,s.waste-amount*1.4);s.inflammation=Math.max(0,s.inflammation-amount*1.8);}

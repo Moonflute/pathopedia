@@ -20,8 +20,8 @@ export function pilotFocus(s,pose,world,objects=pilotObjects(s)){
   const radius=object.radius+Math.min(.16,Math.max(0,t)*.018);
   if(t<-.15||t>10||t>=depth||x*x+y*y+z*z-t*t>radius*radius)continue;
   const stand=object.approach,standDistance=Math.hypot(stand.x-p.x,stand.z-p.z);
-  if(!world.clear(p,stand))continue;
-  best={...object,distance:Math.hypot(x,z),standDistance};depth=t;
+  if(!world.clear({...p,y:eye},{...stand,y:object.kind==='station'?.45:object.height}))continue;
+  best={...object,distance:Math.hypot(x,z,y),standDistance:Math.hypot(standDistance,object.height-eye)};depth=t;
  }
  if(!best)return null;
  const inventory=pilotInventory(s),job=best.jobs.find(j=>j.action===inventory.tool),suggested=job||best.jobs.find(j=>j.action===best.tool)||best.jobs.find(j=>j.action!=='scanner')||best.jobs[0];

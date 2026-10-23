@@ -77,14 +77,14 @@ test('jump raises the camera, lands once while held, and works again after relea
 });
 test('inventory survives saving, reentry and theme changes; missing cells safely release control',()=>{
  const s=city(),p=createCityPilot();assert.ok(p.start(s));const c=p.cell;p.equip('oxygen');pilotInventory(s).oxygen=12;p.chooseDestination('kidney');p.setTheme('1');assert.equal(p.cell,c);assert.ok(p.world.canStand(p.view().position));p.stop();
- const restored=restoreCity(serializeCity(s));assert.deepEqual(pilotInventory(restored),{tool:'oxygen',oxygen:12,target:'kidney',nutrient:0,debris:0,antigen:null});assert.ok(p.start(restored,{theme:'1'}));assert.equal(p.view().inventory.oxygen,12);
+ const restored=restoreCity(serializeCity(s));assert.deepEqual(pilotInventory(restored),{tool:'oxygen',oxygen:12,target:'kidney',nutrient:0,debris:0,antigen:null,fuel:100});assert.ok(p.start(restored,{theme:'1'}));assert.equal(p.view().inventory.oxygen,12);
  restored.cells=restored.cells.filter(x=>x!==p.cell);p.step(.05,{forward:1});assert.equal(p.active,false);assert.equal(pilotedCell(restored),null);
  const bad=JSON.parse(serializeCity(s));bad.pilotInventory.oxygen=-1;assert.equal(restoreCity(JSON.stringify(bad)),null);
 });
-test('nine tools wrap, Q restores the previous tool, and held use cannot spill into a new tool',()=>{
+test('all tools wrap, Q restores the previous tool, and held use cannot spill into a new tool',()=>{
  const s=city(),p=createCityPilot();assert.ok(p.start(s));const c=p.cell,kind=c.kind;
  for(const tool of PILOT_TOOLS){p.equip(tool.id);assert.equal(p.cell,c);assert.equal(c.kind,kind);}
- p.cycle();assert.equal(p.view().tool.id,'engulf');p.cycle(-1);assert.equal(p.view().tool.id,'scanner');p.previous();assert.equal(p.view().tool.id,'engulf');p.previous();assert.equal(p.view().tool.id,'scanner');
+ p.cycle();assert.equal(p.view().tool.id,'engulf');p.cycle(-1);assert.equal(p.view().tool.id,PILOT_TOOLS.at(-1).id);p.previous();assert.equal(p.view().tool.id,'engulf');p.previous();assert.equal(p.view().tool.id,PILOT_TOOLS.at(-1).id);
  Object.assign(c,groundCoordinate(siteAt(s.layout,'heart')));p.resetMotion();p.equip('engulf');p.step(.05,{use:true});s.districts.heart.hp=50;
  p.equip('repair');aim(p,pilotJobs(s,'repair').find(j=>j.id==='heart').target);hold(p,2);assert.equal(s.districts.heart.hp,50);p.step(.05);hold(p,1.3);assert.equal(s.districts.heart.hp,58);p.stop();
 });

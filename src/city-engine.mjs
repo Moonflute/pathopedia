@@ -15,8 +15,10 @@ import {compileThemeLayout} from './city-theme-layout.mjs';
 import {tickResponse,validateResponse} from './city-response.mjs';
 import {ensureHostResponse,validateHostResponse} from './city-host-response.mjs';
 import {moveToInflammation} from './city-immune-traffic.mjs';
-import {pilotedCell,setPilotedCell,pilotInventory,validatePilotInventory} from './city-pilot-state.mjs';
+import {pilotedCell,setPilotedCell,pilotInventory,validatePilotInventory,pilotPose,setPilotPose} from './city-pilot-state.mjs';
 import {pilotWork} from './city-pilot-work.mjs';
+import {pilotRepulse,pilotPull,pilotStaggered} from './city-pilot-gadgets.mjs';
+import {pilotWorld} from './city-pilot-world.mjs';
 
 export const SAVE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
@@ -204,19 +206,21 @@ export function takeCityCell(s,id){
  setPilotedCell(s,c);return c;
 }
 export function releaseCityCell(s){
- const c=pilotedCell(s);setPilotedCell(s,null);if(!c)return;
+ const c=pilotedCell(s);setPilotedCell(s,null);setPilotPose(s,null);if(!c)return;
  releaseWorkplace(c);c.activity=null;c.dock=null;c.perfusionId=null;c.assignment=null;c.task=CELL_JOBS[c.kind].task;
  if(s.cells.includes(c))route(c,[point(s,c.kind==='rbc'?(c.cargo?c.target:'lung'):c.target)]);
 }
-export function pilotCellAction(s,action,id){
+export function pilotCellAction(s,action,id,dt){
  const c=pilotedCell(s);if(!c||!s.cells.includes(c)||c.lost||s.status!=='running')return {ok:false,text:'세포 조종 종료'};
- const p=groundPoint(c),near=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b),inventory=pilotInventory(s);
+ const p=groundPoint(c),near=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b),inventory=pilotInventory(s),pose=pilotPose(s);
+ if(action==='repulsor')return pilotRepulse(s,c);
+ if(action==='tractor-pull'){const pulled=pilotPull(s,c,id,dt);return pulled.ok&&pulled.collect?pilotWork(s,c,'tractor',id,frontierAPI):{...pulled,pulling:pulled.ok};}
  if(action==='attack'&&inventory.tool==='engulf'){
   const e=s.enemies.find(e=>e.id===id&&!e.dead&&e.entered&&e.compartment!=='lumen'),rule=cityRule(s,'neutrophil');
   if(!e||c.cooldown>0)return {ok:false};
   if(!ruleReady(s,'neutrophil',near.id)||!ruleEnemy(s,'neutrophil',e))return {ok:false,text:'현재 전투 규칙에서 공격 불가'};
   if(c.energy<3)return {ok:false,text:'에너지 부족 · 심장에서 회복'};
-  const q=groundPoint(e);if(Math.hypot(q.x-p.x,q.z-p.z)>Math.max(1.5,rule.params.range*.1))return {ok:false};
+  const q=groundPoint(e);if(Math.hypot(q.x-p.x,q.z-p.z,pose.eye-.43)>Math.max(1.5,rule.params.range*.1)||!pilotWorld(s.layout,pose.theme).clear({...p,y:pose.eye},{...q,y:.43}))return {ok:false};
   const organ=s.districts[near.id],depot=frontDepot(s,c),support=antibodySupport(s,e.recordId,near.id),capsule=1-(pathogenDef(e.recordId)?.capsule||0)*(1-support);
   const amount=rule.params.damage*(s.policy==='defense'?1.3:1)*clamp(organ.oxygen/45,.3,1)*((depot?depot.food:organ.food)>0?1:.5)*(organ.supportUntil>s.time?1.15:1)*(1+support*.85+(e.c3b||0)*.8)*capsule*immuneClearance(s,near.id)*clamp(c.energy/65,.35,1);
   damage(s,e,amount,c,JOBS.neutrophil.color);combatEffort(c);c.cooldown=rule.params.interval;beginActivity(s,c,'engulf',.4,e);c.task='직접 조종 · 감염 대응';return {ok:true,defeated:e.dead,amount};
@@ -508,6 +512,7 @@ export function tickCity(s,dt,data,canalTransport=false){
   if(!s.specialists)for(const id of Object.keys(s.antigens))s.antibodies[id]=clamp((s.antibodies[id]||0)+dt*1.5*(1+.4*(s.districts.lymph.level-1))*output(s,'lymph'));
   for(const e of s.enemies){
     if(e.dead)continue;
+    if(pilotStaggered(s,e))continue;
     if(s.frontier&&tickFrontierEnemy(s,e,dt,frontierAPI)){if(!s.biology&&!e.dead&&(s.antibodies[e.recordId]||0)>=100)damage(s,e,dt*1.3,e,'#c6df9c');continue;}
     const lung=point(s,'lung');
     if(dist(e,ENTRANCE)<160&&s.barrier>0){const p={x:983,y:180},distance=dist(e,p);if(distance>8){e.x+=(p.x-e.x)/distance*20*dt;e.y+=(p.y-e.y)/distance*20*dt;}else{s.barrier=clamp(s.barrier-dt*3);e.hp-=dt*.55*s.districts.lung.level;if(e.hp<=0)damage(s,e,0,e,'#a4cab0');}}
@@ -542,7 +547,11 @@ export function tickCity(s,dt,data,canalTransport=false){
   }else if(s.wave>=3&&!s.spawn.length&&!s.enemies.length&&!s.endless)s.status='won';
   if(s.status!=='running')log(s,s.status==='won'?'시나리오 목표 달성':s.endReason);
 }
-export function serializeCity(s){return JSON.stringify({...s,effects:[],nextWave:Number.isFinite(s.nextWave)?s.nextWave:null});}
+export function serializeCity(s){
+ const pilot=pilotedCell(s),pose=pilotPose(s);let cells=s.cells;
+ if(pilot&&pose.height>.1){const world=pilotWorld(s.layout,pose.theme),safe=world.safe(groundPoint(pilot))||world.safe(groundPoint(cityDistrict(s,'heart')));if(safe)cells=s.cells.map(c=>c===pilot?{...c,...groundCoordinate(safe)}:c);}
+ return JSON.stringify({...s,cells,effects:[],nextWave:Number.isFinite(s.nextWave)?s.nextWave:null});
+}
 export function restoreCity(raw){
   try{
     const s=typeof raw==='string'?JSON.parse(raw):raw;

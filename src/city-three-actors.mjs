@@ -48,7 +48,7 @@ export function createActors(profile){
   line(x,y-.15*size,z,x,y+.08*size,z,.045*size,0xf6cf78);
   for(const side of [-1,1])line(x,y+.08*size,z,x+side*.16*size,y+.27*size,z,.045*size,0xf6cf78);
  }
- function worker(unit,kind,id,p,t,selected,drug,readability,onWater=false){
+ function worker(unit,kind,id,p,t,selected,drug,readability,onWater=false,visualScale=1){
   const look=CELL_STYLES[kind]||CELL_STYLES.courier,phase=typeof id==='number'?id:Number(id.replace('shipment',''));
   const prev=last.get(id),distance=prev?Math.hypot(p.x-prev.x,p.z-prev.z):0,movedAt=distance>.00001?t:prev?.movedAt??-1,moving=t-movedAt<.12;
   const act=activeActivity(unit,t),progress=activityProgress(act,t),at=act?groundPoint(act):null,doing=act?.kind;
@@ -63,7 +63,7 @@ export function createActors(profile){
   const waiting=!!unit.waitReason&&!moving;
   const bob=onWater?-.12+Math.sin(t*2.2+phase)*.025:act?-beat*(hammering?.04:.018):moving?Math.abs(Math.sin(stride))*.055:Math.sin(t*(waiting?3:2)+phase)*(waiting?.025:.012);
   const base=unit.integrity<40?'#bfb9ab':kind==='rbc'?(unit.cargo>0?'#df7363':'#6697bd'):CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf||striking?reach*.43:firing?-recoil*.17:0;
-  const part=(id,x,y,z,sx,sy,sz,c,rx=0,rz=0)=>put(id,p.x+x*cs+(z+shift)*sn,y+bob,p.z-x*sn+(z+shift)*cs,sx,sy,sz,c,rx,angle,rz);
+  const part=(id,x,y,z,sx,sy,sz,c,rx=0,rz=0)=>put(id,p.x+(x*cs+(z+shift)*sn)*visualScale,(y+bob)*visualScale,p.z+(-x*sn+(z+shift)*cs)*visualScale,sx*visualScale,sy*visualScale,sz*visualScale,c,rx,angle,rz);
   const squeezing=unit.trafficStage==='crossing',rolling=unit.trafficStage==='rolling';
   part('body',0,look.y,0,look.w*(squeezing?.68:1+reach*.12),look.h*(squeezing?.72:1-reach*.12),look.w*(squeezing?1.35:.88),base,0,rolling?Math.sin(t*5+phase)*.27:0);
   if(kind==='rbc'){part('rim',0,.51,0,.25,.25,.25,look.hat,Math.PI/2);part('cap',0,.485,0,.18,.035,.16,0xc65b67);}
@@ -199,7 +199,7 @@ export function createActors(profile){
   if(lastRun!==s||lastLayout!==s.layout){last.clear();lastRun=s;lastLayout=s.layout;}
   const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time,entries=s.layout?compileLayout(s.layout).entries:{};elevation=0;
   for(const m of Object.values(batches))m.count=0;positions.length=0;const living=new Set(),drug=DRUGS.find(d=>d.id===s.drug);
-  for(const c of s.cells.slice(0,profile.maxCells)){if(c.id===hiddenCell)continue;const p=point(c,c.id);if(eyePosition&&Math.hypot(p.x-eyePosition.x,p.z-eyePosition.z)<1.1||visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability,canals?.isWater(p));}
+  for(const c of s.cells.slice(0,profile.maxCells)){if(c.id===hiddenCell)continue;const p=point(c,c.id);const proximity=eyePosition?Math.hypot(p.x-eyePosition.x,p.z-eyePosition.z,(eyePosition.y??.58)-.45):Infinity,scale=Math.min(1,Math.max(0,(proximity-.65)/1.15));if(scale<.04||visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability,canals?.isWater(p),scale); }
   for(const sh of s.shipments.slice(0,profile.maxShipments)){if(sh.harbourUntil>s.time)continue;const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;elevation=sh.kind==='raw'?entryTrackHeight(entries.gut,p):0;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability,!elevation&&canals?.isWater(p));}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
    const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);elevation=!e.entered?entryTrackHeight(entries[e.front],p):0;
