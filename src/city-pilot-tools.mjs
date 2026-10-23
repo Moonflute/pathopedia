@@ -1,22 +1,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import {PILOT_TOOLS} from './city-pilot-state.mjs';
 
-// Inline icons follow Shoot's SVG hotbar; held tools reuse the bundled MIT Three.js.
-const paths={
- engulf:'M7 20 4 12Q3 9 6 9L8 13V5Q8 2 10 4L11 10V3Q12 1 14 3V10L15 5Q17 3 18 6L17 13Q23 9 22 13L18 20Z',
- oxygen:'M6 5H11V21H4V8Q4 5 6 5ZM15 5H20V21H13V8Q13 5 15 5ZM6 2H9V5M15 2H18V5M4 11H11M13 11H20',
- nutrient:'M3 8 12 3 21 8V20H3ZM3 8H21M12 8V20M9 12H15M12 9V15',
- repair:'M8 10A6 6 0 0 1 4 2L7 6 11 5 12 2A6 6 0 0 1 12 11L21 20 18 23Z',
- cleanup:'M6 9H17V21H6ZM8 4H15V9M6 12 2 15V20H6M17 12H21V7H17M10 14H13V18H10',
- patch:'M3 7H21V17H3ZM10 9H14V15H10M6 10V11M6 13V14M18 10V11M18 13V14',
- antigen:'M8 3H16V6H8ZM9 6V19Q12 23 15 19V6M9 13H15M12 9V11M3 6V10M1 8H5M19 17V21M17 19H21',
- signal:'M8 10H17V22H7V12ZM10 3V10M11 15H14M11 18H14M15 3Q20 5 18 9M18 1Q25 5 21 11',
- scanner:'M3 4H21V18H3ZM6 7H18V14H6M9 18V22H15V18M7 11H9L11 8 13 13 15 10H17',
- tractor:'M5 3V12A7 7 0 0 0 19 12V3H14V12A2 2 0 0 1 10 12V3ZM5 7H10M14 7H19M8 22 10 19M16 22 14 19',
- repulsor:'M8 6H15V18H8ZM3 9V15M11 9V15M19 4Q25 12 19 20M16 7Q20 12 16 17M8 18V22H12V18'
-};
-export const pilotToolIcon=id=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="${paths[id]||paths.engulf}"/></svg>`;
-
+// Held tools reuse the bundled MIT Three.js. Inventory sprites live in city-pilot-icons.mjs.
 export function createPilotTools(){
  const root=new T.Group(),scene=new T.Scene(),camera=new T.PerspectiveCamera(50,1,.01,4),groups=new Map(),materials=new Map();scene.add(root);
  scene.add(new T.HemisphereLight(0xf4fffa,0x546b64,2.4));const light=new T.DirectionalLight(0xfff0cf,3);light.position.set(-2,3,4);scene.add(light);
