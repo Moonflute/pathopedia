@@ -40,6 +40,11 @@ test('pulse gun hits at range, traces the first wall and cannot damage a covered
  const {s,p,world}=fixture();s.cells=[p.cell];const enemy={id:++s.serial,...groundCoordinate({x:0,z:-8}),recordId:'SAU-001',hp:50,maxHp:50,entered:true,site:'heart'};s.enemies=[enemy];aim(p,{x:0,z:-8},.43);const energy=p.cell.energy;p.step(.02,{use:true});assert.ok(enemy.hp<50);assert.equal(p.view().shots,1);assert.ok(p.view().shot.hit);assert.ok(p.cell.energy<energy);
  p.step(.02);for(let i=0;i<17;i++)tickCity(s,.02,data,'2');world.setSurface(surface([[0,1,-4,5,2,.2]]));const hp=enemy.hp;assert.equal(pilotCellAction(s,'attack',enemy.id).ok,false);p.step(.02,{use:true});assert.equal(enemy.hp,hp);assert.equal(p.view().shot.hit,false);assert.ok(p.view().shot.target.z>-4.2);p.stop();
 });
+test('joint repair follows the worker wall or tissue job without healing a different organ',()=>{
+ const {s,p}=fixture(),worker=s.cells.find(c=>c.kind==='fibroblast');s.cells=[p.cell,worker];Object.assign(worker,groundCoordinate({x:0,z:-1}),{target:'heart',frontJob:0});s.districts.heart.hp=50;s.frontier.walls[0].repair={remaining:5,delivered:true};beginActivity(s,worker,'repair',5,worker,'heart');selectSandboxCell(s,worker);p.equip('repair');const stock=s.resources.materials;
+ assert.ok(pilotCellAction(s,'repair','cell:'+worker.id).ok);assert.equal(s.frontier.walls[0].repair.remaining,3.8);assert.equal(s.districts.heart.hp,50);
+ worker.frontJob=null;worker.tissueJob=0;s.frontier.tissues[0].hp=50;s.time+=1;assert.ok(pilotCellAction(s,'repair','cell:'+worker.id).ok);assert.equal(s.frontier.tissues[0].hp,56);assert.equal(s.districts.heart.hp,50);assert.equal(s.resources.materials,stock-2);p.stop();
+});
 for(const theme of ['1','2'])test('theme '+theme+': grapple uses rendered surfaces, constrains the rope and preserves release momentum',()=>{
  const {s,p}=fixture(theme,[[0,3,-7,5,6,.3]]);s.cells=[p.cell];aim(p,{x:0,z:-7},3);step(p,.02,{grapple:true});assert.ok(p.view().grapple);step(p,.5,{grapple:true,strafe:1,jump:true});const v=p.view(),a=v.grapple.target;assert.ok(Math.hypot(v.position.x-a.x,v.eye-a.y,v.position.z-a.z)<=v.grapple.length+.3);assert.ok(v.height>.2);step(p,.02);assert.equal(p.view().grapple,null);assert.ok(p.view().speed>.1);assert.ok(restoreCity(serializeCity(s)));p.stop();
 });

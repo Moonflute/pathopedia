@@ -39,10 +39,12 @@ export function sandboxCellWork(s,c,job,api){
   amount=Math.min(6-i.debris,other.debrisCargo||0);i.debris+=amount;other.debrisCargo-=amount;kind='collect';text='잔해 '+amount+' 인계';
  }else if(job.action==='repair'){
   const work=activeActivity(other,s.time),site=work?.site||other.buildSite||other.target,d=s.districts[site],building=d?.building;
-  if(!work||!d||s.resources.materials<1||c.energy<2)return {ok:false,text:'재료 또는 작업 확인'};
+  if(!work||s.resources.materials<1||c.energy<2)return {ok:false,text:'재료 또는 작업 확인'};
+  const wall=other.frontJob!=null?s.frontier?.walls[other.frontJob]:null,tissue=other.tissueJob!=null?s.frontier?.tissues[other.tissueJob]:null;
   if(work.kind==='build'&&building?.remaining!=null){amount=Math.min(2,Math.max(0,building.remaining-.05));building.remaining-=amount;}
-  else if(work.kind==='repair'){amount=Math.min(6,100-d.hp);d.hp+=amount;}
-  if(amount>0){s.resources.materials--;c.energy-=2;kind=work.kind;text=work.kind==='build'?'공동 건설':'공동 복구 +'+Math.round(amount);}
+  else if(work.kind==='repair'&&wall?.repair?.delivered){amount=Math.min(1.2,Math.max(0,wall.repair.remaining-.05));wall.repair.remaining-=amount;}
+  else if(work.kind==='repair'&&!wall){const entity=tissue||d;if(entity){amount=Math.min(6,100-entity.hp);entity.hp+=amount;}}
+  if(amount>0){s.resources.materials--;c.energy-=2;kind=work.kind;text=work.kind==='build'?'공동 건설':wall?'장벽 공동 보수':'공동 복구 +'+Math.round(amount);}
  }else if(job.action==='signal'){
   if(c.energy<10)return {ok:false,text:'에너지 부족'};c.energy-=10;amount=1;
   const site=cityDistricts(s).reduce((a,b)=>Math.hypot(a.x-c.x,a.y-c.y)<Math.hypot(b.x-c.x,b.y-c.y)?a:b).id;
