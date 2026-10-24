@@ -7,6 +7,7 @@ import {createFrontierScene} from './city-three-frontier.mjs';
 import {WALLS,WORKSHOP,AIRWAY_PATH} from './city-frontier-data.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {createPilotSurface,combinePilotSurfaces} from './city-pilot-physics.mjs';
+import {addPilotLandmarks} from './city-pilot-landmarks.mjs';
 import {pilotWorld} from './city-pilot-world.mjs';
 import {mergeGeometries} from './vendor/three/BufferGeometryUtils.js';
 import {SITES,CITY_ROADS,INTAKE_ROAD,RIVER_PATH,COTTAGES,groundPoint} from './city-three-layout.mjs';
@@ -240,7 +241,8 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  // Selected geometry stays separate during editing, so dragging moves it without rebuilding.
  const preview=owners.fixed.get(editId);if(preview){fixed.remove(preview);root.add(preview);}
  // Merge static geometry, including the imported modular buildings, by material.
- fixed.updateMatrixWorld(true);const pilotSurface=layout&&!editId?createPilotSurface(fixed):null;let tissueSurfaceVersion=-1;
+ fixed.updateMatrixWorld(true);let pilotSurface=layout&&!editId?createPilotSurface(fixed):null;let tissueSurfaceVersion=-1;
+ if(pilotSurface){addPilotLandmarks(fixed,layout,pilotSurface);fixed.updateMatrixWorld(true);pilotSurface=createPilotSurface(fixed);}
  const batches=new Map(),vertexMaterial=new T.MeshStandardMaterial({vertexColors:true,roughness:STYLE.roughness});
  function prepareGeometry(g,original,colored){
   const source=original.vertexColors?g.getAttribute('color'):null;

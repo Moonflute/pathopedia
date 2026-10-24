@@ -15,13 +15,17 @@ import {compileThemeLayout} from './city-theme-layout.mjs';
 import {tickResponse,validateResponse} from './city-response.mjs';
 import {ensureHostResponse,validateHostResponse} from './city-host-response.mjs';
 import {moveToInflammation} from './city-immune-traffic.mjs';
-import {pilotedCell,setPilotedCell,pilotInventory,validatePilotInventory,pilotPose,setPilotPose} from './city-pilot-state.mjs';
+import {pilotedCell,setPilotedCell,pilotInventory,validatePilotInventory,pilotPose,setPilotPose,pilotTool} from './city-pilot-state.mjs';
 import {pilotWork} from './city-pilot-work.mjs';
 import {pilotRepulse,pilotPull,pilotStaggered} from './city-pilot-gadgets.mjs';
 import {pilotWorld} from './city-pilot-world.mjs';
 import {ensureHomeostasis,homeostasisCommand,tickHomeostasis,homeFoodFactor,homeMealArrival,homeDigestion,homeostasisOutput,recycleHomeRbc,validateHomeostasis} from './city-homeostasis.mjs';
 import {HOME_ORGANS,homeOrgan} from './city-homeostasis-data.mjs';
 import {homePoint,homeTransferPath} from './city-homeostasis-paths.mjs';
+import {tickCellMemory} from './city-cell-memory.mjs';
+import {coordinatedTarget,sandboxOrder,sandboxReserved} from './city-sandbox.mjs';
+import {tickSandboxEvents} from './city-sandbox-events.mjs';
+import {tickPilotThreat} from './city-pilot-threats.mjs';
 
 export const SAVE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
@@ -197,9 +201,9 @@ function delivery(s,sh){
   if(sh.kind==='recruit'){const r=s.recruits.find(r=>r.id===sh.recruitId);if(r){r.remaining=(s.host==='neutropenia'&&r.kind==='neutrophil'?22:8)/s.districts.marrow.level;r.duration=r.remaining;}}
   s.stats.deliveries++;
 }
-function damage(s,e,amount,from,color){
+function damage(s,e,amount,from,color,visual=null){
   if(amount>0&&from!==e){e.hitUntil=s.time+.28;e.hitX=from.x;e.hitY=from.y;}
-  e.hp-=amount;s.effects.push({x:from.x,y:from.y,tx:e.x,ty:e.y,color,life:s.specialists?.42:.18,kind:from.kind==='macrophage'||s.biology&&from.kind==='neutrophil'?'engulf':'shot'});
+  e.hp-=amount;s.effects.push({x:from.x,y:from.y,tx:e.x,ty:e.y,color,life:s.specialists?.42:.18,kind:visual||(from.kind==='macrophage'||s.biology&&from.kind==='neutrophil'?'engulf':'shot')});
   if(e.hp<=0&&!e.dead){e.dead=true;s.stats.defeated++;s.debris.push({id:++s.serial,x:e.x,y:e.y,recordId:e.recordId});s.waste=clamp(s.waste+.5);s.inflammation=clamp(s.inflammation+.8);}
 }
 export function takeCityCell(s,id){
@@ -220,14 +224,21 @@ export function pilotCellAction(s,action,id,dt){
  if(action==='repulsor')return pilotRepulse(s,c);
  if(action==='tractor-pull'){const pulled=pilotPull(s,c,id,dt);return pulled.ok&&pulled.collect?pilotWork(s,c,'tractor',id,frontierAPI):{...pulled,pulling:pulled.ok};}
  if(action==='attack'&&inventory.tool==='engulf'){
-  const e=s.enemies.find(e=>e.id===id&&!e.dead&&e.entered&&e.compartment!=='lumen'),rule=cityRule(s,'neutrophil');
-  if(!e||c.cooldown>0)return {ok:false};
-  if(!ruleReady(s,'neutrophil',near.id)||!ruleEnemy(s,'neutrophil',e))return {ok:false,text:'현재 전투 규칙에서 공격 불가'};
+  const def=pilotTool('engulf'),world=pilotWorld(s.layout,pose.theme),from={...p,y:pose.eye},direction={x:Math.sin(pose.yaw||0)*Math.cos(pose.pitch||0),y:Math.sin(pose.pitch||0),z:-Math.cos(pose.yaw||0)*Math.cos(pose.pitch||0)};
+  const wall=world.trace(from,direction,def.range),limit=wall?.distance??def.range;
+  let e=null,depth=limit;
+  for(const enemy of s.enemies){if(enemy.dead||!enemy.entered||enemy.compartment==='lumen')continue;const q=groundPoint(enemy),x=q.x-p.x,y=.43-pose.eye,z=q.z-p.z,t=x*direction.x+y*direction.y+z*direction.z;
+   if(t<0||t>depth||x*x+y*y+z*z-t*t>.43**2||!world.clear(from,{...q,y:.43}))continue;e=enemy;depth=t;}
+  const rule=cityRule(s,'neutrophil');if(c.cooldown>0)return {ok:false};
+  if(id!=null&&(!e||id!==e.id))return {ok:false};
+  if(e&&(!ruleReady(s,'neutrophil',near.id)||!ruleEnemy(s,'neutrophil',e)))return {ok:false,text:'현재 전투 규칙에서 공격 불가'};
   if(c.energy<3)return {ok:false,text:'에너지 부족 · 심장에서 회복'};
-  const q=groundPoint(e);if(Math.hypot(q.x-p.x,q.z-p.z,pose.eye-.43)>Math.max(1.5,rule.params.range*.1)||!pilotWorld(s.layout,pose.theme).clear({...p,y:pose.eye},{...q,y:.43}))return {ok:false};
+  c.cooldown=def.interval;c.energy-=2;
+  const impact=e?{...groundPoint(e),y:.43}:wall||{x:p.x+direction.x*def.range,y:pose.eye+direction.y*def.range,z:p.z+direction.z*def.range};
+  if(!e)return {ok:true,hit:false,impact,text:wall?'표면 명중':'사격'};
   const organ=s.districts[near.id],depot=frontDepot(s,c),support=antibodySupport(s,e.recordId,near.id),capsule=1-(pathogenDef(e.recordId)?.capsule||0)*(1-support);
-  const amount=rule.params.damage*(s.policy==='defense'?1.3:1)*clamp(organ.oxygen/45,.3,1)*((depot?depot.food:organ.food)>0?1:.5)*(organ.supportUntil>s.time?1.15:1)*(1+support*.85+(e.c3b||0)*.8)*capsule*immuneClearance(s,near.id)*clamp(c.energy/65,.35,1);
-  damage(s,e,amount,c,JOBS.neutrophil.color);combatEffort(c);c.cooldown=rule.params.interval;beginActivity(s,c,'engulf',.4,e);c.task='직접 조종 · 감염 대응';return {ok:true,defeated:e.dead,amount};
+  const amount=rule.params.damage*.6*(s.policy==='defense'?1.3:1)*clamp(organ.oxygen/45,.3,1)*((depot?depot.food:organ.food)>0?1:.5)*(organ.supportUntil>s.time?1.15:1)*(1+support*.85+(e.c3b||0)*.8)*capsule*immuneClearance(s,near.id)*clamp(c.energy/65,.35,1);
+  damage(s,e,amount,c,JOBS.neutrophil.color,'shot');beginActivity(s,c,'shoot',.22,e);c.task='직접 조종 · 사격 지원';return {ok:true,hit:true,defeated:e.dead,amount,impact};
  }
  return pilotWork(s,c,action,id,frontierAPI);
 }
@@ -287,6 +298,7 @@ function specialist(s,c,dt){
 function updateCell(s,c,dt,speed,data){
   c.cooldown=Math.max(0,c.cooldown-dt);c.waitReason='';c.nextTask='';
   if(pilotedCell(s)===c)return;
+  if(sandboxReserved(s,c))return;
   if(updateCombatCondition(s,c,dt,frontierAPI))return;
   if(s.specialists&&frontierCell(s,c,dt,frontierAPI))return;
   if(immuneCell(s,c,dt,frontierAPI))return;
@@ -343,7 +355,8 @@ function updateCell(s,c,dt,speed,data){
   if(assigned?.id)c.target=assigned.id;
   const combat=cityRule(s,c.kind),here=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b);
   if(!ruleReady(s,c.kind,here.id)){c.task='전투 대기';c.waitReason=combat.enabled?'규칙의 최소 산소 미달':'전투 규칙 꺼짐';wander(s,c,dt);return;}
-  let target=null,nearest=Infinity;for(const e of s.enemies)if(!e.dead&&e.compartment!=='lumen'&&(!s.biology||!e.front||e.entered)&&ruleEnemy(s,c.kind,e)&&(!hold||dist(e,assigned)<180)){const distance=(e.x-c.x)**2+(e.y-c.y)**2;if(distance<nearest){nearest=distance;target=e;}}
+  const team=sandboxOrder(s,c);if(team)c.target=team.site;
+  const target=coordinatedTarget(s,c,e=>!e.dead&&e.compartment!=='lumen'&&(!s.biology||!e.front||e.entered)&&ruleEnemy(s,c.kind,e),assigned,hold);
   if(target&&(dist(target,c)<(hold?160:240)||dist(target,assigned)<200)){
     c.task='감염 대응';const range=c.kind==='neutrophil'&&!s.biology?66:combat.params.range;
     if(s.physiology&&!moveToInflammation(s,c,target,'combat:'+target.id,dt,frontierAPI,(c.kind==='neutrophil'?82:56)*travelScale(s)))return;
@@ -537,6 +550,7 @@ export function tickCity(s,dt,data,canalTransport=false){
   for(const e of s.enemies){
     if(e.dead)continue;
     if(pilotStaggered(s,e))continue;
+    if(tickPilotThreat(s,e,dt))continue;
     if(s.frontier&&tickFrontierEnemy(s,e,dt,frontierAPI)){if(!s.biology&&!e.dead&&(s.antibodies[e.recordId]||0)>=100)damage(s,e,dt*1.3,e,'#c6df9c');continue;}
     const lung=point(s,'lung');
     if(dist(e,ENTRANCE)<160&&s.barrier>0){const p={x:983,y:180},distance=dist(e,p);if(distance>8){e.x+=(p.x-e.x)/distance*20*dt;e.y+=(p.y-e.y)/distance*20*dt;}else{s.barrier=clamp(s.barrier-dt*3);e.hp-=dt*.55*s.districts.lung.level;if(e.hp<=0)damage(s,e,0,e,'#a4cab0');}}
@@ -554,7 +568,7 @@ export function tickCity(s,dt,data,canalTransport=false){
   s.enemies=s.enemies.filter(e=>!e.dead);
   // Keep dead epithelial remains available for cleanup even after a large battle.
   const epithelialDebris=s.debris.filter(e=>e.epithelialId);s.debris=[...epithelialDebris,...s.debris.filter(e=>!e.epithelialId).slice(-(80-epithelialDebris.length))];
-  s.effects=s.effects.filter(e=>(e.life-=dt)>0);tickResponse(s);
+  s.effects=s.effects.filter(e=>(e.life-=dt)>0);tickResponse(s);if(s.specialists){tickCellMemory(s);tickSandboxEvents(s,dt,data,frontierAPI);}
   const preset=SCENARIOS[s.scenario];
   if(s.scenario==='simulation')return;
   if(s.districts.heart.hp<=0||cityHealth(s)<22){s.status='lost';s.endReason='도시 기능 정지';}

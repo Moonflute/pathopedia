@@ -4,13 +4,7 @@ const ink='#172b30',steel='#718a96',light='#edf6e4',gold='#edbb63';
 const p=(d,fill)=>`<path d="${d}" fill="${fill}"/>`;
 const r=(x,y,w,h,fill)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}"/>`;
 const sprites={
- engulf:[
-  p('M10 3H16V5H22V7H26V20H24V24H22V29H8V23H6V20H4V12H8V15H10Z',ink),
-  p('M12 5H14V11H16V7H20V12H22V9H24V19H22V22H10V20H8V18H6V14H8V17H12Z',gold),
-  r(12,5,2,10,'#fff1bf'),r(17,7,2,8,'#ffe8aa'),r(22,9,2,6,'#ffe8aa'),
-  p('M20 16H24V19H22V22H10V20H18V18H20Z','#bd7c45'),
-  r(9,23,12,4,steel),r(9,23,12,1,'#b3d4cb'),r(12,24,5,2,light)
- ].join(''),
+ engulf:[p('M3 8H22V10H30V17H20V20H16V29H8V21H5V18H3Z',ink),r(5,10,16,7,steel),r(7,10,13,2,light),r(20,12,8,3,gold),r(10,19,4,8,steel),r(9,13,10,3,'#94efd9'),r(15,8,3,3,gold),r(24,11,3,6,light)].join(''),
  oxygen:[
   r(6,2,7,5,ink),r(19,2,7,5,ink),r(8,3,3,4,steel),r(21,3,3,4,steel),
   p('M5 7H14V9H16V26H14V29H5V27H3V10H5ZM18 7H27V9H29V26H27V29H18V27H16V10H18Z',ink),

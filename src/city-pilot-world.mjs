@@ -27,6 +27,10 @@ export function pilotWorld(layout,theme){
  function safe(p,kind,extra=()=>true){if(canStand(p,kind)&&extra(p))return {...p};for(let r=.25;r<=8;r+=.25)for(let i=0;i<24;i++){const q={x:p.x+Math.cos(i*Math.PI/12)*r,z:p.z+Math.sin(i*Math.PI/12)*r};if(canStand(q,kind)&&extra(q))return q;}return null;}
  function move(p,dx,dz,kind){const n=Math.max(1,Math.ceil(Math.max(Math.abs(dx),Math.abs(dz))/.1));for(let i=0;i<n;i++){const x={x:p.x+dx/n,z:p.z};if(canStand(x,kind))p.x=x.x;const z={x:p.x,z:p.z+dz/n};if(canStand(z,kind))p.z=z.z;}return p;}
  function clear(a,b){if(surface)return surface.clear(a,b);const n=Math.max(1,Math.ceil(distance(a,b)*10));for(let i=1;i<n;i++)if((a.y??.45)+((b.y??.45)-(a.y??.45))*i/n<3&&solid({x:a.x+(b.x-a.x)*i/n,z:a.z+(b.z-a.z)*i/n}))return false;return true;}
+ function trace(a,d,max=26){
+  if(surface)return surface.trace?.(a,d,max)||null;
+  for(let t=.05;t<=max;t+=.05){const p={x:a.x+d.x*t,y:a.y+d.y*t,z:a.z+d.z*t};if(p.y>=.27&&p.y<3&&solid(p))return {...p,distance:t};}return null;
+ }
  function moveBody(p,delta,height=.62){
   const steps=Math.max(1,Math.ceil(Math.hypot(delta.x,delta.y,delta.z)/.07));let grounded=false,ceiling=false;
   for(let i=0;i<steps;i++){
@@ -66,5 +70,5 @@ export function pilotWorld(layout,theme){
   // Keep corner waypoints; the same collision map is used by the input mover.
   return points.filter((p,i)=>!i||i===points.length-1||(p.x-points[i-1].x)*(points[i+1].z-p.z)!==(p.z-points[i-1].z)*(points[i+1].x-p.x));
  }
- const result={canStand,safe,move,moveBody,fitsBody,clear,route,stations,town,get revision(){return revision;},setSurface(value){baseSurface=value;surface=combinePilotSurfaces(baseSurface,annexSurface);revision++;passable.clear();},setAnnexSurface(value){annexSurface=value;surface=combinePilotSurfaces(baseSurface,annexSurface);revision++;passable.clear();}};variants.set(theme,result);return result;
+ const result={canStand,safe,move,moveBody,fitsBody,clear,trace,route,stations,town,get revision(){return revision;},setSurface(value){baseSurface=value;surface=combinePilotSurfaces(baseSurface,annexSurface);revision++;passable.clear();},setAnnexSurface(value){annexSurface=value;surface=combinePilotSurfaces(baseSurface,annexSurface);revision++;passable.clear();}};variants.set(theme,result);return result;
 }

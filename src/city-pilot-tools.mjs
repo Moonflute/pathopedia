@@ -19,9 +19,11 @@ export function createPilotTools(){
  for(const def of PILOT_TOOLS){
   const g=new T.Group(),color=def.color;g.visible=false;groups.set(def.id,g);root.add(g);
   if(def.id==='engulf'){
-   add(g,'sphere',color,[0,.015,0],[.085,.08,.09]);
-   for(let i=0;i<4;i++)add(g,'sphere',cream,[(i-1.5)*.04,.08,-.025],[.025,.045,.036]);
-   add(g,'sphere',color,[-.09,.02,.03],[.035,.055,.04],-.4);
+   add(g,'box',metal,[0,.035,-.015],[.15,.12,.29]);add(g,'box',dark,[0,-.075,.07],[.075,.16,.085],-.2);
+   const barrel=add(g,'tube',dark,[0,.055,-.21],[.045,.2,.045]);barrel.rotation.x=Math.PI/2;
+   add(g,'ring',color,[0,.055,-.31],[.055,.055,.055]);add(g,'box',cream,[0,.12,-.025],[.025,.025,.15]);
+   for(const x of [-.079,.079])add(g,'box',0x9af2dd,[x,.045,-.06],[.012,.04,.13]);
+   const flash=add(g,'sphere',0xc5ffdf,[0,.055,-.34],[.07,.07,.07]);flash.userData.flash=true;flash.visible=false;
   }else if(def.id==='oxygen'){
    for(const x of [-.045,.045]){add(g,'tube',color,[x,.03,0],[.037,.2,.037]);add(g,'box',metal,[x,.145,0],[.04,.035,.04]);add(g,'box',cream,[x,.035,.037],[.04,.025,.008]);}
    add(g,'box',dark,[0,-.055,.01],[.16,.025,.06]);
@@ -65,9 +67,10 @@ export function createPilotTools(){
   if(!paused&&v.using&&(!wasUsing||last==='engulf'&&clock-punchAt>460))punchAt=clock;wasUsing=v.using;
   jets.visible=v.flying;jets.scale.x=Math.min(1,aspect);jets.children.forEach((m,i)=>{if(i%2)m.scale.y=.07+(paused?.01:Math.sin(clock*.03)*.018);});
   const walk=paused||v.flying?0:Math.min(1,v.speed/4.2),phase=clock*.009,portrait=aspect<.8,short=height<520,halfY=Math.tan(25*Math.PI/180)*.8;
-  const punch=Math.sin(Math.min(1,(clock-punchAt)/280)*Math.PI),swap=Math.sin(Math.min(1,(clock-changedAt)/200)*Math.PI);
+  const punch=last==='engulf'?(v.shot?Math.exp(-v.shot.progress*12):0):Math.sin(Math.min(1,(clock-punchAt)/280)*Math.PI),swap=Math.sin(Math.min(1,(clock-changedAt)/200)*Math.PI);
+  for(const mesh of groups.get('engulf').children)if(mesh.userData.flash)mesh.visible=last==='engulf'&&!!v.shot&&v.shot.progress<.23;
   camera.aspect=aspect;camera.updateProjectionMatrix();root.scale.setScalar(portrait?.8:short?1.12:1.2);
-  root.position.set(halfY*aspect*(portrait?.43:short?.50:.64)+Math.sin(phase)*.009*walk, -halfY*(portrait?.28:short?.47:.58)-swap*.12+Math.cos(phase*2)*.006*walk, -.8-punch*(last==='engulf'?.12:.025));
-  root.rotation.set(-.1-punch*.22+(v.progress?Math.sin(clock*.018)*.06:0)-(v.dashing?.2:0),-.22,-.12+Math.sin(phase)*.025*walk);
+  root.position.set(halfY*aspect*(portrait?.43:short?.50:.64)+Math.sin(phase)*.009*walk, -halfY*(portrait?.28:short?.47:.58)-swap*.12+Math.cos(phase*2)*.006*walk, -.8+punch*(last==='engulf'?.055:-.025));
+  root.rotation.set(-.1+punch*(last==='engulf'?.15:-.22)+(v.progress?Math.sin(clock*.018)*.06:0)-(v.dashing?.2:0),-.22,-.12+Math.sin(phase)*.025*walk);
  },render(renderer){const autoClear=renderer.autoClear;renderer.autoClear=false;renderer.clearDepth();renderer.render(scene,camera);renderer.autoClear=autoClear;},dispose(){for(const g of Object.values(geometry))g.dispose();for(const m of materials.values())m.dispose();}};
 }

@@ -5,11 +5,21 @@ import {TISSUES,WALLS,supportCount} from './city-frontier-data.mjs';
 import {ruleTarget} from './city-rules.mjs';
 import {pathogenDef} from './city-pathogens.mjs';
 import {pilotSite,pilotFieldSite} from './city-pilot-sites.mjs';
+import {sandboxCellJobs} from './city-sandbox.mjs';
+import {homeSites} from './city-homeostasis-data.mjs';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 export const pilotHostile=e=>!e.dead&&e.entered&&e.compartment!=='lumen';
 export const pilotFoodCapacity=(s,id)=>40+supportCount(s,id,'supply')*8;
 export function pilotJobs(s,tool){
+ const jobs=facilityJobs(s,tool);
+ if(tool==='scanner'){
+  for(const sh of s.shipments)if(!(sh.harbourUntil>s.time))jobs.push({id:'shipment:'+sh.id,...groundPoint(sh),shipment:sh,name:'운반체 관찰',action:tool});
+  if(s.homeostasis)for(const o of homeSites(s.layout))jobs.push({id:'home:'+o.id,x:o.x,z:o.z,home:o,name:o.name+' · 관찰',action:tool});
+ }
+ return [...jobs,...sandboxCellJobs(s,tool)];
+}
+function facilityJobs(s,tool){
  const inventory=pilotInventory(s),districts=cityDistricts(s);
  const organ=(id,label,action=tool)=>{const station=pilotSite(s,id,tool);return {id,...(station?.approach||siteAt(s.layout,id)),target:station?.target,station:station?.key,site:id,name:districts.find(d=>d.id===id).short+' · '+label,action};};
  const enemy=e=>({id:'enemy:'+e.id,...groundPoint(e),enemy:e,name:pathogenDef(e.recordId)?.name||'병원체',action:tool});

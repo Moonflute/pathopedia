@@ -44,10 +44,15 @@ export function createPilotSurface(root,filter=()=>true){
   clear(a,b){
    if(!triangles)return true;ray.origin.set(a.x,a.y??.45,a.z);direction.set(b.x,b.y??.45,b.z).sub(ray.origin);const length=direction.length();if(length<.001)return true;
    ray.direction.copy(direction.divideScalar(length));const hit=tree.rayIntersect(ray);return !hit||hit.distance>=length-.06;
+  },
+  trace(a,d,max=26){
+   if(!triangles)return null;ray.origin.set(a.x,a.y,a.z);ray.direction.set(d.x,d.y,d.z).normalize();
+   const hit=tree.rayIntersect(ray);if(!hit||hit.distance>max)return null;
+   return {x:hit.position.x,y:hit.position.y,z:hit.position.z,distance:hit.distance};
   }
  };
 }
 
 export function combinePilotSurfaces(...surfaces){
- return {blocked:p=>surfaces.some(s=>s?.blocked(p)),clear:(a,b)=>surfaces.every(s=>!s||s.clear(a,b)),resolve(p,height){let normal=null;for(const s of surfaces){const n=s?.resolve(p,height);if(n)normal=n;}return normal;}};
+ return {blocked:p=>surfaces.some(s=>s?.blocked(p)),clear:(a,b)=>surfaces.every(s=>!s||s.clear(a,b)),trace(a,d,max){return surfaces.map(s=>s?.trace?.(a,d,max)).filter(Boolean).sort((a,b)=>a.distance-b.distance)[0]||null;},resolve(p,height){let normal=null;for(const s of surfaces){const n=s?.resolve(p,height);if(n)normal=n;}return normal;}};
 }

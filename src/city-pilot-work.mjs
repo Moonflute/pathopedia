@@ -6,6 +6,7 @@ import {cleanLocalDebris} from './city-biology.mjs';
 import {receiveAntigen} from './city-frontier.mjs';
 import {beginActivity} from './city-activity.mjs';
 import {pilotWorld} from './city-pilot-world.mjs';
+import {sandboxCellWork} from './city-sandbox.mjs';
 
 // All tools operate on the same city objects used by autonomous workers.
 export function pilotWork(s,c,action,id,api){
@@ -13,10 +14,11 @@ export function pilotWork(s,c,action,id,api){
  if(action!==i.tool||action==='engulf')return {ok:false};
  if((timers[action]||0)>s.time)return {ok:false};
  const job=pilotJobs(s,action).find(j=>j.id===id),pose=pilotPose(s),p={...groundPoint(c),y:pose.eye};
- const height=job?.enemy?.43:job?.debris?.12:.5,range=action==='tractor'&&job?.site?2.5:def.range;
+ const height=job?.cell?.45:job?.enemy?.43:job?.debris?.12:.5,range=action==='tractor'&&job?.site?2.5:def.range;
  if(!job||Math.hypot(p.x-job.x,p.z-job.z,pose.eye-height)>range)return {ok:false,text:'작업 대상 가까이 이동'};
  if(action==='tractor'&&job.debris&&Math.hypot(p.x-job.x,p.z-job.z)>1.1)return {ok:false};
  if(!pilotWorld(s.layout,pose.theme).clear(p,{...job,y:height}))return {ok:false,text:'장애물 옆으로 이동'};
+ if(job.cell&&action!=='scanner'){const result=sandboxCellWork(s,c,job,api);if(result.ok)timers[action]=s.time+Math.max(.8,def.interval);return result;}
  let result,kind='collect';
  if(action==='oxygen'){
   const target=job.site,d=s.districts[target],rule=cityRule(s,'oxygen');
@@ -53,7 +55,7 @@ export function pilotWork(s,c,action,id,api){
   c.energy-=10;s.rally=job.site;s.districts[job.site].supportUntil=s.time+15;s.stats.signals=(s.stats.signals||0)+1;kind='signal';result={text:'방어 지원 · 15초'};
  }else if(action==='scanner'){
   const e=job.enemy,d=job.entity;
-  result={text:e?`${job.name} · HP ${Math.ceil(e.hp)}/${Math.ceil(e.maxHp||e.hp)}`:`${job.name.replace(' · 진단','')} · HP ${Math.round(d.hp)} · O₂ ${Math.round(d.oxygen)} · 영양 ${Math.round(d.food)}`,scan:job};
+  result={text:e?`${job.name} · HP ${Math.ceil(e.hp)}/${Math.ceil(e.maxHp||e.hp)}`:d?`${job.name.replace(' · 진단','')} · HP ${Math.round(d.hp)} · O₂ ${Math.round(d.oxygen)} · 영양 ${Math.round(d.food)}`:'관찰 · '+(job.cell?.task||job.name),scan:job};
  }
  if(!result)return {ok:false};
  timers[action]=s.time+def.interval;

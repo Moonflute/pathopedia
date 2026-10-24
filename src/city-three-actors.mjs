@@ -6,6 +6,7 @@ import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 import {pathogenDef} from './city-pathogens.mjs';
 import {compileLayout,siteAt} from './city-tile-layout.mjs';
 import {entryTrackHeight} from './city-entry-tracks.mjs';
+import {pilotThreatView} from './city-pilot-threats.mjs';
 
 // Shared, rigid parts: sixteen cell roles and all work effects use 16
 // batches, without skeletons, particle objects, lights or per-cell DOM.
@@ -207,7 +208,7 @@ export function createActors(profile){
    const moved=prev&&Math.hypot(p.x-prev.x,p.z-prev.z)>.00001;
    const angle=moved?Math.atan2(p.x-prev.x,p.z-prev.z):target&&Math.hypot(target.x-p.x,target.z-p.z)>.001?Math.atan2(target.x-p.x,target.z-p.z):prev?.angle??0;
    last.set(id,{x:p.x,z:p.z,angle});if(visible&&!visible(p))continue;
-   const def=pathogenDef(e.recordId),shape=def?.shape,bacillus=shape==='rod'||shape==='shortRod',hit=Math.max(0,(e.hitUntil||0)-time)/.28,color=hit>.4?0xffd49b:e.color||def?.color||'#bc856f',cs=Math.cos(angle),sn=Math.sin(angle),attacking=e.action==='attack'||e.action==='breach';
+   const threat=pilotThreatView(e),winding=threat?.windup>time,def=pathogenDef(e.recordId),shape=def?.shape,bacillus=shape==='rod'||shape==='shortRod',hit=Math.max(0,(e.hitUntil||0)-time)/.28,color=winding?0xffbb77:hit>.4?0xffd49b:e.color||def?.color||'#bc856f',cs=Math.cos(angle),sn=Math.sin(angle),attacking=e.action==='attack'||e.action==='breach';
    const phase=(time*1.8+e.id*.17)%1,lunge=attacking?Math.max(0,Math.sin((phase-.2)*Math.PI*2))*.35:0,shake=hit*Math.sin(time*55+e.id)*.09,scale=1.24;
    const part=(id,x,y,z,sx,sy,sz,c,rz=0)=>put(id,p.x+(x*cs+(z+lunge)*sn)*scale+shake,(y+Math.sin(phase*Math.PI)*lunge*.35)*scale,p.z+(-x*sn+(z+lunge)*cs)*scale-shake,sx*scale,sy*scale,sz*scale,c,0,angle,rz+(attacking?Math.sin(phase*Math.PI*2)*.12:0));
    const pulse=['attack','colonize'].includes(e.action)?1+Math.sin(time*9+e.id)*.12:1,depth=bacillus?(shape==='shortRod'?.43:.57):.36;
