@@ -5,6 +5,7 @@ import {PERIMETER,WALLS} from './city-frontier-data.mjs';
 import {gridPath} from './city-grid-path.mjs';
 import {compileCanalBlocks} from './city-canal-blocks.mjs';
 import {wallPieces} from './city-boundary.mjs';
+import {compileCanalShore} from './city-canal-shore.mjs';
 
 // Main vessels, exchange beds and local service canals cut one continuous city.
 const cache=new WeakMap(),STEP=.5;
@@ -81,7 +82,8 @@ export function compileCanalLayout(layout){
  }
  const flows=vascular.vessels.filter(r=>r.length>0);
  const outlet=kidneyOutlet(layout,network),blocks=compileCanalBlocks(layout,network,channels,land,outlet);
- const result={channels,parcels,rows,edges,flows,vascular,outlet,blocks,patrol:network.access.filter(r=>r.kind==='patrol'),entries:network.entries,isWater:p=>!land.has(key(Math.floor(p.x/STEP),Math.floor(p.z/STEP)))};
+ const shore=compileCanalShore(edges);
+ const result={channels,parcels,rows,edges,flows,vascular,outlet,blocks,shore,patrol:network.access.filter(r=>r.kind==='patrol'),entries:network.entries,isWater:p=>!shore.isLand(p)};
  cache.set(layout,result);return result;
 }
 export function canalFlowPoint(flow,progress,side=0){

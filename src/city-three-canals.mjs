@@ -9,6 +9,7 @@ import {output} from './city-engine.mjs';
 import {wallPieces} from './city-boundary.mjs';
 import {createNeighbourhoodCourts} from './city-three-neighbourhoods.mjs';
 import {houseDesign,houseRoofGeometry} from './city-three-housing.mjs';
+import {canalShoreGeometry} from './city-three-shore.mjs';
 
 export const CANAL_STYLE=Object.freeze({water:0x4caaa8,deep:0x338b91,foam:0xb6e1d2,stone:0xd9c8a8,quay:0xa39983,sky:0xd7e9e5,roofs:[0xb96146,0xc57852,0xa95643,0xcd8a60],walls:[0xf0dbb4,0xe9b5a0,0xe8cc8d,0xc5d6c7,0xf1e5cc]});
 
@@ -53,13 +54,10 @@ export function canalHouse({box,make,model,mat,parent},x,z,size,index=0,angle=0,
 
 export function createThemeScenery({layout,theme='2',plan=compileThemeLayout(layout,theme),make,box,cylinder,model,newModel=null,cottage,mat,scope,fixed,moving,ribbon,road}){
  if(!plan)return null;const canals=plan.source,water=theme==='2',vascular=plan.vascular;
- function geometry(quadList){const p=[],uv=[];for(const q of quadList)for(const i of [0,2,1,0,3,2]){p.push(...q[i]);uv.push(q[i][0],q[i][2]);}const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(p,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.computeVertexNormals();return g;}
- if(water){const tops=canals.rows.map(r=>[[r.x,.018,r.z],[r.x+r.w,.018,r.z],[r.x+r.w,.018,r.z+r.d],[r.x,.018,r.z+r.d]]);
- const sides=canals.edges.map(([x,z,xx,zz])=>[[x,-.48,z],[xx,-.48,zz],[xx,.018,zz],[x,.018,z]]);
- scope(null);const top=make(geometry(tops),CANAL_STYLE.stone,0,0,0);top.castShadow=false;top.name='canal-islands';
- const banks=make(geometry(sides),CANAL_STYLE.quay,0,0,0);banks.name='canal-quays';banks.material.side=T.DoubleSide;
- const rims=canals.edges.map(([x,z,xx,zz])=>{const length=Math.hypot(xx-x,zz-z),dx=-(zz-z)/length*.11,dz=(xx-x)/length*.11;return [[x,.035,z],[xx,.035,zz],[xx+dx,.035,zz+dz],[x+dx,.035,z+dz]];});
- make(geometry(rims),0xf0dfbf,0,0,0).castShadow=false;
+ if(water){const geometry=canalShoreGeometry(canals.shore);
+ scope(null);const top=make(geometry.top,CANAL_STYLE.stone,0,0,0);top.castShadow=false;top.name='canal-islands';
+ const banks=make(geometry.banks,CANAL_STYLE.quay,0,0,0);banks.name='canal-quays';banks.material.side=T.DoubleSide;
+ const rim=make(geometry.rim,0xf0dfbf,0,0,0);rim.castShadow=false;rim.name='canal-coping';
  }
  scope(null);
  // Identical neighbourhood anchors receive waterfront façades or cottages.
