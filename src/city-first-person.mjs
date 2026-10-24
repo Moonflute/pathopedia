@@ -111,10 +111,11 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
   if(e.code==='KeyT'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){model.toggleFollowing();lastHud=-Infinity;}return;}
   if(e.code==='KeyB'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){model.toggleRide();lastHud=-Infinity;}return;}
   if(e.code==='KeyX'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){model.closeObservation();lastHud=-Infinity;}return;}
+  if(e.code==='KeyI'||e.code==='KeyH'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){const b=q(e.code==='KeyI'?'[data-field-card]':'[data-field-history]');if(b&&!b.hidden)b.click();}return;}
   if(e.code==='KeyF'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat)switched(model.matchTool());return;}
   if(e.code==='KeyR'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){model.nextDestination();lastHud=-Infinity;}return;}
   if(e.code==='KeyC'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat)crouchToggle=!crouchToggle;return;}
-  if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','KeyE','KeyF','KeyV','KeyG','Space','ShiftLeft','ShiftRight','ControlLeft','ControlRight'].includes(e.code)){e.preventDefault();e.stopImmediatePropagation();keys.add(e.code);if(e.code==='Space'&&!e.repeat)jumpQueued=true;if(e.code==='KeyV'&&!e.repeat)dashQueued=true;}
+  if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','KeyE','KeyF','KeyV','KeyG','Space','ShiftLeft','ShiftRight','ControlLeft','ControlRight'].includes(e.code)){e.preventDefault();e.stopImmediatePropagation();keys.add(e.code);if(e.code==='Space'&&!e.repeat)jumpQueued=true;if(e.code==='KeyV'&&!e.repeat)dashQueued=true;if(e.code==='KeyE'&&!e.repeat)useQueued=true;}
  },{capture:true});
  on(window,'keyup',e=>keys.delete(e.code));
  on(window,'blur',()=>{if(model.active&&!menu)pause();});on(window,'pagehide',()=>{if(model.active&&!menu)pause();});
@@ -143,7 +144,7 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
  function moveStick(e,p){touch.strafe=Math.max(-1,Math.min(1,(e.clientX-p.x)/35));touch.forward=Math.max(-1,Math.min(1,-(e.clientY-p.y)/35));stick.querySelector('i').style.transform=`translate(${touch.strafe*26}px,${-touch.forward*26}px)`;}
  on(stick,'pointerdown',e=>{if(menu||!model.active)return;stick.setPointerCapture(e.pointerId);const r=stick.getBoundingClientRect(),p={kind:'stick',x:r.left+r.width/2,y:r.top+r.height/2};pointers.set(e.pointerId,p);moveStick(e,p);});
  on(stick,'pointermove',e=>{const p=pointers.get(e.pointerId);if(p?.kind==='stick')moveStick(e,p);});
- for(const b of hud.querySelectorAll('[data-pilot-hold]'))on(b,'pointerdown',e=>{if(menu||!model.active)return;b.setPointerCapture(e.pointerId);const kind=b.dataset.pilotHold;pointers.set(e.pointerId,{kind});touch[kind]=true;if(kind==='jump')jumpQueued=true;if(kind==='dash')dashQueued=true;});
+ for(const b of hud.querySelectorAll('[data-pilot-hold]'))on(b,'pointerdown',e=>{if(menu||!model.active)return;b.setPointerCapture(e.pointerId);const kind=b.dataset.pilotHold;pointers.set(e.pointerId,{kind});touch[kind]=true;if(kind==='jump')jumpQueued=true;if(kind==='dash')dashQueued=true;if(kind==='use')useQueued=true;});
  function tick(s,dt){
   if(!model.active)return;if(s!==run){exit();return;}if(menu)return;
   const lookPointer=[...pointers.values()].find(p=>p.kind==='look');if(lookPointer?.mouse&&lookPointer.button===0&&lookPointer.moved<5&&performance.now()-lookPointer.at>160)mouseUse=true;
@@ -183,7 +184,7 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
   fields.target.textContent=object?.name||(enemy?(pathogenDef(enemy.recordId)?.name||'병원체'):'');fields['object-status'].textContent=object?.status||'';fields['target-health'].hidden=!enemy;if(enemy)fields['target-health'].value=enemy.hp/(enemy.maxHp||enemy.hp);
   fields.match.hidden=!object||object.matching||object.idle;fields.match.textContent=object?`${touchUI()?'':'F · '}${object.tool.key} ${object.tool.name}`:'';
   hud.dataset.target=object?(object.matching&&object.near?'ready':'focus'):'';
-  fields.feedback.textContent=v.notice;fields['action-hint'].textContent=v.progress?'작업 중':object?.matching?(object.near?(touchUI()?'사용 길게':'클릭 / E 유지')+' · '+object.action:Math.ceil(object.standDistance)+' · 접근'):object?.idle?'지금 할 작업 없음':'';
+  fields.feedback.textContent=v.notice;fields['action-hint'].textContent=v.progress?'작업 중':object?.matching?(object.near?(v.tool.id==='scanner'?(touchUI()?'사용':'클릭 / E'):(touchUI()?'사용 길게':'클릭 / E 유지'))+' · '+object.action:Math.ceil(object.standDistance)+' · 접근'):object?.idle?'지금 할 작업 없음':'';
   const selectedCooldown=v.tool.id==='engulf'?v.cell.cooldown:v.cooldown;
   fields.ready.textContent=selectedCooldown>0?selectedCooldown.toFixed(1)+'초':v.tool.id==='repulsor'?'12 E':'';
   fields.health.textContent='HP '+Math.round(v.cell.integrity);fields.energy.textContent='에너지 '+Math.round(v.cell.energy);fields.cargo.textContent='O₂ '+Math.round(v.inventory.oxygen)+' · 영양 '+Math.round(v.inventory.nutrient)+' · 잔해 '+v.inventory.debris;

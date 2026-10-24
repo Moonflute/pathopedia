@@ -83,7 +83,7 @@ export function createCityPilot(){
  }
  function cycle(direction=1){if(!inventory)return false;const i=PILOT_TOOLS.findIndex(t=>t.id===inventory.tool);return equip(PILOT_TOOLS[(i+(direction<0?-1:1)+PILOT_TOOLS.length)%PILOT_TOOLS.length].id);}
  function previous(){return equip(previousTool);}
- function matchTool(){const object=focus();if(object&&!object.idle)return equip(object.tool.id);return false;}
+ function matchTool(){if(inventory.tool==='scanner'&&watched?.cell){const help=pilotObservation(run,watched)?.help?.[0];if(help)return equip(help.tool);}const object=focus();if(object&&!object.idle)return equip(object.tool.id);return false;}
  function nextDestination(){if(!cell)return;const destinations=pilotJobs(run,inventory.tool).filter(j=>j.site&&j.id!=='lung'&&j.id!=='gut');if(destinations.length){const current=destinations.findIndex(j=>j.id===inventory.target);chooseDestination(destinations[(current+1)%destinations.length].id);say('목적지 · '+objective().name);}}
  function chooseDestination(id){if(!cell||id==='lung'||!run.districts[id]||!ruleTarget(run,'oxygen',id))return;inventory.target=id;progress=0;guideTime=-Infinity;}
  function step(dt,input={}){
@@ -161,7 +161,9 @@ export function createCityPilot(){
    }}else{progress=0;if(use&&!previousAction)say(!object?'대상을 조준하세요':!goal?object.idle?'지금 할 작업 없음':object.tool.key+' · '+object.tool.name:!ready?'도구 재사용 대기':!at?'작업 대상 가까이 이동':'멈춰서 작업');}
   }
   previousAction=rawUse;cell.task='직접 조종 · '+pilotTool(inventory.tool).short;
-  const goal=objective();if(goal.id!==guideKey||run.time-guideTime>2){guideTime=run.time;guideKey=goal.id;guide=flying||jumpHeight>1?[]:world.route(p,goal,'neutrophil');}
+  const goal=objective(),navigating=!goal.idle&&(inventory.tool!=='scanner'||following)&&!flying&&jumpHeight<=1&&!riding&&!grapple;
+  if(!navigating){guide=[];guideTime=run.time;guideKey=goal.id;}
+  else if(goal.id!==guideKey||run.time-guideTime>2){guideTime=run.time;guideKey=goal.id;guide=world.route(p,goal,'neutrophil');}
  }
  function view(alpha=1){
   if(!cell)return null;const actual=position(),goal=objective(),def=pilotTool(inventory.tool),aim=target(scoped||def.id==='scanner'?18:undefined);let next=goal;

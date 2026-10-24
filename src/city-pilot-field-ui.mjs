@@ -8,7 +8,7 @@ export function createPilotFieldUI(hud,model){
  return {update(v){
   const o=v.observed;panel.hidden=!o;
   if(o){for(const id of ['name','task','destination','cargo','why','next'])q(id).textContent=o[id]||'';q('destination').textContent='→ '+o.destination;q('follow').hidden=!o.track||o.carrier;q('follow').setAttribute('aria-pressed',String(v.following));q('follow').textContent=v.following?'T · 추적 해제':'T · 따라가기';q('card').hidden=!o.card;if(o.card)q('card').dataset.cardOpen=o.card;else delete q('card').dataset.cardOpen;
-   q('help').hidden=!o.help?.length;if(o.help?.length){q('help').textContent=o.help[0].name;q('help').dataset.tool=o.help[0].tool;}
+   const keyboard=!matchMedia('(pointer:coarse), (max-width:760px), (max-height:520px)').matches;q('card').textContent=keyboard?'I · 도감 ↗':'도감 ↗';q('history').textContent=keyboard?'H · 이력':'이력';q('help').hidden=!o.help?.length;if(o.help?.length){q('help').textContent=(keyboard?'F · ':'')+o.help[0].name;q('help').dataset.tool=o.help[0].tool;}
    q('history').hidden=!o.history.length;const key=o.key+JSON.stringify(o.history);if(key!==historyKey){historyKey=key;q('log').replaceChildren(...o.history.map(e=>{const li=document.createElement('li');li.textContent=time(e.at)+' · '+e.text;return li;}));}
   }
   const text=v.incidents.map(e=>e.name+' · '+e.phase).join('  /  ');if(incidents.textContent!==text)incidents.textContent=text;incidents.hidden=!text;
