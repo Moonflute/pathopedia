@@ -101,6 +101,19 @@ test('organ vessels separate outward/return paths, avoid buildings and close bot
  }
 });
 
+test('round canal feeders share junctions and leave the main trunk in its flow direction',()=>{
+ const v=compileVascularLayout(createTileLayout()),branches=v.vessels.filter(p=>p.id.startsWith('artery-')&&p.site!=='lung'),junctions=new Map();
+ for(const vessel of branches){
+  const [a,b]=vessel.points,dx=b.x-a.x,dz=b.z-a.z,alignment=(-dx*a.z+dz*a.x)/Math.hypot(dx,dz)/Math.hypot(a.x,a.z);
+  assert.ok(alignment>.9,vessel.id+' has an abrupt trunk junction');
+  const key=a.x+','+a.z;if(!junctions.has(key))junctions.set(key,[]);junctions.get(key).push(vessel);
+ }
+ assert.ok(junctions.size<branches.length-2,'neighbouring tissues share feeder mouths');
+ assert.ok([...junctions.values()].some(group=>group.some(v=>v.site==='skin')&&group.some(v=>v.site!=='skin')),'organ and nearby skin branches share the trunk');
+ const portal=v.vessels.find(p=>p.id==='vein-spleen'),liver=v.centres.liver;
+ assert.ok(Math.max(...portal.points.map(p=>p.z))>Math.max(portal.points[0].z,liver.z)+10,'splenic return bends around southern neighbourhoods');
+});
+
 test('RBCs deliver and return through canal routes across save/resume and theme changes',()=>{
  let s=createCity('normal','simulation',{specialists:true,workCrews:true,expanded:true});applyTileLayout(s,createTileLayout());
  const v=compileVascularLayout(s.layout),rbc=s.cells.find(c=>c.kind==='rbc');s.cells=[rbc];

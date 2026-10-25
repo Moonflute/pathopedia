@@ -75,7 +75,8 @@ export function createThemeScenery({layout,theme='2',plan=compileThemeLayout(lay
    ribbon(vessel.points,.14,vessel.oxygenated?0xf2b095:0x9dd8ec,-.132);
   }else road(vessel.points,vessel.width*(vessel.id.startsWith('systemic-')?1.45:1.15));
  }
- for(const path of canals.patrol)ribbon(path.points,Math.min(.8,path.width),0xc8b493,.065);
+ // Theme-1 patrol chords are simulation paths, not bridges across the lagoon.
+ if(!water)for(const path of canals.patrol)ribbon(path.points,Math.min(.8,path.width),0xc8b493,.065);
  // A narrow stone foundation supports the existing skin wall above the lagoon.
  if(water)for(const wall of WALLS)for(const p of wallPieces(wall))ribbon([p.a,p.b],1.3,0xb8ac90,-.035);
  const outlet=canals.outlet;

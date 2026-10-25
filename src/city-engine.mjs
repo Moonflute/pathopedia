@@ -12,7 +12,7 @@ import {workStation,beginActivity,activityProgress,activeActivity,ACTIVITY_KINDS
 import {ensureBiology,biologyCommand,tickBiology,seedInfection,combatDestination,updateCombatCondition,combatEffort,cleanLocalDebris,localInfection,antibodySupport,medicineOrder,pathogenDef,validateBiology,antigenEvidence} from './city-biology.mjs';
 import {defaultCityRules,validateCityRules,cityRule,ruleReady,ruleTarget,ruleEnemy} from './city-rules.mjs';
 import {ensureImmunity,IMMUNE_ROSTER,immuneCell,tickImmunity,immuneCommand,validateImmunity,immuneClearance} from './city-immunity.mjs';
-import {vascularWalkingRoute} from './city-vascular-layout.mjs';
+import {vascularWalkingRoute,VASCULAR_REVISION} from './city-vascular-layout.mjs';
 import {compileThemeLayout} from './city-theme-layout.mjs';
 import {tickResponse,validateResponse} from './city-response.mjs';
 import {ensureHostResponse,validateHostResponse} from './city-host-response.mjs';
@@ -54,7 +54,7 @@ const movementLayouts=new WeakMap(),navigatedPaths=new WeakMap(),movementVessels
 function route(c,points){c.path=points.map(p=>({...p}));c.step=0;c.travelMode=null;delete c.roadPathVersion;}
 function move(c,speed,dt){
   const layout=movementLayouts.get(c);
-  if(layout&&navigatedPaths.get(c)!==c.path){const vessel=movementVessels.get(c);if(!c.travelMode){c.path=vessel?vascularWalkingRoute(layout,c,c.path.slice(c.step).at(-1),compileThemeLayout(layout,vessel).vascular):walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=vessel?2:1;if(vessel)c.vascularRevision=2;}navigatedPaths.set(c,c.path);}
+  if(layout&&navigatedPaths.get(c)!==c.path){const vessel=movementVessels.get(c);if(!c.travelMode){c.path=vessel?vascularWalkingRoute(layout,c,c.path.slice(c.step).at(-1),compileThemeLayout(layout,vessel).vascular):walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=vessel?2:1;if(vessel)c.vascularRevision=VASCULAR_REVISION;}navigatedPaths.set(c,c.path);}
   // The outer circuit is much longer than the former radial map. Transit speed
   // compensates for that drawing scale; loading and local work retain timing.
   let budget=speed*dt*(movementVessels.get(c)&&!c.dock?2.4:1);
@@ -483,8 +483,8 @@ export function tickCity(s,dt,data,canalTransport=false){
   if(s.layout)for(const actor of [...s.cells,...s.shipments,...s.enemies]){
     const vessel=transport&&(actor.kind==='rbc'||s.shipments.includes(actor)&&actor.kind!=='raw')?transport:false;
     const restoredVessel=actor.roadPathVersion===2&&previousTransport===transport?transport:false;
-    if(!movementVessels.has(actor)&&restoredVessel===vessel&&actor.roadPathVersion&&(actor.roadPathVersion!==2||actor.vascularRevision===2))navigatedPaths.set(actor,actor.path);
-    if((movementVessels.get(actor)??restoredVessel)!==vessel||actor.roadPathVersion===2&&(!vessel||actor.vascularRevision!==2)){
+    if(!movementVessels.has(actor)&&restoredVessel===vessel&&actor.roadPathVersion&&(actor.roadPathVersion!==2||actor.vascularRevision===VASCULAR_REVISION))navigatedPaths.set(actor,actor.path);
+    if((movementVessels.get(actor)??restoredVessel)!==vessel||actor.roadPathVersion===2&&(!vessel||actor.vascularRevision!==VASCULAR_REVISION)){
       // Rejoin the selected network from the current position, without resetting
       // a job, transfer animation, cargo, or the saved city itself.
       if(actor.path){actor.path=actor.step<actor.path.length?[actor.path.at(-1)]:[];actor.step=0;navigatedPaths.delete(actor);}

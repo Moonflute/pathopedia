@@ -60,6 +60,6 @@ test('pathogen selection uses the live entity and never enables following automa
 });
 
 test('a restored older blood route rejoins the new waterways without losing its cargo',()=>{
- let s=city();const c=s.cells.find(c=>c.kind==='rbc'),target=groundCoordinate({x:18,z:18});s.cells=[c];s.transportTheme='2';Object.assign(c,{cargo:8,target:'kidney',path:[target],step:0,roadPathVersion:2,travelMode:null,dock:null});delete c.vascularRevision;
- s=restoreCity(serializeCity(s));assert.ok(s);const restored=s.cells[0],cargo=restored.cargo;tickCity(s,.05,data,'2');assert.equal(restored.cargo,cargo);assert.equal(restored.vascularRevision,2);assert.ok(restored.path.length>2);assert.equal(restored.roadPathVersion,2);
+ let s=city();const c=s.cells.find(c=>c.kind==='rbc'),target=groundCoordinate({x:18,z:18});s.cells=[c];s.transportTheme='2';Object.assign(c,{cargo:8,target:'kidney',path:[target],step:0,roadPathVersion:2,travelMode:null,dock:null});c.vascularRevision=2;
+ s=restoreCity(serializeCity(s));assert.ok(s);const restored=s.cells[0],cargo=restored.cargo;tickCity(s,.05,data,'2');assert.equal(restored.cargo,cargo);assert.equal(restored.vascularRevision,3);assert.ok(restored.path.length>2);assert.equal(restored.roadPathVersion,2);
 });
