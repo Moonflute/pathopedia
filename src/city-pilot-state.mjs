@@ -3,7 +3,6 @@ import {pathogenDef} from './city-pathogens.mjs';
 // Control ownership is transient. Saves always remain ordinary, autonomous cities.
 const pilots=new WeakMap();
 const poses=new WeakMap();
-export const PILOT_MAX_HEIGHT=100;
 export const PILOT_GRAPPLE_RANGE=50;
 export const pilotPose=s=>poses.get(s)||{height:0,eye:.58,theme:'2'};
 export function setPilotPose(s,pose){if(pose)poses.set(s,pose);else poses.delete(s);}

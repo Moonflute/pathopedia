@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {Group,Mesh,BoxGeometry,MeshBasicMaterial} from '../src/vendor/three/three.module.min.js';
+import {Group,Mesh,BoxGeometry,MeshBasicMaterial,PerspectiveCamera,Matrix4,Frustum,Vector3} from '../src/vendor/three/three.module.min.js';
 import {createPilotSurface} from '../src/city-pilot-physics.mjs';
 import {createCity,serializeCity,restoreCity,pilotCellAction} from '../src/city-engine.mjs';
 import {createTileLayout,applyTileLayout} from '../src/city-tile-layout.mjs';
@@ -8,7 +8,7 @@ import {createCityPilot} from '../src/city-pilot.mjs';
 import {pilotWorld} from '../src/city-pilot-world.mjs';
 import {pilotInventory,setPilotPose} from '../src/city-pilot-state.mjs';
 import {CITY_RADIUS} from '../src/city-boundary.mjs';
-import {groundCoordinate,groundPoint} from '../src/city-three-layout.mjs';
+import {groundCoordinate,groundPoint,pilotCameraRange} from '../src/city-three-layout.mjs';
 
 function scene(boxes=[]){const root=new Group();for(const [x,y,z,w,h,d] of boxes){const m=new Mesh(new BoxGeometry(w,h,d),new MeshBasicMaterial());m.position.set(x,y,z);root.add(m);}return createPilotSurface(root);}
 function fixture(theme='2',boxes=[]){const s=createCity('normal','simulation',{specialists:true,expanded:true});applyTileLayout(s,createTileLayout());const world=pilotWorld(s.layout,theme);world.setSurface(scene(boxes));const p=createCityPilot();assert.ok(p.start(s,{theme,spawn:{x:0,z:0}}));return {s,p,world};}
@@ -41,9 +41,16 @@ for(const theme of ['2','1'])test('theme '+theme+': zero legacy fuel permits unl
  p.toggleFlight();step(p,4);assert.equal(p.view().height,0);assert.equal(inventory.fuel,0);const c=p.cell;p.stop();assert.equal(p.active,false);assert.ok(c.path.length);assert.equal(pilotInventory(s).oxygen,12);
 });
 
-test('air dash respects thin walls and flight altitude limits',()=>{
- const {p}=fixture('2',[[0,5,-2,12,10,.1]]);for(let n=0;n<16;n++)p.look(-p.view().yaw/.0025,0);
- step(p,.25,{flight:true,jump:true});step(p,.3,{dash:true});assert.ok(p.view().position.z>-1.8);step(p,10,{jump:true});assert.ok(p.view().height>99&&p.view().height<=100,'100m remains reachable with unlimited flight');assert.ok(p.view().flying);p.stop();
+for(const theme of ['2','1'])test('theme '+theme+': flight keeps climbing past 100m while walls and safe saves still work',()=>{
+ const {s,p,world}=fixture(theme,[[0,5,-2,12,10,.1]]);for(let n=0;n<16;n++)p.look(-p.view().yaw/.0025,0);
+ step(p,.25,{flight:true,jump:true});step(p,.3,{dash:true});assert.ok(p.view().position.z>-1.8);step(p,10,{jump:true});const height=p.view().height;assert.ok(height>100);step(p,10,{jump:true});assert.ok(p.view().height>height+110,'there is no replacement altitude ceiling');assert.ok(p.view().flying);
+ const saved=restoreCity(serializeCity(s));assert.ok(world.canStand(groundPoint(saved.cells.find(c=>c.id===p.cell.id))));p.stop();
+});
+
+test('high-altitude collision has no ceiling and the camera still includes the ground',()=>{
+ const {p,world}=fixture();for(const height of [100,1000,1e6]){const body={x:0,y:height,z:0};assert.equal(world.moveBody(body,{x:0,y:1,z:0}).ceiling,false);assert.ok(body.y>height+.9);
+  const range=pilotCameraRange(body.y),camera=new PerspectiveCamera(74,16/9,range.near,range.far);camera.position.set(0,body.y,0);camera.up.set(0,0,-1);camera.lookAt(0,0,0);camera.updateMatrixWorld();const frustum=new Frustum().setFromProjectionMatrix(new Matrix4().multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse));assert.ok(frustum.containsPoint(new Vector3(0,0,0)));assert.ok(frustum.containsPoint(new Vector3(CITY_RADIUS,0,CITY_RADIUS)),'the city edge stays visible beyond the original far plane');
+ }p.stop();
 });
 
 test('tractor pulls actual debris, enforces capacity and cannot collect through a wall',()=>{

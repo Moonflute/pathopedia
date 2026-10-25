@@ -80,3 +80,9 @@ export function landscapeCameraRange(span,zoom,elevation){
  const distance=Math.max(80,(half+24)/height);
  return {distance,far:distance+Math.max(400,half*4),fogNear:distance+140,fogFar:distance+380};
 }
+
+// Keep the city inside the frustum as the pilot climbs without an altitude cap.
+// Hands use their own camera, independent of this world-depth precision range.
+export function pilotCameraRange(height){
+ return {near:Math.max(.035,(height-24)*.001),far:Math.max(320,height+200)};
+}

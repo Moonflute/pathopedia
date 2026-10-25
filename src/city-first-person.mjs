@@ -6,7 +6,7 @@ import {pilotStock} from './city-pilot-tasks.mjs';
 import {createPilotTools} from './city-pilot-tools.mjs';
 import {pilotToolIcon} from './city-pilot-icons.mjs';
 import {cityRule} from './city-rules.mjs';
-import {groundPoint} from './city-three-layout.mjs';
+import {groundPoint,pilotCameraRange} from './city-three-layout.mjs';
 import {pathogenDef} from './city-pathogens.mjs';
 import {createPilotFixtures} from './city-pilot-fixtures.mjs';
 import {createPilotEffects} from './city-pilot-effects.mjs';
@@ -161,7 +161,7 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
   const v=model.view(menu?1:alpha);if(!v)return null;
   const dt=lastRender?Math.min(.05,(now-lastRender)/1000):.05;lastRender=now;
   const aspect=Math.max(.1,map.clientWidth/map.clientHeight),base=Math.min(110,2*Math.atan(Math.tan(37*Math.PI/180)/Math.min(1,aspect))*180/Math.PI),fov=base+(v.scoped?-13:v.dashing?9:v.sprinting?4:v.flying?2:0);
-  camera.aspect=aspect;camera.fov+=(fov-camera.fov)*(1-Math.exp(-12*dt));camera.updateProjectionMatrix();camera.position.set(v.position.x,v.eye,v.position.z);camera.rotation.set(v.pitch,-v.yaw,v.flying?Math.sin(now*.001)*.003:0,'YXZ');camera.updateMatrixWorld();heldTools.update(v,now,aspect,menu==='pause',map.clientHeight);fixtures.update(run,v);effects.update(v,run.time);life.update(run,v);audio.update(run,v,!!menu);
+  const range=pilotCameraRange(v.eye);camera.near=range.near;camera.far=range.far;camera.aspect=aspect;camera.fov+=(fov-camera.fov)*(1-Math.exp(-12*dt));camera.updateProjectionMatrix();camera.position.set(v.position.x,v.eye,v.position.z);camera.rotation.set(v.pitch,-v.yaw,v.flying?Math.sin(now*.001)*.003:0,'YXZ');camera.updateMatrixWorld();heldTools.update(v,now,aspect,menu==='pause',map.clientHeight);fixtures.update(run,v);effects.update(v,run.time);life.update(run,v);audio.update(run,v,!!menu);
   const navigating=!v.goal.idle&&!v.grapple&&!v.riding&&(v.tool.id!=='scanner'||v.following);beacon.visible=guide.visible=navigating;q('.cc-pilot-waypoint').hidden=!navigating;beacon.position.set(v.goal.x,.15,v.goal.z);guide.count=0;let length=0,previous=v.position;
   for(const next of v.guide){const d=Math.hypot(next.x-previous.x,next.z-previous.z);if(length>14)break;for(let i=.6;i<d&&guide.count<100;i+=.6){if(length+i>14)break;dummy.position.set(previous.x+(next.x-previous.x)*i/d,.13,previous.z+(next.z-previous.z)*i/d);dummy.updateMatrix();guide.setMatrixAt(guide.count++,dummy.matrix);}length+=d;previous=next;}guide.instanceMatrix.needsUpdate=true;
   hud.dataset.hit=String(v.hit);hud.dataset.hurt=String(v.hurt);hud.dataset.scoped=String(v.scoped);fields.transfer.value=v.progress;
