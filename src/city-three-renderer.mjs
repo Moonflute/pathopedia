@@ -1,6 +1,6 @@
 import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 import {CITY_BOUNDS,CITY_SCALE,CITY_ENTRIES} from './city-world.mjs';
-import {siteAt,SQUARE_GRID,placeable,transformPoint} from './city-tile-layout.mjs';
+import {siteAt,SQUARE_GRID,placeable,transformPoint,layoutPlaceables,occupiedTiles} from './city-tile-layout.mjs';
 import {createEditorOverlay} from './city-three-editor.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {OrbitControls} from './vendor/three/OrbitControls.js';
@@ -11,14 +11,13 @@ import {SITES,qualityProfile,landscapeCameraRange} from './city-three-layout.mjs
 import {WALLS,FRONTS} from './city-frontier-data.mjs';
 import {cityHealth} from './city-engine.mjs';
 import {STAGES} from './city-biology.mjs';
-import {cellObservation,createCellObserver,moveFollowCamera} from './city-cell-observer.mjs';
+import {cellObservation,buildingObservation,createCellObserver,moveFollowCamera} from './city-cell-observer.mjs';
 import {createCityMotion} from './city-three-motion.mjs';
 import {createAdaptiveQuality,createFramePacer} from './city-three-performance.mjs';
 import {readCityAssets,createAssetSwitch} from './city-asset-preference.mjs';
 import {readCityTheme,normalizeCityTheme} from './city-theme.mjs';
 import {CANAL_STYLE} from './city-three-canals.mjs';
 import {loadCityBundle} from './city-three-bundle.mjs';
-import {createResponseUI} from './city-response-ui.mjs';
 import {compileVascularLayout} from './city-vascular-layout.mjs';
 import {createCityAlarms} from './city-three-alarms.mjs';
 import {createHostResponseScene} from './city-three-host-response.mjs';
@@ -56,7 +55,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit,on
  const watching=createCellObserver();
  const pilot=createFirstPerson(canvas,{map,game,theme:()=>theme,selectedCell:()=>watching.id,onMode(mode){clearObservation();zoomTarget=null;zoomAnchor=null;focusTarget=null;spawnPointer=null;pointers.clear();down=panStart=null;controls.enabled=(mode==='exit'||mode==='choose')&&!currentEditor;dirty=true;onPilotChange?.(mode);}});scene.add(pilot.root);
  const labelLayer=document.createElement('div');labelLayer.className='cc-three-labels';map.append(labelLayer);
- const responseUI=createResponseUI(map,{focus,overview:reset,signal:abort.signal});
+ let observedBuilding=null;
  const alarms=createCityAlarms(map,{focus,signal:abort.signal});scene.add(alarms.root);
  const hostScene=createHostResponseScene(map);scene.add(hostScene.root);abort.signal.addEventListener('abort',()=>{scene.remove(hostScene.root);hostScene.dispose();},{once:true});
  const labels=Object.entries(SITES).map(([id,s])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label'+(s.detail?' cc-three-label--main':'');b.innerHTML=`<i style="background:#${s.color.toString(16)}">${{heart:'♥',lung:'O₂',gut:'▤',kidney:'≋',marrow:'✚',lymph:'Y'}[id]}</i><span>${s.label}</span><small>${s.detail?'':'연결 거점'}</small>`;b.setAttribute('aria-label',s.label+' 선택');b.addEventListener('click',()=>onSelect(id),{signal:abort.signal});labelLayer.append(b);const stage=document.createElement('em');b.append(stage);return {id,site:s,element:b};});
@@ -84,15 +83,17 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit,on
  }
  function clearObservation(){
   if(inspect.contains(document.activeElement))canvas.focus({preventScroll:true});
-  watching.select(null);inspect.hidden=true;game.dataset.cellObserved='false';syncFollowing();dirty=true;
+  watching.select(null);observedBuilding=null;inspect.hidden=true;game.dataset.cellObserved='false';syncFollowing();dirty=true;
  }
  function updateInspection(s,cell,now){
-  if(!cell){if(!inspect.hidden)clearObservation();return;}
+  if(!cell&&!observedBuilding){if(!inspect.hidden)clearObservation();return;}
   const changed=inspect.hidden||inspect.dataset.cellId!==String(watching.id);
   if(!changed&&now-lastInspect<200)return;
   lastInspect=now;inspect.hidden=false;inspect.dataset.cellId=String(watching.id);game.dataset.cellObserved='true';
-  const detail=cellObservation(s,cell);detail.name+=' #'+detail.id;
+  const detail=observedBuilding?buildingObservation(s,observedBuilding):cellObservation(s,cell);if(!observedBuilding)detail.name+=' #'+detail.id;followButton.hidden=!!observedBuilding;inspect.setAttribute('aria-label',observedBuilding?'선택한 건물':cell?.observedPathogen?'선택한 병원체':'선택한 세포');
   for(const key of Object.keys(fields))if(fields[key].textContent!==detail[key])fields[key].textContent=detail[key];
+  const labels=observedBuilding?['활동','기관·용도','재고','분류','유지 관리','대기','상태']:cell?.observedPathogen?['행동','침투 위치','운반물','기전','진행','장벽 반응','생존 상태']:cell?.somatic?['생활','거주 기관','운반물','세포 분류','다음 활동','회복 조건','건강']:['작업','목적지','운반 물자','항원 특이성','다음','대기 원인','상태'];
+  for(const [i,label] of inspect.querySelectorAll('dt').entries()){label.textContent=labels[i];const hidden=(cell?.somatic||cell?.observedPathogen)&&i===2||cell?.somatic&&i===5;label.hidden=!!hidden;label.nextElementSibling.hidden=!!hidden;}
   inspectHeight=inspect.offsetHeight;
  }
  function trackCell(cell,seconds){
@@ -176,9 +177,11 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit,on
   const ray=new T.Raycaster();ray.setFromCamera(new T.Vector2(px/width*2-1,1-py/height*2),camera);
   const obstruction=village?ray.intersectObject(village.root,true).find(h=>h.object.visible&&h.object.material?.opacity!==0):null;
   let nearest=null,distance=22;
-  for(const p of actor.positions){vec.set(p.x,.5,p.z).project(camera);const d=Math.hypot((vec.x+1)*width/2-px,(1-vec.y)*height/2-py);if(d<distance){const depth=new T.Vector3(p.x,.5,p.z).sub(ray.ray.origin).dot(ray.ray.direction);if(!obstruction||depth<obstruction.distance+.65){nearest=p;distance=d;}}}
-  if(nearest){onSelect('observe');watching.select(nearest.id);lastInspect=0;dirty=true;return;}
-  clearObservation();const hit=ray.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),new T.Vector3());
+  for(const p of actor.pickPositions){vec.set(p.x,p.height??.5,p.z).project(camera);const d=Math.hypot((vec.x+1)*width/2-px,(1-vec.y)*height/2-py);if(d<distance){const depth=new T.Vector3(p.x,p.height??.5,p.z).sub(ray.ray.origin).dot(ray.ray.direction);if(!obstruction||depth<obstruction.distance+.65){nearest=p;distance=d;}}}
+  if(nearest){onSelect('observe');setFollowing(false);zoomTarget=null;observedBuilding=null;watching.select(nearest.id);lastInspect=0;dirty=true;return;}
+  clearObservation();const footprint=obstruction&&obstruction.point.y>.22?layoutPlaceables(currentRun.layout).find(d=>occupiedTiles(d.id,currentRun.layout.items[d.id]).some(p=>p.col===Math.round(obstruction.point.x)&&p.row===Math.round(obstruction.point.z))):null;if(footprint){if(SITES[footprint.id])onSelect(footprint.id);else{onSelect('observe');observedBuilding=footprint.id;lastInspect=0;}dirty=true;return;}
+  if(obstruction?.point.y>.25){const b=village?.root.userData.themePlan?.blocks,p=obstruction.point,plots=b?[...b.frontages.map((q,i)=>({...q,name:(theme==='2'?'수변 주택 ':'민가 ')+(i+1)})),...b.tissues.map((q,i)=>({...q,w:1.35,d:1.35,name:'조직 주택 '+(i+1)})),...b.lung.map((q,i)=>({...q,w:2.6,d:2.8,name:'호흡 작업장 '+(i+1)}))]:[],plot=plots.find(q=>{const turn=Math.abs(Math.sin(q.angle||0))>.5;return Math.abs(p.x-q.x)<(turn?q.d:q.w)/2+.15&&Math.abs(p.z-q.z)<(turn?q.w:q.d)/2+.15;});if(plot){onSelect('observe');observedBuilding={name:plot.name,site:plot.district||'lung'};lastInspect=0;dirty=true;return;}}
+  const hit=obstruction?.point.y>.25?obstruction.point:ray.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),new T.Vector3());
   if(hit){let chosen=null,dist=3.5;for(const id of Object.keys(SITES)){const s=siteAt(currentRun?.layout,id),d=Math.min(Math.hypot(hit.x-s.x,hit.z-s.z),Math.hypot(hit.x-s.building[0],hit.z-s.building[1]));if(d<dist){chosen=id;dist=d;}}for(const o of homeSites(currentRun?.layout)){const d=Math.hypot(hit.x-o.x,hit.z-(o.z-3.5));if(d<dist){chosen='home:'+o.id;dist=d;}}if(chosen)onSelect(chosen);else{const wall=WALLS.find(w=>Math.hypot(hit.x-w.x,hit.z-w.z)<2.5);if(wall)onSelect('wall:'+wall.id);}}dirty=true;
  },{signal:abort.signal});
  canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);down=null;panStart=remainingPointer();},{signal:abort.signal});
@@ -196,11 +199,23 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit,on
  function reset(){focusTarget=null;setFollowing(false);controls.target.set(-1,0,1);camera.position.set(19,32,33);zoomAnchor=null;zoomTarget=fit;controls.update();dirty=true;}
  const frontText=id=>({skin:'보수 공방',airway:theme==='2'?'O₂ · 환기 항구':'O₂ · 환기 관문',gut:theme==='2'?'식량 부두 · 소화기':'식량 보급소 · 소화기'}[id]);
  const frontLabels=Object.entries(FRONTS).map(([id,p])=>{const b=document.createElement('button');b.type='button';b.className='cc-three-label cc-front-label';b.textContent=frontText(id);b.setAttribute('aria-label',b.textContent+' 선택');b.addEventListener('click',()=>onSelect('front:'+id),{signal:abort.signal});labelLayer.append(b);return {id,site:CITY_ENTRIES[id]?.mouth||CITY_ENTRIES[id]?.portal||p,element:b};});
+ const entryChoices=[...WALLS.map(w=>({key:'skin:'+w.id,front:'skin',label:w.name,point:w})),...['airway','gut'].map(front=>({key:front,front,label:front==='airway'?'호흡기 입구':'소화기 입구',point:CITY_ENTRIES[front].mouth||CITY_ENTRIES[front].portal})),{key:'blood',front:'blood',label:'정맥 투여대',point:null}];
+ const entryRings=new T.InstancedMesh(new T.TorusGeometry(1,.06,4,24),new T.MeshBasicMaterial({color:0x53d8b3,depthTest:false}),entryChoices.length);entryRings.name='infection-entry-highlights';entryRings.frustumCulled=false;entryRings.visible=false;scene.add(entryRings);const entryDummy=new T.Object3D();
+ for(const entry of entryChoices){const b=document.createElement('button');b.type='button';b.className='cc-entry-choice';b.textContent=entry.label;b.setAttribute('aria-label',entry.label+' 침투 위치 선택');b.dataset.infectionEntry=entry.key;b.hidden=true;b.addEventListener('click',()=>onSelect('entry:'+entry.key),{signal:abort.signal});map.append(b);entry.button=b;}
+ function updateEntryChoices(s,options){
+  const active=!!options.infectionPick&&!pilot.busy&&!currentEditor;entryRings.visible=active;let n=0;
+  for(const entry of entryChoices){
+   const show=active&&options.infectionRoutes?.includes(entry.front);entry.button.hidden=!show;if(!show)continue;
+   const p=entry.point||siteAt(s.layout,'heart'),r=1.2+Math.sin(s.time*3)*.12;entryDummy.position.set(p.x,.2,p.z);entryDummy.rotation.set(-Math.PI/2,0,0);entryDummy.scale.set(r,r,r);entryDummy.updateMatrix();entryRings.setMatrixAt(n++,entryDummy.matrix);
+   vec.set(p.x,entry.front==='skin'?2:3,p.z).project(camera);const x=(vec.x+1)*width/2,y=(1-vec.y)*height/2;entry.button.hidden=x<20||x>width-20||y<45||y>height-35;entry.button.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;
+  }
+  entryRings.count=n;entryRings.instanceMatrix.needsUpdate=active;
+ }
  const circuitLabels=['체순환 · 심장 → 전신 → 심장','폐순환 · 심장 ⇄ 폐'].map(text=>{const e=document.createElement('span');e.className='cc-circuit-label';e.textContent=text;labelLayer.append(e);return e;});
  let labelRects=[];
  function updateLabels(s,options){
   const occupied=labelRects=[],compact=camera.zoom<.58,top=compactHud.matches?(height<330?60:102):125;
-  if(!responseUI.root.hidden){const r=responseUI.root.getBoundingClientRect(),m=map.getBoundingClientRect();occupied.push({x:r.x-m.x,y:r.y-m.y,w:r.width,h:r.height});}
+
   const ordered=[...labels].sort((a,b)=>(b.id===options.selected?2:b.id==='heart'?1:0)-(a.id===options.selected?2:a.id==='heart'?1:0));
   for(const {id,element} of ordered){
    const site=siteAt(currentEditor?.draft||s.layout,id);vec.set(site.building[0],STYLE.labelHeight[id]||3.8,site.building[1]).project(camera);
@@ -226,7 +241,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit,on
   const layout=currentEditor?.draft||s.layout,editId=currentEditor?.selected||null;
   if(assetCache&&(layout!==villageLayout||editId!==villageEditId))rebuild(layout,editId);
   editOverlay.update(currentEditor);if(currentEditor)village?.movePreview(currentEditor.preview||currentEditor.draft.items[currentEditor.selected]);
-  actor.root.visible=!currentEditor;labelLayer.hidden=!!currentEditor||pilot.busy;responseUI.update(s,pilot.busy||!!currentEditor||!game.querySelector('.cc-start')?.hidden);
+  actor.root.visible=!currentEditor;labelLayer.hidden=!!currentEditor||pilot.busy;
   alarms.update(s,pilot.busy||!!currentEditor||!game.querySelector('.cc-start')?.hidden);
   const now=performance.now();
   if(options.frameTime!=null&&adaptive.sample(options.frameTime,ready&&!options.paused&&!currentEditor))applyQuality();
@@ -252,7 +267,7 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit,on
   scene.fog.near=range.fogNear;scene.fog.far=range.fogFar;camera.updateMatrixWorld();
   }else{const height=pilotView?.height||0;scene.fog.near=35+height;scene.fog.far=100+height;}
   if(options.paused&&!dirty&&!firstPerson&&now-lastFrame<250)return;
-  lastFrame=now;viewMatrix.multiplyMatrices(renderCamera.projectionMatrix,renderCamera.matrixWorldInverse);viewFrustum.setFromProjectionMatrix(viewMatrix);actor.draw(s,{...options,motion,canals:village?.canals,visible:actorVisible,hiddenCell:firstPerson?pilot.cell?.id:null,eyePosition:pilotView?{...pilotView.position,y:pilotView.eye}:null,selectedCell:watching.id,readability:firstPerson?1:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(currentEditor?{...s,layout:currentEditor.draft}:s,{...options,camera:renderCamera,target:firstPerson?renderCamera.position:controls.target});homeScene?.update(s,options.homeLoop);if(!pilot.busy)updateLabels(s,options);const site=siteAt(s.layout,options.selected);selection.visible=!!site&&!currentEditor&&!pilot.busy;selection.material.color.setHex(0xd1ae6c);if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
+  lastFrame=now;viewMatrix.multiplyMatrices(renderCamera.projectionMatrix,renderCamera.matrixWorldInverse);viewFrustum.setFromProjectionMatrix(viewMatrix);actor.draw(s,{...options,motion,canals:village?.canals,visible:actorVisible,hiddenCell:firstPerson?pilot.cell?.id:null,eyePosition:pilotView?{...pilotView.position,y:pilotView.eye}:null,selectedCell:watching.id,readability:firstPerson?1:clamp(30/(height*camera.zoom/(camera.top-camera.bottom)),1,1.5)});village?.update(currentEditor?{...s,layout:currentEditor.draft}:s,{...options,camera:renderCamera,target:firstPerson?renderCamera.position:controls.target});homeScene?.update(s,options.homeLoop);if(!pilot.busy)updateLabels(s,options);updateEntryChoices(s,options);const site=siteAt(s.layout,options.selected);selection.visible=!!site&&!currentEditor&&!pilot.busy;selection.material.color.setHex(0xd1ae6c);if(site){selection.position.set(site.x,.08,site.z);selection.scale.setScalar(site.detail?1:.7);}
   if(pilot.choosing){if(spawnPointer&&dirty)pilot.previewSpawn(spawnHitAt(spawnPointer.x,spawnPointer.y));const point=pilot.spawnPreview;selection.visible=!!point;if(point){selection.position.set(point.x,.12,point.z);selection.scale.setScalar(.3);selection.material.color.setHex(point.valid?0x8fffd2:0xff796d);}}
   if(quality.shadow&&now-lastShadow>quality.shadowInterval){renderer.shadowMap.needsUpdate=true;lastShadow=now;}
   const illness=clamp(Math.max((75-cityHealth(s))/65,(s.inflammation-30)/70),0,1);scene.background.copy(calmSky).lerp(illSky,illness*.8);scene.fog.color.copy(scene.background);sun.color.copy(warmSun).lerp(illSun,illness);
@@ -286,5 +301,5 @@ export function createCityThreeRenderer(canvas,onSelect,onCameraChange,onEdit,on
   // Keep source models until disposal: Apply rebuilds the static mesh once.
  }
  load().catch(error=>{if(disposed)return;console.error('3D village load failed',error);status.innerHTML='마을을 불러오지 못했습니다. <button type="button" data-city3d-retry>다시 열기</button> · <a href="#city">기존 도시</a>';});
- return {draw,zoom,rotate,reset,focus,home,cameraInfo,setNewAssets,setTheme,openPilot(){if(ready&&!currentEditor&&currentRun)pilot.open(currentRun);},exitPilot:()=>pilot.exit(),updatePilot:(s,dt)=>pilot.tick(s,dt),captureMotion:s=>motion.capture(s),beginLayout(){pilot.exit();clearObservation();zoomAnchor=null;zoomTarget=Math.max(camera.zoom,width<761?.95:1);focus(siteAt(currentRun?.layout,'heart'));},invalidate(){dirty=true;},dispose(){disposed=true;pilot.dispose();scene.remove(pilot.root);abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();homeScene?.dispose();village?.dispose();release(scene);assetSwitch.dispose();if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();responseUI.dispose();alarms.dispose();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;delete game.dataset.newAssets;}};
+ return {draw,zoom,rotate,reset,focus,home,cameraInfo,clearObservation,inspectPathogen(record){for(const [prefix,list] of [['enemy',currentRun?.enemies],['virus',currentRun?.physiology?.virions],['host',currentRun?.immunity?.infected],['parasite',currentRun?.immunity?.parasites]]){const target=list?.find(p=>p.recordId===record&&!p.dead);if(target){onSelect('observe');setFollowing(false);zoomTarget=null;observedBuilding=null;watching.select(prefix+target.id);lastInspect=0;dirty=true;return true;}}return false;},setNewAssets,setTheme,openPilot(){if(ready&&!currentEditor&&currentRun)pilot.open(currentRun);},exitPilot:()=>pilot.exit(),updatePilot:(s,dt)=>pilot.tick(s,dt),captureMotion:s=>motion.capture(s),beginLayout(){pilot.exit();clearObservation();zoomAnchor=null;zoomTarget=null;focusTarget=null;},invalidate(){dirty=true;},dispose(){disposed=true;pilot.dispose();scene.remove(pilot.root);abort.abort();observer.disconnect();controls.dispose();motion.reset();sun.shadow.dispose();homeScene?.dispose();village?.dispose();release(scene);assetSwitch.dispose();if(assetCache)for(const a of Object.values(assetCache))release(a);renderer.dispose();renderer.forceContextLoss();status.remove();labelLayer.remove();inspect.remove();for(const e of entryChoices)e.button.remove();alarms.dispose();delete game.dataset.cellObserved;delete game.dataset.cellFollowing;delete game.dataset.newAssets;}};
 }

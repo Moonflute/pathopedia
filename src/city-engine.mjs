@@ -1,3 +1,5 @@
+import {tickResidents,validateResidents,orderResidentGrowth} from './city-residents.mjs';
+import {orderOrganWork,workAtOrgan,validateOrganWork} from './city-organ-work.mjs';
 import {CITY_CAPS,populationLimit,shipmentLimit,travelScale} from './city-world.mjs';
 import {cityDistricts,cityDistrict,cityRoute,intakeRoute,localPoint,createTileLayout,migrateTileLayout,applyTileLayout,validateTileLayout,compileLayout,walkingRoute,roadPoint} from './city-tile-layout.mjs';
 import {ensureFrontier,frontierCommand,deliverFrontier,frontierDestination,assignFronts,spawnAtFront,tickFrontierEnemy,tickFrontier,frontierCell,receiveAntigen,completeInvestment,frontDepot,validateFrontier} from './city-frontier.mjs';
@@ -52,7 +54,7 @@ const movementLayouts=new WeakMap(),navigatedPaths=new WeakMap(),movementVessels
 function route(c,points){c.path=points.map(p=>({...p}));c.step=0;c.travelMode=null;delete c.roadPathVersion;}
 function move(c,speed,dt){
   const layout=movementLayouts.get(c);
-  if(layout&&navigatedPaths.get(c)!==c.path){const vessel=movementVessels.get(c);if(!c.travelMode){c.path=vessel?vascularWalkingRoute(layout,c,c.path.slice(c.step).at(-1),compileThemeLayout(layout,vessel).vascular):walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=vessel?2:1;}navigatedPaths.set(c,c.path);}
+  if(layout&&navigatedPaths.get(c)!==c.path){const vessel=movementVessels.get(c);if(!c.travelMode){c.path=vessel?vascularWalkingRoute(layout,c,c.path.slice(c.step).at(-1),compileThemeLayout(layout,vessel).vascular):walkingRoute(layout,c,c.path.slice(c.step));c.step=0;c.roadPathVersion=vessel?2:1;if(vessel)c.vascularRevision=2;}navigatedPaths.set(c,c.path);}
   // The outer circuit is much longer than the former radial map. Transit speed
   // compensates for that drawing scale; loading and local work retain timing.
   let budget=speed*dt*(movementVessels.get(c)&&!c.dock?2.4:1);
@@ -141,9 +143,11 @@ function shipment(s,kind,to,amount,extra={}){
 }
 export function command(s,action,id,data){
   if(s.status!=='running'&&action!=='continue')return {ok:false,text:'도시를 다시 시작해 주세요.'};
+  if(action==='resident-recruit')return orderResidentGrowth(s);
+  if(action==='organ-work')return orderOrganWork(s,id);
   const home=homeostasisCommand(s,action,id);if(home)return home;
-  const immune=immuneCommand(s,action,id,frontierAPI);if(immune)return immune;
-  const bio=biologyCommand(s,action,id,data,frontierAPI);if(bio)return bio;
+  const immune=immuneCommand(s,action,id,frontierAPI);if(immune){if(immune.ok&&action==='immune-challenge')tickResponse(s);return immune;}
+  const bio=biologyCommand(s,action,id,data,frontierAPI);if(bio){if(bio.ok&&action==='expose')tickResponse(s);return bio;}
   if(s.specialists&&s.shipments.length>=shipmentLimit(s)&&['upgrade','repair','tower','recruit'].includes(action))return {ok:false,text:'물류 대기열 포화'};
   const d=s.districts[id],front=frontierCommand(s,action,id,frontierAPI);if(front)return front;
   if(action==='lifecycle'){s.lifecycle=!s.lifecycle;return {ok:true};}
@@ -300,6 +304,7 @@ function updateCell(s,c,dt,speed,data){
   if(pilotedCell(s)===c)return;
   if(sandboxReserved(s,c))return;
   if(updateCombatCondition(s,c,dt,frontierAPI))return;
+  if(s.specialists&&workAtOrgan(s,c,dt,frontierAPI))return;
   if(s.specialists&&frontierCell(s,c,dt,frontierAPI))return;
   if(immuneCell(s,c,dt,frontierAPI))return;
   if(s.specialists&&['signal','shoot','engulf','collect'].includes(activeActivity(c,s.time)?.kind))return;
@@ -471,14 +476,15 @@ function wander(s,c,dt){
   move(c,35,dt);
 }
 export function tickCity(s,dt,data,canalTransport=false){
+  if(s.specialists&&s.layout)tickResidents(s,dt);
   const transport=canalTransport===true?'2':canalTransport==='1'||canalTransport==='2'?canalTransport:false;
   const previousTransport=s.transportTheme;
   if(s.specialists){ensureHostResponse(s);ensureHomeostasis(s);s.transportTheme=transport||s.transportTheme||'2';}
   if(s.layout)for(const actor of [...s.cells,...s.shipments,...s.enemies]){
     const vessel=transport&&(actor.kind==='rbc'||s.shipments.includes(actor)&&actor.kind!=='raw')?transport:false;
     const restoredVessel=actor.roadPathVersion===2&&previousTransport===transport?transport:false;
-    if(!movementVessels.has(actor)&&restoredVessel===vessel&&actor.roadPathVersion)navigatedPaths.set(actor,actor.path);
-    if((movementVessels.get(actor)??restoredVessel)!==vessel||actor.roadPathVersion===2&&!vessel){
+    if(!movementVessels.has(actor)&&restoredVessel===vessel&&actor.roadPathVersion&&(actor.roadPathVersion!==2||actor.vascularRevision===2))navigatedPaths.set(actor,actor.path);
+    if((movementVessels.get(actor)??restoredVessel)!==vessel||actor.roadPathVersion===2&&(!vessel||actor.vascularRevision!==2)){
       // Rejoin the selected network from the current position, without resetting
       // a job, transfer animation, cargo, or the saved city itself.
       if(actor.path){actor.path=actor.step<actor.path.length?[actor.path.at(-1)]:[];actor.step=0;navigatedPaths.delete(actor);}
@@ -487,6 +493,7 @@ export function tickCity(s,dt,data,canalTransport=false){
   }
   if(s.status!=='running'||!Number.isFinite(dt)||dt<=0)return;
   dt=Math.min(dt,.25);s.time+=dt;
+  if(s.specialists&&s.layout)tickResidents(s,dt);
   if(s.weather.until<=s.time)s.weather={id:'clear',until:0};
   if(s.scenario!=='simulation'&&s.wave<3&&s.time>=s.nextWave&&!s.enemies.length&&!s.spawn.length)startWave(s);
   s.spawnClock-=dt;
@@ -640,7 +647,7 @@ export function restoreCity(raw){
     // Old saves rejoin the streets once; current routes resume at their exact step.
     if(s.layout)for(const a of [...s.cells,...s.shipments,...s.enemies])if(a.roadPathVersion===1&&a.path)navigatedPaths.set(a,a.path);
     if(s.specialists&&!s.immunity)upgradeImmuneRoster(s);
-    if(!validateHomeostasis(s)||s.cells.some(c=>c.homeSite!=null&&!homeOrgan(c.homeSite)||c.homeUntil!=null&&!finite(c.homeUntil)||c.recycling!=null&&typeof c.recycling!=='boolean'))return null;
+    if(!validateHomeostasis(s)||!validateOrganWork(s)||!validateResidents(s)||s.cells.some(c=>c.homeSite!=null&&!homeOrgan(c.homeSite)||c.homeUntil!=null&&!finite(c.homeUntil)||c.recycling!=null&&typeof c.recycling!=='boolean'))return null;
     if(s.specialists){ensureHostResponse(s);ensureHomeostasis(s);}
     return s;
   }catch{return null;}

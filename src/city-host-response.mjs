@@ -1,3 +1,4 @@
+import {injureResidents} from './city-residents.mjs';
 import {cityDistricts,cityDistrict,localPoint,compileLayout,walkablePoint} from './city-tile-layout.mjs';
 import {SITES,groundPoint,groundCoordinate} from './city-three-layout.mjs';
 import {WALLS,SKIN_TISSUES} from './city-frontier-data.mjs';
@@ -29,7 +30,7 @@ export function ensureHostResponse(s){
 }
 export function injure(s,site,cause,amount,point=null,tissueId=null){
  if(!(amount>0)||!s.districts[site])return;
- const target=tissueId==null?s.districts[site]:s.frontier.tissues[tissueId],loss=Math.min(target.hp,amount);target.hp=clamp(target.hp-loss);
+ const target=tissueId==null?s.districts[site]:s.frontier.tissues[tissueId],loss=Math.min(target.hp,amount);target.hp=clamp(target.hp-loss);injureResidents(s,site,loss,point,tissueId);
  const state=s.physiology?.injury[site];if(!state)return;state[cause]=clamp(state[cause]+loss,1e7);state.lastHit=s.time;
  if(point){state.x=point.x;state.y=point.y;}
 }

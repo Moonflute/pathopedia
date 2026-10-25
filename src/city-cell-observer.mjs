@@ -1,6 +1,8 @@
+import {residentView} from './city-residents.mjs';
+import {pathogenDef} from './city-pathogens.mjs';
 import {CITY_BOUNDS} from './city-world.mjs';
-import {cityDistricts} from './city-tile-layout.mjs';
-import {WALLS,FRONTS} from './city-frontier-data.mjs';
+import {cityDistricts,placeable} from './city-tile-layout.mjs';
+import {WALLS,FRONTS,TISSUES} from './city-frontier-data.mjs';
 import {CELL_JOBS,districtDef,DISTRICTS,DRUGS} from './city-data.mjs';
 import {activeActivity,activityProgress} from './city-activity.mjs';
 import {immuneAntigen} from './city-immunity.mjs';
@@ -13,6 +15,8 @@ const nearest=(s,p)=>cityDistricts(s).reduce((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)<
 // Read actual work/cargo state. A combatant's target field can still contain an
 // old district, and a plasma cell's recordId is a recipe, not a carried antigen.
 export function cellObservation(s,c){
+ if(c.somatic)return {name:c.name,id:c.id.split(':').slice(1).join(':'),task:c.task,destination:c.area+' · 거주 조직',cargo:'없음',specificity:c.infected?'감염된 숙주세포':'체세포',next:c.dead?'조직 청소 → 재생':c.health<35?'손상 회복':'작업 → 휴식 → 동네 이동',waiting:c.dead?'조직 재생':'없음',condition:'세포 건강 '+Math.round(c.health)+'%'};
+ if(c.observedPathogen){const p=pathogenDef(c.recordId);return {name:(p?.name||immuneAntigen(c.recordId)?.name||c.recordId)+(c.observedType==='host'?' · 감염 숙주세포':''),id:c.id,task:({attack:'조직 공격',colonize:'정착·증식',trapped:'점액 포획',expelled:'배출 중',attachment:'상피 부착',eclipse:'세포 내 잠복',productive:'바이러스 생산',spread:'조직 확산',entry:'침투 중'})[c.action||c.phase]||'이동 중',destination:district(c.site||c.attackTarget?.site||(c.wall!=null?WALLS[c.wall]?.district:null)||c.target)+' · '+(({skin:'피부',airway:'호흡기',gut:'소화기',blood:'혈류'})[c.front]||'조직') ,cargo:'없음',specificity:p?.mechanism||'숙주세포 감염',next:c.entered?'국소 정착·면역 반응':'장벽 통과 시도',waiting:c.action==='trapped'?'점액 장벽':'없음',condition:c.hp!=null?'생존력 '+Math.ceil(c.hp)+(c.maxHp?' / '+c.maxHp:''):c.phase||'활동 중'};}
  if(!CELL_JOBS[c.kind])return shipmentObservation(s,c);
  const work=activeActivity(c,s.time),job=CELL_JOBS[c.kind],end=c.path?.at(-1)||c;
  let destination='배정 대기',cargo='없음',specificity='없음',task=c.task||job.task;
@@ -65,7 +69,7 @@ function shipmentObservation(s,sh){
  let task=finished?'배송 완료':pickup?'물자 수령대 이동':label+' 배송';
  if(work){task=(work.kind==='load'?'물자 적재':'물자 하역')+' · '+Math.round(activityProgress(work,s.time)*100)+'%';}
  const front=sh.frontDelivery,destination=!pickup&&sh.administration?(sh.administration==='oral'?'소화기 · 경구 투여대':'심장 · 정맥 투여대'):!pickup&&front?(front.type==='wall'?'피부 보수 공방':FRONTS[front.id].name+' · 전선 보급창고'):district(pickup?'gut':sh.to)+(finished?' · 도착 광장':pickup?' · 물자 수령대':' · 물자 하역대');
- return {name:'보급 운반원',id:sh.id,task,destination,cargo:pickup||finished?'없음':label+' '+Math.round(sh.amount),specificity:'없음',next:sh.administration?(pickup?'약품 적재 → 투여대로 배송':finished?'운반 종료':sh.administration==='oral'?'하역 → 장내 방출·흡수':'하역 → 혈류 분포'):sh.nextTask||(pickup?'물자 적재 → 배송':finished?'운반 종료':'현장 하역'),waiting:sh.waitReason||'없음',condition:'운반 중'};
+ return {name:sh.kind==='drug'?'항생제 보급':sh.kind==='materials'?'복구 자재':sh.kind==='raw'?'영양 원료':'영양 운반물',id:sh.id,task,destination,cargo:pickup||finished?'없음':label+' '+Math.round(sh.amount),specificity:'없음',next:sh.administration?(pickup?'약품 적재 → 투여대로 배송':finished?'운반 종료':sh.administration==='oral'?'하역 → 장내 방출·흡수':'하역 → 혈류 분포'):sh.nextTask||(pickup?'물자 적재 → 배송':finished?'운반 종료':'현장 하역'),waiting:sh.waitReason||'없음',condition:'운반 중'};
 }
 
 // Selection is a view state: it never enters the simulation or saved city.
@@ -77,9 +81,13 @@ export function createCellObserver(){
   setFollowing(on){following=!!on&&id!=null;},
   resolve(s){
    if(run!==s){run=s;id=null;following=false;}
-   const cell=(typeof id==='string'?s.shipments.find(sh=>'shipment'+sh.id===id):s.cells.find(c=>c.id===id))||null;
+   let cell=null;
+   if(typeof id==='number')cell=s.cells.find(c=>c.id===id);
+   else if(id?.startsWith('resident:'))cell=residentView(s).find(c=>c.id===id);
+   else if(id?.startsWith('shipment'))cell=s.shipments.find(sh=>'shipment'+sh.id===id);
+   else {const list=id?.startsWith('enemy')?s.enemies:id?.startsWith('virus')?s.physiology?.virions:id?.startsWith('host')?s.immunity?.infected:id?.startsWith('parasite')?s.immunity?.parasites:[];const target=list?.find(c=>id.endsWith(String(c.id))&&id.replace(/\d+$/,'')+c.id===id&&!c.dead);if(target)cell={...target,observedPathogen:true,observedType:id.startsWith('host')?'host':'pathogen'};}
    if(!cell){id=null;following=false;}
-   return cell;
+   return cell||null;
   }
  };
 }
@@ -94,3 +102,5 @@ export function moveFollowCamera(position,target,point,seconds){
  target.x+=dx;target.z+=dz;position.x+=dx;position.z+=dz;
  return alpha>0;
 }
+
+export function buildingObservation(s,id){const d=typeof id==='string'?placeable(id):null,tissue=d?.kind==='house'?TISSUES.find(t=>t.index===Number(id.slice(6))):null,site=typeof id==='object'?id.site:d?.district||tissue?.district||id,state={...(s.districts[site]||s.districts.heart),...(tissue?{hp:s.frontier.tissues[tissue.id]?.hp??100}:{})};return {name:typeof id==='object'?id.name:d?.name||'주택',task:state.building?'시설 작업 진행 중':'거주·생산 활동',destination:(district(site)||'마을')+' · '+(d?.kind==='house'?'조직 주택':'시설'),cargo:'영양 재고 '+Math.floor(state.food),specificity:d?.kind==='house'?'체세포 거주 구역':'도시 시설',next:'산소 공급 · 유지 보수',waiting:state.oxygen<20?'산소 공급 부족':'없음',condition:'건강 '+Math.round(state.hp)+'% · 산소 '+Math.round(state.oxygen)+'%'};}

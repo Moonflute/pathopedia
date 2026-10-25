@@ -1,3 +1,4 @@
+import {naturalWaterway} from './city-waterways.mjs';
 import {compileLayout,walkingRoute,stationOwner,placeable,transformPoint,tissueAt,tissuePresent} from './city-tile-layout.mjs';
 import {groundPoint,groundCoordinate,workStationPoints} from './city-three-layout.mjs';
 import {CITY_CAPS} from './city-world.mjs';
@@ -54,6 +55,7 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  const clear=(a,b)=>{const steps=Math.max(2,Math.ceil(distance(a,b)*8));for(let i=0;i<=steps;i++)if(!free({x:a.x+(b.x-a.x)*i/steps,z:a.z+(b.z-a.z)*i/steps}))return false;return true;};
  const safe=p=>{if(free(p))return p;for(let r=1;r<8;r++)for(let z=-r;z<=r;z++)for(let x=-r;x<=r;x++){const q={x:Math.round(p.x)+x,z:Math.round(p.z)+z};if(free(q))return q;}return p;};
  const link=(a,b,cost=()=>1)=>{if(!square||Math.abs(a.x-b.x)<1e-6||Math.abs(a.z-b.z)<1e-6){if(clear(a,b))return [a,b];}else for(const p of [{x:b.x,z:a.z},{x:a.x,z:b.z}])if(clear(a,p)&&clear(p,b))return clean([a,p,b]);const middle=gridPath({col:Math.round(a.x),row:Math.round(a.z)},{col:Math.round(b.x),row:Math.round(b.z)},allowed,cost,12000);return simplify([a,...(middle||[]),b]);};
+ const branch=(a,b,seed=0)=>square?link(a,b):naturalWaterway(a,b,seed,{link,safe,free});
  const add=(id,kind,points,width,site,circuit='systemic')=>{const safePoints=[];for(let i=1;i<points.length;i++)safePoints.push(...link(points[i-1],points[i]).slice(0,-1));safePoints.push(points.at(-1));const v=flow(id,kind,id.startsWith('systemic-')?clean(safePoints):simplify(safePoints),width,site==='lung'?kind==='vein':kind==='artery');Object.assign(v,{site,circuit,oneWay:true,layer:id});vessels.push(v);lines.push(v);return v;};
  function ring(radius){
   const gates=Array.from({length:72},(_,n)=>safe(ringPoint(-Math.PI/2+n*Math.PI/36,radius))),points=[];
@@ -65,15 +67,15 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  const arterial=ring(radii.artery),venous=ring(radii.vein);
  add('systemic-arterial-ring','artery',arterial.points,1.65,'body');
  add('systemic-venous-ring','vein',venous.points,1.5,'body');
- const stem=link(heart,safe(ringPoint(0,branchRadius)));
+ const stem=branch(heart,safe(ringPoint(0,branchRadius)),7);
  add('aorta','artery',[...lane(stem,1,streets).slice(0,-1),arterial.gates[18]],1.2,'body');
  add('vena-cava','vein',[venous.gates[18],...lane(stem,-1,streets).slice(0,-1).reverse()],1.2,'body');
  for(const id of ['gut','kidney','marrow','lymph',...annex.map(o=>o.id)]){
   const p=centres[id],angle=(Math.atan2(p.z,p.x)+Math.PI/2+Math.PI*2)%(Math.PI*2),n=Math.round(angle/Math.PI*36)%72;
-  const base=link(p,safe(ringPoint(-Math.PI/2+n*Math.PI/36,branchRadius)));
+  const base=branch(p,safe(ringPoint(-Math.PI/2+n*Math.PI/36,branchRadius)),n);
   add('artery-'+id,'artery',[arterial.gates[n],...lane(base,1,streets).slice(0,-1).reverse()],.95,id);
   if(id==='gut'||id==='spleen'){
-   const portal=add('vein-'+id,'vein',link(p,centres.liver),.8,id,'portal');portal.portal=true;
+   const portal=add('vein-'+id,'vein',branch(p,centres.liver,n+1),.8,id,'portal');portal.portal=true;
   }else add('vein-'+id,'vein',[...lane(base,-1,streets).slice(0,-1),venous.gates[n]],.95,id);
  }
  const systemic=new Set();for(const v of vessels)for(const p of v.points)systemic.add(key(p));

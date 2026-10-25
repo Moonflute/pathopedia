@@ -70,7 +70,7 @@ export function homeostasisOutput(s,id){
 export function tickHomeostasis(s,dt,api={}){
  const h=ensureHomeostasis(s);if(!h)return;
  tickHomePackets(s,dt,api.pathLength);
- const renal=clamp((s.districts.kidney.hp/100)*(s.districts.kidney.oxygen/50),.1,1),organ=id=>h.organs[id].function*clamp(h.organs[id].oxygen/45,.3,1)*h.organs[id].hp/100;
+ const renal=clamp((s.districts.kidney.hp/100)*(s.districts.kidney.oxygen/50),.1,1),organ=id=>h.organs[id].function*(1+((h.organs[id].level||1)-1)*.15)*clamp(h.organs[id].oxygen/45,.3,1)*h.organs[id].hp/100;
  if(s.time>=h.exerciseUntil)h.exercise=0;
  const e=h.effectors;
  h.metabolism=clamp(.65+.35*h.thyroid,.6,1.8);

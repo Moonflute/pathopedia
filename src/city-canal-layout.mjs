@@ -37,8 +37,8 @@ function kidneyOutlet(layout,network){
 export function compileCanalLayout(layout){
  if(!layout)return null;if(cache.has(layout))return cache.get(layout);
  const network=compileLayout(layout),vascular=compileVascularLayout(layout),channels=[
-  ...network.streets.runs.map(r=>({points:r.points,width:r.level===1?1.2:.65,kind:'service'})),
-  ...network.access.filter(r=>r.kind!=='patrol').map(r=>({points:r.points,width:Math.max(.62,r.width*.65),kind:'service'})),
+  ...Object.values(network.entries).map(points=>({points,width:2.1,kind:'entry'})),
+  // Local blood beds replace the former theme-1 street grid.
   ...vascular.vessels,
   ...vascular.beds.flatMap(b=>b.branches.map(points=>({points,width:b.width,kind:'capillary'})))
  ];

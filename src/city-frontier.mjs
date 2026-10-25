@@ -231,7 +231,7 @@ function patchSkin(s,c,dt,api){
 function prepareSupply(s,c,dt,api){
  let sh=s.shipments.find(x=>x.id===c.logisticsJob);
  if(!sh){sh=s.shipments.find(x=>x.frontDelivery?.type==='depot'&&!x.prepared&&x.preparer==null);if(!sh){c.logisticsJob=null;return false;}sh.preparer=c.id;c.logisticsJob=sh.id;releaseWorkplace(c);}
- c.target='gut';c.task='전선 보급 출고 준비';c.nextTask='적재 → 운반원 인계';
+ c.target='gut';c.task='전선 보급 출고 준비';c.nextTask='적재 → 운반물 방출';
  const bench=approachWorkplace(s,c,'gut','fabricate',dt,api.move,api.route,60);
  if(!bench.arrived)return true;
  if(c.activity?.kind!=='load'){beginActivity(s,c,'load',2,bench.target,'gut');return true;}

@@ -55,7 +55,7 @@ export function createHostResponseScene(map=null){
    if(ep.antiviral>12){const r=.6+(time*.25+ep.antiviral*.002)%1*.18;put('response-rings',at,.15,r,r,r,0x87bce2,true);}
    if(ep.state==='repairing'){put('antigen-packets',at,.35+ep.health*.003,.09,.25,.09,0xbce9cd);put('response-rings',at,.2,.72,.72,.72,0x7bd9b4,true);}
   }
-  for(const v of p.virions){const at=groundPoint(v),height=!v.entered?entryTrackHeight(entries[v.front],at):0,scale=v.phase==='attachment'?.27:.2;put('viral-particles',at,height+.48,scale,scale,scale,v.phase==='expelled'?0x90bcb4:0x9b72ba);
+  for(const v of p.virions){const at=groundPoint(v),height=map?.closest('.cc-game')?.dataset.theme!=='2'&&!v.entered?entryTrackHeight(entries[v.front],at):0,scale=v.phase==='attachment'?.27:.2;put('viral-particles',at,height+.48,scale,scale,scale,v.phase==='expelled'?0x90bcb4:0x9b72ba);
    for(let n=0;n<3;n++){const a=time*1.8+n*Math.PI*2/3;put('antigen-packets',{x:at.x+Math.cos(a)*scale,z:at.z+Math.sin(a)*scale},height+.48,.065,.1,.065,0xcba4d8);}
   }
   for(const c of s.cells){

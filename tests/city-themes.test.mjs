@@ -1,3 +1,4 @@
+import {residentView} from '../src/city-residents.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CITY_THEME_KEY,readCityTheme,storeCityTheme} from '../src/city-theme.mjs';
@@ -43,7 +44,7 @@ test('waterfront blocks leave traffic and real building expansion clear',()=>{
  for(const town of [layout,expanded.layout]){
   const snapshot=JSON.stringify(town),c=compileCanalLayout(town),network=compileLayout(town);
   // Wider circulation changes the amount of free infill; its physical safety is invariant.
-  assert.ok(c.blocks.frontages.length>=4);assert.ok(c.blocks.gardens.length>=6);assert.ok(c.blocks.tissues.length>0&&c.blocks.tissues.length<=240);assert.ok(c.blocks.lung.length>=3);
+  assert.ok(c.blocks.frontages.length>=4);assert.ok(c.blocks.gardens.length>=6);assert.ok(c.blocks.tissues.length>0&&c.blocks.tissues.length<=300);assert.ok(c.blocks.lung.length>=3);
   for(const b of [...c.blocks.frontages,...c.blocks.gardens,...c.blocks.tissues.map(p=>({...p,w:1.35,d:1.35})),...c.blocks.lung.map(p=>({...p,w:2.6,d:2.8}))]){
    const vertical=Math.abs(Math.sin(b.angle||0))>.5,w=b.w||3.5,d=b.d||3.5,hx=(vertical?d:w)/2,hz=(vertical?w:d)/2;
    for(let x=b.x-hx;x<=b.x+hx;x+=.25)for(let z=b.z-hz;z<=b.z+hz;z+=.25){
@@ -125,7 +126,7 @@ test('switching village → canals → village preserves live state and restores
    for(const [dx,dz] of [[0,0],[-court.w/2+.3,0],[court.w/2-.3,0],[0,-court.d/2+.3],[0,court.d/2-.3]])assert.ok(world.canStand({x:court.x+dx,z:court.z+dz}),'public court cross stays walkable');
   }
   const feet=actors.root.children.find(m=>m.name==='feet');
-  const expected=theme==='2'?s.cells.filter(c=>!v.canals.isWater(groundPoint(c))).length*2:s.cells.length*2;
+  const expected=(theme==='2'?s.cells.filter(c=>!v.canals.isWater(groundPoint(c))).length:s.cells.length)*2+residentView(s).filter(c=>!c.dead).length*2;
   assert.equal(feet.count,expected);assert.equal(actors.root.children.length,16);
   for(const mesh of actors.root.children)assert.ok(mesh.count<=mesh.instanceMatrix.count);
   v.dispose();

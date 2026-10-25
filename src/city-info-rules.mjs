@@ -1,7 +1,7 @@
 import {RULE_SPECS,ruleSpec,defaultCityRules,validateCityRules} from './city-rules.mjs';
 
 export const RULE_VIEWS={production:'실행 · 생산',transport:'실행 · 운반',combat:'실행 · 전투',building:'실행 · 건설·충원'};
-export const RULE_ENDPOINTS={gut:'장 · 영양 가공소',food:'중앙 영양분',fibroblast:'섬유아세포',materials:'건축 자재',plasma:'형질세포',antibody:'표적 항체',rbc:'적혈구',organs:'장기 구역·조직',lung:'폐 · 숨결 항구',heart:'심장 · 박동 광장',kidney:'신장 · 정화 수로',marrow:'골수 · 조혈 공방',lymph:'림프절 · 기억 서고',shipment:'물자 운반원',neutrophil:'호중구',macrophage:'대식세포',pathogens:'전체 유입 병원체',skinThreat:'피부 유입 병원체',airwayThreat:'호흡기 유입 병원체',gutThreat:'소화기 유입 병원체',bloodThreat:'혈류 유입 병원체',construction:'시설 공사',roster:'세포 인력'};
+export const RULE_ENDPOINTS={gut:'장 · 영양 가공소',food:'중앙 영양분',fibroblast:'섬유아세포',materials:'건축 자재',plasma:'형질세포',antibody:'표적 항체',rbc:'적혈구',organs:'장기 구역·조직',lung:'폐 · 숨결 항구',heart:'심장 · 박동 광장',kidney:'신장 · 정화 수로',marrow:'골수 · 조혈 공방',lymph:'림프절 · 기억 서고',shipment:'혈류 운반물',neutrophil:'호중구',macrophage:'대식세포',pathogens:'전체 유입 병원체',skinThreat:'피부 유입 병원체',airwayThreat:'호흡기 유입 병원체',gutThreat:'소화기 유입 병원체',bloodThreat:'혈류 유입 병원체',construction:'시설 공사',roster:'세포 인력'};
 export const isRuleView=v=>v?.id?.startsWith('rules-');
 const ruleNode=(id,r)=>({id:'exec-'+id,label:RULE_SPECS[id].label,kind:'rule',summary:'실행 규칙',detail:'조건·수치·연결을 검증한 뒤 게임에 적용',source:'city-rules.mjs · '+id,rule:{op:id,enabled:r.enabled,params:{...r.params}}});
 function ensureEndpoint(d,id){if(!d.nodes.some(n=>n.id===id))d.nodes.push({id,label:RULE_ENDPOINTS[id],kind:id.endsWith('Threat')?'threat':'rule',summary:'게임 연결 대상',detail:'실행 규칙의 입력 또는 출력',source:'city-rules.mjs'});}

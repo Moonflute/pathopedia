@@ -59,9 +59,9 @@ export function immuneClearance(s,site){
 export function immuneEfferocytosis(s,debris){if(!s.immunity||!debris.cellKind)return;const site=nearest(s,debris);emit(s,site,'il10',2);emit(s,site,'tgfb',1.5);immuneEvent(s,'efferocytosis',null,debris.antigenId,site);}
 export function immuneCommand(s,action,payload,api){
  if(action!=='immune-challenge')return null;
- if(!s.immunity||s.scenario!=='simulation')return {ok:false,text:'시뮬레이션에서 사용'};
+ if(!s.immunity||!s.specialists||s.scenario!=='simulation'&&payload?.manual!==true)return {ok:false,text:'시뮬레이션에서 사용'};
  const challenge=IMMUNE_CHALLENGES[payload?.type],site=payload?.site,amount=Number(payload?.amount);
- if(!challenge||!cityDistrict(s,site)||![3,6,12,24,32].includes(amount))return {ok:false,text:'면역 자극 조건 확인'};
+ if(!challenge||!cityDistrict(s,site)||(!Number.isInteger(amount)||amount<1||amount>(payload.type==='virus'?192:32)))return {ok:false,text:'면역 자극 조건 확인'};
  if(payload.type==='virus'){
   const exposed=viralExposure(s,{...payload,amount});if(!exposed)return {ok:false,text:'바이러스 유입 한도·경로 확인'};
   immuneEvent(s,'exposure',null,challenge.id,exposed.site);api.log(s,'바이러스 · '+({airway:'호흡기',gut:'소화기',skin:'피부'}[exposed.front])+' 노출');return {ok:true,text:'바이러스 유입 시작'};

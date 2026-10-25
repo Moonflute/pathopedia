@@ -118,7 +118,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
   const pts=r.points.map(p=>new T.Vector3(p.x,.08,p.z));
   const line=canal?new T.Line(new T.BufferGeometry().setFromPoints(pts),new T.LineBasicMaterial({color:r.oxygenated?0xd48d77:0x78b5d1})):new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts),32,.075,4,false),new T.MeshBasicMaterial({color:r.pulmonary?0x4f9aa9:newAssets?0xc77f77:0xc89b63}));supply.add(line);
  }
- if(network)createEntryTracks({entries:network.entries,box,cylinder});else{road(intake,1.05);road(AIRWAY_PATH.map(groundPoint),1.8);}
+ if(network&&!canal)createEntryTracks({entries:network.entries,box,cylinder});else{road(intake,1.05);road(AIRWAY_PATH.map(groundPoint),1.8);}
  if(!layout)road(WALLS.map(w=>groundPoint(w.inside)).concat([groundPoint(WALLS[0].inside)]),.65);
  if(!layout)road([{x:-5,z:10},{x:-10,z:10},{x:WORKSHOP.x+1,z:WORKSHOP.z+.5}],.85);
  if(!layout)road([{x:19,z:-4},{x:15,z:-4},{x:11.7,z:-3.4},{x:8,z:-3}],1.2);
@@ -185,7 +185,7 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  model('banner-red',WORKSHOP.x+.9,.8,WORKSHOP.z-1,.8);
  if(newModel){scope('heart');newModel('bench',-2,.04,3.6,.65,.15,fixed,1.5);}
  scope(null);
- const frontier=createFrontierScene({detailedWalls:!!newAssets}),bundleWalls=newAssets?createBundleWalls(newAssets):null;root.add(frontier.root);if(bundleWalls)root.add(bundleWalls.root);
+ const frontier=createFrontierScene({detailedWalls:!!newAssets,theme}),bundleWalls=newAssets?createBundleWalls(newAssets):null;root.add(frontier.root);if(bundleWalls)root.add(bundleWalls.root);
  const allRoads=[...roads.map(r=>r.points),intake,network?network.entries.airway:AIRWAY_PATH.map(groundPoint),...(network?network.connections.filter(c=>c.kind==='walk').map(c=>c.points):[])];
  function nearRoad(x,z,clearance=1.5){return allRoads.some(points=>points.slice(1).some((b,i)=>{const a=points[i],dx=b.x-a.x,dz=b.z-a.z,l=dx*dx+dz*dz,t=l?Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/l)):0;return Math.hypot(x-a.x-dx*t,z-a.z-dz*t)<clearance;}));}
  const occupied=layout?Object.entries(layout.items).flatMap(([id,a])=>occupiedTiles(id,a)):[];

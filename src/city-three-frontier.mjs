@@ -27,7 +27,7 @@ export function entryFlowPoint(points,progress){
 
 // Seven fixed-size pools: structures, modules, stores and tiny effects share
 // geometries. No particle emitters, textures, extra lights or scene graph churn.
-export function createFrontierScene({detailedWalls=false}={}){
+export function createFrontierScene({detailedWalls=false,theme='1'}={}){
  const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={};
  const surface=new T.MeshStandardMaterial({color:0xffffff,roughness:STYLE.roughness}),unlit=new T.MeshBasicMaterial({color:0xffffff});
  function batch(id,geometry,capacity,material=surface,shadow=false){const mesh=new T.InstancedMesh(geometry,material,capacity);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;mesh.castShadow=shadow;mesh.receiveShadow=material===surface;mesh.count=0;mesh.name='frontier-'+id;root.add(mesh);batches[id]=mesh;}
@@ -89,24 +89,24 @@ export function createFrontierScene({detailedWalls=false}={}){
   // Mucus rollers and a timed cilia rake at the mouth of the respiratory channel.
   for(let i=0;i<6;i++){
    const x=CITY_ENTRIES.airway.screen.x-1.1+i*.43,swing=Math.sin(t*(f.airway.boostUntil>t?7:3)+i*.6)*.32;
-   put('post',x,(layout?1.65:0)+.38,CITY_ENTRIES.airway.screen.z,.055,.65,.055,0xb7c7a0,0,swing);
-   if(i<Math.ceil(f.airway.mucus))put('orb',x,(layout?1.65:0)+.22,CITY_ENTRIES.airway.screen.z-.6,.19,.12,.27,0xb9c799);
+   put('post',x,(layout&&theme!=='2'?1.65:0)+.38,CITY_ENTRIES.airway.screen.z,.055,.65,.055,0xb7c7a0,0,swing);
+   if(i<Math.ceil(f.airway.mucus))put('orb',x,(layout&&theme!=='2'?1.65:0)+.22,CITY_ENTRIES.airway.screen.z-.6,.19,.12,.27,0xb9c799);
   }
   const airway=layout?compileLayout(layout).entries.airway:[CITY_ENTRIES.airway.start,CITY_ENTRIES.airway.portal,CITY_ENTRIES.airway.screen,CITY_ENTRIES.airway.gate,SITES.lung];
   const molecules=8+Math.round(10*ventilation);
   for(let i=0;i<molecules;i++){
-   const q=(flowClock+i/molecules)%1,p=entryFlowPoint(airway,q),lane=(i%3-1)*.43,y=entryTrackHeight(airway,p)+.65+Math.sin(q*Math.PI*4)*.09;
+   const q=(flowClock+i/molecules)%1,p=entryFlowPoint(airway,q),lane=(i%3-1)*.43,y=(theme==='2'?0:entryTrackHeight(airway,p))+.65+Math.sin(q*Math.PI*4)*.09;
    const x=p.x-p.dz*lane,z=p.z+p.dx*lane;
    for(const side of [-1,1])put('glow',x-p.dz*side*.16,y,z+p.dx*side*.16,.16,.16,.16,side===1?0x61e0dd:0xd2fff1);
    put('post',x,y,z,.04,.33,.04,0xc8f9ed,-Math.atan2(p.dx,-p.dz),Math.PI/2);
   }
   for(let i=0;i<4;i++){
    const p=entryFlowPoint(airway,(flowClock*.6+i/4)%1),tx=p.x+p.dx*.3,tz=p.z+p.dz*.3;
-   for(const side of [-1,1]){const x=p.x-p.dx*.25-p.dz*side*.28,z=p.z-p.dz*.25+p.dx*side*.28,dx=tx-x,dz=tz-z;put('post',(tx+x)/2,entryTrackHeight(airway,p)+.2,(tz+z)/2,.06,Math.hypot(dx,dz),.06,0x67c9c5,-Math.atan2(dz,dx),Math.PI/2);}
+   for(const side of [-1,1]){const x=p.x-p.dx*.25-p.dz*side*.28,z=p.z-p.dz*.25+p.dx*side*.28,dx=tx-x,dz=tz-z;put('post',(tx+x)/2,(theme==='2'?0:entryTrackHeight(airway,p))+.2,(tz+z)/2,.06,Math.hypot(dx,dz),.06,0x67c9c5,-Math.atan2(dz,dx),Math.PI/2);}
   }
   const mouth=CITY_ENTRIES.gut.mouth,angle=f.gut.quarantine?0:Math.PI/2;
-  put('box',mouth.x-.6-Math.sin(angle)*1.3,(layout?1.65:0)+.65,mouth.z+1.3-Math.cos(angle)*1.3,.12,1.1,2.6,f.gut.quarantine?0xb8b983:0xd8c49e,angle);
-  put('glow',mouth.x-.6,(layout?1.65:0)+1.6,mouth.z+1.6,.13,.16,.13,f.gut.quarantine?0xe8bf65:0x83d6ba);
+  put('box',mouth.x-.6-Math.sin(angle)*1.3,(layout&&theme!=='2'?1.65:0)+.65,mouth.z+1.3-Math.cos(angle)*1.3,.12,1.1,2.6,f.gut.quarantine?0xb8b983:0xd8c49e,angle);
+  put('glow',mouth.x-.6,(layout&&theme!=='2'?1.65:0)+1.6,mouth.z+1.6,.13,.16,.13,f.gut.quarantine?0xe8bf65:0x83d6ba);
   for(const [id,site] of Object.entries(SITES)){
    owner=id;const d=s.districts[id],state=facilityState(s,id),cap=workplaceCapacity(s,id,'oxygen');
    const biology=s.biology?.sites[id];

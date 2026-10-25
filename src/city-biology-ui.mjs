@@ -9,7 +9,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const button=(action,label,id='',extra='')=>`<button type="button" data-city-action="${action}" data-city-id="${esc(id)}" ${extra}>${label}</button>`;
 const select=(key,label,values,value)=>`<label class="cc-bio-field"><span>${label}</span><select data-city-input="${key}" aria-label="${label}">${values.map(([id,name])=>`<option value="${esc(id)}" ${String(value)===String(id)?'selected':''}>${esc(name)}</option>`).join('')}</select></label>`;
 const meter=(label,n,color)=>`<div class="cc-bio-meter"><span>${label}</span><progress max="100" value="${Math.min(100,n)}" style="accent-color:${color}"></progress><b>${Math.round(n)}</b></div>`;
-export const createBiologyControls=()=>({page:'medicine',record:'SAU-002',front:'skin',amount:'6',wall:'11',drug:'vancomycin',route:'iv',packs:'1',site:'lung',order:'auto',challenge:'virus',challengeFront:'airway',challengeAmount:'6',challengeSite:'lung',immuneRecord:'IMM-VIRUS'});
+export const createBiologyControls=()=>({entry:'skin:11',picking:false,page:'medicine',record:'SAU-002',front:'skin',amount:'6',wall:'11',drug:'vancomycin',route:'iv',packs:'1',site:'lung',order:'auto',challenge:'virus',challengeFront:'airway',challengeAmount:'6',challengeSite:'lung',immuneRecord:'IMM-VIRUS'});
 export function biologyPanel(s,data,c){
  const sandbox=s.scenario==='simulation',p=pathogenDef(c.record);
  let body='';

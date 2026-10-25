@@ -46,7 +46,7 @@ export function compileCanalBlocks(layout,network,channels,land,outlet){
   }
   candidates.sort((a,b)=>a.score-b.score);
   let court=null,best=Infinity;
-  for(const [w,d] of [[5.5,4.5],[4.5,3.5],[3.5,3.5]]){
+  for(const [w,d] of [[5.5,4.5],[4.5,3.5],[3.5,3.5],[2.5,2.5]]){
    const p=candidates.find(p=>cells(p,w,d,0));if(!p)continue;
    const score=p.score+(5.5-w)*1.5;if(score>=best)continue;best=score;
    court={x:p.x,z:p.z,w,d,angle:0,variant:gardens.length,district:centre.id,kind:roles[centre.id],cells:cells(p,w,d,0)};
@@ -118,11 +118,11 @@ export function compileCanalBlocks(layout,network,channels,land,outlet){
  }
  // Small houses form four-home blocks. Shared cross lanes and planted corners
  // replace the old uninterrupted carpet of identical south-facing roofs.
- for(let z=-39;z<=39;z+=5)for(let x=-39;x<=39;x+=5){
+ for(let z=-49;z<=49;z+=4.8)for(let x=-49;x<=49;x+=4.8){
   const centre={x:x+1.1,z:z+1.5},lane=cells(centre,3.6,.6,0),first=tissues.length;
   if(lane)reserve(lane);
   for(const [dx,dz,angle] of [[0,0,0],[2.2,0,0],[0,3,Math.PI],[2.2,3,Math.PI]]){
-   const p={x:x+dx,z:z+dz};if(!clear(p)||tissues.length>=240)continue;const footprint=cells(p,1.35,1.35,angle);if(!footprint)continue;
+   const p={x:x+dx,z:z+dz};if(!clear(p)||tissues.length>=300)continue;const footprint=cells(p,1.35,1.35,angle);if(!footprint)continue;
    reserve(footprint);tissues.push({...p,angle,variant:tissues.length,district:nearest(centre).id,neighbourhood:key(x,z)});
   }
   if(lane&&tissues.length-first>=2)walks.push({points:[{x:x-.6,z:centre.z},{x:x+2.8,z:centre.z}],width:.6,cells:lane});

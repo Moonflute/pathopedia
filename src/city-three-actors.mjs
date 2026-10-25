@@ -7,6 +7,7 @@ import {pathogenDef} from './city-pathogens.mjs';
 import {compileLayout,siteAt} from './city-tile-layout.mjs';
 import {entryTrackHeight} from './city-entry-tracks.mjs';
 import {pilotThreatView} from './city-pilot-threats.mjs';
+import {residentView,RESIDENT_LIMIT} from './city-residents.mjs';
 
 // Shared, rigid parts: sixteen cell roles and all work effects use 16
 // batches, without skeletons, particle objects, lights or per-cell DOM.
@@ -30,8 +31,8 @@ export const CELL_STYLES=Object.freeze({
  courier:{w:.26,h:.3,y:.38,face:.43,hat:0xa48461}
 });
 export function createActors(profile){
- const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={},last=new Map(),positions=[];let lastRun=null,lastLayout=null,elevation=0;
- const capacity=profile.maxCells+profile.maxShipments,standard=new T.MeshStandardMaterial({color:0xffffff,roughness:.9}),flat=new T.MeshBasicMaterial({color:0xffffff});
+ const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={},last=new Map(),positions=[],pickPositions=[];let lastRun=null,lastLayout=null,elevation=0;
+ const capacity=profile.maxCells+profile.maxShipments+RESIDENT_LIMIT,standard=new T.MeshStandardMaterial({color:0xffffff,roughness:.9}),flat=new T.MeshBasicMaterial({color:0xffffff});
  const body=new T.SphereGeometry(1,profile.mobile?10:12,profile.mobile?7:8),hat=new T.SphereGeometry(1,profile.mobile?8:10,profile.mobile?5:6),small=new T.SphereGeometry(1,6,4),box=new T.BoxGeometry(1,1,1),rod=new T.CylinderGeometry(1,1,1,6),rim=new T.TorusGeometry(1,.13,4,12);
  function batch(id,geometry,limit=capacity,shadow=true,unlit=false){const m=new T.InstancedMesh(geometry,unlit?flat:standard,limit);m.name=id;m.instanceMatrix.setUsage(T.DynamicDrawUsage);m.instanceColor=new T.InstancedBufferAttribute(new Float32Array(limit*3).fill(1),3);m.instanceColor.setUsage(T.DynamicDrawUsage);m.count=0;m.frustumCulled=false;m.castShadow=shadow;m.receiveShadow=!unlit;root.add(m);batches[id]=m;}
  batch('body',body);batch('cap',hat);batch('eyes',small,capacity*2,false);batch('feet',small,capacity*2);batch('hands',small,capacity*2,false);
@@ -196,14 +197,36 @@ export function createActors(profile){
   if(selected){const scale=selected===2?1.3*readability:1;put('selected',p.x,.07,p.z,scale,scale,scale,selected===2?0x438f92:0xe5b854,Math.PI/2);}
   if(selected===2)put('badge',p.x,1.15,p.z,.08*readability,.14*readability,.08*readability,0x75d1cb);
  }
+ function resident(c,time,selected){
+  const p=c.point,dead=c.dead,work=c.phase>=6&&c.phase<18,sick=c.health<35||c.infected,hit=time-c.hitAt<.7,bob=dead?0:Math.sin(time*(work?5:2)+c.variant)*.025,tint=hit?0xe3a09a:sick?0xb4a0ad:c.color;
+  put('body',p.x,dead?.12:.38+bob,p.z,dead?.43:.3,dead?.1:.31,.29,tint,0,0,hit?Math.sin(time*30)*.12:0);
+  if(dead){put('selected',p.x,.04,p.z,.8,.8,.8,0xb99c9a,Math.PI/2);return;}
+  put('cap',p.x,.64+bob,p.z,.16,.1,.17,c.variant%2?0x8daaa0:0xd2c3a1);
+  for(const side of [-1,1]){
+   put('eyes',p.x+side*.09,.43+bob,p.z+.255,.032,sick?.025:.043,.025,0x46594f);
+   put('feet',p.x+side*.15,.07,p.z+(!work?Math.sin(time*8+c.variant+side)*.06:0),.09,.06,.12,0x948677);
+   put('hands',p.x+side*(work?.24:.33),.35+bob+(work?Math.sin(time*4+c.variant)*.1:0),p.z+(work?.25:0),.075,.09,.075,tint);
+  }
+  if(work){const action=c.variant%5;if(action===0)put('box',p.x,.4,p.z+.4,.2,.12,.18,0xb99b67);else if(action===1)put('pod',p.x,.48,p.z+.33,.1,.13,.1,0xc8bc78);else if(action===3)put('rod',p.x+.27,.3,p.z+.27,.035,.5,.035,0x9a8970,0,0,Math.sin(time*3)*.25);else if(action===4)put('badge',p.x,.45,p.z+.38,.14,.12,.07,0x99b9ad);}
+  if(sick||selected)put('selected',p.x,.06,p.z,.9,.9,.9,sick?0xcf8e89:0x6abbb0,Math.PI/2);
+ }
+ function freight(sh,p,time,selected,onWater){
+  const tint=sh.kind==='drug'?0xb0c7b1:sh.kind==='materials'?0xbea47d:0xe3c27c,y=onWater?-.02+Math.sin(time*2+sh.id)*.04:.24;
+  if(sh.kind==='materials'||sh.kind==='drug'){put('box',p.x,y+.12,p.z,.35,.25,.38,tint);put('box',p.x,y+.13,p.z,.08,.27,.4,0xf2e6c8);}
+  else for(let n=0;n<3;n++)put('pod',p.x+Math.cos(n*2.1+time*.4)*.17,y+.12+Math.sin(time+n)*.03,p.z+Math.sin(n*2.1+time*.4)*.17,.12,.13,.12,tint);
+  if(selected)put('selected',p.x,.06,p.z,.9,.9,.9,0x72b7a7,Math.PI/2);
+ }
  function draw(s,{selectedKind,selectedCell,hiddenCell,eyePosition,readability=1,motion,visible,canals}={}){
   if(lastRun!==s||lastLayout!==s.layout){last.clear();lastRun=s;lastLayout=s.layout;}
   const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time,entries=s.layout?compileLayout(s.layout).entries:{};elevation=0;
-  for(const m of Object.values(batches))m.count=0;positions.length=0;const living=new Set(),drug=DRUGS.find(d=>d.id===s.drug);
+  for(const m of Object.values(batches))m.count=0;positions.length=0;pickPositions.length=0;const living=new Set(),drug=DRUGS.find(d=>d.id===s.drug);
   for(const c of s.cells.slice(0,profile.maxCells)){if(c.id===hiddenCell)continue;const p=point(c,c.id);const proximity=eyePosition?Math.hypot(p.x-eyePosition.x,p.z-eyePosition.z,(eyePosition.y??.58)-.45):Infinity,scale=Math.min(1,Math.max(0,(proximity-.65)/1.15));if(scale<.04||visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability,canals?.isWater(p),scale); }
-  for(const sh of s.shipments.slice(0,profile.maxShipments)){if(sh.harbourUntil>s.time)continue;const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;elevation=sh.kind==='raw'?entryTrackHeight(entries.gut,p):0;positions.push({id,...p,cell:sh});living.add(id);worker(sh,'courier',id,p,time,selectedCell===id?2:0,drug,readability,!elevation&&canals?.isWater(p));}
+  for(const sh of s.shipments.slice(0,profile.maxShipments)){if(sh.harbourUntil>s.time)continue;const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;elevation=!canals&&sh.kind==='raw'?entryTrackHeight(entries.gut,p):0;positions.push({id,...p,height:elevation+.3,cell:sh});living.add(id);freight(sh,p,time,selectedCell===id,!!canals?.isWater(p));}
+  elevation=0;
+  for(const c of residentView(s)){if(visible&&!visible(c.point))continue;pickPositions.push({id:c.id,...c.point,cell:c});resident(c,time,selectedCell===c.id||selectedKind==='somatic');}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
-   const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);elevation=!e.entered?entryTrackHeight(entries[e.front],p):0;
+   const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);elevation=!canals&&!e.entered?entryTrackHeight(entries[e.front],p):0;
+   if(!visible||visible(p))pickPositions.push({id,...p,height:elevation+.5,cell:e});
    const target=e.action==='attack'&&e.attackX!=null?groundPoint({x:e.attackX,y:e.attackY}):null;
    const moved=prev&&Math.hypot(p.x-prev.x,p.z-prev.z)>.00001;
    const angle=moved?Math.atan2(p.x-prev.x,p.z-prev.z):target&&Math.hypot(target.x-p.x,target.z-p.z)>.001?Math.atan2(target.x-p.x,target.z-p.z):prev?.angle??0;
@@ -244,11 +267,12 @@ export function createActors(profile){
     for(let n=0;n<path.length;n++){const a=n?path[n-1]:p,b=path[n],q=(time*.8+n*.17)%1;put('badge',a.x+(b.x-a.x)*q,.2,a.z+(b.z-a.z)*q,.12,.09,.12,0xffd678);}
    }
    for(const [id,state] of Object.entries(s.immunity.sites))if(state.danger>2){const p=siteAt(s.layout,id),r=4+(time*.7)%2;put('selected',p.x,.1,p.z,r,r,r,0xee9c62,Math.PI/2);}
-   for(const h of s.immunity.infected){const p=groundPoint(h);if(visible&&!visible(p))continue;const pulse=1+Math.sin(time*3+h.id)*.08;put('pod',p.x,.24,p.z,.45*pulse,.27,.4*pulse,0xb88ba6);put('rim',p.x,.52,p.z,.16,.16,.16,h.mhcI<.5?0xda9d67:0x7fc6db,Math.PI/2);put('selected',p.x,.075,p.z,1.15,1.15,1.15,0xd88b89,Math.PI/2);for(let n=0;n<3;n++)put('badge',p.x+Math.cos(n*2.1)*.2,.35,p.z+Math.sin(n*2.1)*.2,.06,.08,.06,0x9170b0);}
-   for(const w of s.immunity.parasites){const p=groundPoint(w);if(visible&&!visible(p))continue;for(let n=0;n<6;n++)put('pod',p.x+(n-2.5)*.23,.16,p.z+Math.sin(time*2+n*.9)*.15,.19,.16,.17,n%2?0xd4b48b:0xb79a72);put('selected',p.x,.06,p.z,1.8,1.8,1.8,0xd8b782,Math.PI/2);}
+   for(const h of s.immunity.infected){const p=groundPoint(h);if(visible&&!visible(p))continue;pickPositions.push({id:'host'+h.id,...p,cell:h});const pulse=1+Math.sin(time*3+h.id)*.08;put('pod',p.x,.24,p.z,.45*pulse,.27,.4*pulse,0xb88ba6);put('rim',p.x,.52,p.z,.16,.16,.16,h.mhcI<.5?0xda9d67:0x7fc6db,Math.PI/2);put('selected',p.x,.075,p.z,1.15,1.15,1.15,0xd88b89,Math.PI/2);for(let n=0;n<3;n++)put('badge',p.x+Math.cos(n*2.1)*.2,.35,p.z+Math.sin(n*2.1)*.2,.06,.08,.06,0x9170b0);}
+   for(const w of s.immunity.parasites){const p=groundPoint(w);if(visible&&!visible(p))continue;pickPositions.push({id:'parasite'+w.id,...p,cell:w});for(let n=0;n<6;n++)put('pod',p.x+(n-2.5)*.23,.16,p.z+Math.sin(time*2+n*.9)*.15,.19,.16,.17,n%2?0xd4b48b:0xb79a72);put('selected',p.x,.06,p.z,1.8,1.8,1.8,0xd8b782,Math.PI/2);}
    for(const e of s.immunity.exposures){const p=groundPoint(e);if(visible&&!visible(p))continue;for(let n=0;n<6;n++){const a=time*.7+n*Math.PI/3;put('badge',p.x+Math.cos(a)*.65,.5+Math.sin(time*2+n)*.2,p.z+Math.sin(a)*.65,.12,.13,.12,0xe3c48a);}}
    for(const net of s.immunity.nets){const p=groundPoint(net);if(visible&&!visible(p))continue;for(let n=0;n<4;n++){const a=n*Math.PI/4;line(p.x-Math.cos(a)*.85,.07,p.z-Math.sin(a)*.85,p.x+Math.cos(a)*.85,.07,p.z+Math.sin(a)*.85,.025,0xe5deb9);}put('selected',p.x,.07,p.z,1.5,1.5,1.5,0xe5deb9,Math.PI/2);}
   }
+  for(const v of s.physiology?.virions||[]){const p=groundPoint(v);if(!visible||visible(p))pickPositions.push({id:'virus'+v.id,...p,height:(!canals&&!v.entered?entryTrackHeight(entries[v.front],p):0)+.5,cell:v});}
   for(const e of s.debris.slice(0,80)){const p=groundPoint(e);if(visible&&!visible(p))continue;put('debris',p.x,.11,p.z,e.cellKind?.3:.22,.14,.22,e.cellKind?0xc6bba8:0xa3929e);put('debris',p.x+.2,.08,p.z-.15,.13,.08,.12,0x766a66);}
   for(const fx of s.effects.slice(0,64)){
    const from=groundPoint(fx),to=groundPoint({x:fx.tx,y:fx.ty}),q=Math.max(0,Math.min(1,1-fx.life/.42));
@@ -257,11 +281,12 @@ export function createActors(profile){
    line(from.x+(to.x-from.x)*tail,.48,from.z+(to.z-from.z)*tail,from.x+(to.x-from.x)*head,.48,from.z+(to.z-from.z)*head,.055*readability,fx.color);
    if(q>.42&&q<.85)put('badge',to.x,.5,to.z,.13*readability,.13*readability,.13*readability,fx.color);
   }
+  if(typeof selectedCell==='string'&&/^(enemy|virus|host|parasite)/.test(selectedCell)){const chosen=pickPositions.find(p=>p.id===selectedCell);if(chosen){const y=(chosen.height??.5)-.43;put('selected',chosen.x,y,chosen.z,1.3,1.3,1.3,0x64d1c0,Math.PI/2);put('badge',chosen.x,y+1.2,chosen.z,.11,.2,.11,0x64d1c0);}}
   for(const id of last.keys())if(!living.has(id))last.delete(id);
   for(const m of Object.values(batches)){
    m.instanceMatrix.clearUpdateRanges();m.instanceMatrix.addUpdateRange(0,m.count*16);m.instanceMatrix.needsUpdate=m.count>0;
    if(m.instanceColor){m.instanceColor.clearUpdateRanges();m.instanceColor.addUpdateRange(0,m.count*3);m.instanceColor.needsUpdate=m.count>0;}
   }
  }
- return {root,positions,draw};
+ return {root,positions,pickPositions,draw};
 }
