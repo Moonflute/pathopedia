@@ -37,3 +37,29 @@ test('varied houses keep their lot, stable rebuilds and physical roofs through d
   for(const v of [scene,reordered]){const materials=new Set();for(const m of v.root.children){m.dispose();m.geometry.dispose();materials.add(m.material);}for(const m of materials)m.dispose();}
  }
 });
+
+test('retained housing matches a fresh scene through breathing, fire, repairs, collapse and restoration',()=>{
+ const s=createCity('normal','simulation',{specialists:true});s.layout=createTileLayout();
+ const patches=Array.from({length:12},(_,i)=>({x:100+i*3,z:100,variant:i,district:'heart'})),lungs=[{x:0,z:0,variant:0},{x:3,z:0,variant:1}];
+ const snapshot=scene=>scene.root.children.map(m=>({name:m.name,count:m.count,matrix:m.instanceMatrix.array.slice(0,m.count*16),color:m.count?m.instanceColor?.array.slice(0,m.count*3):null}));
+ const dispose=scene=>{const materials=new Set();for(const m of scene.root.children){m.dispose();m.geometry.dispose();materials.add(m.material);}for(const m of materials)m.dispose();};
+ for(const theme of ['1','2']){
+  const scene=createTissueScene(s.layout,patches,lungs,null,theme);s.time=0;scene.update(s);
+  const roofs=scene.root.children.filter(m=>m.name.startsWith('tissue-roofs-')),body=scene.root.children.find(m=>m.name==='tissue-cottages');
+  const versions=roofs.map(m=>m.instanceMatrix.version),colors=body.instanceColor.version,before=body.instanceMatrix.array.slice();
+  for(const m of scene.root.children){m.instanceMatrix.clearUpdateRanges();m.instanceColor?.clearUpdateRanges();}
+  s.time=.2;scene.update(s);assert.deepEqual(roofs.map(m=>m.instanceMatrix.version),versions);assert.equal(body.instanceColor.version,colors);assert.notDeepEqual(body.instanceMatrix.array,before,'lung motion continues');
+  assert.ok(body.instanceMatrix.updateRanges[0].count<body.count*16,'only lung fittings need a new matrix upload');
+  for(const [hp,repair] of [[100,false],[60,false],[40,false],[40,true],[0,false],[100,false]]){
+   s.time+=.2;s.districts.lung.hp=hp;for(const t of s.frontier.tissues)t.hp=hp;
+   const cells=s.cells;s.cells=repair?s.frontier.tissues.map((_,tissueJob)=>({tissueJob,task:'조직 블록 복구'})):[];
+   const saved=serializeCity(s);scene.update(s);const fresh=createTissueScene(s.layout,patches,lungs,null,theme);fresh.update(s);
+   assert.deepEqual(snapshot(scene),snapshot(fresh),`${theme}: HP ${hp}, repair ${repair}`);assert.equal(serializeCity(s),saved);
+   if(hp===40)assert.equal(scene.root.children.find(m=>m.name==='tissue-fire').count>0,!repair);
+   dispose(fresh);s.cells=cells;
+  }
+  assert.equal(scene.collisionVersion,3,'only collapse and restoration replace collision surfaces');
+  const restored={...s,time:s.time,districts:{...s.districts,lung:{...s.districts.lung,hp:0}}};scene.update(restored);
+  assert.equal(scene.collisionVersion,4,'a new run at the same clock must refresh');dispose(scene);
+ }
+});

@@ -1,4 +1,5 @@
 import * as T from './vendor/three/three.module.min.js';
+import {createInstancePalette} from './city-three-instances.mjs';
 import {groundPoint} from './city-three-layout.mjs';
 import {CELL_JOBS,DRUGS} from './city-data.mjs';
 import {activeActivity,activityProgress} from './city-activity.mjs';
@@ -31,7 +32,7 @@ export const CELL_STYLES=Object.freeze({
  courier:{w:.26,h:.3,y:.38,face:.43,hat:0xa48461}
 });
 export function createActors(profile){
- const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={},last=new Map(),positions=[],pickPositions=[];let lastRun=null,lastLayout=null,elevation=0;
+ const root=new T.Group(),dummy=new T.Object3D(),palette=createInstancePalette(),batches={},last=new Map(),positions=[],pickPositions=[];let lastRun=null,lastLayout=null,elevation=0;
  const capacity=profile.maxCells+profile.maxShipments+RESIDENT_LIMIT,standard=new T.MeshStandardMaterial({color:0xffffff,roughness:.9}),flat=new T.MeshBasicMaterial({color:0xffffff});
  const body=new T.SphereGeometry(1,profile.mobile?10:12,profile.mobile?7:8),hat=new T.SphereGeometry(1,profile.mobile?8:10,profile.mobile?5:6),small=new T.SphereGeometry(1,6,4),box=new T.BoxGeometry(1,1,1),rod=new T.CylinderGeometry(1,1,1,6),rim=new T.TorusGeometry(1,.13,4,12);
  function batch(id,geometry,limit=capacity,shadow=true,unlit=false){const m=new T.InstancedMesh(geometry,unlit?flat:standard,limit);m.name=id;m.instanceMatrix.setUsage(T.DynamicDrawUsage);m.instanceColor=new T.InstancedBufferAttribute(new Float32Array(limit*3).fill(1),3);m.instanceColor.setUsage(T.DynamicDrawUsage);m.count=0;m.frustumCulled=false;m.castShadow=shadow;m.receiveShadow=!unlit;root.add(m);batches[id]=m;}
@@ -39,12 +40,12 @@ export function createActors(profile){
  batch('box',box,capacity*5);batch('pod',small,capacity*8,false);batch('rod',rod,capacity*5,false);batch('rim',rim,capacity*3,false);batch('badge',new T.IcosahedronGeometry(1,0),capacity*7,false);
  batch('enemy',new T.IcosahedronGeometry(1,1),profile.maxEnemies*4);batch('spikes',new T.ConeGeometry(1,1,5),profile.maxEnemies*4);batch('enemyEyes',small,profile.maxEnemies*2,false);
  batch('debris',new T.IcosahedronGeometry(1,0),160,false);batch('selected',new T.TorusGeometry(.43,.035,4,18),capacity*4+profile.maxEnemies*2+160,false,true);batch('beam',rod,capacity*6+profile.maxEnemies*4,false,true);
- function put(id,x,y,z,sx,sy,sz,c,rx=0,ry=0,rz=0){const m=batches[id],n=m.count;if(n>=m.instanceMatrix.count)return;dummy.position.set(x,y+elevation,z);dummy.scale.set(sx,sy,sz);dummy.rotation.set(rx,ry,rz,'YXZ');dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,color.set(c));m.count++;}
+ function put(id,x,y,z,sx,sy,sz,c,rx=0,ry=0,rz=0){const m=batches[id],n=m.count;if(n>=m.instanceMatrix.count)return;dummy.position.set(x,y+elevation,z);dummy.scale.set(sx,sy,sz);dummy.rotation.set(rx,ry,rz,'YXZ');dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,palette(c));m.count++;}
  const up=new T.Vector3(0,1,0),a=new T.Vector3(),b=new T.Vector3(),direction=new T.Vector3();
  function line(x,y,z,tx,ty,tz,r,c){
   a.set(x,y+elevation,z);b.set(tx,ty+elevation,tz);direction.subVectors(b,a);const length=direction.length(),m=batches.beam,n=m.count;
   if(length<.001||n>=m.instanceMatrix.count)return;
-  dummy.position.copy(a).add(b).multiplyScalar(.5);dummy.quaternion.setFromUnitVectors(up,direction.normalize());dummy.scale.set(r,length,r);dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,color.set(c));m.count++;
+  dummy.position.copy(a).add(b).multiplyScalar(.5);dummy.quaternion.setFromUnitVectors(up,direction.normalize());dummy.scale.set(r,length,r);dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,palette(c));m.count++;
  }
  function antibody(x,y,z,size){
   line(x,y-.15*size,z,x,y+.08*size,z,.045*size,0xf6cf78);
