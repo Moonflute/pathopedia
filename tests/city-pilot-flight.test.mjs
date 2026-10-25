@@ -31,19 +31,19 @@ for(const theme of ['2','1'])test('theme '+theme+': toggling flight holds the cu
  step(p,.35,{jump:true});assert.ok(p.view().height>1,'Space explicitly starts ascent');p.toggleFlight();step(p,.1);const height=p.view().height;assert.ok(height>0);p.toggleFlight();step(p,.5);assert.equal(p.view().height,height,'switching mode in the air adds no vertical impulse');p.stop();
 });
 
-for(const theme of ['2','1'])test('theme '+theme+': jetpack hover, air dash, empty-fuel landing and cargo survive exit/save',()=>{
- const {s,p,world}=fixture(theme);pilotInventory(s).oxygen=12;
- step(p,1,{flight:true,jump:true});assert.ok(p.view().flying);assert.ok(p.view().height>3);const fuel=p.view().fuel;
- step(p,.7);const hover=p.view().height;step(p,.5);assert.ok(Math.abs(p.view().height-hover)<.02);assert.ok(p.view().fuel<fuel);
+for(const theme of ['2','1'])test('theme '+theme+': zero legacy fuel permits unlimited flight, air dash and safe cargo save/exit',()=>{
+ const {s,p,world}=fixture(theme);const inventory=pilotInventory(s);inventory.oxygen=12;inventory.fuel=0;
+ step(p,1,{flight:true,jump:true});assert.ok(p.view().flying);assert.ok(p.view().height>3);
+ step(p,.7);const hover=p.view().height;step(p,6);assert.ok(Math.abs(p.view().height-hover)<.02);assert.ok(p.view().flying,'empty legacy fuel never shuts off flight');assert.equal(inventory.fuel,0,'flight has no fuel drain or recharge');
  const before=p.view().position;step(p,.24,{dash:true});assert.ok(Math.hypot(p.view().position.x-before.x,p.view().position.z-before.z)>2);assert.ok(p.view().dashCooldown>1.8);
  const energy=p.cell.energy;step(p,.2,{dash:true});assert.ok(p.cell.energy>=energy,'held dash cannot spend energy twice');
- const saved=restoreCity(serializeCity(s));assert.equal(saved.pilotInventory.oxygen,12);assert.ok(world.canStand(groundPoint(saved.cells.find(c=>c.id===p.cell.id))));
- pilotInventory(s).fuel=.01;step(p,.1);assert.equal(p.view().flying,false);step(p,4);assert.equal(p.view().height,0);assert.ok(p.view().fuel>0);const c=p.cell;p.stop();assert.equal(p.active,false);assert.ok(c.path.length);assert.equal(pilotInventory(s).oxygen,12);
+ const saved=restoreCity(serializeCity(s));assert.equal(saved.pilotInventory.oxygen,12);assert.equal(saved.pilotInventory.fuel,0);assert.ok(world.canStand(groundPoint(saved.cells.find(c=>c.id===p.cell.id))));
+ p.toggleFlight();step(p,4);assert.equal(p.view().height,0);assert.equal(inventory.fuel,0);const c=p.cell;p.stop();assert.equal(p.active,false);assert.ok(c.path.length);assert.equal(pilotInventory(s).oxygen,12);
 });
 
 test('air dash respects thin walls and flight altitude limits',()=>{
  const {p}=fixture('2',[[0,5,-2,12,10,.1]]);for(let n=0;n<16;n++)p.look(-p.view().yaw/.0025,0);
- step(p,.25,{flight:true,jump:true});step(p,.3,{dash:true});assert.ok(p.view().position.z>-1.8);step(p,10,{jump:true});assert.ok(p.view().height>99&&p.view().height<=100,'the old 14m cap is removed and 100m is reachable with one tank');assert.ok(p.view().fuel>0);p.stop();
+ step(p,.25,{flight:true,jump:true});step(p,.3,{dash:true});assert.ok(p.view().position.z>-1.8);step(p,10,{jump:true});assert.ok(p.view().height>99&&p.view().height<=100,'100m remains reachable with unlimited flight');assert.ok(p.view().flying);p.stop();
 });
 
 test('tractor pulls actual debris, enforces capacity and cannot collect through a wall',()=>{

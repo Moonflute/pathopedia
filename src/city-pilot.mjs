@@ -87,7 +87,7 @@ export function createCityPilot(){
   }else if(!world.clear(from,g.anchor))releaseGrapple('갈고리 자동 해제');
   else if(g.phase==='pulling'&&(grappleDistance(p)<=1.35||run.time-g.pullAt>3.5))releaseGrapple('갈고리 자동 해제');
  }
- function toggleFlight(){if(!cell)return false;if(flying){flying=false;say('활공 · 착지');return true;}if(inventory.fuel<5){say('지상에서 연료 충전');return false;}flying=true;jumpVelocity=0;say('제트팩 ON');return true;}
+ function toggleFlight(){if(!cell)return false;if(flying){flying=false;say('활공 · 착지');return true;}flying=true;jumpVelocity=0;say('제트팩 ON');return true;}
  function target(range=pilotTool('engulf').range){
   if(!cell)return null;
   const p=position(),dx=Math.sin(yaw)*Math.cos(pitch),dy=Math.sin(pitch),dz=-Math.cos(yaw)*Math.cos(pitch);let best=null,depth=Infinity;
@@ -135,11 +135,10 @@ export function createCityPilot(){
   if(riding){jumpVelocity=0;vx=vz=0;}
   else if(flying){
    const climb=!!input.jump,descend=input.crouch;
-   jumpVelocity=mix(jumpVelocity,climb?12:descend?-9:0,1-Math.exp(-9*dt));inventory.fuel=clamp(inventory.fuel-dt*(climb?6:moving?5:2),0,100);
-   if(inventory.fuel===0){flying=false;say('연료 소진 · 자동 활공');}
+   jumpVelocity=mix(jumpVelocity,climb?12:descend?-9:0,1-Math.exp(-9*dt));
   }else{
    if(input.jump&&!jumpHeld&&grounded&&!input.crouch&&!pulling){jumpVelocity=4.6;grounded=false;}
-   jumpVelocity=Math.max(-3.6,jumpVelocity-14*dt);if(grounded)inventory.fuel=clamp(inventory.fuel+dt*22,0,100);
+   jumpVelocity=Math.max(-3.6,jumpVelocity-14*dt);
   }jumpHeld=!!input.jump;
   const dashing=run.time<dashUntil,speed=(following&&watched?.cell?clamp(distance(p,groundPoint(watched.cell))*2,4.2,22):flying?(sprinting?7.5:5.4):input.crouch?1.75:sprinting?6.4:4.2)*(scoped?.65:1),blend=1-Math.exp(-(moving?14:22)*dt);
   if(tethered||!grounded&&!flying){const force=tethered?10:6;vx+=(Math.sin(yaw)*forward+Math.cos(yaw)*strafe)*force*dt/normal;vz+=(-Math.cos(yaw)*forward+Math.sin(yaw)*strafe)*force*dt/normal;const max=18,size=Math.hypot(vx,vz);if(size>max){vx*=max/size;vz*=max/size;}}
@@ -191,7 +190,7 @@ export function createCityPilot(){
   if(!cell)return null;const actual=position(),goal=objective(),def=pilotTool(inventory.tool),aim=target(scoped||def.id==='scanner'?18:undefined);let next=goal;
   if(guide.length){let closest=0;for(let i=1;i<guide.length;i++)if(distance(actual,guide[i])<distance(actual,guide[closest]))closest=i;guide=guide.slice(closest);next=guide.find(q=>distance(actual,q)>1.1)||goal;}
   const t=clamp(alpha,0,1),p=previousPosition?{x:mix(previousPosition.x,actual.x,t),z:mix(previousPosition.z,actual.z,t)}:actual;
-  return {cell,inventory,tool:def,position:p,eye:mix(previousEye,eye(),t),goal,next,guide,yaw,pitch,aim,theme,eventsEnabled:sandboxEventsEnabled(run),interaction:focus(),observed:pilotObservation(run,watched),following,riding,grapple:grapple?{phase:grapple.phase,from:{...p,y:eye()-.1},target:grapple.tip,length:grapple.length,pullRequested:grapple.pullRequested}:null,projectiles:projectiles.map(s=>({...s,progress:clamp((run.time-s.at)/s.duration,0,1),impactAge:Math.max(0,run.time-s.at-s.duration)})),shot:shot&&run.time-shot.at<.18?{...shot,progress:(run.time-shot.at)/.18}:null,incidents:sandboxIncidents(run).filter(e=>distance(p,e)<18).sort((a,b)=>distance(p,a)-distance(p,b)).slice(0,2),workPulse:workPulse&&run.time-workPulse.at<.8?{...workPulse,progress:(run.time-workPulse.at)/.8}:null,using:previousAction&&!actionBlocked,progress:progress/(def.id==='oxygen'?cityRule(run,'oxygen').params.duration:def.duration||1),notice:run.time<noticeUntil?notice:'',shots,deliveries,oxygen,actions,scan:run.time<scanUntil?scan:null,cooldown:Math.max(0,(pilotCooldowns(run)[def.id]||0)-run.time),hit:run.time<hitUntil,hurt:run.time<hurtUntil,distance:distance(actual,goal),sprinting,crouching:crouch>.5,scoped,airborne:!grounded,speed:Math.hypot(vx,vz),water:theme==='2'&&world.town.source.isWater(actual),flying,height:jumpHeight,fuel:inventory.fuel,dashing:run.time<dashUntil,dashCooldown:Math.max(0,dashReady-run.time),stuck:stuck>1.2,beam,shock:shock&&run.time-shock.at<.45?{...shock,progress:(run.time-shock.at)/.45}:null};
+  return {cell,inventory,tool:def,position:p,eye:mix(previousEye,eye(),t),goal,next,guide,yaw,pitch,aim,theme,eventsEnabled:sandboxEventsEnabled(run),interaction:focus(),observed:pilotObservation(run,watched),following,riding,grapple:grapple?{phase:grapple.phase,from:{...p,y:eye()-.1},target:grapple.tip,length:grapple.length,pullRequested:grapple.pullRequested}:null,projectiles:projectiles.map(s=>({...s,progress:clamp((run.time-s.at)/s.duration,0,1),impactAge:Math.max(0,run.time-s.at-s.duration)})),shot:shot&&run.time-shot.at<.18?{...shot,progress:(run.time-shot.at)/.18}:null,incidents:sandboxIncidents(run).filter(e=>distance(p,e)<18).sort((a,b)=>distance(p,a)-distance(p,b)).slice(0,2),workPulse:workPulse&&run.time-workPulse.at<.8?{...workPulse,progress:(run.time-workPulse.at)/.8}:null,using:previousAction&&!actionBlocked,progress:progress/(def.id==='oxygen'?cityRule(run,'oxygen').params.duration:def.duration||1),notice:run.time<noticeUntil?notice:'',shots,deliveries,oxygen,actions,scan:run.time<scanUntil?scan:null,cooldown:Math.max(0,(pilotCooldowns(run)[def.id]||0)-run.time),hit:run.time<hitUntil,hurt:run.time<hurtUntil,distance:distance(actual,goal),sprinting,crouching:crouch>.5,scoped,airborne:!grounded,speed:Math.hypot(vx,vz),water:theme==='2'&&world.town.source.isWater(actual),flying,height:jumpHeight,dashing:run.time<dashUntil,dashCooldown:Math.max(0,dashReady-run.time),stuck:stuck>1.2,beam,shock:shock&&run.time-shock.at<.45?{...shock,progress:(run.time-shock.at)/.45}:null};
  }
  return {start,stop,step,view,objective,equip,cycle,previous,matchTool,nextDestination,setTheme,chooseDestination,resetMotion,toggleFlight,recoverPosition,observe,closeObservation,toggleFollowing,toggleRide,toggleEvents(){if(run)setSandboxEvents(run,!sandboxEventsEnabled(run));},get active(){return !!cell;},get cell(){return cell;},get run(){return run;},get world(){return world;},look(dx,dy){const sensitivity=scoped?.00125:.0025;yaw+=clamp(dx,-180,180)*sensitivity;pitch=clamp(pitch-clamp(dy,-180,180)*sensitivity,-1.45,1.45);}};
 }
