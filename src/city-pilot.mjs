@@ -19,7 +19,7 @@ export function createCityPilot(){
  let vx=0,vz=0,jumpHeight=0,jumpVelocity=0,jumpHeld=false,crouch=0,sprinting=false,scoped=false,previousPosition=null,previousEye=.58;
  let previousTool='oxygen',actionBlocked=false,workKey='',actions=0,scan=null,scanUntil=0;
  let workTarget='',workPulse=null;
- let flying=false,grounded=true,flightHeld=false,dashHeld=false,dashUntil=0,dashReady=0,dashDirection=null,launch=0,stuck=0,beam=null,shock=null;
+ let flying=false,grounded=true,flightHeld=false,dashHeld=false,dashUntil=0,dashReady=0,dashDirection=null,stuck=0,beam=null,shock=null;
  let watched=null,following=false,followRoute=[],followAt=-Infinity,grapple=null,grappleHeld=false,riding=null,shot=null,projectiles=[];
  let lastIntegrity=100;
  const position=()=>cell?groundPoint(cell):null;
@@ -47,7 +47,7 @@ export function createCityPilot(){
   if(!cell)return false;
   run=s;inventory=pilotInventory(s);cell.energy??=100;cell.integrity??=100;cell.recovering=false;
   lastIntegrity=cell.integrity;projectiles=[];
-  shots=deliveries=oxygen=actions=0;scan=null;scanUntil=0;watched=null;following=false;followRoute=[];followAt=-Infinity;riding=shot=null;previousTool=inventory.tool==='engulf'?'oxygen':'engulf';actionBlocked=false;workKey=workTarget='';workPulse=null;progress=0;guideTime=-Infinity;guideKey='';guide=[];previousAction=false;pitch=-.04;notice='';jumpHeight=jumpVelocity=crouch=0;flying=flightHeld=dashHeld=false;grounded=true;dashUntil=dashReady=launch=stuck=0;beam=shock=null;resetMotion();setPilotPose(run,{height:0,eye:eye(),theme,yaw,pitch});
+  shots=deliveries=oxygen=actions=0;scan=null;scanUntil=0;watched=null;following=false;followRoute=[];followAt=-Infinity;riding=shot=null;previousTool=inventory.tool==='engulf'?'oxygen':'engulf';actionBlocked=false;workKey=workTarget='';workPulse=null;progress=0;guideTime=-Infinity;guideKey='';guide=[];previousAction=false;pitch=-.04;notice='';jumpHeight=jumpVelocity=crouch=0;flying=flightHeld=dashHeld=false;grounded=true;dashUntil=dashReady=stuck=0;beam=shock=null;resetMotion();setPilotPose(run,{height:0,eye:eye(),theme,yaw,pitch});
   const p=position(),goal=objective();guide=world.route(p,goal,'neutrophil');guideKey=goal.id;guideTime=run.time;
   const target=guide.find(q=>distance(p,q)>.6)||goal;yaw=Math.atan2(target.x-p.x,-(target.z-p.z));return true;
  }
@@ -64,22 +64,30 @@ export function createCityPilot(){
   riding=carrier;flying=false;grapple=null;following=false;vx=vz=jumpVelocity=0;say('운반체 탑승');return true;
  }
  function attachGrapple(){
-  if(grapple){grapple=null;say('그래플 해제');return true;}
+  if(grapple){if(grapple.phase==='attached')startGrapplePull(grapple);else if(grapple.phase==='flying'){grapple.pullRequested=true;say('고정 후 자동 이동');}return true;}
   if(cell.energy<3){say('그래플 · 에너지 부족');return false;}
   const p=position(),from={...p,y:eye()},d={x:Math.sin(yaw)*Math.cos(pitch),y:Math.sin(pitch),z:-Math.cos(yaw)*Math.cos(pitch)},hit=world.trace(from,d,PILOT_GRAPPLE_RANGE),valid=hit&&hit.y>=.27&&hit.distance>=.9;
   const anchor=hit||{x:from.x+d.x*PILOT_GRAPPLE_RANGE,y:from.y+d.y*PILOT_GRAPPLE_RANGE,z:from.z+d.z*PILOT_GRAPPLE_RANGE};
-  grapple={phase:'flying',origin:from,tip:{...from},anchor,valid,length:hit?.distance??PILOT_GRAPPLE_RANGE,elapsed:0,at:run.time,reeling:false};cell.energy-=3;riding=null;following=false;say('그래플 발사');return true;
+  grapple={phase:'flying',origin:from,tip:{...from},anchor,valid,length:hit?.distance??PILOT_GRAPPLE_RANGE,elapsed:0,pullRequested:false,blocked:0};cell.energy-=3;riding=null;following=false;say('갈고리 발사');return true;
+ }
+ function startGrapplePull(g){g.phase='pulling';g.pullAt=run.time;g.pullSpeed=0;flying=false;grounded=false;say('갈고리 이동');}
+ function releaseGrapple(text){grapple=null;say(text);}
+ function grappleDistance(p){const a=grapple.anchor;return Math.hypot(a.x-p.x,a.y-eye(),a.z-p.z);}
+ function pullGrapple(dt,p,delta){
+  const g=grapple,a=g.anchor,d=Math.max(.01,grappleDistance(p));g.pullSpeed=Math.min(24,g.pullSpeed+75*dt);const speed=Math.min(g.pullSpeed,Math.max(0,d-1.1)/dt);
+  vx=(a.x-p.x)/d*speed;jumpVelocity=(a.y-eye())/d*speed;vz=(a.z-p.z)/d*speed;delta.x=vx*dt;delta.y=jumpVelocity*dt;delta.z=vz*dt;g.length=d;
  }
  function advanceGrapple(dt,p){
   if(!grapple)return;const g=grapple,from={...p,y:eye()};
   if(g.phase==='flying'){
    g.elapsed+=dt;const t=Math.min(1,g.elapsed*75/Math.max(.01,g.length));g.tip={x:mix(g.origin.x,g.anchor.x,t),y:mix(g.origin.y,g.anchor.y,t),z:mix(g.origin.z,g.anchor.z,t)};
-   if(t===1){if(g.valid&&world.clear(from,g.anchor)){g.phase='attached';g.length=Math.max(1.2,Math.hypot(from.x-g.anchor.x,from.y-g.anchor.y,from.z-g.anchor.z));flying=false;grounded=false;jumpVelocity=Math.max(1.5,jumpVelocity);say('고정 · Space 줄 감기 / G 해제');}else{g.phase='returning';say('고정할 표면 없음');}}
+   if(t===1){if(g.valid&&world.clear(from,g.anchor)){g.phase='attached';g.length=Math.max(1.2,grappleDistance(p));say('고정 · F 다시 눌러 당기기');if(g.pullRequested)startGrapplePull(g);}else{g.phase='returning';say('고정할 표면 없음');}}
   }else if(g.phase==='returning'){
    const d=Math.hypot(g.tip.x-from.x,g.tip.y-from.y,g.tip.z-from.z),t=Math.min(1,90*dt/Math.max(.01,d));g.tip={x:mix(g.tip.x,from.x,t),y:mix(g.tip.y,from.y,t),z:mix(g.tip.z,from.z,t)};if(t===1)grapple=null;
-  }else if(!world.clear(from,g.anchor)){grapple=null;say('그래플 해제');}
+  }else if(!world.clear(from,g.anchor))releaseGrapple('갈고리 자동 해제');
+  else if(g.phase==='pulling'&&(grappleDistance(p)<=1.35||run.time-g.pullAt>3.5))releaseGrapple('갈고리 자동 해제');
  }
- function toggleFlight(){if(!cell)return false;if(flying){flying=false;say('활공 · 착지');return true;}if(inventory.fuel<5){say('지상에서 연료 충전');return false;}flying=true;launch=grounded?.35:0;grounded=false;jumpVelocity=Math.max(1,jumpVelocity);say('제트팩 ON');return true;}
+ function toggleFlight(){if(!cell)return false;if(flying){flying=false;say('활공 · 착지');return true;}if(inventory.fuel<5){say('지상에서 연료 충전');return false;}flying=true;jumpVelocity=0;say('제트팩 ON');return true;}
  function target(range=pilotTool('engulf').range){
   if(!cell)return null;
   const p=position(),dx=Math.sin(yaw)*Math.cos(pitch),dy=Math.sin(pitch),dz=-Math.cos(yaw)*Math.cos(pitch);let best=null,depth=Infinity;
@@ -115,37 +123,35 @@ export function createCityPilot(){
   }
   if(riding&&(!run.shipments.includes(riding)||Math.hypot(forward,strafe)>.05||input.jump||input.flight)){riding=null;say('운반체에서 내림');}
   if(input.grapple&&!grappleHeld&&!riding)attachGrapple();grappleHeld=!!input.grapple;advanceGrapple(dt,p);
-  const tethered=grapple?.phase==='attached';
+  const tethered=grapple?.phase==='attached',pulling=grapple?.phase==='pulling';
   const normal=Math.max(1,Math.hypot(forward,strafe)),moving=Math.hypot(forward,strafe)>.05;
   yaw+=(input.turn||0)*dt*1.8;pitch=clamp(pitch+(input.look||0)*dt*1.2,-1.45,1.45);scoped=!!input.scope;
   if(input.flight&&!flightHeld)toggleFlight();flightHeld=!!input.flight;
   const stayLow=crouch>.5&&!world.fitsBody({...p,y:jumpHeight},.62);crouch=mix(crouch,input.crouch&&!flying&&!tethered||stayLow?1:0,1-Math.exp(-18*dt));sprinting=!!input.sprint&&crouch<.5&&!scoped&&moving&&cell.energy>0;
-  if(input.dash&&!dashHeld&&run.time>=dashReady&&cell.energy>=8){
+  if(input.dash&&!dashHeld&&!pulling&&run.time>=dashReady&&cell.energy>=8){
    const angle=moving?yaw+Math.atan2(strafe,forward):yaw,vertical=flying?Math.sin(pitch):0;
    dashDirection={x:Math.sin(angle)*Math.sqrt(1-vertical*vertical),y:vertical,z:-Math.cos(angle)*Math.sqrt(1-vertical*vertical)};dashUntil=run.time+.2;dashReady=run.time+2.2;cell.energy-=8;say('돌진');
   }dashHeld=!!input.dash;
   if(riding){jumpVelocity=0;vx=vz=0;}
   else if(flying){
-   launch=Math.max(0,launch-dt);const climb=input.jump||launch>0,descend=input.crouch;
+   const climb=!!input.jump,descend=input.crouch;
    jumpVelocity=mix(jumpVelocity,climb?12:descend?-9:0,1-Math.exp(-9*dt));inventory.fuel=clamp(inventory.fuel-dt*(climb?6:moving?5:2),0,100);
    if(inventory.fuel===0){flying=false;say('연료 소진 · 자동 활공');}
   }else{
-   if(input.jump&&!jumpHeld&&grounded&&!input.crouch&&!tethered){jumpVelocity=4.6;grounded=false;}
+   if(input.jump&&!jumpHeld&&grounded&&!input.crouch&&!pulling){jumpVelocity=4.6;grounded=false;}
    jumpVelocity=Math.max(-3.6,jumpVelocity-14*dt);if(grounded)inventory.fuel=clamp(inventory.fuel+dt*22,0,100);
   }jumpHeld=!!input.jump;
   const dashing=run.time<dashUntil,speed=(following&&watched?.cell?clamp(distance(p,groundPoint(watched.cell))*2,4.2,22):flying?(sprinting?7.5:5.4):input.crouch?1.75:sprinting?6.4:4.2)*(scoped?.65:1),blend=1-Math.exp(-(moving?14:22)*dt);
   if(tethered||!grounded&&!flying){const force=tethered?10:6;vx+=(Math.sin(yaw)*forward+Math.cos(yaw)*strafe)*force*dt/normal;vz+=(-Math.cos(yaw)*forward+Math.sin(yaw)*strafe)*force*dt/normal;const max=18,size=Math.hypot(vx,vz);if(size>max){vx*=max/size;vz*=max/size;}}
   else{vx=mix(vx,(Math.sin(yaw)*forward+Math.cos(yaw)*strafe)*speed/normal,blend);vz=mix(vz,(-Math.cos(yaw)*forward+Math.sin(yaw)*strafe)*speed/normal,blend);}
   const body={...p,y:jumpHeight},ridePoint=riding?groundPoint(riding):null,delta=ridePoint?{x:ridePoint.x-p.x,y:.32-jumpHeight,z:ridePoint.z-p.z}:{x:(dashing?dashDirection.x*12:vx)*dt,y:(dashing&&flying?dashDirection.y*12:jumpVelocity)*dt,z:(dashing?dashDirection.z*12:vz)*dt};
-  if(tethered){
-   grapple.reeling=!!(input.reel||input.jump);grapple.length=clamp(grapple.length+(grapple.reeling?-12:input.crouch?6:0)*dt,1.2,PILOT_GRAPPLE_RANGE);const velocity={x:vx,y:jumpVelocity,z:vz};
-   if(grapple.reeling){const a=grapple.anchor,x=a.x-body.x,y=a.y-eye(),z=a.z-body.z,d=Math.max(.01,Math.hypot(x,y,z)),drive=Math.max(0,12-(velocity.x*x+velocity.y*y+velocity.z*z)/d)*(1-Math.exp(-18*dt));velocity.x+=x/d*drive;velocity.y+=y/d*drive;velocity.z+=z/d*drive;delta.x+=x/d*drive*dt;delta.y+=y/d*drive*dt;delta.z+=z/d*drive*dt;}
-   constrainPilotRope(body,delta,velocity,grapple.anchor,grapple.length,eye()-jumpHeight);vx=velocity.x;vz=velocity.z;jumpVelocity=velocity.y;
-  }
-  const contact=world.moveBody(body,delta,.62-crouch*.2);p.x=body.x;p.z=body.z;jumpHeight=body.y;grounded=contact.grounded;
+  if(pulling)pullGrapple(dt,p,delta);
+  else if(tethered){const velocity={x:vx,y:jumpVelocity,z:vz};constrainPilotRope(body,delta,velocity,grapple.anchor,grapple.length,eye()-jumpHeight);vx=velocity.x;vz=velocity.z;jumpVelocity=velocity.y;}
+  const beforeHeight=jumpHeight,contact=world.moveBody(body,delta,.62-crouch*.2);p.x=body.x;p.z=body.z;jumpHeight=body.y;grounded=contact.grounded;
   if(contact.ceiling)jumpVelocity=Math.min(0,jumpVelocity);if(grounded){jumpVelocity=Math.max(0,jumpVelocity);if(flying&&input.crouch){flying=false;say('착지');}}
   if(ridePoint&&distance(p,ridePoint)>.8){riding=null;say('안전 하차');}
   if(Math.abs(p.x-previousPosition.x)<Math.abs(vx*dt)*.1)vx=0;if(Math.abs(p.z-previousPosition.z)<Math.abs(vz*dt)*.1)vz=0;
+  if(pulling&&grapple){const travelled=Math.hypot(p.x-previousPosition.x,jumpHeight-beforeHeight,p.z-previousPosition.z),expected=Math.hypot(delta.x,delta.y,delta.z);grapple.blocked=travelled<expected*.2?grapple.blocked+dt:0;if(grappleDistance(p)<=1.35||grapple.blocked>.18)releaseGrapple('갈고리 자동 해제');}
   stuck=moving&&distance(p,previousPosition)<.01?stuck+dt:0;
   Object.assign(cell,groundCoordinate(p));
   setPilotPose(run,{height:jumpHeight,eye:eye(),theme,yaw,pitch});beam=null;
@@ -185,7 +191,7 @@ export function createCityPilot(){
   if(!cell)return null;const actual=position(),goal=objective(),def=pilotTool(inventory.tool),aim=target(scoped||def.id==='scanner'?18:undefined);let next=goal;
   if(guide.length){let closest=0;for(let i=1;i<guide.length;i++)if(distance(actual,guide[i])<distance(actual,guide[closest]))closest=i;guide=guide.slice(closest);next=guide.find(q=>distance(actual,q)>1.1)||goal;}
   const t=clamp(alpha,0,1),p=previousPosition?{x:mix(previousPosition.x,actual.x,t),z:mix(previousPosition.z,actual.z,t)}:actual;
-  return {cell,inventory,tool:def,position:p,eye:mix(previousEye,eye(),t),goal,next,guide,yaw,pitch,aim,theme,eventsEnabled:sandboxEventsEnabled(run),interaction:focus(),observed:pilotObservation(run,watched),following,riding,grapple:grapple?{phase:grapple.phase,from:{...p,y:eye()-.1},target:grapple.tip,length:grapple.length,reeling:grapple.reeling}:null,projectiles:projectiles.map(s=>({...s,progress:clamp((run.time-s.at)/s.duration,0,1),impactAge:Math.max(0,run.time-s.at-s.duration)})),shot:shot&&run.time-shot.at<.18?{...shot,progress:(run.time-shot.at)/.18}:null,incidents:sandboxIncidents(run).filter(e=>distance(p,e)<18).sort((a,b)=>distance(p,a)-distance(p,b)).slice(0,2),workPulse:workPulse&&run.time-workPulse.at<.8?{...workPulse,progress:(run.time-workPulse.at)/.8}:null,using:previousAction&&!actionBlocked,progress:progress/(def.id==='oxygen'?cityRule(run,'oxygen').params.duration:def.duration||1),notice:run.time<noticeUntil?notice:'',shots,deliveries,oxygen,actions,scan:run.time<scanUntil?scan:null,cooldown:Math.max(0,(pilotCooldowns(run)[def.id]||0)-run.time),hit:run.time<hitUntil,hurt:run.time<hurtUntil,distance:distance(actual,goal),sprinting,crouching:crouch>.5,scoped,airborne:!grounded,speed:Math.hypot(vx,vz),water:theme==='2'&&world.town.source.isWater(actual),flying,height:jumpHeight,fuel:inventory.fuel,dashing:run.time<dashUntil,dashCooldown:Math.max(0,dashReady-run.time),stuck:stuck>1.2,beam,shock:shock&&run.time-shock.at<.45?{...shock,progress:(run.time-shock.at)/.45}:null};
+  return {cell,inventory,tool:def,position:p,eye:mix(previousEye,eye(),t),goal,next,guide,yaw,pitch,aim,theme,eventsEnabled:sandboxEventsEnabled(run),interaction:focus(),observed:pilotObservation(run,watched),following,riding,grapple:grapple?{phase:grapple.phase,from:{...p,y:eye()-.1},target:grapple.tip,length:grapple.length,pullRequested:grapple.pullRequested}:null,projectiles:projectiles.map(s=>({...s,progress:clamp((run.time-s.at)/s.duration,0,1),impactAge:Math.max(0,run.time-s.at-s.duration)})),shot:shot&&run.time-shot.at<.18?{...shot,progress:(run.time-shot.at)/.18}:null,incidents:sandboxIncidents(run).filter(e=>distance(p,e)<18).sort((a,b)=>distance(p,a)-distance(p,b)).slice(0,2),workPulse:workPulse&&run.time-workPulse.at<.8?{...workPulse,progress:(run.time-workPulse.at)/.8}:null,using:previousAction&&!actionBlocked,progress:progress/(def.id==='oxygen'?cityRule(run,'oxygen').params.duration:def.duration||1),notice:run.time<noticeUntil?notice:'',shots,deliveries,oxygen,actions,scan:run.time<scanUntil?scan:null,cooldown:Math.max(0,(pilotCooldowns(run)[def.id]||0)-run.time),hit:run.time<hitUntil,hurt:run.time<hurtUntil,distance:distance(actual,goal),sprinting,crouching:crouch>.5,scoped,airborne:!grounded,speed:Math.hypot(vx,vz),water:theme==='2'&&world.town.source.isWater(actual),flying,height:jumpHeight,fuel:inventory.fuel,dashing:run.time<dashUntil,dashCooldown:Math.max(0,dashReady-run.time),stuck:stuck>1.2,beam,shock:shock&&run.time-shock.at<.45?{...shock,progress:(run.time-shock.at)/.45}:null};
  }
  return {start,stop,step,view,objective,equip,cycle,previous,matchTool,nextDestination,setTheme,chooseDestination,resetMotion,toggleFlight,recoverPosition,observe,closeObservation,toggleFollowing,toggleRide,toggleEvents(){if(run)setSandboxEvents(run,!sandboxEventsEnabled(run));},get active(){return !!cell;},get cell(){return cell;},get run(){return run;},get world(){return world;},look(dx,dy){const sensitivity=scoped?.00125:.0025;yaw+=clamp(dx,-180,180)*sensitivity;pitch=clamp(pitch-clamp(dy,-180,180)*sensitivity,-1.45,1.45);}};
 }

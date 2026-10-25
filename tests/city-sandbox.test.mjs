@@ -46,9 +46,18 @@ test('joint repair follows the worker wall or tissue job without healing a diffe
  assert.ok(pilotCellAction(s,'repair','cell:'+worker.id).ok);assert.equal(s.frontier.walls[0].repair.remaining,3.8);assert.equal(s.districts.heart.hp,50);
  worker.frontJob=null;worker.tissueJob=0;s.frontier.tissues[0].hp=50;s.time+=1;assert.ok(pilotCellAction(s,'repair','cell:'+worker.id).ok);assert.equal(s.frontier.tissues[0].hp,56);assert.equal(s.districts.heart.hp,50);assert.equal(s.resources.materials,stock-2);p.stop();
 });
-for(const theme of ['1','2'])test('theme '+theme+': a fired hook travels, latches without holding, reels separately and releases with momentum',()=>{
- const {s,p}=fixture(theme,[[0,3,-7,5,6,.3]]);s.cells=[p.cell];aim(p,{x:0,z:-7},3);step(p,.02,{grapple:true});let v=p.view();assert.equal(v.grapple.phase,'flying');assert.ok(v.grapple.target.z>-3,'the hook travels before it reaches the wall');step(p,.14);v=p.view();assert.equal(v.grapple.phase,'attached','releasing G keeps the anchor');const length=v.grapple.length;
- step(p,.12);assert.equal(p.view().grapple.length,length,'the rope does not reel by itself');step(p,.24,{strafe:1,reel:true});v=p.view();const a=v.grapple.target;assert.ok(v.grapple.length<length-2);assert.ok(Math.hypot(v.position.x-a.x,v.eye-a.y,v.position.z-a.z)<=v.grapple.length+.3);assert.ok(v.height>.2);step(p,.02,{grapple:true});assert.equal(p.view().grapple,null);assert.ok(p.view().speed>.1);assert.ok(restoreCity(serializeCity(s)));p.stop();
+for(const theme of ['1','2'])test('theme '+theme+': hook latches on the first press, pulls automatically on the second and releases on arrival',()=>{
+ const {s,p}=fixture(theme,[[0,3,-7,5,6,.3]]);s.cells=[p.cell];aim(p,{x:0,z:-7},3);step(p,.02,{grapple:true});let v=p.view();assert.equal(v.grapple.phase,'flying');assert.ok(v.grapple.target.z>-3,'the hook travels before it reaches the wall');step(p,.14);v=p.view();assert.equal(v.grapple.phase,'attached','releasing the first press keeps the anchor');const length=v.grapple.length;
+ step(p,.12,{jump:true});assert.equal(p.view().grapple.length,length,'Space does not reel the rope');step(p,.02);step(p,.04,{grapple:true});v=p.view();assert.equal(v.grapple.phase,'pulling');const a=v.grapple.target;
+ for(let n=0;n<150&&p.view().grapple;n++)step(p,.02);v=p.view();assert.equal(v.grapple,null,'the player does not need to hold or press another button to finish');assert.ok(Math.hypot(v.position.x-a.x,v.eye-a.y,v.position.z-a.z)<1.5);assert.ok(v.height>.2);assert.ok(v.speed>1,'arrival retains launch momentum');assert.ok(restoreCity(serializeCity(s)));p.stop();
+});
+
+test('the second press can queue an automatic pull while the hook is still travelling',()=>{
+ const {p}=fixture('2',[[0,5,-30,6,10,.3]]);aim(p,{x:0,z:-30},5);step(p,.02,{grapple:true});step(p,.02);step(p,.02,{grapple:true});assert.ok(p.view().grapple.pullRequested);step(p,.5);assert.equal(p.view().grapple.phase,'pulling');assert.ok(p.view().position.z<-.2);for(let n=0;n<180&&p.view().grapple;n++)step(p,.02);assert.equal(p.view().grapple,null);assert.ok(p.view().position.z<-27);p.stop();
+});
+
+test('automatic pull releases when the hook fits through a gap but the player does not',()=>{
+ const {p}=fixture('2',[[0,2,-8,5,4,.3],[-.5,1,-3,.8,2,.2],[.5,1,-3,.8,2,.2]]);aim(p,{x:0,z:-8},.58);step(p,.02,{grapple:true});step(p,.2);assert.equal(p.view().grapple.phase,'attached');step(p,.02,{grapple:true});for(let n=0;n<100&&p.view().grapple;n++)step(p,.02);assert.equal(p.view().grapple,null);assert.ok(p.view().position.z>-3.2,'the capsule cannot pass through the narrow gate');p.stop();
 });
 
 test('a missed hook visibly returns and a new wall breaks the attached rope',()=>{

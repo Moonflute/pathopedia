@@ -25,6 +25,12 @@ test('surface capsule slides beside actual walls, passes low paving, stops below
  assert.equal(world.clear({x:1,y:1,z:0},{x:3,y:1,z:0}),false);assert.equal(world.clear({x:1,y:4,z:0},{x:3,y:4,z:0}),true);
 });
 
+for(const theme of ['2','1'])test('theme '+theme+': toggling flight holds the current height until Space is pressed',()=>{
+ const {p}=fixture(theme);assert.ok(p.toggleFlight());step(p,.8);assert.equal(p.view().flying,true);assert.equal(p.view().height,0,'switching mode on the ground must not launch the player');
+ p.toggleFlight();step(p,.6,{flight:true});assert.equal(p.view().flying,true);assert.equal(p.view().height,0,'the keyboard input path also only changes the mode');
+ step(p,.35,{jump:true});assert.ok(p.view().height>1,'Space explicitly starts ascent');p.toggleFlight();step(p,.1);const height=p.view().height;assert.ok(height>0);p.toggleFlight();step(p,.5);assert.equal(p.view().height,height,'switching mode in the air adds no vertical impulse');p.stop();
+});
+
 for(const theme of ['2','1'])test('theme '+theme+': jetpack hover, air dash, empty-fuel landing and cargo survive exit/save',()=>{
  const {s,p,world}=fixture(theme);pilotInventory(s).oxygen=12;
  step(p,1,{flight:true,jump:true});assert.ok(p.view().flying);assert.ok(p.view().height>3);const fuel=p.view().fuel;
