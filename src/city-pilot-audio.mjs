@@ -16,7 +16,7 @@ export function createPilotAudio(){
  function update(s,v,paused){
   if(!context||!master)return;const now=context.currentTime;
   if(!enabled||paused){for(const a of voices.values())a.gain.gain.setTargetAtTime(0,now,.04);return;}
-  if(v.shot&&v.shot.at!==lastShot){lastShot=v.shot.at;combat.play(context,master,'shot-pulse');if(v.shot.hit)combat.play(context,master,v.shot.defeated?'shield-hit':'effective-hit');}
+  if(v.shot&&v.shot.at!==lastShot){lastShot=v.shot.at;combat.play(context,master,'shot-auto');if(v.shot.hit)combat.play(context,master,v.shot.defeated?'shield-hit':'effective-hit');}
   if(v.workPulse&&v.workPulse.at!==lastWork){lastWork=v.workPulse.at;combat.play(context,master,'effective-hit');}
   const sites=['lung','heart','gut','kidney','marrow','lymph'].map(id=>({id,...siteAt(s.layout,id)}));
   if(s.homeostasis)sites.push(...homeSites(s.layout));

@@ -5,6 +5,7 @@ import {Group,Mesh,BoxGeometry,MeshBasicMaterial} from '../src/vendor/three/thre
 import {createCity,pilotCellAction,serializeCity,restoreCity,tickCity} from '../src/city-engine.mjs';
 import {createCityPilot} from '../src/city-pilot.mjs';
 import {createPilotSurface} from '../src/city-pilot-physics.mjs';
+import {createPilotEffects} from '../src/city-pilot-effects.mjs';
 import {createTileLayout,applyTileLayout} from '../src/city-tile-layout.mjs';
 import {groundCoordinate,groundPoint} from '../src/city-three-layout.mjs';
 import {pilotWorld} from '../src/city-pilot-world.mjs';
@@ -45,8 +46,20 @@ test('joint repair follows the worker wall or tissue job without healing a diffe
  assert.ok(pilotCellAction(s,'repair','cell:'+worker.id).ok);assert.equal(s.frontier.walls[0].repair.remaining,3.8);assert.equal(s.districts.heart.hp,50);
  worker.frontJob=null;worker.tissueJob=0;s.frontier.tissues[0].hp=50;s.time+=1;assert.ok(pilotCellAction(s,'repair','cell:'+worker.id).ok);assert.equal(s.frontier.tissues[0].hp,56);assert.equal(s.districts.heart.hp,50);assert.equal(s.resources.materials,stock-2);p.stop();
 });
-for(const theme of ['1','2'])test('theme '+theme+': grapple uses rendered surfaces, constrains the rope and preserves release momentum',()=>{
- const {s,p}=fixture(theme,[[0,3,-7,5,6,.3]]);s.cells=[p.cell];aim(p,{x:0,z:-7},3);step(p,.02,{grapple:true});assert.ok(p.view().grapple);step(p,.5,{grapple:true,strafe:1,jump:true});const v=p.view(),a=v.grapple.target;assert.ok(Math.hypot(v.position.x-a.x,v.eye-a.y,v.position.z-a.z)<=v.grapple.length+.3);assert.ok(v.height>.2);step(p,.02);assert.equal(p.view().grapple,null);assert.ok(p.view().speed>.1);assert.ok(restoreCity(serializeCity(s)));p.stop();
+for(const theme of ['1','2'])test('theme '+theme+': a fired hook travels, latches without holding, reels separately and releases with momentum',()=>{
+ const {s,p}=fixture(theme,[[0,3,-7,5,6,.3]]);s.cells=[p.cell];aim(p,{x:0,z:-7},3);step(p,.02,{grapple:true});let v=p.view();assert.equal(v.grapple.phase,'flying');assert.ok(v.grapple.target.z>-3,'the hook travels before it reaches the wall');step(p,.14);v=p.view();assert.equal(v.grapple.phase,'attached','releasing G keeps the anchor');const length=v.grapple.length;
+ step(p,.12);assert.equal(p.view().grapple.length,length,'the rope does not reel by itself');step(p,.24,{strafe:1,reel:true});v=p.view();const a=v.grapple.target;assert.ok(v.grapple.length<length-2);assert.ok(Math.hypot(v.position.x-a.x,v.eye-a.y,v.position.z-a.z)<=v.grapple.length+.3);assert.ok(v.height>.2);step(p,.02,{grapple:true});assert.equal(p.view().grapple,null);assert.ok(p.view().speed>.1);assert.ok(restoreCity(serializeCity(s)));p.stop();
+});
+
+test('a missed hook visibly returns and a new wall breaks the attached rope',()=>{
+ const {p,world}=fixture();aim(p,{x:0,z:-7},3);step(p,.02,{grapple:true});step(p,.68);assert.equal(p.view().grapple.phase,'returning');step(p,.65);assert.equal(p.view().grapple,null);
+ world.setSurface(surface([[0,3,-7,5,6,.3]]));aim(p,{x:0,z:-7},3);step(p,.02,{grapple:true});step(p,.14);assert.equal(p.view().grapple.phase,'attached');world.setSurface(surface([[0,3,-7,5,6,.3],[0,2,-2,6,4,.2]]));step(p,.02);assert.equal(p.view().grapple,null);p.stop();
+});
+
+test('held pulse fire produces automatic overlapping visible projectiles with bounded effect pools',()=>{
+ const {s,p}=fixture(),effects=createPilotEffects();s.cells=[p.cell];s.enemies=[];aim(p,{x:0,z:-18},.58);
+ for(let n=0;n<50;n++){tickCity(s,.02,data,'2');p.step(.02,{use:true});}const v=p.view();assert.ok(v.shots>=7&&v.shots<=9,'roughly eight rounds per second');assert.ok(v.projectiles.filter(s=>s.progress<1).length>=2,'multiple pulses can be airborne together');effects.update(v,s.time);
+ const pools=effects.root.children.filter(m=>m.isInstancedMesh&&m.instanceMatrix.count===16);assert.equal(pools.length,2);assert.ok(pools.every(m=>m.count>=2&&m.count<=16));const before=pools[0].instanceMatrix.array[14];step(p,.04);effects.update(p.view(),s.time);assert.notEqual(pools[0].instanceMatrix.array[14],before,'visible pulse advances along its ray');step(p,.7);effects.update(p.view(),s.time);assert.ok(pools.every(m=>m.count===0));effects.dispose();p.stop();
 });
 test('riding follows the actual shipment without taking its cargo and safely ends on departure',()=>{
  const {s,p}=fixture();s.cells=[p.cell];const sh={id:++s.serial,kind:'food',to:'heart',amount:8,phase:'travel',path:[],step:0,...groundCoordinate({x:0,z:-1.5})};s.shipments=[sh];p.equip('scanner');aim(p,{x:0,z:-1.5},.5);assert.ok(p.toggleRide());Object.assign(sh,groundCoordinate({x:1,z:-1.5}));step(p,.04);assert.ok(Math.hypot(p.view().position.x-1,p.view().position.z+1.5)<.1);assert.equal(sh.amount,8);s.shipments=[];step(p,.02);assert.equal(p.view().riding,null);assert.equal(p.cell.lost,undefined);p.stop();

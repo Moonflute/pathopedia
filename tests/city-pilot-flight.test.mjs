@@ -32,12 +32,12 @@ for(const theme of ['2','1'])test('theme '+theme+': jetpack hover, air dash, emp
  const before=p.view().position;step(p,.24,{dash:true});assert.ok(Math.hypot(p.view().position.x-before.x,p.view().position.z-before.z)>2);assert.ok(p.view().dashCooldown>1.8);
  const energy=p.cell.energy;step(p,.2,{dash:true});assert.ok(p.cell.energy>=energy,'held dash cannot spend energy twice');
  const saved=restoreCity(serializeCity(s));assert.equal(saved.pilotInventory.oxygen,12);assert.ok(world.canStand(groundPoint(saved.cells.find(c=>c.id===p.cell.id))));
- pilotInventory(s).fuel=.01;step(p,.1);assert.equal(p.view().flying,false);step(p,3);assert.equal(p.view().height,0);assert.ok(p.view().fuel>0);const c=p.cell;p.stop();assert.equal(p.active,false);assert.ok(c.path.length);assert.equal(pilotInventory(s).oxygen,12);
+ pilotInventory(s).fuel=.01;step(p,.1);assert.equal(p.view().flying,false);step(p,4);assert.equal(p.view().height,0);assert.ok(p.view().fuel>0);const c=p.cell;p.stop();assert.equal(p.active,false);assert.ok(c.path.length);assert.equal(pilotInventory(s).oxygen,12);
 });
 
 test('air dash respects thin walls and flight altitude limits',()=>{
  const {p}=fixture('2',[[0,5,-2,12,10,.1]]);for(let n=0;n<16;n++)p.look(-p.view().yaw/.0025,0);
- step(p,1,{flight:true,jump:true});step(p,.3,{dash:true});assert.ok(p.view().position.z>-1.8);step(p,5,{jump:true});assert.ok(p.view().height<=14);p.stop();
+ step(p,.25,{flight:true,jump:true});step(p,.3,{dash:true});assert.ok(p.view().position.z>-1.8);step(p,10,{jump:true});assert.ok(p.view().height>99&&p.view().height<=100,'the old 14m cap is removed and 100m is reachable with one tank');assert.ok(p.view().fuel>0);p.stop();
 });
 
 test('tractor pulls actual debris, enforces capacity and cannot collect through a wall',()=>{

@@ -3,13 +3,15 @@ import {pathogenDef} from './city-pathogens.mjs';
 // Control ownership is transient. Saves always remain ordinary, autonomous cities.
 const pilots=new WeakMap();
 const poses=new WeakMap();
+export const PILOT_MAX_HEIGHT=100;
+export const PILOT_GRAPPLE_RANGE=50;
 export const pilotPose=s=>poses.get(s)||{height:0,eye:.58,theme:'2'};
 export function setPilotPose(s,pose){if(pose)poses.set(s,pose);else poses.delete(s);}
 export const pilotedCell=s=>pilots.get(s)||null;
 export function setPilotedCell(s,cell){if(cell)pilots.set(s,cell);else pilots.delete(s);}
 
 export const PILOT_TOOLS=Object.freeze([
- {id:'engulf',name:'면역 펄스건',short:'사격',key:'1',duration:0,interval:.28,range:18,color:0xf5c783},
+ {id:'engulf',name:'면역 펄스건',short:'사격',key:'1',duration:0,interval:.12,range:18,color:0xf5c783},
  {id:'oxygen',name:'산소 캐리어',short:'산소',key:'2',duration:.8,interval:.2,range:2.5,color:0x81d9df},
  {id:'nutrient',name:'영양 보급함',short:'영양',key:'3',duration:.8,interval:.3,range:2.5,color:0xf0c463},
  {id:'repair',name:'복구 렌치',short:'복구',key:'4',duration:1.2,interval:.4,range:2.5,color:0x9ab7cb},

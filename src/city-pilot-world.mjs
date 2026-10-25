@@ -2,6 +2,7 @@ import {compileLayout,siteAt} from './city-tile-layout.mjs';
 import {compileThemeLayout} from './city-theme-layout.mjs';
 import {combinePilotSurfaces} from './city-pilot-physics.mjs';
 import {insideCity,CITY_RADIUS} from './city-boundary.mjs';
+import {PILOT_MAX_HEIGHT} from './city-pilot-state.mjs';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 export function segmentDistance(p,a,b){const x=b.x-a.x,z=b.z-a.z,l=x*x+z*z,q=l?Math.max(0,Math.min(1,((p.x-a.x)*x+(p.z-a.z)*z)/l)):0;return Math.hypot(p.x-a.x-x*q,p.z-a.z-z*q);}
@@ -47,7 +48,7 @@ export function pilotWorld(layout,theme){
    }
    else if(p.y<3&&!canStand(p)){const x={x:p.x,z:before.z};if(canStand(x)){p.z=before.z;}else{p.x=before.x;if(!canStand(p))p.z=before.z;}if(before.y>=3){p.y=3;grounded=true;}}
    if(!insideCity(p.x,p.z,1.3)){const scale=(CITY_RADIUS-1.35)/Math.hypot(p.x,p.z);p.x*=scale;p.z*=scale;}
-   if(p.y<=.001){p.y=0;grounded=true;}if(p.y>=14){p.y=14;ceiling=true;}
+   if(p.y<=.001){p.y=0;grounded=true;}if(p.y>=PILOT_MAX_HEIGHT){p.y=PILOT_MAX_HEIGHT;ceiling=true;}
   }
   return {grounded,ceiling};
  }
