@@ -37,14 +37,13 @@ function kidneyOutlet(layout,network){
 export function compileCanalLayout(layout){
  if(!layout)return null;if(cache.has(layout))return cache.get(layout);
  const network=compileLayout(layout),vascular=compileVascularLayout(layout),channels=[
-  ...Object.values(network.entries).map(points=>({points,width:1.5,kind:'entry'})),
   // Local blood beds replace the former theme-1 street grid.
   ...vascular.vessels,
   ...vascular.beds.flatMap(b=>b.branches.map(points=>({points,width:b.width,kind:'capillary'})))
  ];
  const water=new Set();
- for(const {points,width,id,kind} of channels)for(let i=1;i<points.length;i++){
-  const main=id?.startsWith('systemic-')||kind==='entry',a=points[i-1],b=points[i],r=width/2+(main?.08:.03),coverage=main?r+STEP*.5:Math.max(.45,r+STEP*.15);
+ for(const {points,width,id} of channels)for(let i=1;i<points.length;i++){
+  const main=id?.startsWith('systemic-'),a=points[i-1],b=points[i],r=width/2+(main?.08:.03),coverage=main?r+STEP*.5:Math.max(.45,r+STEP*.15);
   for(let x=Math.floor((Math.min(a.x,b.x)-r)/STEP);x<=Math.floor((Math.max(a.x,b.x)+r)/STEP);x++)
    for(let z=Math.floor((Math.min(a.z,b.z)-r)/STEP);z<=Math.floor((Math.max(a.z,b.z)+r)/STEP);z++)
     if(distance({x:(x+.5)*STEP,z:(z+.5)*STEP},a,b)<coverage)water.add(key(x,z));
@@ -58,7 +57,7 @@ export function compileCanalLayout(layout){
  for(let z=top;z<bottom;z++)for(let x=left;x<right;x++){
   const p={x:(x+.5)*STEP,z:(z+.5)*STEP},solid=network.occupied.has(key(Math.round(p.x),Math.round(p.z)));
   // Theme 2 fills the former river setback right up to the city wall. Only real
-  // circulation/access channels remain water inside the harbour perimeter.
+  // circulation channels remain water inside the harbour perimeter.
   if(water.has(key(x,z))&&!solid||!insideBank(p.x-.35,p.z-.35)||!insideBank(p.x+.35,p.z+.35))continue;
   land.add(key(x,z));
  }

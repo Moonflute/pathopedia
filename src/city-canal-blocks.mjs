@@ -73,19 +73,29 @@ export function compileCanalBlocks(layout,network,channels,land,outlet){
   }
  }
  const segments=[];
- for(const channel of channels)for(let i=1;i<channel.points.length;i++){
+ const frontageGuides=[...channels,...Object.values(network.entries).map(points=>({points,width:2.2}))];
+ for(const channel of frontageGuides)for(let i=1;i<channel.points.length;i++){
   const a=channel.points[i-1],b=channel.points[i],length=Math.hypot(b.x-a.x,b.z-a.z);
   if(length<5||Math.abs(a.x-b.x)>.01&&Math.abs(a.z-b.z)>.01)continue;
   segments.push({a,b,length,width:channel.width});
  }
- // Long banks form connected rows. Short local service branches stay open.
+ // Long banks and dry duct corridors form connected rows.
  segments.sort((a,b)=>b.length-a.length);
- for(const {a,b,length,width} of segments){
+ const ringLots=channels.filter(channel=>channel.id?.startsWith('systemic-')).flatMap(channel=>
+  channel.points.slice(1).map((b,i)=>{
+   const a=channel.points[i];
+   return {a,b,length:Math.hypot(b.x-a.x,b.z-a.z),width:channel.width};
+  }).filter(segment=>segment.length>=3.1)
+ );
+ for(const {a,b,length,width} of [...segments,...ringLots]){
   const dx=(b.x-a.x)/length,dz=(b.z-a.z)/length,slots=Math.floor(length/3.1),spacing=length/slots;
   for(let n=0;n<slots;n++)for(const side of [-1,1]){
    if(frontages.length>=108)break;
-   const w=Math.min(2.7,spacing-.3),d=2.3,offset=width/2+d/2+.8,t=(n+.5)/slots;
-   const p={x:a.x+(b.x-a.x)*t-dz*offset*side,z:a.z+(b.z-a.z)*t+dx*offset*side},angle=Math.atan2(dz*side,-dx*side);
+   const w=Math.min(2.7,spacing-.3),d=2.3,t=(n+.5)/slots;
+   const angle=Math.round(Math.atan2(dz*side,-dx*side)/(Math.PI/2))*Math.PI/2;
+   const reach=Math.abs(dx*Math.sin(angle)+dz*Math.cos(angle))*w/2+Math.abs(dx*Math.cos(angle)-dz*Math.sin(angle))*d/2;
+   const offset=width/2+reach+.8;
+   const p={x:a.x+(b.x-a.x)*t-dz*offset*side,z:a.z+(b.z-a.z)*t+dx*offset*side};
    if(!clear(p))continue;const footprint=cells(p,w,d,angle);if(!footprint)continue;
    footprint.forEach(k=>reserved.add(k));const variant=Math.abs(Math.round(p.x*13+p.z*19));
    frontages.push({...p,w,d,angle,variant,district:nearest(p).id,cells:footprint});

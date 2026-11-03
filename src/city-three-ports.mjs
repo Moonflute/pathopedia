@@ -1,8 +1,7 @@
 import * as T from './vendor/three/three.module.min.js';
 import {CITY_ENTRIES} from './city-world.mjs';
 import {compileLayout} from './city-tile-layout.mjs';
-import {entryFlowPoint} from './city-three-frontier.mjs';
-import {entryTrackHeight} from './city-entry-tracks.mjs';
+import {entryFlowPoint,entryTrackHeight} from './city-entry-tracks.mjs';
 import {output} from './city-engine.mjs';
 import {cityThemeObject} from './city-theme.mjs';
 import {CITY_STYLE} from './city-three-style.mjs';
@@ -48,10 +47,10 @@ export function createCityPorts({layout,theme='2',make,box,cylinder,model,newMod
   const dt=last==null?0:Math.max(0,Math.min(.3,s.time-last));last=s.time;const rate=output(s,'lung')*(s.weather.id==='dry'?.55:1);airClock+=dt*rate*.16;
   wind.visible=gusts.visible=airway.length>1&&rate>.02;
   if(wind.visible){
-   for(let n=0;n<36;n++){const q=(airClock+n/36)%1,p=entryFlowPoint(airway,q),lane=(n%5-2)*.46;
-    dummy.position.set(p.x-p.dz*lane,(water?0:entryTrackHeight(airway,p))+.75+Math.sin(q*Math.PI*3+n)*.18,p.z+p.dx*lane);dummy.rotation.set(0,Math.atan2(p.dx,p.dz),0);dummy.scale.set(.075,.06,1.5+n%3*.7);dummy.updateMatrix();wind.setMatrixAt(n,dummy.matrix);
+   for(let n=0;n<36;n++){const q=(airClock+n/36)%1,p=entryFlowPoint(airway,q),lane=(n%5-2)*.29;
+    dummy.position.set(p.x-p.dz*lane,entryTrackHeight(airway,p)+.75+Math.sin(q*Math.PI*3+n)*.18,p.z+p.dx*lane);dummy.rotation.set(0,Math.atan2(p.dx,p.dz),0);dummy.scale.set(.075,.06,1.5+n%3*.7);dummy.updateMatrix();wind.setMatrixAt(n,dummy.matrix);
    }
-   for(let n=0;n<5;n++){const q=(airClock+n/5)%1,p=entryFlowPoint(airway,q);dummy.position.set(p.x,(water?0:entryTrackHeight(airway,p))+1.1,p.z);direction.set(p.dx,0,p.dz);dummy.quaternion.setFromUnitVectors(normal,direction);dummy.rotateZ(q*2);dummy.scale.setScalar(.8+Math.sin(q*Math.PI)*.3);dummy.updateMatrix();gusts.setMatrixAt(n,dummy.matrix);}
+   for(let n=0;n<5;n++){const q=(airClock+n/5)%1,p=entryFlowPoint(airway,q);dummy.position.set(p.x,entryTrackHeight(airway,p)+.84,p.z);direction.set(p.dx,0,p.dz);dummy.quaternion.setFromUnitVectors(normal,direction);dummy.rotateZ(q*2);dummy.scale.setScalar(.57+Math.sin(q*Math.PI)*.16);dummy.updateMatrix();gusts.setMatrixAt(n,dummy.matrix);}
    wind.instanceMatrix.needsUpdate=gusts.instanceMatrix.needsUpdate=true;
   }
   const shipment=s.shipments.filter(sh=>sh.kind==='raw'&&sh.harbourAt!=null&&s.time-sh.harbourAt<8).sort((a,b)=>b.harbourAt-a.harbourAt)[0];

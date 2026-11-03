@@ -234,11 +234,18 @@ export function createActors(profile){
   const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time,entries=s.layout?compileLayout(s.layout).entries:{},wide=STYLE.pathogenScale.width,tall=STYLE.pathogenScale.height;elevation=0;
   for(const m of Object.values(batches))m.count=0;positions.length=0;pickPositions.length=0;living.clear();stats.cells=stats.residents=stats.simple=0;const drug=DRUGS.find(d=>d.id===s.drug),small=pixelScale*.8<(quality.detailPixels||0);
   for(let i=0;i<Math.min(s.cells.length,profile.maxCells);i++){const c=s.cells[i];if(c.id===hiddenCell||!showCityCell(c,quality,selectedCell,selectedKind))continue;const p=point(c,c.id);const proximity=eyePosition?Math.hypot(p.x-eyePosition.x,p.z-eyePosition.z,(eyePosition.y??.58)-.45):Infinity,scale=Math.min(1,Math.max(0,(proximity-.65)/1.15));if(scale<.04||visible&&!visible(p))continue;positions.push({id:c.id,...p,cell:c});living.add(c.id);const simple=small&&selectedCell!==c.id&&!(c.alertUntil>time);stats.cells++;if(simple)stats.simple++;worker(c,c.kind,c.id,p,time,selectedCell===c.id?2:selectedKind===c.kind?1:0,drug,readability,canals?.isWater(p),scale,simple);}
-  for(const sh of s.shipments.slice(0,profile.maxShipments)){if(sh.harbourUntil>s.time)continue;const id='shipment'+sh.id,p=point(sh,id);if(visible&&!visible(p))continue;elevation=!canals&&sh.kind==='raw'?entryTrackHeight(entries.gut,p):0;positions.push({id,...p,height:elevation+.3,cell:sh});living.add(id);freight(sh,p,time,selectedCell===id,!!canals?.isWater(p));}
+  for(const sh of s.shipments.slice(0,profile.maxShipments)){
+   if(sh.harbourUntil>s.time)continue;
+   const id='shipment'+sh.id,p=point(sh,id),raw=sh.kind==='raw';
+   if(visible&&!visible(p))continue;
+   elevation=raw&&!sh.workplace&&sh.phase!=='leaving'?entryTrackHeight(entries.gut,p):0;
+   positions.push({id,...p,height:elevation+.3,cell:sh});living.add(id);
+   freight(sh,p,time,selectedCell===id,!raw&&!!canals?.isWater(p));
+  }
   elevation=0;
   for(const c of residents(s,{stride:quality.residentStride,selectedCell,showAll:selectedKind==='somatic',time})){if(visible&&!visible(c.point))continue;pickPositions.push({id:c.id,...c.point,cell:c});const simple=small&&selectedCell!==c.id;stats.residents++;if(simple)stats.simple++;resident(c,time,selectedCell===c.id||selectedKind==='somatic',simple);}
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
-   const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);elevation=!canals&&!e.entered?entryTrackHeight(entries[e.front],p):0;
+   const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);elevation=!e.entered?entryTrackHeight(entries[e.front],p):0;
    if(!visible||visible(p))pickPositions.push({id,...p,height:elevation+.5*tall,baseHeight:elevation,markerHeight:elevation+1.35*tall,selectionScale:wide,cell:e});
    const target=e.action==='attack'&&e.attackX!=null?groundPoint({x:e.attackX,y:e.attackY}):null;
    const moved=prev&&Math.hypot(p.x-prev.x,p.z-prev.z)>.00001;
@@ -285,7 +292,7 @@ export function createActors(profile){
    for(const e of s.immunity.exposures){const p=groundPoint(e);if(visible&&!visible(p))continue;for(let n=0;n<6;n++){const a=time*.7+n*Math.PI/3;put('badge',p.x+Math.cos(a)*.65,.5+Math.sin(time*2+n)*.2,p.z+Math.sin(a)*.65,.12,.13,.12,0xe3c48a);}}
    for(const net of s.immunity.nets){const p=groundPoint(net);if(visible&&!visible(p))continue;for(let n=0;n<4;n++){const a=n*Math.PI/4;line(p.x-Math.cos(a)*.85,.07,p.z-Math.sin(a)*.85,p.x+Math.cos(a)*.85,.07,p.z+Math.sin(a)*.85,.025,0xe5deb9);}put('selected',p.x,.07,p.z,1.5,1.5,1.5,0xe5deb9,Math.PI/2);}
   }
-  for(const v of s.physiology?.virions||[]){const p=groundPoint(v),baseHeight=!canals&&!v.entered?entryTrackHeight(entries[v.front],p):0;if(!visible||visible(p))pickPositions.push({id:'virus'+v.id,...p,height:baseHeight+.48*tall,baseHeight,markerHeight:baseHeight+.95*tall,selectionScale:wide,cell:v});}
+  for(const v of s.physiology?.virions||[]){const p=groundPoint(v),baseHeight=!v.entered?entryTrackHeight(entries[v.front],p):0;if(!visible||visible(p))pickPositions.push({id:'virus'+v.id,...p,height:baseHeight+.48*tall,baseHeight,markerHeight:baseHeight+.95*tall,selectionScale:wide,cell:v});}
   for(const e of s.debris.slice(0,80)){const p=groundPoint(e);if(visible&&!visible(p))continue;put('debris',p.x,.11,p.z,e.cellKind?.3:.22,.14,.22,e.cellKind?0xc6bba8:0xa3929e);put('debris',p.x+.2,.08,p.z-.15,.13,.08,.12,0x766a66);}
   for(const fx of s.effects.slice(0,64)){
    const from=groundPoint(fx),to=groundPoint({x:fx.tx,y:fx.ty}),q=Math.max(0,Math.min(1,1-fx.life/.42));

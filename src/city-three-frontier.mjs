@@ -1,7 +1,7 @@
 import {CITY_ENTRIES} from './city-world.mjs';
 import {transformPoint,compileLayout,placeable,tissuePresent,tissueAt} from './city-tile-layout.mjs';
 import {wallPieces} from './city-boundary.mjs';
-import {entryTrackHeight} from './city-entry-tracks.mjs';
+import {entryFlowPoint,entryTrackHeight} from './city-entry-tracks.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {SITES,groundPoint} from './city-three-layout.mjs';
 import {WALLS,FRONTS,WORKSHOP,TISSUES} from './city-frontier-data.mjs';
@@ -14,20 +14,11 @@ import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 import {output} from './city-engine.mjs';
 
 const STATUS_LAMPS={heart:[3,1.3],lung:[1.7,3],gut:[-2,1.5],kidney:[-2,1.5],marrow:[1.8,-2.4],lymph:[2.8,1.5]};
-const flowRoutes=new WeakMap();
-export function entryFlowPoint(points,progress){
- if(!points?.length)return null;if(points.length===1)return {...points[0],dx:0,dz:1};
- let cached=flowRoutes.get(points);
- if(!cached){const lengths=[0];for(let i=1;i<points.length;i++)lengths.push(lengths[i-1]+Math.hypot(points[i].x-points[i-1].x,points[i].z-points[i-1].z));cached={lengths,total:lengths.at(-1)};flowRoutes.set(points,cached);}
- const d=Math.max(0,Math.min(1,progress))*cached.total;let lo=1,hi=points.length-1;
- while(lo<hi){const mid=(lo+hi)>>1;if(cached.lengths[mid]<d)lo=mid+1;else hi=mid;}
- const a=points[lo-1],b=points[lo],length=cached.lengths[lo]-cached.lengths[lo-1]||1,q=(d-cached.lengths[lo-1])/length;
- return {x:a.x+(b.x-a.x)*q,z:a.z+(b.z-a.z)*q,dx:(b.x-a.x)/length,dz:(b.z-a.z)/length};
-}
+export {entryFlowPoint} from './city-entry-tracks.mjs';
 
 // Seven fixed-size pools: structures, modules, stores and tiny effects share
 // geometries. No particle emitters, textures, extra lights or scene graph churn.
-export function createFrontierScene({detailedWalls=false,theme='1'}={}){
+export function createFrontierScene({detailedWalls=false}={}){
  const root=new T.Group(),dummy=new T.Object3D(),color=new T.Color(),batches={};
  const surface=new T.MeshStandardMaterial({color:0xffffff,roughness:STYLE.roughness}),unlit=new T.MeshBasicMaterial({color:0xffffff});
  function batch(id,geometry,capacity,material=surface,shadow=false){const mesh=new T.InstancedMesh(geometry,material,capacity);mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;mesh.castShadow=shadow;mesh.receiveShadow=material===surface;mesh.count=0;mesh.name='frontier-'+id;root.add(mesh);batches[id]=mesh;}
@@ -86,27 +77,30 @@ export function createFrontierScene({detailedWalls=false,theme='1'}={}){
   owner='workshop';const awaiting=f.walls.filter(w=>w.repair?.materials&&!w.repair.delivered).length;
   store({x:WORKSHOP.x+.1,z:WORKSHOP.z+.65},awaiting*8,0xc7a074,6);
   owner=null;
-  // Mucus rollers and a timed cilia rake at the mouth of the respiratory channel.
+  const entries=layout?compileLayout(layout).entries:null;
+  const airway=entries?.airway||[CITY_ENTRIES.airway.start,CITY_ENTRIES.airway.portal,CITY_ENTRIES.airway.screen,CITY_ENTRIES.airway.gate,SITES.lung];
+  const screen=CITY_ENTRIES.airway.screen,screenHeight=entryTrackHeight(entries?.airway,screen);
+  // Mucus rollers and a timed cilia rake inside the respiratory duct.
   for(let i=0;i<6;i++){
-   const x=CITY_ENTRIES.airway.screen.x-1.1+i*.43,swing=Math.sin(t*(f.airway.boostUntil>t?7:3)+i*.6)*.32;
-   put('post',x,(layout&&theme!=='2'?1.65:0)+.38,CITY_ENTRIES.airway.screen.z,.055,.65,.055,0xb7c7a0,0,swing);
-   if(i<Math.ceil(f.airway.mucus))put('orb',x,(layout&&theme!=='2'?1.65:0)+.22,CITY_ENTRIES.airway.screen.z-.6,.19,.12,.27,0xb9c799);
+   const x=screen.x-.75+i*.3,swing=Math.sin(t*(f.airway.boostUntil>t?7:3)+i*.6)*.32;
+   put('post',x,screenHeight+.38,screen.z,.055,.65,.055,0xb7c7a0,0,swing);
+   if(i<Math.ceil(f.airway.mucus))put('orb',x,screenHeight+.22,screen.z-.6,.19,.12,.27,0xb9c799);
   }
-  const airway=layout?compileLayout(layout).entries.airway:[CITY_ENTRIES.airway.start,CITY_ENTRIES.airway.portal,CITY_ENTRIES.airway.screen,CITY_ENTRIES.airway.gate,SITES.lung];
   const molecules=8+Math.round(10*ventilation);
   for(let i=0;i<molecules;i++){
-   const q=(flowClock+i/molecules)%1,p=entryFlowPoint(airway,q),lane=(i%3-1)*.43,y=(theme==='2'?0:entryTrackHeight(airway,p))+.65+Math.sin(q*Math.PI*4)*.09;
+   const q=(flowClock+i/molecules)%1,p=entryFlowPoint(airway,q),lane=(i%3-1)*.43,y=entryTrackHeight(entries?.airway,p)+.65+Math.sin(q*Math.PI*4)*.09;
    const x=p.x-p.dz*lane,z=p.z+p.dx*lane;
    for(const side of [-1,1])put('glow',x-p.dz*side*.16,y,z+p.dx*side*.16,.16,.16,.16,side===1?0x61e0dd:0xd2fff1);
    put('post',x,y,z,.04,.33,.04,0xc8f9ed,-Math.atan2(p.dx,-p.dz),Math.PI/2);
   }
   for(let i=0;i<4;i++){
    const p=entryFlowPoint(airway,(flowClock*.6+i/4)%1),tx=p.x+p.dx*.3,tz=p.z+p.dz*.3;
-   for(const side of [-1,1]){const x=p.x-p.dx*.25-p.dz*side*.28,z=p.z-p.dz*.25+p.dx*side*.28,dx=tx-x,dz=tz-z;put('post',(tx+x)/2,(theme==='2'?0:entryTrackHeight(airway,p))+.2,(tz+z)/2,.06,Math.hypot(dx,dz),.06,0x67c9c5,-Math.atan2(dz,dx),Math.PI/2);}
+   for(const side of [-1,1]){const x=p.x-p.dx*.25-p.dz*side*.28,z=p.z-p.dz*.25+p.dx*side*.28,dx=tx-x,dz=tz-z;put('post',(tx+x)/2,entryTrackHeight(entries?.airway,p)+.2,(tz+z)/2,.06,Math.hypot(dx,dz),.06,0x67c9c5,-Math.atan2(dz,dx),Math.PI/2);}
   }
   const mouth=CITY_ENTRIES.gut.mouth,angle=f.gut.quarantine?0:Math.PI/2;
-  put('box',mouth.x-.6-Math.sin(angle)*1.3,(layout&&theme!=='2'?1.65:0)+.65,mouth.z+1.3-Math.cos(angle)*1.3,.12,1.1,2.6,f.gut.quarantine?0xb8b983:0xd8c49e,angle);
-  put('glow',mouth.x-.6,(layout&&theme!=='2'?1.65:0)+1.6,mouth.z+1.6,.13,.16,.13,f.gut.quarantine?0xe8bf65:0x83d6ba);
+  const mouthHeight=entryTrackHeight(entries?.gut,{x:mouth.x-.6,z:mouth.z});
+  put('box',mouth.x-.6-Math.sin(angle)*1.3,mouthHeight+.65,mouth.z+1.3-Math.cos(angle)*1.3,.12,1.1,2.6,f.gut.quarantine?0xb8b983:0xd8c49e,angle);
+  put('glow',mouth.x-.6,mouthHeight+1.6,mouth.z+1.6,.13,.16,.13,f.gut.quarantine?0xe8bf65:0x83d6ba);
   for(const [id,site] of Object.entries(SITES)){
    owner=id;const d=s.districts[id],state=facilityState(s,id),cap=workplaceCapacity(s,id,'oxygen');
    const biology=s.biology?.sites[id];

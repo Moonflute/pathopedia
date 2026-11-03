@@ -12,6 +12,7 @@ import {createActors} from '../src/city-three-actors.mjs';
 import {qualityProfile,groundPoint,groundCoordinate} from '../src/city-three-layout.mjs';
 import {compileThemeLayout} from '../src/city-theme-layout.mjs';
 import {pilotWorld} from '../src/city-pilot-world.mjs';
+import {entryFlowPoint} from '../src/city-entry-tracks.mjs';
 
 test('theme defaults to the original village and persists independently of game saves',()=>{
  const values=new Map([['pathopedia:cell-city:3d:v1','existing game']]),storage={getItem:k=>values.get(k),setItem:(k,v)=>values.set(k,v)};
@@ -24,6 +25,11 @@ test('theme defaults to the original village and persists independently of game 
 test('water covers the blood network while the skin patrol keeps a separate dry route',()=>{
  const layout=createTileLayout(),before=JSON.stringify(layout),network=compileLayout(layout),surface=compileCanalLayout(layout);
  assert.ok(surface.rows.length&&surface.edges.length);assert.equal(surface.flows.length,compileVascularLayout(layout).vessels.length);assert.ok(surface.patrol.length>=14);assert.ok(surface.patrol.every(r=>!surface.channels.includes(r)));
+ for(const points of Object.values(surface.entries)){
+  assert.ok(!surface.channels.some(channel=>channel.points===points),'entry ducts must not excavate water');
+  const dry=Array.from({length:40},(_,i)=>entryFlowPoint(points,.22+i*.013)).filter(p=>!surface.isWater(p));
+  assert.ok(dry.length>26,'only blood crossings have water below the inland duct');
+ }
  for(const points of surface.channels.map(r=>r.points))for(let i=1;i<points.length;i++){
   const a=points[i-1],b=points[i],samples=Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)*4);
   for(let j=0;j<=samples;j++){const t=samples?j/samples:0,p={x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t};assert.ok(surface.isWater(p),'land blocks route '+JSON.stringify(p));}
@@ -116,6 +122,12 @@ test('organ vessels separate outward/return paths, avoid buildings and close bot
 
 test('round canal feeders share junctions and leave the main trunk in its flow direction',()=>{
  const v=compileVascularLayout(createTileLayout()),branches=v.vessels.filter(p=>p.id.startsWith('artery-')&&p.site!=='lung'),junctions=new Map();
+ for(const {id,points} of v.vessels)for(let i=1;i<points.length-1;i++){
+  const a=points[i-1],b=points[i],c=points[i+1];
+  const dx=b.x-a.x,dz=b.z-a.z,ex=c.x-b.x,ez=c.z-b.z;
+  const first=Math.hypot(dx,dz),second=Math.hypot(ex,ez);
+  if(Math.min(first,second)<1.25)assert.ok(dx*ex+dz*ez>-.5*first*second,id+' doubles back at a short bend');
+ }
  for(const vessel of branches){
   const [a,b]=vessel.points,dx=b.x-a.x,dz=b.z-a.z,alignment=(-dx*a.z+dz*a.x)/Math.hypot(dx,dz)/Math.hypot(a.x,a.z);
   assert.ok(alignment>.9,vessel.id+' has an abrupt trunk junction');
