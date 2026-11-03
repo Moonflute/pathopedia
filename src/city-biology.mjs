@@ -103,7 +103,7 @@ export function biologyCommand(s,action,id,data,api){
   const p=pathogenDef(id?.recordId),amount=Number(id?.amount),wall=Number(id?.wall??11);
   if(!p||!data?.records?.some(r=>r.id===p.recordId)||!p.routes.includes(id?.front)||(!Number.isInteger(amount)||amount<1||amount>pathogenLimit(s))||id.front==='skin'&&!WALLS[wall])return {ok:false,text:'지원하지 않는 실험 조건'};
   if(s.enemies.filter(e=>!e.dead).length+s.spawn.length+amount>pathogenLimit(s))return {ok:false,text:'병원체 표시 한도 · 현재 유입 정리 후 추가'};
-  for(let i=0;i<amount;i++)s.spawn.push({recordId:p.recordId,hp:p.hp,maxHp:p.hp,color:p.color,tag:p.tag,front:id.front,...(amount>=64?{releaseBatch:amount/32}:{}),...(id.front==='skin'?{wall}:{}),...(id.front==='blood'?{site:'heart',entered:true,compartment:'blood'}:{})});
+  for(let i=0;i<amount;i++)s.spawn.push({recordId:p.recordId,hp:p.hp,maxHp:p.hp,color:p.color,tag:p.tag,front:id.front,...(amount>=64?{releaseBatch:amount>=256?8:amount>=128?4:2}:{}),...(id.front==='skin'?{wall}:{}),...(id.front==='blood'?{site:'heart',entered:true,compartment:'blood'}:{})});
   s.biology.stats.introduced+=amount;s.spawnClock=0;
   api.log(s,p.name+' · '+EXPOSURE_ROUTES[id.front]+' 유입 '+amount);return {ok:true,text:EXPOSURE_ROUTES[id.front]+' 노출 시작'};
  }

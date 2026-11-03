@@ -10,6 +10,7 @@ import {beginActivity,activeActivity,activityProgress,workStation} from './city-
 import {approachWorkplace,releaseWorkplace,facilityState} from './city-workplaces.mjs';
 import {infectionLoad,STAGES,pathogenDef} from './city-biology.mjs';
 import {pathogenTarget,validatePathogenTarget} from './city-pathogens.mjs';
+import {startInvasion,tickInvasion,validInvasion} from './city-invasion.mjs';
 
 const clamp=(n,hi=100)=>Math.max(0,Math.min(hi,n));
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -113,6 +114,7 @@ export function spawnAtFront(s,e){
  e.front||='airway';if(e.front==='skin')e.wall??=11;
  const p=e.front==='blood'?point(s,'heart'):e.front==='skin'?WALLS[e.wall??11].outside:e.front==='gut'?groundCoordinate(CITY_ENTRIES.gut.start):AIRWAY_PATH[0];
  if(e.front==='blood'){e.entered=true;e.site='heart';e.compartment='blood';}
+ if(startInvasion(s,e))return e;
  if(s.enemies.length+s.spawn.length>=64){
   const world=groundPoint(p),a=e.id*2.399963229728653,lane=(e.id%7-3)*.27;
   const offset=e.front==='blood'?{x:Math.cos(a)*(1.5+e.id%5*.3),z:Math.sin(a)*(1.5+e.id%5*.3)}:e.front==='airway'?{x:lane,z:0}:e.front==='gut'?{x:0,z:lane}:{x:-WALLS[e.wall].nz*lane,z:WALLS[e.wall].nx*lane};
@@ -120,14 +122,15 @@ export function spawnAtFront(s,e){
  }else Object.assign(e,{x:p.x+(e.id%2)*3,y:p.y+(e.id%3)*3});return e;
 }
 function walk(e,p,speed,dt){const d=distance(e,p);if(d<=speed*dt){e.x=p.x;e.y=p.y;return true;}e.x+=(p.x-e.x)/d*speed*dt;e.y+=(p.y-e.y)/d*speed*dt;return false;}
-function entryWalk(s,e,front,speed,dt){if(!s.layout)return walk(e,front==='gut'?point(s,'gut'):AIRWAY_PATH.at(-1),speed,dt);const path=compileLayout(s.layout).entries[front];e.entryStep??=front==='airway'?3:1;const target=path[Math.min(e.entryStep,path.length-1)];if(walk(e,groundCoordinate(target),speed,dt))e.entryStep++;return e.entryStep>=path.length;}
+function entryWalk(s,e,front,speed,dt){if(!s.layout)return walk(e,front==='gut'?point(s,'gut'):AIRWAY_PATH.at(-1),speed,dt);const path=compileLayout(s.layout).entries[front];if(e.invasion)speed*=2;e.entryStep??=front==='airway'?3:1;const target=path[Math.min(e.entryStep,path.length-1)];if(walk(e,groundCoordinate(target),speed,dt))e.entryStep++;return e.entryStep>=path.length;}
 export function tickFrontierEnemy(s,e,dt,api){
  const f=s.frontier;if(!f||!e.front)return false;
+ if(tickInvasion(s,e,dt))return true;
  if(e.front==='skin'&&!e.entered){
   e.action='blocked';e.entryStage='exposure';
   const def=WALLS[e.wall],w=f.walls[e.wall];
   if(w.hp>0&&!e.colonization){walk(e,def.outside,24,dt);return true;}
-  e.action='breach';walk(e,def.inside,28,dt);const p=groundPoint(e);
+  e.action='breach';walk(e,def.inside,e.invasion?60:28,dt);const p=groundPoint(e);
   if((p.x-def.x)*def.nx+(p.z-def.z)*def.nz<-.1)surfaceColonization(s,e,dt);
   return true;
  }
@@ -295,7 +298,7 @@ export function validateFrontier(s){
  for(const c of [...s.cells,...s.shipments]){const w=c.workplace;if(w&&(!districtDef(w.site)||!['oxygen','dock','produce','fabricate','waste','repair','rest'].includes(w.role)||w.key!==w.site+':'+w.role||!n(w.ticket)||w.slot!=null&&(!Number.isInteger(w.slot)||!n(w.slot,CITY_CAPS.workSlots-1))))return false;if(c.frontJob!=null&&!WALLS[c.frontJob]||c.tissueJob!=null&&!TISSUES[c.tissueJob]||c.debrisCargo!=null&&!n(c.debrisCargo,3)||c.materialCargo!=null&&!n(c.materialCargo,8))return false;}
  for(const sh of s.shipments){const d=sh.frontDelivery;if(d&&!(d.type==='wall'&&WALLS[d.id]||d.type==='depot'&&FRONTS[d.id]))return false;}
  for(const c of s.cells)if(c.patchWall!=null&&!WALLS[c.patchWall]||c.alertKind!=null&&!['threat','repair'].includes(c.alertKind)||c.alertUntil!=null&&!n(c.alertUntil))return false;
- for(const e of [...s.enemies,...s.spawn])if(e.front&&!FRONTS[e.front]&&e.front!=='blood'||e.front==='skin'&&!WALLS[e.wall]||e.caughtUntil!=null&&!n(e.caughtUntil)||e.entryStep!=null&&(!Number.isInteger(e.entryStep)||!n(e.entryStep,CITY_CAPS.path))||!validatePathogenTarget(e)||e.path&&(!Array.isArray(e.path)||e.path.length>CITY_CAPS.path||e.path.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y))||!Number.isInteger(e.step)||e.step<0||e.step>e.path.length))return false;
+ for(const e of [...s.enemies,...s.spawn])if(e.front&&!FRONTS[e.front]&&e.front!=='blood'||e.front==='skin'&&!WALLS[e.wall]||e.caughtUntil!=null&&!n(e.caughtUntil)||e.entryStep!=null&&(!Number.isInteger(e.entryStep)||!n(e.entryStep,CITY_CAPS.path))||!validInvasion(e)||!validatePathogenTarget(e)||e.path&&(!Array.isArray(e.path)||e.path.length>CITY_CAPS.path||e.path.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y))||!Number.isInteger(e.step)||e.step<0||e.step>e.path.length))return false;
  for(const d of Object.values(s.districts))if(d.building?.type==='plot'&&!INVESTMENTS[d.building.choice])return false;
  const slots=new Set();for(const c of [...s.cells,...s.shipments])if(c.workplace?.slot!=null){const key=c.workplace.key+':'+c.workplace.slot;if(slots.has(key))return false;slots.add(key);}
  return n(s.workTicket||0);

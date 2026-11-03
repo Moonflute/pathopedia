@@ -6,6 +6,7 @@ import {CITY_ENTRIES} from './city-world.mjs';
 import {pathogenDef,spreadDestination} from './city-pathogens.mjs';
 import {infectionFocus} from './city-infection-focus.mjs';
 import {lymphPath} from './city-immune-traffic.mjs';
+import {startInvasion,tickInvasion,validInvasion} from './city-invasion.mjs';
 
 // Accelerated, bounded teaching states. No clinical concentrations or timings.
 const clamp=(n,max=100)=>Math.max(0,Math.min(max,n)),distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -53,7 +54,7 @@ export function viralExposure(s,payload){
  if(p.virions.length+payload.amount>192)return false;
  const targets=p.epithelium.filter(h=>front==='skin'?h.wall===wall:h.site===site&&h.wall==null);
  const path=front==='skin'?[WALLS[wall].outside,WALLS[wall].inside]:(s.layout?compileLayout(s.layout).entries[front].map(groundCoordinate):[groundCoordinate(CITY_ENTRIES[front].start),cityDistrict(s,site)]);
- for(let n=0;n<payload.amount;n++){const target=targets[(n+p.stats.viralEntries)%targets.length];p.virions.push({id:++s.serial,recordId:VIRAL_ID,site,front,wall:front==='skin'?wall:null,...path[0],path:[...path.slice(1),{x:target.x,y:target.y}],step:0,targetId:target.id,phase:'entry',born:s.time,until:s.time+100,entered:false});}
+ for(let n=0;n<payload.amount;n++){const target=targets[(n+p.stats.viralEntries)%targets.length],v={id:++s.serial,recordId:VIRAL_ID,site,front,wall:front==='skin'?wall:null,...path[0],path:[...path.slice(1),{x:target.x,y:target.y}],step:0,targetId:target.id,phase:'entry',born:s.time,until:s.time+100,entered:false};startInvasion(s,v);p.virions.push(v);}
  hostEvent(s,'exposure',site,path[0],VIRAL_ID);return {site,front};
 }
 export function establishHost(s,ep,recordId=VIRAL_ID){
@@ -67,7 +68,9 @@ function tickVirus(s,dt){
  for(const v of p.virions){
   const target=p.epithelium.find(e=>e.id===v.targetId),ab=i.antibodies[v.recordId],neutralizing=(v.entered?ab?.IgG:ab?.IgA)||0;
   if(v.until<=s.time||!target||neutralizing>25&&(v.id%5<Math.min(5,neutralizing/20))){p.stats.neutralized++;hostEvent(s,'neutralized',v.site,v,v.recordId);continue;}
-  if(v.front==='skin'&&!v.entered&&s.frontier.walls[v.wall].hp>0){v.phase='barrier';alive.push(v);continue;}
+  if(v.front==='skin'&&!v.entered&&s.frontier.walls[v.wall].hp>0)v.phase='barrier';
+  if(tickInvasion(s,v,dt)){alive.push(v);continue;}
+  if(v.front==='skin'&&!v.entered&&s.frontier.walls[v.wall].hp>0){alive.push(v);continue;}
   if(v.phase==='entry'||v.phase==='barrier'){
    if(!walkPath(v,85,dt)){alive.push(v);continue;}
    if(v.front==='airway'&&v.id%4===0&&s.barrier>40){v.phase='expelled';v.path=[groundCoordinate(CITY_ENTRIES.airway.start)];v.step=0;alive.push(v);continue;}
@@ -171,7 +174,7 @@ export function validateHostResponse(s){
  const p=s.physiology;if(!p)return true;const number=(v,max=100)=>Number.isFinite(v)&&v>=0&&v<=max,point=v=>Number.isFinite(v.x)&&Number.isFinite(v.y),site=id=>!!s.districts[id],path=a=>Array.isArray(a.path)&&a.path.length<=900&&a.path.every(point)&&Number.isInteger(a.step)&&a.step>=0&&a.step<=a.path.length;
  if(p.version!==1||!number(p.clock,.6)||!number(p.microbiome)||!number(p.lymphClock,6)||!p.blood||!number(p.blood.inflammation)||!number(p.blood.perfusion)||typeof p.blood.sepsis!=='boolean'||!number(p.blood.spreadClock,19)||!p.blood.strains||Object.entries(p.blood.strains).some(([id,n])=>!pathogenDef(id)||!number(n)))return false;
  if(!Array.isArray(p.epithelium)||p.epithelium.length>100||p.epithelium.some(e=>!point(e)||!site(e.site)||typeof e.id!=='string'||!number(e.health)||!number(e.antiviral)||!['healthy','infected','dead','repairing'].includes(e.state)||typeof e.cleared!=='boolean'))return false;
- if(!Array.isArray(p.virions)||p.virions.length>192||p.virions.some(v=>!point(v)||!path(v)||!site(v.site)||v.recordId!==VIRAL_ID||!p.epithelium.some(e=>e.id===v.targetId)||!['entry','barrier','attachment','spread','expelled'].includes(v.phase)||!number(v.until,1e9)||!number(v.born,s.time)))return false;
+ if(!Array.isArray(p.virions)||p.virions.length>192||p.virions.some(v=>!validInvasion(v)||!point(v)||!path(v)||!site(v.site)||v.recordId!==VIRAL_ID||!p.epithelium.some(e=>e.id===v.targetId)||!['entry','barrier','attachment','spread','expelled'].includes(v.phase)||!number(v.until,1e9)||!number(v.born,s.time)))return false;
  if(!Array.isArray(p.lymphPackets)||p.lymphPackets.length>24||p.lymphPackets.some(v=>!point(v)||!path(v)||!site(v.site)||!s.immunity.antigens[v.recordId]||!number(v.amount)))return false;
  if(!p.stats||Object.values(p.stats).some(n=>!number(n,1e9))||!p.injury||cityDistricts(s).some(d=>{const v=p.injury[d.id];return !v||!HEALING_LABELS[v.phase]||['pathogen','toxin','immune','ischemia','cleaned'].some(k=>!number(v[k],1e7));}))return false;
  if(!Array.isArray(p.events)||p.events.length>48||p.events.some(e=>!point(e)||!site(e.site)||!number(e.time,s.time)||typeof e.kind!=='string'))return false;

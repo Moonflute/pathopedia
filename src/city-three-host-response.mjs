@@ -5,6 +5,7 @@ import {hostPaths,TRAFFIC_LABELS} from './city-immune-traffic.mjs';
 import {HEALING_LABELS,bloodLoad} from './city-host-response.mjs';
 import {entryTrackHeight} from './city-entry-tracks.mjs';
 import {CITY_STYLE as STYLE} from './city-three-style.mjs';
+import {invasionPose,invasionImpact} from './city-invasion.mjs';
 
 export function hostStageMarkers(s){
  const p=s.physiology;if(!p)return [];const out=[],add=(point,text,color,priority)=>out.push({point:groundPoint(point),text,color,priority});
@@ -33,13 +34,13 @@ export function createHostResponseScene(map=null){
  function pool(id,geometry,cap,material=flat){const m=new T.InstancedMesh(geometry,material,cap);m.count=0;m.frustumCulled=false;m.instanceMatrix.setUsage(T.DynamicDrawUsage);batches[id]=m;root.add(m);}
  pool('lymphatic-conduits',new T.CylinderGeometry(1,1,1,5),2400,soft);
  pool('response-rings',new T.TorusGeometry(1,.055,4,28),420,soft);
- pool('antigen-packets',new T.IcosahedronGeometry(1,0),900);
+ pool('antigen-packets',new T.IcosahedronGeometry(1,0),1400);
  pool('epithelial-tiles',new T.CylinderGeometry(1,1,1,6),100);
  pool('viral-particles',new T.IcosahedronGeometry(1,1),192);
  const tags=map?Array.from({length:4},()=>{const e=document.createElement('span');e.className='cc-world-stage';e.hidden=true;map.append(e);return e;}):[],projected=new T.Vector3();
  let last=-Infinity,run=null,markers=[];
- function put(id,p,y,xs,ys,zs,tint,flat=false){const m=batches[id],n=m.count;if(n>=m.instanceMatrix.count)return;dummy.position.set(p.x,y,p.z);dummy.rotation.set(flat?Math.PI/2:0,0,0);dummy.scale.set(xs,ys,zs);dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,color.set(tint));m.count++;}
- function line(a,b,width,tint){const m=batches['lymphatic-conduits'],n=m.count;if(n>=m.instanceMatrix.count)return;delta.set(b.x-a.x,0,b.z-a.z);if(delta.length()<.001)return;dummy.position.set((a.x+b.x)/2,.18,(a.z+b.z)/2);dummy.quaternion.setFromUnitVectors(up,delta.clone().normalize());dummy.scale.set(width,delta.length(),width);dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,color.set(tint));m.count++;}
+ function put(id,p,y,xs,ys,zs,tint,flat=false,yaw=0){const m=batches[id],n=m.count;if(n>=m.instanceMatrix.count)return;dummy.position.set(p.x,y,p.z);dummy.rotation.set(flat?Math.PI/2:0,yaw,0);dummy.scale.set(xs,ys,zs);dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,color.set(tint));m.count++;}
+ function line(a,b,width,tint){const m=batches['lymphatic-conduits'],n=m.count;if(n>=m.instanceMatrix.count)return;delta.set(b.x-a.x,(b.y??.18)-(a.y??.18),b.z-a.z);if(delta.length()<.001)return;dummy.position.set((a.x+b.x)/2,((a.y??.18)+(b.y??.18))/2,(a.z+b.z)/2);dummy.quaternion.setFromUnitVectors(up,delta.clone().normalize());dummy.scale.set(width,delta.length(),width);dummy.updateMatrix();m.setMatrixAt(n,dummy.matrix);m.setColorAt(n,color.set(tint));m.count++;}
  return {root,update(s,hidden=false){
   root.visible=!hidden;if(hidden){for(const tag of tags)tag.hidden=true;return;}
   if(run===s&&s.time>=last&&s.time-last<.12)return;run=s;last=s.time;for(const m of Object.values(batches))m.count=0;
@@ -56,8 +57,14 @@ export function createHostResponseScene(map=null){
    if(ep.antiviral>12){const r=.6+(time*.25+ep.antiviral*.002)%1*.18;put('response-rings',at,.15,r,r,r,0x87bce2,true);}
    if(ep.state==='repairing'){put('antigen-packets',at,.35+ep.health*.003,.09,.25,.09,0xbce9cd);put('response-rings',at,.2,.72,.72,.72,0x7bd9b4,true);}
   }
-  for(const v of p.virions){const at=groundPoint(v),height=!v.entered?entryTrackHeight(entries[v.front],at):0,scale=v.phase==='attachment'?.27:.2;put('viral-particles',at,height+.48*tall,scale*wide,scale*tall,scale*wide,v.phase==='expelled'?0x90bcb4:0x9b72ba);
+  for(const v of p.virions){const base=groundPoint(v),entry=invasionPose(v,time),sn=Math.sin(entry?.angle||0),cs=Math.cos(entry?.angle||0),at={x:base.x+sn*(entry?.lunge||0)*wide,z:base.z+cs*(entry?.lunge||0)*wide},height=(!v.entered?entryTrackHeight(entries[v.front],base):0)+(entry?.bob||0)*tall,scale=v.phase==='attachment'?.27:.2;
+   put('viral-particles',at,height+(entry?.striking?.42:.48)*tall,scale*wide,scale*tall,scale*wide,v.phase==='expelled'?0x90bcb4:0x9b72ba);
    for(let n=0;n<3;n++){const a=time*1.8+n*Math.PI*2/3;put('antigen-packets',{x:at.x+Math.cos(a)*scale*wide,z:at.z+Math.sin(a)*scale*wide},height+.48*tall,.065*wide,.1*tall,.065*wide,0xcba4d8);}
+   if(entry){
+    const stride=entry.moving?Math.sin(time*5+v.id)*.13:0;
+    for(const side of [-1,1])put('antigen-packets',{x:at.x+(side*.16*cs+side*stride*sn)*wide,z:at.z+(-side*.16*sn+side*stride*cs)*wide},height+.08*tall,.1*wide,.08*tall,.14*wide,0x745b87,false,entry.angle);
+    invasionImpact(entry,entryTrackHeight(entries[v.front],entry.gate),(kind,x,y,z,sx,sy,sz,tint,yaw)=>put(kind==='ring'?'response-rings':'antigen-packets',{x,z},y,sx,sy,sz,tint,false,yaw),(x,y,z,tx,ty,tz,r,tint)=>line({x,y,z},{x:tx,y:ty,z:tz},r,tint));
+   }
   }
   for(const c of s.cells){
    const at=groundPoint(c);

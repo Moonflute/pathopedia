@@ -12,6 +12,7 @@ import {entryTrackHeight} from './city-entry-tracks.mjs';
 import {pilotThreatView} from './city-pilot-threats.mjs';
 import {createResidentView,RESIDENT_LIMIT} from './city-residents.mjs';
 import {showCityCell} from './city-quality.mjs';
+import {invasionPose,invasionImpact,invasionApproaches} from './city-invasion.mjs';
 
 // Shared, rigid parts: sixteen cell roles and all work effects use 16
 // batches, without skeletons, particle objects, lights or per-cell DOM.
@@ -39,7 +40,7 @@ export function createActors(profile){
  const capacity=profile.maxCells+profile.maxShipments+RESIDENT_LIMIT,standard=new T.MeshStandardMaterial({color:0xffffff,roughness:.9}),flat=new T.MeshBasicMaterial({color:0xffffff});
  const body=new T.SphereGeometry(1,profile.mobile?10:12,profile.mobile?7:8),hat=new T.SphereGeometry(1,profile.mobile?8:10,profile.mobile?5:6),small=new T.SphereGeometry(1,6,4),box=new T.BoxGeometry(1,1,1),rod=new T.CylinderGeometry(1,1,1,6),rim=new T.TorusGeometry(1,.13,4,12);
  function batch(id,geometry,limit=capacity,shadow=true,unlit=false){const m=new T.InstancedMesh(geometry,unlit?flat:standard,limit);m.name=id;m.instanceMatrix.setUsage(T.DynamicDrawUsage);m.instanceColor=new T.InstancedBufferAttribute(new Float32Array(limit*3).fill(1),3);m.instanceColor.setUsage(T.DynamicDrawUsage);m.count=0;m.frustumCulled=false;m.castShadow=shadow;m.receiveShadow=!unlit;if(shadow)shadowBatches.add(id);root.add(m);batches[id]=m;}
- batch('body',body);batch('cap',hat);batch('eyes',small,capacity*2,false);batch('feet',small,capacity*2);batch('hands',small,capacity*2,false);
+ batch('body',body);batch('cap',hat);batch('eyes',small,capacity*2,false);batch('feet',small,(capacity+profile.maxEnemies)*2);batch('hands',small,(capacity+profile.maxEnemies)*2,false);
  batch('box',box,capacity*5);batch('pod',small,capacity*8,false);batch('rod',rod,capacity*5,false);batch('rim',rim,capacity*3,false);batch('badge',new T.IcosahedronGeometry(1,0),capacity*7,false);
  batch('enemy',new T.IcosahedronGeometry(1,1),profile.maxEnemies*4);batch('spikes',new T.ConeGeometry(1,1,5),profile.maxEnemies*4);batch('enemyEyes',small,profile.maxEnemies*2,false);
  batch('debris',new T.IcosahedronGeometry(1,0),160,false);batch('selected',new T.TorusGeometry(.43,.035,4,18),capacity*4+profile.maxEnemies*2+160,false,true);batch('beam',rod,capacity*6+profile.maxEnemies*4,false,true);
@@ -252,16 +253,21 @@ export function createActors(profile){
   }
   elevation=0;
   for(const c of residents(s,{stride:quality.residentStride,selectedCell,showAll:selectedKind==='somatic',time})){if(visible&&!visible(c.point))continue;pickPositions.push({id:c.id,...c.point,cell:c});const simple=small&&selectedCell!==c.id;stats.residents++;if(simple)stats.simple++;resident(c,time,selectedCell===c.id||selectedKind==='somatic',simple);}
+  for(const g of invasionApproaches(s)){
+   const angle=Math.atan2(g.nx,g.nz),length=128,start=1.3,middle=start+length/2;
+   put('box',g.x+g.nx*middle,canals?-.09:-.025,g.z+g.nz*middle,4.5,canals?.18:.035,length,canals?0xc8b792:0xc4ba95,0,angle);
+   if(canals)for(let d=start+1;d<64;d+=2.4)put('box',g.x+g.nx*d,.008,g.z+g.nz*d,4.4,.025,.055,0x9d8e71,0,angle);
+  }
   for(const e of s.enemies.filter(e=>!e.dead).slice(0,profile.maxEnemies)){
    const id='enemy'+e.id,p=point(e,id),prev=last.get(id);living.add(id);elevation=!e.entered?entryTrackHeight(entries[e.front],p):0;
    if(!visible||visible(p))pickPositions.push({id,...p,height:elevation+.5*tall,baseHeight:elevation,markerHeight:elevation+1.35*tall,selectionScale:wide,cell:e});
    const target=e.action==='attack'&&e.attackX!=null?groundPoint({x:e.attackX,y:e.attackY}):null;
-   const moved=prev&&Math.hypot(p.x-prev.x,p.z-prev.z)>.00001;
-   const angle=moved?Math.atan2(p.x-prev.x,p.z-prev.z):target&&Math.hypot(target.x-p.x,target.z-p.z)>.001?Math.atan2(target.x-p.x,target.z-p.z):prev?.angle??0;
+   const entry=invasionPose(e,time),moved=prev&&Math.hypot(p.x-prev.x,p.z-prev.z)>.00001;
+   const angle=moved?Math.atan2(p.x-prev.x,p.z-prev.z):target&&Math.hypot(target.x-p.x,target.z-p.z)>.001?Math.atan2(target.x-p.x,target.z-p.z):entry?.angle??prev?.angle??0;
    last.set(id,{x:p.x,z:p.z,angle});if(visible&&!visible(p))continue;
-   const threat=pilotThreatView(e),winding=threat?.windup>time,def=pathogenDef(e.recordId),shape=def?.shape,bacillus=shape==='rod'||shape==='shortRod',hit=Math.max(0,(e.hitUntil||0)-time)/.28,color=winding?0xffbb77:hit>.4?0xffd49b:e.color||def?.color||'#bc856f',cs=Math.cos(angle),sn=Math.sin(angle),attacking=e.action==='attack'||e.action==='breach';
-   const phase=(time*1.8+e.id*.17)%1,lunge=attacking?Math.max(0,Math.sin((phase-.2)*Math.PI*2))*.35:0,shake=hit*Math.sin(time*55+e.id)*.09,scale=1.24;
-   const part=(id,x,y,z,sx,sy,sz,c,rz=0)=>put(id,p.x+(x*cs+(z+lunge)*sn)*scale*wide+shake,(y+Math.sin(phase*Math.PI)*lunge*.35)*scale*tall,p.z+(-x*sn+(z+lunge)*cs)*scale*wide-shake,sx*scale*wide,sy*scale*tall,sz*scale*wide,c,0,angle,rz+(attacking?Math.sin(phase*Math.PI*2)*.12:0));
+   const threat=pilotThreatView(e),winding=threat?.windup>time,def=pathogenDef(e.recordId),shape=def?.shape,bacillus=shape==='rod'||shape==='shortRod',hit=Math.max(0,(e.hitUntil||0)-time)/.28,color=winding?0xffbb77:hit>.4?0xffd49b:e.color||def?.color||'#bc856f',cs=Math.cos(angle),sn=Math.sin(angle),attacking=entry?.striking||e.action==='attack'||e.action==='breach';
+   const phase=(time*1.8+e.id*.17)%1,lunge=entry?entry.lunge:attacking?Math.max(0,Math.sin((phase-.2)*Math.PI*2))*.35:0,shake=hit*Math.sin(time*55+e.id)*.09,scale=1.24;
+   const part=(id,x,y,z,sx,sy,sz,c,rz=0)=>put(id,p.x+(x*cs+(z+lunge)*sn)*scale*wide+shake,(y+(entry?entry.bob:Math.sin(phase*Math.PI)*lunge*.35))*scale*tall,p.z+(-x*sn+(z+lunge)*cs)*scale*wide-shake,sx*scale*wide,sy*scale*tall,sz*scale*wide,c,entry?.lean||0,angle,rz+(!entry&&attacking?Math.sin(phase*Math.PI*2)*.12:0));
    const pulse=['attack','colonize'].includes(e.action)?1+Math.sin(time*9+e.id)*.12:1,depth=bacillus?(shape==='shortRod'?.43:.57):.36;
    part('enemy',0,.35,0,(bacillus?.27:.36)*pulse,bacillus?.25:.34,depth,color);
    if(['cluster','chain','pair'].includes(shape))for(let n=0;n<(shape==='cluster'?3:shape==='chain'?3:1);n++){
@@ -270,6 +276,11 @@ export function createActors(profile){
    }
    for(let n=0;n<4;n++){const a=n*Math.PI/2;part('spikes',Math.cos(a)*.3,.62,Math.sin(a)*depth*.85,.09,.3,.09,color,Math.cos(a)*.5);}
    for(const side of [-1,1])part('enemyEyes',side*.115,.42,depth*.91,.04,.05,.03,0x41464c);
+   if(e.invasion){
+    const stride=(entry?.moving||moved)?Math.sin(time*5+e.id)*.14:0;
+    for(const side of [-1,1]){part('feet',side*.2,.065,side*stride,.13,.07,.18,0x66544e);part('hands',side*.36,.34,attacking?.2+Math.max(0,lunge)*1.7:.03-side*stride,.12,.13,.12,color);}
+    invasionImpact(entry,entry?entryTrackHeight(entries[e.front],entry.gate)-elevation:0,(kind,x,y,z,sx,sy,sz,tint,ry)=>put(kind==='ring'?'selected':'pod',x,y,z,sx*(kind==='ring'?2.3:1),sy*(kind==='ring'?2.3:1),sz*(kind==='ring'?2.3:1),tint,0,ry),line);
+   }
    if(attacking)for(const side of [-1,1])line(p.x+(sn*.25+cs*side*.1)*wide,.65*tall,p.z+(cs*.25-sn*side*.1)*wide,p.x+(sn*.25+cs*side*.23)*wide,.7*tall,p.z+(cs*.25-sn*side*.23)*wide,.035*wide,0x584744);
    if(def?.capsule)put('selected',p.x,.22*tall,p.z,1.2*wide,1.2*wide,1.2*wide,e.opsonized>.08?0xf1d58e:0xb5cbd3,Math.PI/2);
    if(e.action==='approach'&&e.entered&&e.attackX!=null){
