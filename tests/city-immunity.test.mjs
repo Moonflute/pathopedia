@@ -66,8 +66,12 @@ test('Tregs lower local inflammation through feedback without directly removing 
 });
 
 test('saving during priming preserves signals, host targets, clones, specificity and the next simulation steps',()=>{
- const s=city();challenge(s,'virus');advance(s,18);const copy=restoreCity(serializeCity(s));assert.ok(copy);advance(s,12);advance(copy,12);assert.equal(serializeCity(copy),serializeCity(s));
- const bad=JSON.parse(serializeCity(s));bad.immunity.infected[0].mhcI=2;assert.equal(restoreCity(bad),null);
+ const s=city();challenge(s,'virus');const ready=()=>s.immunity.infected.length>0&&s.cells.some(c=>c.immuneState==='priming');
+ for(let elapsed=0;elapsed<180&&!ready();elapsed++)advance(s,1);
+ assert.ok(ready(),'an infected host and active priming are both present after entry');
+ const saved=serializeCity(s),copy=restoreCity(saved);assert.ok(copy);
+ const bad=JSON.parse(saved);bad.immunity.infected[0].mhcI=2;assert.equal(restoreCity(bad),null);
+ advance(s,12);advance(copy,12);assert.equal(serializeCity(copy),serializeCity(s));
 });
 
 test('sixteen cell roles and immune targets stay in sixteen bounded renderer pools',()=>{
