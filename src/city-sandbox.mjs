@@ -1,30 +1,44 @@
 import {groundPoint} from './city-three-layout.mjs';
 import {cityDistricts,cityDistrict} from './city-tile-layout.mjs';
-import {pilotedCell} from './city-pilot-state.mjs';
+import {pilotedCell,pilotCrowd} from './city-pilot-state.mjs';
+import {createResidentView,ensureResidents} from './city-residents.mjs';
+import {reactToCell} from './city-pilot-social.mjs';
+import {showCityCell} from './city-quality.mjs';
 import {activeActivity,beginActivity} from './city-activity.mjs';
 import {rememberCell} from './city-cell-memory.mjs';
 
 const orders=new WeakMap(),claims=new WeakMap(),selections=new WeakMap(),reservations=new WeakMap();
+const residentViews=new WeakMap();
+export function pilotResidents(s){if(!residentViews.has(s))residentViews.set(s,createResidentView());const {quality,selectedCell,selectedKind}=pilotCrowd(s);return residentViews.get(s)(s,{stride:quality.residentStride,selectedCell,showAll:selectedKind==='somatic'});}
 export function selectSandboxCell(s,c){if(c)selections.set(s,c);else selections.delete(s);}
 export function reserveSandboxCell(s,c){reservations.set(c,s.time+.35);}
 export const sandboxReserved=(s,c)=>(reservations.get(c)||0)>s.time&&!!pilotedCell(s);
 export const sandboxOrder=(s,c)=>{const o=orders.get(c);return o&&o.until>s.time?o:null;};
 export function sandboxCellJobs(s,tool){
  const player=pilotedCell(s),p=player?groundPoint(player):null;if(!p)return [];
- const jobs=[];
+ const jobs=[],{quality,selectedCell,selectedKind}=pilotCrowd(s);
  for(const c of s.cells){
   if(c===player||c.lost||Math.hypot(groundPoint(c).x-p.x,groundPoint(c).z-p.z)>12)continue;
-  if(tool!=='scanner'&&tool!=='repair'&&c!==selections.get(s))continue;
+  if(!showCityCell(c,quality,selectedCell,selectedKind))continue;
   let action='';
   if(tool==='scanner')action='관찰';
   if(tool==='oxygen'&&c.kind==='rbc'&&c.cargo<120)action='산소 전달';
-  if(tool==='nutrient'&&(c.energy??100)<96)action='영양 지원';
+  if(tool==='nutrient')action='영양 주기';
   if(tool==='repair'){if((c.integrity??100)<99.9)action='세포 복구';else if(c.kind==='fibroblast'&&['repair','build'].includes(activeActivity(c,s.time)?.kind))action='공동 작업';}
   if(action)jobs.push({id:'cell:'+c.id,...groundPoint(c),cell:c,name:action,action:tool,height:.45});
+ }
+ if(['scanner','nutrient','repair'].includes(tool))for(const r of pilotResidents(s)){
+  if(r.dead||Math.hypot(r.point.x-p.x,r.point.z-p.z)>12||tool==='repair'&&r.health>=99.9)continue;
+  jobs.push({id:r.id,...r.point,resident:r,name:tool==='scanner'?'관찰':tool==='nutrient'?'영양 주기':'세포 복구',action:tool,height:.45});
  }
  return jobs;
 }
 export function sandboxCellWork(s,c,job,api){
+ if(job.resident){
+  const r=job.resident,person=ensureResidents(s)?.people.find(p=>p.id===r.id);if(!person||person.dead)return {ok:false};
+  const amount=Math.min(job.action==='repair'?12:4,100-person.health);person.health+=amount;reactToCell(s,r,job.action);beginActivity(s,c,'unload',.6,r);
+  return {ok:true,amount,text:job.action==='repair'?'세포 회복 +'+Math.round(amount):'영양을 받아 먹었어요'};
+ }
  const other=job.cell;if(!s.cells.includes(other)||other.lost)return {ok:false};
  let amount=0,kind='signal',text=job.name;
  if(job.action==='oxygen'){
@@ -45,7 +59,9 @@ export function sandboxCellWork(s,c,job,api){
   }
 
  }
- if(amount<=0)return {ok:false,text:'이미 처리됨'};
+ if(amount<=0&&job.action!=='nutrient')return {ok:false,text:'이미 처리됨'};
+ if(job.action==='nutrient'&&!amount)text='영양을 받아 먹었어요';
+ reactToCell(s,other,job.action);
  rememberCell(s,other,text);rememberCell(s,c,text);beginActivity(s,c,kind,.6,other);
  return {ok:true,text,amount};
 }

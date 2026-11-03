@@ -49,8 +49,8 @@ export function createPilotTools(){
   if(!paused&&v.using&&(!wasUsing||last==='engulf'&&clock-punchAt>460))punchAt=clock;wasUsing=v.using;
   jets.visible=v.flying;jets.scale.x=Math.min(1,aspect);jets.children.forEach((m,i)=>{if(i%2)m.scale.y=.07+(paused?.01:Math.sin(clock*.03)*.018);});
   const walk=paused||v.flying?0:Math.min(1,v.speed/4.2),phase=clock*.009,portrait=aspect<.8,short=height<520,halfY=Math.tan(25*Math.PI/180)*.8;
-  const punch=last==='engulf'?(v.shot?Math.exp(-v.shot.progress*12):0):Math.sin(Math.min(1,(clock-punchAt)/280)*Math.PI),swap=Math.sin(Math.min(1,(clock-changedAt)/200)*Math.PI);
-  for(const mesh of groups.get('engulf').children)if(mesh.userData.flash)mesh.visible=last==='engulf'&&!!v.shot&&v.shot.progress<.23;
+  const punch=last==='engulf'?(v.shot?Math.exp(-v.shot.progress*12)*(v.shot.charged?2.3:1):0):Math.sin(Math.min(1,(clock-punchAt)/280)*Math.PI),swap=Math.sin(Math.min(1,(clock-changedAt)/200)*Math.PI);
+  for(const mesh of groups.get('engulf').children)if(mesh.userData.flash){mesh.visible=last==='engulf'&&(v.charging||!!v.shot&&v.shot.progress<.23);mesh.scale.setScalar(v.charging?.03+v.charge*.07:v.shot?.charged?.13:.07);}
   camera.aspect=aspect;camera.updateProjectionMatrix();root.scale.setScalar(portrait?.8:short?1.12:1.2);
   root.position.set(halfY*aspect*(portrait?.43:short?.50:.64)+Math.sin(phase)*.009*walk, -halfY*(portrait?.28:short?.47:.58)-swap*.12+Math.cos(phase*2)*.006*walk, -.8+punch*(last==='engulf'?.055:-.025));
   root.rotation.set(-.1+punch*(last==='engulf'?.15:-.22)+(v.progress?Math.sin(clock*.018)*.06:0),-.22,-.12+Math.sin(phase)*.025*walk);

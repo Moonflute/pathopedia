@@ -2,13 +2,13 @@ import {pilotInventory,pilotTool} from './city-pilot-state.mjs';
 import {cityDistricts,siteAt,tissueAt,tissuePresent} from './city-tile-layout.mjs';
 import {groundPoint} from './city-three-layout.mjs';
 import {TISSUES,WALLS,supportCount} from './city-frontier-data.mjs';
-import {pathogenDef} from './city-pathogens.mjs';
 import {pilotSite,pilotFieldSite} from './city-pilot-sites.mjs';
 import {sandboxCellJobs} from './city-sandbox.mjs';
 import {homeSites} from './city-homeostasis-data.mjs';
+import {pilotHostile,pilotEnemyBody,pilotEnemyName,pilotEnemies} from './city-pilot-combat.mjs';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
-export const pilotHostile=e=>!e.dead&&e.entered&&e.compartment!=='lumen';
+export {pilotHostile};
 export const pilotFoodCapacity=(s,id)=>40+supportCount(s,id,'supply')*8;
 export function pilotJobs(s,tool){
  const jobs=facilityJobs(s,tool);
@@ -21,8 +21,8 @@ export function pilotJobs(s,tool){
 function facilityJobs(s,tool){
  const inventory=pilotInventory(s),districts=cityDistricts(s);
  const organ=(id,label,action=tool)=>{const station=pilotSite(s,id,tool);return {id,...(station?.approach||siteAt(s.layout,id)),target:station?.target,station:station?.key,site:id,name:districts.find(d=>d.id===id).short+' · '+label,action};};
- const enemy=e=>({id:'enemy:'+e.id,...groundPoint(e),enemy:e,name:pathogenDef(e.recordId)?.name||'병원체',action:tool});
- if(tool==='engulf')return s.enemies.filter(pilotHostile).map(enemy);
+ const enemy=e=>{const b=pilotEnemyBody(s,e);return {id:'enemy:'+e.id,x:b.x,z:b.z,height:b.y,radius:Math.max(b.rx,b.rz),enemy:e,name:pilotEnemyName(e),action:tool};};
+ if(tool==='engulf')return pilotEnemies(s).filter(pilotHostile).map(enemy);
  if(tool==='oxygen')return districts.filter(d=>s.districts[d.id].oxygen<99.9).map(d=>organ(d.id,'산소 공급'));
  if(tool==='nutrient')return districts.filter(d=>s.districts[d.id].food<pilotFoodCapacity(s,d.id)-.1).map(d=>organ(d.id,'영양 공급'));
  if(tool==='repair')return [
@@ -33,7 +33,7 @@ function facilityJobs(s,tool){
   ...(s.barrier<99.9?[{...organ('lung','폐 장벽 복구'),id:'barrier:lung',barrier:true}]:[])
  ];
  if(tool==='tractor')return inventory.debris>=6?[organ('kidney','잔해 하역')]:[...s.debris.map(d=>({id:'debris:'+d.id,...groundPoint(d),debris:d,name:'잔해 수거',action:tool})),...(inventory.debris?[organ('kidney','잔해 하역')]:[])];
- if(tool==='scanner')return [...s.enemies.filter(pilotHostile).map(enemy),...districts.map(d=>({...organ(d.id,'진단'),entity:s.districts[d.id]}))];
+ if(tool==='scanner')return [...pilotEnemies(s).filter(pilotHostile).map(enemy),...districts.map(d=>({...organ(d.id,'진단'),entity:s.districts[d.id]}))];
  return [];
 }
 export function pilotObjective(s,tool,p){

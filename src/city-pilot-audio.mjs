@@ -4,7 +4,7 @@ import {homeSites} from './city-homeostasis-data.mjs';
 
 // Reuse Shoot's bounded one-shots; two nearby facilities share a noise buffer.
 export function createPilotAudio(){
- const combat=createCombatAudio(),voices=new Map();let context=null,master=null,noise=null,lastShot=-1,lastWork=-1,lastBeat=0,enabled=true,closed=false;
+ const combat=createCombatAudio(),voices=new Map();let context=null,master=null,noise=null,lastShot=-1,lastWork=-1,lastBeat=0,lastCharge=0,enabled=true,closed=false;
  try{enabled=localStorage.getItem('pathopedia:city:pilot:sound:v1')!=='off';}catch{}
  function unlock(){
   if(!enabled||closed)return;
@@ -16,7 +16,8 @@ export function createPilotAudio(){
  function update(s,v,paused){
   if(!context||!master)return;const now=context.currentTime;
   if(!enabled||paused){for(const a of voices.values())a.gain.gain.setTargetAtTime(0,now,.04);return;}
-  if(v.shot&&v.shot.at!==lastShot){lastShot=v.shot.at;combat.play(context,master,'shot-auto');if(v.shot.hit)combat.play(context,master,v.shot.defeated?'shield-hit':'effective-hit');}
+  if(v.shot&&v.shot.at!==lastShot){lastShot=v.shot.at;combat.play(context,master,v.shot.charged?'shot-scatter':'shot-auto');if(v.shot.hit)combat.play(context,master,v.shot.defeated?'shield-hit':'effective-hit');}
+  if(v.charging&&now-lastCharge>.2){lastCharge=now;combat.play(context,master,'charge');}
   if(v.workPulse&&v.workPulse.at!==lastWork){lastWork=v.workPulse.at;combat.play(context,master,'effective-hit');}
   const sites=['lung','heart','gut','kidney','marrow','lymph'].map(id=>({id,...siteAt(s.layout,id)}));
   if(s.homeostasis)sites.push(...homeSites(s.layout));

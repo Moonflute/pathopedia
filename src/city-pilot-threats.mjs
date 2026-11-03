@@ -2,10 +2,12 @@ import {pilotedCell,pilotPose} from './city-pilot-state.mjs';
 import {groundPoint,groundCoordinate} from './city-three-layout.mjs';
 import {pilotWorld} from './city-pilot-world.mjs';
 import {pathogenDef} from './city-pathogens.mjs';
+import {pilotStaggered} from './city-pilot-combat.mjs';
 
 const encounters=new WeakMap();
 export const pilotThreatView=e=>encounters.get(e)||null;
 export function tickPilotThreat(s,e,dt){
+ if(pilotStaggered(s,e)){encounters.delete(e);return true;}
  const c=pilotedCell(s),pose=pilotPose(s);if(!c||c.lost||!e.entered||e.dead||e.compartment==='lumen'||pose.height>1.8)return false;
  const p=groundPoint(c),q=groundPoint(e),distance=Math.hypot(p.x-q.x,p.z-q.z),world=pilotWorld(s.layout,pose.theme);
  if(distance>8||!world.clear({...q,y:.43},{...p,y:pose.eye})){encounters.delete(e);return false;}

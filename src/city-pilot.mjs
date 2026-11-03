@@ -9,6 +9,8 @@ import {pilotObservation} from './city-pilot-observation.mjs';
 import {constrainPilotRope} from './city-pilot-rope.mjs';
 import {sandboxIncidents,selectSandboxCell,reserveSandboxCell} from './city-sandbox.mjs';
 import {sandboxEventsEnabled,setSandboxEvents} from './city-sandbox-events.mjs';
+import {pilotRaycast} from './city-pilot-combat.mjs';
+import {reactToCell,reserveResident,canAccompany,companionCell,toggleCompanion as changeCompanion} from './city-pilot-social.mjs';
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z),mix=(a,b,t)=>a+(b-a)*t;
 const hostile=pilotHostile;
@@ -20,7 +22,7 @@ export function createCityPilot(){
  let workTarget='',workPulse=null;
  let flying=false,grounded=true,flightHeld=false,stuck=0,beam=null;
  let watched=null,following=false,followRoute=[],followAt=-Infinity,grapple=null,grappleHeld=false,riding=null,shot=null,projectiles=[];
- let lastIntegrity=100;
+ let lastIntegrity=100,charge=0,chargeHeld=false;
  const position=()=>cell?groundPoint(cell):null;
  const eye=()=>((theme==='2'&&world.town.source.isWater(position())) ? .48 : .58)-crouch*.24+jumpHeight;
  const focus=(inspect=false)=>cell?pilotFocus(run,{position:position(),yaw,pitch,eye:eye()},world,undefined,inspect):null;
@@ -31,7 +33,7 @@ export function createCityPilot(){
   return pilotObjective(run,inventory.tool,position());
  }
  function say(text){if(text){notice=text;noticeUntil=run.time+3;}}
- function resetMotion(){vx=vz=0;jumpHeld=false;sprinting=scoped=false;grapple=null;grappleHeld=false;following=false;previousPosition=position();if(cell)previousEye=eye();}
+ function resetMotion(){vx=vz=0;charge=0;chargeHeld=false;jumpHeld=false;sprinting=scoped=false;grapple=null;grappleHeld=false;following=false;previousPosition=position();if(cell)previousEye=eye();}
  function start(s,{preferred=null,theme:selectedTheme='2',spawn=null}={}){
   if(!s.layout||s.status!=='running')return false;
   const nextWorld=pilotWorld(s.layout,selectedTheme);if(spawn!==null&&!nextWorld.canStand(spawn))return false;
@@ -86,16 +88,28 @@ export function createCityPilot(){
  }
  function toggleFlight(){if(!cell)return false;if(flying){flying=false;say('활공 · 착지');return true;}flying=true;jumpVelocity=0;say('제트팩 ON');return true;}
  function target(range=pilotTool('engulf').range){
-  if(!cell)return null;
-  const p=position(),dx=Math.sin(yaw)*Math.cos(pitch),dy=Math.sin(pitch),dz=-Math.cos(yaw)*Math.cos(pitch);let best=null,depth=Infinity;
-  for(const e of run.enemies){
-   if(!hostile(e))continue;const q=groundPoint(e),x=q.x-p.x,z=q.z-p.z,y=.43-eye(),t=x*dx+y*dy+z*dz;
-   if(t<0||t>range||t>=depth||x*x+y*y+z*z-t*t>.43**2||!world.clear({...p,y:eye()},{...q,y:.43}))continue;best=e;depth=t;
-  }return best;
+  if(!cell)return null;return pilotRaycast(run,world,{...position(),y:eye()},{x:Math.sin(yaw)*Math.cos(pitch),y:Math.sin(pitch),z:-Math.cos(yaw)*Math.cos(pitch)},range,false).enemy;
+ }
+ function greet(){
+  const object=focus(true),other=object?.cell||object?.resident;if(!other||object.distance>2.7||other.dead)return false;
+  reactToCell(run,other,'greet');say(object.name+' · 인사');return true;
+ }
+ function toggleCompanion(){
+  const object=focus(true),other=object?.distance<=3.2&&canAccompany(object.cell)?object.cell:null;
+  if(!other&&!companionCell(run)){say('호중구·대식세포 가까이에서 부르기');return false;}
+  const result=changeCompanion(run,other);say(result.text);return result.ok;
+ }
+ function fire(power=0){
+  const p=position(),result=pilotCellAction(run,power?'charge':'attack',null,power);if(!result.ok){say(result.text);return;}
+  shots++;const from={x:p.x+Math.cos(yaw)*.2+Math.sin(yaw)*.25,y:eye()-.14,z:p.z+Math.sin(yaw)*.2-Math.cos(yaw)*.25};
+  shot={at:run.time,from,target:result.impact,hit:result.hit,defeated:result.defeated,charged:!!power,power,radius:result.radius||0,bursts:result.bursts||[]};
+  projectiles.push({...shot,duration:clamp(Math.hypot(from.x-shot.target.x,from.y-shot.target.y,from.z-shot.target.z)/(power?65:45),.07,.45)});if(projectiles.length>16)projectiles.shift();
+  if(result.hit){hitUntil=run.time+(result.defeated?.22:.1);say(result.defeated?'병원체 제거':power?'충전탄 명중':'');}
+  pitch=clamp(pitch+(power?.024:.004),-1.45,1.45);
  }
  function equip(id){
   if(!cell||id===inventory.tool||!PILOT_TOOLS.some(t=>t.id===id))return false;
-  previousTool=inventory.tool;inventory.tool=id;actionBlocked=previousAction;progress=0;workKey='';scoped=false;guideTime=-Infinity;say(pilotTool(id).name);return true;
+  previousTool=inventory.tool;inventory.tool=id;charge=0;chargeHeld=false;actionBlocked=previousAction;progress=0;workKey='';scoped=false;guideTime=-Infinity;say(pilotTool(id).name);return true;
  }
  function cycle(direction=1){if(!inventory)return false;const i=PILOT_TOOLS.findIndex(t=>t.id===inventory.tool);return equip(PILOT_TOOLS[(i+(direction<0?-1:1)+PILOT_TOOLS.length)%PILOT_TOOLS.length].id);}
  function previous(){return equip(previousTool);}
@@ -107,7 +121,7 @@ export function createCityPilot(){
   if(!run.cells.includes(cell)||cell.lost||run.status!=='running'||pilotedCell(run)!==cell){stop();return;}
   if(!Number.isFinite(dt)||dt<=0)return;dt=Math.min(.05,dt);
   const p=position();previousPosition={...p};previousEye=eye();
-  projectiles=projectiles.filter(s=>run.time-s.at<s.duration+.14);
+  projectiles=projectiles.filter(s=>run.time-s.at<s.duration+(s.charged?.55:.3));
   let forward=clamp(input.forward||0,-1,1),strafe=clamp(input.strafe||0,-1,1);
   if(watched&&!pilotObservation(run,watched)){closeObservation();say('관찰 대상 이동 종료');}
   if(following){
@@ -122,7 +136,7 @@ export function createCityPilot(){
   if(input.grapple&&!grappleHeld&&!riding)attachGrapple();grappleHeld=!!input.grapple;advanceGrapple(dt,p);
   const tethered=grapple?.phase==='attached',pulling=grapple?.phase==='pulling';
   const normal=Math.max(1,Math.hypot(forward,strafe)),moving=Math.hypot(forward,strafe)>.05;
-  yaw+=(input.turn||0)*dt*1.8;pitch=clamp(pitch+(input.look||0)*dt*1.2,-1.45,1.45);scoped=!!input.scope;
+  yaw+=(input.turn||0)*dt*1.8;pitch=clamp(pitch+(input.look||0)*dt*1.2,-1.45,1.45);scoped=!!input.scope&&inventory.tool!=='engulf';
   if(input.flight&&!flightHeld)toggleFlight();flightHeld=!!input.flight;
   const stayLow=crouch>.5&&!world.fitsBody({...p,y:jumpHeight},.62);crouch=mix(crouch,input.crouch&&!flying&&!tethered||stayLow?1:0,1-Math.exp(-18*dt));sprinting=!!input.sprint&&crouch<.5&&!scoped&&moving&&cell.energy>0;
   if(riding){jumpVelocity=0;vx=vz=0;}
@@ -154,12 +168,17 @@ export function createCityPilot(){
   if(cell.integrity<=0){cell.lost=true;stop();return;}
   const rawUse=!!(input.use||input.fire||input.interact);if(!rawUse){actionBlocked=false;workTarget='';}const use=rawUse&&!actionBlocked;
   if(inventory.tool==='engulf'){
-   if(use&&cell.cooldown<=0){const e=target(),result=pilotCellAction(run,'attack',e?.id);if(result.ok){shots++;const from={x:p.x+Math.cos(yaw)*.2+Math.sin(yaw)*.25,y:eye()-.14,z:p.z+Math.sin(yaw)*.2-Math.cos(yaw)*.25};shot={at:run.time,from,target:result.impact,hit:result.hit,defeated:result.defeated};projectiles.push({...shot,duration:clamp(Math.hypot(from.x-shot.target.x,from.y-shot.target.y,from.z-shot.target.z)/45,.09,.45)});if(projectiles.length>16)projectiles.shift();if(result.hit){hitUntil=run.time+.1;say(result.defeated?'병원체 제거':'명중');}pitch=clamp(pitch+.003,-1.45,1.45);}else say(result.text);}
+   const held=!!input.scope;
+   if(held&&cell.cooldown<=0)charge=Math.min(1,charge+dt/1.05);
+   if(!held&&chargeHeld&&charge>0){fire(Math.max(.15,charge));charge=0;}
+   else if(use&&!held&&cell.cooldown<=0)fire();
+   chargeHeld=held;
   }else{
    const object=focus(),goal=object?.job,def=pilotTool(inventory.tool),at=object?.near,ready=(pilotCooldowns(run)[def.id]||0)<=run.time;
    if(use&&object){if(!workTarget)workTarget=object.key;else if(workTarget!==object.key){actionBlocked=true;say('대상 변경 · 다시 사용');}}
    const pulling=def.id==='tractor'&&goal?.debris,mobileWork=def.id==='tractor',acting=use&&!actionBlocked&&goal&&at&&ready&&(mobileWork||Math.hypot(vx,vz)<.25&&grounded);
    if(acting&&goal.cell&&['oxygen','nutrient','repair'].includes(def.id))reserveSandboxCell(run,goal.cell);
+   if(acting&&goal.resident)reserveResident(run,goal.resident);
    if(workKey!==goal?.id){progress=0;workKey=goal?.id||'';}
    if(acting){progress+=dt;if(progress>= def.duration){
     const result=pilotCellAction(run,pulling?'tractor-pull':def.id,goal.id,dt);progress=0;say(result.text);
@@ -173,11 +192,12 @@ export function createCityPilot(){
   else if(goal.id!==guideKey||run.time-guideTime>2){guideTime=run.time;guideKey=goal.id;guide=world.route(p,goal,'neutrophil');}
  }
  function view(alpha=1){
-  if(!cell)return null;const actual=position(),goal=objective(),def=pilotTool(inventory.tool),aim=target(scoped?18:undefined);let next=goal;
+  if(!cell)return null;const actual=position(),goal=objective(),def=pilotTool(inventory.tool),aim=target();let next=goal;
   if(guide.length){let closest=0;for(let i=1;i<guide.length;i++)if(distance(actual,guide[i])<distance(actual,guide[closest]))closest=i;guide=guide.slice(closest);next=guide.find(q=>distance(actual,q)>1.1)||goal;}
   const t=clamp(alpha,0,1),p=previousPosition?{x:mix(previousPosition.x,actual.x,t),z:mix(previousPosition.z,actual.z,t)}:actual;
-  const objects=pilotObjects(run),pose={position:actual,yaw,pitch,eye:eye()},interaction=pilotFocus(run,pose,world,objects),inspectable=interaction||pilotFocus(run,pose,world,objects,true);
-  return {cell,inventory,tool:def,position:p,eye:mix(previousEye,eye(),t),goal,next,guide,yaw,pitch,aim,theme,eventsEnabled:sandboxEventsEnabled(run),interaction,inspectable,observed:pilotObservation(run,watched),following,riding,grapple:grapple?{phase:grapple.phase,from:{...p,y:eye()-.1},target:grapple.tip,length:grapple.length,pullRequested:grapple.pullRequested}:null,projectiles:projectiles.map(s=>({...s,progress:clamp((run.time-s.at)/s.duration,0,1),impactAge:Math.max(0,run.time-s.at-s.duration)})),shot:shot&&run.time-shot.at<.18?{...shot,progress:(run.time-shot.at)/.18}:null,incidents:sandboxIncidents(run).filter(e=>distance(p,e)<18).sort((a,b)=>distance(p,a)-distance(p,b)).slice(0,2),workPulse:workPulse&&run.time-workPulse.at<.8?{...workPulse,progress:(run.time-workPulse.at)/.8}:null,using:previousAction&&!actionBlocked,progress:progress/(def.duration||1),notice:run.time<noticeUntil?notice:'',shots,deliveries,oxygen,actions,cooldown:Math.max(0,(pilotCooldowns(run)[def.id]||0)-run.time),hit:run.time<hitUntil,hurt:run.time<hurtUntil,distance:distance(actual,goal),sprinting,crouching:crouch>.5,scoped,airborne:!grounded,speed:Math.hypot(vx,vz),water:theme==='2'&&world.town.source.isWater(actual),flying,height:jumpHeight,stuck:stuck>1.2,beam};
+  const objects=pilotObjects(run),pose={position:actual,yaw,pitch,eye:eye()},interaction=pilotFocus(run,pose,world,objects),inspectable=pilotFocus(run,pose,world,objects,true)||interaction;
+  const social=inspectable&&(inspectable.cell||inspectable.resident)&&inspectable.distance<=3.2?inspectable:null,buddy=companionCell(run);
+  return {cell,inventory,tool:def,position:p,charge,charging:chargeHeld,social,buddy,canAccompany:canAccompany(social?.cell),eye:mix(previousEye,eye(),t),goal,next,guide,yaw,pitch,aim,theme,eventsEnabled:sandboxEventsEnabled(run),interaction,inspectable,observed:pilotObservation(run,watched),following,riding,grapple:grapple?{phase:grapple.phase,from:{...p,y:eye()-.1},target:grapple.tip,length:grapple.length,pullRequested:grapple.pullRequested}:null,projectiles:projectiles.map(s=>({...s,progress:clamp((run.time-s.at)/s.duration,0,1),impactAge:Math.max(0,run.time-s.at-s.duration)})),shot:shot&&run.time-shot.at<.18?{...shot,progress:(run.time-shot.at)/.18}:null,incidents:sandboxIncidents(run).filter(e=>distance(p,e)<18).sort((a,b)=>distance(p,a)-distance(p,b)).slice(0,2),workPulse:workPulse&&run.time-workPulse.at<.8?{...workPulse,progress:(run.time-workPulse.at)/.8}:null,using:previousAction&&!actionBlocked,progress:progress/(def.duration||1),notice:run.time<noticeUntil?notice:'',shots,deliveries,oxygen,actions,cooldown:Math.max(0,(pilotCooldowns(run)[def.id]||0)-run.time),hit:run.time<hitUntil,hurt:run.time<hurtUntil,distance:distance(actual,goal),sprinting,crouching:crouch>.5,scoped,airborne:!grounded,speed:Math.hypot(vx,vz),water:theme==='2'&&world.town.source.isWater(actual),flying,height:jumpHeight,stuck:stuck>1.2,beam};
  }
- return {start,stop,step,view,objective,equip,cycle,previous,matchTool,nextDestination,setTheme,chooseDestination,resetMotion,toggleFlight,recoverPosition,observe,closeObservation,toggleFollowing,toggleRide,toggleEvents(){if(run)setSandboxEvents(run,!sandboxEventsEnabled(run));},get active(){return !!cell;},get cell(){return cell;},get run(){return run;},get world(){return world;},look(dx,dy){const sensitivity=scoped?.00125:.0025;yaw+=clamp(dx,-180,180)*sensitivity;pitch=clamp(pitch-clamp(dy,-180,180)*sensitivity,-1.45,1.45);}};
+ return {start,stop,step,view,objective,equip,cycle,previous,matchTool,nextDestination,setTheme,chooseDestination,resetMotion,toggleFlight,recoverPosition,observe,closeObservation,toggleFollowing,toggleRide,greet,toggleCompanion,toggleEvents(){if(run)setSandboxEvents(run,!sandboxEventsEnabled(run));},get active(){return !!cell;},get cell(){return cell;},get run(){return run;},get world(){return world;},look(dx,dy){const sensitivity=scoped?.00125:.0025;yaw+=clamp(dx,-180,180)*sensitivity;pitch=clamp(pitch-clamp(dy,-180,180)*sensitivity,-1.45,1.45);}};
 }

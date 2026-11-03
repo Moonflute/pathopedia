@@ -121,7 +121,7 @@ test('zero materials and energy permit repair while remote jobs remain blocked a
 
 for(const theme of ['2','1'])test('theme '+theme+': workstations have reachable approaches; aimed work stops when looking away',()=>{
  const s=city(),p=createCityPilot(),sites=pilotSites(s),lung=sites.find(x=>x.key==='oxygen:lung');assert.equal(sites.length,13);s.districts.lung.oxygen=20;
- assert.ok(p.start(s,{theme,spawn:lung.approach}));
+ assert.ok(p.start(s,{theme,spawn:lung.approach}));s.cells=[p.cell];
  for(const site of sites){assert.ok(p.world.canStand(site.approach),site.key);assert.ok(p.world.route(lung.approach,site.approach,'neutrophil').length,site.key+' reachable');}
  aim(p,lung.target,lung.height);assert.equal(p.view().interaction.key,lung.key);const original=p.cell;assert.ok(p.matchTool());assert.equal(p.view().tool.id,'oxygen');assert.equal(p.cell,original);
  const away={x:p.view().position.x,z:p.view().position.z+2};aim(p,away);hold(p,1);assert.equal(s.districts.lung.oxygen,20,'proximity alone cannot supply');p.step(.05);

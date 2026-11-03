@@ -68,3 +68,10 @@
 .cc-pilot-controls dt{color:#f4d487;font:12px/1.5 ui-monospace,monospace}.cc-pilot-controls dd{margin:0;color:#fff1d7}
 .cc-pilot-actions [data-pilot-ride]{position:absolute;right:0;bottom:calc(100% + 6px);width:100%}
 @media(max-height:520px){.cc-pilot .cc-pilot-controls{padding:12px;gap:5px 12px;font-size:11px}.cc-pilot-paused{gap:8px}.cc-pilot-paused>div{padding:4px}.cc-pilot-paused button{min-height:44px;padding:8px 15px}}
+
+.cc-pilot .cc-pilot-social{position:absolute;top:calc(50% + 62px);left:50%;transform:translateX(-50%);display:flex;justify-content:center;gap:6px;max-width:calc(100% - 32px)}
+.cc-game .cc-pilot-social button{min-height:44px;padding:7px 12px;font-size:12px;white-space:nowrap}
+.cc-pilot[data-charging=true] .cc-pilot-crosshair{color:#9affdf;text-shadow:0 0 12px #70ffd1;font-size:32px}
+.cc-pilot .cc-pilot-paused{overflow-y:auto;box-sizing:border-box;padding:12px}
+@media(max-height:520px){.cc-game .cc-pilot-social button{font-size:11px;padding:6px 10px}.cc-pilot .cc-pilot-social{top:calc(50% + 48px)}}
+@media(max-height:520px){.cc-pilot:has(.cc-pilot-social button:not([hidden])) .cc-pilot-selected{display:none}}

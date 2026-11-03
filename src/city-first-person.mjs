@@ -7,7 +7,7 @@ import {createPilotTools} from './city-pilot-tools.mjs';
 import {pilotToolIcon} from './city-pilot-icons.mjs';
 import {cityRule} from './city-rules.mjs';
 import {groundPoint,pilotCameraRange} from './city-three-layout.mjs';
-import {pathogenDef} from './city-pathogens.mjs';
+import {pilotEnemyName,pilotEnemyHP,pilotEnemyMaxHP} from './city-pilot-combat.mjs';
 import {createPilotFixtures} from './city-pilot-fixtures.mjs';
 import {createPilotEffects} from './city-pilot-effects.mjs';
 import {createPilotAudio} from './city-pilot-audio.mjs';
@@ -26,10 +26,11 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
  <div class="cc-pilot-feedback" role="status" data-pilot-feedback></div><div class="cc-pilot-transfer"><progress data-pilot-transfer max="1" value="0"></progress><span data-pilot-action-hint></span></div>
  <div class="cc-pilot-bottom"><div class="cc-pilot-vitals"><strong data-pilot-health></strong><span data-pilot-energy></span><small data-pilot-cargo></small><small data-pilot-score></small></div><div class="cc-pilot-map"><canvas width="160" height="160" aria-label="세포 위치와 목적지 지도"></canvas></div></div>
  <div class="cc-pilot-selected"><button type="button" data-pilot-cycle="-1" aria-label="이전 도구" hidden>‹</button><div><strong data-pilot-selected></strong><small data-pilot-ready></small></div><button type="button" data-pilot-cycle="1" aria-label="다음 도구" hidden>›</button></div><div class="cc-pilot-hotbar" role="group" aria-label="도구 퀵슬롯">${toolButtons()}</div>
+ <div class="cc-pilot-social"><button type="button" data-pilot-greet hidden>E · 인사</button><button type="button" data-pilot-companion hidden>G · 동행</button></div>
  <div class="cc-pilot-context"><button type="button" data-pilot-observe>관찰</button><button type="button" data-pilot-grapple aria-pressed="false">F · 갈고리 발사</button><button type="button" data-pilot-ride hidden>B · 탑승</button></div>
  <div class="cc-pilot-stick" role="group" aria-label="세포 이동 조이스틱"><i></i></div><div class="cc-pilot-actions" aria-label="터치 조작"><button type="button" data-pilot-toggle="sprint" aria-pressed="false">달리기</button><button type="button" data-pilot-hold="crouch">앉기</button><button type="button" data-pilot-hold="jump">점프</button><button type="button" data-pilot-hold="scope">조준</button><button type="button" data-pilot-grapple aria-pressed="false">갈고리 발사</button><button type="button" data-pilot-ride hidden>탑승</button><button type="button" data-pilot-hold="use">사격</button></div>
  <div class="cc-pilot-keys">WASD 이동 · &#96; 비행 · F 발사·다시 당기기 · Esc 메뉴</div>
- <div class="cc-pilot-paused" hidden><dl class="cc-pilot-controls"><dt>F</dt><dd>갈고리 발사 · 고정</dd><dt>F 다시</dt><dd>자동 당기기 · 도착하면 해제</dd><dt>&#96;</dt><dd>제트팩 켜기 · 끄기</dd><dt>Space / Ctrl</dt><dd>비행 중 상승 / 하강</dd><dt>클릭 / E</dt><dd>도구 사용 · 펄스건 연사</dd><dt>Z</dt><dd>대상 지원 도구 선택</dd></dl><div><button type="button" data-pilot-resume>▶ 계속하기</button><button type="button" data-pilot-exit>도시로 ↗</button></div></div>
+ <div class="cc-pilot-paused" hidden><dl class="cc-pilot-controls"><dt>F</dt><dd>갈고리 발사 · 고정</dd><dt>F 다시</dt><dd>자동 당기기 · 도착하면 해제</dd><dt>&#96;</dt><dd>제트팩 켜기 · 끄기</dd><dt>Space / Ctrl</dt><dd>비행 중 상승 / 하강</dd><dt>클릭</dt><dd>도구 사용 · 펄스건 연사</dd><dt>우클릭 유지 → 놓기</dt><dd>충전탄 발사</dd><dt>E / G</dt><dd>세포 인사 / 동행·해제</dd><dt>Z</dt><dd>대상 지원 도구 선택</dd></dl><div><button type="button" data-pilot-resume>▶ 계속하기</button><button type="button" data-pilot-exit>도시로 ↗</button></div></div>
  <div class="cc-pilot-error" hidden><p>조종할 세포를 충원해 주세요</p><button type="button" data-pilot-exit>도시로 ↗</button></div>`;
  const placement=document.createElement('section');placement.className='cc-pilot-placement';placement.hidden=true;placement.setAttribute('aria-label','1인칭 시작 위치 선택');
  placement.innerHTML='<div><strong>어디서 시작할까요?</strong><span role="status">길이나 수로를 클릭하세요</span></div><button type="button" aria-label="시작 위치 선택 취소">취소 <kbd>Esc</kbd></button>';
@@ -69,7 +70,7 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
   if(!choosing)return;previewSpawn(point);
   if(!spawnPreview?.valid){placement.dataset.invalid='true';placement.querySelector('[role="status"]').textContent='빈 길이나 수로를 선택하세요';return;}
   failed=!model.start(run,{preferred,theme,spawn:spawnPreview});choosing=false;spawnPreview=null;spawnWorld=null;placement.hidden=true;hud.hidden=false;q('.cc-pilot-error').hidden=!failed;game.dataset.pilot='explorer';if(failed)return;
-  root.visible=true;lastHud=-Infinity;lastTool='';lastRender=0;canvas.setAttribute('aria-label','세포 1인칭. WASD 이동, 마우스 시점, 휠 또는 1·2·3·4·0 도구 전환, Q 직전 도구, Z 맞는 도구, 클릭 또는 E 사용, 백틱 제트팩, F 갈고리 발사와 다시 눌러 자동 당기기, Space 점프 또는 상승, Shift 달리기, Ctrl 앉기 또는 하강, Escape 메뉴.');onMode('start');canvas.focus({preventScroll:true});render(performance.now(),1);lock();
+  root.visible=true;lastHud=-Infinity;lastTool='';lastRender=0;canvas.setAttribute('aria-label','세포 1인칭. WASD 이동, 마우스 시점, 휠 또는 1·2·3·4·0 도구 전환, Q 직전 도구, Z 맞는 도구, 클릭 사용, 우클릭 유지 후 놓아 충전탄, E 세포 인사, G 동행 또는 해제, 백틱 제트팩, F 갈고리 발사와 다시 눌러 자동 당기기, Space 점프 또는 상승, Shift 달리기, Ctrl 앉기 또는 하강, Escape 메뉴.');onMode('start');canvas.focus({preventScroll:true});render(performance.now(),1);lock();
  }
  on(placement.querySelector('button'),'click',exit);
  on(hud,'pointerdown',()=>audio.unlock());
@@ -82,6 +83,8 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
   else if(b.hasAttribute('data-card-open'))pause();
   else if(b.hasAttribute('data-pilot-audio'))b.setAttribute('aria-pressed',String(audio.toggle()));
   else if(b.hasAttribute('data-pilot-grapple')&&!menu){grappleQueued=true;}
+  else if(b.hasAttribute('data-pilot-greet')&&!menu){model.greet();lastHud=-Infinity;}
+  else if(b.hasAttribute('data-pilot-companion')&&!menu){model.toggleCompanion();lastHud=-Infinity;}
   else if(b.hasAttribute('data-pilot-observe')&&!menu){model.observe();lastHud=-Infinity;}
   else if(b.hasAttribute('data-pilot-ride')&&!menu){model.toggleRide();lastHud=-Infinity;}
   else if(b.hasAttribute('data-pilot-resume'))resume();
@@ -106,6 +109,8 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
   if(e.code==='Backquote'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){touch.crouch=crouchToggle=false;model.toggleFlight();}return;}
   if(e.code==='KeyQ'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat)switched(model.previous());return;}
   if(e.code==='KeyF'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat)grappleQueued=true;return;}
+  if(e.code==='KeyG'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){model.toggleCompanion();lastHud=-Infinity;}return;}
+  if(e.code==='KeyE'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat&&!model.greet()){keys.add('KeyE');useQueued=true;}return;}
   if(e.code==='KeyT'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){model.toggleFollowing();lastHud=-Infinity;}return;}
   if(e.code==='KeyB'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){model.toggleRide();lastHud=-Infinity;}return;}
   if(e.code==='KeyX'){e.preventDefault();e.stopImmediatePropagation();if(!e.repeat){model.closeObservation();lastHud=-Infinity;}return;}
@@ -164,27 +169,28 @@ export function createFirstPerson(canvas,{map,game,onMode,theme:readTheme,select
   const range=pilotCameraRange(v.eye);camera.near=range.near;camera.far=range.far;camera.aspect=aspect;camera.fov+=(fov-camera.fov)*(1-Math.exp(-12*dt));camera.updateProjectionMatrix();camera.position.set(v.position.x,v.eye,v.position.z);camera.rotation.set(v.pitch,-v.yaw,v.flying?Math.sin(now*.001)*.003:0,'YXZ');camera.updateMatrixWorld();heldTools.update(v,now,aspect,menu==='pause',map.clientHeight);fixtures.update(run,v);effects.update(v,run.time);life.update(run,v);audio.update(run,v,!!menu);
   const navigating=!v.goal.idle&&!v.grapple&&!v.riding;beacon.visible=guide.visible=navigating;q('.cc-pilot-waypoint').hidden=!navigating;beacon.position.set(v.goal.x,.15,v.goal.z);guide.count=0;let length=0,previous=v.position;
   for(const next of v.guide){const d=Math.hypot(next.x-previous.x,next.z-previous.z);if(length>14)break;for(let i=.6;i<d&&guide.count<100;i+=.6){if(length+i>14)break;dummy.position.set(previous.x+(next.x-previous.x)*i/d,.13,previous.z+(next.z-previous.z)*i/d);dummy.updateMatrix();guide.setMatrixAt(guide.count++,dummy.matrix);}length+=d;previous=next;}guide.instanceMatrix.needsUpdate=true;
-  hud.dataset.hit=String(v.hit);hud.dataset.hurt=String(v.hurt);hud.dataset.scoped=String(v.scoped);fields.transfer.value=v.progress;
+  hud.dataset.hit=String(v.hit);hud.dataset.hurt=String(v.hurt);hud.dataset.scoped=String(v.scoped);hud.dataset.charging=String(v.charging);fields.transfer.value=v.charging?v.charge:v.progress;
   if(lastTool!==v.inventory.tool||lastWidth!==map.clientWidth||lastHeight!==map.clientHeight){
    lastWidth=map.clientWidth;lastHeight=map.clientHeight;lastTool=v.inventory.tool;
    for(const {def,button} of slots){const active=def.id===lastTool;button.setAttribute('aria-pressed',String(active));if(active)button.scrollIntoView({block:'nearest',inline:'center'});}
    for(const b of hud.querySelectorAll('[data-pilot-cycle]'))b.hidden=hotbar.scrollWidth<=hotbar.clientWidth;
-   q('[data-pilot-hold="use"]').textContent=v.tool.short;fields.selected.textContent=v.tool.name;
+   q('[data-pilot-hold="use"]').textContent=v.tool.short;q('[data-pilot-hold="scope"]').textContent=v.tool.id==='engulf'?'충전탄':'조준';fields.selected.textContent=v.tool.name;
   }
   if(now-lastHud<100)return v;lastHud=now;
   fieldUI.update(v);fields.name.textContent='탐험가 #'+v.cell.id;fields.motion.textContent=v.riding?'운반체 탑승':v.grapple?(v.grapple.phase==='flying'?'갈고리 발사':v.grapple.phase==='returning'?'갈고리 회수':v.grapple.phase==='pulling'?'갈고리 이동':'갈고리 고정'):v.following?'세포 따라가기':v.flying?'제트팩':v.airborne?'공중':v.height>.5?'지붕 위':v.crouching?'앉기':v.sprinting?'달리기':'';
   for(const b of hud.querySelectorAll('[data-pilot-ride]')){b.hidden=!v.riding&&!(v.interaction?.shipment&&v.interaction.distance<2.2)&&!v.observed?.carrier;b.textContent=v.riding?'내리기':'탑승';}
+  const greet=q('[data-pilot-greet]'),companion=q('[data-pilot-companion]');greet.hidden=!v.social||v.social.distance>2.7;greet.textContent=(touchUI()?'':'E · ')+'인사';companion.hidden=!v.buddy&&!v.canAccompany;companion.textContent=(touchUI()?'':'G · ')+(v.buddy&&(!v.canAccompany||v.social.cell===v.buddy)?'동행 해제':'동행');if(v.buddy)fields.motion.textContent+=' · 동행 #'+v.buddy.id+' HP '+Math.round(v.buddy.integrity??100);
   q('[data-pilot-observe]').hidden=!v.inspectable||!!v.observed;hud.dataset.grapple=String(!!v.grapple);
   for(const b of hud.querySelectorAll('[data-pilot-grapple]')){b.setAttribute('aria-pressed',String(!!v.grapple));b.disabled=['pulling','returning'].includes(v.grapple?.phase);b.textContent=(b.closest('.cc-pilot-context')?'F · ':'')+(v.grapple?.phase==='pulling'?'자동 이동':v.grapple?.phase==='returning'?'회수 중':v.grapple?'당기기':'갈고리 발사');}
   q('.cc-pilot-keys').textContent=v.grapple?(v.grapple.phase==='pulling'?'갈고리 이동 · 도착하면 자동 해제':v.grapple.pullRequested?'고정 후 자동 이동':'F 다시 눌러 당기기 · 도착하면 자동 해제'):'WASD 이동 · ` 비행 · F 발사·다시 당기기 · Esc 메뉴';
   hud.dataset.flying=String(v.flying);fields.altitude.textContent=v.height.toFixed(1)+' m';
   q('[data-pilot-flight]').setAttribute('aria-pressed',String(v.flying));q('[data-pilot-hold=jump]').textContent=v.flying?'상승':'점프';q('[data-pilot-hold=crouch]').textContent=v.flying?'하강':'앉기';q('.cc-pilot-unstuck').hidden=!v.stuck;
   fields.goal.textContent=v.goal.name;fields.distance.textContent=v.goal.idle?'주변 탐색':v.distance<=v.tool.range?'목표 근처':Math.round(v.distance)+' · 이동';fields.bearing.style.transform=`rotate(${Math.atan2(v.next.x-v.position.x,-(v.next.z-v.position.z))-v.yaw}rad)`;
-  const object=v.interaction,enemy=object?object.jobs.find(j=>j.enemy)?.enemy:v.aim;
-  fields.target.textContent=object?.name||(enemy?(pathogenDef(enemy.recordId)?.name||'병원체'):'');fields['object-status'].textContent=object?.status||'';fields['target-health'].hidden=!enemy;if(enemy)fields['target-health'].value=enemy.hp/(enemy.maxHp||enemy.hp);
+  const object=v.interaction||v.social,enemy=v.aim||object?.jobs.find(j=>j.enemy)?.enemy;
+  fields.target.textContent=object?.name||(enemy?pilotEnemyName(enemy):'');fields['object-status'].textContent=object?.status||'';fields['target-health'].hidden=!enemy;if(enemy)fields['target-health'].value=pilotEnemyHP(enemy)/pilotEnemyMaxHP(enemy);
   fields.match.hidden=!object||object.matching||object.idle;fields.match.textContent=object?`${touchUI()?'':'Z · '}${object.tool.key} ${object.tool.name}`:'';
   hud.dataset.target=object?(object.matching&&object.near?'ready':'focus'):'';
-  fields.feedback.textContent=v.notice;fields['action-hint'].textContent=v.progress?'작업 중':object?.matching?(object.near?(touchUI()?'사용 길게':'클릭 / E 유지')+' · '+object.action:Math.ceil(object.standDistance)+' · 접근'):object?.idle?'지금 할 작업 없음':'';
+  fields.feedback.textContent=v.notice;fields['action-hint'].textContent=v.charging?'충전 '+Math.round(v.charge*100)+'% · 놓으면 발사':v.tool.id==='engulf'?(touchUI()?'충전탄 길게 → 놓기':'좌클릭 연사 · 우클릭 충전 → 놓기'):v.progress?'작업 중':object?.matching?(object.near?(touchUI()?'사용 길게':'클릭 유지')+' · '+object.action:Math.ceil(object.standDistance)+' · 접근'):object?.idle?'지금 할 작업 없음':'';
   const selectedCooldown=v.tool.id==='engulf'?v.cell.cooldown:v.cooldown;
   fields.ready.textContent=selectedCooldown>0?selectedCooldown.toFixed(1)+'초':'';
   fields.health.textContent='HP '+Math.round(v.cell.integrity);fields.energy.textContent='에너지 '+Math.round(v.cell.energy);fields.cargo.textContent='잔해 '+v.inventory.debris+'/6';

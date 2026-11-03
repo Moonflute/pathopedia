@@ -1,3 +1,5 @@
+import {cellReaction} from './city-pilot-social.mjs';
+import {setPilotCrowd} from './city-pilot-state.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {createInstancePalette} from './city-three-instances.mjs';
 import {groundPoint} from './city-three-layout.mjs';
@@ -55,9 +57,10 @@ export function createActors(profile){
  function worker(unit,kind,id,p,t,selected,drug,readability,onWater=false,visualScale=1,simple=false){
   const look=CELL_STYLES[kind]||CELL_STYLES.courier,phase=typeof id==='number'?id:Number(id.replace('shipment',''));
   const prev=last.get(id),distance=prev?Math.hypot(p.x-prev.x,p.z-prev.z):0,movedAt=distance>.00001?t:prev?.movedAt??-1,moving=t-movedAt<.12;
-  const act=activeActivity(unit,t),progress=activityProgress(act,t),at=act?groundPoint(act):null,doing=act?.kind;
+  const response=cellReaction(lastRun,unit.id,t),act=activeActivity(unit,t),progress=response?Math.min(1,Math.max(0,(t-response.at)/.9)):activityProgress(act,t),at=response?{x:response.x,z:response.z}:act?groundPoint(act):null,doing=response?(['oxygen','nutrient'].includes(response.kind)?'load':response.kind==='repair'?'repair':'signal'):act?.kind;
   let angle=prev?.angle??.5;
-  if(distance>.00001)angle=Math.atan2(p.x-prev.x,p.z-prev.z);
+  if(response)angle=Math.atan2(response.x-p.x,response.z-p.z);
+  else if(distance>.00001)angle=Math.atan2(p.x-prev.x,p.z-prev.z);
   else if(at&&Math.hypot(at.x-p.x,at.z-p.z)>.01)angle=Math.atan2(at.x-p.x,at.z-p.z);
   last.set(id,{x:p.x,z:p.z,angle,movedAt});
   const transfer=doing==='load'||doing==='unload',hammering=['build','repair','fabricate'].includes(doing),firing=doing==='shoot',engulf=doing==='engulf',striking=doing==='cytotoxic'||doing==='degranulate',producing=doing==='produce';
@@ -69,7 +72,7 @@ export function createActors(profile){
   const base=unit.integrity<40?'#bfb9ab':kind==='rbc'?(unit.cargo>0?'#df7363':'#6697bd'):CELL_JOBS[kind]?.color||'#d7bb8b',cs=Math.cos(angle),sn=Math.sin(angle),shift=engulf||striking?reach*.43:firing?-recoil*.17:0;
   const part=(id,x,y,z,sx,sy,sz,c,rx=0,rz=0)=>put(id,p.x+(x*cs+(z+shift)*sn)*visualScale,(y+bob)*visualScale,p.z+(-x*sn+(z+shift)*cs)*visualScale,sx*visualScale,sy*visualScale,sz*visualScale,c,rx,angle,rz);
   const squeezing=unit.trafficStage==='crossing',rolling=unit.trafficStage==='rolling';
-  part(simple?'pod':'body',0,look.y,0,look.w*(squeezing?.68:1+reach*.12),look.h*(squeezing?.72:1-reach*.12),look.w*(squeezing?1.35:.88),base,0,rolling?Math.sin(t*5+phase)*.27:0);
+  part(simple?'pod':'body',0,look.y,0,look.w*(squeezing?.68:1+reach*.12+(response?beat*.14:0)),look.h*(squeezing?.72:1-reach*.12-(response?beat*.12:0)),look.w*(squeezing?1.35:.88),base,0,rolling?Math.sin(t*5+phase)*.27:0);
   if(simple){
    part('pod',0,look.y+look.h*.86,0,look.w*.85,.075,look.w*.85,look.hat);
    if(kind==='rbc'&&unit.cargo)part('pod',0,.37,-.3,.19,.26,.18,0xa5dfd4);
@@ -85,7 +88,8 @@ export function createActors(profile){
   const hands=[{x:-look.w-.025,y:look.y,z:0},{x:look.w+.025,y:look.y,z:0}];
   for(let i=0;i<2;i++){
    const side=i?1:-1,h=hands[i];
-   if(transfer){h.x=side*.23;h.y=.46+beat*.16;h.z=.22+beat*.16;}
+   if(response&&doing==='signal'){h.y=.65+Math.sin(progress*18)*.12;h.z=.12;}
+   else if(transfer){h.x=side*.23;h.y=.46+beat*.16;h.z=.22+beat*.16;}
    else if(engulf||striking||doing==='collect'){h.x=side*(.39-reach*.16);h.y=.4+reach*.13;h.z=.17+reach*.6;}
    else if(kind==='courier'){h.x=side*.24;h.z=.4;}
    else if(moving)h.z=Math.sin((onWater?t*2:stride)+side)*(onWater?.035:.09);
@@ -98,6 +102,7 @@ export function createActors(profile){
    if(!onWater)part('feet',side*look.w*.48,.075,moving?Math.sin(stride+side)*.075:firing?side*.08:0,.09,.065,.12,0x826f61);
    part('hands',h.x,h.y,h.z,.075,.095,.075,base);
   }
+  if(response&&['oxygen','nutrient'].includes(response.kind))part('pod',0,.48+beat*.1,.28,.11,.1,.11,response.kind==='oxygen'?0x8ce4ed:0xffd478);
   const hand=hands[1];
   if(kind==='neutrophil'){
    part('box',0,.64,.245,.2,.055,.035,0x91b3af);part('badge',0,.34,.25,.055,.06,.035,0x839da8);
@@ -209,18 +214,20 @@ export function createActors(profile){
   if(selected===2)put('badge',p.x,1.15,p.z,.08*readability,.14*readability,.08*readability,0x75d1cb);
  }
  function resident(c,time,selected,simple=false){
-  const p=c.point,dead=c.dead,work=c.phase>=6&&c.phase<18,sick=c.health<35||c.infected,hit=time-c.hitAt<.7,bob=dead?0:Math.sin(time*(work?5:2)+c.variant)*.025,tint=hit?0xe3a09a:sick?0xb4a0ad:c.color;
-  put(simple?'pod':'body',p.x,dead?.12:.38+bob,p.z,dead?.43:.3,dead?.1:.31,.29,tint,0,0,hit?Math.sin(time*30)*.12:0);
+  const p=c.point,r=cellReaction(lastRun,c.id,time),progress=r?Math.min(1,Math.max(0,(time-r.at)/.9)):0,beat=Math.sin(progress*Math.PI),angle=r?Math.atan2(r.x-p.x,r.z-p.z):0,cs=Math.cos(angle),sn=Math.sin(angle);
+  const dead=c.dead,work=!r&&c.phase>=6&&c.phase<18,sick=c.health<35||c.infected,hit=time-c.hitAt<.7,bob=dead?0:Math.sin(time*(work?5:2)+c.variant)*.025+beat*.06,tint=hit?0xe3a09a:sick?0xb4a0ad:c.color;
+  const part=(id,x,y,z,sx,sy,sz,color,rz=0)=>put(id,p.x+x*cs+z*sn,y,p.z-x*sn+z*cs,sx,sy,sz,color,0,angle,rz);
+  part(simple?'pod':'body',0,dead?.12:.38+bob,0,dead?.43:.3+beat*.04,dead?.1:.31-beat*.04,.29,tint,hit?Math.sin(time*30)*.12:0);
   if(dead){put('selected',p.x,.04,p.z,.8,.8,.8,0xb99c9a,Math.PI/2);return;}
-  put(simple?'pod':'cap',p.x,.64+bob,p.z,.16,.1,.17,c.variant%2?0x8daaa0:0xd2c3a1);
-  if(simple){if(work)put('box',p.x,.4,p.z+.36,.16,.12,.16,0xb99b67);if(sick||selected)put('selected',p.x,.06,p.z,.9,.9,.9,sick?0xcf8e89:0x6abbb0,Math.PI/2);return;}
-  for(const side of [-1,1]){
-   put('eyes',p.x+side*.09,.43+bob,p.z+.255,.032,sick?.025:.043,.025,0x46594f);
-   put('feet',p.x+side*.15,.07,p.z+(!work?Math.sin(time*8+c.variant+side)*.06:0),.09,.06,.12,0x948677);
-   put('hands',p.x+side*(work?.24:.33),.35+bob+(work?Math.sin(time*4+c.variant)*.1:0),p.z+(work?.25:0),.075,.09,.075,tint);
+  part(simple?'pod':'cap',0,.64+bob,0,.16,.1,.17,c.variant%2?0x8daaa0:0xd2c3a1);
+  if(!simple||r)for(const side of [-1,1]){
+   part('eyes',side*.09,.43+bob,.255,.032,sick?.025:.043,.025,0x46594f);
+   part('feet',side*.15,.07,!work&&!r?Math.sin(time*8+c.variant+side)*.06:0,.09,.06,.12,0x948677);
+   part('hands',side*(r?.24:work?.24:.33),.35+bob+(r?(r.kind==='greet'?.22+Math.sin(progress*18)*.09:beat*.12):work?Math.sin(time*4+c.variant)*.1:0),r||work?.25:0,.075,.09,.075,tint);
   }
-  if(work){const action=c.variant%5;if(action===0)put('box',p.x,.4,p.z+.4,.2,.12,.18,0xb99b67);else if(action===1)put('pod',p.x,.48,p.z+.33,.1,.13,.1,0xc8bc78);else if(action===3)put('rod',p.x+.27,.3,p.z+.27,.035,.5,.035,0x9a8970,0,0,Math.sin(time*3)*.25);else if(action===4)put('badge',p.x,.45,p.z+.38,.14,.12,.07,0x99b9ad);}
-  if(sick||selected)put('selected',p.x,.06,p.z,.9,.9,.9,sick?0xcf8e89:0x6abbb0,Math.PI/2);
+  if(r?.kind==='nutrient')part('pod',0,.48+beat*.08,.32,.1,.12,.1,0xffd478);
+  else if(work){const action=c.variant%5;if(action===0)part('box',0,.4,.4,.2,.12,.18,0xb99b67);else if(action===1)part('pod',0,.48,.33,.1,.13,.1,0xc8bc78);else if(action===3)part('rod',.27,.3,.27,.035,.5,.035,0x9a8970,Math.sin(time*3)*.25);else if(action===4)part('badge',0,.45,.38,.14,.12,.07,0x99b9ad);}
+  if(sick||selected||r)put('selected',p.x,.06,p.z,.9,.9,.9,r?0xa5edce:sick?0xcf8e89:0x6abbb0,Math.PI/2);
  }
  function freight(sh,p,time,selected,onWater){
   const tint=sh.kind==='drug'?0xb0c7b1:sh.kind==='materials'?0xbea47d:0xe3c27c,y=onWater?-.02+Math.sin(time*2+sh.id)*.04:.24;
@@ -229,6 +236,7 @@ export function createActors(profile){
   if(selected)put('selected',p.x,.06,p.z,.9,.9,.9,0x72b7a7,Math.PI/2);
  }
  function draw(s,{selectedKind,selectedCell,hiddenCell,eyePosition,readability=1,motion,visible,canals,quality=profile,pixelScale=Infinity}={}){
+  setPilotCrowd(s,{quality,selectedCell,selectedKind});
   if(lastRun!==s||lastLayout!==s.layout){last.clear();lastRun=s;lastLayout=s.layout;}
   if(lastQuality!==quality){lastQuality=quality;for(const id of shadowBatches)batches[id].castShadow=quality.actorShadows!==false;}
   const point=(unit,id)=>motion?motion.point(unit,id):groundPoint(unit),time=motion?motion.time:s.time,entries=s.layout?compileLayout(s.layout).entries:{},wide=STYLE.pathogenScale.width,tall=STYLE.pathogenScale.height;elevation=0;

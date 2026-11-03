@@ -12,11 +12,11 @@ export function pilotWork(s,c,action,id,api){
  if(action!==i.tool||action==='engulf')return {ok:false};
  if((timers[action]||0)>s.time)return {ok:false};
  const job=pilotJobs(s,action).find(j=>j.id===id),pose=pilotPose(s),p={...groundPoint(c),y:pose.eye};
- const height=job?.cell?.45:job?.enemy?.43:job?.debris?.12:.5,range=action==='tractor'&&job?.site?2.5:def.range;
+ const height=(job?.cell||job?.resident)?.45:job?.enemy?.43:job?.debris?.12:.5,range=action==='tractor'&&job?.site?2.5:def.range;
  if(!job||Math.hypot(p.x-job.x,p.z-job.z,pose.eye-height)>range)return {ok:false,text:'작업 대상 가까이 이동'};
  if(action==='tractor'&&job.debris&&Math.hypot(p.x-job.x,p.z-job.z)>1.1)return {ok:false};
  if(!pilotWorld(s.layout,pose.theme).clear(p,{...job,y:height}))return {ok:false,text:'장애물 옆으로 이동'};
- if(job.cell){const result=sandboxCellWork(s,c,job,api);if(result.ok)timers[action]=s.time+Math.max(.8,def.interval);return result;}
+ if(job.cell||job.resident){const result=sandboxCellWork(s,c,job,api);if(result.ok)timers[action]=s.time+Math.max(.8,def.interval);return result;}
  let result,kind='collect';
  if(action==='oxygen'){
   const d=s.districts[job.site],amount=Math.min(32,100-d.oxygen);if(amount<=0)return {ok:false};

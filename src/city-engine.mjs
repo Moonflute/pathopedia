@@ -28,6 +28,8 @@ import {tickCellMemory} from './city-cell-memory.mjs';
 import {coordinatedTarget,sandboxOrder,sandboxReserved} from './city-sandbox.mjs';
 import {tickSandboxEvents} from './city-sandbox-events.mjs';
 import {tickPilotThreat} from './city-pilot-threats.mjs';
+import {pilotRaycast,pilotEnemyBody,pilotHostile,pilotEnemies,damagePilotEnemy,pushPilotEnemy} from './city-pilot-combat.mjs';
+import {tickCellReaction,tickCompanion,releaseCompanion,markCompanionEnemy} from './city-pilot-social.mjs';
 
 export const SAVE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
@@ -218,7 +220,7 @@ export function takeCityCell(s,id){
  setPilotedCell(s,c);return c;
 }
 export function releaseCityCell(s){
- const c=pilotedCell(s);setPilotedCell(s,null);setPilotPose(s,null);if(!c)return;
+ releaseCompanion(s);const c=pilotedCell(s);setPilotedCell(s,null);setPilotPose(s,null);if(!c)return;
  releaseWorkplace(c);c.activity=null;c.dock=null;c.perfusionId=null;c.assignment=null;c.task=CELL_JOBS[c.kind].task;
  if(s.cells.includes(c))route(c,[point(s,c.kind==='rbc'?(c.cargo?c.target:'lung'):c.target)]);
 }
@@ -226,21 +228,23 @@ export function pilotCellAction(s,action,id,dt){
  const c=pilotedCell(s);if(!c||!s.cells.includes(c)||c.lost||s.status!=='running')return {ok:false,text:'세포 조종 종료'};
  const p=groundPoint(c),near=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b),inventory=pilotInventory(s),pose=pilotPose(s);
  if(action==='tractor-pull'){const pulled=pilotPull(s,c,id,dt);return pulled.ok&&pulled.collect?pilotWork(s,c,'tractor',id,frontierAPI):{...pulled,pulling:pulled.ok};}
- if(action==='attack'&&inventory.tool==='engulf'){
+ if(['attack','charge'].includes(action)&&inventory.tool==='engulf'){
   const def=pilotTool('engulf'),world=pilotWorld(s.layout,pose.theme),from={...p,y:pose.eye},direction={x:Math.sin(pose.yaw||0)*Math.cos(pose.pitch||0),y:Math.sin(pose.pitch||0),z:-Math.cos(pose.yaw||0)*Math.cos(pose.pitch||0)};
-  const wall=world.trace(from,direction,def.range),limit=wall?.distance??def.range;
-  let e=null,depth=limit;
-  for(const enemy of s.enemies){if(enemy.dead||!enemy.entered||enemy.compartment==='lumen')continue;const q=groundPoint(enemy),x=q.x-p.x,y=.43-pose.eye,z=q.z-p.z,t=x*direction.x+y*direction.y+z*direction.z;
-   if(t<0||t>depth||x*x+y*y+z*z-t*t>.43**2||!world.clear(from,{...q,y:.43}))continue;e=enemy;depth=t;}
+  const charged=action==='charge',power=charged?clamp(Number(dt)||0,.15,1):0,ray=pilotRaycast(s,world,from,direction,def.range),e=ray.enemy;
   const rule=cityRule(s,'neutrophil');if(c.cooldown>0)return {ok:false};
   if(id!=null&&(!e||id!==e.id))return {ok:false};
   if(e&&(!ruleReady(s,'neutrophil',near.id)||!ruleEnemy(s,'neutrophil',e)))return {ok:false,text:'현재 전투 규칙에서 공격 불가'};
-  c.cooldown=def.interval;
-  const impact=e?{...groundPoint(e),y:.43}:wall||{x:p.x+direction.x*def.range,y:pose.eye+direction.y*def.range,z:p.z+direction.z*def.range};
-  if(!e)return {ok:true,hit:false,impact,text:wall?'표면 명중':'사격'};
-  const organ=s.districts[near.id],depot=frontDepot(s,c),support=antibodySupport(s,e.recordId,near.id),capsule=1-(pathogenDef(e.recordId)?.capsule||0)*(1-support);
-  const amount=rule.params.damage*.6*(s.policy==='defense'?1.3:1)*clamp(organ.oxygen/45,.3,1)*((depot?depot.food:organ.food)>0?1:.5)*(organ.supportUntil>s.time?1.15:1)*(1+support*.85+(e.c3b||0)*.8)*capsule*immuneClearance(s,near.id);
-  damage(s,e,amount,c,JOBS.neutrophil.color,'shot');beginActivity(s,c,'shoot',.22,e);c.task='직접 조종 · 사격 지원';return {ok:true,hit:true,defeated:e.dead,amount,impact};
+  c.cooldown=charged?.65:def.interval;const {impact}=ray;
+  if(!e&&!charged)return {ok:true,hit:false,impact,text:ray.wall?'표면 명중':'사격'};
+  const radius=charged?1.3+power*2:0,targets=charged?pilotEnemies(s).filter(other=>{if(!pilotHostile(other)||!ruleReady(s,'neutrophil',near.id)||!ruleEnemy(s,'neutrophil',other))return false;const b=pilotEnemyBody(s,other),d=Math.hypot(b.x-impact.x,b.y-impact.y,b.z-impact.z);return other===e||d<radius+Math.min(b.rx,b.ry,b.rz)&&world.clear(from,b)&&world.clear(impact,b);}):[e];
+  let amount=0,defeated=false;const bursts=[];
+  for(const other of targets){
+   const support=antibodySupport(s,other.recordId,near.id),capsule=1-(pathogenDef(other.recordId)?.capsule||0)*(1-support);
+   const dealt=rule.params.damage*.6*(charged?3+power*4:1)*(s.policy==='defense'?1.3:1)*(1+support*.85+(other.c3b||0)*.8)*capsule*immuneClearance(s,near.id);
+   damagePilotEnemy(s,other,dealt,c,JOBS.neutrophil.color,damage);amount+=dealt;defeated||=other.dead;markCompanionEnemy(s,other);
+   if(other.dead)bursts.push(pilotEnemyBody(s,other));else if(charged)pushPilotEnemy(s,other,world,p,.7+power*1.8);
+  }
+  beginActivity(s,c,'shoot',charged?.4:.22,e||groundCoordinate(impact));c.task='직접 조종 · 사격 지원';return {ok:true,hit:targets.length>0,defeated,amount,impact,charged,power,radius,bursts};
  }
  return pilotWork(s,c,action,id,frontierAPI);
 }
@@ -300,7 +304,8 @@ function specialist(s,c,dt){
 function updateCell(s,c,dt,speed,data){
   c.cooldown=Math.max(0,c.cooldown-dt);c.waitReason='';c.nextTask='';
   if(pilotedCell(s)===c)return;
-  if(sandboxReserved(s,c))return;
+  if(sandboxReserved(s,c)||tickCellReaction(s,c,dt))return;
+  if(tickCompanion(s,c,dt,frontierAPI))return;
   if(updateCombatCondition(s,c,dt,frontierAPI))return;
   if(s.specialists&&workAtOrgan(s,c,dt,frontierAPI))return;
   if(s.specialists&&frontierCell(s,c,dt,frontierAPI))return;

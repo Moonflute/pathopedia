@@ -5,6 +5,7 @@ import {compileCanalLayout} from './city-canal-layout.mjs';
 import {groundPoint,groundCoordinate} from './city-three-layout.mjs';
 import {TISSUES} from './city-frontier-data.mjs';
 import {showCityResident} from './city-quality.mjs';
+import {residentSocialTime} from './city-pilot-social.mjs';
 
 export const RESIDENT_LIMIT=192;
 const cache=new WeakMap();
@@ -58,7 +59,7 @@ export function createResidentView(){
   result.length=0;
   for(const v of views){
    if(!showCityResident(v.id,stride,selectedCell,showAll))continue;
-   const health=state.get(v.id),phase=(time+v.variant*2.7)%28,move=phase<6?phase/6:phase<18?1:phase<24?1-(phase-18)/6:0,damaged=health?.health??s.districts[v.site]?.hp??100;
+   const health=state.get(v.id),phase=(residentSocialTime(s,v.id,time)+v.variant*2.7)%28,move=phase<6?phase/6:phase<18?1:phase<24?1-(phase-18)/6:0,damaged=health?.health??s.districts[v.site]?.hp??100;
    v.point.x=v.anchor.x+(v.end.x-v.anchor.x)*move;v.point.z=v.anchor.z+(v.end.z-v.anchor.z)*move;
    const p=groundCoordinate(v.point);v.x=p.x;v.y=p.y;v.health=damaged;v.dead=health?.dead||damaged<=0;v.hitAt=health?.hitAt??-100;v.growUntil=health?.growUntil;v.phase=phase;
    v.task=health?.growUntil?'세포 재생 중':damaged<=0?'조직 재생 대기':v.infected?'감염 반응':damaged<35?'손상 · 회복 중':phase<6||phase>=18&&phase<24?'동네 산책':RESIDENT_ACTIVITIES[1+v.variant%5];result.push(v);
@@ -71,7 +72,7 @@ export function residentView(s){return createResidentView()(s);}
 export function residentCount(s){return plans(s.layout).length;}
 export function injureResidents(s,site,amount,point,tissue){
  const state=ensureResidents(s);if(!state||amount<=0)return;
- const at=point?groundPoint(point):siteAt(s.layout,site),catalog=plans(s.layout),distance=plan=>{const p=position(plan,s.time);return Math.hypot(p.x-at.x,p.z-at.z);},options=catalog.filter(p=>p.site===site&&(tissue==null||p.tissue===tissue)).sort((a,b)=>distance(a)-distance(b));
+ const at=point?groundPoint(point):siteAt(s.layout,site),catalog=plans(s.layout),distance=plan=>{const p=position(plan,residentSocialTime(s,plan.id,s.time));return Math.hypot(p.x-at.x,p.z-at.z);},options=catalog.filter(p=>p.site===site&&(tissue==null||p.tissue===tissue)).sort((a,b)=>distance(a)-distance(b));
  const plan=options.find(p=>!state.people.find(q=>q.id===p.id)?.dead);if(!plan)return;
  const p=state.people.find(q=>q.id===plan.id);p.health=Math.max(0,p.health-amount*4);p.hitAt=s.time;p.dead=p.health<=0;
 }

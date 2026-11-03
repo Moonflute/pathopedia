@@ -1,8 +1,10 @@
+import {cellReaction} from './city-pilot-social.mjs';
+import {pilotResidents} from './city-sandbox.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {activeActivity,activityProgress} from './city-activity.mjs';
 import {groundPoint} from './city-three-layout.mjs';
 
-const tags={load:'▣',unload:'↓',build:'⚒',repair:'⚒',fabricate:'⚒',produce:'Y',engulf:'◎',shoot:'✦',collect:'♻',signal:'!',patch:'+',present:'MHC',prime:'MHC',degranulate:'✦',cytotoxic:'✦',regulate:'〜',net:'NET'};
+const tags={greet:'♪',join:'↗',leave:'↩',nutrient:'●',oxygen:'O₂',load:'▣',unload:'↓',build:'⚒',repair:'⚒',fabricate:'⚒',produce:'Y',engulf:'◎',shoot:'✦',collect:'♻',signal:'!',patch:'+',present:'MHC',prime:'MHC',degranulate:'✦',cytotoxic:'✦',regulate:'〜',net:'NET'};
 const tint={load:0xefc97b,unload:0x8ddae0,repair:0x9edcb8,build:0x9edcb8,produce:0xc2a0ed,engulf:0xeab88a,collect:0xafcf88,signal:0xefcd83,present:0xc4afe9,regulate:0xa3d1c8};
 export function createPilotLife(){
  const root=new T.Group(),materials=new Map(),baseMaterial=new T.SpriteMaterial(),labels=Array.from({length:8},()=>{const sprite=new T.Sprite(baseMaterial);sprite.scale.set(.48,.23,1);root.add(sprite);return sprite;});
@@ -11,13 +13,15 @@ export function createPilotLife(){
  const setRing=(x,z,size,col)=>{dummy.position.set(x,.1,z);dummy.rotation.set(-Math.PI/2,0,0);dummy.scale.setScalar(size);dummy.updateMatrix();rings.setMatrixAt(rings.count,dummy.matrix);rings.setColorAt(rings.count++,color.setHex(col));};
  return {root,update(s,v){
   labels.forEach(l=>l.visible=false);rings.count=particles.count=0;
-  const near=s.cells.filter(c=>c!==v.cell&&!c.lost).map(c=>({c,p:groundPoint(c),a:activeActivity(c,s.time)})).filter(o=>Math.hypot(o.p.x-v.position.x,o.p.z-v.position.z)<12).sort((a,b)=>Math.hypot(a.p.x-v.position.x,a.p.z-v.position.z)-Math.hypot(b.p.x-v.position.x,b.p.z-v.position.z)).slice(0,8);
-  near.forEach(({c,p,a},i)=>{
-   const kind=a?.kind||(c.waitReason?'signal':null);if(kind){labels[i].material=label(kind);labels[i].position.set(p.x,1.15,p.z);labels[i].visible=true;}
-   if(a&&['load','unload','produce','collect','present'].includes(a.kind)){
+  const near=[...s.cells,...pilotResidents(s)].filter(c=>c!==v.cell&&!c.lost).map(c=>({c,p:groundPoint(c),a:activeActivity(c,s.time),r:cellReaction(s,c.id)})).filter(o=>Math.hypot(o.p.x-v.position.x,o.p.z-v.position.z)<12).sort((a,b)=>Number(!!b.r)-Number(!!a.r)||Math.hypot(a.p.x-v.position.x,a.p.z-v.position.z)-Math.hypot(b.p.x-v.position.x,b.p.z-v.position.z)).slice(0,8);
+  near.forEach(({c,p,a,r},i)=>{
+   const kind=r?.kind||a?.kind||(c.waitReason?'signal':null);if(kind){labels[i].material=label(kind);labels[i].position.set(p.x,1.15,p.z);labels[i].visible=true;}
+   if(r&&['nutrient','oxygen','repair'].includes(r.kind))for(let n=0;n<4&&particles.count<32;n++){const t=Math.min(1,Math.max(0,(s.time-r.at)/.9+n*.08));dummy.position.set(r.x+(p.x-r.x)*t,.45+Math.sin(t*Math.PI)*.3,r.z+(p.z-r.z)*t);dummy.rotation.set(0,0,0);dummy.scale.setScalar(1.5);dummy.updateMatrix();particles.setMatrixAt(particles.count,dummy.matrix);particles.setColorAt(particles.count++,color.setHex(r.kind==='nutrient'?0xffd478:r.kind==='oxygen'?0x8ce4ed:0x9effc6));}
+   if(a&&!r&&['load','unload','produce','collect','present'].includes(a.kind)){
     const q=groundPoint(a),progress=activityProgress(a,s.time);for(let n=0;n<3&&particles.count<32;n++){let t=(progress+n/3)%1;if(a.kind==='load'||a.kind==='collect')t=1-t;dummy.position.set(p.x+(q.x-p.x)*t,.45+Math.sin(t*Math.PI)*.2,p.z+(q.z-p.z)*t);dummy.rotation.set(0,0,0);dummy.scale.setScalar(1);dummy.updateMatrix();particles.setMatrixAt(particles.count,dummy.matrix);particles.setColorAt(particles.count++,color.setHex(tint[a.kind]||0xc6d8a1));}
    }
   });
+  if(v.buddy){const p=groundPoint(v.buddy);setRing(p.x,p.z,1.2,0x7ce9c7);}
   const tracked=v.observed?.track;if(tracked){const p=groundPoint(tracked);setRing(p.x,p.z,1,0x9af4d6);}
   for(const e of v.incidents)setRing(e.x,e.z,2+Math.sin(s.time*2)*.15,e.color);
   rings.instanceMatrix.needsUpdate=true;if(rings.instanceColor)rings.instanceColor.needsUpdate=true;particles.instanceMatrix.needsUpdate=true;if(particles.instanceColor)particles.instanceColor.needsUpdate=true;
