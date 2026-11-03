@@ -19,7 +19,7 @@ import {ensureHostResponse,validateHostResponse} from './city-host-response.mjs'
 import {moveToInflammation} from './city-immune-traffic.mjs';
 import {pilotedCell,setPilotedCell,pilotInventory,validatePilotInventory,pilotPose,setPilotPose,pilotTool} from './city-pilot-state.mjs';
 import {pilotWork} from './city-pilot-work.mjs';
-import {pilotRepulse,pilotPull,pilotStaggered} from './city-pilot-gadgets.mjs';
+import {pilotPull} from './city-pilot-gadgets.mjs';
 import {pilotWorld} from './city-pilot-world.mjs';
 import {ensureHomeostasis,homeostasisCommand,tickHomeostasis,homeFoodFactor,homeMealArrival,homeDigestion,homeostasisOutput,recycleHomeRbc,validateHomeostasis} from './city-homeostasis.mjs';
 import {HOME_ORGANS,homeOrgan} from './city-homeostasis-data.mjs';
@@ -225,7 +225,6 @@ export function releaseCityCell(s){
 export function pilotCellAction(s,action,id,dt){
  const c=pilotedCell(s);if(!c||!s.cells.includes(c)||c.lost||s.status!=='running')return {ok:false,text:'세포 조종 종료'};
  const p=groundPoint(c),near=cityDistricts(s).reduce((a,b)=>dist(c,a)<dist(c,b)?a:b),inventory=pilotInventory(s),pose=pilotPose(s);
- if(action==='repulsor')return pilotRepulse(s,c);
  if(action==='tractor-pull'){const pulled=pilotPull(s,c,id,dt);return pulled.ok&&pulled.collect?pilotWork(s,c,'tractor',id,frontierAPI):{...pulled,pulling:pulled.ok};}
  if(action==='attack'&&inventory.tool==='engulf'){
   const def=pilotTool('engulf'),world=pilotWorld(s.layout,pose.theme),from={...p,y:pose.eye},direction={x:Math.sin(pose.yaw||0)*Math.cos(pose.pitch||0),y:Math.sin(pose.pitch||0),z:-Math.cos(pose.yaw||0)*Math.cos(pose.pitch||0)};
@@ -236,12 +235,11 @@ export function pilotCellAction(s,action,id,dt){
   const rule=cityRule(s,'neutrophil');if(c.cooldown>0)return {ok:false};
   if(id!=null&&(!e||id!==e.id))return {ok:false};
   if(e&&(!ruleReady(s,'neutrophil',near.id)||!ruleEnemy(s,'neutrophil',e)))return {ok:false,text:'현재 전투 규칙에서 공격 불가'};
-  if(c.energy<3)return {ok:false,text:'에너지 부족 · 심장에서 회복'};
-  c.cooldown=def.interval;c.energy-=2;
+  c.cooldown=def.interval;
   const impact=e?{...groundPoint(e),y:.43}:wall||{x:p.x+direction.x*def.range,y:pose.eye+direction.y*def.range,z:p.z+direction.z*def.range};
   if(!e)return {ok:true,hit:false,impact,text:wall?'표면 명중':'사격'};
   const organ=s.districts[near.id],depot=frontDepot(s,c),support=antibodySupport(s,e.recordId,near.id),capsule=1-(pathogenDef(e.recordId)?.capsule||0)*(1-support);
-  const amount=rule.params.damage*.6*(s.policy==='defense'?1.3:1)*clamp(organ.oxygen/45,.3,1)*((depot?depot.food:organ.food)>0?1:.5)*(organ.supportUntil>s.time?1.15:1)*(1+support*.85+(e.c3b||0)*.8)*capsule*immuneClearance(s,near.id)*clamp(c.energy/65,.35,1);
+  const amount=rule.params.damage*.6*(s.policy==='defense'?1.3:1)*clamp(organ.oxygen/45,.3,1)*((depot?depot.food:organ.food)>0?1:.5)*(organ.supportUntil>s.time?1.15:1)*(1+support*.85+(e.c3b||0)*.8)*capsule*immuneClearance(s,near.id);
   damage(s,e,amount,c,JOBS.neutrophil.color,'shot');beginActivity(s,c,'shoot',.22,e);c.task='직접 조종 · 사격 지원';return {ok:true,hit:true,defeated:e.dead,amount,impact};
  }
  return pilotWork(s,c,action,id,frontierAPI);
@@ -556,7 +554,6 @@ export function tickCity(s,dt,data,canalTransport=false){
   if(!s.specialists)for(const id of Object.keys(s.antigens))s.antibodies[id]=clamp((s.antibodies[id]||0)+dt*1.5*(1+.4*(s.districts.lymph.level-1))*output(s,'lymph'));
   for(const e of s.enemies){
     if(e.dead)continue;
-    if(pilotStaggered(s,e))continue;
     if(tickPilotThreat(s,e,dt))continue;
     if(s.frontier&&tickFrontierEnemy(s,e,dt,frontierAPI)){if(!s.biology&&!e.dead&&(s.antibodies[e.recordId]||0)>=100)damage(s,e,dt*1.3,e,'#c6df9c');continue;}
     const lung=point(s,'lung');

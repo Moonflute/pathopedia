@@ -16,7 +16,7 @@ export function pilotObservation(s,object){
  if(c){
   if(object.cell&&!s.cells.includes(c)||object.shipment&&!s.shipments.includes(c))return null;
   const detail=cellObservation(s,c),job=CELL_JOBS[c.kind];
-  const help=object.cell?['nutrient','repair','oxygen','cleanup','signal'].flatMap(tool=>sandboxCellJobs(s,tool).filter(j=>j.cell===c).map(j=>({tool,name:j.name}))):[];
+  const help=object.cell?['repair','nutrient','oxygen'].flatMap(tool=>sandboxCellJobs(s,tool).filter(j=>j.cell===c).map(j=>({tool,name:j.name}))):[];
   const card=job?.card||cellCards[c.kind];return {key:object.key,name:detail.name+' #'+c.id,task:detail.task,destination:detail.destination,cargo:detail.cargo,why:cellPrinciples[c.kind]||'물자 적재 → 배송 → 시설 하역',next:detail.waiting!=='없음'?detail.waiting:detail.next,history:cellHistory(c),help,card:card?'immune-element:'+card:null,track:c,carrier:!!object.shipment};
  }
  const enemy=object.jobs?.find(j=>j.enemy)?.enemy;

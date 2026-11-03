@@ -16,7 +16,7 @@ export function pilotSites(s){
   if(!approach)continue;
   sites.push({key:role+':'+d.id,site:d.id,role,target,approach,height:role==='oxygen'?.72:.48,radius:role==='oxygen'?.34:.48,
    name:d.short+' · '+(role==='oxygen'?(d.id==='lung'?'산소 충전기':'산소 주입구'):role==='produce'?'항원 접수대':d.id==='gut'?'보급 상자':d.id==='kidney'?'집하 상자':'보급·정비대'),
-   tool:role==='oxygen'?'oxygen':role==='produce'?'antigen':d.id==='gut'?'nutrient':d.id==='kidney'?'cleanup':'repair'});
+   tool:role==='oxygen'?'oxygen':d.id==='gut'?'nutrient':d.id==='kidney'?'tractor':'repair'});
  }
  cache.set(s.layout,{world,revision:world.revision,sites});return sites;
 }

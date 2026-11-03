@@ -48,12 +48,14 @@ for(const theme of ['2','1']){
   }
   const [key]=compileLayout(s.layout).occupied.keys(),[x,z]=key.split(',').map(Number);assert.equal(world.canStand({x,z}),false);assert.equal(world.canStand({x:CITY_RADIUS+1,z:0}),false);
  });
- test('theme '+theme+': same neutrophil carries oxygen, switches tools, walks and unloads once',()=>{
-  const s=city(),p=createCityPilot(),c=s.cells.find(c=>c.kind==='neutrophil');s.cells=[c];Object.assign(c,groundCoordinate(siteAt(s.layout,'lung')));const originalCargo=c.cargo;s.districts.heart.oxygen=20;
-  assert.ok(p.start(s,{preferred:c.id,theme}));p.equip('oxygen');p.chooseDestination('heart');aim(p,p.objective().target,.72);hold(p,1);const cargo=pilotInventory(s).oxygen;assert.ok(cargo>0);
-  const position=p.view().position;p.equip('engulf');assert.equal(p.cell,c);assert.deepEqual(p.view().position,position);assert.equal(pilotInventory(s).oxygen,cargo);assert.equal(c.cargo,originalCargo);
-  p.equip('oxygen');travel(p,pilotJobs(s,'oxygen').find(j=>j.id==='heart'));aim(p,p.objective().target,.72);const before=s.stats.oxygen;hold(p,1);assert.equal(pilotInventory(s).oxygen,0);assert.equal(s.districts.heart.oxygen,20+cargo);assert.equal(s.stats.oxygen,before+cargo);
-  for(let i=0;i<30;i++)p.step(.05,{use:true});assert.equal(s.stats.oxygen,before+cargo);assert.equal(p.view().deliveries,1);assert.ok(restoreCity(serializeCity(s)));p.stop();
+ test('theme '+theme+': oxygen supplies work repeatedly from an empty inventory without spending resources',()=>{
+  const s=city(),p=createCityPilot(),c=s.cells.find(c=>c.kind==='neutrophil');s.cells=[c];s.districts.heart.oxygen=20;
+  const originalCargo=c.cargo,stock=structuredClone(s.resources),station=pilotSites(s).find(x=>x.key==='oxygen:heart');
+  assert.ok(p.start(s,{preferred:c.id,theme,spawn:station.approach}));p.equip('oxygen');p.chooseDestination('heart');aim(p,station.target,station.height);hold(p,1);
+  assert.equal(s.districts.heart.oxygen,52);assert.equal(pilotInventory(s).oxygen,0);assert.deepEqual(s.resources,stock);
+  const position=p.view().position;p.equip('engulf');assert.equal(p.cell,c);assert.deepEqual(p.view().position,position);assert.equal(c.cargo,originalCargo);
+  p.equip('oxygen');p.step(.05);s.time+=1;hold(p,1);assert.equal(s.districts.heart.oxygen,84);assert.equal(s.stats.oxygen,64);assert.equal(p.view().deliveries,2);
+  assert.equal(pilotInventory(s).oxygen,0);assert.deepEqual(s.resources,stock);assert.ok(restoreCity(serializeCity(s)));p.stop();
  });
 }
 test('combat tool works on an RBC without changing its identity or autonomous cargo',()=>{
@@ -89,45 +91,47 @@ test('all tools wrap, Q restores the previous tool, and held use cannot spill in
  Object.assign(c,groundCoordinate(siteAt(s.layout,'heart')));p.resetMotion();p.equip('engulf');p.step(.05,{use:true});s.districts.heart.hp=50;
  p.equip('repair');aim(p,pilotJobs(s,'repair').find(j=>j.id==='heart').target);hold(p,2);assert.equal(s.districts.heart.hp,50);p.step(.05);hold(p,1.3);assert.equal(s.districts.heart.hp,58);p.stop();
 });
-for(const theme of ['2','1'])test('theme '+theme+': supply, repairs, cleanup, patching, antigen and support affect the real city',()=>{
+for(const theme of ['2','1'])test('theme '+theme+': universal repair selects the real organ, tissue, wall, lung barrier, home facility and cell',()=>{
  const s=city(),p=createCityPilot();assert.ok(p.start(s,{theme}));const i=pilotInventory(s),c=p.cell;
- const act=(tool,id)=>{p.equip(tool);const job=pilotJobs(s,tool).find(j=>j.id===id);assert.ok(job,tool+' target');Object.assign(c,groundCoordinate(job));p.resetMotion();s.time+=7;return pilotCellAction(s,tool,id);};
- const food=s.resources.food;assert.ok(act('nutrient','gut').ok);assert.equal(s.resources.food,food-20);assert.equal(i.nutrient,20);
- s.districts.heart.food=38;assert.ok(act('nutrient','heart').ok);assert.equal(i.nutrient,18);assert.equal(s.districts.heart.food,40);
- s.districts.heart.hp=96;const materials=s.resources.materials;assert.ok(act('repair','heart').ok);assert.equal(s.districts.heart.hp,100);assert.equal(s.resources.materials,materials-1);
+ const act=(tool,id)=>{p.equip(tool);const job=pilotJobs(s,tool).find(j=>j.id===id);assert.ok(job,tool+' target '+id);Object.assign(c,groundCoordinate(job));p.resetMotion();s.time+=7;if(tool==='repair'){p.step(.05);aim(p,job.target||job,job.cell?.45:job.station?.48:.65);assert.equal(p.view().interaction?.job?.id,id,'aim selects the repair action');const stock=s.resources.materials;hold(p,1.3);assert.equal(s.resources.materials,stock,'repair does not spend materials');return {ok:true};}return pilotCellAction(s,tool,id);};
+ s.resources.materials=0;s.resources.food=0;s.districts.heart.food=18;assert.ok(act('nutrient','heart').ok);assert.equal(i.nutrient,0);assert.equal(s.resources.food,0);assert.equal(s.districts.heart.food,38);
+ s.districts.heart.hp=96;const materials=s.resources.materials;assert.ok(act('repair','heart').ok);assert.equal(s.districts.heart.hp,100);assert.equal(s.resources.materials,materials);
  s.frontier.tissues[0].hp=40;assert.ok(act('repair','tissue:'+TISSUES[0].id).ok);assert.equal(s.frontier.tissues[0].hp,48);
- s.debris=[{id:++s.serial,...groundCoordinate(siteAt(s.layout,'heart')),recordId:'SAU-001'}];const debris=s.debris[0],waste=s.waste;
- assert.ok(act('cleanup','debris:'+debris.id).ok);assert.equal(s.debris.length,0);assert.equal(i.debris,1);assert.equal(s.waste,waste,'kidney handles waste after unloading');
- assert.equal(pilotCellAction(s,'cleanup','debris:'+debris.id).ok,false);assert.ok(act('cleanup','kidney').ok);assert.equal(i.debris,0);assert.equal(s.frontier.waste.stock,1);
- s.frontier.walls[0].hp=0;assert.ok(act('patch','wall:'+WALLS[0].id).ok);assert.equal(s.frontier.walls[0].hp,12);act('patch','wall:'+WALLS[0].id);act('patch','wall:'+WALLS[0].id);assert.equal(s.frontier.walls[0].hp,25);
- s.debris=[{id:++s.serial,...groundCoordinate(siteAt(s.layout,'heart')),recordId:'SAU-001'}];assert.ok(act('antigen','debris:'+s.debris[0].id).ok);assert.equal(i.antigen,'SAU-001');assert.ok(act('antigen','lymph').ok);assert.equal(i.antigen,null);assert.equal(s.frontier.inbox.filter(x=>x.recordId==='SAU-001').length,1);
- assert.equal(pilotJobs(s,'antigen').length,0,'no duplicate antigen collection');
- const energy=c.energy;assert.ok(act('signal','heart').ok);assert.equal(c.energy,energy-10);assert.equal(s.rally,'heart');assert.equal(s.districts.heart.supportUntil,s.time+15);
- p.equip('repair');p.equip('signal');assert.equal(pilotCellAction(s,'signal','heart').ok,false,'switching cannot reset the support cooldown');
- const state=JSON.stringify({districts:s.districts,resources:s.resources});const result=act('scanner','heart');assert.ok(result.ok);assert.match(result.text,/HP 100/);assert.equal(JSON.stringify({districts:s.districts,resources:s.resources}),state);
- assert.ok(restoreCity(serializeCity(s)),'all tool state is saveable');p.stop();
+ s.frontier.walls[0].hp=0;for(let n=0;n<13;n++)assert.ok(act('repair','wall:'+WALLS[0].id).ok);assert.equal(s.frontier.walls[0].hp,100,'one tool completes full wall recovery');assert.equal(pilotCellAction(s,'repair','wall:'+WALLS[0].id).ok,false);
+ s.barrier=40;assert.ok(act('repair','barrier:lung').ok);assert.equal(s.barrier,48);assert.equal(s.districts.lung.hp,100,'barrier recovery never heals a different target');
+ s.homeostasis.organs.brain.hp=40;assert.ok(act('repair','home:brain').ok);assert.equal(s.homeostasis.organs.brain.hp,48);
+ const other=s.cells.find(x=>x!==c);Object.assign(other,groundCoordinate({x:groundPoint(c).x+1,z:groundPoint(c).z}));other.integrity=40;assert.ok(act('repair','cell:'+other.id).ok);assert.equal(other.integrity,48,'damaged cells need no scanner or mode selection');
+ s.debris=[{id:++s.serial,...groundCoordinate(siteAt(s.layout,'heart')),recordId:'SAU-001'}];const debris=s.debris[0],waste=s.waste;assert.ok(act('tractor','debris:'+debris.id).ok);assert.equal(s.debris.length,0);assert.equal(i.debris,1);assert.equal(s.waste,waste);assert.ok(act('tractor','kidney').ok);assert.equal(i.debris,0);assert.equal(s.frontier.waste.stock,1);
+ const station=pilotSites(s).find(x=>x.key==='dock:heart');Object.assign(c,groundCoordinate(station.approach));p.resetMotion();aim(p,station.target,station.height);const state=JSON.stringify({districts:s.districts,resources:s.resources});assert.ok(p.observe());assert.ok(p.view().observed);assert.equal(JSON.stringify({districts:s.districts,resources:s.resources}),state);
+ assert.ok(restoreCity(serializeCity(s)));p.stop();
 });
-test('unaffordable or remote jobs cannot grant free resources; old inventory saves migrate',()=>{
- const s=city();s.pilotInventory={tool:'oxygen',oxygen:7,target:'heart'};assert.ok(restoreCity(serializeCity(s)));
- const p=createCityPilot();p.start(s);s.districts.heart.hp=40;s.resources.materials=0;p.equip('repair');Object.assign(p.cell,groundCoordinate(siteAt(s.layout,'heart')));
- assert.equal(pilotCellAction(s,'repair','heart').ok,false);assert.equal(s.districts.heart.hp,40);
+
+test('retired tool saves switch to repair while the five-slot belt and cargo stay valid',()=>{
+ assert.deepEqual(PILOT_TOOLS.map(t=>t.key),['1','2','3','4','0']);const original=city();pilotInventory(original).oxygen=7;
+ for(const id of ['cleanup','patch','antigen','signal','scanner','repulsor']){const payload=JSON.parse(serializeCity(original));payload.pilotInventory.tool=id;const saved=restoreCity(JSON.stringify(payload));assert.ok(saved);assert.equal(pilotInventory(saved).tool,'repair');assert.equal(pilotInventory(saved).oxygen,7);const p=createCityPilot();assert.ok(p.start(saved));assert.equal(p.equip(id),false);p.stop();}
+});
+
+test('zero materials and energy permit repair while remote jobs remain blocked and saves stay valid',()=>{
+ const s=city(),p=createCityPilot();p.start(s);s.districts.heart.hp=40;s.resources.materials=0;p.cell.energy=0;p.equip('repair');
+ const job=pilotJobs(s,'repair').find(j=>j.id==='heart');Object.assign(p.cell,groundCoordinate(job));p.resetMotion();p.cell.energy=0;
+ assert.equal(pilotCellAction(s,'repair','heart').ok,true);assert.equal(s.districts.heart.hp,48);assert.equal(s.resources.materials,0);assert.equal(p.cell.energy,0);
  p.equip('nutrient');assert.equal(pilotCellAction(s,'nutrient','gut').ok,false);assert.equal(pilotInventory(s).nutrient,0);
  const bad=JSON.parse(serializeCity(s));bad.pilotInventory.debris=7;assert.equal(restoreCity(JSON.stringify(bad)),null);p.stop();
 });
 
 for(const theme of ['2','1'])test('theme '+theme+': workstations have reachable approaches; aimed work stops when looking away',()=>{
- const s=city(),p=createCityPilot(),sites=pilotSites(s),lung=sites.find(x=>x.key==='oxygen:lung');assert.equal(sites.length,13);
+ const s=city(),p=createCityPilot(),sites=pilotSites(s),lung=sites.find(x=>x.key==='oxygen:lung');assert.equal(sites.length,13);s.districts.lung.oxygen=20;
  assert.ok(p.start(s,{theme,spawn:lung.approach}));
  for(const site of sites){assert.ok(p.world.canStand(site.approach),site.key);assert.ok(p.world.route(lung.approach,site.approach,'neutrophil').length,site.key+' reachable');}
  aim(p,lung.target,lung.height);assert.equal(p.view().interaction.key,lung.key);const original=p.cell;assert.ok(p.matchTool());assert.equal(p.view().tool.id,'oxygen');assert.equal(p.cell,original);
- const away={x:p.view().position.x,z:p.view().position.z+2};aim(p,away);hold(p,1);assert.equal(pilotInventory(s).oxygen,0,'proximity alone cannot load');p.step(.05);
- aim(p,lung.target,lung.height);hold(p,.3);assert.ok(p.view().progress>0);aim(p,away);hold(p,.2);assert.equal(p.view().progress,0);assert.equal(pilotInventory(s).oxygen,0);
- p.step(.05);aim(p,lung.target,lung.height);hold(p,1);assert.ok(pilotInventory(s).oxygen>0);assert.equal(p.view().workPulse.key,lung.key);assert.ok(restoreCity(serializeCity(s)));p.stop();
+ const away={x:p.view().position.x,z:p.view().position.z+2};aim(p,away);hold(p,1);assert.equal(s.districts.lung.oxygen,20,'proximity alone cannot supply');p.step(.05);
+ aim(p,lung.target,lung.height);hold(p,.3);assert.ok(p.view().progress>0);aim(p,away);hold(p,.2);assert.equal(p.view().progress,0);assert.equal(s.districts.lung.oxygen,20);
+ p.step(.05);aim(p,lung.target,lung.height);hold(p,1);assert.equal(s.districts.lung.oxygen,52);assert.equal(pilotInventory(s).oxygen,0);assert.equal(p.view().workPulse.key,lung.key);assert.ok(restoreCity(serializeCity(s)));p.stop();
 });
 
 test('aim chooses the intended debris; held use cannot sweep into a second object',()=>{
  const s=city(),p=createCityPilot(),w=pilotWorld(s.layout,'2');
- const origin=w.safe(siteAt(s.layout,'heart'),'neutrophil',q=>[-.65,.65].every(x=>w.canStand({x:q.x+x,z:q.z-1.2})&&w.clear(q,{x:q.x+x,z:q.z-1.2})));assert.ok(origin);p.start(s,{spawn:origin});p.equip('cleanup');
+ const origin=w.safe(siteAt(s.layout,'heart'),'neutrophil',q=>[-.65,.65].every(x=>w.canStand({x:q.x+x,z:q.z-1.2})&&w.clear(q,{x:q.x+x,z:q.z-1.2})));assert.ok(origin);p.start(s,{spawn:origin});p.equip('tractor');
  const targets=[{x:origin.x-.65,z:origin.z-1.2},{x:origin.x+.65,z:origin.z-1.2}];s.debris=targets.map((point,n)=>({id:++s.serial,...groundCoordinate(point),recordId:n?'SAU-001':'KPN-001'}));const [left,right]=s.debris;
  aim(p,targets[1],.12);assert.equal(p.view().interaction.key,'debris:'+right.id);hold(p,.7);assert.deepEqual(s.debris,[left]);assert.equal(pilotInventory(s).debris,1);
  aim(p,targets[0],.12);hold(p,1);assert.deepEqual(s.debris,[left]);p.step(.05);hold(p,.7);assert.equal(s.debris.length,0);assert.equal(pilotInventory(s).debris,2);p.stop();
