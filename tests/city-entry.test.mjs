@@ -33,11 +33,11 @@ test('large invading pathogens keep ground selection, visible head markers and b
  const bounds=(root,names)=>{const out=new T.Box3(),matrix=new T.Matrix4();for(const name of names){const mesh=typeof name==='number'?root.children[name]:root.getObjectByName(name);mesh.geometry.computeBoundingBox();for(let n=0;n<mesh.count;n++){mesh.getMatrixAt(n,matrix);out.union(mesh.geometry.boundingBox.clone().applyMatrix4(matrix));}}return out;};
  for(const width of [390,1280])for(const canals of [null,{isWater:()=>false}]){
   const actors=createActors(qualityProfile(width)),host=createHostResponseScene();actors.draw(s,{canals});const before=serializeCity(s);actors.draw(s,{canals,selectedCell:'enemy999'});host.update(s);
-  const enemy=bounds(actors.root,['enemy','spikes','enemyEyes']);assert.ok(enemy.max.y>2.7);assert.ok(enemy.getSize(new T.Vector3()).x>1.2);
-  const selected=actors.pickPositions.find(p=>p.id==='enemy999');assert.ok(selected.height>1.3&&selected.height<enemy.max.y);assert.ok(selected.markerHeight>enemy.max.y);
+  const enemy=bounds(actors.root,['enemy','spikes','enemyEyes']);assert.ok(enemy.max.y>5.4,'invaders tower above the first-person eye level');assert.ok(enemy.getSize(new T.Vector3()).x>2.4);
+  const selected=actors.pickPositions.find(p=>p.id==='enemy999');assert.ok(selected.height>2.6&&selected.height<enemy.max.y);assert.ok(selected.markerHeight>enemy.max.y);
   const ring=translation(actors.root.getObjectByName('selected'),actors.root.getObjectByName('selected').count-1);assert.ok(Math.abs(ring.y-.07)<1e-6,'selection stays on the ground');
-  const virus=bounds(host.root,[4]);assert.ok(virus.getSize(new T.Vector3()).y>1,'virus height grows threefold');
-  const worm=actors.pickPositions.find(p=>p.id.startsWith('parasite'));assert.equal(worm.height,.48);assert.equal(serializeCity(s),before);
+  const virus=bounds(host.root,[4]);assert.ok(virus.getSize(new T.Vector3()).y>2,'virus height grows sixfold');
+  const worm=actors.pickPositions.find(p=>p.id.startsWith('parasite'));assert.equal(worm.height,.96);assert.equal(serializeCity(s),before);
   assert.equal(actors.root.children.length,16);assert.equal(host.root.children.length,5);for(const mesh of [...actors.root.children,...host.root.children]){assert.ok(mesh.count<=mesh.instanceMatrix.count);assert.ok(mesh.instanceMatrix.array.every(Number.isFinite));}host.dispose();
  }
 });
