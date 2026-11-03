@@ -5,6 +5,18 @@ import {CITY_ENTRIES,storedPlacement} from './city-world.mjs';
 import {compileVascularLayout} from './city-vascular-layout.mjs';
 
 const STEP=.5,key=(x,z)=>x+','+z;
+// Frontage spacing follows distance along the bank, not curve tessellation.
+function bankSections(channel){
+ const points=channel.points,lengths=[0],sections=[];
+ for(let i=1;i<points.length;i++)lengths.push(lengths[i-1]+Math.hypot(points[i].x-points[i-1].x,points[i].z-points[i-1].z));
+ let index=1;
+ const at=d=>{while(index<points.length-1&&lengths[index]<d)index++;const a=points[index-1],b=points[index],t=(d-lengths[index-1])/(lengths[index]-lengths[index-1]||1);return {x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t};};
+ for(let d=0;d+3.1<lengths.at(-1);d+=6.4){
+  const a=at(d),b=at(Math.min(d+6.4,lengths.at(-1))),length=Math.hypot(b.x-a.x,b.z-a.z);
+  if(length>=3.1)sections.push({a,b,length,width:channel.width});
+ }
+ return sections;
+}
 export function compileCanalBlocks(layout,network,channels,land,outlet){
  const reserved=new Set(),frontages=[],gardens=[],tissues=[],lung=[],walks=[];
  // The common town must leave both theme silhouettes clear before any house
@@ -81,12 +93,7 @@ export function compileCanalBlocks(layout,network,channels,land,outlet){
  }
  // Long banks and dry duct corridors form connected rows.
  segments.sort((a,b)=>b.length-a.length);
- const ringLots=channels.filter(channel=>channel.id?.startsWith('systemic-')).flatMap(channel=>
-  channel.points.slice(1).map((b,i)=>{
-   const a=channel.points[i];
-   return {a,b,length:Math.hypot(b.x-a.x,b.z-a.z),width:channel.width};
-  }).filter(segment=>segment.length>=3.1)
- );
+ const ringLots=channels.filter(channel=>channel.id?.startsWith('systemic-')).flatMap(bankSections);
  for(const {a,b,length,width} of [...segments,...ringLots]){
   const dx=(b.x-a.x)/length,dz=(b.z-a.z)/length,slots=Math.floor(length/3.1),spacing=length/slots;
   for(let n=0;n<slots;n++)for(const side of [-1,1]){
@@ -111,13 +118,17 @@ export function compileCanalBlocks(layout,network,channels,land,outlet){
  // Short bank-side walks give long frontages an address and a dry promenade.
  // They are scenery on existing land, never new bridges or transport edges.
  let promenades=0;
- for(const {a,b,length,width} of segments){
-  const dx=(b.x-a.x)/length,dz=(b.z-a.z)/length,angle=Math.abs(dx)>.5?0:Math.PI/2;
+ for(const {a,b,length,width} of [...segments,...ringLots]){
+  const dx=(b.x-a.x)/length,dz=(b.z-a.z)/length;
   for(let along=3;along<length-2;along+=6)for(const side of [-1,1]){
    if(promenades>=22)break;
-   const offset=width/2+1.05,p={x:a.x+dx*along-dz*offset*side,z:a.z+dz*along+dx*offset*side},span=Math.min(4.5,length-2);
-   const footprint=cells(p,span,.7,angle);if(!footprint||!clear(p))continue;
-   reserve(footprint);promenades++;walks.push({kind:'promenade',width:.7,cells:footprint,points:[{x:p.x-dx*span/2,z:p.z-dz*span/2},{x:p.x+dx*span/2,z:p.z+dz*span/2}]});
+   let walk=null;
+   for(const span of [Math.min(4.5,length-2),2.4])for(const setback of [1.05,1.5,2.1]){
+    const offset=width/2+setback,p={x:a.x+dx*along-dz*offset*side,z:a.z+dz*along+dx*offset*side};
+    const footprint=cells(p,Math.abs(dx)*span+.7,Math.abs(dz)*span+.7,0);if(walk||!footprint||!clear(p))continue;
+    walk={kind:'promenade',width:.7,cells:footprint,points:[{x:p.x-dx*span/2,z:p.z-dz*span/2},{x:p.x+dx*span/2,z:p.z+dz*span/2}]};
+   }
+   if(walk){reserve(walk.cells);promenades++;walks.push(walk);}
   }
  }
  // Alternate quiet corners with housing; garden trees stay off the patrol strip.

@@ -126,7 +126,13 @@ test('round canal feeders share junctions and leave the main trunk in its flow d
   const a=points[i-1],b=points[i],c=points[i+1];
   const dx=b.x-a.x,dz=b.z-a.z,ex=c.x-b.x,ez=c.z-b.z;
   const first=Math.hypot(dx,dz),second=Math.hypot(ex,ez);
-  if(Math.min(first,second)<1.25)assert.ok(dx*ex+dz*ez>-.5*first*second,id+' doubles back at a short bend');
+  assert.ok(dx*ex+dz*ez>Math.cos(50*Math.PI/180)*first*second,id+' has an abrupt bend');
+  const area=Math.abs(dx*ez-dz*ex),radius=first*second*Math.hypot(c.x-a.x,c.z-a.z)/(2*area);
+  if(area>1e-7)assert.ok(radius>.3,id+' disguises a tight corner with tiny segments');
+ }
+ for(const ring of Object.values(v.systemic)){
+  assert.deepEqual(ring.points[0],ring.points.at(-1),'smoothed trunk stays closed');
+  for(const gate of ring.gates)assert.ok(ring.points.some(p=>Math.hypot(p.x-gate.x,p.z-gate.z)<1e-7),'branch junction remains on the smoothed trunk');
  }
  for(const vessel of branches){
   const [a,b]=vessel.points,dx=b.x-a.x,dz=b.z-a.z,alignment=(-dx*a.z+dz*a.x)/Math.hypot(dx,dz)/Math.hypot(a.x,a.z);

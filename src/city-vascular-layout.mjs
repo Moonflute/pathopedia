@@ -1,4 +1,4 @@
-import {naturalWaterway,simplifyWaterway} from './city-waterways.mjs';
+import {naturalWaterway,simplifyWaterway,roundWaterway,softenWaterway} from './city-waterways.mjs';
 import {compileLayout,walkingRoute,walkablePoint,stationOwner,placeable,transformPoint,tissueAt,tissuePresent} from './city-tile-layout.mjs';
 import {groundPoint,groundCoordinate,workStationPoints} from './city-three-layout.mjs';
 import {CITY_CAPS} from './city-world.mjs';
@@ -7,7 +7,7 @@ import {insideCity,rimPoint} from './city-boundary.mjs';
 import {SKIN_TISSUES} from './city-frontier-data.mjs';
 import {homeSites} from './city-homeostasis-data.mjs';
 export const SYSTEMIC_RADII=Object.freeze({artery:41,vein:38.6});
-export const VASCULAR_REVISION=5;
+export const VASCULAR_REVISION=6;
 const SQUARE_RADII=Object.freeze({artery:31,vein:28.6});
 
 // Two directed trunks share each corridor: outward arteries and returning veins.
@@ -77,7 +77,21 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  const clear=(a,b)=>{const steps=Math.max(2,Math.ceil(distance(a,b)*8));for(let i=0;i<=steps;i++)if(!free({x:a.x+(b.x-a.x)*i/steps,z:a.z+(b.z-a.z)*i/steps}))return false;return true;};
  const safe=p=>{if(free(p))return p;for(let r=1;r<8;r++)for(let z=-r;z<=r;z++)for(let x=-r;x<=r;x++){const q={x:Math.round(p.x)+x,z:Math.round(p.z)+z};if(free(q))return q;}return p;};
  const link=(a,b,cost=()=>1)=>{if(!square||Math.abs(a.x-b.x)<1e-6||Math.abs(a.z-b.z)<1e-6){if(clear(a,b))return [a,b];}else for(const p of [{x:b.x,z:a.z},{x:a.x,z:b.z}])if(clear(a,p)&&clear(p,b))return clean([a,p,b]);const middle=gridPath({col:Math.round(a.x),row:Math.round(a.z)},{col:Math.round(b.x),row:Math.round(b.z)},allowed,cost,12000);return simplify([a,...(middle||[]),b]);};
- const branch=(a,b,options={})=>square?link(a,b):naturalWaterway(a,b,{link,clear,...options});
+ // Reserve turning room before smoothing. Near a real destination the margin
+ // tapers away, so narrow saved entrances remain reachable.
+ const nearby=new Map();
+ const buildingGap=p=>{const k=key(p);if(!nearby.has(k)){const cx=Math.round(p.x),cz=Math.round(p.z),cells=[];for(let x=cx-3;x<=cx+3;x++)for(let z=cz-3;z<=cz+3;z++)if(occupied.has(x+','+z))cells.push({x,z});nearby.set(k,cells);}let gap=3;for(const q of nearby.get(k))gap=Math.min(gap,Math.hypot(Math.max(0,Math.abs(p.x-q.x)-.58),Math.max(0,Math.abs(p.z-q.z)-.58)));return gap;};
+ const branch=(a,b,options={})=>{
+  if(square)return link(a,b);
+  const roomy=p=>free(p)&&buildingGap(p)>=Math.min(1.2,distance(p,a)*.55,distance(p,b)*.55);
+  const guideClear=(p,q)=>{const steps=Math.max(2,Math.ceil(distance(p,q)*6));for(let n=0;n<=steps;n++)if(!roomy({x:p.x+(q.x-p.x)*n/steps,z:p.z+(q.z-p.z)*n/steps}))return false;return true;};
+  const guide=(p,q)=>{
+   const start={col:Math.round(p.x),row:Math.round(p.z)},end={col:Math.round(q.x),row:Math.round(q.z)};
+   const middle=gridPath(start,end,t=>roomy({x:t.col,z:t.row}),()=>1,12000)||gridPath(start,end,allowed,t=>1+4*Math.max(0,1.6-buildingGap({x:t.col,z:t.row}))**2,12000);
+   return middle?clean([p,...middle,q]):link(p,q);
+  };
+  return naturalWaterway(a,b,{link:guide,clear,guideClear,...options});
+ };
  const feeders=new Map(),tangent=(index,direction=1)=>{const t=-Math.PI/2+index*Math.PI/36;return {x:-Math.sin(t)*direction,z:Math.cos(t)*direction};};
  const alignment=(points,direction,end=false)=>{const i=end?points.length-1:1,a=points[i-1],b=points[i],length=distance(a,b)||1;return ((b.x-a.x)*direction.x+(b.z-a.z)*direction.z)/length;};
  function feeder(n,sign,stem){
@@ -113,7 +127,7 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
    for(let i=1;i<points.length;i++)safePoints.push(...link(points[i-1],points[i]).slice(0,-1));
    points=[...safePoints,points.at(-1)];
   }
-  const path=id.startsWith('systemic-')?clean(points):square?simplify(points):simplifyWaterway(removeShortDetours(points,clear),clear);
+  const path=id.startsWith('systemic-')?clean(points):square?simplify(points):simplifyWaterway(softenWaterway(roundWaterway(removeShortDetours(points,clear),clear),clear),clear);
   const vessel=flow(id,kind,path,width,site==='lung'?kind==='vein':kind==='artery');
   Object.assign(vessel,{site,circuit,oneWay:true,layer:id});vessels.push(vessel);lines.push(vessel);return vessel;
  }
@@ -125,7 +139,22 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
    const section=square?followRing(a,b):simplifyWaterway(naturalWaterway(a,b,{link:followRing,clear}),clear);
    points.push(...section.slice(0,-1));
   }
-  points.push(gates[0]);return {gates,points};
+  points.push(gates[0]);
+  if(square)return {gates,points};
+  // Smooth across the old section boundaries, then put junctions back on the
+  // resulting ring. Fixed grid-snapped gates otherwise leave a kink each side.
+  const rounded=simplifyWaterway(softenWaterway(points,clear,true),clear),pins=new Map();
+  for(let n=0;n<gates.length;n++){
+   let nearest=null;
+   for(let i=1;i<rounded.length;i++){
+    const a=rounded[i-1],b=rounded[i],dx=b.x-a.x,dz=b.z-a.z,l=dx*dx+dz*dz,t=l?Math.max(0,Math.min(1,((gates[n].x-a.x)*dx+(gates[n].z-a.z)*dz)/l)):0,p={x:a.x+dx*t,z:a.z+dz*t},d=distance(gates[n],p);
+    if(!nearest||d<nearest.distance)nearest={index:i,t,point:p,distance:d};
+   }
+   gates[n]=nearest.point;if(!pins.has(nearest.index))pins.set(nearest.index,[]);pins.get(nearest.index).push(nearest);
+  }
+  const connected=[rounded[0]];
+  for(let i=1;i<rounded.length;i++)connected.push(...(pins.get(i)||[]).sort((a,b)=>a.t-b.t).map(p=>p.point),rounded[i]);
+  return {gates,points:clean(connected)};
  }
  // Blood exits the heart, traverses the selected supply circuit, exchanges in a
  // tissue bed, then continues clockwise on the return ring to the heart.
@@ -161,7 +190,7 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  const systemic=new Set();for(const v of vessels)for(const p of v.points)systemic.add(key(p));
  const lung=centres.lung,pulmonary=gridPath({col:Math.round(heart.x),row:Math.round(heart.z)},{col:Math.round(lung.x),row:Math.round(lung.z)},allowed,p=>systemic.has(p.col+','+p.row)?8:1,12000);
  const pulmonaryGuide=simplify([heart,...(pulmonary||network.vascular.lung),lung]);
- const pulmonaryBase=square?pulmonaryGuide:naturalWaterway(heart,lung,{link:()=>pulmonaryGuide,clear});
+ const pulmonaryBase=square?pulmonaryGuide:branch(heart,lung);
  add('artery-lung','artery',lane(pulmonaryBase,1,streets,null,square?.68:.32,square?null:clear),square?1.25:.62,'lung','pulmonary');
  add('vein-lung','vein',lane(pulmonaryBase,-1,streets,null,square?.68:.32,square?null:clear).reverse(),square?1.25:.62,'lung','pulmonary');
  const peripheral=[];
