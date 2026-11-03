@@ -1,18 +1,22 @@
 import {qualityProfile} from './city-three-layout.mjs';
+import {normalizeCityQuality} from './city-quality.mjs';
 
 export const CITY_STEP=1/30;
 
 // Sample rAF cadence, including simulation/GPU stalls, rather than our render cap.
 // Lower resolution first, then shadows, and only finally use a 30 fps fallback.
-export function createAdaptiveQuality(width,dpr=1){
+export function createAdaptiveQuality(width,dpr=1,mode='auto',height=0){
+ mode=normalizeCityQuality(mode);
  let level=0,last=null,warmUntil=0,elapsed=0,frames=0,late=0,work=0,workFrames=0,stable=0;
  const clear=()=>{elapsed=0;frames=0;late=0;work=0;workFrames=0;};
  return {
-  get profile(){return qualityProfile(width,dpr,level);},
-  resize(w,p,now){width=w;dpr=p;this.suspend(now);},
+  get profile(){return qualityProfile(width,dpr,level,mode,height);},
+  resize(w,p,now,h=height){width=w;dpr=p;height=h;this.suspend(now);},
+  setMode(value,now){mode=normalizeCityQuality(value);level=0;this.suspend(now);},
   suspend(now){last=null;stable=0;warmUntil=now+1500;clear();},
   rendered(milliseconds){if(Number.isFinite(milliseconds)){work+=milliseconds;workFrames++;}},
   sample(now,active=true){
+   if(mode!=='auto')return false;
    if(!active){this.suspend(now);return false;}
    const dt=last==null?0:now-last;last=now;
    if(dt>250||dt<0){this.suspend(now);return false;}

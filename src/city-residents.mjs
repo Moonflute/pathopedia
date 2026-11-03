@@ -4,6 +4,7 @@ import {homeSites,homeFootprint} from './city-homeostasis-data.mjs';
 import {compileCanalLayout} from './city-canal-layout.mjs';
 import {groundPoint,groundCoordinate} from './city-three-layout.mjs';
 import {TISSUES} from './city-frontier-data.mjs';
+import {showCityResident} from './city-quality.mjs';
 
 export const RESIDENT_LIMIT=192;
 const cache=new WeakMap();
@@ -40,15 +41,33 @@ export function ensureResidents(s){
  const old=new Map((s.somatic?.people||[]).map(p=>[p.id,p]));
  return s.somatic={version:1,revision:s.layout.revision||0,people:catalog.map(p=>old.get(p.id)||{id:p.id,health:s.districts[p.site]?.hp??100,hitAt:-100,dead:false})};
 }
-export function residentView(s){
- const state=new Map((s.somatic?.people||[]).map(p=>[p.id,p])),infectedAt=new Map();
- for(const h of s.immunity?.infected||[]){if(!infectedAt.has(h.site))infectedAt.set(h.site,[]);infectedAt.get(h.site).push(groundPoint(h));}
- return plans(s.layout).map(plan=>{
-  const health=state.get(plan.id),phase=(s.time+plan.variant*2.7)%28,move=phase<6?phase/6:phase<18?1:phase<24?1-(phase-18)/6:0,damaged=health?.health??s.districts[plan.site]?.hp??100,infected=infectedAt.get(plan.site)?.some(p=>Math.hypot(p.x-plan.anchor.x,p.z-plan.anchor.z)<3);
-  const p={x:plan.anchor.x+(plan.end.x-plan.anchor.x)*move,z:plan.anchor.z+(plan.end.z-plan.anchor.z)*move};
-  return {...plan,...groundCoordinate(p),point:p,somatic:true,health:damaged,dead:health?.dead||damaged<=0,hitAt:health?.hitAt??-100,growUntil:health?.growUntil,infected,phase,task:health?.growUntil?'세포 재생 중':damaged<=0?'조직 재생 대기':infected?'감염 반응':damaged<35?'손상 · 회복 중':phase<6||phase>=18&&phase<24?'동네 산책':RESIDENT_ACTIVITIES[1+plan.variant%5]};
- });
+// Each renderer owns these reusable view objects. They never enter a saved city.
+// Skip sparse residents before doing coordinate transforms or allocating views.
+export function createResidentView(){
+ let run=null,layout=null,catalog=null,people=null,peopleCount=-1,views=[],infectionTime=-Infinity,hosts=null,hostCount=-1;
+ const state=new Map(),infectedAt=new Map(),result=[];
+ return (s,{stride=1,selectedCell=null,showAll=false,time=s.time}={})=>{
+  if(run!==s||layout!==s.layout){run=s;layout=s.layout;catalog=plans(layout);views=catalog.map(plan=>({...plan,x:0,y:0,point:{x:0,z:0},somatic:true,health:100,dead:false,hitAt:-100,growUntil:undefined,infected:undefined,phase:0,task:''}));people=null;peopleCount=-1;infectionTime=-Infinity;}
+  const population=s.somatic?.people,infected=s.immunity?.infected;
+  if(people!==population||peopleCount!==(population?.length||0)){people=population;peopleCount=population?.length||0;state.clear();for(const p of population||[])state.set(p.id,p);}
+  if(infectionTime!==s.time||hosts!==infected||hostCount!==(infected?.length||0)){
+   infectionTime=s.time;hosts=infected;hostCount=infected?.length||0;infectedAt.clear();
+   for(const h of infected||[]){if(!infectedAt.has(h.site))infectedAt.set(h.site,[]);infectedAt.get(h.site).push(groundPoint(h));}
+   for(const v of views)v.infected=infectedAt.get(v.site)?.some(p=>Math.hypot(p.x-v.anchor.x,p.z-v.anchor.z)<3);
+  }
+  result.length=0;
+  for(const v of views){
+   if(!showCityResident(v.id,stride,selectedCell,showAll))continue;
+   const health=state.get(v.id),phase=(time+v.variant*2.7)%28,move=phase<6?phase/6:phase<18?1:phase<24?1-(phase-18)/6:0,damaged=health?.health??s.districts[v.site]?.hp??100;
+   v.point.x=v.anchor.x+(v.end.x-v.anchor.x)*move;v.point.z=v.anchor.z+(v.end.z-v.anchor.z)*move;
+   const p=groundCoordinate(v.point);v.x=p.x;v.y=p.y;v.health=damaged;v.dead=health?.dead||damaged<=0;v.hitAt=health?.hitAt??-100;v.growUntil=health?.growUntil;v.phase=phase;
+   v.task=health?.growUntil?'세포 재생 중':damaged<=0?'조직 재생 대기':v.infected?'감염 반응':damaged<35?'손상 · 회복 중':phase<6||phase>=18&&phase<24?'동네 산책':RESIDENT_ACTIVITIES[1+v.variant%5];result.push(v);
+  }
+  return result;
+ };
 }
+// Observation/UI callers receive independent snapshots, not retained renderer data.
+export function residentView(s){return createResidentView()(s);}
 export function injureResidents(s,site,amount,point,tissue){
  const state=ensureResidents(s);if(!state||amount<=0)return;
  const at=point?groundPoint(point):siteAt(s.layout,site),catalog=plans(s.layout),distance=plan=>{const p=position(plan,s.time);return Math.hypot(p.x-at.x,p.z-at.z);},options=catalog.filter(p=>p.site===site&&(tissue==null||p.tissue===tissue)).sort((a,b)=>distance(a)-distance(b));

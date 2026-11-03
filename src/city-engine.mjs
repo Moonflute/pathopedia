@@ -474,7 +474,6 @@ function wander(s,c,dt){
   move(c,35,dt);
 }
 export function tickCity(s,dt,data,canalTransport=false){
-  if(s.specialists&&s.layout)tickResidents(s,dt);
   const transport=canalTransport===true?'2':canalTransport==='1'||canalTransport==='2'?canalTransport:false;
   const previousTransport=s.transportTheme;
   if(s.specialists){ensureHostResponse(s);ensureHomeostasis(s);s.transportTheme=transport||s.transportTheme||'2';}

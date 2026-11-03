@@ -1,6 +1,7 @@
 import {CITY_CAPS,CITY_SCALE} from './city-world.mjs';
 import {districtDef} from './city-data.mjs';
 import {ROADS,FOOD_ROAD} from './city-map.mjs';
+import {normalizeCityQuality} from './city-quality.mjs';
 
 // Presentation coordinates only: the shared simulation and its saves stay unchanged.
 // Each district owns a courtyard and a separate building site. Facilities can
@@ -69,9 +70,12 @@ export const COTTAGES=[
  [-11.7,-7.2,1.5,.5],[-11,-4.3,1.25,.7],[-1.4,-6.6,1.45,-1],
  [5.7,-7,1.35,-.3],[-9.5,6.6,1.25,.6],[-1,11.3,1.2,-1]
 ];
-export function qualityProfile(width,dpr=1,level=0){
- const mobile=width<761,tier=Math.max(0,Math.min(4,Math.floor(level))),base=Math.min(dpr,mobile?1.35:1.75);
- return {mobile,level:tier,dpr:Math.min(base,Math.max(.75,base*[1,.85,.72,.63,.63][tier])),shadow:tier>=3?0:(mobile?512:1024)/(tier>=2?2:1),shadowInterval:tier>=2?400:200,fps:tier===4?30:60,maxCells:CITY_CAPS.cells,maxShipments:CITY_CAPS.shipments,maxEnemies:CITY_CAPS.enemies};
+export function qualityProfile(width,dpr=1,level=0,mode='auto',height=0){
+ mode=normalizeCityQuality(mode);
+ const mobile=width<761,tier=mode==='standard'?0:mode==='low'?2:mode==='minimum'?4:Math.max(0,Math.min(4,Math.floor(level))),base=Math.min(dpr,mobile?1.35:1.75);
+ const maxPixels=[2560*1440,1920*1080,1280*720,1280*720,960*540][tier];
+ const ratio=Math.min(base,Math.max(.75,base*[1,.85,.72,.63,.63][tier])),pixelLimit=width>0&&height>0?Math.sqrt(maxPixels/(width*height)):Infinity;
+ return {mobile,mode,level:tier,dpr:Math.min(ratio,pixelLimit),maxPixels,shadow:tier>=3?0:(mobile?512:1024)/(tier>=2?2:1),shadowInterval:tier>=2?400:200,fps:tier===4?30:60,residentStride:tier===4?3:tier>=2?2:1,rbcSkip:tier===4?2:tier>=2?4:0,actorShadows:tier<2,detailPixels:tier===4?38:tier>=2?28:18,maxCells:CITY_CAPS.cells,maxShipments:CITY_CAPS.shipments,maxEnemies:CITY_CAPS.enemies};
 }
 // Orthographic zoom changes the ray origins, not camera distance. At overview
 // scale the bottom rays must still start above the ground, including portrait.
