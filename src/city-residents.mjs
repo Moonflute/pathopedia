@@ -68,6 +68,7 @@ export function createResidentView(){
 }
 // Observation/UI callers receive independent snapshots, not retained renderer data.
 export function residentView(s){return createResidentView()(s);}
+export function residentCount(s){return plans(s.layout).length;}
 export function injureResidents(s,site,amount,point,tissue){
  const state=ensureResidents(s);if(!state||amount<=0)return;
  const at=point?groundPoint(point):siteAt(s.layout,site),catalog=plans(s.layout),distance=plan=>{const p=position(plan,s.time);return Math.hypot(p.x-at.x,p.z-at.z);},options=catalog.filter(p=>p.site===site&&(tissue==null||p.tissue===tissue)).sort((a,b)=>distance(a)-distance(b));

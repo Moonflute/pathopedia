@@ -4,7 +4,7 @@ import {readCityQuality,storeCityQuality,CITY_QUALITY_KEY} from '../src/city-qua
 import {qualityProfile} from '../src/city-three-layout.mjs';
 import {createAdaptiveQuality} from '../src/city-three-performance.mjs';
 import {createActors} from '../src/city-three-actors.mjs';
-import {createResidentView,residentView,ensureResidents} from '../src/city-residents.mjs';
+import {createResidentView,residentView,residentCount,ensureResidents} from '../src/city-residents.mjs';
 import {createCity,tickCity,serializeCity} from '../src/city-engine.mjs';
 import {createTileLayout,applyTileLayout} from '../src/city-tile-layout.mjs';
 
@@ -69,4 +69,11 @@ test('resident recovery advances once per valid simulation tick and never while 
  const rate=s.cells.some(c=>c.kind==='fibroblast'&&c.target===view.site)?1.2:.2;
  tickCity(s,.1,null,'1');assert.ok(Math.abs(p.health-(50+.1*rate))<1e-8);
  const health=p.health;tickCity(s,0,null,'1');assert.equal(p.health,health);s.status='won';tickCity(s,.1,null,'1');assert.equal(p.health,health);
+});
+
+test('paused legacy saves count residents without creating simulation state',()=>{
+ const s=city(),total=residentCount(s);delete s.somatic;
+ const before=serializeCity(s),actor=createActors(qualityProfile(1280,1,0,'standard'));
+ actor.draw(s,{pixelScale:100});assert.equal(actor.stats.residents,total);
+ assert.equal(residentCount(s),total);assert.equal(serializeCity(s),before);assert.equal(s.somatic,undefined);dispose(actor);
 });
