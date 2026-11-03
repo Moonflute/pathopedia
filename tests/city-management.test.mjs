@@ -11,6 +11,7 @@ import {HOME_ORGANS,homeSites} from '../src/city-homeostasis-data.mjs';
 import {groundCoordinate} from '../src/city-three-layout.mjs';
 import {compileCanalLayout} from '../src/city-canal-layout.mjs';
 import {createCellObserver,cellObservation} from '../src/city-cell-observer.mjs';
+import {VASCULAR_REVISION} from '../src/city-vascular-layout.mjs';
 
 const data=JSON.parse(fs.readFileSync(new URL('../data/organisms.json',import.meta.url)));
 function city(){const s=createCity('normal','simulation',{specialists:true,expanded:true,workCrews:true});applyTileLayout(s,createTileLayout());s.resources.materials=300;s.resources.food=300;return s;}
@@ -60,6 +61,6 @@ test('pathogen selection uses the live entity and never enables following automa
 });
 
 test('a restored older blood route rejoins the new waterways without losing its cargo',()=>{
- let s=city();const c=s.cells.find(c=>c.kind==='rbc'),target=groundCoordinate({x:18,z:18});s.cells=[c];s.transportTheme='2';Object.assign(c,{cargo:8,target:'kidney',path:[target],step:0,roadPathVersion:2,travelMode:null,dock:null});c.vascularRevision=2;
- s=restoreCity(serializeCity(s));assert.ok(s);const restored=s.cells[0],cargo=restored.cargo;tickCity(s,.05,data,'2');assert.equal(restored.cargo,cargo);assert.equal(restored.vascularRevision,3);assert.ok(restored.path.length>2);assert.equal(restored.roadPathVersion,2);
+ let s=city();const c=s.cells.find(c=>c.kind==='rbc'),target=groundCoordinate({x:18,z:18});s.cells=[c];s.transportTheme='2';Object.assign(c,{cargo:8,target:'kidney',path:[target],step:0,roadPathVersion:2,travelMode:null,dock:null});c.vascularRevision=VASCULAR_REVISION-1;
+ s=restoreCity(serializeCity(s));assert.ok(s);const restored=s.cells[0],cargo=restored.cargo;tickCity(s,.05,data,'2');assert.equal(restored.cargo,cargo);assert.equal(restored.vascularRevision,VASCULAR_REVISION);assert.ok(restored.path.length>2);assert.equal(restored.roadPathVersion,2);
 });

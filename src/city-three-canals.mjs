@@ -72,7 +72,7 @@ export function createThemeScenery({layout,theme='2',plan=compileThemeLayout(lay
  for(const bed of vascular.beds)for(const points of bed.branches){if(water)ribbon(points,bed.width,0x8bb8ab,-.145);else road(points,.7);}
  for(const vessel of vascular.vessels){
   if(water){ribbon(vessel.points,vessel.width,vessel.oxygenated?0xd86b5a:0x508fca,-.14);
-   ribbon(vessel.points,.14,vessel.oxygenated?0xf2b095:0x9dd8ec,-.132);
+   ribbon(vessel.points,Math.min(.14,vessel.width*.15),vessel.oxygenated?0xf2b095:0x9dd8ec,-.132);
   }else road(vessel.points,vessel.width*(vessel.id.startsWith('systemic-')?1.45:1.15));
  }
  // Theme-1 patrol chords are simulation paths, not bridges across the lagoon.
@@ -128,7 +128,7 @@ export function createThemeScenery({layout,theme='2',plan=compileThemeLayout(lay
  const arrow=new T.BufferGeometry();arrow.setAttribute('position',new T.Float32BufferAttribute([-.45,0,-.35,0,0,.45,.45,0,-.35,.45,0,-.35,0,0,.12,-.45,0,-.35],3));arrow.computeVertexNormals();
  const flowSlots=vascular.vessels.map(f=>Math.max(1,Math.ceil(f.length/12))),count=flowSlots.reduce((a,b)=>a+b,0),mesh=new T.InstancedMesh(arrow,new T.MeshBasicMaterial({color:0xffffff,side:T.DoubleSide}),count),dummy=new T.Object3D();
  let slot=0;for(const [i,flow] of vascular.vessels.entries())for(let j=0;j<flowSlots[i];j++){
-  const point=canalFlowPoint(flow,(j+.5)/flowSlots[i]);dummy.position.set(point.x,water?-.08:.045,point.z);dummy.rotation.set(0,point.angle,0);dummy.scale.set(.58,1,.8);dummy.updateMatrix();mesh.setMatrixAt(slot,dummy.matrix);mesh.setColorAt(slot++,new T.Color(water?(flow.oxygenated?0xf4b29c:0xa8d6e9):0xf1e6cc));
+  const point=canalFlowPoint(flow,(j+.5)/flowSlots[i]),scale=water&&!flow.id.startsWith('systemic-')?Math.min(1,flow.width/.8):1;dummy.position.set(point.x,water?-.08:.045,point.z);dummy.rotation.set(0,point.angle,0);dummy.scale.set(.58*scale,1,.8*scale);dummy.updateMatrix();mesh.setMatrixAt(slot,dummy.matrix);mesh.setColorAt(slot++,new T.Color(water?(flow.oxygenated?0xf4b29c:0xa8d6e9):0xf1e6cc));
  }
  mesh.name=water?'canal-current':'avenue-directions';mesh.frustumCulled=false;moving.add(mesh);
  let lastTime=null,dischargePhase=0;

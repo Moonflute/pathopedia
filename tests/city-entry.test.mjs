@@ -6,6 +6,7 @@ import {createCity,tickCity,command,serializeCity,restoreCity} from '../src/city
 import {createTileLayout,applyTileLayout,compileLayout} from '../src/city-tile-layout.mjs';
 import {groundCoordinate,qualityProfile,landscapeCameraRange} from '../src/city-three-layout.mjs';
 import {createActors} from '../src/city-three-actors.mjs';
+import {createHostResponseScene} from '../src/city-three-host-response.mjs';
 import {createVillage} from '../src/city-three-village.mjs';
 import {createFrontierScene,entryFlowPoint} from '../src/city-three-frontier.mjs';
 import {CITY_CAPS,LANDSCAPE_RADIUS} from '../src/city-world.mjs';
@@ -23,6 +24,22 @@ test('pathogen eyes and long axis turn with displayed movement, then face the at
  face=translation(eyes,0).add(translation(eyes,1)).multiplyScalar(.5).sub(translation(body,0));assert.ok(face.z>.45);assert.ok(Math.abs(face.x)<.01);
  const target=groundCoordinate({x:0,z:1});Object.assign(s.enemies[0],{action:'attack',attackX:target.x,attackY:target.y});actors.draw(s);
  face=translation(eyes,0).add(translation(eyes,1)).multiplyScalar(.5).sub(translation(body,0));assert.ok(face.x>.45);
+});
+
+test('large invading pathogens keep ground selection, visible head markers and bounded pools without changing the simulation',()=>{
+ const s=town();s.enemies=[{id:999,recordId:'PAE-013',hp:100,maxHp:100,entered:true,...groundCoordinate({x:0,z:0})}];
+ assert.ok(command(s,'immune-challenge',{type:'virus',front:'airway',site:'lung',amount:1}).ok);s.physiology.virions[0].entered=true;
+ assert.ok(command(s,'immune-challenge',{type:'helminth',site:'gut',amount:1}).ok);
+ const bounds=(root,names)=>{const out=new T.Box3(),matrix=new T.Matrix4();for(const name of names){const mesh=typeof name==='number'?root.children[name]:root.getObjectByName(name);mesh.geometry.computeBoundingBox();for(let n=0;n<mesh.count;n++){mesh.getMatrixAt(n,matrix);out.union(mesh.geometry.boundingBox.clone().applyMatrix4(matrix));}}return out;};
+ for(const width of [390,1280])for(const canals of [null,{isWater:()=>false}]){
+  const actors=createActors(qualityProfile(width)),host=createHostResponseScene();actors.draw(s,{canals});const before=serializeCity(s);actors.draw(s,{canals,selectedCell:'enemy999'});host.update(s);
+  const enemy=bounds(actors.root,['enemy','spikes','enemyEyes']);assert.ok(enemy.max.y>2.7);assert.ok(enemy.getSize(new T.Vector3()).x>1.2);
+  const selected=actors.pickPositions.find(p=>p.id==='enemy999');assert.ok(selected.height>1.3&&selected.height<enemy.max.y);assert.ok(selected.markerHeight>enemy.max.y);
+  const ring=translation(actors.root.getObjectByName('selected'),actors.root.getObjectByName('selected').count-1);assert.ok(Math.abs(ring.y-.07)<1e-6,'selection stays on the ground');
+  const virus=bounds(host.root,[4]);assert.ok(virus.getSize(new T.Vector3()).y>1,'virus height grows threefold');
+  const worm=actors.pickPositions.find(p=>p.id.startsWith('parasite'));assert.equal(worm.height,.48);assert.equal(serializeCity(s),before);
+  assert.equal(actors.root.children.length,16);assert.equal(host.root.children.length,5);for(const mesh of [...actors.root.children,...host.root.children]){assert.ok(mesh.count<=mesh.instanceMatrix.count);assert.ok(mesh.instanceMatrix.array.every(Number.isFinite));}host.dispose();
+ }
 });
 
 test('airflow follows the compiled intake into the lung and slows with ventilation',()=>{

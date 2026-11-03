@@ -32,6 +32,19 @@ test('water covers the blood network while the skin patrol keeps a separate dry 
  assert.equal(JSON.stringify(layout),before);
 });
 
+test('secondary canals have narrow water surfaces while the main rings keep their width',()=>{
+ const layout=createTileLayout(),town=compileCanalLayout(layout),water=town.vascular,plain=compileVascularLayout(layout,'square'),widths=[];
+ for(const id of ['systemic-arterial-ring','systemic-venous-ring'])assert.equal(water.vessels.find(v=>v.id===id).width,plain.vessels.find(v=>v.id===id).width);
+ assert.equal(plain.vessels.find(v=>v.id==='artery-gut').width,.95,'plain roads retain their authored width');
+ for(const flow of water.vessels.filter(v=>v.id.startsWith('artery-')&&v.site!=='lung')){
+  assert.ok(flow.width<=.46);
+  for(const q of [.3,.5,.7]){const p=canalFlowPoint(flow,q),nx=Math.cos(p.angle),nz=-Math.sin(p.angle);let width=0;
+   for(const side of [-1,1]){let d=.05;while(d<8&&town.isWater({x:p.x+nx*d*side,z:p.z+nz*d*side}))d+=.05;width+=d;}widths.push(width);
+  }
+ }
+ widths.sort((a,b)=>a-b);assert.ok(widths[Math.floor(widths.length/2)]<2,'actual banks must narrow along with the painted lanes');
+});
+
 test('one-way vessels require a full circuit instead of reversing on the same edge',()=>{
  const points=[{x:0,z:0},{x:2,z:0},{x:2,z:2},{x:0,z:2},{x:0,z:0}],a={x:.8,z:0},b={x:.2,z:0};
  const length=path=>path.slice(1).reduce((s,p,i)=>s+Math.hypot(p.x-path[i].x,p.z-path[i].z),0);

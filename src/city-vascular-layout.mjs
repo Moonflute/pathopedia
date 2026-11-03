@@ -7,7 +7,7 @@ import {insideCity,rimPoint} from './city-boundary.mjs';
 import {SKIN_TISSUES} from './city-frontier-data.mjs';
 import {homeSites} from './city-homeostasis-data.mjs';
 export const SYSTEMIC_RADII=Object.freeze({artery:41,vein:38.6});
-export const VASCULAR_REVISION=3;
+export const VASCULAR_REVISION=4;
 const SQUARE_RADII=Object.freeze({artery:31,vein:28.6});
 
 // Two directed trunks share each corridor: outward arteries and returning veins.
@@ -21,7 +21,7 @@ function flow(id,kind,points,width,oxygenated){
  const lengths=[0];for(let i=1;i<points.length;i++)lengths.push(lengths[i-1]+distance(points[i-1],points[i]));
  return {id,kind,points,width,oxygenated,lengths,length:lengths.at(-1)};
 }
-function lane(points,side,network,endDirection=null){
+function lane(points,side,network,endDirection=null,spacing=.68){
  const sampled=[];
  for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],n=Math.max(1,Math.ceil(distance(a,b)*4));for(let j=0;j<n;j++)sampled.push({x:a.x+(b.x-a.x)*j/n,z:a.z+(b.z-a.z)*j/n});}sampled.push(points.at(-1));
  const snap=p=>({x:+p.x.toFixed(5),z:+p.z.toFixed(5)}),free=p=>!network.occupied.has(key(p));
@@ -29,7 +29,7 @@ function lane(points,side,network,endDirection=null){
   if(!i||i===sampled.length-1&&!endDirection)return p;
   const a=sampled[i-1],b=sampled[Math.min(i+1,sampled.length-1)],length=distance(a,b)||1,dx=i===sampled.length-1?-endDirection.z:-(b.z-a.z)/length,dz=i===sampled.length-1?endDirection.x:(b.x-a.x)/length;
   // Narrow the pair at a pre-existing tight quay, never cut a building corner.
-  let offset=.68*side;for(let n=0;n<5;n++){const q=snap({x:p.x+dx*offset,z:p.z+dz*offset});if([[0,0],[.18,0],[-.18,0],[0,.18],[0,-.18]].every(([x,z])=>free({x:q.x+x,z:q.z+z})))return q;offset*=.5;}
+  let offset=spacing*side;for(let n=0;n<5;n++){const q=snap({x:p.x+dx*offset,z:p.z+dz*offset});if([[0,0],[.18,0],[-.18,0],[0,.18],[0,-.18]].every(([x,z])=>free({x:q.x+x,z:q.z+z})))return q;offset*=.5;}
   return snap(p);
  });
  // Adjacent clear points can still clip a square corner. Pull both endpoints
@@ -62,15 +62,15 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  function feeder(n,sign,stem){
   const key=n+':'+sign+':'+stem;if(feeders.has(key))return feeders.get(key);let best=null,score=-Infinity;
   for(const index of [n,(n+4)%72,(n+68)%72,(n+8)%72,(n+64)%72]){
-   const angle=-Math.PI/2+index*Math.PI/36,radial={x:Math.cos(angle),z:Math.sin(angle)},root=safe(ringPoint(angle,branchRadius-sign*5.5)),toward={x:radial.x*sign,z:radial.z*sign},side=stem?sign:-sign;
-   const outward={x:root.x-toward.z*.68*side,z:root.z+toward.x*.68*side},inward={x:root.x+toward.z*.68*side,z:root.z-toward.x*.68*side},a=(index+(stem?1:-1)+72)%72,v=(index+(stem?-1:1)+72)%72;
+   const angle=-Math.PI/2+(index+.5)*Math.PI/36,radial={x:Math.cos(angle),z:Math.sin(angle)},root=safe(ringPoint(angle,branchRadius-sign*4.2)),toward={x:radial.x*sign,z:radial.z*sign},side=stem?sign:-sign,spacing=stem?.36:.26;
+   const outward={x:root.x-toward.z*spacing*side,z:root.z+toward.x*spacing*side},inward={x:root.x+toward.z*spacing*side,z:root.z-toward.x*spacing*side},a=(index+(stem?1:0))%72,v=(index+(stem?0:1))%72;
    if(!free(outward)||!free(inward))continue;
    const at=tangent(a,stem?-1:1),vt=tangent(v,stem?-1:1);
    const supply=branch(arterial.gates[a],outward,index,{startDirection:at,endDirection:{x:-toward.x,z:-toward.z}}),returning=branch(inward,venous.gates[v],index,{startDirection:toward,endDirection:vt});
    const quality=Math.min(alignment(supply,at),alignment(returning,vt,true));
    if(quality>score){score=quality;best={index,root,toward,side,a,v};}if(quality>.94)break;
   }
-  if(!best){const angle=-Math.PI/2+n*Math.PI/36;best={index:n,root:safe(ringPoint(angle,branchRadius-sign*5.5)),toward:{x:Math.cos(angle)*sign,z:Math.sin(angle)*sign},side:stem?sign:-sign,a:(n+71)%72,v:(n+1)%72};}
+  if(!best){const angle=-Math.PI/2+(n+.5)*Math.PI/36;best={index:n,root:safe(ringPoint(angle,branchRadius-sign*4.2)),toward:{x:Math.cos(angle)*sign,z:Math.sin(angle)*sign},side:stem?sign:-sign,a:(n+(stem?1:0))%72,v:(n+(stem?0:1))%72};}
   feeders.set(key,best);return best;
  }
  function branches(p,n,stem=false){
@@ -81,7 +81,7 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
   // tangent before turning toward the neighbourhood, rather than meeting at 90 degrees.
   n=stem?n:(Math.round(n/4)*4)%72;
   const sign=Math.hypot(p.x,p.z)<branchRadius?1:-1,{root,toward,side,a,v,index}=feeder(n,sign,stem);
-  const base=branch(p,root,index,{endDirection:toward}),outward=lane(base,side,streets,toward),inward=lane(base,-side,streets,toward);
+  const base=branch(p,root,index,{endDirection:toward}),spacing=stem?.36:.26,outward=lane(base,side,streets,toward,spacing),inward=lane(base,-side,streets,toward,spacing);
   const supply=branch(arterial.gates[a],outward.at(-1),index,{startDirection:tangent(a,stem?-1:1),endDirection:{x:-toward.x,z:-toward.z}});
   const returning=branch(inward.at(-1),venous.gates[v],index,{startDirection:toward,endDirection:tangent(v,stem?-1:1)});
   return {artery:clean([...supply,...outward.slice(0,-1).reverse()]),vein:clean([...inward,...returning.slice(1)])};
@@ -98,8 +98,8 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  add('systemic-arterial-ring','artery',arterial.points,1.65,'body');
  add('systemic-venous-ring','vein',venous.points,1.5,'body');
  const stem=branches(heart,18,true);
- add('aorta','artery',[...stem.artery].reverse(),1.2,'body');
- add('vena-cava','vein',[...stem.vein].reverse(),1.2,'body');
+ add('aorta','artery',[...stem.artery].reverse(),square?1.2:.66,'body');
+ add('vena-cava','vein',[...stem.vein].reverse(),square?1.2:.66,'body');
  const portalHub=safe({x:centres.liver.x-8,z:centres.liver.z+5}),portalTrunk=branch(portalHub,centres.liver,4);
  function portalPath(id,p,seed){
   if(square)return link(p,centres.liver);
@@ -118,24 +118,24 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
  for(const id of ['gut','kidney','marrow','lymph',...annex.map(o=>o.id)]){
   const p=centres[id],angle=(Math.atan2(p.z,p.x)+Math.PI/2+Math.PI*2)%(Math.PI*2),n=Math.round(angle/Math.PI*36)%72;
   const pair=branches(p,n);
-  add('artery-'+id,'artery',pair.artery,.95,id);
+  add('artery-'+id,'artery',pair.artery,square?.95:.46,id);
   if(id==='gut'||id==='spleen'){
-   const portal=add('vein-'+id,'vein',portalPath(id,p,n+1),.8,id,'portal');portal.portal=true;
-  }else add('vein-'+id,'vein',pair.vein,.95,id);
+   const portal=add('vein-'+id,'vein',portalPath(id,p,n+1),square?.8:.4,id,'portal');portal.portal=true;
+  }else add('vein-'+id,'vein',pair.vein,square?.95:.46,id);
  }
  const systemic=new Set();for(const v of vessels)for(const p of v.points)systemic.add(key(p));
  const lung=centres.lung,pulmonary=gridPath({col:Math.round(heart.x),row:Math.round(heart.z)},{col:Math.round(lung.x),row:Math.round(lung.z)},allowed,p=>systemic.has(p.col+','+p.row)?8:1,12000);
  const pulmonaryGuide=simplify([heart,...(pulmonary||network.vascular.lung),lung]);
  const pulmonaryBase=square?pulmonaryGuide:naturalWaterway(heart,lung,5,{link:()=>pulmonaryGuide,free});
- add('artery-lung','artery',lane(pulmonaryBase,1,streets),1.25,'lung','pulmonary');
- add('vein-lung','vein',lane(pulmonaryBase,-1,streets).reverse(),1.25,'lung','pulmonary');
+ add('artery-lung','artery',lane(pulmonaryBase,1,streets,null,square?.68:.32),square?1.25:.62,'lung','pulmonary');
+ add('vein-lung','vein',lane(pulmonaryBase,-1,streets,null,square?.68:.32).reverse(),square?1.25:.62,'lung','pulmonary');
  const peripheral=[];
  for(const t of SKIN_TISSUES){
   if(!tissuePresent({layout},t))continue;
   const p=safe(groundPoint(tissueAt({layout},t).point)),angle=(Math.atan2(p.z,p.x)+Math.PI/2+Math.PI*2)%(Math.PI*2),n=Math.round(angle/Math.PI*36)%72;
   const pair=branches(p,n);
-  add('artery-skin-'+t.skinWall,'artery',pair.artery,.65,'skin');
-  add('vein-skin-'+t.skinWall,'vein',pair.vein,.58,'skin');
+  add('artery-skin-'+t.skinWall,'artery',pair.artery,square?.65:.3,'skin');
+  add('vein-skin-'+t.skinWall,'vein',pair.vein,square?.58:.28,'skin');
   peripheral.push({id:t.id,site:t.district,point:p});
  }
  for(const [id,centre] of Object.entries(centres)){
@@ -146,7 +146,7 @@ export function compileVascularLayout(layout,shape='round',obstacles=null){
    const points=simplify([centre,...walkingRoute(layout,groundCoordinate(centre),[groundCoordinate(stand)]).map(groundPoint)]);
    if(points.length<2)continue;branches.push(points);lines.push({points,layer:'bed:'+id,junctions:[{point:centre,id:'exchange:'+id}]});
   }
-  beds.push({id,centre,branches,width:.62});
+  beds.push({id,centre,branches,width:square?.62:.38});
  }
  // Crossing vessels are not shunts: only authored gates and exchange beds
  // connect the two circulations, even when a narrow old block shares a quay.
