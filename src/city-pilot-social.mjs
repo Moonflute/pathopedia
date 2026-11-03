@@ -10,7 +10,7 @@ import {cityRule,ruleReady,ruleEnemy} from './city-rules.mjs';
 
 const reactions=new WeakMap(),companions=new WeakMap(),marks=new WeakMap();
 const names={greet:'인사',oxygen:'산소 받기',nutrient:'영양 먹기',repair:'회복',join:'동행 시작',leave:'다시 순찰'};
-export const canAccompany=c=>!!c&&!c.lost&&['neutrophil','macrophage'].includes(c.kind);
+export const canAccompany=c=>!!c&&!c.lost&&(c.integrity??100)>0&&['neutrophil','macrophage'].includes(c.kind);
 export function cellReaction(s,id,time=s.time){const r=reactions.get(s)?.get(id);return r&&time<r.until?r:null;}
 export function residentSocialTime(s,id,time){const r=reactions.get(s)?.get(id);return r?time-r.offset-Math.max(0,Math.min(time-r.at,r.until-r.at)):time;}
 export function reactToCell(s,c,kind){
@@ -30,7 +30,7 @@ export function tickCellReaction(s,c,dt){
 }
 export function companionCell(s){
  const a=companions.get(s);if(!a)return null;
- if(!pilotedCell(s)||!s.cells.includes(a.cell)||a.cell.lost){releaseCompanion(s);return null;}return a.cell;
+ if(!pilotedCell(s)||!s.cells.includes(a.cell)||a.cell.lost||(a.cell.integrity??100)<=0){releaseCompanion(s);return null;}return a.cell;
 }
 export function releaseCompanion(s){
  const a=companions.get(s);if(!a)return false;companions.delete(s);marks.delete(s);

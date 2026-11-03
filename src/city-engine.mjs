@@ -305,8 +305,8 @@ function updateCell(s,c,dt,speed,data){
   c.cooldown=Math.max(0,c.cooldown-dt);c.waitReason='';c.nextTask='';
   if(pilotedCell(s)===c)return;
   if(sandboxReserved(s,c)||tickCellReaction(s,c,dt))return;
-  if(tickCompanion(s,c,dt,frontierAPI))return;
   if(updateCombatCondition(s,c,dt,frontierAPI))return;
+  if(tickCompanion(s,c,dt,frontierAPI))return;
   if(s.specialists&&workAtOrgan(s,c,dt,frontierAPI))return;
   if(s.specialists&&frontierCell(s,c,dt,frontierAPI))return;
   if(immuneCell(s,c,dt,frontierAPI))return;

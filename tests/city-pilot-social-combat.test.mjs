@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {Group,Mesh,BoxGeometry,MeshBasicMaterial} from '../src/vendor/three/three.module.min.js';
-import {createCity,pilotCellAction,serializeCity,restoreCity} from '../src/city-engine.mjs';
+import {createCity,tickCity,pilotCellAction,serializeCity,restoreCity} from '../src/city-engine.mjs';
 import {createCityPilot} from '../src/city-pilot.mjs';
 import {createTileLayout,applyTileLayout} from '../src/city-tile-layout.mjs';
 import {groundCoordinate,groundPoint} from '../src/city-three-layout.mjs';
@@ -63,4 +64,10 @@ test('one real immune companion follows, assists the marked target, can be repai
  const e=enemy(s,{x:4,z:-6});markCompanionEnemy(s,e);c.cooldown=0;tickCompanion(s,c,.05,{damage(s,e,n){e.hp-=n;}});assert.ok(e.hp<100);assert.match(c.task,/함께 방어/);
  Object.assign(c,groundCoordinate({x:4,z:-1.6}),{integrity:50});p.step(.02);p.equip('repair');assert.ok(pilotCellAction(s,'repair','cell:'+c.id).ok);assert.equal(c.integrity,58);
  assert.ok(toggleCompanion(s,other).ok);assert.equal(companionCell(s),other);assert.equal(c.target,target);assert.doesNotMatch(c.task,/동행/);assert.ok(restoreCity(serializeCity(s)));p.stop();assert.equal(companionCell(s),null);assert.doesNotMatch(other.task,/동행/);
+});
+test('companions keep normal injury and loss handling during city ticks',()=>{
+ const {s,p}=fixture(),c=s.cells.find(c=>c!==p.cell&&c.kind==='neutrophil'),data=JSON.parse(fs.readFileSync(new URL('../data/organisms.json',import.meta.url)));
+ assert.ok(toggleCompanion(s,c).ok);s.time+=1.1;c.integrity=80;for(const site of Object.values(s.biology.sites))site.inflammation=40;
+ tickCity(s,.05,data);assert.ok(c.integrity<80);assert.equal(companionCell(s),c);
+ c.integrity=0;tickCity(s,.05,data);assert.equal(companionCell(s),null);assert.equal(toggleCompanion(s,c).ok,false);p.stop();
 });
