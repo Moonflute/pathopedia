@@ -3,7 +3,7 @@ import {DISTRICTS,cityJobs,cellCap,DRUGS} from './city-data.mjs';
 import {HOME_ORGANS} from './city-homeostasis-data.mjs';
 import {counts,upgradeCost,cityHealth,cityOxygen} from './city-engine.mjs';
 import {PATHOGENS,pathogenDef} from './city-pathogens.mjs';
-import {WALLS} from './city-frontier-data.mjs';
+import {WALLS,wallOpen} from './city-frontier-data.mjs';
 import {wallMaximum,frontierAlerts} from './city-frontier.mjs';
 import {pathogenLimit,populationLimit} from './city-world.mjs';
 import {responseView} from './city-response.mjs';
@@ -33,7 +33,7 @@ export function cellDashboard(s,selected){
 
 export function defenseDashboard(s){
  const f=s.frontier,skin=f.walls.reduce((sum,w)=>sum+w.hp,0)/f.walls.reduce((sum,_,i)=>sum+wallMaximum(s,i),0)*100,alerts=frontierAlerts(s);
- const rows=[['skin','피부',skin,f.walls.some(w=>w.repair)?'보수 진행 중':f.walls.some(w=>w.hp<=0)?'장벽 파손':'장벽 유지'],['airway','호흡기',s.barrier,'점액 '+Math.round(f.airway.mucus)+' · 배출 '+f.airway.cleared],['gut','소화기',s.physiology?.microbiome??100,f.gut.quarantine?'검역 강화 중':'위산·점액·정상균총']];
+ const rows=[['skin','피부',skin,f.walls.some(w=>w.repair)?'보수 진행 중':f.walls.some(wallOpen)?'장벽 파손':'장벽 유지'],['airway','호흡기',s.barrier,'점액 '+Math.round(f.airway.mucus)+' · 배출 '+f.airway.cleared],['gut','소화기',s.physiology?.microbiome??100,f.gut.quarantine?'검역 강화 중':'위산·점액·정상균총']];
  const response=responseView(s);
  return `<div class="cc-defense-alerts">${alerts.length?alerts.map((a,i)=>button('front-alert',i,esc(a.text)+' ↗')).join(''):'<span class="cc-dashboard-ok">현재 장벽 경고 없음</span>'}</div><div class="cc-barrier-dashboard">${rows.map(([id,name,hp,status])=>`<article><header>${button('front-focus',id,'<strong>'+name+'</strong>')}<span>${status}</span></header>${meter('방어 상태',hp)}${button('barrier-strengthen',id,'강화',id==='airway'&&f.airway.boostUntil>s.time?'disabled':'')}</article>`).join('')}</div><section class="cc-defense-response"><h3>실시간 면역 대응</h3>${response?`<strong>${esc(response.name)} · ${response.route}</strong><ol>${response.steps.map(step=>`<li data-response-state="${step.state}"><b>${step.name}</b><span>${esc(step.detail)}</span></li>`).join('')}</ol>`:'<p>감염 유입 대기</p>'}</section>`;
 }

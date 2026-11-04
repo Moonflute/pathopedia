@@ -4,7 +4,7 @@ import {wallPieces} from './city-boundary.mjs';
 import {entryFlowPoint,entryTrackHeight} from './city-entry-tracks.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {SITES,groundPoint} from './city-three-layout.mjs';
-import {WALLS,FRONTS,WORKSHOP,TISSUES} from './city-frontier-data.mjs';
+import {WALLS,FRONTS,WORKSHOP,TISSUES,wallOpen} from './city-frontier-data.mjs';
 import {wallMaximum} from './city-frontier.mjs';
 import {workStation} from './city-activity.mjs';
 import {workplaceCapacity,facilityState} from './city-workplaces.mjs';
@@ -51,15 +51,17 @@ export function createFrontierScene({detailedWalls=false}={}){
   flowClock+=Math.max(0,Math.min(.5,t-flowTime))*.12*ventilation;flowTime=t;
   let fireCount=0;
   for(const [i,def] of WALLS.entries()){
-   const w=f.walls[i],ratio=w.hp/wallMaximum(s,i),repair=w.repair,front=def.nx*viewX+def.nz*viewZ>Math.hypot(viewX,viewZ)*.3;
-   const height=front?.6:1.55,stone=repair?0xb9ccc2:ratio<.75?0xcdab91:0xdfc8ae;
+   const w=f.walls[i],ratio=w.hp/wallMaximum(s,i),repair=w.repair,open=wallOpen(w),hit=w.hitAt!=null?t-w.hitAt:Infinity,front=def.nx*viewX+def.nz*viewZ>Math.hypot(viewX,viewZ)*.3;
+   const height=front?.6:1.55,stone=hit<.18?0xffd89d:repair?0xb9ccc2:ratio<.75?0xcdab91:0xdfc8ae;
    for(const [n,{x,z,length,angle}] of wallPieces(def).entries()){
-    if(w.hp===0){put('box',x,.15,z,length*.8,.3,.8,0x968477,angle,.23*(n%2?1:-1));if(repair?.delivered)put('box',x,.3,z,length-.12,.25+(1-repair.remaining/7)*.5,.23,0xa7c9bc,angle);}
-    else if(!detailedWalls){put('box',x,height*.5,z,length+.03,height,.5,stone,angle);put('box',x,height+.06,z,length+.05,.12,.64,ratio<.75?0xb79480:0xf0e3ca,angle);if(ratio<.75&&n%2===0)put('box',x,height*.5,z+.27,.055,height*.65,.025,0x8e7568,0,.3);}
+    if(open){put('box',x,.15,z,length*.8,.3,.8,0x968477,angle,.23*(n%2?1:-1));if(repair?.delivered)put('box',x,.3,z,length-.12,.25+(1-repair.remaining/7)*.5,.23,0xa7c9bc,angle);}
+    else{if(!detailedWalls){put('box',x,height*.5,z,length+.03,height,.5,stone,angle);put('box',x,height+.06,z,length+.05,.12,.64,ratio<.75?0xb79480:0xf0e3ca,angle);}if(ratio<.75&&n%2===0)put('box',x+def.nx*.36,height*.5,z+def.nz*.36,.075,height*.7,.045,0x755b50,Math.atan2(def.nx,def.nz),n%4?.35:-.35);}
    }
    if(!detailedWalls)for(const p of [def.a]){put('post',p.x,height*.6,p.z,.32,height*1.2,.32,0xcfb89e);put('roof',p.x,height*1.25,p.z,.45,.3,.45,repair?0x8caf9f:0xb99581,Math.PI/4);}
    if(repair){const progress=1-repair.remaining/7;put('post',def.x-.8,1,def.z,.07,2,.07,0x977f60);put('post',def.x+.8,1,def.z,.07,2,.07,0x977f60);put('box',def.x,1.95,def.z,1.8,.12,.12,0x977f60);put('box',def.x,2.2,def.z,1.65,.13,.12,0x4d655e);if(progress>0)put('glow',def.x-(1-progress)*.8,2.2,def.z+.05,1.6*progress,.12,.12,0x83e1bd);}
-   if(w.warningUntil>t||w.hp===0||selectedWall===i)put('glow',def.x,front?1.1:2.05,def.z,.14,.22,.14,w.hp===0?0xd77c63:0xe0bd72);
+   if(hit<6||ratio<.75||selectedWall===i){const angle=Math.atan2(viewX,viewZ),width=4.2,y=1.3*STYLE.pathogenScale.height,fill=Math.min(1,ratio),dx=Math.cos(angle),dz=-Math.sin(angle);put('box',def.x,y,def.z,width,.25,.2,0x5e4b46,angle);if(fill>0)put('box',def.x-dx*(1-fill)*width/2+Math.sin(angle)*.03,y+.01,def.z-dz*(1-fill)*width/2+Math.cos(angle)*.03,width*fill,.21,.23,ratio<.3?0xe87a59:0xe4c47a,angle);}
+   if(open&&hit<1.1)for(let n=0;n<6;n++){const q=hit/1.1,a=n*Math.PI/3,r=.4+q*2.2;put('box',def.x+Math.cos(a)*r,.25+Math.sin(q*Math.PI)*1.8,def.z+Math.sin(a)*r,.3*(1-q)+.08,.24,.28,0xbfa488,a+q*3,q);}
+   if(w.warningUntil>t||open||selectedWall===i)put('glow',def.x,front?1.1:2.05,def.z,.14,.22,.14,open?0xd77c63:0xe0bd72);
    if(w.hp<30&&!repair?.delivered)fire(def.x,def.z,t,fireCount++,1.1-w.hp/100);
    else if(ratio<.75&&!repair?.delivered)injury(def.x,def.z,t,1-ratio);
   }

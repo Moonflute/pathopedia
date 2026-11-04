@@ -2,7 +2,7 @@ import {CITY_STYLE as STYLE} from './city-three-style.mjs';
 import {CITY_ENTRIES} from './city-world.mjs';
 import * as T from './vendor/three/three.module.min.js';
 import {GLTFLoader} from './vendor/three/GLTFLoader.js';
-import {WALLS} from './city-frontier-data.mjs';
+import {WALLS,wallOpen} from './city-frontier-data.mjs';
 import {wallMaximum} from './city-frontier.mjs';
 import {wallPieces,WALL_ARC_STEPS} from './city-boundary.mjs';
 
@@ -62,9 +62,9 @@ export function createBundleWalls(bundle){
   const vx=camera?camera.position.x-target.x:20,vz=camera?camera.position.z-target.z:32;
   for(const {mesh} of batches)mesh.count=0;
   for(const [i,wall] of WALLS.entries()){
-   const state=s.frontier?.walls[i];if(!state||state.hp<=0)continue;
+   const state=s.frontier?.walls[i];if(!state||wallOpen(state))continue;
    const front=wall.nx*vx+wall.nz*vz>Math.hypot(vx,vz)*.3;
-   color.set(state.repair?0xb9ccc2:state.hp/wallMaximum(s,i)<.75?0xc9ab93:STYLE.plasterWarm);
+   color.set(state.hitAt!=null&&s.time-state.hitAt<.18?0xffd89d:state.repair?0xb9ccc2:state.hp/wallMaximum(s,i)<.75?0xc9ab93:STYLE.plasterWarm);
    for(const p of wallPieces(wall)){position.set(p.x,.02,p.z);quaternion.setFromAxisAngle(axis,p.angle);scale.set(p.length*1.02/Math.max(.01,walls.size.x),front?.6:1.7,1);wallMatrix.compose(position,quaternion,scale);put(walls);}
    if(i===0||i===4||i===7||i===10){position.set(wall.a.x,.02,wall.a.z);quaternion.identity();scale.setScalar(front?1.1:2.3);wallMatrix.compose(position,quaternion,scale);put(towers);}
   }

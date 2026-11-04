@@ -26,5 +26,6 @@ export const SKIN_TISSUES=WALLS.map(w=>{const x=w.x-w.nx*5.4,z=w.z-w.nz*5.4;retu
 TISSUES.push(...SKIN_TISSUES);
 export const INVESTMENTS={barrier:{name:'장벽 보강',cost:26},sensor:{name:'감지 초소',cost:24},supply:{name:'보급 확장',cost:28},production:{name:'생산칸',cost:32}};
 export const supportCount=(s,id,kind)=>s.frontier?.plots[id]?.filter(p=>p===kind).length||0;
-export const wallState=(w,max=100)=>w.repair?'복구':w.hp===0?'파손':w.hp<max*.75?'손상':'정상';
+export const wallOpen=w=>w.hp<=0||w.breached===true&&w.hp<25;
+export const wallState=(w,max=100)=>w.repair?'복구':wallOpen(w)?'파손':w.hp<max*.75?'손상':'정상';
 export const districtName=id=>DISTRICTS.find(d=>d.id===id)?.short||'';

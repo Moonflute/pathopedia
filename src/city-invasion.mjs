@@ -1,8 +1,9 @@
 import {CITY_ENTRIES} from './city-world.mjs';
-import {WALLS} from './city-frontier-data.mjs';
+import {WALLS,wallOpen} from './city-frontier-data.mjs';
+import {pathogenDef} from './city-pathogens.mjs';
 import {groundPoint,groundCoordinate} from './city-three-layout.mjs';
 
-export const INVASION_MARCH=Object.freeze({distance:24,gap:6.2,speed:1.6,stand:3.4,period:1.4,assault:4.2});
+export const INVASION_MARCH=Object.freeze({distance:24,gap:6.2,speed:1.6,stand:3.4,period:1.4,contact:.48,assault:4.2});
 const queues=new WeakMap();
 export function invasionGate(e){
  if(e.front==='skin'){const w=WALLS[e.wall];return w?{x:w.x,z:w.z,nx:w.nx,nz:w.nz,key:'skin:'+e.wall}:null;}
@@ -32,11 +33,29 @@ function leader(s,e){
  }
  const first=cached.ahead.get(e);return first&&waiting(first)?first:null;
 }
-export function tickInvasion(s,e,dt){
- const invasion=e.invasion,gate=invasionGate(e);if(!invasion||!gate||e.entered)return false;
+function strikeSkin(s,e,dt,api){
+ const v=e.invasion,w=s.frontier.walls[e.wall],profile=pathogenDef(e.recordId);
+ const contacts=time=>Math.max(0,Math.floor((time-v.since)/INVASION_MARCH.period-INVASION_MARCH.contact+1e-8)+1);
+ const strikes=contacts(s.time),previous=v.strikes??contacts(s.time-dt);v.strikes=strikes;
+ // Game-scale pressure from skin-invasive bacteria; free virions need an opening.
+ if(strikes<=previous||!profile?.routes.includes('skin')||!profile.damage||leader(s,e))return;
+ const g=invasionGate(e),nearby=s.enemies.filter(a=>a!==e&&waiting(a)&&a.front==='skin'&&a.wall===e.wall&&pathogenDef(a.recordId)?.damage>0&&distance(a,g)<=24).length;
+ const pressure=1+Math.min(3,nearby)*.25,damage=(3+profile.damage*8)*pressure*(strikes-previous);
+ if(w.hp>=25)delete w.breached;
+ w.hp=Math.max(0,w.hp-damage);w.hitAt=s.time;w.warningUntil=Math.max(w.warningUntil||0,s.time+8);
+ if(w.hp===0){w.breached=true;api?.log?.(s,WALLS[e.wall].name+' · 장벽 붕괴');}
+}
+export function tickInvasion(s,e,dt,api){
+ const gate=invasionGate(e);if(!gate||e.entered||e.dead)return false;
+ let invasion=e.invasion;
+ if(!invasion){
+  // Resume old saves already waiting at the wall without moving them back to spawn.
+  if(!s.layout||e.front!=='skin'||e.colonization||distance(e,gate)<0||distance(e,gate)>INVASION_MARCH.stand+1)return false;
+  invasion=e.invasion={version:1,stage:'barrier',since:s.time,moving:false,strikes:0};queues.delete(s);
+ }
  if(invasion.stage==='passed'){
-  if(e.front!=='skin'||e.colonization||s.frontier.walls[e.wall].hp<=0)return false;
-  invasion.stage='barrier';invasion.since=s.time;queues.delete(s);
+  if(e.front!=='skin'||e.colonization||wallOpen(s.frontier.walls[e.wall]))return false;
+  invasion.stage='barrier';invasion.since=s.time;invasion.strikes=0;queues.delete(s);
  }
  e.action='approach';invasion.moving=false;
  if(invasion.stage==='march'){
@@ -44,14 +63,15 @@ export function tickInvasion(s,e,dt){
   Object.assign(e,groundCoordinate({x:gate.x+gate.nx*next,z:gate.z+gate.nz*next}));invasion.moving=d-next>1e-6;
   if(e.until!=null)e.until=Math.max(e.until,s.time+30);
   if(next>stand+.001)return true;
-  invasion.stage='barrier';invasion.since=s.time;
+  invasion.stage='barrier';invasion.since=s.time;invasion.strikes=0;
  }
  e.action='blocked';e.entryStage='barrier';
- if(e.front==='skin'&&s.frontier.walls[e.wall].hp<=0||e.front!=='skin'&&s.time-invasion.since>=INVASION_MARCH.assault){invasion.stage='passed';e.action='approach';return false;}
+ if(e.front==='skin'&&!wallOpen(s.frontier.walls[e.wall]))strikeSkin(s,e,dt,api);
+ if(e.front==='skin'&&wallOpen(s.frontier.walls[e.wall])||e.front!=='skin'&&s.time-invasion.since>=INVASION_MARCH.assault){invasion.stage='passed';e.action='approach';return false;}
  return true;
 }
 export function validInvasion(e){
- const v=e.invasion;return v==null||!!invasionGate(e)&&v.version===1&&['march','barrier','passed'].includes(v.stage)&&Number.isFinite(v.since)&&v.since>=0&&typeof v.moving==='boolean';
+ const v=e.invasion;return v==null||!!invasionGate(e)&&v.version===1&&['march','barrier','passed'].includes(v.stage)&&Number.isFinite(v.since)&&v.since>=0&&typeof v.moving==='boolean'&&(v.strikes==null||Number.isSafeInteger(v.strikes)&&v.strikes>=0);
 }
 // Shared pose makes the wind-up, contact flash and recoil land on the same beat.
 export function invasionPose(e,time){

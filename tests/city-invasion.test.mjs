@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {INVASION_MARCH,startInvasion,tickInvasion,invasionGate,invasionPose,invasionImpact} from '../src/city-invasion.mjs';
-import {groundPoint,qualityProfile} from '../src/city-three-layout.mjs';
+import {groundPoint,groundCoordinate,qualityProfile} from '../src/city-three-layout.mjs';
+import {WALLS,SKIN_TISSUES,wallOpen} from '../src/city-frontier-data.mjs';
 import {createCity,tickCity,command,serializeCity,restoreCity} from '../src/city-engine.mjs';
 import {applyTileLayout,createTileLayout} from '../src/city-tile-layout.mjs';
 import {createActors} from '../src/city-three-actors.mjs';
@@ -52,4 +53,37 @@ test('arrival feet and impacts fit existing renderer pools on desktop and mobile
  for(const width of [390,1280]){const actors=createActors(qualityProfile(width)),host=createHostResponseScene(),before=serializeCity(s);actors.draw(s);host.update(s);assert.equal(actors.root.children.length,16);assert.equal(host.root.children.length,5);assert.ok(actors.root.getObjectByName('feet').count>=6);assert.ok(actors.root.getObjectByName('pod').count>=18);
   for(const root of [actors.root,host.root])root.traverse(m=>{if(m.isInstancedMesh){assert.ok(m.count<=m.instanceMatrix.count);assert.ok(m.instanceMatrix.array.every(Number.isFinite));}});assert.equal(serializeCity(s),before);host.dispose();
  }
+});
+
+test('wall damage lands once per contact, reflects bacterial strength and caps queue pressure',()=>{
+ const hit=(recordId,count=1)=>{
+  const s={time:0,layout:{},enemies:[],frontier:{walls:WALLS.map(()=>({hp:100,warningUntil:0}))}},g=WALLS[11];
+  for(let n=0;n<count;n++)s.enemies.push({id:n+1,front:'skin',wall:11,recordId,...groundCoordinate({x:g.x+g.nx*(3.4+n*6.2),z:g.z+g.nz*(3.4+n*6.2)}),invasion:{version:1,stage:n?'march':'barrier',since:0,moving:false,strikes:0}});
+  const e=s.enemies[0],w=s.frontier.walls[11];s.time=.66;tickInvasion(s,e,.66);assert.equal(w.hp,100);
+  s.time=.7;tickInvasion(s,e,.04);const hp=w.hp;tickInvasion(s,e,.04);assert.equal(w.hp,hp,'one impact cannot be applied twice');assert.equal(s.frontier.walls[10].hp,100);
+  return {s,e,w,damage:100-hp};
+ };
+ const single=hit('SAU-002'),crowd=hit('SAU-002',256),gas=hit('SPY-101'),virus=hit('IMM-VIRUS');
+ assert.ok(single.damage>0&&gas.damage>single.damage);assert.ok(crowd.damage>single.damage&&crowd.damage<=single.damage*1.75+1e-8);assert.equal(virus.damage,0);
+ for(let n=0;n<30&&!wallOpen(single.w);n++){single.s.time+=.1;tickInvasion(single.s,single.e,.1);}assert.ok(single.w.hp<100);
+ single.w.hp=0;single.w.breached=true;tickInvasion(single.s,single.e,.1);single.w.hp=4;assert.ok(wallOpen(single.w));assert.equal(tickInvasion(single.s,single.e,.1),false);
+ single.w.hp=25;assert.equal(wallOpen(single.w),false);assert.ok(tickInvasion(single.s,single.e,.1));single.s.time+=.7;tickInvasion(single.s,single.e,.7);assert.ok(single.w.hp<25);assert.equal(wallOpen(single.w),false,'a sealed wall must be broken again');
+});
+
+test('skin invaders naturally break a healthy wall and reach the adjacent tissue with city defenses active',()=>{
+ const s=createCity('normal','simulation',{specialists:true,expanded:true});applyTileLayout(s,createTileLayout());
+ const data=JSON.parse(fs.readFileSync(new URL('../data/organisms.json',import.meta.url)));assert.ok(command(s,'expose',{recordId:'SAU-002',front:'skin',wall:11,amount:6},data).ok);
+ let damaged=false,broken=false,entered=false,local=false;
+ for(let n=0;n<600&&!local;n++){
+  tickCity(s,.1,data,'2');const w=s.frontier.walls[11];damaged||=w.hp<100;broken||=wallOpen(w);entered||=s.enemies.some(e=>e.front==='skin'&&e.entered);local||=s.enemies.some(e=>e.action==='attack'&&e.attackTarget?.kind==='tissue'&&e.attackTarget.id===SKIN_TISSUES[11].id);
+ }
+ assert.ok(damaged,'strikes reduce wall health');assert.ok(broken,'a breach occurs without a manual wound');assert.ok(entered,'automatic patches do not close the breach at one HP');assert.ok(local,'the first attack targets tissue immediately inside the breach');
+});
+
+test('a saved assault resumes without replaying impacts and rejects invalid damage state',()=>{
+ const s=town(),data=JSON.parse(fs.readFileSync(new URL('../data/organisms.json',import.meta.url)));command(s,'expose',{recordId:'SAU-002',front:'skin',wall:11,amount:3},data);
+ for(let n=0;n<300&&s.frontier.walls[11].hp===100;n++)tickCity(s,.1,data,'2');assert.ok(s.frontier.walls[11].hp<100);
+ const saved=serializeCity(s),copy=restoreCity(saved);assert.ok(copy);
+ for(let n=0;n<35;n++){tickCity(s,.1,data,'2');tickCity(copy,.1,data,'2');}assert.equal(serializeCity(copy),serializeCity(s));
+ const invalid=JSON.parse(saved);invalid.enemies[0].invasion.strikes=-1;assert.equal(restoreCity(invalid),null);invalid.enemies[0].invasion.strikes=1;invalid.frontier.walls[11].breached='yes';assert.equal(restoreCity(invalid),null);
 });

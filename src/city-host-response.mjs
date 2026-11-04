@@ -1,7 +1,7 @@
 import {injureResidents} from './city-residents.mjs';
 import {cityDistricts,cityDistrict,localPoint,compileLayout,walkablePoint} from './city-tile-layout.mjs';
 import {SITES,groundPoint,groundCoordinate} from './city-three-layout.mjs';
-import {WALLS,SKIN_TISSUES} from './city-frontier-data.mjs';
+import {WALLS,SKIN_TISSUES,wallOpen} from './city-frontier-data.mjs';
 import {CITY_ENTRIES} from './city-world.mjs';
 import {pathogenDef,spreadDestination} from './city-pathogens.mjs';
 import {infectionFocus} from './city-infection-focus.mjs';
@@ -68,9 +68,9 @@ function tickVirus(s,dt){
  for(const v of p.virions){
   const target=p.epithelium.find(e=>e.id===v.targetId),ab=i.antibodies[v.recordId],neutralizing=(v.entered?ab?.IgG:ab?.IgA)||0;
   if(v.until<=s.time||!target||neutralizing>25&&(v.id%5<Math.min(5,neutralizing/20))){p.stats.neutralized++;hostEvent(s,'neutralized',v.site,v,v.recordId);continue;}
-  if(v.front==='skin'&&!v.entered&&s.frontier.walls[v.wall].hp>0)v.phase='barrier';
+  if(v.front==='skin'&&!v.entered&&!wallOpen(s.frontier.walls[v.wall]))v.phase='barrier';
   if(tickInvasion(s,v,dt)){alive.push(v);continue;}
-  if(v.front==='skin'&&!v.entered&&s.frontier.walls[v.wall].hp>0){alive.push(v);continue;}
+  if(v.front==='skin'&&!v.entered&&!wallOpen(s.frontier.walls[v.wall])){alive.push(v);continue;}
   if(v.phase==='entry'||v.phase==='barrier'){
    if(!walkPath(v,85,dt)){alive.push(v);continue;}
    if(v.front==='airway'&&v.id%4===0&&s.barrier>40){v.phase='expelled';v.path=[groundCoordinate(CITY_ENTRIES.airway.start)];v.step=0;alive.push(v);continue;}
