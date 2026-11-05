@@ -58,11 +58,11 @@ export function createCityGame(data,options={}){
       ${is3d?button('front-alert','','class="cc-front-warning" data-city-warning hidden'):''}<div class="cc-resources" aria-label="도시 자원">
         ${[['health','♥','건강'],['oxygen','O₂','산소'],['food','◈','영양분'],['materials','▥',is3d?'자재':'건축 자재'],['waste','≋','노폐물']].map(([id,glyph,label])=>`<div class="cc-resource cc-resource--${id}" title="${label}"><span aria-hidden="true">${glyph}</span><div><small>${label}</small><strong data-city-value="${id}">—</strong></div><i data-city-meter="${id}"></i></div>`).join('')}
       </div>
-          ${is3d?'<section class="cc-layout-editor" data-city-layout-editor aria-label="마을 배치 편집" hidden></section>':''}<div class="cc-pause" data-city-paused hidden>${icon('pause')}<span>일시정지</span></div>
+          <div class="cc-pause" data-city-paused hidden>${icon('pause')}<span>일시정지</span></div>
           <div class="cc-result" data-city-result hidden></div>
           <div class="cc-toast" role="status" data-city-toast hidden></div>
           <div class="cc-unit-selection" data-city-unit-selection hidden></div><div class="cc-map-caption"><span>● 적혈구　◈ 물자　✦ 면역세포</span><span>${is3d?'이동: 드래그 · 줌: 휠/두 손가락 · 회전: 우클릭/Q·E':'드래그 · 휠 / 두 손가락'}</span></div>
-        </div><aside class="cc-sidebar" id="city-management" aria-label="도시 관리" ${panel?'':'hidden'}>
+        </div>${is3d?'<section class="cc-layout-editor" data-city-layout-editor aria-label="마을 배치 편집" hidden></section>':''}<aside class="cc-sidebar" id="city-management" aria-label="도시 관리" ${panel?'':'hidden'}>
           <header class="cc-panel-heading"><div><span>MANAGEMENT</span><h2 data-city-panel-title>구역 관리</h2></div>${button('close',icon('x'),'aria-label="관리 패널 닫기"')}</header>
           <section class="cc-panel" data-city-panel="district"><nav class="cc-districts" aria-label="장기 구역 선택" ${is3d?'hidden':''}>${DISTRICTS.map(d=>button('select',`<span style="--organ:${d.color}">${d.symbol}</span><strong>${d.short}</strong>`,`data-city-id="${d.id}" aria-pressed="${d.id===selected}"`)).join('')}</nav><div class="cc-detail" data-city-detail></div></section>
           <section class="cc-panel" data-city-panel="workers" hidden><div class="cc-section-label">세포 인력 <span data-city-population></span></div><div class="cc-workers" data-city-workers></div><div class="cc-policy" role="group" aria-label="도시 운영 방침" ${is3d?'hidden':''}>${Object.entries(POLICIES).map(([id,name])=>button('policy',name,`data-city-id="${id}" aria-pressed="${id===run.policy}"`)).join('')}</div></section>
@@ -119,7 +119,7 @@ export function createCityGame(data,options={}){
     for(const el of game.querySelectorAll('[data-city-page]'))el.hidden=el.dataset.cityPage!==cityPage;
     for(const el of game.querySelectorAll('[data-city-action="panel"]'))el.setAttribute('aria-expanded',String(el.dataset.cityId===panel));
     for(const el of game.querySelectorAll('[data-city-action="city-page"]'))el.setAttribute('aria-pressed',String(el.dataset.cityId===cityPage));
-    if(is3d){game.dataset.editing=String(!!editor);const editPanel=game.querySelector('[data-city-layout-editor]');editPanel.hidden=!editor;if(editor)region('[data-city-layout-editor]',layoutEditorMarkup(editor));}
+    if(is3d){game.dataset.editing=String(!!editor);game.dataset.editorCollapsed=String(!!editor?.collapsed);const editPanel=game.querySelector('[data-city-layout-editor]');editPanel.hidden=!editor;if(editor)region('[data-city-layout-editor]',layoutEditorMarkup(editor));}
     const set=(sel,value)=>{const e=game.querySelector(sel);if(e&&e.textContent!==String(value))e.textContent=value;};
     set('[data-city-panel-title]',{district:is3d?'기관 현황':'구역 관리',infection:'감염',workers:'세포 현황',armory:is3d?(run.scenario==='simulation'?'면역·감염 실험':'치료·감염 대응'):'방어 장비',city:cityPage==='settings'?'설정':cityPage==='homeostasis'?'항상성':'도시 운영',frontier:'방어·항생제'}[panel]||'도시 관리');
     const stats={health:cityHealth(run),oxygen:cityOxygen(run),food:run.resources.food,materials:run.resources.materials,waste:run.waste};

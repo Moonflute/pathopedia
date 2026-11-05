@@ -1,4 +1,4 @@
-/* The management UI floats above an unchanged canvas in both city themes. */
+/* Management panels float; the landscape layout editor reserves its own space. */
 .cc-game.cc-three.cc-management .cc-stage{display:block;position:relative;overflow:hidden}
 .cc-game.cc-three.cc-management .cc-map{position:absolute;inset:0;width:100%;height:100%}
 .cc-game.cc-three.cc-management .cc-sidebar{position:absolute;z-index:12;inset:10px 10px 10px auto;width:min(390px,calc(100% - 20px));max-height:none;display:flex;flex-direction:column;border:1px solid #b9c9b9;border-radius:14px;background:#f7f4ebf7;box-shadow:0 8px 32px #233d3826;overflow:hidden}
@@ -98,6 +98,11 @@
 .cc-game.cc-management .cc-infection-table th button{border:0;background:transparent;padding:3px 0;font-size:11px;text-align:left;white-space:normal;min-height:32px;color:#537e71}
 .cc-game.cc-three.cc-management .cc-detail,.cc-game.cc-three.cc-management .cc-workers{display:block;min-width:0}
 .cc-game.cc-three.cc-management .cc-sidebar{height:auto}
+.cc-game.cc-three.cc-management .cc-layout-heading{display:grid;flex:1;min-width:0;gap:2px}
+.cc-game.cc-three.cc-management .cc-layout-heading>span{font-size:10px;overflow-wrap:anywhere}
+.cc-game.cc-three.cc-management .cc-layout-editor header button{flex:none;min-width:44px;min-height:44px}
+.cc-game.cc-three.cc-management[data-editor-collapsed=true] .cc-layout-editor{width:min(320px,calc(100% - 16px));max-height:none;overflow:visible}
+.cc-game.cc-three.cc-management[data-editor-collapsed=true] .cc-layout-heading>span{display:none}
 @media(max-width:619px),(max-width:760px) and (min-height:621px){
  .cc-game.cc-three.cc-management .cc-sidebar{height:54%;max-height:430px}
  .cc-game.cc-three.cc-management .cc-organ-card header button,.cc-game.cc-three.cc-management .cc-organ-card footer button,.cc-game.cc-three.cc-management .cc-cell-card>button,.cc-game.cc-three.cc-management .cc-barrier-dashboard article>button,.cc-game.cc-three.cc-management .cc-infection-form>button{min-height:44px}
@@ -130,12 +135,17 @@
  .cc-game.cc-three.cc-management .cc-layout-editor footer button{flex:1;background:#e9eddf;border:1px solid #bac4af}
  .cc-game.cc-three.cc-management[data-editing=true] .cc-map-shortcuts{top:8px;bottom:auto}
 }
-@media(min-width:620px) and (max-width:1100px) and (max-height:620px){
- .cc-game.cc-three.cc-management .cc-layout-editor{left:auto;right:8px;top:8px;bottom:8px;transform:none;width:min(400px,50%);max-height:none;padding:8px}
+@media(min-width:520px) and (max-width:1100px) and (max-height:620px) and (orientation:landscape){
+ .cc-game.cc-three.cc-management{--cc-editor-width:clamp(260px,34vw,320px)}
+ .cc-game.cc-three.cc-management[data-editing=true]:not([data-editor-collapsed=true]) .cc-map{right:calc(var(--cc-editor-width) + 16px);width:auto}
+ .cc-game.cc-three.cc-management .cc-layout-editor{left:auto;right:8px;top:8px;bottom:8px;transform:none;width:var(--cc-editor-width);max-height:none;padding:8px}
  .cc-game.cc-three.cc-management .cc-layout-editor header{top:-8px;gap:5px}
+ .cc-game.cc-three.cc-management .cc-layout-editor header strong{font-size:12px}
+ .cc-game.cc-three.cc-management[data-editor-collapsed=true] .cc-layout-editor{width:320px;bottom:auto}
  .cc-game.cc-three.cc-management .cc-layout-expansion{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
  .cc-game.cc-three.cc-management .cc-layout-expansion select{grid-column:1/-1;max-width:none}
- .cc-game.cc-three.cc-management[data-editing=true] .cc-map-shortcuts{right:calc(50% + 16px)}
+ .cc-game.cc-three.cc-management[data-editing=true] .cc-map-shortcuts{right:8px}
+ .cc-game.cc-three.cc-management[data-editing=true][data-editor-collapsed=true] .cc-map-shortcuts{right:336px}
  .cc-game.cc-three.cc-management .cc-sidebar{width:min(350px,46%)}
 }
 @media(max-width:370px){
