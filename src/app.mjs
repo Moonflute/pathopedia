@@ -7,7 +7,7 @@ import { handleReferenceCardClick, handleCardTabKeydown, bindCardMotion, bindCar
 import { createCardInspector } from './card-inspector.mjs';
 import { createCardStacks } from './card-stacks.mjs';
 
-const VERSION = '0.88.1';
+const VERSION = '0.89.0';
 const KEY = 'pathopedia.v1';
 const APP_TABS = [
  {id:'lab',label:'병원체 추측',icon:'<path d="m9 3 6 6-3 3-6-6 3-3Z"/><path d="M12 12v2M7 13a6 6 0 0 0 12 0 6 6 0 0 0-3-5M4 17h10M10 20v2M5 22h15"/>'},
@@ -49,7 +49,7 @@ root.addEventListener('pointermove',event=>cardGallery?.handlePointerMove(event)
 root.addEventListener('pointerdown',event=>cardGallery?.handlePointerDown(event));
 root.addEventListener('wheel',event=>cardGallery?.handleWheel(event),{passive:false});
 root.addEventListener('focusin',event=>cardGallery?.handleFocusIn(event));
-const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.88.1" alt="" width="27" height="27">';
+const symbol = '<img class="brand-icon" src="./assets/pathopedia-icon-192.png?v=0.89.0" alt="" width="27" height="27">';
 const record = () => data.records.find(r => r.id === round.targetId);
 const answerVisible = () => ['solved','revealed'].includes(round.status);
 const has = (kind, key) => round.actions.find(a => a.kind === kind && a.key === key);
@@ -91,7 +91,7 @@ function home() {
  return `<section class="tab-selection" aria-label="탭 선택" style="--home-rows-wide:${Math.ceil(APP_TABS.length/4)};--home-rows-tall:${Math.ceil(APP_TABS.length/3)};--home-rows-narrow:${Math.ceil(APP_TABS.length/2)}"><nav class="tab-choices" aria-label="학습 화면 선택">${APP_TABS.map(({id,label,icon})=>`<button type="button" class="tab-choice" data-view="${id}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${icon}</svg><span>${label}</span></button>`).join('')}</nav></section>`;
 }
 function shell() {
- const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',defense:'defense-main',play:'play-main',survival:'survival-main',reroll:'luck-main',city:'city-main',city3d:'city-main',cards:'card-gallery-main'}[view];
+ const mainClass={home:'home-main',lab:'game-main',treatment:'treatment-main',defense:'defense-main',play:'play-main',survival:'survival-main',reroll:'luck-main',city:'village-main',city3d:'city-main',cards:'card-gallery-main'}[view];
  const content=view==='home'?home():view==='lab'?lab():view==='treatment'?treatmentGame.render():view==='defense'?defenseGame.render():view==='play'?playView():view==='survival'?survivalView():view==='reroll'?luckView():view==='city'?cityView():view==='city3d'?cityThreeView():cardGallery.render();
  return `<header class="appbar${view==='home'?' appbar--home':''}"><a class="brand" href="#home" aria-label="Pathopedia 탭 선택">${symbol}<span>PATHOPEDIA</span></a>${view==='home'?'':`<nav class="appnav" aria-label="주 메뉴">${APP_TABS.map(({id,label})=>`<button type="button" data-view="${id}" class="${view===id?'active':''}" ${view===id?'aria-current="page"':''}>${label}</button>`).join('')}</nav>`}<span class="version">v ${VERSION}</span></header>
   ${storageWarning ? `<div class="storage-warning" role="alert">${esc(storageWarning)}</div>` : ''}
@@ -121,12 +121,12 @@ async function loadCity(){
  if(cityGame||cityLoading)return;
  cityLoadError='';
  const styleReady=new Promise((resolve,reject)=>{
-  if(document.querySelector('link[data-city-style]'))return resolve();
-  const link=document.createElement('link');link.rel='stylesheet';link.href=new URL('./city.css',import.meta.url).href;link.dataset.cityStyle='';link.onload=resolve;link.onerror=()=>{link.remove();reject(Error('City stylesheet unavailable'));};document.head.append(link);
+  if(document.querySelector('link[data-village-style]'))return resolve();
+  const link=document.createElement('link');link.rel='stylesheet';link.href=new URL('./cell-village.css',import.meta.url).href;link.dataset.villageStyle='';link.onload=resolve;link.onerror=()=>{link.remove();reject(Error('Village stylesheet unavailable'));};document.head.append(link);
  });
- cityLoading=Promise.all([import('./city-ui.mjs'),styleReady]);
- try{const [{createCityGame}]=await cityLoading;cityGame=createCityGame(data);
-  if('serviceWorker' in navigator)void navigator.serviceWorker.ready.then(reg=>reg.active?.postMessage('CACHE_CITY')).catch(()=>{});
+ cityLoading=Promise.all([import('./cell-village-ui.mjs'),styleReady]);
+ try{const [{createCellVillage}]=await cityLoading;cityGame=createCellVillage();
+  if('serviceWorker' in navigator)void navigator.serviceWorker.ready.then(reg=>reg.active?.postMessage('CACHE_CELL_VILLAGE')).catch(()=>{});
  }catch(error){cityLoadError=error.message;console.error('City load failed',error);}
  finally{cityLoading=null;if(view==='city')render();}
 }

@@ -1,0 +1,18 @@
+{
+  "version": "0.89.0",
+  "tileSize": 16,
+  "sources": [
+    {
+      "file": "tiny-town.png",
+      "author": "Kenney",
+      "pack": "Tiny Town 1.1",
+      "url": "https://kenney.nl/assets/tiny-town",
+      "archivePath": "Tilemap/tilemap_packed.png",
+      "license": "CC0-1.0",
+      "licenseFile": "KENNEY-LICENSE.txt",
+      "bytes": 5042,
+      "sha256": "3a54d99ecde790d4fdea207a3644cf130fc56fa838f1beb1507c185a95b8e902"
+    }
+  ],
+  "runtime": "One local atlas, loaded only by the independent Cell City tab. Organ buildings, residents, clothing and effects are original Canvas pixel drawings. No Stardew Valley assets are included."
+}

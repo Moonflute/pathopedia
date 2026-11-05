@@ -1,70 +1,29 @@
-# Cell City prototype — 0.45.0
+# Cell City — 몸속의 작은 하루 (v0.89.0)
 
-Open the **cell city** tab or #city. One body-city contains lung, heart, kidney, gastrointestinal, marrow and lymph districts. A new start screen selects a scenario or resumes the existing save. Separate difficulty controls and finished artwork are deferred.
+`#city`의 기존 2D 경영 프로토타입을 독립된 생활 관찰 마을로 교체했다. 스타듀밸리처럼 정면과 바닥이 함께 보이는 탑다운 구도이며 대각선 격자·회전·원근 투영을 사용하지 않는다. `#city3d`는 기존 3D 시뮬레이션을 유지한다.
 
-## Scenario goals
+## 마을
 
-| Scenario | Opening | Success | Failure |
-| --- | --- | --- | --- |
-| 감염 도시 복구 | Lung health 45%, other districts 62%, waste 58%, damaged airway barrier, active infection | Within 8 game minutes: clear three infection events, every district at least 85%, waste at most 30%; hold recovery conditions for 15 seconds | Recovery deadline, heart failure, or average health below 22% |
-| 건강한 도시 유지 | Healthy valley town, 40 cells | 5 game minutes; average health at least 70%, waste at most 65% | A continuous 15-second breach, heart failure, or average health below 22% |
-| 면역저하 도시 유지 | Desert palette, 36 cells, four neutrophils and slower neutrophil recruitment | 6 game minutes; average health at least 75%, waste at most 65% | Same 15-second grace rule and critical failure conditions |
+48×34 타일의 작은 마을에 뇌 신호 우체국, 폐 숨결 온실, 골수 공방, 심장 광장, 영양 부엌, 간 정리소, 콩팥 여과소를 배치한다. 텃밭·벤치·수조·꽃과 나무가 길 주변을 채운다. 시설의 표식, 펌프·바람·신호·물결·바구니 연출로 역할을 구분한다.
 
-A breach at the survival deadline must recover within the remaining grace period before success. The prototype models reduced immunity specifically as neutropenia; the desert is a visual metaphor. The old save retains its original three-wave objective. Winning allows free operation.
+주민은 역할군당 한 명, 총 8명이다. 루비(적혈구), 두두(심근세포), 솔솔(폐포세포), 반짝(신경세포), 보리(장세포), 맑음(신장세포), 모모(대식세포), 토리(섬유아세포)가 각자의 시설·배달·산책·휴식 동선을 반복한다. 현재는 생물학적 역할을 일상 행동으로 표현하는 생활 시뮬이며 실제 대사·감염·전투·건강 수치 계산은 하지 않는다.
 
-## Village and transport
+## 조작
 
-The finite landscape adds mountains behind the town, a river crossing it and exiting beside the kidney plant, seven wall towers and distinct airway/food gates. The foreground floating shadow is removed. Valley and desert reuse one layout and swap the terrain palette and tree treatment.
+- 처음에는 마을이 자동으로 움직이는 구경 모드다. 드래그로 이동, 휠과 ±로 확대·축소, 전체 보기 버튼으로 지도를 맞춘다. 모바일 첫 화면은 중앙을 크게 보여준다.
+- 주민 또는 주민 목록을 누르면 해당 주민을 따라본다. ×로 따라보기를 끝낸다.
+- 산책하기에서 이름, 옷 6색, 머리 3색, 피부 3색을 고르면 플레이어 한 명이 광장에 생긴다. 기존 캐릭터는 내 캐릭터에서 수정한다.
+- WASD / 방향키 / 바닥 클릭 / 터치 방향패드로 이동한다. 건물·물·지도 경계는 통과하지 못한다. 경로는 타일 탐색으로 우회한다.
+- 주민·시설 클릭은 다가가 인사하거나 작은 작업을 수행한다. 근처에서는 E 또는 작업 버튼으로 같은 동작을 한다. 도움 횟수만 기록하고 재화·패배 조건은 두지 않는다.
+- 1×/2×, 재생/일시정지, 자동/낮/밤 조명을 제공한다. 비활성 탭에서는 루프를 멈춘다. 대화상자 동안은 시뮬레이션 입력과 진행을 멈춘다.
 
-- Heart: existing pumping station and animated pulse.
-- Circulation: precomputed curved roads with two lanes. Heart-to-lung blood uses the blue pulmonary lane and oxygenated return uses red; systemic supply reverses that pairing. The renderer and red cells share the same route geometry. No per-frame pathfinding.
-- Skin: thick walls, crenellations and towers. The airway gate remains the active barrier mechanic; whole-wall damage is not yet simulated.
-- Kidney: settling/filter tanks on the river's downstream bank, rotating filter arms and an outflow pipe.
-- Lung: wind rotors, bellows and an airway entrance retained for respiratory infection.
-- Gut: external ingredient carts deliver raw food; the district processes the stock into nutrients for distribution. Higher levels increase both intake and processing capacity. Separate stomach/liver/pancreas districts remain deferred.
-- Marrow: manual recruitment, a three-slot production queue, birth at the marrow exit and a direct production control in the district panel.
-- Lymph: existing antigen delivery and target-specific antibody support, pending later concept work.
+## 구조와 저장
 
-The scene has 6 organ facilities, 29 neighborhood buildings, 24 accessories, 36 trees and 7 wall towers (102 structures/decorations). Cached primitive sprites keep these replaceable without downloading artwork. Real work units are used instead of decorative moving crowds: 40 initially (36 in the neutropenia scenario), with a recruitment cap of 96 across five jobs.
+- `src/cell-village-world.mjs`: 역할·장소·길찾기·충돌·일과·상호작용·저장 검증.
+- `src/cell-village-renderer.mjs`: 정적 배경 캔버스, Kenney 타일, 자체 도트 건물·캐릭터, 카메라·작업 연출.
+- `src/cell-village-ui.mjs`, `src/cell-village.css`: 별도 앱 진입점과 `.vlg-game` 전용 UI.
+- `pathopedia:cell-village:v1`에 이름·외형·위치·시간·도움 횟수를 5초 간격과 탭 이탈 시 저장한다. 이전 2D·3D 기록을 읽거나 지우지 않는다. 주민은 재입장 시 자신의 일과를 다시 시작한다.
+- 30fps, 정적 배경 한 장, 최대 DPR 2, 고정 주민 8명과 플레이어 1명. Kontra.js(MIT)를 재사용한다.
+- `CACHE_CELL_VILLAGE`로 방문한 마을을 오프라인 저장한다. 빌드가 `assets/cell-village`를 복사한다.
 
-## UI and camera
-
-Resources are compact at the lower left; materials are labeled **건축 자재** (the game resource for construction and repairs). Context panels and the command bar stay within the viewport. The command dock uses a fixed center column so drug names and log messages cannot shift it. The marrow production shortcut fits inside the same panel.
-
-District-tab selection changes selection only, without focusing the camera on that district. The **세포** panel's job icons toggle rings on matching cells and directional counts for offscreen units. Mouse wheel follows the cursor; pinch follows the midpoint, with drag movement. Zooming out stops at the landscape overview; maximum zoom remains 320%.
-
-## Optional game lifetimes
-
-**운영 → 환경·설정 → 게임 수명** is OFF by default. ON advances a scalar age per cell. Expired cells leave and join the marrow replacement backlog. Automatic replacements spend four local marrow nutrients, use the same three production slots, obey job caps, and are delayed if nutrients or queue capacity are unavailable. Neutrophil replacement takes longer in neutropenia. OFF freezes age and new automatic replacement requests; already queued production finishes.
-
-| Cell | Game lifetime |
-| --- | --- |
-| Red cell | 12 minutes |
-| Neutrophil | 4 minutes |
-| Macrophage | 15 minutes |
-| Fibroblast | 20 minutes |
-| Dendritic cell | 10 minutes |
-
-These are gameplay values, not biological lifespans. Initial ages are staggered; newly produced cells start at zero. Age, pending replacements, raw food and scenario progress persist. Existing schema-1 saves receive compatible defaults.
-
-## Rendering and resource budget
-
-Canvas 2D remains capped at 30 fps and device pixel ratio 1.5. The 1440×900 ground cache contains landscape, river, roads and walls. Repeated trees/houses/accessories are pre-rendered into small cached canvases, while animated organs and moving units retain depth ordering. Offscreen actors are culled. Paused scenes redraw only when dirty. The nearest-enemy scan uses a linear pass instead of allocating and sorting a target list per fighter each tick.
-
-CPU-only benchmark on this development PC, Node v24, 24 persistent enemies, game lifetimes ON, 200 warmup + 1,200 measured updates per case:
-
-| Cells | Mean update | 95th percentile |
-| --- | --- | --- |
-| 40 | 0.039 ms | 0.067 ms |
-| 96 (all job caps) | 0.044 ms | 0.065 ms |
-| 160 (exploratory only) | 0.058 ms | 0.082 ms |
-
-Reproduce with node scripts/benchmark-city.mjs. This is simulation CPU cost, not browser rendering, input latency or a guarantee for low-end phones. Production remains capped at 96. Raising the cap to 160 needs target-device drawing checks; 160 is not enabled in the game. Static scenery is cheaper to extend through the existing caches than to add new independent AI units.
-
-## Sources and validation
-
-Existing Kontra.js 10.0.2 (MIT) and Lucide (ISC) are reused. [Kenney isometric buildings](https://kenney.nl/assets/isometric-tiles-buildings) (CC0) were reviewed as future asset candidates. [MDN canvas optimization](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas) supports pre-rendering repeating primitives. Current visuals remain code-drawn placeholders with no new remote assets or dependencies.
-
-Focused checks cover camera input, real deliveries and construction, susceptibility gating, three scenario goals/failure conditions, optional cell turnover and save continuation. A simple managed simulation reached recovery at 262 seconds, normal maintenance at 300 seconds and neutropenia maintenance at 360 seconds. These are feasibility checks, not final difficulty tuning. Browser checks cover desktop/mobile start screens, compact HUD, production/selection controls and drug-switch dock stability. GitHub Pages runs the normal repository test/build workflow before deployment.
-
-Combat, physiology quantities and antibiotic weapons are fictional. Only unqualified S in fixed isolate records activates drug equipment; R and unsupported activity remain inactive. No dosing or treatment recommendation is modeled.
+도트 원본·라이선스·5,042바이트 PNG 예산은 [에셋 활용 문서](cell-city-assets.md)의 독립 2D 절을 따른다. 주요 동선·충돌·저장·상호작용과 오프라인 캐시는 관련 테스트 8개로 확인한다. 실제 브라우저 화면 검증 여부는 배포 작업 결과에 별도 기록한다.

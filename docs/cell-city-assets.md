@@ -1,6 +1,23 @@
 # Cell City 에셋 활용 가이드
 
-구현 기준: v0.87.0 · 문서 갱신: 2026년 11월 5일.
+구현 기준: 2D v0.89.0 / 3D v0.87.0 · 문서 갱신: 2026년 11월 5일.
+
+## 독립 2D Cell City (v0.89.0)
+
+`#city`는 정면과 바닥이 함께 보이는 2D 탑다운 도트 마을이다. 기존 경영 프로토타입 화면을 교체했으며 `#city3d`의 시뮬레이션·테마·저장과 공유하지 않는다. 이 절 아래 기존 3D 모델·수로·시설 기준은 **city 3D 전용**이다.
+
+| 리소스 | 출처·라이선스 | 적용 위치·예산 |
+| --- | --- | --- |
+| `assets/cell-village/tiny-town.png` | [Kenney Tiny Town](https://kenney.nl/assets/tiny-town), CC0 1.0. 원본 `Tilemap/tilemap_packed.png` | 16px 지형·나무·꽃·정원 소품. PNG **1개, 5,042바이트**. 2D 탭 진입 시만 로드 |
+| `KENNEY-LICENSE.txt`, `sources.json` | 원본 라이선스·출처·SHA-256 | 에셋 옆 보관. 빌드는 이 폴더만 추가 복사 |
+| 장기 시설 7개·주민 8명·플레이어 1명 | 프로젝트 자체 Canvas 픽셀 도형 | 지붕·정면·장기 표식·의상·방향·보행·작업 연출. 외부 비트맵 추가 없음 |
+| 게임 루프 | 기존 Kontra.js 10.0.2, MIT | 30fps, 비활성 탭 정지. 새 런타임 패키지 없음 |
+
+- 코드는 `cell-village-world.mjs`, `cell-village-renderer.mjs`, `cell-village-ui.mjs`, `cell-village.css`로 분리한다. 지도는 48×34타일, 768×544 논리 픽셀이며 정적 배경은 메모리 캔버스 한 장에 저장한다. 화면 DPR은 최대 2다.
+- CSS는 `.vlg-game`과 `.village-main` 전용이다. 기존 `.cc-game`, `.city-main` 및 공통 이미지/SVG 규칙을 변경하지 않는다. 신규 스타일에 `!important`는 없다.
+- 저장 키는 `pathopedia:cell-village:v1`. 이름·옷·머리·피부·플레이어 위치·마을 시간·도움 횟수를 저장한다. 이전 2D/3D 저장을 읽거나 삭제하지 않는다.
+- `CACHE_CELL_VILLAGE`가 새 모듈·CSS·PNG만 오프라인 저장한다. 3D 모델 43개·이미지 7개·4,864,667바이트 예산과는 별도다.
+- 외부 ZIP은 메모리에서 필요한 두 파일만 추출했다. 원본 전체 묶음·시험 이미지·임시 캡처를 생성하지 않았다. Stardew Valley에서는 화면 구도와 생활감만 참고했으며 원본 게임 에셋은 사용하지 않는다.
 
 도시 구조·외관·에셋을 변경할 때 먼저 읽는 작업 문서다. 보유 원본에서 무엇을 고르고, 어느 코드에 연결하며, 어떤 외관·용량·시뮬레이션 조건을 지켜야 하는지 기록한다. 개별 모델의 정확한 경로·바이트·체크섬·라이선스는 [`sources.json`](../assets/city3d/bundle/sources.json), 실제 표시 조건은 아래 연결 코드가 기준이다. 구현과 문서가 달라지면 함께 갱신한다.
 
