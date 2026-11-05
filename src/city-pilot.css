@@ -75,3 +75,50 @@
 .cc-pilot .cc-pilot-paused{overflow-y:auto;box-sizing:border-box;padding:12px}
 @media(max-height:520px){.cc-game .cc-pilot-social button{font-size:11px;padding:6px 10px}.cc-pilot .cc-pilot-social{top:calc(50% + 48px)}}
 @media(max-height:520px){.cc-pilot:has(.cc-pilot-social button:not([hidden])) .cc-pilot-selected{display:none}}
+
+/* Keep touch-only observation and pause reachable without a keyboard. */
+.cc-pilot .cc-pilot-touch-only,.cc-pilot .cc-pilot-touch-help{display:none}
+@media(pointer:coarse),(max-width:760px),(max-height:520px){
+ .cc-game .cc-pilot .cc-pilot-touch-only{display:inline-flex;align-items:center;justify-content:center}
+ .cc-game .cc-pilot .cc-pilot-top [data-pilot-audio],.cc-pilot .cc-pilot-key-help{display:none}
+ .cc-pilot .cc-pilot-touch-help{display:grid}
+ .cc-pilot .cc-pilot-top{gap:6px;align-items:flex-start}
+ .cc-pilot .cc-pilot-top>div:first-child{min-width:0;flex:1;max-width:150px}
+ .cc-pilot .cc-pilot-top strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+ .cc-pilot .cc-pilot-top>div:last-child{flex:none;gap:3px}
+ .cc-game .cc-pilot .cc-pilot-top button{min-width:44px;min-height:44px;padding:7px 5px;font-size:11px}
+ .cc-game .cc-pilot .cc-pilot-actions button,.cc-game .cc-pilot .cc-pilot-observe-actions button{min-height:44px}
+ .cc-pilot .cc-pilot-paused{align-content:safe center}
+ .cc-pilot .cc-pilot-controls{box-sizing:border-box;width:min(420px,100%);max-width:100%;grid-template-columns:auto minmax(0,1fr);padding:14px;gap:8px 14px}
+ .cc-pilot .cc-pilot-paused>div{gap:6px;max-width:100%;padding:4px}
+ .cc-pilot .cc-pilot-hotbar{scrollbar-width:none}
+}
+@media(max-width:760px) and (min-height:521px){
+ .cc-pilot .cc-pilot-flight{top:72px;left:12px;right:auto;transform:none;padding:6px 8px}
+ .cc-pilot .cc-pilot-waypoint{top:68px;left:92px;right:12px;transform:none;max-width:none;padding:6px 9px;gap:7px;min-height:44px;box-sizing:border-box}
+ .cc-pilot .cc-pilot-waypoint div{min-width:0;flex:1}
+ .cc-pilot .cc-pilot-waypoint strong{font-size:12px;white-space:normal;overflow-wrap:anywhere}
+ .cc-pilot .cc-pilot-bottom{inset:126px 12px auto;align-items:flex-start;gap:8px}
+ .cc-pilot .cc-pilot-map canvas{width:64px;height:64px}
+ .cc-pilot .cc-pilot-vitals{padding:7px 9px;gap:2px 12px}
+ .cc-pilot .cc-pilot-vitals>strong{font-size:16px}
+ .cc-pilot .cc-pilot-incidents{top:198px;max-width:calc(100% - 24px)}
+ .cc-pilot .cc-pilot-target{top:calc(50% - 72px);max-width:calc(100% - 32px)}
+ .cc-pilot .cc-pilot-actions{bottom:132px;right:12px;gap:4px}
+ .cc-pilot .cc-pilot-stick{left:16px;bottom:148px}
+ .cc-game .cc-pilot .cc-pilot-observation{inset:68px 12px 286px;max-height:none;width:auto}
+ .cc-pilot:has(.cc-pilot-observation:not([hidden])) :is(.cc-pilot-flight,.cc-pilot-waypoint,.cc-pilot-bottom,.cc-pilot-incidents,.cc-pilot-target){display:none}
+}
+@media(max-width:760px) and (min-height:521px) and (max-height:700px){
+ .cc-pilot .cc-pilot-map canvas{width:48px;height:48px}
+ .cc-pilot .cc-pilot-vitals [data-pilot-score]{display:none}
+ .cc-pilot .cc-pilot-incidents{top:180px;font-size:9px}
+}
+@media(max-height:520px){
+ .cc-pilot .cc-pilot-waypoint{max-width:calc(100% - 410px);top:10px}
+ .cc-pilot .cc-pilot-map{position:absolute;right:0;top:-43px}
+ .cc-pilot .cc-pilot-target{top:calc(50% - 65px)}
+ .cc-pilot .cc-pilot-actions{gap:4px}
+ .cc-game .cc-pilot .cc-pilot-observation{bottom:82px;max-height:none}
+ .cc-pilot:has(.cc-pilot-observation:not([hidden])) :is(.cc-pilot-waypoint,.cc-pilot-incidents,.cc-pilot-target,.cc-pilot-social){display:none}
+}

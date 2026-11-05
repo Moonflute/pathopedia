@@ -102,3 +102,44 @@
  .cc-game.cc-three.cc-management .cc-sidebar{height:54%;max-height:430px}
  .cc-game.cc-three.cc-management .cc-organ-card header button,.cc-game.cc-three.cc-management .cc-organ-card footer button,.cc-game.cc-three.cc-management .cc-cell-card>button,.cc-game.cc-three.cc-management .cc-barrier-dashboard article>button,.cc-game.cc-three.cc-management .cc-infection-form>button{min-height:44px}
 }
+
+/* Touch targets and editor space share the same mobile breakpoints as the HUD. */
+@media(max-width:760px),(max-width:1100px) and (max-height:620px){
+ .cc-game.cc-three.cc-management{padding-inline:env(safe-area-inset-left) env(safe-area-inset-right)}
+ .cc-game.cc-three.cc-management .cc-main-pause,.cc-game.cc-three.cc-management .cc-panel-heading button{min-width:44px;min-height:44px}
+ .cc-game.cc-three.cc-management .cc-panel-heading{height:48px;min-height:48px;padding-block:2px}
+ .cc-game.cc-three.cc-management .cc-sidebar button,.cc-game.cc-three.cc-management .cc-sidebar select,.cc-game.cc-three.cc-management .cc-sidebar input:not([type=checkbox]),.cc-game.cc-three.cc-management .cc-start-actions button{min-height:44px}
+ .cc-game.cc-three.cc-management .cc-operation-summary{gap:4px;margin-bottom:8px}
+ .cc-game.cc-three.cc-management .cc-operation-summary>div{padding:5px;gap:2px}
+ .cc-game.cc-three.cc-management .cc-operation-summary strong{font-size:15px}
+ .cc-game.cc-three.cc-management .cc-settings .cc-quality-control{margin-bottom:8px}
+ .cc-game.cc-three.cc-management .cc-sidebar select,.cc-game.cc-three.cc-management .cc-sidebar input:not([type=checkbox]){font-size:16px}
+ .cc-game.cc-three.cc-management .cc-infection-table{table-layout:fixed;overflow-wrap:anywhere}
+ .cc-game.cc-three.cc-management .cc-infection-table th:first-child{width:40%}
+ .cc-game.cc-three.cc-management[data-editing=true]{grid-template-rows:minmax(0,1fr)}
+ .cc-game.cc-three.cc-management[data-editing=true] .cc-header{display:none}
+ .cc-game.cc-three.cc-management .cc-layout-editor{box-sizing:border-box;max-height:58%;overflow:auto;overscroll-behavior:contain;scroll-padding-block:54px 8px}
+ .cc-game.cc-three.cc-management .cc-layout-editor header{position:sticky;top:-10px;z-index:1;min-height:48px;padding-block:4px;background:#f3f4e8}
+ .cc-game.cc-three.cc-management .cc-layout-editor header>span{min-width:0}
+ .cc-game.cc-three.cc-management .cc-layout-editor button,.cc-game.cc-three.cc-management .cc-layout-editor select{min-height:44px;font-size:12px}
+ .cc-game.cc-three.cc-management .cc-layout-editor select{font-size:16px}
+ .cc-game.cc-three.cc-management .cc-layout-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+ .cc-game.cc-three.cc-management .cc-layout-actions button:nth-child(-n+2),.cc-game.cc-three.cc-management .cc-layout-actions button:nth-last-child(-n+2){grid-column:span 2}
+ .cc-game.cc-three.cc-management .cc-layout-editor footer{flex-wrap:wrap;gap:4px}
+ .cc-game.cc-three.cc-management .cc-layout-editor footer>span{flex:1 0 100%}
+ .cc-game.cc-three.cc-management .cc-layout-editor footer button{flex:1;background:#e9eddf;border:1px solid #bac4af}
+ .cc-game.cc-three.cc-management[data-editing=true] .cc-map-shortcuts{top:8px;bottom:auto}
+}
+@media(min-width:620px) and (max-width:1100px) and (max-height:620px){
+ .cc-game.cc-three.cc-management .cc-layout-editor{left:auto;right:8px;top:8px;bottom:8px;transform:none;width:min(400px,50%);max-height:none;padding:8px}
+ .cc-game.cc-three.cc-management .cc-layout-editor header{top:-8px;gap:5px}
+ .cc-game.cc-three.cc-management .cc-layout-expansion{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+ .cc-game.cc-three.cc-management .cc-layout-expansion select{grid-column:1/-1;max-width:none}
+ .cc-game.cc-three.cc-management[data-editing=true] .cc-map-shortcuts{right:calc(50% + 16px)}
+ .cc-game.cc-three.cc-management .cc-sidebar{width:min(350px,46%)}
+}
+@media(max-width:370px){
+ .cc-game.cc-three.cc-management .cc-time-controls>span{display:none}
+ .cc-game.cc-three.cc-management .cc-start-actions{gap:5px}
+ .cc-game.cc-three.cc-management .cc-start-actions button{padding-inline:7px}
+}
