@@ -18,6 +18,7 @@ import {createEntryTracks} from './city-entry-tracks.mjs';
 import {createTissueScene} from './city-three-tissue.mjs';
 import {createCityPorts} from './city-three-ports.mjs';
 import {houseDesign,houseRoofGeometry} from './city-three-housing.mjs';
+import {townBuilding} from './city-three-architecture.mjs';
 
 // All decorative meshes are baked once by material. Only working machinery moves.
 export function createVillage(assets,layout=null,editId=null,newAssets=null,theme='1'){
@@ -42,10 +43,13 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
  const box=(x,y,z,w,h,d,c,parent)=>make(new T.BoxGeometry(w,h,d),c,x,y,z,parent);
  const cylinder=(x,y,z,rt,rb,h,c,parent)=>make(new T.CylinderGeometry(rt,rb,h,12),c,x,y,z,parent);
  const orb=(x,y,z,r,c,parent)=>make(new T.IcosahedronGeometry(r,1),c,x,y,z,parent);
+ const architecture=[];
+ const building=spec=>{const g=townBuilding({box,make,parent:group('fixed'),theme},spec);architecture.push({owner,...spec});return g;};
+ root.userData.architecture=architecture;
  const model=(name,x,y,z,size=1,angle=0,parent=fixed)=>{
   const proto=assets[name];if(!proto)return null;const g=proto.clone(true);g.position.set(x,y,z);g.rotation.y=angle;g.scale.setScalar(size);staticParent(parent).add(g);return g;
  };
- const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{if(canal&&name==='cart')return null;if(canal&&['house-a','house-b','hall','workshop','tower'].includes(name)){const g=cottage(x,z,Math.min(height/2.25,maxWidth/1.5),angle,true);g.position.y=y;return g;}const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;if(name==='gate'||name==='harbour-crane')g.traverse(m=>{if(m.isMesh)m.material=mat(name==='gate'?STYLE.plaster:STYLE.timber);});if(name==='tree-round'||name==='tree-cube')g.traverse(m=>{if(!m.isMesh)return;if(!m.geometry.boundingBox)m.geometry.computeBoundingBox();m.material=mat(m.geometry.boundingBox.min.y>.4?STYLE.foliage[name==='tree-round'?0:1]:STYLE.timber);});g.name='bundle-'+name;root.userData.bundleModels[name]=(root.userData.bundleModels[name]||0)+1;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
+ const newModel=newAssets?((name,x,y,z,height=1,angle=0,parent=fixed,maxWidth=Infinity)=>{if(canal&&name==='cart')return null;const g=bundleModel(newAssets,name,height,maxWidth);if(!g)return null;if(name==='gate'||name==='harbour-crane')g.traverse(m=>{if(m.isMesh)m.material=mat(name==='gate'?STYLE.plaster:STYLE.timber);});if(name==='tree-round'||name==='tree-cube')g.traverse(m=>{if(!m.isMesh)return;if(!m.geometry.boundingBox)m.geometry.computeBoundingBox();m.material=mat(m.geometry.boundingBox.min.y>.4?STYLE.foliage[name==='tree-round'?0:1]:STYLE.timber);});g.name='bundle-'+name;root.userData.bundleModels[name]=(root.userData.bundleModels[name]||0)+1;g.position.set(x,y,z);g.rotation.y=angle;staticParent(parent).add(g);return g;}):null;
  const disc=(x,z,r,c,y=.012)=>{const m=make(new T.CircleGeometry(r,32),c,x,y,z);m.rotation.x=-Math.PI/2;m.castShadow=false;return m;};
  function ribbon(points,width,color,height=.025){
   if(points.length<2)return;
@@ -141,18 +145,20 @@ export function createVillage(assets,layout=null,editId=null,newAssets=null,them
   const tower=districts[id].tower;tower.position.set(site.x+2,0,site.z+1.5);cylinder(0,.8,0,.5,.7,1.6,0xd8caae,tower);cylinder(0,1.65,0,.7,.7,.16,0xb19a79,tower);const shield=orb(0,1.95,0,.32,site.color,tower);shield.scale.y=1.3;
   // Upgrade modules are drawn by the bounded frontier instance pools.
  }
- for(const d of layoutPlaceables(layout).filter(d=>d.kind==='house')){const i=Number(d.id.slice(6)),p=d.origin;scope(d.id);cottage(p.x,p.z,d.size,layout?0:d.angle,i%3===0);if(layout)road([{x:p.x,z:p.z+.8},{x:p.x,z:p.z+2}],STYLE.alley);if(i%3===0)model('lantern',p.x+.85,0,p.z+.7,.8);}
+ for(const d of layoutPlaceables(layout).filter(d=>d.kind==='house')){const i=Number(d.id.slice(6)),p=d.origin;scope(d.id);
+  if(i%5===3)building({kind:'merchant',district:d.district||'heart',x:p.x,z:p.z,w:2.05,d:1.95,height:3.1+(i%3)*.25,angle:layout?0:d.angle});
+  else cottage(p.x,p.z,d.size,layout?0:d.angle,i%3===0);
+  if(layout)road([{x:p.x,z:p.z+.8},{x:p.x,z:p.z+2}],STYLE.alley);if(i%3===0)model('lantern',p.x+.85,0,p.z+.7,.8);}
  for(const d of layoutPlaceables(layout).filter(d=>d.kind==='depot'||d.kind==='production')){
   scope(d.id);const {x,z}=d.origin;
-  if(newModel&&d.kind==='depot')newModel('house-b',x,0,z-.8,2.8,0,fixed,3.4);
-  else{const shop=cottage(x,z-.8,1.8,0,true);shop.scale.x*=1.3;}
+  building({kind:d.kind==='depot'?'warehouse':'guildhall',district:d.district,x,z:z-.8,w:2.85,d:2,height:d.kind==='depot'?2.8:3.65});
   if(d.kind==='depot'){
    if(newModel){newModel('crate',x-.8,.03,z+1,.6,0,fixed,.7);newModel('logs',x+.7,.03,z+1,.55,0,fixed,.9);}
    else{box(x-.7,.3,z+1,.7,.6,.6,0xc1aa7d);box(x+.7,.3,z+1,.7,.6,.6,0xc1aa7d);}
   }else for(let n=0;n<3;n++){if(newModel)newModel('table',x-1+n,.02,z+1,.55,0,fixed,.75);else box(x-1+n,.28,z+1,.7,.55,.5,0xbba580);}
  }
 
- const facilities=createFacilities({fixed,animated,make,box,cylinder,orb,model,newModel,cottage,road,scope});
+ const facilities=createFacilities({fixed,animated,make,box,cylinder,orb,model,newModel,cottage,building,road,scope});
  scope(null);
  // A protected respiratory portal emerges from the northern hillside.
  const {portal,screen,start:airStart}=CITY_ENTRIES.airway;

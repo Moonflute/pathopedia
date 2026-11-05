@@ -10,6 +10,7 @@ import {wallPieces} from './city-boundary.mjs';
 import {createNeighbourhoodCourts} from './city-three-neighbourhoods.mjs';
 import {houseDesign,houseRoofGeometry} from './city-three-housing.mjs';
 import {canalShoreGeometry} from './city-three-shore.mjs';
+import {townBuilding} from './city-three-architecture.mjs';
 
 export const CANAL_STYLE=Object.freeze({water:0x4caaa8,deep:0x338b91,foam:0xb6e1d2,stone:0xd9c8a8,quay:0xa39983,sky:0xd7e9e5,roofs:[0xb96146,0xc57852,0xa95643,0xcd8a60],walls:[0xf0dbb4,0xe9b5a0,0xe8cc8d,0xc5d6c7,0xf1e5cc]});
 
@@ -63,6 +64,7 @@ export function createThemeScenery({layout,theme='2',plan=compileThemeLayout(lay
  // Identical neighbourhood anchors receive waterfront façades or cottages.
  // Infill is rebuilt around real placements and never covers transport routes.
  for(const b of canals.blocks.frontages){
+  if(b.architecture){townBuilding({box,make,parent:fixed,theme},{...b,kind:b.architecture});continue;}
   const g=cityThemeObject(theme,'frontage')==='canal-house'?canalHouse({box,make,model,mat,parent:fixed},b.x,b.z,1,b.variant,b.angle,b.variant%4===0?3:2):cottage(b.x,b.z,1,b.angle,false,fixed,b.variant,b.district);
   g.scale.set(b.w/1.35,water?1.15+(b.variant%3)*.1:1.05+(b.variant%3)*.08,b.d/(water?1.4:1.65));g.name=water?'canal-frontage':'village-frontage';
  }

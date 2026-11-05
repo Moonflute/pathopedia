@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import * as T from '../src/vendor/three/three.module.min.js';
 import {GLTFLoader} from '../src/vendor/three/GLTFLoader.js';
 import {createHomeostasisScene} from '../src/city-three-homeostasis.mjs';
+import {HOME_BUILDINGS} from '../src/city-homeostasis-assets.mjs';
 import {homeSites,homeFootprint} from '../src/city-homeostasis-data.mjs';
 import {createPilotSurface} from '../src/city-pilot-physics.mjs';
 import {createCity,serializeCity} from '../src/city-engine.mjs';
@@ -36,7 +37,10 @@ test('organ assets stay inside existing lots, leave exchange points walkable and
   const scene=createHomeostasisScene({layout:s.layout,theme,bundle:enabled?bundle:null});scene.update(s);
   const assets=scene.buildings.getObjectByName('home-organ-assets'),sites=homeSites(s.layout);let draws=0;
   for(const site of sites){const group=assets.getObjectByName('home-kit-'+site.id),box=new T.Box3().setFromObject(group),f=homeFootprint(site);
-   if(enabled){assert.ok(!box.isEmpty(),site.id);assert.ok(box.min.x>=f.left&&box.max.x<=f.right&&box.min.z>=f.top&&box.max.z<=f.bottom,site.id+' footprint');}
+   if(enabled||HOME_BUILDINGS[site.id]){assert.ok(!box.isEmpty(),site.id);assert.ok(box.min.x>=f.left&&box.max.x<=f.right&&box.min.z>=f.top&&box.max.z<=f.bottom,site.id+' footprint');
+    if(site.id==='brain')assert.ok(box.max.y>8,'control hall is a skyline landmark');
+    if(site.id==='liver')assert.ok(box.max.y>6&&box.max.x-box.min.x>4.3,'liver has a broad storehouse');
+   }
    else assert.ok(box.isEmpty());
   }
   scene.buildings.traverse(m=>{if(m.isMesh)draws++;});assert.ok(draws<=29,'bounded static batches: '+draws);

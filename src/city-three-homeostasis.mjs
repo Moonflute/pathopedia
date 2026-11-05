@@ -15,7 +15,7 @@ export function createHomeostasisScene({layout,theme='1',bundle=null,map=null,on
  pool('work',new T.BoxGeometry(1,1,1),160);pool('packets',new T.IcosahedronGeometry(1,0),160,dynamic,bright);pool('signals',new T.CylinderGeometry(1,1,1,5),2400,dynamic,soft);pool('rings',new T.TorusGeometry(1,.06,4,24),72,dynamic,soft);pool('vapour',new T.IcosahedronGeometry(1,1),72,dynamic,soft);
  function put(id,x,y,z,sx,sy,sz,tint,rx=0,ry=0){const m=pools[id],i=m.count;if(i>=m.instanceMatrix.count)return;dummy.position.set(x,y,z);dummy.rotation.set(rx,ry,0);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix);m.setColorAt(i,color.set(tint));m.count++;}
  function line(a,b,y,width,tint){const m=pools.signals,i=m.count;if(i>=m.instanceMatrix.count)return;delta.set(b.x-a.x,0,b.z-a.z);if(delta.length()<.01)return;dummy.position.set((a.x+b.x)/2,y,(a.z+b.z)/2);dummy.quaternion.setFromUnitVectors(up,delta.clone().normalize());dummy.scale.set(width,delta.length(),width);dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix);m.setColorAt(i,color.set(tint));m.count++;}
- const assets=createHomeostasisAssets(sites,bundle);buildings.add(assets.root);
+ const assets=createHomeostasisAssets(sites,bundle,theme);buildings.add(assets.root);
  for(const o of sites){
   put('masonry',o.x,.06,o.z-3.4,6.6,.12,5.2,theme==='2'?0xd9c8aa:0xd8d7bb);
   if(!assets.hasBody(o.id)){put('masonry',o.x,1.2,o.z-3.5,3.9,2.2,3,STYLE.plaster);put('roofs',o.x,2.9,o.z-3.5,3.05,1.35,2.4,theme==='2'?0xb5684c:o.color,0,Math.PI/4);for(const x of [-1.1,1.1])put('masonry',o.x+x,1.35,o.z-1.97,.5,.65,.06,STYLE.glass);put('masonry',o.x,.7,o.z-1.94,.68,1.25,.08,STYLE.timber);}
@@ -45,7 +45,8 @@ export function createHomeostasisScene({layout,theme='1',bundle=null,map=null,on
   }
   for(const o of sites){const state=h.organs[o.id],active=loop?.sites.includes(o.id),phase=h.loops[o.loop].phase;
    if(active||phase!=='stable'){const r=1.05+(s.time*.33%1)*1.3;put('rings',o.x,.17,o.z,r,r,r,o.color,Math.PI/2);}
-   put('work',o.x,3.8,o.z-3.5,3,.09,.17,0xc9cbb6);put('work',o.x-1.5+1.5*state.oxygen/100,3.81,o.z-3.5,Math.max(.02,3*state.oxygen/100),.13,.2,state.oxygen<25?0xc98569:0x89b5ab);
+   const roof=assets.height(o.id)+.35;
+   put('work',o.x,roof,o.z-3.5,3,.09,.17,0xc9cbb6);put('work',o.x-1.5+1.5*state.oxygen/100,roof+.01,o.z-3.5,Math.max(.02,3*state.oxygen/100),.13,.2,state.oxygen<25?0xc98569:0x89b5ab);
   }
   const liver=point('liver'),fat=point('fat'),bone=point('bone'),muscle=point('muscle'),pancreas=point('pancreas'),kidney=point('kidney');
   for(let i=0;i<12;i++){const x=liver.x-2+(i%4)*1.2,z=liver.z-1+Math.floor(i/4)*.65;put('work',x,.32,z,.54,.25+Math.min(1,h.glycogen/120)*.55,.5,0xd5b46e);}
@@ -64,7 +65,7 @@ export function createHomeostasisScene({layout,theme='1',bundle=null,map=null,on
   const h=s.homeostasis,loop=HOME_LOOPS.find(l=>l.id===selectedLoop),max=loop?(width<761?3:6):(width<761?1:3),occupied=[];let shown=0;
   const sorted=[...tags].sort((a,b)=>(loop?.sites.includes(b.o.id)?2:0)-(loop?.sites.includes(a.o.id)?2:0));
   for(const {o,b} of sorted){
-   b.hidden=true;if(hidden||!h||shown>=max)continue;projected.set(o.x,4.7,o.z-3).project(camera);const x=(projected.x+1)*width/2,y=(1-projected.y)*height/2;
+   b.hidden=true;if(hidden||!h||shown>=max)continue;projected.set(o.x,assets.height(o.id)+1.05,o.z-3).project(camera);const x=(projected.x+1)*width/2,y=(1-projected.y)*height/2;
    if(projected.z<-1||projected.z>1||x<58||x>width-58||y<(width<761?108:135)||y>height-inset-65||reserved.some(p=>x+75>p.x&&x-75<p.x+p.w&&y>p.y&&y-44<p.y+p.h)||occupied.some(p=>Math.abs(p.x-x)<150&&Math.abs(p.y-y)<48))continue;
    b.hidden=false;b.classList.toggle('is-active',!!loop?.sites.includes(o.id));b.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-100%)`;
    const phase=h.loops[loop?.sites.includes(o.id)?loop.id:o.loop].phase,text=o.name+'<small>'+HOME_PHASES[phase]+' · O₂ '+Math.round(h.organs[o.id].oxygen)+'%</small>';if(b.innerHTML!==text)b.innerHTML=text;occupied.push({x,y});shown++;

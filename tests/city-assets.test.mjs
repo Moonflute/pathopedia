@@ -110,8 +110,12 @@ test('real imported walls track breakage; switching village meshes preserves cit
  for(const enabled of [true,false,true]){
   const village=createVillage({},s.layout,'workshop',enabled?bundle:null);village.update(s,{});village.movePreview(s.layout.items.workshop);village.dispose();
   const used=village.root.userData.bundleModels;
-  if(enabled){assert.ok(used['house-a']+used['house-b']>=8);assert.equal(used.hall,1);assert.equal(used.tower,3);assert.equal(used.silo,1);assert.ok(used.market>=3);}
+  if(enabled){assert.ok(used.crate>=6);assert.ok(used.market>=3);assert.ok(used['repair-scaffold']>0);}
   else assert.deepEqual(used,{});
+  const buildings=village.root.userData.architecture;
+  assert.ok(buildings.some(b=>b.owner==='heart'&&b.kind==='hall'&&b.height>=4.5));
+  assert.ok(buildings.some(b=>b.owner==='gut'&&b.kind==='warehouse'));
+  assert.ok(buildings.filter(b=>b.kind==='merchant').length>=6,'medium townhouses break up the small cottages');
  }
  assert.equal(serializeCity(s),snapshot);assert.equal(released,0);
  for(const mesh of walls.root.children)mesh.dispose();

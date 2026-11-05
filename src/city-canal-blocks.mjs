@@ -3,6 +3,7 @@
 import {siteAt,layoutPlaceables,occupiedTiles} from './city-tile-layout.mjs';
 import {CITY_ENTRIES,storedPlacement} from './city-world.mjs';
 import {compileVascularLayout} from './city-vascular-layout.mjs';
+import {gridPath} from './city-grid-path.mjs';
 
 const STEP=.5,key=(x,z)=>x+','+z;
 // Frontage spacing follows distance along the bank, not curve tessellation.
@@ -48,17 +49,55 @@ export function compileCanalBlocks(layout,network,channels,land,outlet){
  // Public space is planned before infill, so each district has a recognisable
  // meeting place instead of inheriting whatever tiny hole the houses leave.
  const roles={heart:'market',lung:'wind',gut:'harvest',kidney:'water',marrow:'workshop',lymph:'cloister'};
+ const architecture={heart:'hall',lung:'merchant',gut:'warehouse',kidney:'cloister',marrow:'guildhall',lymph:'cloister'};
+ const dryRoads=[...network.roadCells.keys()].map(k=>{const [x,z]=k.split(',').map(Number);return {x,z};}).filter(p=>land.has(key(Math.floor(p.x/STEP),Math.floor(p.z/STEP)))&&!network.occupied.has(key(p.x,p.z)));
+ function approach(start,plot,building){
+  const own=new Set(plot),solid=new Set(building);
+  const free=p=>{
+   for(const dx of [-1,0,1])for(const dz of [-1,0,1]){
+    const x=p.col+dx,z=p.row+dz,k=key(x,z),cell=key(Math.round((x+.5)*STEP),Math.round((z+.5)*STEP));
+    if(!land.has(k)||solid.has(k)||network.occupied.has(cell)||reserved.has(k)&&!own.has(k)&&!network.roadCells.has(cell))return false;
+   }return true;
+  };
+  const targets=dryRoads.filter(p=>Math.hypot(p.x-start.x,p.z-start.z)<12).sort((a,b)=>Math.hypot(a.x-start.x,a.z-start.z)-Math.hypot(b.x-start.x,b.z-start.z));
+  for(const p of targets.slice(0,6)){
+   const path=gridPath({col:Math.floor(start.x/STEP),row:Math.floor(start.z/STEP)},{col:Math.floor(p.x/STEP),row:Math.floor(p.z/STEP)},free,()=>1,1800);
+   if(!path)continue;
+   const points=path.map(p=>({x:(p.x+.5)*STEP,z:(p.z+.5)*STEP})),footprint=new Set();
+   for(const p of path)for(const dx of [-1,0,1])for(const dz of [-1,0,1])footprint.add(key(p.x+dx,p.z+dz));
+   return {kind:'district-lane',points:points.filter((p,i)=>!i||i===points.length-1||(p.x-points[i-1].x)*(points[i+1].z-p.z)!==(p.z-points[i-1].z)*(points[i+1].x-p.x)),width:1.05,cells:[...footprint]};
+  }
+  return null;
+ }
  for(const centre of centres){
   const candidates=[];
-  for(let dz=-18;dz<=18;dz++)for(let dx=-18;dx<=18;dx++){
+  for(let dz=-27;dz<=27;dz++)for(let dx=-27;dx<=27;dx++){
    const p={x:centre.x+dx+.25,z:centre.z+dz+.25},distance=Math.hypot(dx,dz);
-   if(distance>18||!clear(p)||gardens.some(g=>Math.hypot(g.x-p.x,g.z-p.z)<7))continue;
+   if(distance>27||!clear(p)||gardens.some(g=>Math.hypot(g.x-p.x,g.z-p.z)<8))continue;
    // Favour the building's neighbourhood, with the heart's square on its south side.
    candidates.push({...p,score:distance+(nearest(p).id===centre.id?0:8)+(centre.id==='heart'&&dz<0?5:0)});
   }
   candidates.sort((a,b)=>a.score-b.score);
+  // Give a large civic frontage and its square one complete dry plot before
+  // tiny infill consumes it. Both themes and the pilot use these same bounds.
+  let estate=null;
+  for(const [w,d] of [[8,8.5],[7,7],[6,6]]){
+   if(estate)break;
+   for(const p of candidates){
+    const plot=cells(p,w,d,0);if(!plot)continue;
+    const hall={x:p.x,z:p.z-d*.26,w:w-.45,d:d*.44,angle:0,variant:frontages.length,district:centre.id,architecture:architecture[centre.id],height:centre.id==='heart'?5.4:4.5+(frontages.length%2)*.55};
+    const square={x:p.x,z:p.z+d*.24,w:w-.45,d:d*.46,angle:0,variant:gardens.length,district:centre.id,kind:roles[centre.id],estate:true};
+    hall.cells=cells(hall,hall.w,hall.d,0);square.cells=cells(square,square.w,square.d,0);if(!hall.cells||!square.cells)continue;
+    const lane=approach({x:square.x,z:square.z},plot,hall.cells);if(!lane)continue;
+    estate={hall,square,plot,lane};break;
+   }
+  }
+  if(estate){
+   reserve(estate.plot);reserve(estate.lane.cells);frontages.push(estate.hall);gardens.push(estate.square);walks.push(estate.lane);
+   continue;
+  }
   let court=null,best=Infinity;
-  for(const [w,d] of [[5.5,4.5],[4.5,3.5],[3.5,3.5],[2.5,2.5]]){
+  for(const [w,d] of [[7.5,5.5],[5.5,4.5],[4.5,3.5],[3.5,3.5],[2.5,2.5]]){
    const p=candidates.find(p=>cells(p,w,d,0));if(!p)continue;
    const score=p.score+(5.5-w)*1.5;if(score>=best)continue;best=score;
    court={x:p.x,z:p.z,w,d,angle:0,variant:gardens.length,district:centre.id,kind:roles[centre.id],cells:cells(p,w,d,0)};
@@ -137,10 +176,25 @@ export function compileCanalBlocks(layout,network,channels,land,outlet){
   const footprint=cells(p,1.8,1.8,0);if(!footprint)continue;
   reserve(footprint);gardens.push({...p,w:1.8,d:1.8,kind:'grove',district:nearest(p).id,variant:gardens.length,cells:footprint});
  }
- // Small houses form four-home blocks. Shared cross lanes and planted corners
- // replace the old uninterrupted carpet of identical south-facing roofs.
+ // Joined two-bay houses frame a narrow alley. Cap their count and reserve
+ // the entire dry block before filling the remaining space with tiny homes.
+ const terraceCandidates=[];
+ for(let z=-47;z<=47;z+=1.5)for(let x=-47;x<=47;x+=1.5){const p={x:x+.25,z:z+.25};if(clear(p)){const district=nearest(p);terraceCandidates.push({...p,district:district.id,score:Math.hypot(p.x-district.x,p.z-district.z)});}}
+ terraceCandidates.sort((a,b)=>a.score-b.score);
+ let terraces=0;
+ for(const centre of terraceCandidates){
+  if(terraces===8)break;const plot=cells(centre,3.8,4.2,0);if(!plot)continue;
+  const rows=[-1,1].map((side,n)=>({x:centre.x,z:centre.z+side*1.25,w:3.4,d:1.4,height:2.5+(terraces%3)*.3,angle:n?Math.PI:0,architecture:'terrace',district:centre.district,variant:frontages.length+n}));
+  for(const row of rows)row.cells=cells(row,row.w,row.d,row.angle);
+  if(rows.some(r=>!r.cells))continue;
+  const cross=cells(centre,3.8,.9,0);if(!cross)continue;
+  reserve(plot);frontages.push(...rows);terraces++;
+  walks.push({kind:'residential-alley',width:.9,points:[{x:centre.x-1.8,z:centre.z},{x:centre.x+1.8,z:centre.z}],cells:cross});
+ }
+ // Smaller four-home groups keep opposite front doors facing a shared lane.
  for(let z=-49;z<=49;z+=4.8)for(let x=-49;x<=49;x+=4.8){
-  const centre={x:x+1.1,z:z+1.5},lane=cells(centre,3.6,.6,0),first=tissues.length;
+  const centre={x:x+1.1,z:z+1.5};
+  const lane=cells(centre,3.6,.6,0),first=tissues.length;
   if(lane)reserve(lane);
   for(const [dx,dz,angle] of [[0,0,0],[2.2,0,0],[0,3,Math.PI],[2.2,3,Math.PI]]){
    const p={x:x+dx,z:z+dz};if(!clear(p)||tissues.length>=300)continue;const footprint=cells(p,1.35,1.35,angle);if(!footprint)continue;

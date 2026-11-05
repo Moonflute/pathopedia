@@ -82,6 +82,9 @@ test('district courts and shared lanes stay dry, open and stable after expansion
   const source=JSON.stringify(layout),town=compileCanalLayout(layout),network=compileLayout(layout),b=town.blocks;
   assert.deepEqual(b.gardens.filter(p=>!['orchard','grove'].includes(p.kind)).map(p=>p.kind),['market','wind','harvest','water','workshop','cloister']);
   assert.ok(b.walks.some(p=>p.kind==='promenade'));assert.ok(b.walks.some(p=>!p.kind));
+  assert.ok(b.frontages.filter(p=>p.architecture&&p.architecture!=='terrace').length>=2,'large buildings and their squares survive expansion');
+  assert.ok(b.walks.some(p=>p.kind==='district-lane'),'civic square connects to an existing dry street');
+  assert.ok(b.frontages.some(p=>p.architecture==='terrace'),'joined houses frame a residential alley');
   assert.ok(b.tissues.some(p=>p.angle===Math.PI),'opposite homes face the shared lane');
   const buildings=new Set(b.frontages.flatMap(p=>p.cells));
   for(const walk of b.walks)for(let i=1;i<walk.points.length;i++){
@@ -168,6 +171,12 @@ test('switching village → canals → village preserves live state and restores
   const world=pilotWorld(s.layout,theme);
   for(const court of v.root.userData.themePlan.blocks.gardens.filter(p=>p.kind!=='grove')){
    for(const [dx,dz] of [[0,0],[-court.w/2+.3,0],[court.w/2-.3,0],[0,-court.d/2+.3],[0,court.d/2-.3]])assert.ok(world.canStand({x:court.x+dx,z:court.z+dz}),'public court cross stays walkable');
+  }
+  for(const lane of v.root.userData.themePlan.blocks.walks.filter(p=>['district-lane','residential-alley'].includes(p.kind))){
+   for(let i=1;i<lane.points.length;i++){
+    const a=lane.points[i-1],b=lane.points[i],steps=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)*4));
+    for(let n=0;n<=steps;n++)assert.ok(world.canStand({x:a.x+(b.x-a.x)*n/steps,z:a.z+(b.z-a.z)*n/steps}),lane.kind+' is clear of the actual building mesh');
+   }
   }
   const feet=actors.root.children.find(m=>m.name==='feet');
   const expected=(theme==='2'?s.cells.filter(c=>!v.canals.isWater(groundPoint(c))).length:s.cells.length)*2+residentView(s).filter(c=>!c.dead).length*2;

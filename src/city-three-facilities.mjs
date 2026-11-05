@@ -16,7 +16,7 @@ export function machineDrive(s,id){
 // CC0 modular walls, roofs, mills, stalls and carts share the existing atlas.
 // Bespoke organ machinery uses the same small palette and only moving parts
 // remain outside the static geometry bake.
-export function createFacilities({fixed,animated,make,box,cylinder,orb,model,newModel=null,cottage,road,scope=()=>{}}){
+export function createFacilities({fixed,animated,make,box,cylinder,orb,model,newModel=null,cottage,building,road,scope=()=>{}}){
  const {plaster:ivory,brass,timber:wood,teal,rose,sage:green,stone}=STYLE;
  const rotors=[],pistons=[],belts=[],pumps=[],phases=Object.fromEntries(DISTRICTS.map(d=>[d.id,0]));
  function pipe(points,r=.11,color=brass,segments=14){return make(new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),segments,r,6,false),color,0,0,0);}
@@ -24,16 +24,16 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  scope('lung');
  // Lung: a wind-catching harbour with bellows and open intake funnels.
  for(const [x,z,s] of [[-9,-10,1],[-5.6,-12,.8]]){
-  if(newModel)newModel('tower',x,0,z,3.3*s,0,fixed,1.7*s);
-  cylinder(x,1.5*s,z,.65*s,.8*s,3*s,ivory);rim(x,.45*s,z,.8*s,teal);rim(x,2.8*s,z,.7*s,teal);
-  make(new T.ConeGeometry(.92*s,.7*s,8),teal,x,3.25*s,z);
-  make(new T.TorusGeometry(.76*s,.08*s,6,20),ivory,x,2.12*s,z+.76*s);
-  const rotor=new T.Group();rotor.position.set(x,2.12*s,z+.84*s);animated.add(rotor);
-  for(let i=0;i<4;i++){const blade=new T.Group();blade.rotation.z=i*Math.PI/2;rotor.add(blade);box(0,.38*s,0,.25*s,.58*s,.06*s,teal,blade);}
+  cylinder(x,2.85*s,z,.72*s,.88*s,5.7*s,ivory);
+  for(const y of [.45,2.2,3.8,5.5])rim(x,y*s,z,.78*s,teal);
+  make(new T.ConeGeometry(1.02*s,.95*s,8),teal,x,6.05*s,z);
+  make(new T.TorusGeometry(.92*s,.08*s,6,20),ivory,x,4.12*s,z+.8*s);
+  const rotor=new T.Group();rotor.position.set(x,4.12*s,z+.89*s);animated.add(rotor);
+  for(let i=0;i<4;i++){const blade=new T.Group();blade.rotation.z=i*Math.PI/2;rotor.add(blade);box(0,.48*s,0,.3*s,.72*s,.06*s,teal,blade);}
   orb(0,0,.05,.15*s,brass,rotor);rotors.push({mesh:rotor,id:'lung',axis:'z',speed:-1.05});
   box(x,.4,z+.7,.37,.8,.15,wood);model('banner-green',x+.75,1.3,z,.75);
  }
- cottage(-10.8,-10.5,1.4,.3,true);
+ building({kind:'guildhall',district:'lung',x:-10.8,z:-10.5,w:2.1,d:2.5,height:3.3});
  for(const x of [-8,-6.6]){
   if(newModel)newModel('tank',x,.03,-8.2,1.45,0,fixed,.9);
   else{cylinder(x,.65,-8.2,.42,.42,1.3,0xa0c9c5);cylinder(x,1.36,-8.2,.25,.35,.15,ivory);}
@@ -44,8 +44,7 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  if(newModel)newModel('market',-4,.02,-9,1.5,.6,fixed,1.8);else model('stall-green',-4,.05,-9,1.1,.6);
  scope('heart');
  // Heart: broad pump house, paired pistons and a continuous brass manifold.
- if(newModel)newModel('hall',0,.02,-1.5,2.6,0,fixed,3.8);
- else cottage(0,-1.5,1.8,0,true);
+ building({kind:'hall',district:'heart',x:0,z:-1.35,w:4.4,d:2.15,height:4.65});
  box(0,.14,-.25,4.15,.28,2.45,stone);
  for(const x of [-1,1]){
   cylinder(x,1.35,-.25,.57,.64,2.4,rose);rim(x,.32,-.25,.64,brass);rim(x,2.35,-.25,.59,ivory);
@@ -61,17 +60,15 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  for(let i=0;i<4;i++){const spoke=box(0,0,0,.055,.87,.055,brass,flywheel);spoke.rotation.z=i*Math.PI/4;}
  orb(0,0,.02,.13,ivory,flywheel);rotors.push({mesh:flywheel,id:'heart',axis:'z',speed:1.25});
  const heart=new T.Shape();heart.moveTo(0,-.48);heart.bezierCurveTo(-1,.1,-.66,.72,-.22,.55);heart.quadraticCurveTo(0,.48,0,.3);heart.quadraticCurveTo(0,.48,.22,.55);heart.bezierCurveTo(.66,.72,1,.1,0,-.48);
- cylinder(0,3.3,-.3,.08,.1,.6,brass);
- make(new T.ExtrudeGeometry(heart,{depth:.18,bevelEnabled:true,bevelThickness:.04,bevelSize:.04,bevelSegments:1,steps:1,curveSegments:5}),STYLE.roofs[0],0,3.8,-.3);
+ cylinder(0,7.5,-1.6,.08,.1,.75,brass);
+ make(new T.ExtrudeGeometry(heart,{depth:.18,bevelEnabled:true,bevelThickness:.04,bevelSize:.04,bevelSegments:1,steps:1,curveSegments:5}),STYLE.roofs[0],0,8.05,-1.6);
  model('banner-red',-1.85,.3,-1.2,.8);
  if(newModel){newModel('market',2.55,.02,4.1,1.15,-.35,fixed,1.3);newModel('crate',2.45,.03,2.65,.45,0,fixed,.55);}
  else model('stall-red',2.55,.05,4.1,.8,-.35);
  scope('gut');
  // Gut: grain silos, food workshop and a short working packing belt.
- if(newModel){newModel('house-b',10,.02,-5,2.9,-.2,fixed,3.2);newModel('silo',12.6,.02,-5.4,2.8,0,fixed,1.3);}
- else{const kitchen=cottage(10,-5,1.8,-.2,true);kitchen.scale.x*=1.25;kitchen.scale.z*=.8;
-  for(const [x,z,h] of [[12,-5.8,2.6],[12.8,-4.5,1.9]]){cylinder(x,h/2,z,.52,.58,h,0xdbb66e);make(new T.ConeGeometry(.65,.55,8),wood,x,h+.2,z);rim(x,.5,z,.58,wood);}}
- cylinder(12.6,1.35,-5.4,.57,.6,2.7,ivory);rim(12.6,2.5,-5.4,.59,brass);make(new T.ConeGeometry(.75,.65,8),STYLE.roofs[2],12.6,3,-5.4);
+ building({kind:'warehouse',district:'gut',x:10,z:-5.35,w:3.5,d:2.5,height:4.4});
+ cylinder(12.6,2.7,-5.4,.62,.68,5.4,ivory);for(const y of [.4,2.1,3.8,5.2])rim(12.6,y,-5.4,.68,brass);make(new T.ConeGeometry(.8,.85,8),STYLE.roofs[2],12.6,5.75,-5.4);
  for(const x of [9.35,10.65]){make(new T.CylinderGeometry(.6,.24,.8,8),brass,x,2.4,-4.75);rim(x,2.82,-4.75,.61,ivory);orb(x,2.85,-4.75,.42,0xe2c57d);}
  box(10,1.3,-3.8,2.6,1.45,.2,ivory);box(10,1.6,-3.67,2.7,.2,.28,STYLE.roofs[2]);
  const mill=new T.Group();mill.position.set(10.6,1.12,-3.55);animated.add(mill);make(new T.TorusGeometry(.37,.1,6,12),brass,0,0,0,mill);box(0,0,0,.65,.09,.08,wood,mill);box(0,0,0,.09,.65,.08,wood,mill);rotors.push({mesh:mill,id:'gut',axis:'z',speed:.75});
@@ -82,9 +79,8 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  scope('kidney');
  // Kidney: open filtration basins beside the river, with a working waterwheel.
  box(10.6,.09,9.2,4.3,.18,4,stone);
- if(newModel)newModel('workshop',11.9,.02,7.3,1.7,Math.PI/2,fixed,1.8);
- for(const x of [9.5,12.1]){cylinder(x,1.25,7.3,.33,.44,2.5,ivory);for(const y of [.45,1.2,1.95]){cylinder(x,y,7.3,.36,.36,.34,teal);rim(x,y+.19,7.3,.37,ivory);}cylinder(x,2.75,7.3,.61,.23,.7,teal);rim(x,3.12,7.3,.62,ivory);}
- pipe([[9.5,2.4,7.3],[9.5,3.25,7.3],[12.1,3.25,7.3],[12.1,2.4,7.3]],.12,teal);
+ for(const x of [9.5,12.1]){cylinder(x,2.5,7.3,.43,.56,5,ivory);for(const y of [.6,2.1,3.6]){cylinder(x,y,7.3,.48,.48,.68,teal);rim(x,y+.38,7.3,.51,ivory);}cylinder(x,5.3,7.3,.74,.31,.8,teal);rim(x,5.72,7.3,.75,ivory);}
+ pipe([[9.5,4.7,7.3],[9.5,6,7.3],[12.1,6,7.3],[12.1,4.7,7.3]],.16,teal);
  for(const [x,z] of [[9.8,8.2],[11.2,10.3]]){
   cylinder(x,.45,z,.95,1.04,.8,ivory);cylinder(x,.87,z,.81,.81,.035,0x84b5b4);rim(x,.89,z,.9,stone);
   const rake=new T.Group();rake.position.set(x,.94,z);animated.add(rake);box(0,0,0,1.6,.06,.08,wood,rake);rotors.push({mesh:rake,id:'kidney',axis:'y',speed:.3});
@@ -96,23 +92,20 @@ export function createFacilities({fixed,animated,make,box,cylinder,orb,model,new
  road([{x:8,z:8},{x:9,z:9.3},{x:10,z:9.3}],.75);
  scope('marrow');
  // Marrow: a bone-framed nursery, with production pods beside the exit.
- if(newModel){const nursery=newModel('house-a',-6.8,.02,12,2.8,Math.PI,fixed,3.6);nursery.scale.y*=1.1;}
- else{box(-6.8,.85,12,3.3,1.7,1.9,rose);const roof=cylinder(-6.8,1.8,12,.98,.98,3.5,ivory);roof.rotation.z=Math.PI/2;
-  box(-6.8,.66,10.99,.95,1.3,.08,wood);box(-6.8,.67,10.93,.65,1.1,.04,0x6b7f78);}
- for(const x of [-8.5,-5.1]){cylinder(x,1.55,11,.22,.22,3.1,ivory);for(const y of [.25,2.95]){orb(x-.16,y,11,.3,ivory);orb(x+.16,y,11,.3,ivory);}}
- box(-6.8,3.08,11,3.5,.3,.32,ivory);
- const nurseryRoof=cylinder(-6.8,2,12,.83,.83,3.5,ivory);nurseryRoof.rotation.z=Math.PI/2;
- box(-6.8,3.12,10.79,.8,.18,.08,STYLE.roofs[4]);box(-6.8,3.12,10.78,.18,.8,.08,STYLE.roofs[4]);
+ building({kind:'guildhall',district:'marrow',x:-6.8,z:12,w:4.2,d:2.7,height:4.8,angle:Math.PI});
+ for(const x of [-8.5,-5.1]){cylinder(x,2.65,11,.22,.22,5.3,ivory);for(const y of [.25,5.15]){orb(x-.16,y,11,.3,ivory);orb(x+.16,y,11,.3,ivory);}}
+ box(-6.8,5.28,11,3.5,.3,.32,ivory);
+ box(-6.8,5.32,10.79,.9,.2,.08,STYLE.roofs[4]);box(-6.8,5.32,10.78,.2,.9,.08,STYLE.roofs[4]);
  // Production bays are instanced and follow each actual recruitment order.
  model('cart',-4.5,.05,11.4,.75,.6);model('chimney',-7.9,2.15,12.2,.8);
  scope('lymph');
  // Lymph: a green rotunda with a signal mast and antibody work benches.
- if(newModel)newModel('tower',-15.25,.02,.1,2.8,0,fixed,1.1);
- make(new T.CylinderGeometry(1.3,1.45,1.7,10),ivory,-13.6,.9,.5);
- make(new T.ConeGeometry(1.65,.9,10),green,-13.6,2.15,.5);box(-13.6,.65,1.86,.65,1.3,.08,wood);
- for(const side of [-1,1]){box(-13.6+side*.88,1.1,1.57,.35,.55,.08,teal);box(-13.6+side*.88,1.1,1.63,.05,.55,.03,ivory);}
- cylinder(-13.6,3.05,.5,.1,.12,1.25,brass);
- for(const side of [-1,1]){const branch=cylinder(-13.6+side*.3,3.72,.5,.09,.09,.9,brass);branch.rotation.z=-side*.7;orb(-13.6+side*.59,4.06,.5,.18,green);}
+ make(new T.CylinderGeometry(1.3,1.45,3.7,10),ivory,-13.6,1.9,.5);
+ for(const y of [.3,1.8,3.6])rim(-13.6,y,.5,1.42,green);
+ make(new T.ConeGeometry(1.65,1.5,10),green,-13.6,4.5,.5);box(-13.6,.65,1.86,.65,1.3,.08,wood);
+ for(const side of [-1,1])for(const y of [1.1,2.75]){box(-13.6+side*.88,y,1.57,.35,.55,.08,teal);box(-13.6+side*.88,y,1.63,.05,.55,.03,ivory);}
+ cylinder(-13.6,5.75,.5,.12,.14,1.3,brass);
+ for(const side of [-1,1]){const branch=cylinder(-13.6+side*.4,6.55,.5,.11,.11,1.15,brass);branch.rotation.z=-side*.7;orb(-13.6+side*.77,6.98,.5,.23,green);}
  model('banner-green',-12.2,1,.6,.8);
  // Bench and dock coordinates are also the workers' real interaction targets.
  // Fixed fittings join the static bake; moving cargo/vials use actor instances.
