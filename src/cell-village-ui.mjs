@@ -39,7 +39,8 @@ export function createCellVillage(){
     q('.vlg-residents').hidden=!panel;game.querySelector('.vlg-dock [data-village-action="residents"]').setAttribute('aria-expanded',String(panel));
     const resident=world.residents.find(r=>r.id===follow),followEl=q('[data-vlg-follow]');followEl.hidden=!resident;if(resident)followEl.querySelector('span').textContent=`${resident.name} · ${resident.activity}`;
     q('[data-vlg-save]').textContent=storageOK?'자동 저장':'저장할 수 없음';q('[data-vlg-help]').textContent=`부서 작업 ${world.logistics.stats.work} · 여과 ${world.logistics.stats.filtered}`;
-    for(const kind of ['oxygen','food','waste'])q(`[data-vlg-load="${kind}"]`).textContent=world.logistics.parcels.filter(p=>kind==='waste'?['waste','sorted'].includes(p.kind):p.kind===kind).length;
+    const inTransit=[...world.logistics.parcels,...world.residents.map(r=>r.carry).filter(Boolean)];
+    for(const kind of ['oxygen','food','waste'])q(`[data-vlg-load="${kind}"]`).textContent=inTransit.filter(p=>kind==='waste'?['waste','sorted'].includes(p.kind):p.kind===kind).length;
     q('[data-vlg-hint]').textContent=mode==='walk'?'WASD / 방향키 · E 인사 · 클릭 이동':'드래그로 둘러보기 · 휠로 확대';
     const near=nearestInteraction(world),interactButton=q('[data-vlg-interact]');interactButton.disabled=!near||paused;interactButton.textContent=near?`${near.label}  E`:'가까이 다가가기';
     q('[data-vlg-toast]').hidden=!toast||performance.now()>toastEnd;q('[data-vlg-toast]').textContent=toast;

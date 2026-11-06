@@ -1,5 +1,5 @@
-import {TILE,COLS,ROWS,SITES,POINTS,blocked} from './cell-office-layout.mjs';
-import {createLogistics,tickLogistics,helpStation} from './cell-office-logistics.mjs';
+import {TILE,COLS,ROWS,SITES,POINTS,DOCKS,PORTS,blocked} from './cell-office-layout.mjs';
+import {createLogistics,tickLogistics,helpStation,neededInput,takeInput,putInput,takeOutput,dispatch} from './cell-office-logistics.mjs';
 export {TILE,COLS,ROWS,SITES,POINTS,blocked};
 export const SAVE_KEY = 'pathopedia:cell-village:v1';
 export const CLOTHES = ['#c65e56', '#548f80', '#7389b4', '#a27eab', '#d6a153', '#6d8290'];
@@ -57,7 +57,7 @@ export function createWorld(saved) {
       if(saved.version!==2||!Number.isFinite(p.x)||!Number.isFinite(p.y)||!canStand(p.x,p.y))Object.assign(world.player,POINTS.plaza);
     }
   }
-  world.residents=RESIDENTS.map((r,i)=>({...r,...POINTS[r.id==='ruby'?'dispatch':r.home],direction:'up',step:0,path:[],routeIndex:0,wait:8+i*1.3,activity:r.work,moving:false,deliveries:0,destination:r.id==='ruby'?'dispatch':r.home}));
+  world.residents=RESIDENTS.map((r,i)=>({...r,...POINTS[r.id==='ruby'?'dispatch':r.home],direction:'up',step:0,path:[],routeIndex:0,wait:8+i*1.3,activity:r.work,moving:false,deliveries:0,destination:r.id==='ruby'?'dispatch':r.home,task:'work',carry:null,handoff:0,greeting:0,nextBreak:world.time+65+i*5}));
   return world;
 }
 export function serializeWorld(w){return JSON.stringify({version:2,time:w.time,help:w.help,production:{work:w.logistics.stats.work,sorted:w.logistics.stats.sorted,filtered:w.logistics.stats.filtered},player:w.player&&{name:w.player.name,color:w.player.color,hair:w.player.hair,skin:w.player.skin,x:w.player.x,y:w.player.y}});}
@@ -77,14 +77,63 @@ function followPath(actor,dt,speed){
   if(distance<speed*dt+1){actor.x=target.x;actor.y=target.y;actor.path.shift();actor.moving=!!actor.path.length;}
   else moveActor(actor,target.x-actor.x,target.y-actor.y,dt,speed);
 }
+const cargoName=kind=>({oxygen:'산소통',food:'식량 상자',waste:'회수 상자',sorted:'분류한 상자'})[kind];
+function startTask(r,task,point,activity){
+  r.task=task;r.path=findPath(r,point);r.handoff=.45;r.activity=activity;r.destination=r.home;
+}
+function face(r,point){
+  const dx=point.x-r.x,dy=point.y-r.y;
+  r.direction=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';
+}
+function tickEmployee(world,r,dt){
+  const flow=world.logistics,s=flow.stations[r.home],work=POINTS[r.home],dock=DOCKS[r.home];
+  if(r.task==='break'){
+    r.task='rest';r.wait=6;r.direction='down';r.activity='휴게실에서 쉬는 중';return;
+  }
+  if(r.task==='rest'){
+    r.wait-=dt;if(r.wait>0)return;
+    r.nextBreak=world.time+75+RESIDENTS.findIndex(p=>p.id===r.id)*3;
+    startTask(r,'work',work,'작업대로 돌아가는 중');return;
+  }
+  if(['pickup','load','unload'].includes(r.task)){
+    face(r,r.task==='unload'?{x:work.x,y:work.y-TILE}:PORTS[r.home].path.at(-1));
+    r.handoff=Math.max(0,r.handoff-dt);if(r.handoff>0)return;
+    if(r.task==='pickup'){
+      r.carry=takeInput(flow,r.home);
+      startTask(r,r.carry?'unload':'work',work,r.carry?`${cargoName(r.carry.kind)} 작업대로 운반`:'입고 대기 중');
+    }else if(r.task==='unload'){
+      putInput(flow,r.home,r.carry);r.carry=null;r.deliveries++;
+      startTask(r,'work',work,r.work);
+    }else if(dispatch(flow,r.carry.kind,r.carry.from,r.carry.to)){
+      r.carry=null;r.deliveries++;s.departure=1.2;
+      startTask(r,'work',work,'작업대로 돌아가는 중');
+    }
+    return;
+  }
+  r.direction='up';
+  if(s.output.length){
+    if(s.readyTime>0){r.activity='출고 준비 중';return;}
+    const parcel=takeOutput(flow,r.home,world.residents);
+    if(parcel){r.carry=parcel;startTask(r,'load',dock,`${cargoName(parcel.kind)} 출고대로 운반`);return;}
+  }
+  if(world.time>=r.nextBreak&&s.progress===0){
+    const dest=r.route.includes('coffee')?'coffee':'lounge';
+    startTask(r,'break',POINTS[dest],'휴게실 가는 중');r.destination=dest;return;
+  }
+  const kind=neededInput(flow,r.home);
+  if(kind){startTask(r,'pickup',dock,`${cargoName(kind)} 받으러 가는 중`);return;}
+  r.activity=s.working?r.work:s.output.length?'출고 대기 중':['lung','gut'].includes(r.home)?'충전·포장 대기 중':'물자 도착 기다리는 중';
+}
 export function tickWorld(world,dt,input={}) {
   world.time+=dt;
   world.effects=world.effects.filter(e=>(e.life-=dt)>0);
   for(const r of world.residents){
+    if(r.greeting>0){r.greeting=Math.max(0,r.greeting-dt);r.moving=false;continue;}
     if(r.path.length){followPath(r,dt,r.id==='ruby'?40:34);continue;}
-    r.moving=false;r.wait-=dt;r.direction='up';
-    const station=world.logistics.stations[r.home];
-    r.activity=['lounge','coffee'].includes(r.destination)?'휴게실에서 쉬는 중':r.id==='ruby'?'물류 배차 중':station?.working?r.work:['lung','gut'].includes(r.home)?'출고 대기 중':['liver','kidney'].includes(r.home)?'회수품 대기 중':'물자 도착 기다리는 중';
+    r.moving=false;
+    if(r.id!=='ruby'){tickEmployee(world,r,dt);continue;}
+    r.wait-=dt;r.direction='up';
+    r.activity=['lounge','coffee'].includes(r.destination)?'휴게실에서 쉬는 중':r.destination==='dispatch'?'물류 배차 중':'출고 현황 확인 중';
     if(r.wait>0)continue;
     const dest=r.route[r.routeIndex++%r.route.length],point=POINTS[dest];
     r.path=findPath(r,point);r.wait=['lounge','coffee'].includes(dest)?6:13+(r.routeIndex%3)*2;r.destination=dest;
@@ -109,7 +158,7 @@ export function interact(world,target){
   if(!target)return '';
   if(target.kind==='resident'){
     const r=world.residents.find(r=>r.id===target.id);if(!r)return '';
-    r.wait=6;r.path=[];r.moving=false;r.direction='down';
+    r.greeting=2;r.moving=false;r.direction='down';
     world.effects.push({x:r.x,y:r.y-28,life:2,kind:'heart'});
     return `${r.name} · ${r.line}`;
   }

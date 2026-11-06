@@ -1,8 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {SAVE_KEY,SITES,POINTS,RESIDENTS,CLOTHES,createWorld,serializeWorld,findPath,canStand,tickWorld,nearestInteraction,interact} from '../src/cell-village-world.mjs';
-import {BRIDGES,FIXTURES,PORTS,TILE,blocked} from '../src/cell-office-layout.mjs';
+import {BRIDGES,FIXTURES,PORTS,DOCKS,TILE,blocked} from '../src/cell-office-layout.mjs';
 import {MAX_PARCELS,parcelPoint} from '../src/cell-office-logistics.mjs';
+
+function assertConservation(world){
+  const f=world.logistics,stations=Object.values(f.stations);
+  const cargo=[...f.parcels.map(p=>p.kind),...stations.flatMap(s=>[...s.inbox,...s.output]),...world.residents.flatMap(r=>r.carry?[r.carry.kind]:[])];
+  const count=kind=>cargo.filter(k=>k===kind).length,stock=kind=>stations.reduce((sum,s)=>sum+s[kind],0);
+  assert.equal(f.stats.madeOxygen+9,stock('oxygen')+count('oxygen')+f.stats.work);
+  assert.equal(f.stats.madeFood+9,stock('food')+count('food')+f.stats.work);
+  assert.equal(f.stats.work,count('waste')+count('sorted')+stock('waste')+f.stats.filtered);
+  assert.equal(f.stats.sorted,count('sorted')+f.stations.kidney.waste+f.stats.filtered);
+}
 
 test('the independent village has exactly one resident per role and no old city save dependency',()=>{
   const world=createWorld();assert.equal(world.residents.length,8);assert.equal(new Set(RESIDENTS.map(r=>r.role)).size,8);
@@ -10,7 +20,10 @@ test('the independent village has exactly one resident per role and no old city 
   assert.deepEqual(world.residents.map(r=>r.id),RESIDENTS.map(r=>r.id));
 });
 test('every department and break room is reachable through doors and conveyor bridges',()=>{
-  for(const site of SITES){const path=findPath(POINTS.plaza,POINTS[site.id]);assert.ok(path.length,site.id);assert.ok(path.every(p=>canStand(p.x,p.y)),site.id);}
+  for(const site of SITES){
+    const path=findPath(POINTS.plaza,POINTS[site.id]);assert.ok(path.length,site.id);assert.ok(path.every(p=>canStand(p.x,p.y)),site.id);
+    const dock=DOCKS[site.id],handoff=findPath(POINTS[site.id],dock);assert.ok(canStand(dock.x,dock.y),site.id);assert.ok(handoff.length);assert.deepEqual(handoff.at(-1),dock);assert.ok(handoff.every(p=>canStand(p.x,p.y)));
+  }
   const path=findPath(POINTS.lung,POINTS.kidney);assert.ok(path.length);assert.ok(path.every(p=>canStand(p.x,p.y)));
   assert.ok(findPath(POINTS.plaza,POINTS.lounge).length);
   for(const b of BRIDGES)assert.equal(blocked(b.x,b.y),false);
@@ -41,14 +54,15 @@ test('nearby residents greet the player and organ work records a small contribut
   assert.equal(world.logistics.stations.kidney.boost,15);
 });
 test('supplies are delivered, consumed, sorted and filtered without creating or losing parcels',()=>{
-  const world=createWorld();
-  for(let i=0;i<9000;i++)tickWorld(world,1/30);
-  const f=world.logistics,count=kind=>f.parcels.filter(p=>p.kind===kind).length,stock=kind=>Object.values(f.stations).reduce((sum,s)=>sum+s[kind],0);
+  const world=createWorld(),carried=new Set();
+  for(let i=0;i<9000;i++){
+    tickWorld(world,1/30);
+    for(const r of world.residents){if(r.carry)carried.add(r.carry.kind);if(['break','rest'].includes(r.task))assert.equal(r.carry,null);}
+    if(i%300===0)assertConservation(world);
+  }
+  const f=world.logistics;
   assert.ok(f.stats.work>10);assert.ok(f.stats.filtered>5);assert.ok(f.stats.sorted>=f.stats.filtered);assert.ok(f.parcels.length<=MAX_PARCELS);
-  assert.equal(f.stats.madeOxygen+9,stock('oxygen')+count('oxygen')+f.stats.work);
-  assert.equal(f.stats.madeFood+9,stock('food')+count('food')+f.stats.work);
-  assert.equal(f.stats.work,count('waste')+count('sorted')+stock('waste')+f.stats.filtered);
-  assert.equal(f.stats.sorted,count('sorted')+f.stations.kidney.waste+f.stats.filtered);
+  assertConservation(world);assert.deepEqual([...carried].sort(),['food','oxygen','sorted','waste']);
   assert.ok(f.parcels.every(p=>PORTS[p.from]&&PORTS[p.to]&&Number.isFinite(parcelPoint(p).x)));
   for(const id of ['brain','heart','marrow'])assert.ok(f.stations[id].completed>0,id);
 });
@@ -59,4 +73,25 @@ test('equipment waits for its employee and player assistance affects the running
   interact(world,{kind:'site',id:'lung'});interact(world,{kind:'site',id:'heart'});
   for(let i=0;i<90;i++)tickWorld(world,1/30);
   assert.ok(world.logistics.stats.madeOxygen>0);assert.ok(world.logistics.beltSpeed>23);
+  assert.deepEqual(world.logistics.stations.lung.output,['oxygen'],'assistance fills a canister but an employee must carry it out');
+});
+
+test('arriving parcels wait at the dock until an employee carries them to the machine',()=>{
+  const world=createWorld();world.residents=[];
+  for(let i=0;i<1800;i++)tickWorld(world,1/30);
+  for(const id of ['brain','heart','marrow']){
+    const station=world.logistics.stations[id];assert.equal(station.oxygen,2);assert.equal(station.food,2);assert.equal(station.inbox.length,2);assert.equal(station.completed,0);
+  }
+  assertConservation(world);
+});
+test('greeting a carrier pauses and resumes the same parcel without teleporting or losing it',()=>{
+  const world=createWorld(),r=world.residents.find(r=>r.id==='breeze');
+  for(let i=0;i<300&&!r.carry;i++)tickWorld(world,1/30);
+  assert.equal(r.carry?.kind,'oxygen');assert.deepEqual({x:r.x,y:r.y},POINTS.lung);
+  const parcel={...r.carry},path=r.path.map(p=>({...p})),position={x:r.x,y:r.y};
+  interact(world,{kind:'resident',id:r.id});
+  for(let i=0;i<60;i++)tickWorld(world,1/30);
+  assert.deepEqual(r.carry,parcel);assert.deepEqual(r.path,path);assert.deepEqual({x:r.x,y:r.y},position);assertConservation(world);
+  for(let i=0;i<300&&r.carry;i++)tickWorld(world,1/30);
+  assert.equal(r.carry,null);assert.deepEqual({x:r.x,y:r.y},DOCKS.lung);assert.ok(r.deliveries>0);assertConservation(world);
 });

@@ -39,6 +39,8 @@ export const PORTS={
   heart:port(47,[[16.5,17.5],[12.5,17.5]]),
 };
 export function pathLength(path){return path.slice(1).reduce((sum,q,i)=>sum+Math.abs(q.x-path[i].x)+Math.abs(q.y-path[i].y),0);}
+// Staff stand beside the belt, never on its moving surface.
+export const DOCKS={lung:p(9.5,9.5),brain:p(23.5,9.5),gut:p(39.5,9.5),heart:p(12.5,18.5),marrow:p(35.5,18.5),liver:p(9.5,27.5),kidney:p(39.5,27.5)};
 export function pathPoint(path,distance){
   let d=Math.max(0,distance);
   for(let i=1;i<path.length;i++){const a=path[i-1],b=path[i],length=Math.abs(b.x-a.x)+Math.abs(b.y-a.y);if(d<=length){const f=length?d/length:0;return {x:a.x+(b.x-a.x)*f,y:a.y+(b.y-a.y)*f,dx:Math.sign(b.x-a.x),dy:Math.sign(b.y-a.y)};}d-=length;}
