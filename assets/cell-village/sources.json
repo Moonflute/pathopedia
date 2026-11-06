@@ -1,5 +1,5 @@
 {
-  "version": "0.89.0",
+  "version": "0.90.0",
   "tileSize": 16,
   "sources": [
     {
@@ -14,5 +14,5 @@
       "sha256": "3a54d99ecde790d4fdea207a3644cf130fc56fa838f1beb1507c185a95b8e902"
     }
   ],
-  "runtime": "One local atlas, loaded only by the independent Cell City tab. Organ buildings, residents, clothing and effects are original Canvas pixel drawings. No Stardew Valley assets are included."
+  "runtime": "One existing local CC0 atlas, reused for exterior ground and indoor potted greenery. The single building, cutaway department walls, equipment, conveyors, parcels, employees and effects are original Canvas pixel drawings. No new images or Stardew Valley assets are included."
 }

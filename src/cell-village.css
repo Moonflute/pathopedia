@@ -1,5 +1,5 @@
 /* Cell City owns this shell; the 3D tab continues to use .city-main / .cc-game. */
-body:has(.village-main){overflow:hidden;background:#78965f}
+body:has(.village-main){overflow:hidden;background:#7b9380}
 #app:has(>.village-main){height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 #app:has(>.village-main)>.appbar{flex:none;height:44px;min-height:44px;flex-wrap:nowrap;padding-block:0}
 main.village-main{flex:1;min-height:0;max-width:none;width:100%;padding:0;margin:0;overflow:hidden}
@@ -39,6 +39,10 @@ main.village-main{flex:1;min-height:0;max-width:none;width:100%;padding:0;margin
 .vlg-toast{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);max-width:min(530px,calc(100% - 36px));padding:13px 20px;color:#5d624e;background:#fff2d9f5;border:2px solid #c8bd95;border-radius:7px;box-shadow:0 4px 0 #43573d22;font-size:12px;text-align:center;pointer-events:none;z-index:6}
 .vlg-walk-controls{position:absolute;inset:auto 20px 20px;display:flex;align-items:flex-end;justify-content:flex-end;pointer-events:none}.vlg-walk-controls>*{pointer-events:auto}.vlg-game .vlg-interact{max-width:230px;background:#f9efd7ed;font-size:12px;min-height:44px}.vlg-game .vlg-interact:disabled{opacity:.55}.vlg-dpad{display:none}
 .vlg-game[data-mode=walk] .vlg-toast{bottom:84px}
+.vlg-game .vlg-cargo-key{position:absolute;left:22px;bottom:17px;display:flex;gap:13px;align-items:center;padding:8px 11px;background:#f7f0deed;border:1px solid #b9c2a5;border-radius:5px;color:#69745c;font-size:10px;pointer-events:none}
+.vlg-game .vlg-cargo-key span{display:flex;align-items:center;gap:5px}.vlg-game .vlg-cargo-key span:before{content:'';width:7px;height:9px;border:1px solid #55818b;background:#98c7ce;border-radius:2px}.vlg-game .vlg-cargo-key .vlg-key-food:before{background:#dfb66c;border-color:#9e7b49}.vlg-game .vlg-cargo-key .vlg-key-waste:before{background:#b6b4a4;border-color:#858375}.vlg-game .vlg-cargo-key b{font:600 10px var(--mono);min-width:12px}
+.vlg-game[data-mode=walk] .vlg-cargo-key{display:none}
+@media(max-width:760px){.vlg-game .vlg-cargo-key{left:12px;bottom:12px;padding:7px 9px;gap:10px}}
 .vlg-game .vlg-character-dialog{padding:0;width:min(380px,calc(100% - 28px));max-height:calc(100dvh - 28px);border:2px solid #b9b99b;border-radius:12px;background:#f6efdc;color:#465844;box-shadow:0 8px 0 #273f3725,0 24px 80px #1c372854;overflow:auto}
 .vlg-game .vlg-character-dialog::backdrop{background:#263f3c80;backdrop-filter:blur(3px)}
 .vlg-character-form{padding:22px}.vlg-character-form header{display:flex;align-items:center;justify-content:space-between}.vlg-game .vlg-character-form h2{font-size:22px;letter-spacing:-.04em;line-height:1.4;margin:3px 0 0;font-weight:650}

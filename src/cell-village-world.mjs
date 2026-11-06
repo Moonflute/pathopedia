@@ -1,42 +1,21 @@
-export const TILE = 16;
-export const COLS = 48;
-export const ROWS = 34;
+import {TILE,COLS,ROWS,SITES,POINTS,blocked} from './cell-office-layout.mjs';
+import {createLogistics,tickLogistics,helpStation} from './cell-office-logistics.mjs';
+export {TILE,COLS,ROWS,SITES,POINTS,blocked};
 export const SAVE_KEY = 'pathopedia:cell-village:v1';
 export const CLOTHES = ['#c65e56', '#548f80', '#7389b4', '#a27eab', '#d6a153', '#6d8290'];
 export const HAIR = ['#574237', '#a97143', '#ddd2b1'];
 export const SKIN = ['#f3cfaa', '#c99873', '#805c48'];
-export const TREES = [[4,7],[4,12],[44,7],[44,12],[4,23],[44,25],[15,4],[32,4],[4,29],[44,30]];
-export const BENCHES = [[19,20],[28,20],[12,21],[35,21]];
-export const SITES = [
-  {id:'brain', name:'신호 우체국', organ:'뇌', x:21,y:3,w:6,h:5, roof:'#9680a5', accent:'#ceb5db', symbol:'signal', action:'신호 보내기', result:'반짝, 신호가 마을에 닿았어요.'},
-  {id:'lung', name:'숨결 온실', organ:'폐', x:7,y:8,w:6,h:5, roof:'#6b9990', accent:'#a7d4ca', symbol:'air', action:'환기하기', result:'온실에 산뜻한 바람이 불어요.'},
-  {id:'marrow', name:'골수 공방', organ:'골수', x:35,y:8,w:6,h:5, roof:'#b48b5c', accent:'#ebce8b', symbol:'bone', action:'자재 정리', result:'공방의 작업대가 말끔해졌어요.'},
-  {id:'heart', name:'두근두근 광장', organ:'심장', x:21,y:14,w:6,h:5, roof:'#b76161', accent:'#eaa199', symbol:'heart', action:'펌프 돌리기', result:'두근두근, 펌프에 힘을 보탰어요.'},
-  {id:'gut', name:'영양 부엌', organ:'장', x:7,y:24,w:6,h:5, roof:'#c38b58', accent:'#f0cf88', symbol:'food', action:'식량 바구니 채우기', result:'따뜻한 식량 바구니가 준비됐어요.'},
-  {id:'liver', name:'간 정리소', organ:'간', x:21,y:25,w:6,h:5, roof:'#a67471', accent:'#d9aaa0', symbol:'leaf', action:'물자 분류', result:'마을에 쓸 물자를 가지런히 정리했어요.'},
-  {id:'kidney', name:'콩팥 여과소', organ:'신장', x:35,y:24,w:6,h:5, roof:'#7298ab', accent:'#aed7e5', symbol:'water', action:'여과 수조 살피기', result:'수조에 맑은 물이 흐르네요.'},
-];
 export const RESIDENTS = [
-  {id:'ruby',name:'루비',role:'적혈구',color:'#cb665d',hair:1,skin:0,hat:'cap',home:'heart',work:'산소 배달',route:['lung','heart','gut','kidney','heart'],line:'오늘도 산소 한 바구니, 배달 갑니다!'},
-  {id:'beat',name:'두두',role:'심근세포',color:'#c78383',hair:0,skin:1,hat:'band',home:'heart',work:'펌프 가동',route:['heart','heart','plaza'],line:'두근, 두근. 오늘도 좋은 박자야.'},
-  {id:'breeze',name:'솔솔',role:'폐포세포',color:'#69a69b',hair:2,skin:0,hat:'flower',home:'lung',work:'산소 준비',route:['lung','lung','garden'],line:'깊게 숨 쉬어 봐. 바람이 참 좋지?'},
-  {id:'spark',name:'반짝',role:'신경세포',color:'#a48cb5',hair:0,skin:2,hat:'antenna',home:'brain',work:'신호 전달',route:['brain','brain','heart'],line:'반가워! 네가 왔다는 소식도 전해 둘게.'},
-  {id:'grain',name:'보리',role:'장세포',color:'#c59a5b',hair:1,skin:1,hat:'chef',home:'gut',work:'영양 포장',route:['gut','garden','gut','plaza'],line:'방금 담은 영양 바구니야. 든든하지?'},
-  {id:'clear',name:'맑음',role:'신장세포',color:'#759faf',hair:0,skin:0,hat:'cap',home:'kidney',work:'노폐물 여과',route:['kidney','pond','kidney'],line:'졸졸 흐르는 물소리, 같이 듣고 갈래?'},
-  {id:'momo',name:'모모',role:'대식세포',color:'#8c9b72',hair:2,skin:2,hat:'band',home:'liver',work:'주변 청소',route:['liver','plaza','lung','marrow','kidney'],line:'구석구석 깨끗하게! 산책길은 내가 맡을게.'},
-  {id:'patch',name:'토리',role:'섬유아세포',color:'#b49471',hair:1,skin:1,hat:'work',home:'marrow',work:'조직 수선',route:['marrow','brain','heart','marrow'],line:'조금씩 고치다 보면 더 튼튼한 마을이 돼.'},
+  {id:'ruby',name:'루비',role:'적혈구',color:'#cb665d',hair:1,skin:0,hat:'cap',home:'heart',work:'물류 배차',route:['dispatch','lung','dispatch','gut','dispatch','lounge'],line:'파란 산소, 노란 식량. 오늘도 배송 중!'},
+  {id:'beat',name:'두두',role:'심근세포',color:'#c78383',hair:0,skin:1,hat:'band',home:'heart',work:'순환 펌프 가동',route:['heart','heart','lounge','heart'],line:'두근, 두근. 이 박자에 벨트가 움직여.'},
+  {id:'breeze',name:'솔솔',role:'폐포세포',color:'#69a69b',hair:2,skin:0,hat:'flower',home:'lung',work:'산소 충전',route:['lung','lung','lounge','lung'],line:'갓 충전한 산소야. 저 벨트에 실어 보낼게.'},
+  {id:'spark',name:'반짝',role:'신경세포',color:'#a48cb5',hair:0,skin:2,hat:'antenna',home:'brain',work:'신호 설비 가동',route:['brain','brain','coffee','brain'],line:'모든 부서 이상 없음! 잠깐 커피 마실까?'},
+  {id:'grain',name:'보리',role:'장세포',color:'#c59a5b',hair:1,skin:1,hat:'chef',home:'gut',work:'식량 포장',route:['gut','gut','lounge','gut'],line:'산소랑 함께 받아야 든든하게 일할 수 있지.'},
+  {id:'clear',name:'맑음',role:'신장세포',color:'#759faf',hair:0,skin:0,hat:'cap',home:'kidney',work:'노폐물 여과',route:['kidney','kidney','lounge','kidney'],line:'정리부에서 보낸 상자는 여기서 마무리해.'},
+  {id:'momo',name:'모모',role:'대식세포',color:'#8c9b72',hair:2,skin:2,hat:'band',home:'liver',work:'회수품 분류',route:['liver','liver','coffee','liver'],line:'쓰고 남은 건 내가 정리해서 여과부로 보낼게.'},
+  {id:'patch',name:'토리',role:'섬유아세포',color:'#b49471',hair:1,skin:1,hat:'work',home:'marrow',work:'조직 수선',route:['marrow','marrow','lounge','marrow'],line:'물자가 도착하면 수선 시작. 오늘도 차근차근!'},
 ];
-export const POINTS = {
-  ...Object.fromEntries(SITES.map(s=>[s.id,{x:(s.x+s.w/2)*TILE,y:(s.y+s.h+1)*TILE}])),
-  plaza:{x:24*TILE,y:22*TILE}, garden:{x:11*TILE,y:20*TILE}, pond:{x:37*TILE,y:20*TILE},
-};
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-export function blocked(tx,ty) {
-  if(tx<2||ty<2||tx>=COLS-2||ty>=ROWS-1)return true;
-  if(tx>=38&&tx<=43&&ty>=17&&ty<=20)return true;
-  if(TREES.some(([x,y])=>tx===x&&ty===y+1)||BENCHES.some(([x,y])=>ty===y&&tx>=x&&tx<x+2))return true;
-  return SITES.some(s=>tx>=s.x&&tx<s.x+s.w&&ty>=s.y&&ty<s.y+s.h);
-}
 export function canStand(x,y) {
   return [[-4,-2],[4,-2],[-4,2],[4,2]].every(([dx,dy])=>!blocked(Math.floor((x+dx)/TILE),Math.floor((y+dy)/TILE)));
 }
@@ -68,20 +47,20 @@ export function findPath(from,to) {
   return path;
 }
 export function createWorld(saved) {
-  const world={time:0,help:0,player:null,residents:[],effects:[],message:'',messageUntil:0};
-  if(saved&&saved.version===1){
+  const world={time:0,help:0,player:null,residents:[],effects:[],logistics:createLogistics(saved?.production)};
+  if(saved&&[1,2].includes(saved.version)){
     if(Number.isFinite(saved.time))world.time=clamp(saved.time,0,1e8);
     if(Number.isFinite(saved.help))world.help=clamp(Math.floor(saved.help),0,1e6);
     if(saved.player){
       const p=saved.player;
       world.player={name:String(p.name||'여행자').slice(0,12),color:CLOTHES.includes(p.color)?p.color:CLOTHES[1],hair:clamp(Math.floor(Number(p.hair)||0),0,2),skin:clamp(Math.floor(Number(p.skin)||0),0,2),x:Number(p.x),y:Number(p.y),direction:'down',step:0,path:[],moving:false};
-      if(!Number.isFinite(p.x)||!Number.isFinite(p.y)||!canStand(p.x,p.y))Object.assign(world.player,POINTS.plaza);
+      if(saved.version!==2||!Number.isFinite(p.x)||!Number.isFinite(p.y)||!canStand(p.x,p.y))Object.assign(world.player,POINTS.plaza);
     }
   }
-  world.residents=RESIDENTS.map((r,i)=>({...r,...POINTS[r.home],x:POINTS[r.home].x+(i%2?8:-8),direction:'down',step:0,path:[],routeIndex:i%r.route.length,wait:1+i*.7,activity:r.work,moving:false,deliveries:0}));
+  world.residents=RESIDENTS.map((r,i)=>({...r,...POINTS[r.id==='ruby'?'dispatch':r.home],direction:'up',step:0,path:[],routeIndex:0,wait:8+i*1.3,activity:r.work,moving:false,deliveries:0,destination:r.id==='ruby'?'dispatch':r.home}));
   return world;
 }
-export function serializeWorld(w){return JSON.stringify({version:1,time:w.time,help:w.help,player:w.player&&{name:w.player.name,color:w.player.color,hair:w.player.hair,skin:w.player.skin,x:w.player.x,y:w.player.y}});}
+export function serializeWorld(w){return JSON.stringify({version:2,time:w.time,help:w.help,production:{work:w.logistics.stats.work,sorted:w.logistics.stats.sorted,filtered:w.logistics.stats.filtered},player:w.player&&{name:w.player.name,color:w.player.color,hair:w.player.hair,skin:w.player.skin,x:w.player.x,y:w.player.y}});}
 export function moveActor(actor,dx,dy,dt,speed=55){
   const length=Math.hypot(dx,dy);actor.moving=length>.01;
   if(!actor.moving)return;
@@ -102,14 +81,17 @@ export function tickWorld(world,dt,input={}) {
   world.time+=dt;
   world.effects=world.effects.filter(e=>(e.life-=dt)>0);
   for(const r of world.residents){
-    if(r.path.length){followPath(r,dt,r.id==='ruby'?31:22);continue;}
-    r.moving=false;r.wait-=dt;
+    if(r.path.length){followPath(r,dt,r.id==='ruby'?40:34);continue;}
+    r.moving=false;r.wait-=dt;r.direction='up';
+    const station=world.logistics.stations[r.home];
+    r.activity=['lounge','coffee'].includes(r.destination)?'휴게실에서 쉬는 중':r.id==='ruby'?'물류 배차 중':station?.working?r.work:['lung','gut'].includes(r.home)?'출고 대기 중':['liver','kidney'].includes(r.home)?'회수품 대기 중':'물자 도착 기다리는 중';
     if(r.wait>0)continue;
     const dest=r.route[r.routeIndex++%r.route.length],point=POINTS[dest];
-    r.path=findPath(r,point);r.wait=5+(r.routeIndex%4)*2;
-    r.activity=dest==='plaza'?'광장에서 쉬는 중':dest==='garden'?'정원 산책':dest==='pond'?'물길 살피는 중':r.work;
+    r.path=findPath(r,point);r.wait=['lounge','coffee'].includes(dest)?6:13+(r.routeIndex%3)*2;r.destination=dest;
+    r.activity=['lounge','coffee'].includes(dest)?'휴게실 가는 중':dest==='dispatch'?'물류 홀로 이동':`${SITES.find(s=>s.id===dest)?.name||'부서'}로 이동`;
     r.deliveries++;
   }
+  tickLogistics(world.logistics,dt,world.residents);
   const p=world.player;
   if(p){
     if(input.x||input.y){p.path=[];moveActor(p,input.x,input.y,dt,70);}
@@ -132,7 +114,7 @@ export function interact(world,target){
     return `${r.name} · ${r.line}`;
   }
   const site=SITES.find(s=>s.id===target.id);if(!site)return '';
-  world.help++;world.effects.push({...POINTS[site.id],life:3,kind:'spark'});return site.result;
+  world.help++;helpStation(world.logistics,site.id);world.effects.push({...POINTS[site.id],life:3,kind:'spark'});return site.result;
 }
 export function villageClock(world){
   const total=360+Math.floor(world.time*2),minutes=total%1440;

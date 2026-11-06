@@ -1,4 +1,5 @@
 import {GameLoop} from './vendor/kontra-10.0.2.mjs';
+import {FIXTURES,TILE} from './cell-office-layout.mjs';
 import {SAVE_KEY,CLOTHES,HAIR,SKIN,RESIDENTS,SITES,POINTS,createWorld,serializeWorld,tickWorld,findPath,nearestInteraction,interact,villageClock} from './cell-village-world.mjs';
 import {createVillageRenderer,drawPerson} from './cell-village-renderer.mjs';
 
@@ -11,33 +12,34 @@ export function createCellVillage(){
   const keys=new Set(),held=new Set();
   const save=()=>{try{localStorage.setItem(SAVE_KEY,serializeWorld(world));storageOK=true;}catch{storageOK=false;}};
   const notify=text=>{toast=text;toastEnd=performance.now()+4500;updateHUD();};
-  function render(){return `<section class="vlg-game" aria-label="Cell City 도트 마을" data-mode="${mode}">
-    <header class="vlg-header"><div class="vlg-brand"><span class="vlg-emblem" aria-hidden="true">♥</span><div><h1>CELL CITY</h1><span>몸속의 작은 하루</span></div></div><div class="vlg-clock"><span data-vlg-day>1일째</span><strong data-vlg-clock>06:00</strong></div><div class="vlg-time-controls">${button('light','☀','aria-label="시간대 자동, 누르면 낮 또는 밤으로 변경" title="시간대"')}${button('pause','Ⅱ','aria-label="마을 일시정지"')}${button('speed','1×','aria-label="재생 속도 변경"')}</div></header>
-    <div class="vlg-stage"><canvas class="vlg-canvas" tabindex="0" aria-label="Cell City 마을. 구경할 때 드래그로 지도 이동. 산책할 때 WASD, 방향키 또는 바닥 클릭으로 이동. E로 인사와 작업."></canvas>
-      <div class="vlg-corner"><span class="vlg-live-dot"></span><span data-vlg-mode>마을 구경 중</span><span class="vlg-corner-divider">/</span><span>주민 8명</span></div>
-      <div class="vlg-map-controls">${button('zoom-out','−','aria-label="마을 축소"')}${button('fit','⌖','aria-label="마을 전체 보기" title="마을 전체"')}${button('zoom-in','＋','aria-label="마을 확대"')}</div>
+  function render(){return `<section class="vlg-game" aria-label="Cell City 몸속 회사" data-mode="${mode}">
+    <header class="vlg-header"><div class="vlg-brand"><span class="vlg-emblem" aria-hidden="true">♥</span><div><h1>CELL CITY</h1><span>몸속 주식회사 · 1F</span></div></div><div class="vlg-clock"><span data-vlg-day>1일째</span><strong data-vlg-clock>06:00</strong></div><div class="vlg-time-controls">${button('light','☀','aria-label="시간대 자동, 누르면 낮 또는 밤으로 변경" title="시간대"')}${button('pause','Ⅱ','aria-label="업무 일시정지"')}${button('speed','1×','aria-label="재생 속도 변경"')}</div></header>
+    <div class="vlg-stage"><canvas class="vlg-canvas" tabindex="0" aria-label="Cell City 사내. 구경할 때 드래그로 지도 이동. 산책할 때 WASD, 방향키 또는 바닥 클릭으로 이동. E로 인사와 작업."></canvas>
+      <div class="vlg-corner"><span class="vlg-live-dot"></span><span data-vlg-mode>사내 구경 중</span><span class="vlg-corner-divider">/</span><span>직원 8명</span></div>
+      <div class="vlg-map-controls">${button('zoom-out','−','aria-label="건물 축소"')}${button('fit','⌖','aria-label="건물 전체 보기" title="건물 전체"')}${button('zoom-in','＋','aria-label="건물 확대"')}</div>
       <div class="vlg-pause-label" data-vlg-paused hidden>잠시 쉬는 중</div>
-      <div class="vlg-follow" data-vlg-follow hidden><span></span>${button('unfollow','×','aria-label="주민 따라보기 종료"')}</div>
-      <aside class="vlg-residents" aria-label="마을 주민" hidden><header><div><small>OUR NEIGHBOURS</small><h2>마을 주민 <span>8</span></h2></div>${button('residents','×','aria-label="주민 목록 닫기"')}</header><div class="vlg-resident-list">${RESIDENTS.map(r=>button('resident',`<canvas class="vlg-avatar" width="48" height="56" data-vlg-avatar="${r.id}" aria-hidden="true"></canvas><span><strong>${r.name}<small>${r.role}</small></strong><span data-vlg-activity="${r.id}">${r.work}</span></span><span class="vlg-follow-arrow" aria-hidden="true">↗</span>`,`class="vlg-resident" data-id="${r.id}" aria-label="${r.name}, ${r.role} 따라보기"`)).join('')}</div><p class="vlg-resident-note">주민을 누르면 따라가요.</p></aside>
-      <div class="vlg-toast" role="status" data-vlg-toast hidden></div>
+      <div class="vlg-follow" data-vlg-follow hidden><span></span>${button('unfollow','×','aria-label="직원 따라보기 종료"')}</div>
+      <aside class="vlg-residents" aria-label="함께 일하는 직원" hidden><header><div><small>OUR LITTLE TEAM</small><h2>함께 일하는 직원 <span>8</span></h2></div>${button('residents','×','aria-label="직원 목록 닫기"')}</header><div class="vlg-resident-list">${RESIDENTS.map(r=>button('resident',`<canvas class="vlg-avatar" width="48" height="56" data-vlg-avatar="${r.id}" aria-hidden="true"></canvas><span><strong>${r.name}<small>${r.role}</small></strong><span data-vlg-activity="${r.id}">${r.work}</span></span><span class="vlg-follow-arrow" aria-hidden="true">↗</span>`,`class="vlg-resident" data-id="${r.id}" aria-label="${r.name}, ${r.role} 따라보기"`)).join('')}</div><p class="vlg-resident-note">직원을 누르면 따라가요.</p></aside>
+      <div class="vlg-cargo-key" aria-label="운송 중인 물자"><span class="vlg-key-oxygen">산소 <b data-vlg-load="oxygen">0</b></span><span class="vlg-key-food">식량 <b data-vlg-load="food">0</b></span><span class="vlg-key-waste">회수 <b data-vlg-load="waste">0</b></span></div><div class="vlg-toast" role="status" data-vlg-toast hidden></div>
       <div class="vlg-walk-controls" data-vlg-walk hidden><div class="vlg-dpad" aria-label="이동 방향"><button type="button" data-vlg-dir="up" aria-label="위로 이동">▲</button><button type="button" data-vlg-dir="left" aria-label="왼쪽으로 이동">◀</button><span></span><button type="button" data-vlg-dir="right" aria-label="오른쪽으로 이동">▶</button><button type="button" data-vlg-dir="down" aria-label="아래로 이동">▼</button></div>${button('interact','인사하기','class="vlg-interact" data-vlg-interact disabled')}</div>
     </div>
-    <footer class="vlg-footer"><div class="vlg-status"><span data-vlg-save>자동 저장</span><small data-vlg-help>천천히 흘러가는 하루</small></div><nav class="vlg-dock" aria-label="마을 메뉴">${button('walk','산책하기','class="vlg-primary"')}${button('residents','주민들','aria-expanded="false"')}${button('character','내 캐릭터')}</nav><span class="vlg-hint" data-vlg-hint>드래그로 둘러보기 · 휠로 확대</span></footer>
-    <dialog class="vlg-character-dialog" aria-labelledby="vlg-character-title"><form class="vlg-character-form"><header><div><small>A LITTLE YOU</small><h2 id="vlg-character-title">나의 작은 캐릭터</h2></div>${button('cancel-character','×','aria-label="캐릭터 만들기 닫기"')}</header><div class="vlg-character-preview"><canvas width="160" height="144" data-vlg-preview aria-label="캐릭터 미리보기"></canvas><span>마을에서 만나요.</span></div><label class="vlg-name-label">이름<input name="village-name" maxlength="12" required autocomplete="off" placeholder="여행자" aria-label="캐릭터 이름"></label>${[['color','옷',CLOTHES],['hair','머리',HAIR],['skin','피부',SKIN]].map(([key,label,colors])=>`<div class="vlg-custom-row"><span>${label}</span><div class="vlg-swatches" role="group" aria-label="${label} 색상">${colors.map((color,i)=>button('swatch','',`class="vlg-swatch" style="--swatch:${color}" data-key="${key}" data-value="${key==='color'?color:i}" aria-label="${label} 색상 ${i+1}" aria-pressed="false"`)).join('')}</div></div>`).join('')}<button type="submit" class="vlg-enter">마을로 들어가기 <span aria-hidden="true">→</span></button></form></dialog>
+    <footer class="vlg-footer"><div class="vlg-status"><span data-vlg-save>자동 저장</span><small data-vlg-help>천천히 흘러가는 하루</small></div><nav class="vlg-dock" aria-label="사내 메뉴">${button('walk','출근하기','class="vlg-primary"')}${button('residents','직원들','aria-expanded="false"')}${button('character','내 캐릭터')}</nav><span class="vlg-hint" data-vlg-hint>드래그로 둘러보기 · 휠로 확대</span></footer>
+    <dialog class="vlg-character-dialog" aria-labelledby="vlg-character-title"><form class="vlg-character-form"><header><div><small>A LITTLE YOU</small><h2 id="vlg-character-title">나의 사원증</h2></div>${button('cancel-character','×','aria-label="캐릭터 만들기 닫기"')}</header><div class="vlg-character-preview"><canvas width="160" height="144" data-vlg-preview aria-label="캐릭터 미리보기"></canvas><span>오늘도 좋은 하루.</span></div><label class="vlg-name-label">이름<input name="village-name" maxlength="12" required autocomplete="off" placeholder="여행자" aria-label="캐릭터 이름"></label>${[['color','옷',CLOTHES],['hair','머리',HAIR],['skin','피부',SKIN]].map(([key,label,colors])=>`<div class="vlg-custom-row"><span>${label}</span><div class="vlg-swatches" role="group" aria-label="${label} 색상">${colors.map((color,i)=>button('swatch','',`class="vlg-swatch" style="--swatch:${color}" data-key="${key}" data-value="${key==='color'?color:i}" aria-label="${label} 색상 ${i+1}" aria-pressed="false"`)).join('')}</div></div>`).join('')}<button type="submit" class="vlg-enter">출근하기 <span aria-hidden="true">→</span></button></form></dialog>
   </section>`;}
   function updateHUD(){
     if(!active||!game)return;
     const clock=villageClock(world),q=s=>game.querySelector(s),action=s=>q(`[data-village-action="${s}"]`);
     q('[data-vlg-day]').textContent=`${clock.day}일째`;q('[data-vlg-clock]').textContent=clock.text;
-    game.dataset.mode=mode;q('[data-vlg-mode]').textContent=mode==='walk'?'마을 산책 중':'마을 구경 중';
-    action('walk').textContent=mode==='walk'?'구경하기':'산책하기';
-    action('pause').textContent=paused?'▶':'Ⅱ';action('pause').setAttribute('aria-label',paused?'마을 재생':'마을 일시정지');action('pause').setAttribute('aria-pressed',String(paused));
+    game.dataset.mode=mode;q('[data-vlg-mode]').textContent=mode==='walk'?'사내 산책 중':'사내 구경 중';
+    action('walk').textContent=mode==='walk'?'구경하기':'출근하기';
+    action('pause').textContent=paused?'▶':'Ⅱ';action('pause').setAttribute('aria-label',paused?'업무 재생':'업무 일시정지');action('pause').setAttribute('aria-pressed',String(paused));
     action('speed').textContent=`${speed}×`;action('speed').setAttribute('aria-label',`재생 속도 ${speed}배, 눌러서 변경`);
     action('light').textContent=night==='night'?'☾':night==='day'?'☀':'◐';action('light').setAttribute('aria-label',`시간대 ${night==='auto'?'자동':night==='day'?'낮':'밤'}, 눌러서 변경`);
     q('[data-vlg-paused]').hidden=!paused;q('[data-vlg-walk]').hidden=mode!=='walk';
     q('.vlg-residents').hidden=!panel;game.querySelector('.vlg-dock [data-village-action="residents"]').setAttribute('aria-expanded',String(panel));
     const resident=world.residents.find(r=>r.id===follow),followEl=q('[data-vlg-follow]');followEl.hidden=!resident;if(resident)followEl.querySelector('span').textContent=`${resident.name} · ${resident.activity}`;
-    q('[data-vlg-save]').textContent=storageOK?'자동 저장':'저장할 수 없음';q('[data-vlg-help]').textContent=world.help?`작은 도움 ${world.help}번`:'천천히 흘러가는 하루';
+    q('[data-vlg-save]').textContent=storageOK?'자동 저장':'저장할 수 없음';q('[data-vlg-help]').textContent=`부서 작업 ${world.logistics.stats.work} · 여과 ${world.logistics.stats.filtered}`;
+    for(const kind of ['oxygen','food','waste'])q(`[data-vlg-load="${kind}"]`).textContent=world.logistics.parcels.filter(p=>kind==='waste'?['waste','sorted'].includes(p.kind):p.kind===kind).length;
     q('[data-vlg-hint]').textContent=mode==='walk'?'WASD / 방향키 · E 인사 · 클릭 이동':'드래그로 둘러보기 · 휠로 확대';
     const near=nearestInteraction(world),interactButton=q('[data-vlg-interact]');interactButton.disabled=!near||paused;interactButton.textContent=near?`${near.label}  E`:'가까이 다가가기';
     q('[data-vlg-toast]').hidden=!toast||performance.now()>toastEnd;q('[data-vlg-toast]').textContent=toast;
@@ -107,7 +109,8 @@ export function createCellVillage(){
       const resident=world.residents.find(r=>Math.hypot(point.x-r.x,point.y-(r.y-12))<17);
       if(mode==='watch'){if(resident){follow=resident.id;selected=resident.id;renderer.focus(resident,true);updateHUD();}return;}
       if(!world.player||paused)return;
-      const site=SITES.find(s=>point.x>s.x*16&&point.x<(s.x+s.w)*16&&point.y>s.y*16&&point.y<(s.y+s.h+1)*16);
+      const fixture=FIXTURES.find(f=>point.x>=f.x*TILE&&point.x<(f.x+f.w)*TILE&&point.y>=f.y*TILE-10&&point.y<(f.y+f.h)*TILE);
+      const site=SITES.find(s=>s.id===fixture?.room||Math.hypot(point.x-POINTS[s.id].x,point.y-POINTS[s.id].y)<18);
       pendingInteraction=resident?{kind:'resident',id:resident.id}:site?{kind:'site',id:site.id}:null;
       const target=resident||site&&POINTS[site.id]||point;
       world.player.path=findPath(world.player,target);
