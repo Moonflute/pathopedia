@@ -13,6 +13,7 @@ test('new release and optional modules bypass the previous deployment HTTP cache
  w.handlers.message({data:'CACHE_CITY',waitUntil:p=>work=p});await work;assert.ok(w.added.some(r=>r.url.endsWith('/src/city-engine.mjs')));assert.ok(w.added.every(r=>r.cache==='reload'));
  w.handlers.message({data:'CACHE_CELL_VILLAGE',waitUntil:p=>work=p});await work;assert.ok(w.added.some(r=>r.url.endsWith('/src/cell-village-ui.mjs')));assert.ok(w.added.some(r=>r.url.endsWith('/assets/cell-village/tiny-town.png')));assert.ok(w.added.every(r=>r.cache==='reload'));
  assert.ok(w.added.some(r=>r.url.endsWith('/src/cell-office-layout.mjs')));assert.ok(w.added.some(r=>r.url.endsWith('/src/cell-office-logistics.mjs')));
+ assert.ok(w.added.some(r=>r.url.endsWith('/src/cell-office-life.mjs')));
 });
 test('first city module request revalidates and remains usable offline afterwards',async()=>{
  const w=worker(),request=new Request('https://example.com/pathopedia/src/city-first-person.mjs');let result,pending=[];

@@ -1,5 +1,5 @@
 {
-  "version": "0.91.0",
+  "version": "0.92.0",
   "tileSize": 16,
   "sources": [
     {
@@ -14,5 +14,5 @@
       "sha256": "3a54d99ecde790d4fdea207a3644cf130fc56fa838f1beb1507c185a95b8e902"
     }
   ],
-  "runtime": "One existing local CC0 atlas, reused for exterior ground and indoor potted greenery. The building, equipment and conveyors use original Canvas pixel drawings. The same parcel drawings appear on belts, at receiving docks, on workbenches and in employees' hands. Tank levels, packing stages, control lights and filtering reflect real work. No new images or packages are included."
+  "runtime": "One existing local CC0 atlas, reused for exterior ground and indoor greenery. Original Canvas pixel drawings cover equipment, furniture, personal desk decorations, social poses and speech bubbles. The same parcel drawing follows belts, docks, workbenches, staff/player hands and dropped-box recovery. Daily shifts, paired breaks and incidents use existing character art. No new images or packages are included."
 }

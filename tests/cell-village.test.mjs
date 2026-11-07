@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {SAVE_KEY,SITES,POINTS,RESIDENTS,CLOTHES,createWorld,serializeWorld,findPath,canStand,tickWorld,nearestInteraction,interact} from '../src/cell-village-world.mjs';
-import {BRIDGES,FIXTURES,PORTS,DOCKS,TILE,blocked} from '../src/cell-office-layout.mjs';
+import {BRIDGES,FIXTURES,PORTS,DOCKS,TILE,BREAK_SEATS,GARDEN_SPOTS,SOCIAL_SPOTS,blocked} from '../src/cell-office-layout.mjs';
 import {MAX_PARCELS,parcelPoint} from '../src/cell-office-logistics.mjs';
+import {heldCargo,cargoDestination,officePhase} from '../src/cell-office-life.mjs';
 
 function assertConservation(world){
   const f=world.logistics,stations=Object.values(f.stations);
-  const cargo=[...f.parcels.map(p=>p.kind),...stations.flatMap(s=>[...s.inbox,...s.output]),...world.residents.flatMap(r=>r.carry?[r.carry.kind]:[])];
+  const cargo=[...f.parcels.map(p=>p.kind),...stations.flatMap(s=>[...s.inbox,...s.output]),...world.residents.flatMap(r=>r.carry?[r.carry.kind]:[]),...heldCargo(world).map(p=>p.kind)];
   const count=kind=>cargo.filter(k=>k===kind).length,stock=kind=>stations.reduce((sum,s)=>sum+s[kind],0);
   assert.equal(f.stats.madeOxygen+9,stock('oxygen')+count('oxygen')+f.stats.work);
   assert.equal(f.stats.madeFood+9,stock('food')+count('food')+f.stats.work);
@@ -26,6 +27,7 @@ test('every department and break room is reachable through doors and conveyor br
   }
   const path=findPath(POINTS.lung,POINTS.kidney);assert.ok(path.length);assert.ok(path.every(p=>canStand(p.x,p.y)));
   assert.ok(findPath(POINTS.plaza,POINTS.lounge).length);
+  for(const point of [...BREAK_SEATS,...GARDEN_SPOTS,...SOCIAL_SPOTS,POINTS.assist]){assert.ok(canStand(point.x,point.y));assert.deepEqual(findPath(POINTS.plaza,point).at(-1),{x:point.x,y:point.y});}
   for(const b of BRIDGES)assert.equal(blocked(b.x,b.y),false);
   for(const f of FIXTURES)assert.equal(blocked(f.x,f.y),true);
   assert.equal(blocked(16,16),true,'uncovered belt cannot be walked through');
@@ -94,4 +96,44 @@ test('greeting a carrier pauses and resumes the same parcel without teleporting 
   assert.deepEqual(r.carry,parcel);assert.deepEqual(r.path,path);assert.deepEqual({x:r.x,y:r.y},position);assertConservation(world);
   for(let i=0;i<300&&r.carry;i++)tickWorld(world,1/30);
   assert.equal(r.carry,null);assert.deepEqual({x:r.x,y:r.y},DOCKS.lung);assert.ok(r.deliveries>0);assertConservation(world);
+});
+
+test('a full office day includes paired breaks, shared meals, greetings and autonomous incident recovery',()=>{
+  const world=createWorld(),phases=new Set(),incidents=new Set();let sharedRest=false;
+  for(let i=0;i<21600;i++){
+    tickWorld(world,1/30);phases.add(officePhase(world.time).id);
+    if(world.life.event)incidents.add(world.life.event.type);
+    const resting=world.residents.filter(r=>r.task==='rest');if(resting.length===2&&resting.some(r=>r.chat))sharedRest=true;
+    assert.ok(world.residents.filter(r=>r.breakPlan).length<=2,'departments take turns, not an all-staff shutdown');
+    if(i%30===0){assertConservation(world);for(const r of world.residents)assert.ok(canStand(r.x,r.y),r.id);}
+  }
+  assert.equal(phases.size,6);assert.ok(sharedRest);assert.ok(world.life.stats.chats>3);assert.ok(world.life.stats.breaks>=8);assert.ok(world.life.stats.inspections>=8);assert.ok(world.life.stats.tidied>=8);
+  assert.deepEqual([...incidents].sort(),['rush','spill']);assert.ok(world.life.stats.resolved>=2);
+  for(const r of world.residents)assert.ok(r.lunchDay>=1,`${r.id} missed lunch`);
+  assert.ok(world.logistics.stats.work>30);assert.ok(world.logistics.stats.filtered>15);assertConservation(world);
+});
+test('the player delivers one real parcel, rests, and keeps desk decoration and delivery history',()=>{
+  const world=createWorld({version:2,player:{name:'사원',...POINTS.lung}});world.residents=[];
+  interact(world,{kind:'site',id:'lung'});for(let i=0;i<90;i++)tickWorld(world,1/30);
+  interact(world,{kind:'site',id:'lung'});assert.equal(world.player.carry.kind,'oxygen');assertConservation(world);
+  const recipient=world.player.carry.to;world.player.path=findPath(world.player,cargoDestination(world.player.carry));
+  for(let i=0;i<900&&world.player.path.length;i++)tickWorld(world,1/30,{walk:true});
+  const before=world.logistics.stations[recipient].inbox.length;
+  interact(world,{kind:'delivery',id:recipient});assert.equal(world.player.carry,null);assert.equal(world.logistics.stations[recipient].inbox.length,before+1);assert.equal(world.life.deliveries,1);assertConservation(world);
+  Object.assign(world.player,POINTS.coffee);interact(world,{kind:'spot',id:'coffee'});tickWorld(world,1/30,{walk:true});assert.equal(world.player.pose,'coffee');
+  tickWorld(world,1/30,{walk:true,x:1});assert.equal(world.player.pose,null);
+  Object.assign(world.player,POINTS.desk);interact(world,{kind:'spot',id:'desk'});tickWorld(world,1/30,{walk:true});assert.equal(world.player.seated,true);
+  interact(world,{kind:'stand'});assert.equal(world.player.seated,false);
+  Object.assign(world.player,POINTS.locker);interact(world,{kind:'spot',id:'locker'});
+  const restored=createWorld(JSON.parse(serializeWorld(world)));assert.equal(restored.life.deskStyle,1);assert.equal(restored.life.deliveries,1);assert.equal(restored.player.name,'사원');
+});
+test('the player can recover a dropped parcel before Ruby without duplicate collection',()=>{
+  const world=createWorld({version:2,player:{name:'사원',...POINTS.plaza}}),owner=world.residents.find(r=>r.id==='breeze');
+  for(let i=0;i<600&&!(owner.carry&&owner.moving);i++)tickWorld(world,1/30);
+  assert.ok(owner.carry);world.life.eventCursor=1;world.life.nextEvent=world.time;tickWorld(world,1/30);
+  const event=world.life.event;assert.equal(event.type,'spill');assert.ok(event.parcel);assertConservation(world);
+  Object.assign(world.player,event.point);interact(world,{kind:'spill',id:'spill'});const carried=world.player.carry;assert.ok(carried);assert.equal(world.life.event,null);assertConservation(world);
+  for(let i=0;i<900;i++)tickWorld(world,1/30);
+  assert.equal(world.residents.find(r=>r.id==='ruby').carry,null);assert.equal(world.player.carry,carried);assertConservation(world);
+  Object.assign(world.player,cargoDestination(carried));interact(world,{kind:'delivery',id:carried.to});assert.equal(world.player.carry,null);assertConservation(world);
 });

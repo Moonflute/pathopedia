@@ -1,6 +1,7 @@
 import {GameLoop} from './vendor/kontra-10.0.2.mjs';
-import {FIXTURES,TILE} from './cell-office-layout.mjs';
-import {SAVE_KEY,CLOTHES,HAIR,SKIN,RESIDENTS,SITES,POINTS,createWorld,serializeWorld,tickWorld,findPath,nearestInteraction,interact,villageClock} from './cell-village-world.mjs';
+import {FIXTURES,TILE,SOCIAL_SPOTS} from './cell-office-layout.mjs';
+import {officePhase,cargoDestination} from './cell-office-life.mjs';
+import {SAVE_KEY,CLOTHES,HAIR,SKIN,RESIDENTS,SITES,POINTS,createWorld,serializeWorld,tickWorld,findPath,nearestInteraction,interactionPoint,cargoName,interact,villageClock} from './cell-village-world.mjs';
 import {createVillageRenderer,drawPerson} from './cell-village-renderer.mjs';
 
 const button=(action,label,attrs='')=>`<button type="button" data-village-action="${action}" ${attrs}>${label}</button>`;
@@ -15,7 +16,8 @@ export function createCellVillage(){
   function render(){return `<section class="vlg-game" aria-label="Cell City 몸속 회사" data-mode="${mode}">
     <header class="vlg-header"><div class="vlg-brand"><span class="vlg-emblem" aria-hidden="true">♥</span><div><h1>CELL CITY</h1><span>몸속 주식회사 · 1F</span></div></div><div class="vlg-clock"><span data-vlg-day>1일째</span><strong data-vlg-clock>06:00</strong></div><div class="vlg-time-controls">${button('light','☀','aria-label="시간대 자동, 누르면 낮 또는 밤으로 변경" title="시간대"')}${button('pause','Ⅱ','aria-label="업무 일시정지"')}${button('speed','1×','aria-label="재생 속도 변경"')}</div></header>
     <div class="vlg-stage"><canvas class="vlg-canvas" tabindex="0" aria-label="Cell City 사내. 구경할 때 드래그로 지도 이동. 산책할 때 WASD, 방향키 또는 바닥 클릭으로 이동. E로 인사와 작업."></canvas>
-      <div class="vlg-corner"><span class="vlg-live-dot"></span><span data-vlg-mode>사내 구경 중</span><span class="vlg-corner-divider">/</span><span>직원 8명</span></div>
+      <div class="vlg-corner"><span class="vlg-live-dot"></span><span data-vlg-mode>사내 구경 중</span><span class="vlg-corner-divider">/</span><span data-vlg-phase>아침 점검</span></div>
+      <div class="vlg-life-controls">${button('event','','class="vlg-event" data-vlg-event hidden')}${button('delivery','','class="vlg-delivery" data-vlg-delivery hidden')}${button('my-desk','내 자리 ↗','class="vlg-my-desk" data-vlg-my-desk hidden')}</div>
       <div class="vlg-map-controls">${button('zoom-out','−','aria-label="건물 축소"')}${button('fit','⌖','aria-label="건물 전체 보기" title="건물 전체"')}${button('zoom-in','＋','aria-label="건물 확대"')}</div>
       <div class="vlg-pause-label" data-vlg-paused hidden>잠시 쉬는 중</div>
       <div class="vlg-follow" data-vlg-follow hidden><span></span>${button('unfollow','×','aria-label="직원 따라보기 종료"')}</div>
@@ -30,7 +32,13 @@ export function createCellVillage(){
     if(!active||!game)return;
     const clock=villageClock(world),q=s=>game.querySelector(s),action=s=>q(`[data-village-action="${s}"]`);
     q('[data-vlg-day]').textContent=`${clock.day}일째`;q('[data-vlg-clock]').textContent=clock.text;
-    game.dataset.mode=mode;q('[data-vlg-mode]').textContent=mode==='walk'?'사내 산책 중':'사내 구경 중';
+    game.dataset.mode=mode;game.dataset.following=String(!!follow);q('[data-vlg-mode]').textContent=mode==='walk'?'사내 산책 중':'사내 구경 중';
+    q('[data-vlg-phase]').textContent=officePhase(world.time).label;
+    const event=world.life.event,eventButton=q('[data-vlg-event]');eventButton.hidden=!event;if(event)eventButton.textContent=`${event.label} ↗`;
+    const carry=world.player?.carry,deliveryButton=q('[data-vlg-delivery]');deliveryButton.hidden=!carry||mode!=='walk';
+    eventButton.disabled=paused||(mode==='walk'&&!!carry);deliveryButton.disabled=paused;
+    if(carry)deliveryButton.textContent=`${cargoName(carry.kind)} → ${SITES.find(s=>s.id===carry.to).name}`;
+    q('[data-vlg-my-desk]').hidden=!world.player||mode!=='walk'||!!carry;
     action('walk').textContent=mode==='walk'?'구경하기':'출근하기';
     action('pause').textContent=paused?'▶':'Ⅱ';action('pause').setAttribute('aria-label',paused?'업무 재생':'업무 일시정지');action('pause').setAttribute('aria-pressed',String(paused));
     action('speed').textContent=`${speed}×`;action('speed').setAttribute('aria-label',`재생 속도 ${speed}배, 눌러서 변경`);
@@ -38,10 +46,10 @@ export function createCellVillage(){
     q('[data-vlg-paused]').hidden=!paused;q('[data-vlg-walk]').hidden=mode!=='walk';
     q('.vlg-residents').hidden=!panel;game.querySelector('.vlg-dock [data-village-action="residents"]').setAttribute('aria-expanded',String(panel));
     const resident=world.residents.find(r=>r.id===follow),followEl=q('[data-vlg-follow]');followEl.hidden=!resident;if(resident)followEl.querySelector('span').textContent=`${resident.name} · ${resident.activity}`;
-    q('[data-vlg-save]').textContent=storageOK?'자동 저장':'저장할 수 없음';q('[data-vlg-help]').textContent=`부서 작업 ${world.logistics.stats.work} · 여과 ${world.logistics.stats.filtered}`;
-    const inTransit=[...world.logistics.parcels,...world.residents.map(r=>r.carry).filter(Boolean)];
+    q('[data-vlg-save]').textContent=storageOK?'자동 저장':'저장할 수 없음';q('[data-vlg-help]').textContent=`부서 작업 ${world.logistics.stats.work} · 내 배달 ${world.life.deliveries}`;
+    const inTransit=[...world.logistics.parcels,...world.residents.map(r=>r.carry),world.player?.carry].filter(Boolean);
     for(const kind of ['oxygen','food','waste'])q(`[data-vlg-load="${kind}"]`).textContent=inTransit.filter(p=>kind==='waste'?['waste','sorted'].includes(p.kind):p.kind===kind).length;
-    q('[data-vlg-hint]').textContent=mode==='walk'?'WASD / 방향키 · E 인사 · 클릭 이동':'드래그로 둘러보기 · 휠로 확대';
+    q('[data-vlg-hint]').textContent=mode==='walk'?'WASD / 방향키 · E 행동 · 클릭 이동':'드래그로 둘러보기 · 휠로 확대';
     const near=nearestInteraction(world),interactButton=q('[data-vlg-interact]');interactButton.disabled=!near||paused;interactButton.textContent=near?`${near.label}  E`:'가까이 다가가기';
     q('[data-vlg-toast]').hidden=!toast||performance.now()>toastEnd;q('[data-vlg-toast]').textContent=toast;
     for(const r of world.residents){q(`[data-vlg-activity="${r.id}"]`).textContent=r.activity;const b=q(`[data-id="${r.id}"]`);b.setAttribute('aria-pressed',String(r.id===follow));}
@@ -56,6 +64,12 @@ export function createCellVillage(){
   }
   function startWalking(){mode='walk';follow='';selected='';panel=false;paused=false;pendingInteraction=null;renderer.focus(world.player,true);canvas.focus({preventScroll:true});updateHUD();}
   function doInteraction(target=nearestInteraction(world)){if(paused||!target)return;notify(interact(world,target));save();}
+  function approach(target){
+    if(!world.player||paused)return;
+    const point=interactionPoint(world,target);if(!point)return;
+    world.player.pendingSpot=null;world.player.pose=null;world.player.seated=false;
+    pendingInteraction=target;world.player.path=findPath(world.player,point);keys.clear();held.clear();
+  }
   function handleClick(b){
     if(!active||!b?.hasAttribute('data-village-action'))return false;
     const action=b.dataset.villageAction;
@@ -73,6 +87,13 @@ export function createCellVillage(){
     if(action==='zoom-in')renderer.setZoom(1.25);
     if(action==='zoom-out')renderer.setZoom(.8);
     if(action==='interact')doInteraction();
+    if(action==='delivery'&&world.player?.carry)approach({kind:'delivery',id:world.player.carry.to});
+    if(action==='my-desk')approach({kind:'spot',id:'desk'});
+    if(action==='event'&&world.life.event){
+      const event=world.life.event;
+      if(mode==='walk')approach(event.type==='spill'?{kind:'spill',id:'spill'}:{kind:'site',id:'gut'});
+      else{follow='';selected='';renderer.focus(event.point,true);}
+    }
     updateHUD();return true;
   }
   function mount(root,enabled){
@@ -112,9 +133,11 @@ export function createCellVillage(){
       if(!world.player||paused)return;
       const fixture=FIXTURES.find(f=>point.x>=f.x*TILE&&point.x<(f.x+f.w)*TILE&&point.y>=f.y*TILE-10&&point.y<(f.y+f.h)*TILE);
       const site=SITES.find(s=>s.id===fixture?.room||Math.hypot(point.x-POINTS[s.id].x,point.y-POINTS[s.id].y)<18);
-      pendingInteraction=resident?{kind:'resident',id:resident.id}:site?{kind:'site',id:site.id}:null;
-      const target=resident||site&&POINTS[site.id]||point;
-      world.player.path=findPath(world.player,target);
+      const spot=SOCIAL_SPOTS.find(s=>s.id===fixture?.kind||(s.id==='bench'&&fixture?.kind==='sofa')||Math.hypot(point.x-s.x,point.y-s.y)<14);
+      const delivery=world.player.carry&&Math.hypot(point.x-cargoDestination(world.player.carry).x,point.y-cargoDestination(world.player.carry).y)<22;
+      const event=world.life.event,spill=event?.type==='spill'&&event.parcel&&Math.hypot(point.x-event.point.x,point.y-event.point.y)<16;
+      const target=delivery?{kind:'delivery',id:world.player.carry.to}:resident?{kind:'resident',id:resident.id}:spill?{kind:'spill',id:'spill'}:spot?{kind:'spot',id:spot.id}:site?{kind:'site',id:site.id}:null;
+      if(target)approach(target);else{pendingInteraction=null;world.player.pendingSpot=null;world.player.pose=null;world.player.seated=false;world.player.path=findPath(world.player,point);}
     },opts);
     canvas.addEventListener('pointercancel',()=>{pointer=null;},opts);
     for(const b of game.querySelectorAll('[data-vlg-dir]')){
@@ -128,9 +151,9 @@ export function createCellVillage(){
           const x=(keys.has('KeyD')||keys.has('ArrowRight')||held.has('right')?1:0)-(keys.has('KeyA')||keys.has('ArrowLeft')||held.has('left')?1:0),y=(keys.has('KeyS')||keys.has('ArrowDown')||held.has('down')?1:0)-(keys.has('KeyW')||keys.has('ArrowUp')||held.has('up')?1:0);
           tickWorld(world,dt*speed,{x:mode==='walk'?x:0,y:mode==='walk'?y:0,walk:mode==='walk'});
           if(pendingInteraction&&world.player){
-            const target=pendingInteraction.kind==='resident'?world.residents.find(r=>r.id===pendingInteraction.id):POINTS[pendingInteraction.id];
+            const target=interactionPoint(world,pendingInteraction);
             if(!target)pendingInteraction=null;
-            else if(Math.hypot(target.x-world.player.x,target.y-world.player.y)<32){doInteraction(pendingInteraction);pendingInteraction=null;world.player.path=[];}
+            else if(Math.hypot(target.x-world.player.x,target.y-world.player.y)<22){world.player.path=[];doInteraction(pendingInteraction);pendingInteraction=null;}
             else {const end=world.player.path.at(-1);if(!end||Math.hypot(end.x-target.x,end.y-target.y)>24)world.player.path=findPath(world.player,target);}
           }
         }

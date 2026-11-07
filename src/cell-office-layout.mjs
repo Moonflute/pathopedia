@@ -12,7 +12,15 @@ export const SITES=[
 ];
 export const LOUNGE={id:'lounge',name:'직원 휴게실',x:18,y:25,w:12,h:7,color:'#8e9c78',floor:'#e8dfc8',door:[[23,25],[24,25]]};
 export const ROOMS=[...SITES,LOUNGE];
-export const POINTS={...Object.fromEntries(SITES.map(s=>[s.id,s.work])),plaza:p(24.5,21.5),lounge:p(24.5,29.5),dispatch:p(26.5,18.5),coffee:p(21.5,29.5)};
+export const POINTS={...Object.fromEntries(SITES.map(s=>[s.id,s.work])),plaza:p(24.5,21.5),lounge:p(24.5,29.5),dispatch:p(26.5,18.5),coffee:p(26.5,29.5),desk:p(29.5,17.5),locker:p(29.5,20.5),bench:p(21.5,28.5),assist:p(37.5,8.5)};
+export const BREAK_SEATS=[p(23.5,28.5),p(24.5,28.5)];
+export const GARDEN_SPOTS=[p(28.5,29.5),p(27.5,30.5)];
+export const SOCIAL_SPOTS=[
+  {id:'desk',label:'내 자리에 앉기',pose:'desk',...POINTS.desk},
+  {id:'locker',label:'내 자리 꾸미기',...POINTS.locker},
+  {id:'coffee',label:'커피 마시기',pose:'coffee',...POINTS.coffee},
+  {id:'bench',label:'함께 쉬기',pose:'book',...POINTS.bench},
+];
 export const FIXTURES=[
   {room:'lung',kind:'oxygen',x:6,y:6,w:6,h:2},
   {room:'brain',kind:'control',x:20,y:6,w:7,h:2},
@@ -24,6 +32,9 @@ export const FIXTURES=[
   {room:'lounge',kind:'sofa',x:20,y:27,w:3,h:1},
   {room:'lounge',kind:'coffee',x:26,y:27,w:2,h:2},
   {room:'hall',kind:'dispatch',x:22,y:16,w:4,h:2},
+  {room:'lounge',kind:'table',x:23,y:27,w:2,h:1},
+  {room:'personal',kind:'desk',x:28,y:15,w:2,h:2},
+  {room:'personal',kind:'locker',x:28,y:21,w:2,h:1},
 ];
 export const BELT=[p(16.5,12.5),p(31.5,12.5),p(31.5,23.5),p(16.5,23.5),p(16.5,12.5)];
 export const BELT_LENGTH=52*TILE;

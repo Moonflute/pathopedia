@@ -24,7 +24,7 @@ export function parcelPoint(parcel){
   if(parcel.phase==='loop')return beltPoint(PORTS[parcel.from].offset+parcel.distance);
   return pathPoint(PORTS[parcel.to].path,parcel.distance);
 }
-function receive(state,parcel){
+export function receiveParcel(state,parcel){
   const station=state.stations[parcel.to],capacity=parcel.kind==='waste'||parcel.kind==='sorted'?16:6;
   if(station.inbox.filter(kind=>kind===parcel.kind).length>=capacity)return false;
   station.inbox.push(parcel.kind);station.arrival=1.2;state.stats.received++;return true;
@@ -36,7 +36,7 @@ function moveParcels(state,dt){
     for(let step=0;step<3;step++){
       const length=parcel.phase==='out'?pathLength(PORTS[parcel.from].path):parcel.phase==='loop'?parcel.loopDistance:pathLength(PORTS[parcel.to].path);
       if(parcel.distance<length)break;
-      if(parcel.phase==='in'){parcel.distance=length;if(receive(state,parcel))delivered.add(parcel.id);break;}
+      if(parcel.phase==='in'){parcel.distance=length;if(receiveParcel(state,parcel))delivered.add(parcel.id);break;}
       parcel.distance-=length;parcel.phase=parcel.phase==='out'?'loop':'in';
     }
   }
@@ -63,9 +63,10 @@ export function takeOutput(state,id,residents){
   if(!to)return null;
   s.output.shift();return {kind,from:id,to};
 }
-export function tickLogistics(state,dt,residents){
-  const present=id=>residents.some(r=>r.id!=='ruby'&&r.home===id&&r.task==='work'&&!r.moving&&r.greeting<=0&&Math.hypot(r.x-POINTS[id].x,r.y-POINTS[id].y)<6);
-  const dispatcher=residents.some(r=>r.id==='ruby'&&!r.moving&&r.greeting<=0&&Math.hypot(r.x-POINTS.dispatch.x,r.y-POINTS.dispatch.y)<24);
+export function tickLogistics(state,dt,residents,extraCargo=[]){
+  const carriers=[...residents,...extraCargo.map(carry=>({carry}))];
+  const present=id=>residents.some(r=>r.id!=='ruby'&&r.home===id&&r.workReady&&r.task==='work'&&!r.moving&&r.greeting<=0&&!r.chat&&Math.hypot(r.x-POINTS[id].x,r.y-POINTS[id].y)<6);
+  const dispatcher=residents.some(r=>r.id==='ruby'&&r.task==='work'&&!r.moving&&r.greeting<=0&&!r.chat&&Math.hypot(r.x-POINTS.dispatch.x,r.y-POINTS.dispatch.y)<24);
   state.pumpBoost=Math.max(0,state.pumpBoost-dt);state.beltSpeed=(present('heart')?29:23)+(dispatcher?5:0)+(state.pumpBoost>0?10:0);
   state.beltTravel=(state.beltTravel+state.beltSpeed*dt)%(BELT_LENGTH*100);
   moveParcels(state,dt);
@@ -74,7 +75,7 @@ export function tickLogistics(state,dt,residents){
     s.working=false;
     if((!present(id)&&s.boost<=0)||s.output.length)continue;
     const producer=id==='lung'||id==='gut',kind=id==='lung'?'oxygen':'food';
-    if(producer&&!destination(state,kind,residents))continue;
+    if(producer&&!destination(state,kind,carriers))continue;
     if(CONSUMERS.includes(id)&&(s.oxygen<1||s.food<1))continue;
     if((id==='liver'||id==='kidney')&&s.waste<1)continue;
     s.working=true;s.progress+=dt*(s.boost>0?1.8:1);
